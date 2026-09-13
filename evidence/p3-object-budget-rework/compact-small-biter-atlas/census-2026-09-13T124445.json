@@ -1,0 +1,3963 @@
+{
+  "candidate_sha": "5b3ff607387c8a5d852f9863f402c15d17c2c454",
+  "kind": "p3-census-diagnostic",
+  "rows": [
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 316,
+      "objects": 3672,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 6,
+      "second": 1,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 345,
+      "objects": 3785,
+      "orphans": 0,
+      "pool_active": 12,
+      "pool_idle": 4,
+      "second": 2,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 332,
+      "objects": 3716,
+      "orphans": 0,
+      "pool_active": 6,
+      "pool_idle": 11,
+      "second": 3,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 273,
+      "objects": 3560,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 4,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 325,
+      "objects": 3693,
+      "orphans": 0,
+      "pool_active": 9,
+      "pool_idle": 8,
+      "second": 5,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 313,
+      "objects": 3629,
+      "orphans": 0,
+      "pool_active": 3,
+      "pool_idle": 14,
+      "second": 6,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 320,
+      "objects": 3667,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 7,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2495426334137": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2495661215422": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 292,
+      "objects": 3620,
+      "orphans": 0,
+      "pool_active": 12,
+      "pool_idle": 5,
+      "second": 8,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 315,
+      "objects": 3645,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 9,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 321,
+      "objects": 3657,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 10,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 346,
+      "objects": 3782,
+      "orphans": 0,
+      "pool_active": 7,
+      "pool_idle": 10,
+      "second": 11,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 297,
+      "objects": 3613,
+      "orphans": 0,
+      "pool_active": 6,
+      "pool_idle": 11,
+      "second": 12,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 325,
+      "objects": 3685,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 13,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 317,
+      "objects": 3674,
+      "orphans": 0,
+      "pool_active": 12,
+      "pool_idle": 5,
+      "second": 14,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 6
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 310,
+      "objects": 3619,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 15,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631154011801": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 297,
+      "objects": 3583,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 16,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 337,
+      "objects": 3717,
+      "orphans": 0,
+      "pool_active": 7,
+      "pool_idle": 10,
+      "second": 17,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 319,
+      "objects": 3633,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 18,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 327,
+      "objects": 3683,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 19,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 299,
+      "objects": 3618,
+      "orphans": 0,
+      "pool_active": 6,
+      "pool_idle": 11,
+      "second": 20,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 351,
+      "objects": 3720,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 21,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 328,
+      "objects": 3680,
+      "orphans": 0,
+      "pool_active": 6,
+      "pool_idle": 11,
+      "second": 22,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 7
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 319,
+      "objects": 3650,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 23,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 283,
+      "objects": 3565,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 24,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 340,
+      "objects": 3699,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 25,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 327,
+      "objects": 3687,
+      "orphans": 0,
+      "pool_active": 1,
+      "pool_idle": 16,
+      "second": 26,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 332,
+      "objects": 3670,
+      "orphans": 0,
+      "pool_active": 6,
+      "pool_idle": 11,
+      "second": 27,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 301,
+      "objects": 3606,
+      "orphans": 0,
+      "pool_active": 11,
+      "pool_idle": 6,
+      "second": 28,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 355,
+      "objects": 3757,
+      "orphans": 0,
+      "pool_active": 3,
+      "pool_idle": 14,
+      "second": 29,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 348,
+      "objects": 3707,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 30,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 331,
+      "objects": 3705,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 31,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 287,
+      "objects": 3559,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 32,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 342,
+      "objects": 3715,
+      "orphans": 0,
+      "pool_active": 1,
+      "pool_idle": 16,
+      "second": 33,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 333,
+      "objects": 3719,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 34,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 324,
+      "objects": 3647,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 35,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 298,
+      "objects": 3589,
+      "orphans": 0,
+      "pool_active": 1,
+      "pool_idle": 16,
+      "second": 36,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 350,
+      "objects": 3748,
+      "orphans": 0,
+      "pool_active": 8,
+      "pool_idle": 9,
+      "second": 37,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 354,
+      "objects": 3749,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 38,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 358,
+      "objects": 3716,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 39,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 296,
+      "objects": 3628,
+      "orphans": 0,
+      "pool_active": 13,
+      "pool_idle": 4,
+      "second": 40,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 333,
+      "objects": 3661,
+      "orphans": 0,
+      "pool_active": 7,
+      "pool_idle": 10,
+      "second": 41,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 337,
+      "objects": 3716,
+      "orphans": 0,
+      "pool_active": 3,
+      "pool_idle": 14,
+      "second": 42,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 338,
+      "objects": 3740,
+      "orphans": 0,
+      "pool_active": 9,
+      "pool_idle": 8,
+      "second": 43,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 284,
+      "objects": 3553,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 44,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 344,
+      "objects": 3714,
+      "orphans": 0,
+      "pool_active": 5,
+      "pool_idle": 12,
+      "second": 45,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 358,
+      "objects": 3830,
+      "orphans": 0,
+      "pool_active": 7,
+      "pool_idle": 10,
+      "second": 46,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 354,
+      "objects": 3748,
+      "orphans": 0,
+      "pool_active": 1,
+      "pool_idle": 16,
+      "second": 47,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 325,
+      "objects": 3652,
+      "orphans": 0,
+      "pool_active": 0,
+      "pool_idle": 17,
+      "second": 48,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 341,
+      "objects": 3767,
+      "orphans": 0,
+      "pool_active": 1,
+      "pool_idle": 16,
+      "second": 49,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 326,
+      "objects": 3649,
+      "orphans": 0,
+      "pool_active": 3,
+      "pool_idle": 14,
+      "second": 50,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 335,
+      "objects": 3694,
+      "orphans": 0,
+      "pool_active": 1,
+      "pool_idle": 16,
+      "second": 51,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 299,
+      "objects": 3631,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 52,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 341,
+      "objects": 3700,
+      "orphans": 0,
+      "pool_active": 0,
+      "pool_idle": 17,
+      "second": 53,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 343,
+      "objects": 3707,
+      "orphans": 0,
+      "pool_active": 3,
+      "pool_idle": 14,
+      "second": 54,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 358,
+      "objects": 3818,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 55,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 312,
+      "objects": 3621,
+      "orphans": 0,
+      "pool_active": 4,
+      "pool_idle": 13,
+      "second": 56,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 341,
+      "objects": 3691,
+      "orphans": 0,
+      "pool_active": 2,
+      "pool_idle": 15,
+      "second": 57,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 340,
+      "objects": 3749,
+      "orphans": 0,
+      "pool_active": 13,
+      "pool_idle": 4,
+      "second": 58,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    },
+    {
+      "enemy_kind_counts": {
+        "Rift Cutter": 1,
+        "Rift Warden": 1,
+        "Small Biter": 8
+      },
+      "fullframe_consumers": {
+        "2023852345614": {
+          "frames": "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres",
+          "frames_instance": -9223369951631373295,
+          "kind": "Rift Warden"
+        },
+        "2086582356503": {
+          "frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+          "frames_instance": -9223369905007489829,
+          "kind": "Rift Cutter"
+        },
+        "2195869141485": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2199929228670": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2200164109707": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348055268493": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348290149407": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2348525030867": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2631388891142": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        },
+        "2724133341353": {
+          "frames": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+          "frames_instance": -9223369837126873735,
+          "kind": "Small Biter"
+        }
+      },
+      "nodes": 331,
+      "objects": 3663,
+      "orphans": 0,
+      "pool_active": 6,
+      "pool_idle": 11,
+      "second": 59,
+      "unique_frame_paths": [
+        "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres",
+        "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+        "res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres"
+      ]
+    }
+  ],
+  "ultimate_activations": 1,
+  "ultimate_attempts": 18
+}
