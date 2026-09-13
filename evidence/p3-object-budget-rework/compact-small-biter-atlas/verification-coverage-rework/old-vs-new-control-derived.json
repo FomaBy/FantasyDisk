@@ -38,11 +38,11 @@
    }
   }
  },
- "_strict_limitation": "The producer's strict exit-1 outcome is retained: its in-probe aligned-grid histogram DOES distinguish a direct image mirror on this content; the executed miss demonstrated is render-level acceptance of spatially different renders (color-multiset equality), not pixel-grid mirror equality.",
+ "_strict_limitation": "The producer's strict exit-1 outcome is retained: its in-probe aligned-grid histogram DOES distinguish a direct image mirror on this content, and the committed-processor flip-pair run likewise measured histogram inequality. NO render-level spatial old-checker miss is claimed as executed on retained evidence (the earlier assertion is withdrawn at _transformation.old_accepts_spatially_different_renders); the histogram's spatial blindness is QA report 01a09a91's inspection finding. The single retained executed old-checker miss is the duration mutant.",
  "_prior_disclosure": "",
  "_provenance": {
-  "capture_source_commit": "5fe0b8e148f47b56f49560ea815075d428d01c81 (captures exported at this source; blobs unchanged since \u2014 covered by the manifest inventory)",
-  "processor_source_commit": "committed at the instrumentation commit preceding the processor run; processor file sha256 recorded in capture-processor-run.log header",
+  "capture_source_commit": "5fe0b8e148f47b56f49560ea815075d428d01c81 is the retained capture-CONTAINER commit (the captures' packaging into the evidence tree); the captures were EXECUTED at the export instrumentation source named in checker-windowed-render-exported.log \u2014 a capture is not relabeled as executed at a later packaging commit",
+  "processor_source_commit": "c5b5a487114a2c8d2c141736b1b9b280c19bb764 (the commit whose tree contains the processor and its inputs; processor file sha256 recorded in capture-processor-run.log header)",
   "argv_note": "capture-processor-run.log's header command line is an ABBREVIATED reconstruction; the exact executed argv paths are recorded verbatim inside the processor's own JSON output (inputs field) and are preserved unedited"
  }
 }
