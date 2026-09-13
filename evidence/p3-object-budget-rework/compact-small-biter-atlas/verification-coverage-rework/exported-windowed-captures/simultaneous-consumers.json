@@ -1,30 +1,38 @@
 {
   "alone_sha": "7f89f4bc72602d033f11bb04ff41ed17884031c482654383ca56030c72e6dd61",
-  "first_animation": "attack_east",
-  "hide_show_deterministic": true,
-  "positions": [
-    [
+  "first": {
+    "alone_reference_sha": "7f89f4bc72602d033f11bb04ff41ed17884031c482654383ca56030c72e6dd61",
+    "animation": "attack_east",
+    "flip_h": false,
+    "frame": 0,
+    "position": [
       0,
       0
     ],
-    [
-      256,
-      256
-    ]
-  ],
-  "restored_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536",
-  "scales": [
-    [
+    "scale": [
       0.5,
       0.5
     ],
-    [
+    "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_56"
+  },
+  "hide_show_deterministic": true,
+  "hide_show_reproducible": true,
+  "restored_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536",
+  "second": {
+    "alone_reference_sha": "a2ce002a6b4b0d6c56abd43dc936261e0fc8a05b67f1253fa876d7099063373a",
+    "animation": "attack_north",
+    "flip_h": true,
+    "frame": 0,
+    "position": [
+      256,
+      256
+    ],
+    "scale": [
       0.5,
       0.5
-    ]
-  ],
-  "second_animation": "attack_north",
+    ],
+    "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_92"
+  },
   "second_contributed_pixels": true,
-  "second_flip_h": true,
   "together_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536"
 }

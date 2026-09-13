@@ -1,7 +1,14 @@
-command: ... -- render --export-dir /tmp/export-new (outside worktree per PM direction)
-source: ea0f6d16a480ffe1b68875971b8e0008149fc487
-Sun Sep 13 15:36:09 UTC 2026
+command (complete argv): FSD_GODOT_RUN_TIMEOUT=700 FSD_GODOT_MAXWAIT=900 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --script res://tests/full_frame_atlas_parity_test.gd -- render --export-dir /tmp/expfinal-bound
+cwd: /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3934-0b5c06167c31/workdir/FantasyDisk
+source: a7bdecb1cf0a013b9daa3736b592066e0becd6d3
+source_tree: 11a3427ce1b107820f747d4e9ac3d4432276596c
+base: origin/dev=b0ebba8f36721842ee2bb5606733979986433a45
+godot: 4.7.stable.official.5b4e0cb0f
+worktree_dirty_files_before: 486
+started_utc: 2026-09-13T17:03:35Z
 Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
 OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
 
+FAN3934_ARGS ["render","--export-dir","/tmp/expfinal-bound"]
 FULL_FRAME_ATLAS_PARITY_TEST PASS
+exit_status=0

@@ -1,0 +1,21 @@
+{
+ "_producer": "old-vs-new-control.gd (immutable, committed)",
+ "_raw_output": "old-vs-new-control-raw.log (unedited gate output; exit 1 recorded)",
+ "_raw_result": {
+  "control_pass": false,
+  "new_checker_detects_duration_mutant": true,
+  "new_checker_detects_spatial_mutant": true,
+  "new_source_identity": "successor checker (tres-parse equality + spatial image SHA)",
+  "old_checker_misses_duration_mutant": true,
+  "old_checker_misses_spatial_mutant": false,
+  "old_source_identity": "failed candidate 68afccda test assertions (positivity + dead branch + histogram)"
+ },
+ "_raw_exit_note": "The producer's own control_pass=false: its in-probe mirror-histogram check samples the atlas region on an aligned grid and does distinguish flip on this content \u2014 the producer's strict variant is NOT claimed as a miss. The EXECUTED miss demonstrations are: (a) duration mutant missed by old positivity (raw: old_checker_misses_duration_mutant=true, new detects=true); (b) the old comparison accepted spatially different RENDERS: histogram(case0 sprite)==histogram(case0 reference) while spatial SHA differs (measured on the exported captures, see old-vs-new-control.json fields old_checker_misses_spatial_defect=true, new_spatial_sha_detects_flip=true \u2014 both executed on real capture files).",
+ "executed_outcomes": {
+  "old_misses_duration_mutant": true,
+  "new_detects_duration_mutant": true,
+  "old_accepts_different_renders": true,
+  "new_detects_render_difference": true
+ },
+ "transformation_note": "The previously published old-vs-new-control.json was produced by a Python post-processor over the producer JSON plus capture-file measurements; that relationship is now disclosed here and both the raw and capture-derived records are retained unedited."
+}
