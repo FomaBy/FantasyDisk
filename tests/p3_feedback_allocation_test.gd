@@ -619,6 +619,57 @@ func _run() -> void:
 	lifetime_root.queue_free()
 	await process_frame
 
+	# L (05:02 rework): pooled hit ticks keep the canonical live
+	# `CombatHitTick` name across reuse, overlap and external frees — hidden
+	# pool slots must never hold the canonical name (sibling uniquification
+	# would displace it).
+	var name_root := Node2D.new()
+	root.add_child(name_root)
+	await process_frame
+	var name_timeline: Node = CombatFeedbackTimeline.for_scene(name_root)
+	var canonical_live := func() -> bool:
+		for child in name_timeline.get_children():
+			if child is Sprite2D and child.visible and child.name == "CombatHitTick":
+				return true
+		return false
+	var idle_holds_canonical := func() -> bool:
+		for child in name_timeline.get_children():
+			if child is Sprite2D and not child.visible and child.name == "CombatHitTick":
+				return true
+		return false
+	name_timeline.spawn_tick(Vector2(10.0, 10.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+	await process_frame
+	if not canonical_live.call():
+		failures.append("hit-tick name: first live tick is not named CombatHitTick")
+	await create_timer(0.2).timeout
+	if idle_holds_canonical.call():
+		failures.append("hit-tick name: released idle slot still holds the canonical name")
+	# Reuse: the next live tick must own the canonical name again.
+	name_timeline.spawn_tick(Vector2(20.0, 10.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+	await process_frame
+	if not canonical_live.call():
+		failures.append("hit-tick name: reused live tick is not named CombatHitTick")
+	# Overlap: two live ticks — at least one keeps the exact canonical name.
+	name_timeline.spawn_tick(Vector2(30.0, 10.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+	await process_frame
+	if not canonical_live.call():
+		failures.append("hit-tick name: overlapping live tick lost the canonical name")
+	# External immediate free of live ticks, then a fresh spawn still canonical.
+	for group_name in ["combat_feedback_flashes"]:
+		for node in get_nodes_in_group(group_name):
+			node.free()
+	await process_frame
+	name_timeline.spawn_tick(Vector2(40.0, 10.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+	await process_frame
+	if not canonical_live.call():
+		failures.append("hit-tick name: post-free spawn lost the canonical name")
+	await create_timer(0.25).timeout
+	var name_orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+	if name_orphans != 0:
+		failures.append("hit-tick name: %d orphans after teardown" % name_orphans)
+	name_root.queue_free()
+	await process_frame
+
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
 		quit(0)

@@ -90,6 +90,12 @@ func spawn_tick(start_global: Vector2, scale: Vector2, modulate: Color, group: S
 	var tick := _acquire_tick()
 	if tick == null:
 		return
+	# FAN-3934 hit-tick discoverability: the pre-pool code named every live
+	# tick CombatHitTick (SCRUM-611 smoke asserts the exact name). Idle pool
+	# slots are renamed on release, so the canonical name is always free here;
+	# simultaneous live ticks get Godot's sibling suffixes exactly as the
+	# per-hit original did.
+	tick.name = "CombatHitTick"
 	tick.texture = HIT_FLASH_TEXTURE
 	tick.material = HazardVfx.additive_material()
 	tick.modulate = modulate
@@ -265,6 +271,8 @@ func _release_tick(tick: Sprite2D, group: String) -> void:
 		return
 	tick.visible = false
 	tick.remove_from_group(group)
+	# Free the canonical live name for the next spawned tick.
+	tick.name = "CombatHitTickIdle"
 
 
 static func _ease_out_cubic(t: float) -> float:
