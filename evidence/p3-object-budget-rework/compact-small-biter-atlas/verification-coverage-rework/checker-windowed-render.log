@@ -1,9 +1,10 @@
-command: FSD_GODOT_RUN_TIMEOUT=700 FSD_GODOT_MAXWAIT=900 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py  --path . --script res://tests/full_frame_atlas_parity_test.gd -- render
-source: f400eabdf9569daaeab0a49705c838bd5874b0c6 tree 32bb24cb668d682f7f6eb69742bbab23ada39f58
-godot: 4.7.stable.official.5b4e0cb0f
-Sun Sep 13 12:59:02 UTC 2026
+command: FSD_GODOT_RUN_TIMEOUT=700 FSD_GODOT_MAXWAIT=900 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --script res://tests/full_frame_atlas_parity_test.gd -- render
+exit_status recorded at bottom
+source: 686a78ba625512142fdc21a1c87ca42fc9905ea4 tree 3933a684bacf1d7f1c98ff3944539f7bc2699260
+godot: 4.7.stable.official.5b4e0cb0f renderer: windowed OpenGL (gate output)
+started_utc: 2026-09-13T14:03:32Z
 Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
 OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
 
-FULL_FRAME_ATLAS_PARITY_TEST render-capture stage UNAVAILABLE in headless (run windowed with 'render' arg)
 FULL_FRAME_ATLAS_PARITY_TEST PASS
+exit_status=0

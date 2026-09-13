@@ -1,29 +1,48 @@
-# FAN-3934 — sixth-failure verification-coverage evidence (2026-09-13)
+# FAN-3934 — verification-coverage evidence (2026-09-13, corrected)
 
-Raw runs of the FINAL checker (`tests/full_frame_atlas_parity_test.gd` at the
-successor source, per-log command/argv/environment/exit recorded in each file):
+## Why the previous windowed log was invalid (diagnosis, item 1)
 
-- `checker-headless.log` — headless invocation, **exit 0**, PASS with the
-  render-capture stage explicitly marked UNAVAILABLE (not substituted).
-- `checker-windowed-render.log` — windowed `-- render` invocation on the real
-  macOS/OpenGL renderer, **exit 0**, PASS: all 24 animation rows x 3 explicit
-  cases (unflipped / flipped / scaled) spatially byte-equal to their reference
-  Sprite2D renders; simultaneous-consumer hide/show determinism green.
+The prior `checker-windowed-render.log` printed "render-capture stage
+UNAVAILABLE" despite the published command requesting `-- render`. Root cause:
+the evidence-collection shell loop passed the probe arguments through an
+unquoted zsh variable; zsh performs NO word splitting, so the gate received a
+single argument "-- render" (one word) instead of the two words `--` and
+`render`. The test therefore saw an empty user-arg list and honestly skipped
+the stage. The prior handoff's claim of windowed spatial captures was thus
+unsupported FOR THAT RECORDED RUN (an earlier live run had executed the stage,
+but no record of it was published). The invalid log is preserved verbatim as
+`checker-windowed-render-INVALID-argsmangled.log`; nothing was relabeled.
 
-Deliberate negative results executed and retained (inside the same checker):
+## Corrected executed runs (this directory; command/source/engine/exit in each)
 
-- corrupted duration list (one value +0.5) is REJECTED by the tres-parsed
-  equality rule;
-- region-shifted AtlasTexture is REJECTED by pixel-SHA comparison;
-- hide/show determinism failure path arms if the second consumer contributes
-  no pixels.
+- `checker-windowed-render.log` — re-executed with correctly split arguments,
+  windowed OpenGL renderer: **exit 0**, spatial stage EXECUTED (no UNAVAILABLE
+  line): all 24 animation rows x 3 cases byte-equal; simultaneous-consumer
+  hide/show determinism green.
+- `checker-headless.log` — headless re-record: **exit 0**, render stage
+  explicitly UNAVAILABLE (honest skip). The prior version is preserved as
+  `checker-headless-v1.log` (its recorded hash in the old manifest predates
+  the final commit's whitespace correction — the discrepancy the PM found).
+- `static-gate.log` — `quality_gate.py --static-only --changed-ref origin/dev`
+  exit recorded.
+- `range-check.log` — `git diff --check origin/dev...HEAD` exit recorded.
+- `contracts.log` — workflow + static-guard unit contracts exit recorded.
+- `regression-smoke_contact_feedback.log`, `regression-runtime_combat.log`,
+  `regression-take_damage.log`, `regression-feedback_alloc.log` — the four
+  affected regressions, commands and exits recorded.
+- `negative-outcomes.md` — per-negative outcome table (corrupted duration,
+  shifted region, missing-pixel path) with the detector failure lines.
 
-Historical honesty note: the windowed/headless console logs previously named
-"new-checker-*-console.log" and "old-checker-*.log" in this directory were
-misnamed duplicates of the runs above (the "old checker" control was
-inadvertently executed against the already-committed new test because the
-working tree was clean); they were removed rather than relabeled. The two
-canonical logs above are the actual executed runs whose contents were never
-edited. No earlier product/performance sample is relabeled as a successor run:
-the product content of `f400eabd` is byte-identical to QA-reviewed `68afccda`
-(test-only diff), which is the exact unchanged-input proof for evidence reuse.
+## Missing historical artifacts (inventoried, not recreated)
+
+- The prior handoff's "old-checker control" logs were misnamed duplicates
+  (deleted, disclosed) — an actual old-checker control was never executed and
+  is NOT recreated here; QA's inspection remains authoritative.
+- No PNG capture files were historically produced; the checker compares
+  captures in-memory by image SHA. Publishing renderer PNGs would require a
+  new test change and is unnecessary for the acceptance: the executed logs
+  prove the comparisons ran and passed (failures would exit 1 with named
+  FAIL lines). Stated as a limitation, not substituted.
+
+No earlier product/performance sample is relabeled a successor run; product
+content is byte-identical to QA-reviewed `68afccda` (test/evidence-only diff).

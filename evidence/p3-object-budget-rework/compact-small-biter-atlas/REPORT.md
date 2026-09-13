@@ -135,3 +135,22 @@ rather than relabeled; QA's own inspection remains the authority on the old
 checker's insufficiency. No earlier product/performance sample is relabeled:
 product content of `f400eabd` is byte-identical to QA-reviewed `68afccda`
 (test-only diff), which is the exact unchanged-input proof for evidence reuse.
+
+
+## Dated correction — 2026-09-13 publication diagnosis (14:01 decision)
+
+Two evidence defects in successor `686a78ba` are corrected additively:
+(1) the recorded windowed checker log was an INVALID run — a zsh unquoted
+variable passed "-- render" as one word, so the render stage was honestly
+skipped and the handoff's windowed-capture claim was unsupported for that
+record; the invalid log is preserved verbatim and the run re-executed with
+correctly split arguments (exit 0, spatial stage executed). (2) the canonical
+manifest hashed the pre-whitespace-fix version of one log; the manifest is
+rebuilt from the FINAL successor's Git inventory after all corrections, with
+an explicit nonrecursive self-exclusion convention (MANIFEST.md and REPORT.md
+only), and re-audited with real negatives. The verification subtree now
+carries commands, numeric exits, per-negative outcomes, preserved invalid
+attempts and an explicit missing-artifact inventory (old-checker control
+never executed — not recreated; no PNG captures exist by design — stated as a
+limitation). No production byte changed; product content remains byte-identical
+to QA-reviewed `68afccda`.
