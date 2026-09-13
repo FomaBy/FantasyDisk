@@ -1,6 +1,6 @@
 # FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
 
-- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `af55d4047c1ba133b7ee7111246dc243672a1f88`.
+- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `a80241051bef7a2d7ffc9104ce9b896dd0a7f953`.
 - Audit: publication-correction/audit_manifest.py (self-test negatives).
 - Nonrecursive self-exclusion: MANIFEST.md + REPORT.md only; audit-result
 -  point-in-time against its named commit.
@@ -8,7 +8,7 @@
 ## excluded generated outputs
 - 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived).
 
-## canonical changed-path inventory (commit af55d4047c1ba133b7ee7111246dc243672a1f88)
+## canonical changed-path inventory (commit a80241051bef7a2d7ffc9104ce9b896dd0a7f953)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -662,7 +662,7 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-smoke_contact_feedback.log` `425b3b67fc8c786658ea7606e42db70621a1e1c6a9ad6ffd46bbc35da61882ea`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-take_damage.log` `92a2d95d64d24a77387123997397a2f54bf802f3c8a07574a70c1a16a137b4b0`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate-clean.log` `72c512e33a0508dd99671aadf1dc318feae33150ade13a543d09da28f0a49348`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate-final.log` `dcfda74e5c09d84c7d82ba9d2d6622ba043f5fb03cf3a99814544a105cf75b22`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate-final.log` `9ad399b4d96e8ff2773b772ad17adfabeceba0d4b7267881d63f01c344e2f4eb`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate.log` `128922c59626a0a149c3ddd8f619cdb941ba5504a2adc44298eb6de9c9009ce7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/MANIFEST.md` `ed09e20005f6e45720cc2d5e08a4c2e8c65e7b77487a844a1367700244df7bc7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/PLAN.md` `231e1cd8a3f94560a167c6299354158c864d302f2191f81607457f41f7efefb5`
