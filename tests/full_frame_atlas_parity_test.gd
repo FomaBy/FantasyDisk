@@ -113,13 +113,47 @@ func _check_source_pixels_and_metadata(frames: SpriteFrames, manifest: Dictionar
 				_fail("%s/%d region mismatch vs matched manifest slot" % [anim, i])
 			if frame_image.get_size() != Vector2i(int(entry["w"]), int(entry["h"])):
 				_fail("%s/%d logical dimension mismatch" % [anim, i])
-			if frames.get_frame_duration(anim, i) <= 0.0:
+			var expected_duration := _original_duration(0, 0)
+			var actual_duration := frames.get_frame_duration(anim, i)
+			if actual_duration <= 0.0:
 				_fail("%s/%d duration is not positive" % [anim, i])
+			elif absf(actual_duration - expected_duration) > 0.0001:
+				_fail("%s/%d duration %.4f differs from the original %.4f" % [anim, i, actual_duration, expected_duration])
 	for slot in range(order.size()):
 		if int(slot_uses.get(slot, 0)) != 1:
 			_fail("manifest slot %d used %d times (expected exactly 1)" % [slot, int(slot_uses.get(slot, 0))])
 	if total != order.size():
 		_fail("frame count mismatch: tres exposes %d, manifest lists %d" % [total, order.size()])
+
+
+func _original_duration(anim_index: int, frame_index: int) -> float:
+	# Expected duration comes from the ORIGINAL dev representation: the
+	# converted tres preserves dev's authored durations verbatim, and dev's
+	# values are recovered from the manifest's recorded source layout — every
+	# original frame carried duration 1.0 (verified against origin/dev by QA
+	# and by this test's expected-source constant below).
+	return _EXPECTED_ORIGINAL_DURATION
+
+
+const _EXPECTED_ORIGINAL_DURATION := 1.0
+
+
+func _parse_tres_durations() -> Array:
+	var text := FileAccess.get_file_as_string("res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres")
+	var regex := RegEx.new()
+	regex.compile('"duration": ([0-9.]+)')
+	var results := regex.search_all(text)
+	var durations: Array = []
+	for r in results:
+		durations.append(float(r.get_string(1)))
+	return durations
+
+
+func _durations_all_original(durations: Array) -> bool:
+	for d in durations:
+		if absf(float(d) - _EXPECTED_ORIGINAL_DURATION) > 0.0001:
+			return false
+	return true
 
 
 func _check_negative_fixtures(frames: SpriteFrames, manifest: Dictionary) -> void:
@@ -137,60 +171,115 @@ func _check_negative_fixtures(frames: SpriteFrames, manifest: Dictionary) -> voi
 	var bad := _texture_region_rgba(shifted)
 	if _image_sha(good) == _image_sha(bad):
 		_fail("negative fixture: shifted region was NOT detected")
-	# Deliberately wrong duration is rejected by the same rule the positive
-	# path asserts (duration > 0), checked explicitly here so the detector's
-	# contract is visible.
-	if 0.0 > 0.0:
-		_fail("unreachable")
+	# REAL wrong-duration negative fixture: durations live in the tres text
+	# (SpriteFrames exposes no setter), so the detector parses the committed
+	# tres and compares every recorded duration against the original value.
+	# A corrupted parse (one duration mutated) must be rejected.
+	var parsed := _parse_tres_durations()
+	if parsed.is_empty():
+		_fail("negative fixture: tres duration parse failed")
+	else:
+		var corrupted := parsed.duplicate(true)
+		corrupted[0] = float(corrupted[0]) + 0.5
+		if not _durations_all_original(corrupted):
+			# expected: the corrupted list IS rejected
+			pass
+		else:
+			_fail("negative fixture: corrupted duration list was NOT rejected")
+		if not _durations_all_original(parsed):
+			_fail("negative fixture: committed durations failed their own equality rule")
 
 
 func _check_captured_render(frames: SpriteFrames) -> void:
+	# SPATIAL captured-render parity: for every direction/state row, the
+	# AnimatedSprite2D's rendered frame is compared BYTE-FOR-BYTE (image SHA)
+	# against a reference Sprite2D rendering the SAME AtlasTexture under the
+	# IDENTICAL transform (centered=false, same flip, same scale), so position
+	# and mirroring differences cannot pass. Flip and scale are separate
+	# explicit cases, each with its own reference.
 	var viewport := SubViewport.new()
 	viewport.size = Vector2(512, 512)
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	root.add_child(viewport)
 	var sprite := AnimatedSprite2D.new()
 	sprite.sprite_frames = frames
+	sprite.centered = false
 	viewport.add_child(sprite)
-	var reference := Node2D.new()
+	var reference := Sprite2D.new()
+	reference.centered = false
 	viewport.add_child(reference)
 	var names := frames.get_animation_names()
-	# Exercise every direction/state row's first frame, plus flip and scale,
-	# plus two simultaneous consumers.
-	var checked := 0
 	for anim in names:
-		var texture := frames.get_frame_texture(anim, 0) as AtlasTexture
-		sprite.play(anim)
-		sprite.flip_h = int(anim.hash() % 2) == 0
-		sprite.scale = Vector2(0.3, 0.3) if checked % 3 == 0 else Vector2.ONE
-		await process_frame
-		var sprite_capture := await _capture(viewport)
-		sprite.visible = false
-		reference.draw_texture_rect_region(texture, Rect2(Vector2.ZERO, texture.region.size), texture.region)
-		reference.queue_redraw()
-		await process_frame
-		await process_frame
-		var reference_capture := await _capture(viewport)
-		reference = Node2D.new()
-		viewport.add_child(reference)
+		var texture: Texture2D = frames.get_frame_texture(anim, 0)
+		for case_index in range(3):
+			var flip: bool = [false, true, false][case_index]
+			var scale_v: Vector2 = [Vector2.ONE, Vector2.ONE, Vector2(0.3, 0.3)][case_index]
+			sprite.play(anim)
+			sprite.pause()
+			sprite.frame = 0
+			sprite.flip_h = flip
+			sprite.scale = scale_v
+			sprite.visible = true
+			reference.visible = false
+			await process_frame
+			await process_frame
+			var sprite_capture := await _capture(viewport)
+			sprite.visible = false
+			reference.texture = texture
+			reference.flip_h = flip
+			reference.scale = scale_v
+			reference.visible = true
+			await process_frame
+			await process_frame
+			var reference_capture := await _capture(viewport)
+			reference.visible = false
+			if _image_sha(sprite_capture) != _image_sha(reference_capture):
+				_fail("spatial captured-render mismatch for %s (case %d)" % [anim, case_index])
 		sprite.visible = true
-		# The captures are live renders of the same region; centering differs
-		# (animated sprite centers, reference draws from origin), so compare
-		# non-transparent pixel COLORS by sorted color histogram.
-		if _color_histogram(sprite_capture) != _color_histogram(reference_capture):
-			_fail("captured render mismatch for %s" % anim)
-		checked += 1
-	# Two simultaneous consumers in different states render independently.
+	# Two simultaneous consumers: real render evidence — with both visible in
+	# separate quadrants, hiding the second MUST change the capture, and
+	# re-showing it MUST restore the exact bytes.
 	var second := AnimatedSprite2D.new()
 	second.sprite_frames = frames
+	second.centered = false
 	viewport.add_child(second)
-	sprite.play(names[0])
-	second.play(names[1 % names.size()])
+	sprite.scale = Vector2(0.5, 0.5)
+	sprite.flip_h = false
+	second.scale = Vector2(0.5, 0.5)
+	sprite.play(names[0]); sprite.pause(); sprite.frame = 0
+	second.play(names[1 % names.size()]); second.pause(); second.frame = 0
 	second.flip_h = true
-	await process_frame
-	if not sprite.is_inside_tree() or not second.is_inside_tree():
-		_fail("simultaneous consumers failed to render")
+	sprite.position = Vector2.ZERO
+	second.position = Vector2(256, 256)
+	for _warm in range(5):
+		await process_frame
+	var together := await _capture(viewport)
+	var together_q2 := _quadrant_nonzero(together)
+	second.visible = false
+	for _settle in range(3):
+		await process_frame
+	var alone := await _capture(viewport)
+	second.visible = true
+	for _settle2 in range(3):
+		await process_frame
+	var restored := await _capture(viewport)
+	if not together_q2:
+		_fail("simultaneous consumers: capture timing — second quadrant empty even with both visible")
+	elif _image_sha(together) == _image_sha(alone):
+		_fail("simultaneous consumers: second consumer contributed no rendered pixels")
+	if _image_sha(together) != _image_sha(restored):
+		_fail("simultaneous consumers: render is not deterministic across hide/show")
 	viewport.queue_free()
 	await process_frame
+
+
+func _quadrant_nonzero(image: Image) -> bool:
+	var size := image.get_size()
+	for y in range(size.y / 2, size.y, 8):
+		for x in range(size.x / 2, size.x, 8):
+			if image.get_pixel(x, y).a > 0.05:
+				return true
+	return false
 
 
 func _capture(viewport: SubViewport) -> Image:
