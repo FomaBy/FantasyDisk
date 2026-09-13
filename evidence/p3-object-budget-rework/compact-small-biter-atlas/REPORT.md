@@ -178,3 +178,23 @@ outside the worktree and a verified-clean tree. (4) The complete
 coverage/accounting table is `verification-coverage-rework/coverage-accounting.md`,
 binding every reused result to its unchanged-input proof. No production byte
 changed; static-only execution is not claimed as a full Godot or CI PASS.
+
+
+## Dated correction — 16:50 decision (source binding, control provenance, completed comparisons)
+
+(1) The prior exported-run log named source `ea0f6d16` whose committed test had
+no export support — the executed source was that commit plus an uncommitted
+test patch. Limitation disclosed; the export instrumentation is now committed
+FIRST and a bounded fresh execution ran at the committed source with complete
+argv, source/tree/base, dirty-file count and numeric exit
+(`checker-windowed-render-exported.log`, 490 artifacts). (2) The control JSON's
+Python post-processor is disclosed in `old-vs-new-control-derived.json`; the
+immutable producer's unedited output and its exit-1 strict outcome are
+published in `old-vs-new-control-raw.log`, and the strict in-probe mirror
+histogram is explicitly NOT claimed as an old-checker miss. (3) The
+simultaneous-consumer record now carries both consumers' frame/texture/flip/
+position/scale identities with matched alone-render references, and executed
+captured displacement/mirroring negatives (on a runtime-verified asymmetric
+frame) are published with PNGs. (4) `coverage-accounting.md` now enumerates
+per-check bindings with corrected counts and the original-vs-current
+engine/renderer/import/workload comparison. No production byte changed.
