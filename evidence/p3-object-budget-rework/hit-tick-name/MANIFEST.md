@@ -1,0 +1,47 @@
+# FAN-3934 hit-tick-name SHA-256 manifest
+
+- source `1b934fc557a7b3517adddd4b193d5b1b0730b547` tree `e8bd150c08d7915428843c1d4d6a2c639a4b47ca`; probe sha256 `57d817d2effc2627f5d5b115b8094ebdb6bda541e5a3640fab2a9f7f03eaa6f5`
+
+- DIAGNOSIS.md `c713bd1677fcf6453a784cd835a96c7e545a05d171e857e3fc13f79c651b3cf3`
+- driver-header.txt `e760c36d3a8d2ebbe08bdcdfb2c28c2cfe5b786a76491f77512dce6479432537`
+- env-final.txt `1173181fd6356adfeaa007a56bb07f85c2cb6573b4b967ce10758ce498a99e20`
+- env-matrix-p1.txt `bfaa3402314fe6b38813bd2c66b0448c4589e7ec8cf2ab76d481f4e0c7be2a15`
+- env-matrix-p2.txt `909b2b5ded9755f04c8c5f53b791213e3a6ab61028a67321fb08c1b5180f5757`
+- env-matrix-p3-run1.txt `4300862123ac8edb08d731c9178fddc32987a9e05e34ab349514fa2f3dc80470`
+- env-matrix-p3-run2-FAILED-overbudget.txt `0d8dada70e0c8eafa35ad200264996d82eddd3c8ed3402f7adda699987bce4b1`
+- env-suite-berserk.txt `f8047876c937d092ce6659e621f76cc2e48f99020a4038a0e11dd2159c36a6db`
+- env-suite-feedback.txt `5e21ae88467fd97e80f9167263385037bbfa19f14cdb63311b09ca2f491dca9f`
+- env-suite-hazard.txt `b3f729590f5231021eb37dec289b0e111ec52671d7391189f329bc7effd3b8fc`
+- env-suite-hazardsmoke.txt `f52ae236c1c8ad6399807f4d77f48230643580768d11eb315501c8e67205402f`
+- env-suite-residency.txt `ce4cb8b9997ac0c946a238ad6e1ab58c511ab2f736d97911b82393ebb124d5eb`
+- env-suite-summon.txt `28a8021f1e86ecf9281196e57e0e7e095317abfaf397d83214b30945dcce38f8`
+- file-hashes.txt `a5f249b88aef62844f7bf2db142bb7c55b438a7abd30153090abcba8d5481b71`
+- log-matrix-p1.txt `79bd16530b2bc7662e0f5474eccd8548716876f54f2e6a8ea3729715870ee08d`
+- log-matrix-p2.txt `af2fc9694702febda61bbcf4a50155021e88ef998ff586211fde1bc517ebbfce`
+- log-matrix-p3-rerun1.txt `9d2be80e273df263b8e0c86a4174324ad18546afa99d5f9309018c068aeefd37`
+- log-matrix-p3-rerun2.txt `e6e65d5e8ae3ef51a03997f74953fc7e19effc03f4969fa97f760a4973a23ef7`
+- log-matrix-p3-run1.txt `3e5a2a4cb27e931ab231f40ff7042262ed836ef8dfbdb9dfaeec9edcc500d50b`
+- log-matrix-p3-run2-FAILED-overbudget.txt `08f4f0660b1ff9f42977a3c90e5dddf2b839a42768ff617245fd844976679e3f`
+- log-suite-berserk.txt `f5bb2a4f52efdb43c6dec8fa857eed4319b6f0d13d2510a92b31817f1f81dcb0`
+- log-suite-feedback.txt `cfbb4d3f65bcf20c18f35eb1b83a81976da78370252d3b3f77987eafe31eebd3`
+- log-suite-hazard.txt `4237f80ac406c7b1eb180b7c7611508139a532463f1f026c7f52284a75929a75`
+- log-suite-hazardsmoke.txt `f2f018ec3c2c4a9ff761cf3580d1a2f3294ed2eb12a8071230a576c4820dd818`
+- log-suite-residency.txt `eac653b3708d51f19e520fe31eb4960161bcb438dc779bfde16e272923fe4f8b`
+- log-suite-summon.txt `111f0e175e2fdf80204b823afbadb8f2d172e93dbf5706c25a91a52467e4e117`
+- perf-p1.csv `a284aa02bd1a408dc7ec28664b5a8d4ff046e7557e0f13f7138e3c090eb19ecf`
+- perf-p1.json `033ed20b11062065fa9d1f02f96c5bd86a0a2f53637111c277a3f6140b4a1845`
+- perf-p2.csv `1137d85ef5291f5006eae529ca64e64fa9b4705c17223cf34010a8b3e5f9e1b5`
+- perf-p2.json `c30c2e9fa0534b6861e222fb32cb6bd6574ef02ca0bfbcbbb40bea4688932732`
+- perf-p3-rerun1.csv `76f6a5b75480071490c669ab348fcaebdfd2874b3f615f22cab12bcabd9302d1`
+- perf-p3-rerun1.json `154c9a0245fc2a8067710ca31a6c15f7bdcbe604de783b709dae5201225c770b`
+- perf-p3-rerun2.csv `44b8202c1a5dc17e914115b45d863bfa2a7acc5157b41e42455bbb6cc044dc36`
+- perf-p3-rerun2.json `7771a6ab84af6ba968a0e96863ec97638fea697a40f8a1f77fc0453bacc5d381`
+- perf-p3-run1.csv `b91d563df63fe9e9b87f77996bed4f9f9324591e28696df133f03ceec35e2039`
+- perf-p3-run1.json `856afa725c815ecac95ff467b2d0c061c54fc830a0f97737f6e1dcee899dc2c0`
+- perf-p3-run2-FAILED-overbudget.csv `b3142e311329edeae8c7822f6cf564e8bc1cad416aacb48d1ecec6d7803c51f0`
+- perf-p3-run2-FAILED-overbudget.json `e3b85d47fe80e831be2977f24d0beb44bf8a809019f977cb965955a5de787515`
+- pfa-before.log `479a2c192f469bb03804ff16659fcc1bb24fbf0699edd273f25d9841dec97ba2`
+- run_observed.py `4a8255dd1d4f8f9e4cbca52ad3761c40bd952cf2d586591f8900074960210126`
+- suite-runtime_smoke_combat_test.log `ac7c3ae62170ddd7ba78aee9f89bc9b17cff4f2eea139c3173dbff780cbf05df`
+- suite-smoke_contact_feedback_test.log `2282f02c77163d93f32eecf17285afa6d093f00b223b483f31f594813ed07157`
+- suite-take_damage_contract_routing_test.log `87e432a7bdc923627b4ad8943e4e98e90196d2e43f14b07cce0e7b41a2205914`
