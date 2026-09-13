@@ -1,6 +1,6 @@
 # FAN-3934 frame-residency-causal SHA-256 manifest
 
-- source `df46819a5046cb7cd0578498546471b8859c0308` tree `8b85d4726a289d2c2faee13d027a8f04f0fd6433` (evidence-only)
+- source `b4828471342fe6995264c94a0a981bbbbe2554c8` tree `019a7a57795a12a9648c04d8f065cc4f4026e977` (evidence-only)
 
 - REPORT.md `25b6a5ee35134cd6eeca047f2239c703a19e7d385a777817c5d4d2fd15b06846`
 - census-2026-09-13T091829.json `75832d20e0995f9615577732e56a591beaa85347138b79c8b627fe4a7e32ed8a`
@@ -8,5 +8,7 @@
 - census-run1.log `652cd731eeca76e9171b7ffa0f5c9ccfb2ee5bfe69a7fd01d033f2297d3af175`
 - census-run2.log `652cd731eeca76e9171b7ffa0f5c9ccfb2ee5bfe69a7fd01d033f2297d3af175`
 - consumer_lifecycle_probe.gd `ed2f888c92e5269482825cf395e7d2076632c6fa22dceafe18bb7565f559afb5`
+- consumer_lifecycle_probe.gd.uid `585dcfb756217442d2234a7b4891567ef3a15bd8092246a922eccd05fdce149f`
 - lifecycle.json `9962da8bc0090dd2faf5250010e9237bc74bf6bcdd63fd9600e63ab23c1bb717`
 - p3_census_probe.gd `b598c92ce28d93a1dfdcc3391c0ae6470e7c85ed4509e2748d0350e6dbca107b`
+- p3_census_probe.gd.uid `49fccb260cc7a79eac58ebd5ff601d11f9a5b2ff52c66ec9de485e18515600dd`
