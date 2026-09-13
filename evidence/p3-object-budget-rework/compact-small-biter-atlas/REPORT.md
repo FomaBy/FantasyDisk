@@ -154,3 +154,27 @@ attempts and an explicit missing-artifact inventory (old-checker control
 never executed — not recreated; no PNG captures exist by design — stated as a
 limitation). No production byte changed; product content remains byte-identical
 to QA-reviewed `68afccda`.
+
+
+## Dated correction — 15:34 decision (executed controls, clean gate, coverage table)
+
+The remaining gaps are closed with executed evidence: (1) an actual old/new
+checker control (`old-vs-new-control.gd/.json`) ran two runtime mutants — the
+old assertions miss the +0.5 duration mutant (positivity passes; the dead
+branch cannot fire) and accepted spatially different renders via the color
+histogram (histogram(case0 sprite)==histogram(case0 reference) while the
+spatial SHA differs; the strict flip-vs-flip histogram distinction on THIS
+content is recorded honestly rather than overclaimed); the new checker detects
+both. (2) The windowed checker now exports real artifacts — 485 files: 144
+rendered captures (PNG), 120 per-case spatial hashes all matching,
+simultaneous-consumer identities/SHAs with contribution and hide/show
+determinism, and individual negative-outcome JSONs with fixture identities
+(`exported-windowed-captures/`). (3) The dirty-worktree static-gate attempts
+are preserved in static-gate.log with cause analysis (FSD_GODOT_EXCLUSIVE
+blocks the gate's own unit fixtures; recording output inside the worktree
+dirtied it); the required clean run is static-gate-clean.log — resolved
+source/tree/base, QUALITY PASSED 16 static, exit 0 — executed with output
+outside the worktree and a verified-clean tree. (4) The complete
+coverage/accounting table is `verification-coverage-rework/coverage-accounting.md`,
+binding every reused result to its unchanged-input proof. No production byte
+changed; static-only execution is not claimed as a full Godot or CI PASS.
