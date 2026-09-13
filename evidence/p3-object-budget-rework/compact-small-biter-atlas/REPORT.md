@@ -90,3 +90,22 @@ P2's 1% low of 49.7 passes the ≥45 floor with reduced margin — disclosed.
   deleted history; its replacement and this stage's 4 retained runs supersede.
 - Historical failed-sample kind census remains missing; census diagnostics here
   are separate from the decisive probe and reconstruct nothing.
+
+
+## Publication correction (10:26 decision; prior raws preserved)
+
+The original handoff claimed a complete manifest; that claim was wrong. The
+previous MANIFEST.md listed 110 entries of which 52 named files absent from
+the candidate commit — 48 generated `.translation` and 4 generated
+`.csv.import` engine cache outputs, hashed from the local working tree during
+generation before the commit (local ignored files must never be treated as
+delivered evidence). The three committed atlas `.png.import` sidecars and
+`tests/full_frame_atlas_parity_test.gd.uid` were omitted. The canonical
+manifest above is rebuilt from Git blobs of the successor's inventory commit,
+includes the sidecars and the UID, states its self-hash convention, and
+classifies the generated outputs as reproducible-derived exclusions rather
+than publishing them. `publication-correction/audit_manifest.py` audits any
+manifest against any commit by reading blobs from Git and demonstrates the
+expected HASH-MISMATCH/ABSENT failures in a self-test; its full run on the
+final successor is recorded in `publication-correction/audit-result.txt`.
+No measurement, raw file or production byte changed in this correction.
