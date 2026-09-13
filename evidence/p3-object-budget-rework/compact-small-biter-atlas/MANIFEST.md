@@ -1,14 +1,13 @@
 # FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
 
-- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `75d88031b1f626db9984fefafbfe9147f6e12de4`.
+- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `0cfad50a7154abe3de4526a796068055c1e4dfd3` (frozen inventory; this commit changes only the manifest).
 - Audit: publication-correction/audit_manifest.py (self-test negatives).
-- Nonrecursive self-exclusion: MANIFEST.md + REPORT.md only (this commit
--  changes only the manifest); audit-result point-in-time.
+- Nonrecursive self-exclusion: MANIFEST.md + REPORT.md only.
 
 ## excluded generated outputs
 - 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived).
 
-## canonical changed-path inventory (commit 75d88031b1f626db9984fefafbfe9147f6e12de4)
+## canonical changed-path inventory (commit 0cfad50a7154abe3de4526a796068055c1e4dfd3)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -149,13 +148,15 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/run_observed.py` `f85358336b62d5f4c71ecca5969de06b3d8da717164544d56398effcd92b52e1`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/EVIDENCE.md` `9607bb9d911b6f1657512488f866413bf8c0c7af812f3f617b6770efdc1c2ef3`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/audit-result.txt` `e6a42c1327f3065b52a0f840e36869267431d6200e11d2afc18f90f75836965f`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/capture-processor-run.log` `ad72d460c15b36af6f292739950a1e8af710de5a496de284089c5da203a3d2a0`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/capture_histogram_processor.py` `c147849b9c33018188afeac9d9587f2b8d28a609a03dfff9e3b875dc9fd55f37`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless-v1.log` `a735fa436bc82bbf0883b133d0e605722a241ffb52c3d7e7960f3c33903ae657`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless.log` `b8240691eb3cde5b037f5754574bb0ed1c10ae39653ca8ed1adbe50bbed5dfa2`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render-INVALID-argsmangled.log` `f34157a47b662d462bb2d69056cd8d185a9771e1fd8ae17974aafa6828f48461`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render-exported.log` `01f7723ac017f51d7e3796ef145b3e686c6e77021720c77e310f563ccacd3e08`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render.log` `509cc752dcba31aaebb726a20595ee2c3c0fcf8a7c0e78e3435d133839ffa447`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/contracts.log` `9b22dd01c942815c2a03102e40b731217e57be389fba36f3883fff713045ebfd`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/coverage-accounting.md` `01172b5f41e4ea70a69414eda61e1f9a51d7aeef6431fb1e3cbcdff80c54d958`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/coverage-accounting.md` `80fd3e0707222b9b12e0847a81e73f8ee599c6003d2e41254b8dccfe771d6077`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-reference.png` `cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-sprite.png` `cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case1-reference.png` `e022cda4135d4f96fc6304ae022fdbf12bda822690b8bdbcb2246aa98156ae7e`
@@ -649,7 +650,7 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/reference-move_west-2.json` `eae901cb0b870f8425ee5242e918bd153970033ff5371ec366d90e717875ec18`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/simultaneous-consumers.json` `4b57d6b8f84193299296ca92279c18f71b6b87a3efefbeb315292962e813b8f7`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/negative-outcomes.md` `1f80ceb184ae1f56d2b15e8354d41149a0d0d32d1538bbac959bf1cb20fcfe09`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/old-vs-new-control-derived.json` `ba0fc0db4e550dc2233f99949e7035a9c3161173c189c3fdccc144eefa7910b9`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/old-vs-new-control-derived.json` `047283126652be7fc35006bfdd718c61d0ea2e8d89bded8b078a306630b32579`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/old-vs-new-control-raw-inputs.json` `99c2c41f2148a94eea57a3eade8f5f8de6985e2bf38006dc55fa8ce78f0a023c`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/old-vs-new-control-raw.log` `66057b3c1a79583015685a7d08a8c1ba8db2107cd8fc20a8d52398f499819a48`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/old-vs-new-control.gd` `e8d4161d8d9493db5cc6f791db9e4a99890c80c3d1bf2a8bee04992d7ce34b91`
@@ -662,7 +663,7 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-smoke_contact_feedback.log` `425b3b67fc8c786658ea7606e42db70621a1e1c6a9ad6ffd46bbc35da61882ea`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-take_damage.log` `92a2d95d64d24a77387123997397a2f54bf802f3c8a07574a70c1a16a137b4b0`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate-clean.log` `72c512e33a0508dd99671aadf1dc318feae33150ade13a543d09da28f0a49348`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate-final.log` `c075502c26745243767508ef0709aae6706c95d7f82ab1b1f2dafbaab399d01e`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate-final.log` `114162afb5971a222808a437dd87588def136965aa220ea03941ab7c0c0301af`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate.log` `128922c59626a0a149c3ddd8f619cdb941ba5504a2adc44298eb6de9c9009ce7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/MANIFEST.md` `ed09e20005f6e45720cc2d5e08a4c2e8c65e7b77487a844a1367700244df7bc7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/PLAN.md` `231e1cd8a3f94560a167c6299354158c864d302f2191f81607457f41f7efefb5`
