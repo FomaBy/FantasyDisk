@@ -554,6 +554,71 @@ func _run() -> void:
 	capture_root.queue_free()
 	await process_frame
 
+	# K (03:19 CI rework): external immediate frees of pooled group members
+	# (the CI failure mode) must leave the pool safe and fully functional:
+	# live/freed mixing, subsequent spawns, overlap, completion and cleanup.
+	var lifetime_root := Node2D.new()
+	root.add_child(lifetime_root)
+	await process_frame
+	var lifetime_timeline: Node = CombatFeedbackTimeline.for_scene(lifetime_root)
+	var lifetime_setup := func(label: Label) -> void:
+		label.text = "9"
+		label.z_index = 3000
+		label.modulate = Color(0.9, 0.2, 0.1, 1.0)
+	lifetime_timeline.spawn_number(lifetime_setup, Vector2(100.0, 100.0), 44.0, 0.62, 0.20, 0.42, false)
+	lifetime_timeline.spawn_tick(Vector2(120.0, 100.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+	var live_label: Label = null
+	var live_tick: Sprite2D = null
+	for child in lifetime_timeline.get_children():
+		if child is Label: live_label = child
+		if child is Sprite2D: live_tick = child
+	if live_label == null or live_tick == null:
+		failures.append("lifetime case: initial pooled items missing")
+	else:
+		# Simulate exactly the CI failure: an external owner immediately frees
+		# every group member while items are live.
+		for group_name in ["combat_feedback_labels", "combat_feedback_flashes"]:
+			for node in get_nodes_in_group(group_name):
+				node.free()
+		await process_frame
+		# The next spawns must return VALID, functional items (the old pool
+		# handed back the freed references and crashed on .visible).
+		lifetime_timeline.spawn_number(lifetime_setup, Vector2(150.0, 100.0), 44.0, 0.62, 0.20, 0.42, false)
+		lifetime_timeline.spawn_tick(Vector2(170.0, 100.0), Vector2.ONE, Color(1.0, 0.5, 0.4, 0.4), "combat_feedback_flashes")
+		await process_frame
+		var replacement_label: Label = null
+		var replacement_tick: Sprite2D = null
+		for child in lifetime_timeline.get_children():
+			if child is Label and child.visible: replacement_label = child
+			if child is Sprite2D and child.visible: replacement_tick = child
+		if replacement_label == null or not is_instance_valid(replacement_label):
+			failures.append("lifetime case: post-free spawn returned no valid number")
+		else:
+			# Appearance parity on the replacement: the setup color survives.
+			if absf(replacement_label.modulate.r - 0.9) > 0.01:
+				failures.append("lifetime case: setup color clobbered on spawn (%.3f)" % replacement_label.modulate.r)
+		if replacement_tick == null or not is_instance_valid(replacement_tick):
+			failures.append("lifetime case: post-free spawn returned no valid tick")
+		# Overlap with a live item and full completion/cleanup.
+		lifetime_timeline.spawn_number(lifetime_setup, Vector2(200.0, 100.0), 44.0, 0.62, 0.20, 0.42, false)
+		await process_frame
+		var visible_numbers := 0
+		for child in lifetime_timeline.get_children():
+			if child is Label and child.visible: visible_numbers += 1
+		if visible_numbers < 2:
+			failures.append("lifetime case: overlapping numbers not both live (%d)" % visible_numbers)
+		await create_timer(0.75).timeout
+		var leftovers := 0
+		for child in lifetime_timeline.get_children():
+			if (child is Label or child is Sprite2D) and child.visible: leftovers += 1
+		if leftovers != 0:
+			failures.append("lifetime case: %d items still visible after full lifetimes" % leftovers)
+		var lifetime_orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
+		if lifetime_orphans != 0:
+			failures.append("lifetime case: %d orphans after teardown" % lifetime_orphans)
+	lifetime_root.queue_free()
+	await process_frame
+
 	if failures.is_empty():
 		print("P3_FEEDBACK_ALLOCATION_TEST PASS")
 		quit(0)

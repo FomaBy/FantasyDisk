@@ -67,7 +67,10 @@ func spawn_number(label_setup: Callable, start_global: Vector2, rise: float,
 	label_setup.call(label)
 	label.add_to_group("combat_feedback_labels")
 	label.global_position = start_global
-	label.modulate = Color(1.0, 1.0, 1.0, 1.0)
+	# FAN-3934 lifetime/color repair: label_setup owns the RGB (damage-type /
+	# crit color); only the fade alpha resets to opaque so pooled reuse starts
+	# bright without clobbering the setup color.
+	label.modulate.a = 1.0
 	label.visible = true
 	_active_numbers.append({
 		"label": label,
@@ -127,9 +130,21 @@ func flash_body(body: CanvasItem, original_modulate: Color) -> void:
 
 
 func _acquire_number() -> Label:
+	# FAN-3934 lifetime repair: external owners may immediately free pooled
+	# items (group-based cleanup frees every combat_feedback_labels/flashes
+	# member). Dead references are evicted here so the pool never hands out or
+	# touches a freed node.
+	var alive: Array[Label] = []
+	var reusable: Label = null
 	for label in _numbers:
-		if not label.visible:
-			return label
+		if not is_instance_valid(label):
+			continue
+		alive.append(label)
+		if reusable == null and not label.visible:
+			reusable = label
+	_numbers = alive
+	if reusable != null:
+		return reusable
 	var label := Label.new()
 	label.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(label)
@@ -138,9 +153,18 @@ func _acquire_number() -> Label:
 
 
 func _acquire_tick() -> Sprite2D:
+	# Same lifetime repair as _acquire_number for the tick pool.
+	var alive: Array[Sprite2D] = []
+	var reusable: Sprite2D = null
 	for tick in _ticks:
-		if not tick.visible:
-			return tick
+		if not is_instance_valid(tick):
+			continue
+		alive.append(tick)
+		if reusable == null and not tick.visible:
+			reusable = tick
+	_ticks = alive
+	if reusable != null:
+		return reusable
 	var tick := Sprite2D.new()
 	tick.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(tick)
@@ -230,11 +254,15 @@ func _step_bodies(delta: float) -> void:
 
 
 func _release_number(label: Label, group: String) -> void:
+	if not is_instance_valid(label):
+		return
 	label.visible = false
 	label.remove_from_group(group)
 
 
 func _release_tick(tick: Sprite2D, group: String) -> void:
+	if not is_instance_valid(tick):
+		return
 	tick.visible = false
 	tick.remove_from_group(group)
 
