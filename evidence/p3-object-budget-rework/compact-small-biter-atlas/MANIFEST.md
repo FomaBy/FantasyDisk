@@ -1,13 +1,13 @@
 # FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
 
-- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `0e5e2ed38ab9644f2096909a5e2ca317d05a147f` (frozen inventory; manifest commit changes only this file).
+- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `7d9d3b73c7b8a82fa2f8c95e4ec70792c502d8e9` (frozen inventory; manifest commit changes only this file).
 - Audit: publication-correction/audit_manifest.py (self-test negatives).
 - Nonrecursive self-exclusion: MANIFEST.md + REPORT.md only.
 
 ## excluded generated outputs
 - 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived).
 
-## canonical changed-path inventory (commit 0e5e2ed38ab9644f2096909a5e2ca317d05a147f)
+## canonical changed-path inventory (commit 7d9d3b73c7b8a82fa2f8c95e4ec70792c502d8e9)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -157,7 +157,7 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render-exported.log` `01f7723ac017f51d7e3796ef145b3e686c6e77021720c77e310f563ccacd3e08`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render.log` `509cc752dcba31aaebb726a20595ee2c3c0fcf8a7c0e78e3435d133839ffa447`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/contracts.log` `9b22dd01c942815c2a03102e40b731217e57be389fba36f3883fff713045ebfd`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/coverage-accounting.md` `3d3710e57c5232bd86500c12b6c691704f1305fbaf15879c2bbd5ca79884a3f8`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/coverage-accounting.md` `f3846b953df674afbfc05a27e7404b8408f4ba9dcc08e4588234e459c3beffa0`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-reference.png` `cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-sprite.png` `cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case1-reference.png` `e022cda4135d4f96fc6304ae022fdbf12bda822690b8bdbcb2246aa98156ae7e`
