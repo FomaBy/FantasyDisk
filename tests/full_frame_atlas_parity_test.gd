@@ -32,10 +32,30 @@ const FRAMES_PATH := "res://assets/sprites/enemies/full_frame/small_biter_sprite
 const MANIFEST_PATH := "res://assets/sprites/enemies/full_frame/small_biter_atlas_manifest.json"
 
 var _failures: Array[String] = []
+var _export_dir := ""
 
 
 func _initialize() -> void:
+	var args := OS.get_cmdline_user_args()
+	for i in range(args.size() - 1):
+		if String(args[i]) == "--export-dir":
+			_export_dir = String(args[i + 1])
 	call_deferred("_run")
+
+
+func _export_json(name: String, data: Dictionary) -> void:
+	if _export_dir == "":
+		return
+	var f := FileAccess.open("%s/%s" % [_export_dir, name], FileAccess.WRITE)
+	if f != null:
+		f.store_string(JSON.stringify(data, "  ") + "\n")
+		f.close()
+
+
+func _export_png(name: String, image: Image) -> void:
+	if _export_dir == "" or image == null:
+		return
+	image.save_png("%s/%s" % [_export_dir, name])
 
 
 func _run() -> void:
@@ -169,7 +189,12 @@ func _check_negative_fixtures(frames: SpriteFrames, manifest: Dictionary) -> voi
 		int(entry["y"]), int(entry["w"]), int(entry["h"]))
 	var good := _texture_region_rgba(texture)
 	var bad := _texture_region_rgba(shifted)
-	if _image_sha(good) == _image_sha(bad):
+	var shifted_detected: bool = _image_sha(good) != _image_sha(bad)
+	_export_json("negative-shifted-region.json", {
+		"fixture": "AtlasTexture region shifted one slot", "source_sha": _image_sha(good),
+		"shifted_sha": _image_sha(bad), "detector_rejected": shifted_detected,
+	})
+	if not shifted_detected:
 		_fail("negative fixture: shifted region was NOT detected")
 	# REAL wrong-duration negative fixture: durations live in the tres text
 	# (SpriteFrames exposes no setter), so the detector parses the committed
@@ -181,12 +206,16 @@ func _check_negative_fixtures(frames: SpriteFrames, manifest: Dictionary) -> voi
 	else:
 		var corrupted := parsed.duplicate(true)
 		corrupted[0] = float(corrupted[0]) + 0.5
-		if not _durations_all_original(corrupted):
-			# expected: the corrupted list IS rejected
-			pass
-		else:
+		var corrupted_rejected: bool = not _durations_all_original(corrupted)
+		var committed_ok: bool = _durations_all_original(parsed)
+		_export_json("negative-corrupted-duration.json", {
+			"fixture": "duration list[0] +0.5 (all others authentic)",
+			"corrupted_value": float(corrupted[0]), "expected": _EXPECTED_ORIGINAL_DURATION,
+			"detector_rejected": corrupted_rejected, "committed_list_passes": committed_ok,
+		})
+		if not corrupted_rejected:
 			_fail("negative fixture: corrupted duration list was NOT rejected")
-		if not _durations_all_original(parsed):
+		if not committed_ok:
 			_fail("negative fixture: committed durations failed their own equality rule")
 
 
@@ -224,6 +253,12 @@ func _check_captured_render(frames: SpriteFrames) -> void:
 			await process_frame
 			await process_frame
 			var sprite_capture := await _capture(viewport)
+			_export_png("capture-%s-case%d-sprite.png" % [String(anim).replace("/", "_"), case_index], sprite_capture)
+			_export_json("case-%s-%d.json" % [String(anim).replace("/", "_"), case_index], {
+				"animation": String(anim), "case": case_index, "flip": flip, "scale": [scale_v.x, scale_v.y],
+				"frame": 0, "texture": str(texture.resource_path),
+				"sprite_sha": _image_sha(sprite_capture),
+			})
 			sprite.visible = false
 			reference.texture = texture
 			reference.flip_h = flip
@@ -232,6 +267,11 @@ func _check_captured_render(frames: SpriteFrames) -> void:
 			await process_frame
 			await process_frame
 			var reference_capture := await _capture(viewport)
+			_export_png("capture-%s-case%d-reference.png" % [String(anim).replace("/", "_"), case_index], reference_capture)
+			_export_json("reference-%s-%d.json" % [String(anim).replace("/", "_"), case_index], {
+				"reference_sha": _image_sha(reference_capture),
+				"match": _image_sha(sprite_capture) == _image_sha(reference_capture),
+			})
 			reference.visible = false
 			if _image_sha(sprite_capture) != _image_sha(reference_capture):
 				_fail("spatial captured-render mismatch for %s (case %d)" % [anim, case_index])
@@ -263,6 +303,15 @@ func _check_captured_render(frames: SpriteFrames) -> void:
 	for _settle2 in range(3):
 		await process_frame
 	var restored := await _capture(viewport)
+	_export_png("capture-simultaneous-together.png", together)
+	_export_png("capture-simultaneous-alone.png", alone)
+	_export_json("simultaneous-consumers.json", {
+		"first_animation": String(names[0]), "second_animation": String(names[1 % names.size()]),
+		"second_flip_h": true, "positions": [[0, 0], [256, 256]], "scales": [[0.5, 0.5], [0.5, 0.5]],
+		"together_sha": _image_sha(together), "alone_sha": _image_sha(alone), "restored_sha": _image_sha(restored),
+		"second_contributed_pixels": _image_sha(together) != _image_sha(alone),
+		"hide_show_deterministic": _image_sha(together) == _image_sha(restored),
+	})
 	if not together_q2:
 		_fail("simultaneous consumers: capture timing — second quadrant empty even with both visible")
 	elif _image_sha(together) == _image_sha(alone):

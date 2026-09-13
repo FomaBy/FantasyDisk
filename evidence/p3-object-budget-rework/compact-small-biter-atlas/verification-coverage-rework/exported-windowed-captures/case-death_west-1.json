@@ -1,0 +1,12 @@
+{
+  "animation": "death_west",
+  "case": 1,
+  "flip": true,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "a5f78c4955ae6e258ce4b4573f69d0a9dd2340f213846c597d0550f313f69e24",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_160"
+}

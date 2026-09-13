@@ -1,0 +1,7 @@
+command: ... -- render --export-dir /tmp/export-new (outside worktree per PM direction)
+source: ea0f6d16a480ffe1b68875971b8e0008149fc487
+Sun Sep 13 15:36:09 UTC 2026
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+FULL_FRAME_ATLAS_PARITY_TEST PASS

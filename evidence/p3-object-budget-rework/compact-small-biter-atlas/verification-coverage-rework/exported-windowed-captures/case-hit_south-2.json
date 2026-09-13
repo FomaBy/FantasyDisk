@@ -1,0 +1,12 @@
+{
+  "animation": "hit_south",
+  "case": 2,
+  "flip": false,
+  "frame": 0,
+  "scale": [
+    0.300000011920929,
+    0.300000011920929
+  ],
+  "sprite_sha": "3e1e671d02d2318a8d710e1ec031d1050b27671b0f28972bc69b7bec09371e9f",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_112"
+}

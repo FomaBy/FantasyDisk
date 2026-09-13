@@ -1,0 +1,12 @@
+{
+  "animation": "death_south_east",
+  "case": 1,
+  "flip": true,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "c6b03fe800094b5728871d5d09f1e396213ee372b61636e1d2544379f3a3ca8f",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_142"
+}

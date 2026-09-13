@@ -1,0 +1,30 @@
+{
+  "alone_sha": "7f89f4bc72602d033f11bb04ff41ed17884031c482654383ca56030c72e6dd61",
+  "first_animation": "attack_east",
+  "hide_show_deterministic": true,
+  "positions": [
+    [
+      0,
+      0
+    ],
+    [
+      256,
+      256
+    ]
+  ],
+  "restored_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536",
+  "scales": [
+    [
+      0.5,
+      0.5
+    ],
+    [
+      0.5,
+      0.5
+    ]
+  ],
+  "second_animation": "attack_north",
+  "second_contributed_pixels": true,
+  "second_flip_h": true,
+  "together_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536"
+}

@@ -1,0 +1,28 @@
+{
+ "old_checker_misses_duration_mutant": true,
+ "old_duration_logic": "positivity only (+0.5 stays positive; dead 'if 0.0 > 0.0' cannot fire)",
+ "new_checker_detects_duration_mutant": true,
+ "new_duration_logic": "tres-parsed equality vs original 1.0 rejects +0.5",
+ "new_spatial_sha_detects_flip": true,
+ "mutants": {
+  "M1": "every frame duration +0.5",
+  "M2": "mirrored (flip_h) render of the same frame"
+ },
+ "evidence": {
+  "case0_sha": "26d85f3c7b274b13",
+  "case1_sha": "3207e2a400120e31",
+  "hist_key_count": 26,
+  "hist_counts_sample": {
+   "76,76,76": 3541,
+   "9,4,3": 149,
+   "239,223,207": 62
+  }
+ },
+ "old_source_identity": "failed candidate 68afccda checker assertions",
+ "new_source_identity": "successor checker",
+ "control_pass": true,
+ "old_checker_misses_spatial_defect": true,
+ "old_spatial_logic": "8th-pixel color histogram: accepts renders that differ spatially (position/mirroring) as long as the sampled color multiset matches \u2014 executed demonstration: histogram(case0 sprite)==histogram(case0 reference) while histogram(case1 FLIPPED sprite) also matches the same color multiset class; the old test compared a flipped sprite against an unflipped reference and passed",
+ "old_checker_misses_spatial_mutant_strict": false,
+ "old_checker_misses_spatial_mutant_strict_note": "on THIS content the aligned 8px sampling happened to distinguish flip(case0 vs case1) \u2014 recorded honestly; the accepted-defect class is the flip-vs-unflipped-reference comparison the old test actually performed and passed"
+}
