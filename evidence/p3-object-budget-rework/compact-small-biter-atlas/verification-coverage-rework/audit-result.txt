@@ -1,0 +1,3 @@
+audit of evidence/p3-object-budget-rework/compact-small-biter-atlas/MANIFEST.md at 9660bfa6c642345d7e7e9ec8c58aa061d9196f2b: 497/497 match, 0 mismatched, 0 absent
+audit of evidence/p3-object-budget-rework/compact-small-biter-atlas/MANIFEST.md at 9660bfa6c642345d7e7e9ec8c58aa061d9196f2b: 497/497 match, 0 mismatched, 0 absent
+self-test: mismatch-detected=True absent-detected=True
