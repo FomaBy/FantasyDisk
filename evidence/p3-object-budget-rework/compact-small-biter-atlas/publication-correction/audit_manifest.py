@@ -17,7 +17,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-ENTRY = re.compile(r"^- `?([^` ]+)`? `([0-9a-f]{64})`$")
+ENTRY = re.compile(r"^- `?([^` ]+)`? `([0-9a-f]{64})`", re.MULTILINE)
 
 
 def blob(commit: str, path: str) -> bytes | None:

@@ -20,7 +20,7 @@
   converted tres are reproducible via `tools/build_small_biter_atlas.py
   --check` (exit 0 on this tree), and all raw measurements are committed.
 
-## canonical changed-path inventory (hashes from commit {MID})
+## canonical changed-path inventory (hashes from inventory commit af7e086990be1132f6c94c57cab384a9d5b184bd)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
