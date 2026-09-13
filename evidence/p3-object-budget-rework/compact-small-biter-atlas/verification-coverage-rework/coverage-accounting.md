@@ -22,24 +22,24 @@ test-dependent result below names its executed source.
 
 | check | executed source | raw record |
 |---|---|---|
-| full_frame_registry_integrity_test | 68afccda (QA 6th review, 22-suite matrix) | QA report 01a09a91 (product bytes identical now) |
-| full_frame_registry_shard_validation_test | same | same |
-| full_frame_eight_direction_contract_test | same | same |
-| full_frame_row_scale_invariant_test | same | same |
-| smoke_bootstrap / death_flow / hud_layout / projectile / wave_cap (tests/combat, 5 suites) | 68afccda | QA report 01a09a91 (5/5 combat suites exit 0, 2/2 runs each) |
+| full_frame_registry_integrity_test | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91 section 'Everything else — green' (22 suites exit 0) | product bytes identical ⇒ applicable |
+| full_frame_registry_shard_validation_test | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91, same 22-suite matrix | applicable as above |
+| full_frame_eight_direction_contract_test | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91, same matrix | applicable as above |
+| full_frame_row_scale_invariant_test | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91, same matrix | applicable as above |
+| smoke_bootstrap / death_flow / hud_layout / projectile / wave_cap | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91: all five combat suites exit 0, 2/2 runs each | applicable as above |
 | smoke_contact_feedback | 68afccda (QA) + current | QA report + regression-smoke_contact_feedback.log |
 | runtime_smoke_combat | 68afccda (QA) + current | QA report + regression-runtime_combat.log |
 | take_damage_contract_routing | 68afccda (QA) + current | QA report + regression-take_damage.log |
 | p3_feedback_allocation | 68afccda (QA) + current | QA report + regression-feedback_alloc.log |
-| ultimates/presentation_contract + presentation_failure_contract | 68afccda | QA report (2 presentation suites, exit 0) |
-| engineer_accessibility_modes (headless) | 68afccda | QA report (within 22-suite matrix) |
+| ultimates/presentation_contract + presentation_failure_contract | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91 (both presentation suites exit 0) | applicable as above |
+| engineer_accessibility_modes (headless) | 68afccda72d7fc31a24cc34238a2e040bb687b14 | QA report 01a09a91 (within the 22-suite matrix) | applicable as above |
 | atlas parity headless | 686a78ba (checker-headless.log, retained) — NO retained later headless file exists | limitation recorded honestly: later headless passes were console-only and are not claimed as evidence; the retained windowed run is authoritative |
 | atlas parity windowed + export | current successor (instrumented, committed BEFORE execution) | checker-windowed-render-exported.log: complete argv, source/tree/base, exit 0 |
 | spatial cases | current successor | exported-windowed-captures/: 120 reference results, 120 case records across 40 animation rows x 3 cases — 120/120 match |
 | simultaneous consumers | current successor | simultaneous-consumers.json: frame/texture/flip/position/scale identities + matched alone-render references for BOTH consumers |
 | captured negatives (displacement, mirroring) | current successor | negative-render-detectors.json: executed on an asymmetric frame, both detected; PNGs retained |
 | negatives (duration, shifted region) | current successor | negative-corrupted-duration.json / negative-shifted-region.json (fixture identities + outcomes) |
-| old/new control | current successor | old-vs-new-control-raw.log (unedited producer output, exit 1 disclosed) + old-vs-new-control-derived.json (transformation disclosed) |
+| old/new control | raw: 686a78ba-era producer logic re-executed at this successor (old-vs-new-control-raw.log, unedited, exit 1); capture measurements: committed processor at capture-processor-run.log (flip pair) and capture-processor-run-matched.log (matched pair) | EXECUTED old-checker miss = duration mutant only; the spatial-render miss was WITHDRAWN after processor measurement (histogram distinguishes the flip pair); QA report 01a09a91 remains the authority on the histogram's principled blindness |
 | decisive P1/P2/two-P3 matrix | 5b3ff607 (product bytes identical) + QA re-measure at 68afccda | QA report 01a09a91: P3 3,832/3,859 of 4,000; P1 2,246 @ 125.5 MiB; P2 4,028 @ exactly 48 — NOT rerun (no product change; bounded-matrix rule) |
 | static gate (clean) | a1a1eb3a (static-gate-clean.log) and 33179647 (static-gate-final.log) | both logs retained with their own sources; the final-source gate below re-executes at the exact successor | only evidence/test files changed since; the gate's changed-ref selection is unaffected by untracked-evidence additions and the test file is not selected by static checks other than the passing unit contracts re-run below |
 | workflow/static-guard contracts | a1a1eb3a-era (contracts.log names its date; source not recorded in-file) | limitation honestly recorded: contracts.log lacks an in-file source binding; these contracts were re-run inside every static gate above (including the current certifying run's python-unit check), so current coverage exists via static-gate-final.log's 16/16 |

@@ -28,10 +28,21 @@
    "explanation": "The earlier assertion was based on pre-publication console measurements and is NOT supported by the committed capture blobs: on the retained renders the 8th-pixel histogram DOES distinguish the flipped render. The old histogram's spatial blindness therefore stands as QA's principled inspection finding (report 01a09a91), not as an executed miss on retained evidence. The only EXECUTED old-checker miss retained is the duration mutant."
   },
   "new_spatial_sha_detects_difference": {
-   "raw_input": "same committed processor run: spatial_sha_differ=true on the flip pair (and false on matched pairs, e.g. case0-sprite vs case0-reference)",
-   "value": true
+   "flip_pair": {
+    "raw_input": "capture_histogram_processor.py executed on capture-attack_east-case1-sprite.png (flip=true) vs capture-attack_east-case0-reference.png (flip=false): spatial_sha_differ=true",
+    "value": true
+   },
+   "matched_pair": {
+    "raw_input": "SECOND retained processor execution on capture-attack_east-case0-sprite.png vs capture-attack_east-case0-reference.png (matched pair): spatial_sha_differ=false (see capture-processor-run-matched.log)",
+    "value": false
+   }
   }
  },
  "_strict_limitation": "The producer's strict exit-1 outcome is retained: its in-probe aligned-grid histogram DOES distinguish a direct image mirror on this content; the executed miss demonstrated is render-level acceptance of spatially different renders (color-multiset equality), not pixel-grid mirror equality.",
- "_prior_disclosure": ""
+ "_prior_disclosure": "",
+ "_provenance": {
+  "capture_source_commit": "5fe0b8e148f47b56f49560ea815075d428d01c81 (captures exported at this source; blobs unchanged since \u2014 covered by the manifest inventory)",
+  "processor_source_commit": "committed at the instrumentation commit preceding the processor run; processor file sha256 recorded in capture-processor-run.log header",
+  "argv_note": "capture-processor-run.log's header command line is an ABBREVIATED reconstruction; the exact executed argv paths are recorded verbatim inside the processor's own JSON output (inputs field) and are preserved unedited"
+ }
 }
