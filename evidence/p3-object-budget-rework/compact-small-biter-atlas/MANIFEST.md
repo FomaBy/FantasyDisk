@@ -1,26 +1,21 @@
 # FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
 
-- Canonical inventory of the successor's changed paths vs dev base `{BASE}`.
-- Every hash is the SHA-256 of the blob READ FROM GIT at the inventory commit
-  (not the working tree); audit reproducibly with
-  `publication-correction/audit_manifest.py`, which also demonstrates the
-  expected HASH-MISMATCH and ABSENT failures in its self-test.
-- Self-hash convention: this MANIFEST.md, the corrected REPORT.md and the
-  publication-correction/ directory live in the same commit and are not
-  self-hashed; every other changed path appears exactly once.
+- Canonical inventory of the successor's changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`.
+- Every hash is the SHA-256 of the blob READ FROM GIT at inventory commit
+  `9660bfa6c642345d7e7e9ec8c58aa061d9196f2b`; audit reproducibly with `publication-correction/audit_manifest.py`
+-  (self-test demonstrates HASH-MISMATCH and ABSENT detections).
+- Self-hash convention: this MANIFEST.md and the corrected REPORT.md live in
+-  the same final commit and are not self-hashed; every other changed path
+-  appears exactly once. verification-coverage-rework/EVIDENCE.md documents
+-  the raw checker runs bound to this inventory.
 
-## excluded generated outputs (classification, 10:26 decision)
+## excluded generated outputs
 
-- The previous manifest's 52 absent entries (48 `*.translation`, 4
-  `*.csv.import`) named engine-generated import/translation cache outputs
-  that were never tracked in the candidate commit. They are derived
-  artifacts, deterministically regenerated from committed sources by any
-  import pass, and are excluded from the canonical source manifest by
-  design. No result's reproducibility depends on them: the atlas pages and
-  converted tres are reproducible via `tools/build_small_biter_atlas.py
-  --check` (exit 0 on this tree), and all raw measurements are committed.
+- Engine-generated import/translation cache outputs (48 `*.translation`,
+-  4 `*.csv.import`) remain classified as derived, reproducible artifacts and
+-  are excluded by design (see the prior publication correction).
 
-## canonical changed-path inventory (hashes from inventory commit af7e086990be1132f6c94c57cab384a9d5b184bd)
+## canonical changed-path inventory (hashes from commit 9660bfa6c642345d7e7e9ec8c58aa061d9196f2b)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -155,7 +150,12 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/phase-orig.json` `a1d0ce5fdc7c318564c9282c19648b57262e1c04de6e9d92a7c938f124f08237`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/phase_probe.gd` `81811be40afbd35b94d88832ba7fb5e4f3a547b7f6bbd5988025b443a5b21f81`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/phase_probe.gd.uid` `65fb3b32501245d134cb9663319ad0fa5142a31bdf36826194b86c793b86e5f2`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/publication-correction/audit-result.txt` `dd633533f644c2c286e4b18f50b1809fd14cdd58f4c4f537604c6a8cd2142265`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/publication-correction/audit_manifest.py` `e672fae5b44ef8bd4d24864cc88703c35e813a1bdbe7a74db626d73b52c1a7c1`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/run_observed.py` `f85358336b62d5f4c71ecca5969de06b3d8da717164544d56398effcd92b52e1`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/EVIDENCE.md` `ad9887cf956d0eb110ec6d687afdcc94d1b47e36facf3b312a0bc51a139a78a4`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless.log` `e4c0b71f91ef6a1677a74c71a8816b21acc10f1bc60c64c449c3638ab6505e68`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render.log` `f34157a47b662d462bb2d69056cd8d185a9771e1fd8ae17974aafa6828f48461`
 - `evidence/p3-object-budget-rework/frame-representation-proof/MANIFEST.md` `ed09e20005f6e45720cc2d5e08a4c2e8c65e7b77487a844a1367700244df7bc7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/PLAN.md` `231e1cd8a3f94560a167c6299354158c864d302f2191f81607457f41f7efefb5`
 - `evidence/p3-object-budget-rework/frame-representation-proof/REPORT.md` `e087f8b1fba40c106be8c4ce786a488d923356e06a52b55395c0b0657bc51009`
@@ -503,7 +503,7 @@
 - `scripts/ultimates/registry/weapon_ultimate_package_discovery.gd` `541f5a9646fce589305c1824916375e0843a4d0f15f56f5f855ce33d7868e6ac`
 - `scripts/ultimates/registry/weapon_ultimate_registry.gd` `0195b013308941d2bc40f39ee1410c04a49321d398d9f1991f0c1e64dbcaf5b3`
 - `scripts/vfx/berserk_axe_cleave_vfx.gd` `cb1cc66a88413bd9af77feb00e04eb995e836bfa6febd48f13d6134e4ff21c12`
-- `tests/full_frame_atlas_parity_test.gd` `e75894f7d5eb79c3a0b919daeace976bc0ee2274fd67f5005c60ba6e1f830ace`
+- `tests/full_frame_atlas_parity_test.gd` `d3952b42915ae4e444fe2b5c24537e6b42a5e29bdc3817b62a47b6f1e22a96b3`
 - `tests/full_frame_atlas_parity_test.gd.uid` `06f81739b8f54009db517fe62d1f9f54666bd3f66d9921fa3ebba16c4e3207a8`
 - `tests/p3_executor_residency_test.gd` `85dee1781efded22e8fc77ac41960a159b4c8e59a252f77fb085dbdc44cd7dd4`
 - `tests/p3_executor_residency_test.gd.uid` `03deae9e398d7440d18c9248fefe7d04ccd7523705fb0aec957085aa47c21ce5`

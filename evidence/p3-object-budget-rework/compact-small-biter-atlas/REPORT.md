@@ -109,3 +109,29 @@ manifest against any commit by reading blobs from Git and demonstrates the
 expected HASH-MISMATCH/ABSENT failures in a self-test; its full run on the
 final successor is recorded in `publication-correction/audit-result.txt`.
 No measurement, raw file or production byte changed in this correction.
+
+
+## Dated correction — final checker and executed evidence (2026-09-13, 12:55 decision)
+
+The canonical report previously described the ORIGINAL checker (positive
+durations; subsampled color-histogram "captured" comparison). The FINAL checker
+at the successor is different and stronger: every frame duration is asserted
+EQUAL to the original authored value via tres-text parsing with a real
+corrupted-duration negative fixture; captured-render parity is SPATIAL
+byte-equality (image SHA) between the AnimatedSprite2D render and a reference
+Sprite2D under identical transform, per animation row and per explicit
+unflipped/flipped/scaled case; simultaneous-consumer evidence requires the
+second consumer's pixels to change the capture and hide/show to restore exact
+bytes. The dead `if 0.0 > 0.0` branch is deleted.
+
+Actually executed evidence for the final checker (raw logs with command,
+argv, source/tree, engine and exits): headless run exit 0 (render stage
+explicitly UNAVAILABLE), windowed real-renderer `-- render` run exit 0 with
+all rows/cases spatially equal — see `verification-coverage-rework/` (EVIDENCE.md
+plus both logs; internal negative fixtures executed and retained). Missing
+historical artifacts disclosed: the earlier "old-checker" control logs were
+misnamed duplicates (working tree was already the new test) and were removed
+rather than relabeled; QA's own inspection remains the authority on the old
+checker's insufficiency. No earlier product/performance sample is relabeled:
+product content of `f400eabd` is byte-identical to QA-reviewed `68afccda`
+(test-only diff), which is the exact unchanged-input proof for evidence reuse.
