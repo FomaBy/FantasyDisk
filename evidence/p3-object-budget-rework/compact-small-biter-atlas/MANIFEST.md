@@ -1,21 +1,20 @@
 # FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
 
 - Canonical inventory of the successor's changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`.
-- Every hash is the SHA-256 of the blob READ FROM GIT at inventory commit
-  `9660bfa6c642345d7e7e9ec8c58aa061d9196f2b`; audit reproducibly with `publication-correction/audit_manifest.py`
--  (self-test demonstrates HASH-MISMATCH and ABSENT detections).
-- Self-hash convention: this MANIFEST.md and the corrected REPORT.md live in
--  the same final commit and are not self-hashed; every other changed path
--  appears exactly once. verification-coverage-rework/EVIDENCE.md documents
--  the raw checker runs bound to this inventory.
+- Hashes are SHA-256 of blobs READ FROM GIT at inventory commit `8ce99de246e00ffc0f831272cd03030c5d31cc9e`
+-  (audit: publication-correction/audit_manifest.py; self-test demonstrates
+-  HASH-MISMATCH and ABSENT detections).
+- Self-exclusion convention (explicit, nonrecursive): exactly this MANIFEST.md
+-  and REPORT.md are excluded — they live in the same final commit and cannot
+-  self-hash; EVERY other changed path, including the preserved additive note
+-  and every verification-correction file, is listed exactly once.
 
 ## excluded generated outputs
 
 - Engine-generated import/translation cache outputs (48 `*.translation`,
--  4 `*.csv.import`) remain classified as derived, reproducible artifacts and
--  are excluded by design (see the prior publication correction).
+-  4 `*.csv.import`) are derived reproducible artifacts, excluded by design
 
-## canonical changed-path inventory (hashes from commit 9660bfa6c642345d7e7e9ec8c58aa061d9196f2b)
+## canonical changed-path inventory (hashes from commit 8ce99de246e00ffc0f831272cd03030c5d31cc9e)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -152,10 +151,21 @@
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/phase_probe.gd.uid` `65fb3b32501245d134cb9663319ad0fa5142a31bdf36826194b86c793b86e5f2`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/publication-correction/audit-result.txt` `dd633533f644c2c286e4b18f50b1809fd14cdd58f4c4f537604c6a8cd2142265`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/publication-correction/audit_manifest.py` `e672fae5b44ef8bd4d24864cc88703c35e813a1bdbe7a74db626d73b52c1a7c1`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/publication-correction/sixth-failure-test-rework.md` `2af460d26d3d0a53c6e16fa697521d4348d335b14692522c014d28d6928e427a`
 - `evidence/p3-object-budget-rework/compact-small-biter-atlas/run_observed.py` `f85358336b62d5f4c71ecca5969de06b3d8da717164544d56398effcd92b52e1`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/EVIDENCE.md` `ad9887cf956d0eb110ec6d687afdcc94d1b47e36facf3b312a0bc51a139a78a4`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless.log` `e4c0b71f91ef6a1677a74c71a8816b21acc10f1bc60c64c449c3638ab6505e68`
-- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render.log` `f34157a47b662d462bb2d69056cd8d185a9771e1fd8ae17974aafa6828f48461`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/EVIDENCE.md` `9607bb9d911b6f1657512488f866413bf8c0c7af812f3f617b6770efdc1c2ef3`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/audit-result.txt` `f22b9d921f00d9d55512698b19d8c450b0d85619825a9e8b7de0c9e089fc0515`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless-v1.log` `a735fa436bc82bbf0883b133d0e605722a241ffb52c3d7e7960f3c33903ae657`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-headless.log` `b8240691eb3cde5b037f5754574bb0ed1c10ae39653ca8ed1adbe50bbed5dfa2`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render-INVALID-argsmangled.log` `f34157a47b662d462bb2d69056cd8d185a9771e1fd8ae17974aafa6828f48461`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/checker-windowed-render.log` `509cc752dcba31aaebb726a20595ee2c3c0fcf8a7c0e78e3435d133839ffa447`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/contracts.log` `9b22dd01c942815c2a03102e40b731217e57be389fba36f3883fff713045ebfd`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/negative-outcomes.md` `1f80ceb184ae1f56d2b15e8354d41149a0d0d32d1538bbac959bf1cb20fcfe09`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/range-check.log` `a8f61674409bcc68b74158908252aa5c4bb491ec2e1928c8b6872d2eaa28f010`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-feedback_alloc.log` `f81ed2b63a842ebc81b99637e1859bbb7b917fe89cdbfbf9a08dadacf8aaac7d`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-runtime_combat.log` `15e4a199d0cd556a17a8c4984bdebb4984af4cd19b1fac0ef3182b0c447be790`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/regression-take_damage.log` `92a2d95d64d24a77387123997397a2f54bf802f3c8a07574a70c1a16a137b4b0`
+- `evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/static-gate.log` `128922c59626a0a149c3ddd8f619cdb941ba5504a2adc44298eb6de9c9009ce7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/MANIFEST.md` `ed09e20005f6e45720cc2d5e08a4c2e8c65e7b77487a844a1367700244df7bc7`
 - `evidence/p3-object-budget-rework/frame-representation-proof/PLAN.md` `231e1cd8a3f94560a167c6299354158c864d302f2191f81607457f41f7efefb5`
 - `evidence/p3-object-budget-rework/frame-representation-proof/REPORT.md` `e087f8b1fba40c106be8c4ce786a488d923356e06a52b55395c0b0657bc51009`
