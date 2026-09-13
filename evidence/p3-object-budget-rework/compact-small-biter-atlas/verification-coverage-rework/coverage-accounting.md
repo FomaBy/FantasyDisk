@@ -33,7 +33,7 @@ test-dependent result below names its executed source.
 | p3_feedback_allocation | 68afccda (QA) + current | QA report + regression-feedback_alloc.log |
 | ultimates/presentation_contract + presentation_failure_contract | 68afccda | QA report (2 presentation suites, exit 0) |
 | engineer_accessibility_modes (headless) | 68afccda | QA report (within 22-suite matrix) |
-| atlas parity headless | 686a78ba (recorded in log) — re-executed at 33179647 headless PASS this round (smoke, console) | checker-headless.log names 686a78ba; this round's headless PASS at 33179647 was run before the export commit (console, not retained as file) — recorded honestly; windowed full run below is the authoritative current-source result |
+| atlas parity headless | 686a78ba (checker-headless.log, retained) — NO retained later headless file exists | limitation recorded honestly: later headless passes were console-only and are not claimed as evidence; the retained windowed run is authoritative |
 | atlas parity windowed + export | current successor (instrumented, committed BEFORE execution) | checker-windowed-render-exported.log: complete argv, source/tree/base, exit 0 |
 | spatial cases | current successor | exported-windowed-captures/: 120 reference results, 120 case records across 40 animation rows x 3 cases — 120/120 match |
 | simultaneous consumers | current successor | simultaneous-consumers.json: frame/texture/flip/position/scale identities + matched alone-render references for BOTH consumers |
@@ -42,7 +42,7 @@ test-dependent result below names its executed source.
 | old/new control | current successor | old-vs-new-control-raw.log (unedited producer output, exit 1 disclosed) + old-vs-new-control-derived.json (transformation disclosed) |
 | decisive P1/P2/two-P3 matrix | 5b3ff607 (product bytes identical) + QA re-measure at 68afccda | QA report 01a09a91: P3 3,832/3,859 of 4,000; P1 2,246 @ 125.5 MiB; P2 4,028 @ exactly 48 — NOT rerun (no product change; bounded-matrix rule) |
 | static gate (clean) | a1a1eb3a (static-gate-clean.log) and 33179647 (static-gate-final.log) | both logs retained with their own sources; the final-source gate below re-executes at the exact successor | only evidence/test files changed since; the gate's changed-ref selection is unaffected by untracked-evidence additions and the test file is not selected by static checks other than the passing unit contracts re-run below |
-| workflow/static-guard contracts | current successor | contracts.log (OK) |
+| workflow/static-guard contracts | a1a1eb3a-era (contracts.log names its date; source not recorded in-file) | limitation honestly recorded: contracts.log lacks an in-file source binding; these contracts were re-run inside every static gate above (including the current certifying run's python-unit check), so current coverage exists via static-gate-final.log's 16/16 |
 | range check | a1a1eb3a (recorded in range-check-resolved.log) | superseded by the final-successor range check re-run at each publication commit (exit 0, console) and again below at the final successor |
 
 ## Count corrections (prior table inaccuracies)
@@ -66,15 +66,15 @@ PASS is not a Godot/CI PASS.
   and `old-vs-new-control-raw.log` (source 33179647c09b9b2c14548bf607764b07256604ec, exit 1 disclosed); the
   final static gate and range check are re-executed at the exact successor in
   this round's publication step (see static-gate-final.log appended record).
-- **Dirty-486 accounting** (fresh export log, prior round): the 486 dirty
-  files were the previous round's staged exported-capture copies (490-file
-  tree) not yet committed at execution time — path/input evidence: the export
-  directory listing matches that round's committed
-  `exported-windowed-captures/` inventory exactly (git show of the successor
-  commit), so the executed INPUT set was committed-source + those identical
-  capture copies; the tracked tree was clean (`git status` counted only
-  untracked evidence). This round's export log records dirty_files_before=0
-  before staging, removing the ambiguity.
+- **Dirty-input disclosure (corrected):** the prior round's export log
+  recorded 486 dirty files (that round's staged capture copies, untracked);
+  the RETAINED path/hash record for those 486 was not preserved and is NOT
+  inferred from later directories — recorded as unavailable provenance. The
+  following export log then recorded dirty_files_before=1 (one unnamed
+  untracked file, identity not retained) — also disclosed as unavailable. The
+  current round's certifying static run records dirty_files 0 before AND
+  after, with the log itself written outside the checkout and packaged
+  immutable afterwards (the exact sequence the PM prescribed).
 - Reuse applicability now covers ALL relevant inputs, not only
   assets/scripts/workflows: the decisive probe
   (`evidence/p3-object-budget-rework/raw-baseline/extracted/perf_probe.gd`,
