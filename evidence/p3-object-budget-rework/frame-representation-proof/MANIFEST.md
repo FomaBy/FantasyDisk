@@ -1,0 +1,25 @@
+# FAN-3934 frame-representation-proof SHA-256 manifest
+
+- source `746914fa8bc3a866814a7bffd66b8946643e91ff` tree `c3e4022446d2c5af2792a0eaed2adaaf6c1f20a0` (evidence-only)
+
+- PLAN.md `231e1cd8a3f94560a167c6299354158c864d302f2191f81607457f41f7efefb5`
+- REPORT.md `e087f8b1fba40c106be8c4ce786a488d923356e06a52b55395c0b0657bc51009`
+- parity.json `4bbc971059df4484baae19370b19b3538cc78b290bc9604d30f76d214ff2ce35`
+- parity_check.gd `5804335e80431affe4f9bc72d0416f6c8855b4cf81a1b31b9c759797be83663a`
+- parity_check.gd.uid `6414c4916dbad7b91d4c5e45893df367ab45c4950e4577d94c467ce7f48f9bf7`
+- phase-orig-1.json `af213082461c6da5fce1a9f389baa612900e7ca7322f74f2ac5d09a94a5bbbb2`
+- phase-orig-1.log `a5407f11ac2a49a2abc4c3e05abff623b92d6c3637fcd2b2a215c95dc3b2b6e9`
+- phase-orig-2.json `113d7d6196d79263f75d3327b04a845b50394aead2ccebfb61ca821643763769`
+- phase-orig-2.log `7c42cc2712613ec716b76b8508ee6b2827083a139f890364627ebdcacda9dbd9`
+- phase-orig.json `113d7d6196d79263f75d3327b04a845b50394aead2ccebfb61ca821643763769`
+- phase-proto-1.json `5024bb2cbf3799de8053ff175e066feb7346789c047e1b0d0be005468c5c9a89`
+- phase-proto-1.log `ebc7f9c886e7b2cd76e0a18de1836e036c1bb2b4e0a70cfaa323f7a396fdd8d7`
+- phase-proto-2.json `8a115a935665fbee1f0a7e7c9199a27ac0fc959eb988da3faf3c27e9b4f864ce`
+- phase-proto-2.log `c0b31d7cd6290acc6c573b5d7b390b27fc67ebe3f9d427afc9f11fb8ec184d82`
+- phase-proto.json `8a115a935665fbee1f0a7e7c9199a27ac0fc959eb988da3faf3c27e9b4f864ce`
+- pixel-parity.json `9f8e9cb8346be70941802033555a30f112834eedf8208bfd9d9c24f0049b3773`
+- tex_test.gd.uid `1aac918b6bfaf05acdffbe9563fe8f9bde4c8410042c56cec5f767b2d3bb780f`
+- prototype/atlas_manifest.json `4655ba52e35a56f1509403f6283ad790da33508719dc5f1f95e5aa463e2a19dc`
+- prototype/small_biter_atlas.png `db661651a15d842b88d45b39beea2195e84092b4bab241e3b29f9dc438089732`
+- prototype/small_biter_atlas.png.import `2dce2734659138d9ac326aa298fae0a503afbffdc87611848728dea92825c471`
+- prototype/small_biter_spriteframes_packed.tres `2ff2f9f958070578ce79a932b80fdd830e663ece5b5815f5b58e5efa30c364f1`
