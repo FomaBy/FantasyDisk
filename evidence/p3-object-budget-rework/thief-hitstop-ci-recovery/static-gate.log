@@ -1,6 +1,7 @@
-command: GODOT_BIN=... python3 tools/quality_gate.py --static-only --changed-ref origin/dev (output outside checkout)
-source: d57bb959a27549bbe01b94f677b7904f3101b1a4
-Sun Sep 13 22:00:32 UTC 2026
+command: GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/quality_gate.py --static-only --changed-ref origin/dev
+source: 1a127c93d3c4883e52d58d9b3fd5b2306c6c14fe tree 359f7f6d20214de43ca91dc0366467b69564760a
+worktree_dirty_before: 0
+Sun Sep 13 22:08:13 UTC 2026
 STATIC repository-invariants
 Static quality guard passed (case/version/Windows/architecture/sidecars/credentials/ownership).
 STATIC repository-storage-policy
@@ -135,16 +136,16 @@ test_successful_quit_detector_ignores_non_executable_text_and_failures (test_god
 test_every_viewport_readback_suite_guards_headless (test_headless_capture_guard_contract.HeadlessCaptureGuardTests) ... ok
 test_guard_detector_actually_catches_unguarded_fixture (test_headless_capture_guard_contract.HeadlessCaptureGuardTests) ... ok
 test_guarded_fixture_passes_detector (test_headless_capture_guard_contract.HeadlessCaptureGuardTests) ... ok
-test_hook_allows_the_push_when_the_guard_passes (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmpme6izv2e/.git/hooks/pre-push
+test_hook_allows_the_push_when_the_guard_passes (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmppp5m6mpp/.git/hooks/pre-push
 ok
-test_hook_blocks_the_push_when_the_guard_fails (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmphpg1kx5n/.git/hooks/pre-push
+test_hook_blocks_the_push_when_the_guard_fails (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmpk5avzdgx/.git/hooks/pre-push
 ok
 test_installer_exists_and_is_executable (test_install_hooks.InstallHooksTest) ... ok
-test_installer_is_idempotent (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmp9xm5o161/.git/hooks/pre-push
-Installed pre-push hook at /private/tmp/multica-task-2822158481/tmp9xm5o161/.git/hooks/pre-push
+test_installer_is_idempotent (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmp7vjw688w/.git/hooks/pre-push
+Installed pre-push hook at /private/tmp/multica-task-2822158481/tmp7vjw688w/.git/hooks/pre-push
 ok
 test_installer_refuses_to_overwrite_a_foreign_pre_push_hook (test_install_hooks.InstallHooksTest) ... ok
-test_run_installs_executable_pre_push_hook_calling_the_guard (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmptu9stspu/.git/hooks/pre-push
+test_run_installs_executable_pre_push_hook_calling_the_guard (test_install_hooks.InstallHooksTest) ... Installed pre-push hook at /private/tmp/multica-task-2822158481/tmpffzs89uf/.git/hooks/pre-push
 ok
 test_archive_importer_jira_requests_are_get_only (test_jira_archive_guards.JiraArchiveGuardTest) ... ok
 test_archive_importer_rejects_live_project_before_jira_access (test_jira_archive_guards.JiraArchiveGuardTest) ... ok
@@ -361,11 +362,7 @@ test_dirty_worktree_cannot_be_certifying (test_quality_tools.QualityGateTests) .
 test_discovers_direct_and_inherited_suites (test_quality_tools.QualityGateTests) ... ok
 test_discovers_nested_godot_suites (test_quality_tools.QualityGateTests) ... ok
 test_empty_godot_selection_is_reported_as_failure (test_quality_tools.QualityGateTests) ... EMPTY TEST SET: no Godot tests selected for profile full with filters no_such_suite_matches_this_filter
-QUALITY NON-CERTIFYING: worktree is not clean
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-1.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-2.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-3.log
-QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-2822158481/quality-empty-selection-wki_g371/quality_gate_report.json
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-2822158481/quality-empty-selection-llmu5mxs/quality_gate_report.json
 ok
 test_every_python_unit_command_is_guarded_by_executed_count (test_quality_tools.QualityGateTests) ... STATIC repository-invariants
 STATIC repository-storage-policy
@@ -403,7 +400,7 @@ GODOT 1/2 tests/a5_balance_report_integrity_test.gd
 GODOT 2/2 tests/runtime_smoke_test.gd
 ULTIMATE FEATURE LIST SKIPPED: recipe suites outside this selection: res://tests/ultimates/mechanics/assassin_live_test.gd, res://tests/ultimates/mechanics/berserk_live_test.gd, res://tests/ultimates/mechanics/biologist_live_test.gd, res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd, res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd, res://tests/ultimates/mechanics/doctor_live_test.gd, res://tests/ultimates/mechanics/druid_live_test.gd, res://tests/ultimates/mechanics/elementalist_live_test.gd, res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd, res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd, res://tests/ultimates/mechanics/knight_trio_integration_test.gd, res://tests/ultimates/mechanics/priest_live_test.gd, res://tests/ultimates/mechanics/ranger_live_test.gd, res://tests/ultimates/mechanics/robot_ultimate_live_test.gd, res://tests/ultimates/mechanics/sniper_live_test.gd, res://tests/ultimates/mechanics/thief_live_test.gd, res://tests/ultimates/soldier_runtime_test.gd
 QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped
-QUALITY PARTIAL_PASS: 1 static, 2 Godot; report=/tmp/multica-task-2822158481/quality-import-report-7tbubymx/report.json
+QUALITY PARTIAL_PASS: 1 static, 2 Godot; report=/tmp/multica-task-2822158481/quality-import-report-gnzui4lk/report.json
 ok
 test_import_timeout_reads_its_environment_override (test_quality_tools.QualityGateTests) ... ok
 test_known_import_sidecars_are_removed_without_broad_cleanup (test_quality_tools.QualityGateTests) ... ok
@@ -1056,11 +1053,7 @@ ok
 test_manifest_capture_sources_fail_closed_on_a_malformed_source (test_quality_tools.QualityGateTests) ... ok
 test_manifest_capture_sources_list_every_recorded_source_commit (test_quality_tools.QualityGateTests) ... ok
 test_missing_python_tests_fail_closed_through_cli (test_quality_tools.QualityGateTests) ... EMPTY TEST SET: no Python tests discovered under tests/
-QUALITY NON-CERTIFYING: worktree is not clean
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-1.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-2.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-3.log
-QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-2822158481/quality-godot-only-pn5k1ncm/report.json
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-2822158481/quality-godot-only-_qfqsykj/report.json
 ok
 test_nested_python_tests_actually_execute (test_quality_tools.QualityGateTests) ... ok
 test_nested_suite_runs_from_its_own_resource_path (test_quality_tools.QualityGateTests) ... PASS  registry_contract_test
@@ -1068,15 +1061,13 @@ ok
 test_nonintegration_changed_ref_is_partial_and_recorded (test_quality_tools.QualityGateTests) ... GODOT warming import cache via semaphore gate
 GODOT running 1 test(s) via semaphore gate
 GODOT 1/1 tests/runtime_smoke_test.gd
-ULTIMATE FEATURE LIST SKIPPED: recipe suites outside this selection: res://tests/ultimates/mechanics/assassin_live_test.gd, res://tests/ultimates/mechanics/berserk_live_test.gd, res://tests/ultimates/mechanics/biologist_live_test.gd, res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd, res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd, res://tests/ultimates/mechanics/doctor_live_test.gd, res://tests/ultimates/mechanics/druid_live_test.gd, res://tests/ultimates/mechanics/elementalist_live_test.gd, res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd, res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd, res://tests/ultimates/mechanics/knight_trio_integration_test.gd, res://tests/ultimates/mechanics/priest_live_test.gd, res://tests/ultimates/mechanics/ranger_live_test.gd, res://tests/ultimates/mechanics/robot_ultimate_live_test.gd, res://tests/ultimates/mechanics/sniper_live_test.gd, res://tests/ultimates/mechanics/thief_live_test.gd, res://tests/ultimates/soldier_runtime_test.gd
-QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped
-QUALITY NON-CERTIFYING: changed ref HEAD^ is not the configured integration ref origin/dev (resolves to 6fa6826e748d7b835c5ce18b3a77ee013dda2810)
-QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-2822158481/quality-changed-ref-report-_36q3ian/report.json
+QUALITY NON-CERTIFYING: changed ref HEAD^ is not the configured integration ref origin/dev (resolves to d57bb959a27549bbe01b94f677b7904f3101b1a4)
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-2822158481/quality-changed-ref-report-db_mcvpp/report.json
 ok
 test_offensive_cadence_and_balance_paths_select_focused_regressions (test_quality_tools.QualityGateTests) ... ok
-test_only_timing_sensitive_suites_request_machine_exclusive (test_quality_tools.QualityGateTests) ... PASS  live_balance_simulation_test
-PASS  berserk_dps_runaway_gate
+test_only_timing_sensitive_suites_request_machine_exclusive (test_quality_tools.QualityGateTests) ... PASS  berserk_dps_runaway_gate
 PASS  pool_dot_runaway_gate
+PASS  live_balance_simulation_test
 PASS  runtime_smoke_test
 ok
 test_package_subdirectory_is_not_discovered_twice (test_quality_tools.QualityGateTests) ... ok
@@ -1110,11 +1101,7 @@ test_shared_presentation_runtime_paths_select_every_consumer_suite (test_quality
 test_static_command_routes_python_cache_outside_checkout (test_quality_tools.QualityGateTests) ... ok
 test_static_profile_fails_closed_when_nothing_is_discovered (test_quality_tools.QualityGateTests) ... EMPTY TEST SET: no Godot tests discovered under tests/
 EMPTY TEST SET: no Python tests discovered under tests/
-QUALITY NON-CERTIFYING: worktree is not clean
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-1.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-2.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-3.log
-QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-2822158481/quality-empty-36hunlxn/report.json
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-2822158481/quality-empty-9lvm908c/report.json
 ok
 test_static_profile_selects_no_godot_tests (test_quality_tools.QualityGateTests) ... ok
 test_ultimate_executor_contract_paths_select_all_contract_regressions (test_quality_tools.QualityGateTests) ... ok
@@ -1192,29 +1179,29 @@ test_extraction_is_deterministic (test_release_skill_onboarding.PinnedLegacyFixt
 test_manifest_matches_the_pinned_commits_and_paths (test_release_skill_onboarding.PinnedLegacyFixtureTest) ... ok
 test_all_persistent_residue_and_marker_states_block_without_mutation (test_release_skill_onboarding.ReleaseSkillOnboardingTest)
 A same-UID process can forge every persistent v1 evidence shape. ... ok
-test_changed_source_has_continuous_old_or_new_selection (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 8171e77] updated source changed-source-continuity
+test_changed_source_has_continuous_old_or_new_selection (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 39e355b] updated source changed-source-continuity
  1 file changed, 2 insertions(+)
 ok
-test_concurrent_updater_fails_closed_without_touching_active_selection (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main ee8dfbd] updated source first-concurrent-update
+test_concurrent_updater_fails_closed_without_touching_active_selection (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 9d47186] updated source first-concurrent-update
  1 file changed, 2 insertions(+)
-[main 7288448] updated source second-concurrent-update
+[main 8787fdf] updated source second-concurrent-update
  1 file changed, 2 insertions(+)
 ok
 test_current_run_cleanup_preserves_replaced_parent_residue_and_marker (test_release_skill_onboarding.ReleaseSkillOnboardingTest)
-Descriptor-relative cleanup must not touch a replacement after its pause hook. ... [main dbef932] updated source runtime-parent-replacement
+Descriptor-relative cleanup must not touch a replacement after its pause hook. ... [main e3f9836] updated source runtime-parent-replacement
  1 file changed, 2 insertions(+)
-[main 104b970] updated source runtime-residue-replacement
+[main 8cbd593] updated source runtime-residue-replacement
  1 file changed, 2 insertions(+)
-[main 14c00a0] updated source runtime-marker-replacement
+[main f0670ec] updated source runtime-marker-replacement
  1 file changed, 2 insertions(+)
 ok
 test_durable_mirror_survives_disposable_source_checkout_removal (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
-test_failed_staging_preserves_last_known_good_mirror_and_selection (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main fb69997] updated test source
+test_failed_staging_preserves_last_known_good_mirror_and_selection (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 2120708] updated test source
  1 file changed, 1 insertion(+)
 ok
-test_failure_before_commit_preserves_old_and_after_commit_keeps_new (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main bf2e6a2] updated source pre-commit-fault
+test_failure_before_commit_preserves_old_and_after_commit_keeps_new (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main c3cc27a] updated source pre-commit-fault
  1 file changed, 2 insertions(+)
-[main 8f9df5c] updated source post-commit-fault
+[main 73664aa] updated source post-commit-fault
  1 file changed, 2 insertions(+)
 ok
 test_fifo_is_preserved_and_blocks (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
@@ -1243,9 +1230,9 @@ ok
 test_fresh_isolated_home_selects_repo_provenance (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
 test_known_legacy_copy_is_migrated_to_complete_repo_tree (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
 test_legacy_backup_or_marker_replacement_preserves_the_absent_destination (test_release_skill_onboarding.ReleaseSkillOnboardingTest)
-A substituted legacy backup/marker fails closed without a replacement pointer. ... [main 5247d62] updated source mirror-legacy-backup
+A substituted legacy backup/marker fails closed without a replacement pointer. ... [main e3b0ddf] updated source mirror-legacy-backup
  1 file changed, 2 insertions(+)
-[main 99707c7] updated source mirror-legacy-backup
+[main f505fbd] updated source mirror-legacy-backup
  1 file changed, 2 insertions(+)
 ok
 test_lock_liveness_probe_distinguishes_live_from_esrch (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
@@ -1257,26 +1244,26 @@ test_malformed_unreadable_incomplete_and_foreign_locks_fail_closed (test_release
 test_managed_mirror_update_is_idempotent (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
 test_marker_without_residue_variants_are_preserved_in_every_namespace (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
 test_mirror_activation_rejects_replaced_captured_entries (test_release_skill_onboarding.ReleaseSkillOnboardingTest)
-Mirror activation has the same immediate identity contract as selection. ... [main 68d2152] updated source mirror-parent
+Mirror activation has the same immediate identity contract as selection. ... [main 4a9f627] updated source mirror-parent
  1 file changed, 2 insertions(+)
-[main 7d6691c] updated source mirror-stage
+[main 48dc318] updated source mirror-stage
  1 file changed, 2 insertions(+)
-[main cfe427d] updated source mirror-destination
+[main 18fc21e] updated source mirror-destination
  1 file changed, 2 insertions(+)
-[main e25686a] updated source mirror-marker
+[main 54d034a] updated source mirror-marker
  1 file changed, 2 insertions(+)
-[main 3b0c2b2] updated source mirror-equivalent-stage
+[main a55a9ee] updated source mirror-equivalent-stage
  1 file changed, 2 insertions(+)
 ok
 test_mode_drift_is_preserved_and_blocks (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
-test_postpublication_contention_rejects_loser_before_selection_hook (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 29c7bc1] updated source first-after-lock-publication
+test_postpublication_contention_rejects_loser_before_selection_hook (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 0e34b1b] updated source first-after-lock-publication
  1 file changed, 2 insertions(+)
-[main e237d37] updated source second-after-lock-publication
+[main 7caf3d2] updated source second-after-lock-publication
  1 file changed, 2 insertions(+)
 ok
-test_prepublication_contention_fails_closed_without_managed_mutation (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main cb46905] updated source first-before-lock-publication
+test_prepublication_contention_fails_closed_without_managed_mutation (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 3da5a37] updated source first-before-lock-publication
  1 file changed, 2 insertions(+)
-[main b2fc777] updated source second-before-lock-publication
+[main e064323] updated source second-before-lock-publication
  1 file changed, 2 insertions(+)
 ok
 test_previous_onboarding_reproduces_silent_skip_and_drift (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
@@ -1284,28 +1271,28 @@ test_release_only_mode_isolated_from_unrelated_runtime_state (test_release_skill
 test_release_only_mode_rejects_extra_arguments_without_creating_state (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
 test_selected_skill_uses_durable_mirror_not_the_source_checkout (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
 test_selection_activation_rejects_replaced_captured_entries (test_release_skill_onboarding.ReleaseSkillOnboardingTest)
-Selection must not commit a stage, parent, destination, or marker replacement. ... [main f3e1195] updated source selection-parent
+Selection must not commit a stage, parent, destination, or marker replacement. ... [main 0d3b4be] updated source selection-parent
  1 file changed, 2 insertions(+)
-[main 29ca716] updated source selection-stage
+[main 7352449] updated source selection-stage
  1 file changed, 2 insertions(+)
-[main f6b8b59] updated source selection-destination
+[main a2bef8b] updated source selection-destination
  1 file changed, 2 insertions(+)
-[main 498cd2e] updated source selection-marker
+[main 52d7261] updated source selection-marker
  1 file changed, 2 insertions(+)
-[main e59ac92] updated source selection-equivalent-stage
- 1 file changed, 2 insertions(+)
-ok
-test_sigkill_after_lock_publication_reclaims_dead_owner (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 487dca6] updated source sigkill-after-lock-publication
+[main 36e0266] updated source selection-equivalent-stage
  1 file changed, 2 insertions(+)
 ok
-test_sigkill_preserves_residue_and_blocks_next_run (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 58c52fa] updated source signal-before-SIGKILL
- 1 file changed, 2 insertions(+)
-[main 207da75] updated source signal-after-SIGKILL
+test_sigkill_after_lock_publication_reclaims_dead_owner (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main b253890] updated source sigkill-after-lock-publication
  1 file changed, 2 insertions(+)
 ok
-test_sigterm_cleans_current_run_residue (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 1a8df51] updated source signal-before-SIGTERM
+test_sigkill_preserves_residue_and_blocks_next_run (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 971b166] updated source signal-before-SIGKILL
  1 file changed, 2 insertions(+)
-[main 52f68f6] updated source signal-after-SIGTERM
+[main d78d4ab] updated source signal-after-SIGKILL
+ 1 file changed, 2 insertions(+)
+ok
+test_sigterm_cleans_current_run_residue (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... [main 1e12287] updated source signal-before-SIGTERM
+ 1 file changed, 2 insertions(+)
+[main 48c7771] updated source signal-after-SIGTERM
  1 file changed, 2 insertions(+)
 ok
 test_symlinked_entries_are_preserved_and_block_without_following_targets (test_release_skill_onboarding.ReleaseSkillOnboardingTest) ... ok
@@ -1498,7 +1485,7 @@ GODOT 15/18 tests/ultimates/mechanics/robot_ultimate_live_test.gd
 GODOT 16/18 tests/ultimates/mechanics/sniper_live_test.gd
 GODOT 17/18 tests/ultimates/mechanics/thief_live_test.gd
 GODOT 18/18 tests/ultimates/soldier_runtime_test.gd
-QUALITY PASSED: 2 static, 18 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-6yr16znc/report.json
+QUALITY PASSED: 2 static, 18 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-ye96cr70/report.json
 ok
 test_checker_failure_fails_the_gate (test_ultimate_feature_list.QualityGateIntegrationTests) ... GODOT warming import cache via semaphore gate
 GODOT running 18 test(s) via semaphore gate
@@ -1520,7 +1507,7 @@ GODOT 15/18 tests/ultimates/mechanics/robot_ultimate_live_test.gd
 GODOT 16/18 tests/ultimates/mechanics/sniper_live_test.gd
 GODOT 17/18 tests/ultimates/mechanics/thief_live_test.gd
 GODOT 18/18 tests/ultimates/soldier_runtime_test.gd
-QUALITY FAILED: 2 static, 18 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-_u5_ci4g/report.json
+QUALITY FAILED: 2 static, 18 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-clhbzv0y/report.json
 ok
 test_gate_binds_in_process_without_manifest_or_subprocess (test_ultimate_feature_list.QualityGateIntegrationTests) ... ok
 test_missing_suite_path_conservatively_selects_the_full_godot_fleet (test_ultimate_feature_list.QualityGateIntegrationTests) ... ok
@@ -1529,7 +1516,7 @@ GODOT running 1 test(s) via semaphore gate
 GODOT 1/1 tests/runtime_smoke_test.gd
 ULTIMATE FEATURE LIST SKIPPED: recipe suites outside this selection: res://tests/ultimates/mechanics/assassin_live_test.gd, res://tests/ultimates/mechanics/berserk_live_test.gd, res://tests/ultimates/mechanics/biologist_live_test.gd, res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd, res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd, res://tests/ultimates/mechanics/doctor_live_test.gd, res://tests/ultimates/mechanics/druid_live_test.gd, res://tests/ultimates/mechanics/elementalist_live_test.gd, res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd, res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd, res://tests/ultimates/mechanics/knight_trio_integration_test.gd, res://tests/ultimates/mechanics/priest_live_test.gd, res://tests/ultimates/mechanics/ranger_live_test.gd, res://tests/ultimates/mechanics/robot_ultimate_live_test.gd, res://tests/ultimates/mechanics/sniper_live_test.gd, res://tests/ultimates/mechanics/thief_live_test.gd, res://tests/ultimates/soldier_runtime_test.gd
 QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped
-QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-rzqatvln/report.json
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-9_dxt741/report.json
 ok
 test_recipe_scripts_are_read_from_the_committed_feature_list (test_ultimate_feature_list.QualityGateIntegrationTests) ... ok
 test_static_profile_command_set_is_unchanged (test_ultimate_feature_list.QualityGateIntegrationTests) ... ok
@@ -1537,7 +1524,7 @@ test_unrelated_changes_and_other_profiles_do_not_select_checker (test_ultimate_f
 test_unselected_checker_is_not_invoked_and_keeps_no_logs (test_ultimate_feature_list.QualityGateIntegrationTests) ... GODOT warming import cache via semaphore gate
 GODOT running 1 test(s) via semaphore gate
 GODOT 1/1 tests/runtime_smoke_test.gd
-QUALITY PASSED: 2 static, 1 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-jml7fj_s/report.json
+QUALITY PASSED: 2 static, 1 Godot; report=/tmp/multica-task-2822158481/quality-feature-list-ddg41yu5/report.json
 ok
 test_real_feature_list_commits_no_generated_state (test_ultimate_feature_list.RealFeatureListTests) ... ok
 test_real_feature_list_validates_against_canonical_catalog (test_ultimate_feature_list.RealFeatureListTests) ... ok
@@ -1718,7 +1705,7 @@ test_import_timeout_fails_closed (test_windows_quality_import_contract.WindowsIm
 test_incomplete_cache_validation_fails_closed (test_windows_quality_import_contract.WindowsImportCompletionContractTests) ... ok
 
 ----------------------------------------------------------------------
-Ran 782 tests in 308.743s
+Ran 782 tests in 453.699s
 
 OK (skipped=3)
 STATIC python-unit:tests/tools
@@ -1732,7 +1719,7 @@ test_documented_check_names_match_quality_gate (test_qa_protocol_gate_contract.Q
 test_documented_report_keys_exist_in_quality_gate (test_qa_protocol_gate_contract.QaProtocolGateContractTests) ... ok
 
 ----------------------------------------------------------------------
-Ran 7 tests in 0.204s
+Ran 7 tests in 0.226s
 
 OK
 STATIC python-syntax
@@ -1747,8 +1734,5 @@ STATIC git-index-check
 STATIC git-head-check
 STATIC git-range-check
 STATIC shell-syntax
-QUALITY NON-CERTIFYING: worktree is not clean
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-1.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-2.log
-  ?? evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-3.log
-QUALITY PARTIAL_PASS: 16 static, 0 Godot; report=build/quality_gate_report.json
+QUALITY PASSED: 16 static, 0 Godot; report=build/quality_gate_report.json
+exit_status=0
