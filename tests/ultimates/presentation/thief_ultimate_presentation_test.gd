@@ -250,6 +250,38 @@ func _test_v2_scene_bindings(registry, weapon_id: String, errors: Array[String])
 ## sprites) is sampled every scheduled frame; the hold is the run of frames
 ## it stays frozen after the first impact, summed in wall-clock seconds, and
 ## must sit inside the v2 envelope of 80-150 ms within half a frame.
+var _dip_diag_dir := ""
+var _dip_diag: Array[Dictionary] = []
+
+
+static func _diag_requested() -> bool:
+	var args := OS.get_cmdline_user_args()
+	for i in range(args.size() - 1):
+		if String(args[i]) == "--dip-diag":
+			return true
+	return false
+
+
+func _dip_diag_init() -> void:
+	var args := OS.get_cmdline_user_args()
+	for i in range(args.size() - 1):
+		if String(args[i]) == "--dip-diag":
+			_dip_diag_dir = String(args[i + 1])
+			DirAccess.make_dir_recursive_absolute(_dip_diag_dir)
+			break
+
+
+func _dip_diag_flush(weapon_id: String) -> void:
+	if _dip_diag_dir == "" or _dip_diag.is_empty():
+		return
+	var f := FileAccess.open("%s/dip-%s.json" % [_dip_diag_dir, weapon_id], FileAccess.WRITE)
+	if f == null:
+		return
+	f.store_string(JSON.stringify({"weapon_id": weapon_id, "frames": _dip_diag}, "  ") + "\n")
+	f.close()
+	_dip_diag = []
+
+
 func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String]) -> void:
 	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
 	if packed == null:
@@ -259,6 +291,8 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 	var declared_seconds := float(presence.get("hitstop_ms", 0.0)) / 1000.0
 	var declared_dip := float(presence.get("time_scale_dip", 1.0))
 	var active := float(timing.get("active", 0.0))
+	if _dip_diag_dir == "" and _diag_requested():
+		_dip_diag_init()
 	var scene := packed.instantiate() as Node2D
 	root.add_child(scene)
 	await process_frame
@@ -287,6 +321,16 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 		# first-impact hitstop live after processing; the drawn pose must be
 		# identical across all of them and move again on the frame after.
 		var holding := float(scene.get("_hitstop_remaining")) > 0.0
+		if _dip_diag_dir != "":
+			_dip_diag.append({
+				"i": _dip_diag.size(),
+				"raw_delta": root.get_process_delta_time(),
+				"scale": Engine.time_scale,
+				"wall_delta": delta,
+				"wall": wall,
+				"hitstop_remaining": float(scene.get("_hitstop_remaining")),
+				"holding": holding,
+			})
 		var pose := _scene_pose(scene)
 		if not hold_open:
 			if holding:
@@ -312,6 +356,7 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 		_expect(is_equal_approx(lowest_scale, declared_dip), "%s scheduled: the declared time-scale dip %.2f must be live during the hold (lowest %.2f)" % [weapon_id, declared_dip, lowest_scale], errors)
 		_expect(absf(dip_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the dip must last the declared %.0f ms within a frame, lasted %.1f ms" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0], errors)
 	_expect(restored_after >= 0.0 and is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: Engine.time_scale must be restored when the hold ends" % weapon_id, errors)
+	_dip_diag_flush(weapon_id)
 	scene.finish("cancel")
 	scene.free()
 	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: cleanup must leave Engine.time_scale at 1" % weapon_id, errors)
