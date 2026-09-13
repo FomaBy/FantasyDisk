@@ -23,11 +23,12 @@
    "value": true
   },
   "old_accepts_spatially_different_renders": {
-   "raw_input": "executed measurement on exported captures: histogram(capture-attack_east-case0-sprite.png) == histogram(capture-attack_east-case0-reference.png) while their byte SHAs differ (these PNGs are committed under exported-windowed-captures/)",
-   "value": true
+   "status": "WITHDRAWN after committed-processor execution",
+   "raw_input": "capture_histogram_processor.py run on committed capture-attack_east-case1-sprite.png vs capture-attack_east-case0-reference.png (the flipped-vs-unflipped pair): old_checker_histogram_equal=false, spatial_sha_differ=true",
+   "explanation": "The earlier assertion was based on pre-publication console measurements and is NOT supported by the committed capture blobs: on the retained renders the 8th-pixel histogram DOES distinguish the flipped render. The old histogram's spatial blindness therefore stands as QA's principled inspection finding (report 01a09a91), not as an executed miss on retained evidence. The only EXECUTED old-checker miss retained is the duration mutant."
   },
   "new_spatial_sha_detects_difference": {
-   "raw_input": "same committed capture pair; byte-level SHA comparison",
+   "raw_input": "same committed processor run: spatial_sha_differ=true on the flip pair (and false on matched pairs, e.g. case0-sprite vs case0-reference)",
    "value": true
   }
  },
