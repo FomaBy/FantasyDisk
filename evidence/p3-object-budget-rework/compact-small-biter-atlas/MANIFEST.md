@@ -1,13 +1,13 @@
-# FAN-3934 compact-small-biter-atlas canonical SHA-256 manifest
+# FAN-3934 canonical SHA-256 manifest (thief-hitstop-ci-recovery successor)
 
-- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `d0d9e5c28ba2ed1730ff4eed934e4f259e0b92d9` (frozen inventory; manifest commit changes only this file).
-- Audit: publication-correction/audit_manifest.py (self-test negatives).
-- Nonrecursive self-exclusion: MANIFEST.md + REPORT.md only.
+- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `7113cb0c0821741417f11e1271256ca7449a281b` (frozen inventory; manifest commit changes only this file).
+- Audit: compact-small-biter-atlas/publication-correction/audit_manifest.py (self-test negatives).
+- Nonrecursive self-exclusion: compact-small-biter-atlas MANIFEST.md + REPORT.md only (their own frozen inventories remain in force).
 
 ## excluded generated outputs
 - 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived).
 
-## canonical changed-path inventory (commit d0d9e5c28ba2ed1730ff4eed934e4f259e0b92d9)
+## canonical changed-path inventory (commit 7113cb0c0821741417f11e1271256ca7449a281b)
 - `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -989,6 +989,36 @@
 - `evidence/p3-object-budget-rework/round9/engineer-windowed.log` `d5b26fbac92ce29826742ed5398a81710574c4122e6d4a79b095366000138008`
 - `evidence/p3-object-budget-rework/round9/vsync_measure.gd` `443d41ff56697bcb0bd75bab385baf7dd667788fec21b2b81b2228c7b3829662`
 - `evidence/p3-object-budget-rework/round9/vsync_measure.gd.uid` `a25d2c2e54cdd549f2dcab0623b1df76231d0378a89bcb1d2e22bf7d191f2df6`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/DIAGNOSIS.md` `53d01c53e0b833afa621184aff8ccfdab3a9333e82512cbf783eae552c389858`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/PLAN.md` `110709054d5741ee3573b0ecf6560a8da0fc5bbe41a5260f79944b4285904636`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-1-frames/dip-thief_coin_pouch.json` `d6018bf5416c76c9b69a9e227352d92fe26d6c7bfc88b97f44af1729bda092ea`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-1-frames/dip-thief_shadow_cloak.json` `94b8d09b7cb96d9ef1762b4b1fe22d12e8a9fecb4cb763938e41d2cdebdd7960`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-1-frames/dip-thief_smoke_bomb.json` `9be3318ebe19a34d3f79411d2243dbe08cfc039ce94cae0cb0155e6933b4dc44`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-1.log` `939312d35c158106bc56dd33e9f9901c264dc9ac0bd22b5c950223a58a514a9b`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-2-frames/dip-thief_coin_pouch.json` `e50543c5a3df1957da40e482efbb26af1d7aa5029269d77a359945a0d88a4cde`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-2-frames/dip-thief_shadow_cloak.json` `35b90ba3c5236ed109dc83eaeb15734612cf9da87f8cfa7c33390c58b414fb6e`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-2-frames/dip-thief_smoke_bomb.json` `f5678c65f8cc47578372596be466995aa89e97f4d97535393d9f97dbd887f53b`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-2.log` `f891e35f9f445178c1c468a3359c4d255d7fbf8e80576995a7bb83e81477f259`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-3-frames/dip-thief_coin_pouch.json` `25c2e469640d8910c76dfb667c662bdea5b75d814ca53525910d1bfcb3bb4958`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-3-frames/dip-thief_shadow_cloak.json` `d92054c0954bbf75cab8879735d3fa0867104e1ead7767749b5e56bb126bb522`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-3-frames/dip-thief_smoke_bomb.json` `5f628a71fe9f04852cc000e73fbacd2eb928bdb6f8d2e080610a36e1074dd9ed`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-baseline-3.log` `b8d951109d4e0d13205621a9422c8b8c4c5a895e24e2657ac9417b50e7369417`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-1-frames/dip-thief_coin_pouch.json` `736098ae1946165f1c89ec937e0f25f83918b2c57777007babdb890eeb24e61e`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-1-frames/dip-thief_shadow_cloak.json` `a234c04300e696a65dadee6780dab11782a9210353bcb9de3c2b48773cbc236d`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-1-frames/dip-thief_smoke_bomb.json` `594f025a387818bcd1f9169275a7f70d24e3d406006cfd95a91aac48ac9b404d`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-1.log` `b80faa6ff5114c1abba44ab404720bea09e5ba3d9ca9ab2fa34b557392ff9049`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-2-frames/dip-thief_coin_pouch.json` `b1035241d478323878260b09454f5207f5db0ece64cf532086a20e0f5923787f`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-2-frames/dip-thief_shadow_cloak.json` `364aa4bedd4b3cec3a5e11c4a55a3a8a2e0c0182f155f7a86f6537040d2566d5`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-2-frames/dip-thief_smoke_bomb.json` `9c2cb7f0347c4ab0556594d9b08ac336ea3a3fb794cfc0c1741834531c89a9d4`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-2.log` `45e913444e0395853ae478e82c9517b436e75e82960b6147bfa80382c2099c20`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-3-frames/dip-thief_coin_pouch.json` `eb38f398fe38090e841318db74d558eabaca07219b0ece3312c8593a97967e3c`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-3-frames/dip-thief_shadow_cloak.json` `d274e56afbaf67f2bc8b7ebdb733f3d98050959c2cb1eec4d93ddf78826d0313`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-3-frames/dip-thief_smoke_bomb.json` `656fa689d760668f50d4cce043f387985f0b5ac4d83b5463d80146176d0363e7`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/diag-candidate-3.log` `57eac41773eb9fc2966cf344eee70b9a55d6d02fc79f8880c31328ed8c047d6e`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-1.log` `8f8881cb708429e7601abb633a108eb783b9b9a5f7f5a41219c3602c6e99a437`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-2.log` `923bcb006496aa24533b356d21f8221fb75aa539466a4f36e3b7a4d4fc67cfaf`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/repaired-suite-3.log` `846dbbeeeb862af363c67c3f7777ea25147ba88e53dad7721cd88cc670d125f4`
+- `evidence/p3-object-budget-rework/thief-hitstop-ci-recovery/static-gate.log` `fb7f188fa91366e2ab001df13c2ebf5ba2039ad34b8d0d1e3253213c51e709f7`
 - `evidence/p3-object-budget-rework/validation/env-after-round2.txt` `2a3a282b79a673d546127cf4d55a30fae66f4c81c219809e7faadc55fdf8ab3b`
 - `evidence/p3-object-budget-rework/validation/env-after.txt` `9d9bc6470d3288cc243203db613ad95e7415dcefc7f5eaceda1e835ba8233027`
 - `evidence/p3-object-budget-rework/validation/env-before-round2.txt` `c60ea6fd83f89b167f1f0e9895086bcb9eee519f6adfeecfadc0a32aee0011ee`
@@ -1022,4 +1052,5 @@
 - `tests/test_headless_capture_guard_contract.py` `791dad47d47930e276b40b48105473549c08afd652e2161e5f9c546c3f896eee`
 - `tests/test_quality_workflow.py` `5c2949632e670b0a5fdab0188b7c5bd26021b02000560d2420f984bd5a7d0ebc`
 - `tests/ultimates/presentation/engineer_accessibility_modes_test.gd` `79d095a0f8a99b32957a23f602cb383a521a6336aa901b19b094534770b9dbde`
+- `tests/ultimates/presentation/thief_ultimate_presentation_test.gd` `f6817cbd4a7cf974ebb0e80ee52569e7df2996be6f11dcc1e158487629f9355f`
 - `tools/build_small_biter_atlas.py` `26fb800a7963a86b9a392220c3b8baecce9bf3342a2ffb632da524c34379a30e`
