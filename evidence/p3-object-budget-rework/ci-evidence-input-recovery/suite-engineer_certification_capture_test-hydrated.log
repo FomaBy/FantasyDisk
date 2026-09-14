@@ -1,0 +1,9 @@
+command (complete argv): FSD_GODOT_EXCLUSIVE=1 FSD_GODOT_RUN_TIMEOUT=900 FSD_GODOT_MAXWAIT=900 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/engineer_certification_capture_test.gd
+source: a09bca47f56fdc71dc37cc29da5179c20c35c4a4 tree 5736137d2a966fb4274a8ff81d42bccc3db9761c
+input_hydration: engineer 48 sample PNGs smudged via git lfs pull (see lfs-hydration.log); tracked tree otherwise clean
+godot: 4.7.stable.official.5b4e0cb0f
+started_utc: 2026-09-14T01:20:27Z
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+FAN-3939 Engineer certification capture package: PASS
+exit_status=0
