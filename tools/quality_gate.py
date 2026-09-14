@@ -252,13 +252,19 @@ def _certification_capture_declarations(
     if live_capture is not None:
         if not isinstance(live_capture, dict):
             raise RuntimeError(f"{description}.live_capture must be an object")
-        if "capture_manifest" in live_capture:
-            declarations.append((
-                "live_capture",
-                live_capture,
-                "capture_manifest",
-                "capture_script",
-            ))
+        # FAN-3934 CI evidence-input recovery: the Engineer class manifest
+        # publishes its certification link as
+        # `live_capture.certification_manifest`. A key this lister does not
+        # read is evidence CI never hydrates, so the certification gate
+        # fails on LFS pointers instead of judging the frames.
+        for manifest_key in ("capture_manifest", "certification_manifest"):
+            if manifest_key in live_capture:
+                declarations.append((
+                    "live_capture",
+                    live_capture,
+                    manifest_key,
+                    "capture_script",
+                ))
     return declarations
 
 
@@ -278,25 +284,41 @@ def _linked_certification_manifest_path(
 
 
 def _certification_artifact_paths(payload: dict, description: str) -> list[str]:
-    """Every LFS artifact declared by a linked certification manifest."""
-    records: object | None = None
-    record_key = ""
-    for key in ("captures", "sheets", "viewports"):
-        if key in payload:
-            records = payload[key]
-            record_key = key
-            break
-    if not isinstance(records, list) or not records:
-        raise RuntimeError(
-            f"{description} must declare a non-empty captures, sheets, or viewports list"
-        )
+    """Every LFS artifact declared by a linked certification manifest.
+
+    FAN-3934: manifests may publish several record lists (the Engineer
+    certification manifest carries hydrated PNGs in `samples` and geometry-only
+    `viewports`). Paths are collected from every present list; a record
+    without a `path` is a geometry descriptor and carries no evidence, but at
+    least one artifact path must resolve overall.
+    """
     paths: list[str] = []
-    for index, record in enumerate(records):
-        if not isinstance(record, dict):
-            raise RuntimeError(f"{description}.{record_key}[{index}] must be an object")
-        paths.append(_lfs_evidence_path(
-            record.get("path"), f"{description}.{record_key}[{index}].path"
-        ))
+    for record_key in ("captures", "sheets", "viewports", "samples"):
+        if record_key not in payload:
+            continue
+        records = payload[record_key]
+        # FAN-3934: some manifests publish `viewports` as a geometry DICT
+        # (not an artifact list); non-list geometry shapes carry no paths and
+        # are skipped, while a list that declares records keeps the original
+        # non-empty contract.
+        if not isinstance(records, list):
+            continue
+        if not records:
+            raise RuntimeError(
+                f"{description}.{record_key} must be a non-empty list"
+            )
+        for index, record in enumerate(records):
+            if not isinstance(record, dict):
+                raise RuntimeError(f"{description}.{record_key}[{index}] must be an object")
+            if "path" not in record:
+                continue
+            paths.append(_lfs_evidence_path(
+                record.get("path"), f"{description}.{record_key}[{index}].path"
+            ))
+    if not paths:
+        raise RuntimeError(
+            f"{description} declared no evidence artifact paths"
+        )
     return paths
 
 

@@ -235,6 +235,21 @@ class QualityWorkflowContractTests(unittest.TestCase):
         # A budget without a bound, or a bound without evidence, must fail.
         self.assertNotIn("timeout-minutes: 60", self.candidate_job)
 
+    def test_sparse_cone_materializes_vfx_reference_directories(self) -> None:
+        # FAN-3934 CI evidence-input recovery: the scrum895/scrum924 VFX
+        # suites read manifest.json and frame_qa_report.json from their
+        # reference directories at runtime; both directories were absent from
+        # the cone and the suites failed in CI on identical base blobs.
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        for required_path in (
+            "docs/design/references/scrum895_berserk_axe_hammer_vfx",
+            "docs/design/references/scrum924_holy_flail_spiral_vfx",
+        ):
+            self.assertIn(f"          {required_path}\n", checkout)
+            self.assertTrue((ROOT / required_path / "manifest.json").is_file())
+            self.assertTrue((ROOT / required_path / "frame_qa_report.json").is_file())
+
     def test_sparse_cone_materializes_a5_fragment_inputs(self) -> None:
         # FAN-3934 CI repair (run 34715975730): the atlas attribution suite
         # reads a tracked fragment that the old cone never materialized; the

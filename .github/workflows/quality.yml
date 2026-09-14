@@ -86,6 +86,12 @@ jobs:
             docs/design/references/unified_master_frame/unified_master_frame_metadata.json
             docs/design/references/weapon_attack_animations
             docs/design/references/weapon_ultimates
+            # FAN-3934 CI evidence-input recovery: the scrum895/scrum924 VFX
+            # reference directories hold the manifest.json/frame_qa_report.json
+            # their suites read at runtime; both were absent from the cone and
+            # the suites failed in CI despite identical base blobs.
+            docs/design/references/scrum895_berserk_axe_hammer_vfx
+            docs/design/references/scrum924_holy_flail_spiral_vfx
             docs/design/reference-assets-lfs
       - name: Fetch pinned legacy commits for shallow candidates
         if: github.event_name != 'push'
