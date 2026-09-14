@@ -40,19 +40,19 @@ const EVIDENCE_BY_CLASS := {
 const FRAMES_BY_CLASS := {
 	"assassin": {
 		"chakrams": [
-			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropDarken", "ImpactFlash", "Orbit/MoonOne", "Orbit/MoonEight"]},
-			{"phase": "active", "time": 2.4, "required_nodes": ["BackdropDarken", "Orbit/MoonFour", "ReturnCrescents"]},
+			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropLayer/BackdropVeil", "ImpactFlash", "Orbit/MoonOne", "Orbit/MoonEight"]},
+			{"phase": "active", "time": 2.4, "required_nodes": ["BackdropLayer/BackdropVeil", "Orbit/MoonFour", "ReturnCrescents"]},
 			{"phase": "recovery", "time": 3.2, "required_nodes": ["Orbit/MoonOne", "ReturnCrescents"]},
 		],
 		"shadow_daggers": [
-			{"phase": "release", "time": 0.5, "required_nodes": ["FreezeMarks", "Afterimages/BackstabOne"]},
-			{"phase": "active", "time": 2.0, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
-			{"phase": "recovery", "time": 5.2, "required_nodes": ["FreezeMarks", "FinalReveal"]},
+			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropLayer/BackdropVeil", "FreezeMarks", "Afterimages/BackstabOne"]},
+			{"phase": "active", "time": 2.05, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
+			{"phase": "recovery", "time": 3.0, "required_nodes": ["FreezeMarks", "FinalReveal"]},
 		],
 		"venom_wire": [
-			{"phase": "release", "time": 0.7, "required_nodes": ["Anchors/NeedleOne", "HexWeb"]},
-			{"phase": "active", "time": 2.4, "required_nodes": ["HexWeb", "SnapCollapse"]},
-			{"phase": "recovery", "time": 5.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
+			{"phase": "release", "time": 0.8, "required_nodes": ["BackdropLayer/BackdropVeil", "Anchors/NeedleOne", "HexWeb"]},
+			{"phase": "active", "time": 2.8, "required_nodes": ["HexWeb", "SnapCollapse"]},
+			{"phase": "recovery", "time": 3.25, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
 		],
 	},
 	"berserk": {
@@ -125,19 +125,19 @@ const FRAMES_BY_CLASS := {
 	},
 	"druid": {
 		"summon_amulet": [
-			{"phase": "release", "time": 1.50, "required_nodes": ["WildHunt"]},
-			{"phase": "active", "time": 3.50, "required_nodes": ["WildHunt"]},
-			{"phase": "recovery", "time": 6.20, "required_nodes": ["WildHunt"]},
+			{"phase": "release", "time": 1.0, "required_nodes": ["BackdropLayer/BackdropVeil", "WildHunt"]},
+			{"phase": "active", "time": 1.95, "required_nodes": ["WildHunt"]},
+			{"phase": "recovery", "time": 3.1, "required_nodes": ["WildHunt"]},
 		],
 		"briar_staff": [
-			{"phase": "release", "time": 1.70, "required_nodes": ["BriarLattice"]},
-			{"phase": "active", "time": 4.20, "required_nodes": ["BriarLattice"]},
-			{"phase": "recovery", "time": 7.30, "required_nodes": ["BriarLattice"]},
+			{"phase": "release", "time": 1.1, "required_nodes": ["BackdropLayer/BackdropVeil", "BriarLattice"]},
+			{"phase": "active", "time": 2.0, "required_nodes": ["BriarLattice"]},
+			{"phase": "recovery", "time": 3.2, "required_nodes": ["BriarLattice"]},
 		],
 		"raven_totem": [
-			{"phase": "release", "time": 1.80, "required_nodes": ["RavenVortex"]},
-			{"phase": "active", "time": 4.50, "required_nodes": ["RavenVortex"]},
-			{"phase": "recovery", "time": 7.80, "required_nodes": ["RavenVortex"]},
+			{"phase": "release", "time": 0.75, "required_nodes": ["BackdropLayer/BackdropVeil", "RavenVortex"]},
+			{"phase": "active", "time": 1.65, "required_nodes": ["RavenVortex"]},
+			{"phase": "recovery", "time": 2.9, "required_nodes": ["RavenVortex"]},
 		],
 	},
 	"elementalist": {

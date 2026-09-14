@@ -58,7 +58,10 @@
           "spriteframes": "assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres",
           "animation": "druid_summon_amulet_ultimate",
           "frame_count": 9,
-          "frame_size": [256, 256],
+          "frame_size": [
+            256,
+            256
+          ],
           "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
         }
       },
@@ -66,8 +69,8 @@
         "windup": 0.0,
         "release": 0.85,
         "active": 1.15,
-        "recovery": 6.6,
-        "cancel": 7.4
+        "recovery": 2.85,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.druid.summon_amulet.windup",
@@ -84,7 +87,33 @@
         "max_visual_nodes": 11,
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "summon_cap_and_persistence_owner": "mechanics FAN-1495"
+        "summon_cap_and_persistence_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/summon_amulet/summon_amulet_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the Wild Hunt holds one accepted source frame while phase scale and alpha preserve the summon envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     },
     {
@@ -99,16 +128,19 @@
           "spriteframes": "assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres",
           "animation": "druid_briar_staff_ultimate",
           "frame_count": 9,
-          "frame_size": [256, 256],
+          "frame_size": [
+            256,
+            256
+          ],
           "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
         }
       },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 1.1,
-        "active": 1.55,
-        "recovery": 7.9,
-        "cancel": 8.6
+        "release": 0.95,
+        "active": 1.45,
+        "recovery": 3.0,
+        "cancel": 3.75
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.druid.briar_staff.windup",
@@ -125,7 +157,33 @@
         "max_visual_nodes": 12,
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "boss_control_cap_owner": "mechanics FAN-1495"
+        "boss_control_cap_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 130,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/briar_staff/briar_staff_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the briar lattice holds one accepted source frame while phase scale and alpha preserve the growth envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     },
     {
@@ -140,16 +198,19 @@
           "spriteframes": "assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres",
           "animation": "druid_raven_totem_ultimate",
           "frame_count": 9,
-          "frame_size": [256, 256],
+          "frame_size": [
+            256,
+            256
+          ],
           "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
         }
       },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.6,
-        "active": 0.95,
-        "recovery": 8.4,
-        "cancel": 9.2
+        "active": 1.25,
+        "recovery": 2.65,
+        "cancel": 3.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.druid.raven_totem.windup",
@@ -166,18 +227,92 @@
         "max_visual_nodes": 11,
         "crowd_cap": 22,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "accuracy_slow_and_wisp_return_owner": "mechanics FAN-1495"
+        "accuracy_slow_and_wisp_return_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/raven_totem/raven_totem_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the raven vortex holds one accepted source frame while phase scale and alpha preserve the gathering envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     }
   ],
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/druid_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/druid_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/druid_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3942",
+      "source_ref": "agent/codex-dev-sol-5-6/4d7a94c42825",
+      "source_commit_sha": "450f4a50bef2e9c355bd7bb63057f5e12e5585de",
+      "source_tree_sha": "579e55b71f91c87f6ab4d825590aa3b134fa3b01",
+      "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/druid_certification_capture_test.gd",
+      "weapon_ids": [
+        "summon_amulet",
+        "briar_staff",
+        "raven_totem"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "sheet_sha256": {
+        "648p": "c452b6d27b2b250108982af34dbe6ca478667e31eac24e5107c74e61cc461ecb",
+        "720p": "15397570dcdaa87fe6bc14dee475dae93b7baaab218c8745e1858ae9158c00f9",
+        "1080p": "96f505816e1665c3891e9e421337ae618ecfaff6f4a29c4f5c0236c32bc36221",
+        "2k": "02f279ceeb75debe11060d0cd0981b877fbba6b6f76b2dff6da9752da566d8fd"
+      },
+      "live_samples": 144,
+      "note": "Four native-size mode matrices index 144 fresh measurements from real Main.tscn combat runs with the shipped Player, HUD and Enemy hazards. The dedicated persisted accessibility flags drive the reduced-motion and photosensitivity-safe variants independently."
+    }
   }
 }
