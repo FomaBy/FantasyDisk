@@ -1,26 +1,38 @@
 # Doctor ultimate presentation-v2 readability
 
-FAN-3942 captured the three canonical Doctor presentations from the real
-`scenes/Main.tscn` combat scene through the real Player's shipped presentation
-runtime. The matrix covers normal, crowded, reduced-motion, and
-photosensitivity-safe modes at 1152×648, 1280×720, 1920×1080, and 2560×1440.
-Release, active, and recovery are measured for every combination: 144 samples.
+FAN-3942 captured all three canonical Doctor presentations from real
+`scenes/Main.tscn` combat through `Player.activate_ultimate()`, the shipped
+executor, and the shared presentation runtime. The matrix covers normal,
+crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
+1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
+for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `b9911a7a908c1da23129303f9794cedef8320bc5`; source tree:
-`dc28f372db1c6d822da2eb4b05c4fc972ed7e756`. Godot 4.7 stable used the
-Compatibility renderer on Apple M4 Pro. Exact per-sample values, capture time,
-commands, PNG dimensions, and SHA-256 hashes are in
-`certification_capture_manifest.json`.
+Source commit: `6a1a682902c93b8185cc0da70a3a710d1bcbd6a6`; source tree:
+`c46ec92bd0f2ba4eabbfe97f185242b7b01f048d`. Godot 4.7 stable used the
+Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
+command, configuration, seed, mode state, dimensions, record attestations, and
+PNG SHA-256 hashes.
 
-| Weapon | Max effect box | Min backdrop | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Restore potion | 0.0475 | 1.0000 | 0.587 | 0.377 | 0.0002 | 12 | 5 |
-| Plague syringe | 0.0336 | 1.0000 | 0.592 | 0.344 | 0.0002 | 12 | 6 |
-| Bone saw | 0.0434 | 1.0000 | 0.608 | 0.411 | 0.0002 | 12 | 8 |
+| Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Restore potion | 0.0293 | 0.545 | 0.375 | 0.0002 | 12 | 4 |
+| Plague syringe | 0.0272 | 0.666 | 0.351 | 0.0002 | 12 | 6 |
+| Bone saw | 0.0173 | 0.572 | 0.476 | 0.0002 | 12 | 7 |
 
-Result: PASS. All declared nodes are present, every fullscreen darken reaches
-the viewport, all measured HUD bands remain clear, player contrast stays above
-0.25, near-white coverage stays below 0.05, and crowded samples hold each
-weapon's declared cap. The focused validator includes fail-closed mutations for
-missing coverage, source provenance, LFS pointers, PNG hashes/dimensions, HUD
-occlusion, excessive coverage/flash, crowd shortfall, and retimed beats.
+## Beat observations
+
+| Weapon | Release | Active | Recovery |
+| --- | --- | --- | --- |
+| Restore potion | At 1.10s the giant flask and glass impact establish the heal/poison identity. | At 2.10s the poison pool and shield crystal remain present with four or fewer drawn nodes. | At 3.05s the pool and shield recede while the HUD remains clear; the minimum player contrast is 0.375. |
+| Plague syringe | At 1.00s the oversized syringe and patient-zero marker are present. | At 2.60s the epidemic spread reaches its largest measured extent, 0.0272, without exceeding six nodes. | At 3.55s the recovery footprint falls as low as 0.0027; this sparse tail remains intentional and traceable rather than substituting a blank frame. |
+| Bone saw | At 0.85s three saws and the surgical orbit arc establish direction. | At 1.70s the orbit, metal sparks, and red drain ribbon identify the active cut. | At 2.55s the saws and shield stitches remain visible with at most six nodes. |
+
+## Result and limitations
+
+Result: PASS. All 144 activations started through the real Player entry point,
+all 144 runtime scenes bound a real cast pose, all required beat nodes were
+present, the backdrop covered the full viewport, and every HUD band remained
+clear. The original strict node/coverage ceilings are retained: Restore uses at
+most 4 measured nodes, Plague 6, and Bone Saw 7. The Plague recovery is
+deliberately sparse, and the deterministic hazard fixture caps Doctor crowded
+captures at 12; these images are not a performance benchmark.
