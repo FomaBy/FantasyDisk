@@ -1,13 +1,13 @@
 # FAN-3934 canonical SHA-256 manifest (ci-evidence-input-recovery successor)
 
-- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `d0188c33981fc16205197b76055df95969f8bee2` (frozen inventory; manifest commit changes only this file).
+- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `b186ec05ae2730f11cad51bb18b1dfe6fff50a4c` (frozen inventory; manifest commit changes only this file).
 - Audit: compact-small-biter-atlas/publication-correction/audit_manifest.py (self-test negatives).
 - Nonrecursive self-exclusion: compact-small-biter-atlas MANIFEST.md + REPORT.md only.
 
 ## excluded generated outputs
-- 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived).
+- 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived); LFS PNG smudges are binary payloads of unchanged tracked pointers.
 
-## canonical changed-path inventory (commit d0188c33981fc16205197b76055df95969f8bee2)
+## canonical changed-path inventory (commit b186ec05ae2730f11cad51bb18b1dfe6fff50a4c)
 - `.github/workflows/quality.yml` `1bfbdfdbabb35ee5ee7ccfef8eff13185ee61684ca5531f274a1ba39fc8cfcaf`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
@@ -57,8 +57,11 @@
 - `evidence/p3-object-budget-rework/ci-atlas-diagnosis/full-checkout-suite-pass.log` `e8b80604be93df23e6a744921f5d65cc95253f4baedd39f5c39907d78a873f7e`
 - `evidence/p3-object-budget-rework/ci-atlas-diagnosis/sparse-cone-suite-fail.log` `f442bf4764253bf66321b1f2866a01cb8179439454759a6b2dc1d022df4cb82f`
 - `evidence/p3-object-budget-rework/ci-evidence-input-recovery/DIAGNOSIS.md` `ff084853c1066e766c22d9fd648081aed73c57a023efb6abeb0ecfc6f942792d`
-- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/feature-list-check.log` `aa0438f688f8a3d52434c042d8bb3e528a6f853bb0e7b2bf70b42a68f4b9f089`
-- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/static-gate.log` `1af899aa015a54784fe650b36ece9fcadfa1e09e69d5271aa9488e1ca62e7220`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/VALIDATION-RECONCILIATION.md` `9bf11f2ff03b2058abd043d0c62a7d6ceafaed410a8b4afba87a0418ea8659da`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/feature-list-check.log` `935149d73500aa856d411c9c5ad8f7fea5e424fdc8ec7e04d314fe5d7dc3a733`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/lfs-hydration.log` `7ce9c4483b9b51c936d95a20ddbebd6ea52191833eb046b332326f09b91f920c`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/static-gate.log` `2c20da62543bbec8514a59231854176a9703a8f949565316d95df8847fc919c3`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-engineer_certification_capture_test-hydrated.log` `9e69c12a9730ccad0b724351ef40197cf5942d6947e92374dcb1ab1acdd910b6`
 - `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-engineer_certification_capture_test.log` `d7f00f6331b5aa5b3a725ef54ab577122a22d57c03dae7d730bb339f882184ef`
 - `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-scrum895_berserk_axe_hammer_vfx_test.log` `281474fb59cb0fd84cfa51def922e895df8235a19851b952a929afa20406c03d`
 - `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-scrum924_holy_flail_spiral_vfx_test.log` `57937a956a2baca2cceceab03baf8bcf7ce4cde679ac7fc88e908beabd8262da`
