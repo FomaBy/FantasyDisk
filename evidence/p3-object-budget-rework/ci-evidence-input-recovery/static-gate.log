@@ -1762,3 +1762,12 @@ QUALITY NON-CERTIFYING: worktree is not clean
   ?? evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-semantic_typography_scrum1061_test.log
   ?? evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-thief_ultimate_presentation_test.log
 QUALITY PARTIAL_PASS: 16 static, 0 Godot; report=build/quality_gate_report.json
+
+NOTE: the PARTIAL_PASS classification above is the static-only run's honest
+NON-CERTIFYING note: the changed profile (Thief/engineer presentation test
+changes on this branch) OWES the ultimate feature-list checker, which a
+static-only execution cannot run. The owed checker was therefore executed
+directly at the same frozen source — see feature-list-check.log:
+ULTIMATE FEATURE LIST PASSED 51/51, exit 0. Together these cover the changed
+inputs' static + feature-list obligations; the terminal protected CI run
+remains the full acceptance.
