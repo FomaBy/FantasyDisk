@@ -15,13 +15,50 @@ const SFX_DUCK_DB := -8.0
 
 ## Reduced motion, as every Sniper `quality.reduced_motion_substitute` in
 ## docs/design/references/weapon_ultimates/sniper/manifest.json declares it: the
-## backdrop holds one steady dim instead of stepping per phase, the hero pose
-## and weapon silhouette hold their aimed size as one static glint, and the
-## camera shake and the hitstop drop out. Phase timing, SFX ducking, gameplay
-## and balance are identical to the ordinary path.
+## backdrop holds one steady dim instead of stepping per phase, the hero pose and
+## weapon silhouette hold their aimed size, the named arena progression collapses
+## into one held treatment, and the camera shake and the hitstop drop out. Phase
+## timing, SFX ducking, gameplay and balance are identical to the ordinary path.
 const REDUCED_MOTION_BACKDROP_ALPHA := 0.16
 const REDUCED_MOTION_POSE_SCALE := 0.30
 const REDUCED_MOTION_SILHOUETTE_SCALE := 0.46
+
+## The declared treatment, per weapon, built only from nodes the shipped scene
+## already authors — no new art and no new timing. From the release beat onward
+## exactly these nodes are drawn and they never change again, so what each
+## declaration names as reducing is simply never drawn: the arena and muzzle
+## tracer and the sonic crack for Deadeye, the three barrage columns for Spotter,
+## the five wave fronts and echoes for Shatter.
+##
+## - `sniper_deadeye_rifle` — the endpoint flash alone is the "one static glint";
+##   the rifle silhouette that holds its aimed pose beside it is the code-owned
+##   `WeaponSilhouette`, held at `REDUCED_MOTION_SILHOUETTE_SCALE`.
+## - `sniper_spotter_scope` — the sky-grid crown holds "one calm crimson frame"
+##   and the arena impact core is the "single pulse".
+## - `sniper_shatter_rounds` — the five fan trajectories hold "a single pale
+##   formation" and the crystal wave core is the "one non-flashing bloom"; the
+##   near-white muzzle flash is dropped with the waves.
+const REDUCED_MOTION_TREATMENT := {
+	"sniper_deadeye_rifle": [
+		"Active/EndpointFlash",
+	],
+	"sniper_spotter_scope": [
+		"Release/SkyGridCrown",
+		"Active/ArenaImpactCore",
+	],
+	"sniper_shatter_rounds": [
+		"Release/FanTrajectory1",
+		"Release/FanTrajectory2",
+		"Release/FanTrajectory3",
+		"Release/FanTrajectory4",
+		"Release/FanTrajectory5",
+		"Active/CrystalWaveCore",
+	],
+}
+
+## The beats the held treatment covers. Windup is the aimed charge, which is one
+## authored state already, and cancel is the teardown the timeline owns.
+const REDUCED_MOTION_HELD_PHASES := ["release", "active", "recovery"]
 
 @export_file("*.json") var definition_path := ""
 
@@ -43,6 +80,7 @@ var _hitstop_previous_scale := 1.0
 var _hitstop_active := false
 var _reduced_motion := false
 var _photosensitivity_safe := false
+var _authored_phase_visibility := {}
 var _presence_state := _empty_presence_state()
 
 
@@ -69,7 +107,7 @@ func begin(handles: Dictionary, headless_mode := -1) -> Dictionary:
 	_identity = manifest().get("identity", {}) as Dictionary
 	## Latched once per cast: a substitute that swapped in halfway through would
 	## be neither the animated presentation nor the declared static one.
-	_reduced_motion = not _motion_allowed()
+	_reduced_motion = _reduced_motion_enabled()
 	_photosensitivity_safe = _photosensitivity_safe_enabled()
 	_build_presence_nodes()
 	_timeline = Timeline.new(manifest(), headless_mode)
@@ -136,10 +174,32 @@ func _show_phase(phase_name: String) -> void:
 	if phase_nodes == null:
 		return
 	_visible_phase = phase_name
-	for node in phase_nodes.get_children():
-		if node is CanvasItem:
-			(node as CanvasItem).visible = node.name.to_lower() == phase_name
+	if _reduced_motion and REDUCED_MOTION_HELD_PHASES.has(phase_name):
+		_show_reduced_motion_treatment(phase_nodes)
+	else:
+		for node in phase_nodes.get_children():
+			if node is CanvasItem:
+				(node as CanvasItem).visible = node.name.to_lower() == phase_name
 	_apply_presence_pose(phase_name)
+
+
+## The held treatment, drawn from the release beat onward. The authored group a
+## beat would have stepped to is not shown at all, so the tracer, the barrage
+## columns and the wave fronts each declaration names never reach the frame.
+func _show_reduced_motion_treatment(phase_nodes: Node) -> void:
+	var treatment: Array = REDUCED_MOTION_TREATMENT.get(_weapon_id(), [])
+	for group in phase_nodes.get_children():
+		var group_item := group as CanvasItem
+		if group_item == null:
+			continue
+		var drawn := false
+		for child in group.get_children():
+			var child_item := child as CanvasItem
+			if child_item == null:
+				continue
+			child_item.visible = treatment.has("%s/%s" % [group.name, child.name])
+			drawn = drawn or child_item.visible
+		group_item.visible = drawn
 
 
 func _reset_phase_nodes() -> void:
@@ -147,9 +207,45 @@ func _reset_phase_nodes() -> void:
 	var phase_nodes := get_node_or_null("PhaseNodes")
 	if phase_nodes == null:
 		return
+	_remember_authored_phase_visibility(phase_nodes)
 	for node in phase_nodes.get_children():
 		if node is CanvasItem:
 			(node as CanvasItem).visible = false
+		for child in node.get_children():
+			var child_item := child as CanvasItem
+			if child_item != null:
+				child_item.visible = bool(_authored_phase_visibility.get("%s/%s" % [node.name, child.name], true))
+
+
+## The reduced-motion treatment hides individual authored children, so the next
+## cast on the same instance has to start from what the scene authored rather
+## than from what the previous mode left behind.
+func _remember_authored_phase_visibility(phase_nodes: Node) -> void:
+	if not _authored_phase_visibility.is_empty():
+		return
+	for node in phase_nodes.get_children():
+		for child in node.get_children():
+			var child_item := child as CanvasItem
+			if child_item != null:
+				_authored_phase_visibility["%s/%s" % [node.name, child.name]] = child_item.visible
+
+
+## Every phase node actually on screen right now, as "Group/Child". This is the
+## runtime answer to what the presentation drew, not what a manifest promised.
+func _drawn_phase_nodes() -> PackedStringArray:
+	var drawn := PackedStringArray()
+	var phase_nodes := get_node_or_null("PhaseNodes")
+	if phase_nodes == null:
+		return drawn
+	for group in phase_nodes.get_children():
+		var group_item := group as CanvasItem
+		if group_item == null or not group_item.visible:
+			continue
+		for child in group.get_children():
+			var child_item := child as CanvasItem
+			if child_item != null and child_item.visible:
+				drawn.append("%s/%s" % [group.name, child.name])
+	return drawn
 
 
 ## Applied presentation weight, as this cast actually ran it. Every value is
@@ -172,6 +268,7 @@ func _empty_presence_state() -> Dictionary:
 		"reduced_motion": _reduced_motion,
 		"photosensitivity_safe": _photosensitivity_safe,
 		"reduced_motion_substitute_applied": false,
+		"phase_nodes_drawn": PackedStringArray(),
 	}
 
 
@@ -247,14 +344,35 @@ func _apply_presence_pose(phase_name: String) -> void:
 		var glint_scale := REDUCED_MOTION_SILHOUETTE_SCALE if _reduced_motion else (0.46 if phase_name == "windup" else 0.72)
 		_silhouette.scale = Vector2.ONE * glint_scale
 		_presence_state["silhouette_scale"] = glint_scale if _silhouette.visible else 0.0
-	## All three substitutes at once, or none: a held pose with no steady dim is
-	## not what the class manifest promises.
+	_presence_state["phase_nodes_drawn"] = _drawn_phase_nodes()
+	## Every part of the declaration at once, or none: a held pose with no steady
+	## dim, or a steady dim with the tracer still sweeping, is not what the class
+	## manifest promises.
 	_presence_state["reduced_motion_substitute_applied"] = (
 		_reduced_motion
 		and _backdrop.visible
 		and bool(_presence_state["cast_pose_bound"])
 		and bool(_presence_state["silhouette_bound"])
+		and _holds_declared_treatment(phase_name)
 	)
+
+
+## True when the phase nodes on screen are exactly the declared held treatment.
+## A beat that still stepped its authored group fails this, so the substitute
+## cannot be reported from the backdrop alone.
+func _holds_declared_treatment(phase_name: String) -> bool:
+	if not REDUCED_MOTION_HELD_PHASES.has(phase_name):
+		return true
+	var treatment: Array = REDUCED_MOTION_TREATMENT.get(_weapon_id(), [])
+	if treatment.is_empty():
+		return false
+	var drawn := _presence_state["phase_nodes_drawn"] as PackedStringArray
+	if drawn.size() != treatment.size():
+		return false
+	for path in treatment:
+		if not drawn.has(str(path)):
+			return false
+	return true
 
 
 func _phase_backdrop_alpha(phase_name: String) -> float:
@@ -292,7 +410,7 @@ func _fit_backdrop_to_viewport() -> void:
 func _apply_release_presence() -> void:
 	if _presence.is_empty():
 		return
-	if _presence.get("camera_shake") == true and not _reduced_motion:
+	if _presence.get("camera_shake") == true and _camera_shake_allowed():
 		_presence_state["camera_shake_triggered"] = true
 		_shake_camera()
 	## The declared reduction of the hitstop is zero: reduced motion never dips
@@ -314,8 +432,12 @@ func _backdrop_color(alpha: float) -> Color:
 	return Color(0.015, 0.035, 0.08, alpha)
 
 
+func _weapon_id() -> String:
+	return str((manifest().get("key", {}) as Dictionary).get("weapon_id", ""))
+
+
 func _palette_color(alpha: float) -> Color:
-	var weapon_id := str((manifest().get("key", {}) as Dictionary).get("weapon_id", ""))
+	var weapon_id := _weapon_id()
 	if weapon_id == "sniper_spotter_scope":
 		return Color(1.0, 0.38, 0.32, alpha)
 	if weapon_id == "sniper_shatter_rounds":
@@ -337,18 +459,28 @@ func _policy_root() -> Node:
 	return node
 
 
-## Motion policy, read exactly as the adopted classes read it: the shipped
-## `screen_shake` setting main.gd mirrors onto the tree root, and the ultimate
-## reduced-motion preference published by
-## scripts/settings/ultimate_accessibility_settings.gd. Either one holds the
-## camera and selects the declared static substitute.
-func _motion_allowed() -> bool:
+## The declared substitute belongs to the dedicated reduced-motion preference
+## published by scripts/settings/ultimate_accessibility_settings.gd, and to
+## nothing else. The ordinary `screen_shake` setting is a camera toggle: turning
+## it off must leave the visual treatment, the hitstop and the time-scale dip
+## exactly as they are.
+func _reduced_motion_enabled() -> bool:
+	var policy_root := _policy_root()
+	if policy_root == self:
+		return false
+	return bool(Accessibility.read_snapshot(policy_root).get(Accessibility.REDUCED_MOTION_KEY, false))
+
+
+## Camera shake, held by either switch: the shipped `screen_shake` setting
+## main.gd mirrors onto the tree root, or reduced motion, which removes the
+## camera move along with the rest of the declared reduction.
+func _camera_shake_allowed() -> bool:
+	if _reduced_motion:
+		return false
 	var policy_root := _policy_root()
 	if policy_root == self:
 		return true
-	if not bool(policy_root.get_meta("screen_shake", true)):
-		return false
-	return not bool(Accessibility.read_snapshot(policy_root).get(Accessibility.REDUCED_MOTION_KEY, false))
+	return bool(policy_root.get_meta("screen_shake", true))
 
 
 ## Photosensitivity-safe preference. Sniper declares no separate substitute for
@@ -413,6 +545,7 @@ func _clear_presence() -> void:
 	_presence_state["cast_pose_scale"] = 0.0
 	_presence_state["silhouette_scale"] = 0.0
 	_presence_state["reduced_motion_substitute_applied"] = false
+	_presence_state["phase_nodes_drawn"] = PackedStringArray()
 	if _ducked_bus_index != -1 and AudioServer.get_bus_index("SFX") == _ducked_bus_index:
 		AudioServer.set_bus_volume_db(_ducked_bus_index, _ducked_previous_db)
 	_ducked_bus_index = -1

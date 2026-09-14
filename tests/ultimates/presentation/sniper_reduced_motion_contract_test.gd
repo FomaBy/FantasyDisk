@@ -8,15 +8,17 @@ extends SceneTree
 ## production presentation runtime and checks the behaviour that promise
 ## describes — never the label itself:
 ##
-## - the declared static substitute really replaces the per-phase animation (one
-##   steady backdrop dim, the hero pose held at its aimed size, the weapon
-##   silhouette held as one static glint),
+## - the declared static substitute really replaces the per-phase animation: one
+##   steady backdrop dim, the hero pose and weapon silhouette held at their aimed
+##   size, and — the part a backdrop-only reduction misses — the named arena
+##   progression collapsed into one held treatment, with the tracer, the three
+##   barrage columns and the five wave fronts never drawn at all,
 ## - the release applies no hitstop at all and never dips `Engine.time_scale`,
-## - normal presentation keeps its stepped backdrop, growing pose, camera shake
-##   and declared hitstop,
-## - the two runtime accessibility flags are observed on their own and together,
-##   and the `screen_shake` mirror alone also selects the substitute — but the
-##   photosensitivity-safe flag never does,
+## - normal presentation keeps its stepped backdrop, growing pose, camera shake,
+##   declared hitstop and the full named progression,
+## - the substitute belongs to the dedicated `ultimate_reduced_motion` preference
+##   alone: the ordinary `screen_shake` toggle removes the camera move and
+##   nothing else, and the photosensitivity-safe flag never selects it,
 ## - cancel, natural finish, teardown and a repeated cast restore the camera,
 ##   the time scale, the SFX bus and the reported state.
 ##
@@ -40,17 +42,37 @@ const CLASS_ID := "sniper"
 const CLASS_MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/sniper/manifest.json"
 const SAMPLED_BEATS: Array[String] = ["release", "active", "recovery"]
 const EPSILON := 0.0005
+const PROBE_WEAPON := "sniper_deadeye_rifle"
 
-## The five combinations the acceptance asks for: the two runtime accessibility
-## flags on their own, the two together, and the shipped `screen_shake` mirror
-## that main.gd publishes for scripts without a game reference.
+## Every combination the acceptance asks for: the shake toggle on its own, the
+## reduced-motion preference with the shake toggle both ways, photosensitivity
+## safe alone, and both preferences together.
 const MODES := [
 	{"id": "normal", "screen_shake": true, "reduced_motion": false, "photosensitivity_safe": false},
+	{"id": "normal_shake_off", "screen_shake": false, "reduced_motion": false, "photosensitivity_safe": false},
 	{"id": "reduced_motion", "screen_shake": true, "reduced_motion": true, "photosensitivity_safe": false},
+	{"id": "reduced_motion_shake_off", "screen_shake": false, "reduced_motion": true, "photosensitivity_safe": false},
 	{"id": "photosensitivity_safe", "screen_shake": true, "reduced_motion": false, "photosensitivity_safe": true},
 	{"id": "combined", "screen_shake": true, "reduced_motion": true, "photosensitivity_safe": true},
-	{"id": "screen_shake_off", "screen_shake": false, "reduced_motion": false, "photosensitivity_safe": false},
 ]
+
+## The authored nodes each `reduced_motion_substitute` names as reducing, stated
+## here independently of the production table so this suite checks the promise
+## rather than mirroring the implementation. None of them may reach the frame
+## under reduced motion, and the ordinary presentation must still draw them all.
+const DECLARED_REDUCING_NODES := {
+	"sniper_deadeye_rifle": [
+		"Release/ArenaTracer", "Release/MuzzleTracer", "Active/SonicCrack",
+	],
+	"sniper_spotter_scope": [
+		"Release/SkyGridRelease", "Active/BarrageColumnWest",
+		"Active/BarrageColumnCore", "Active/BarrageColumnEast",
+	],
+	"sniper_shatter_rounds": [
+		"Release/MuzzleFlash", "Active/WaveFrontNorth", "Active/WaveFrontSouth",
+		"Active/WaveEchoNorth", "Active/WaveEchoCore", "Active/WaveEchoSouth",
+	],
+}
 
 ## Normal per-phase presentation, as `_apply_presence_pose()` applies it. The
 ## substitute has to differ from this, not merely coexist with it.
@@ -68,6 +90,9 @@ class Host extends Node2D:
 
 var _errors: Array[String] = []
 var _weapons: Dictionary = {}
+## Live readings kept from one weapon, so the negative probes below mutate what
+## the shipped scene actually reported instead of a hand-built fixture.
+var _captured_states: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -149,6 +174,8 @@ func _check_cast(holder: Node2D, registry: Registry, weapon_id: String, mode: Di
 		_check(str(scene.call("visible_phase_name")) == beat, "%s must reach its declared %s beat" % [label, beat])
 		states[beat] = scene.call("presence_state_for_tests") as Dictionary
 
+	if weapon_id == PROBE_WEAPON:
+		_captured_states[mode_id] = states.duplicate(true)
 	for beat in states:
 		for violation in behaviour_violations(states[beat] as Dictionary, weapon_id, str(beat), mode):
 			_errors.append("%s at %s: %s" % [label, beat, violation])
@@ -192,7 +219,7 @@ func _check_repeat_and_teardown(holder: Node2D, registry: Registry, weapon_id: S
 	holder.add_child(host)
 	await process_frame
 
-	_apply_mode(MODES[1] as Dictionary)
+	_apply_mode(_mode("reduced_motion"))
 	var runtime := Runtime.new(0)
 	if not runtime.begin(host, registry, registry.catalog_profile_for(CLASS_ID, weapon_id)):
 		_errors.append("%s repeat cast must instantiate its shipped scene" % weapon_id)
@@ -208,7 +235,7 @@ func _check_repeat_and_teardown(holder: Node2D, registry: Registry, weapon_id: S
 
 	## The same mounted scene, cast again with motion restored: the substitute
 	## must not survive into a presentation that no longer asks for it.
-	_apply_mode(MODES[0] as Dictionary)
+	_apply_mode(_mode("normal"))
 	var repeat := Runtime.new(0)
 	if not repeat.begin(host, registry, registry.catalog_profile_for(CLASS_ID, weapon_id)):
 		_errors.append("%s must accept a repeated cast" % weapon_id)
@@ -268,10 +295,39 @@ func behaviour_violations(state: Dictionary, weapon_id: String, beat: String, mo
 	var expected_hitstop := 0.0 if reduced else declared_hitstop
 	if not is_equal_approx(float(state.get("hitstop_ms", -1.0)), expected_hitstop):
 		violations.append("hitstop %.1f ms, expected %.1f ms" % [float(state.get("hitstop_ms", -1.0)), expected_hitstop])
-	if bool(state.get("camera_shake_triggered", false)) == reduced:
-		violations.append("camera shake was %s" % ("triggered" if reduced else "skipped"))
+	if bool(state.get("camera_shake_triggered", false)) != _expects_camera_shake(mode):
+		violations.append("camera shake was %s" % (
+			"triggered" if bool(state.get("camera_shake_triggered", false)) else "skipped"))
 	if not bool(state.get("sfx_ducked", false)) and bool(presence.get("sfx_ducking", false)):
 		violations.append("the declared SFX duck must survive every mode")
+	violations.append_array(_phase_node_violations(state, weapon_id, beat, mode))
+	return violations
+
+
+## The half of each declaration a backdrop-only reduction misses: which authored
+## arena nodes actually reached the frame at this beat.
+func _phase_node_violations(state: Dictionary, weapon_id: String, beat: String, mode: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	if not Presentation.REDUCED_MOTION_HELD_PHASES.has(beat):
+		return violations
+	var drawn := _string_array(state.get("phase_nodes_drawn", []))
+	if drawn.is_empty():
+		violations.append("no arena node was drawn at all")
+		return violations
+	var named := _string_array(DECLARED_REDUCING_NODES.get(weapon_id, []))
+	if _expects_substitute(mode):
+		var treatment := _string_array(Presentation.REDUCED_MOTION_TREATMENT.get(weapon_id, []))
+		treatment.sort()
+		var held := drawn.duplicate()
+		held.sort()
+		if held != treatment:
+			violations.append("the held treatment drew %s, expected %s" % [str(held), str(treatment)])
+		for path in named:
+			if drawn.has(path):
+				violations.append("%s is declared to reduce but was still drawn" % path)
+	## The ordinary side is judged across the three beats instead of per beat:
+	## recovery authors no barrage column or wave front, so only the union of the
+	## cast can show that the named content really plays. See envelope_violations.
 	return violations
 
 
@@ -289,96 +345,158 @@ func envelope_violations(states: Dictionary, weapon_id: String, mode: Dictionary
 		violations.append("the substitute stepped its backdrop %s instead of holding one dim" % str(alphas))
 	if not _expects_substitute(mode) and steady:
 		violations.append("the ordinary presentation stopped stepping its backdrop %s" % str(alphas))
+
+	## The arena content has to hold too, and the ordinary presentation has to
+	## keep stepping it. Equal sets in both modes is exactly the defect that a
+	## backdrop-only reduction hides.
+	var sets: Array = []
+	for beat in SAMPLED_BEATS:
+		var drawn := _string_array((states.get(beat, {}) as Dictionary).get("phase_nodes_drawn", []))
+		drawn.sort()
+		sets.append(drawn)
+	var held := true
+	for drawn in sets:
+		held = held and drawn == sets[0]
+	if _expects_substitute(mode) and not held:
+		violations.append("the substitute stepped its arena nodes %s instead of holding one treatment" % str(sets))
+	if not _expects_substitute(mode) and held:
+		violations.append("the ordinary presentation stopped stepping its arena nodes %s" % str(sets))
+	if not _expects_substitute(mode):
+		var union := {}
+		for drawn in sets:
+			for path in drawn:
+				union[path] = true
+		for path in _string_array(DECLARED_REDUCING_NODES.get(weapon_id, [])):
+			if not union.has(path):
+				violations.append("the ordinary presentation never drew %s, so nothing is being reduced" % path)
+
 	if _weapons.get(weapon_id, {}).is_empty():
 		violations.append("the class manifest no longer carries this weapon")
 	return violations
 
 
-## Each rule, shown red on a mutated reading of the package's own evidence. A
-## substitute that is only declared, or a release that keeps its normal hitstop,
-## must not be able to reach a PASS.
+func _string_array(raw_values: Variant) -> Array[String]:
+	var values: Array[String] = []
+	if raw_values is PackedStringArray:
+		for raw_value in raw_values as PackedStringArray:
+			values.append(str(raw_value))
+	elif raw_values is Array:
+		for raw_value in raw_values as Array:
+			values.append(str(raw_value))
+	return values
+
+
+## Each rule, shown red on a mutated reading the live run actually produced.
+## Nothing here is hand-built: the probes start from the readings the shipped
+## scenes reported above, so a rule that no longer bites is visible immediately.
 func _check_negative_probes() -> void:
-	var weapon_id := "sniper_deadeye_rifle"
-	var reduced_mode := MODES[1] as Dictionary
-	var normal_mode := MODES[0] as Dictionary
-	var reduced := _reference_state(weapon_id, "release", true)
-	var normal := _reference_state(weapon_id, "release", false)
+	var weapon_id := PROBE_WEAPON
+	var normal_mode := _mode("normal")
+	var reduced_mode := _mode("reduced_motion")
+	var normal := _captured_states.get("normal", {}) as Dictionary
+	var reduced := _captured_states.get("reduced_motion", {}) as Dictionary
+	if not normal.has("release") or not reduced.has("release"):
+		_errors.append("the negative probes need the captured %s readings" % weapon_id)
+		return
+	var normal_release := normal["release"] as Dictionary
+	var reduced_release := reduced["release"] as Dictionary
 
-	_check(behaviour_violations(reduced, weapon_id, "release", reduced_mode).is_empty(),
-		"the reduced-motion reference reading must itself pass")
-	_check(behaviour_violations(normal, weapon_id, "release", normal_mode).is_empty(),
-		"the normal reference reading must itself pass")
+	_check(behaviour_violations(reduced_release, weapon_id, "release", reduced_mode).is_empty(),
+		"the captured reduced-motion reading must itself pass")
+	_check(behaviour_violations(normal_release, weapon_id, "release", normal_mode).is_empty(),
+		"the captured normal reading must itself pass")
 
-	var label_only := reduced.duplicate(true)
+	var label_only := reduced_release.duplicate(true)
 	label_only["reduced_motion_substitute_applied"] = false
 	_check(not behaviour_violations(label_only, weapon_id, "release", reduced_mode).is_empty(),
 		"a declared substitute that was never applied must fail closed")
 
-	var animated := reduced.duplicate(true)
-	animated["backdrop_alpha"] = _normal_backdrop_alpha(
-		(_weapons[weapon_id] as Dictionary).get("presence", {}) as Dictionary, "release")
-	animated["cast_pose_scale"] = float(NORMAL_POSE_SCALE["release"])
-	_check(not behaviour_violations(animated, weapon_id, "release", reduced_mode).is_empty(),
+	var posed := reduced_release.duplicate(true)
+	posed["backdrop_alpha"] = float(normal_release.get("backdrop_alpha", 0.0))
+	posed["cast_pose_scale"] = float(normal_release.get("cast_pose_scale", 0.0))
+	_check(not behaviour_violations(posed, weapon_id, "release", reduced_mode).is_empty(),
 		"a reduced-motion beat that kept the animated pose must fail closed")
 
-	var frozen := reduced.duplicate(true)
-	frozen["hitstop_ms"] = float((_weapons[weapon_id] as Dictionary).get("presence", {}).get("hitstop_ms", 0.0))
+	## The defect the previous candidate shipped: the backdrop and pose held, but
+	## the named tracer, barrage columns and wave fronts still played.
+	var animated := reduced_release.duplicate(true)
+	animated["phase_nodes_drawn"] = normal_release.get("phase_nodes_drawn", PackedStringArray())
+	_check(not behaviour_violations(animated, weapon_id, "release", reduced_mode).is_empty(),
+		"a reduced-motion beat that restored the animated arena content must fail closed")
+
+	var leaked := reduced_release.duplicate(true)
+	var with_tracer := _string_array(leaked.get("phase_nodes_drawn", []))
+	with_tracer.append(str(_string_array(DECLARED_REDUCING_NODES.get(weapon_id, []))[0]))
+	leaked["phase_nodes_drawn"] = with_tracer
+	_check(not behaviour_violations(leaked, weapon_id, "release", reduced_mode).is_empty(),
+		"a single declared-reducing node leaking into the substitute must fail closed")
+
+	var blanked := reduced_release.duplicate(true)
+	blanked["phase_nodes_drawn"] = PackedStringArray()
+	_check(not behaviour_violations(blanked, weapon_id, "release", reduced_mode).is_empty(),
+		"a substitute that simply stopped drawing must fail closed")
+
+	var frozen := reduced_release.duplicate(true)
+	frozen["hitstop_ms"] = float(normal_release.get("hitstop_ms", 0.0))
 	_check(not behaviour_violations(frozen, weapon_id, "release", reduced_mode).is_empty(),
 		"a reduced-motion release that kept its normal hitstop must fail closed")
 
-	var shaken := reduced.duplicate(true)
+	var shaken := reduced_release.duplicate(true)
 	shaken["camera_shake_triggered"] = true
 	_check(not behaviour_violations(shaken, weapon_id, "release", reduced_mode).is_empty(),
 		"a reduced-motion release that still shook must fail closed")
 
-	var muted := reduced.duplicate(true)
+	var muted := reduced_release.duplicate(true)
 	muted["sfx_ducked"] = false
 	_check(not behaviour_violations(muted, weapon_id, "release", reduced_mode).is_empty(),
 		"a substitute that also dropped the declared SFX duck must fail closed")
 
-	var pretended := normal.duplicate(true)
+	var pretended := normal_release.duplicate(true)
 	pretended["reduced_motion_substitute_applied"] = true
 	_check(not behaviour_violations(pretended, weapon_id, "release", normal_mode).is_empty(),
 		"a normal cast that claims the substitute must fail closed")
 
-	## The photosensitivity-safe flag must not be able to stand in for reduced
-	## motion: the same substitute reading, judged under that mode, is a failure.
-	_check(not behaviour_violations(reduced, weapon_id, "release", MODES[2] as Dictionary).is_empty(),
+	## Neither the photosensitivity-safe preference nor the ordinary shake toggle
+	## may stand in for reduced motion: the same substitute reading, judged under
+	## either of those modes, is a failure.
+	_check(not behaviour_violations(reduced_release, weapon_id, "release", _mode("photosensitivity_safe")).is_empty(),
 		"photosensitivity-safe alone must not enable the substitute")
+	_check(not behaviour_violations(reduced_release, weapon_id, "release", _mode("normal_shake_off")).is_empty(),
+		"disabling camera shake alone must not enable the substitute")
 
-	var flat := {}
-	var stepped := {}
-	for beat in SAMPLED_BEATS:
-		flat[beat] = _reference_state(weapon_id, beat, true)
-		stepped[beat] = _reference_state(weapon_id, beat, false)
-	_check(envelope_violations(flat, weapon_id, reduced_mode).is_empty()
-		and envelope_violations(stepped, weapon_id, normal_mode).is_empty(),
-		"the reference envelopes must themselves pass")
-	_check(not envelope_violations(stepped, weapon_id, reduced_mode).is_empty(),
+	## And the shake toggle must still be the thing that holds the camera.
+	var shake_off := normal_release.duplicate(true)
+	_check(not behaviour_violations(shake_off, weapon_id, "release", _mode("normal_shake_off")).is_empty(),
+		"a shake-off cast that still moved the camera must fail closed")
+
+	_check(envelope_violations(reduced, weapon_id, reduced_mode).is_empty()
+		and envelope_violations(normal, weapon_id, normal_mode).is_empty(),
+		"the captured envelopes must themselves pass")
+	_check(not envelope_violations(normal, weapon_id, reduced_mode).is_empty(),
 		"a reduced-motion envelope that still steps must fail closed")
-	_check(not envelope_violations(flat, weapon_id, normal_mode).is_empty(),
+	_check(not envelope_violations(reduced, weapon_id, normal_mode).is_empty(),
 		"an ordinary envelope that stopped stepping must fail closed")
 
+	var restored := {}
+	var stripped := {}
+	for beat in SAMPLED_BEATS:
+		var mutated := (reduced[beat] as Dictionary).duplicate(true)
+		mutated["phase_nodes_drawn"] = (normal[beat] as Dictionary).get("phase_nodes_drawn", PackedStringArray())
+		restored[beat] = mutated
+		var dropped := (normal[beat] as Dictionary).duplicate(true)
+		dropped["phase_nodes_drawn"] = (reduced[beat] as Dictionary).get("phase_nodes_drawn", PackedStringArray())
+		stripped[beat] = dropped
+	_check(not envelope_violations(restored, weapon_id, reduced_mode).is_empty(),
+		"a reduced-motion envelope whose arena content matched the ordinary one must fail closed")
+	_check(not envelope_violations(stripped, weapon_id, normal_mode).is_empty(),
+		"an ordinary envelope that dropped its declared arena content must fail closed")
 
-## A reading of what the shipped scene is required to report at one beat. The
-## probes mutate this, so every rule is proved against the same shape the live
-## assertions consume.
-func _reference_state(weapon_id: String, beat: String, reduced: bool) -> Dictionary:
-	var presence := (_weapons[weapon_id] as Dictionary).get("presence", {}) as Dictionary
-	return {
-		"backdrop_visible": true,
-		"backdrop_alpha": Presentation.REDUCED_MOTION_BACKDROP_ALPHA if reduced else _normal_backdrop_alpha(presence, beat),
-		"camera_shake_triggered": not reduced,
-		"hitstop_ms": 0.0 if reduced else float(presence.get("hitstop_ms", 0.0)),
-		"sfx_ducked": bool(presence.get("sfx_ducking", false)),
-		"cast_pose_bound": true,
-		"cast_pose_scale": Presentation.REDUCED_MOTION_POSE_SCALE if reduced else float(NORMAL_POSE_SCALE[beat]),
-		"silhouette_bound": true,
-		"silhouette_scale": Presentation.REDUCED_MOTION_SILHOUETTE_SCALE if reduced else float(NORMAL_SILHOUETTE_SCALE[beat]),
-		"reduced_motion": reduced,
-		"photosensitivity_safe": false,
-		"reduced_motion_substitute_applied": reduced,
-	}
+
+func _mode(mode_id: String) -> Dictionary:
+	for raw_mode in MODES:
+		if str((raw_mode as Dictionary)["id"]) == mode_id:
+			return raw_mode as Dictionary
+	return {}
 
 
 func _normal_backdrop_alpha(presence: Dictionary, beat: String) -> float:
@@ -394,10 +512,15 @@ func _normal_backdrop_alpha(presence: Dictionary, beat: String) -> float:
 	return 0.0
 
 
-## Either shipped switch selects the substitute; the photosensitivity-safe
-## preference on its own never does.
+## Only the dedicated preference selects the substitute.
 func _expects_substitute(mode: Dictionary) -> bool:
-	return bool(mode["reduced_motion"]) or not bool(mode["screen_shake"])
+	return bool(mode["reduced_motion"])
+
+
+## The camera moves when the shake toggle allows it and reduced motion does not
+## remove it. Turning the shake toggle off changes nothing else.
+func _expects_camera_shake(mode: Dictionary) -> bool:
+	return bool(mode["screen_shake"]) and not bool(mode["reduced_motion"])
 
 
 func _apply_mode(mode: Dictionary) -> void:

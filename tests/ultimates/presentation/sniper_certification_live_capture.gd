@@ -49,6 +49,7 @@ const OUTPUT_DIR := "res://docs/design/reference-assets-lfs/ultimate-certificati
 const CAPTURE_SCRIPT_PATH := "tests/ultimates/presentation/sniper_certification_live_capture.gd"
 const CAPTURE_TEST_PATH := "tests/ultimates/presentation/sniper_certification_capture_test.gd"
 const TIMELINE_DIR := "res://scenes/vfx/ultimates/sniper"
+const Presentation := preload("res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd")
 const PRESENTATION_SCRIPT_PATH := "res://scenes/vfx/ultimates/sniper/sniper_ultimate_presentation.gd"
 const SETTINGS_PATH := "user://settings.cfg"
 ## Built in code by SniperUltimatePresentationScene, top-level and fitted to the
@@ -74,17 +75,36 @@ const SHEET_BEAT := "active"
 ## the capture.
 ##
 ## `reduced_motion` holds the dedicated `ultimate_reduced_motion` preference and
-## deliberately leaves `screen_shake` on: the declared static substitute has to
-## come from the accessibility preference itself, not from a disabled camera
-## shake. `photosensitivity_safe` holds both shipped photosensitivity switches —
-## the `ultimate_photosensitivity_safe` preference and the combat-feedback
-## toggle the victim-impact player and the enemy hit flash read.
+## deliberately leaves `screen_shake` on: the declared static substitute comes
+## from the accessibility preference itself, never from a disabled camera shake.
+## `photosensitivity_safe` holds both shipped photosensitivity switches — the
+## `ultimate_photosensitivity_safe` preference and the combat-feedback toggle the
+## victim-impact player and the enemy hit flash read.
+##
+## The ordinary shake toggle is a camera switch of its own. It is not a fifth
+## presentation mode, so it is covered by the separate `shake_off` pass below:
+## representative live evidence that turning it off removes the camera move and
+## changes nothing else.
 const MODES := [
 	{"id": "normal", "label": "NORMAL", "screen_shake": true, "combat_feedback": true, "reduced_motion": false, "photosensitivity_safe": false, "hazards": 6, "crowd_cap": false},
 	{"id": "crowded", "label": "CROWDED", "screen_shake": true, "combat_feedback": true, "reduced_motion": false, "photosensitivity_safe": false, "hazards": 6, "crowd_cap": true},
 	{"id": "reduced_motion", "label": "REDUCED MOTION", "screen_shake": true, "combat_feedback": true, "reduced_motion": true, "photosensitivity_safe": false, "hazards": 6, "crowd_cap": false},
 	{"id": "photosensitivity_safe", "label": "PHOTOSENSITIVITY SAFE", "screen_shake": true, "combat_feedback": false, "reduced_motion": false, "photosensitivity_safe": true, "hazards": 6, "crowd_cap": false},
 ]
+
+## Representative live evidence for the separate `screen_shake` setting: all
+## three weapons, at the smallest supported viewport, at every sampled beat.
+const SHAKE_OFF_PASS := {
+	"id": "shake_off",
+	"label": "SHAKE OFF",
+	"screen_shake": false,
+	"combat_feedback": true,
+	"reduced_motion": false,
+	"photosensitivity_safe": false,
+	"hazards": 6,
+	"crowd_cap": false,
+}
+const SHAKE_OFF_VIEWPORT_ID := "648p"
 
 const VIEWPORTS := [
 	{"id": "648p", "size": Vector2i(1152, 648)},
@@ -109,6 +129,7 @@ const MEASURE_STRIDE := 2
 
 var _weapon_manifest := {}
 var _records: Array[Dictionary] = []
+var _shake_off_records: Array[Dictionary] = []
 var _sheets: Array[Dictionary] = []
 var _frame_dir := ""
 var _source := {}
@@ -160,6 +181,13 @@ func _initialize() -> void:
 					push_error("%s Sniper certification capture: %s" % [ISSUE, failure])
 					_quit(1)
 					return
+		if str(viewport["id"]) == SHAKE_OFF_VIEWPORT_ID:
+			for weapon_id in WEAPON_IDS:
+				var shake_failure := await _capture_combination(viewport, weapon_id, SHAKE_OFF_PASS)
+				if not shake_failure.is_empty():
+					push_error("%s Sniper certification capture: %s" % [ISSUE, shake_failure])
+					_quit(1)
+					return
 		var sheet_error := await _write_matrix_sheet(viewport)
 		if sheet_error != OK:
 			push_error("%s Sniper certification capture: sheet %s failed (%s)" % [
@@ -172,8 +200,8 @@ func _initialize() -> void:
 		push_error("%s Sniper certification capture: manifest write failed (%s)" % [ISSUE, error_string(write_error)])
 		_quit(1)
 		return
-	print("%s Sniper certification capture: %d samples, %d sheets written to %s" % [
-		ISSUE, _records.size(), _sheets.size(), OUTPUT_DIR])
+	print("%s Sniper certification capture: %d samples (+%d shake-off), %d sheets written to %s" % [
+		ISSUE, _records.size(), _shake_off_records.size(), _sheets.size(), OUTPUT_DIR])
 	_quit(0)
 
 
@@ -261,6 +289,12 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 				"null" if frame == null else str(frame.get_size()), str(size)])
 		frame.convert(Image.FORMAT_RGB8)
 		var presentation := _presentation_root(main)
+		## What the shipped presentation actually applied for this frame. These
+		## are written where the effect is applied, so a declared substitute the
+		## runtime never performed cannot reach the manifest.
+		var presence_state := {}
+		if presentation != null and presentation.has_method("presence_state_for_tests"):
+			presence_state = presentation.call("presence_state_for_tests") as Dictionary
 		var record := _measure(frame, baseline, size, presentation, player, hud_root, hazards)
 		record["weapon_id"] = weapon_id
 		record["mode"] = mode_id
@@ -272,8 +306,13 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		record["declared_beat_seconds"] = float(beat["declared_time"])
 		record["presentation_alive"] = presentation != null
 		record["visible_phase"] = str(presentation.call("visible_phase_name")) if presentation != null else ""
-		record["required_nodes"] = beat["required_nodes"]
-		record["required_nodes_present"] = _required_nodes_present(presentation, beat)
+		## Under reduced motion the beat's authored group is deliberately not
+		## stepped to, so what the frame owes is the declared held treatment.
+		var required_nodes: Array = beat["required_nodes"]
+		if bool(presence_state.get("reduced_motion", false)):
+			required_nodes = _treatment_node_paths(weapon_id)
+		record["required_nodes"] = required_nodes
+		record["required_nodes_present"] = _required_nodes_present(presentation, required_nodes)
 		## The four switches as the live run published them, not as the capture
 		## wanted them.
 		var live_settings := _published_settings()
@@ -281,16 +320,14 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		record["combat_feedback_setting"] = bool(live_settings["combat_feedback"])
 		record["reduced_motion_setting"] = bool(live_settings["reduced_motion"])
 		record["photosensitivity_safe_setting"] = bool(live_settings["photosensitivity_safe"])
-		## What the shipped presentation actually applied for this frame. These
-		## are written where the effect is applied, so a declared substitute the
-		## runtime never performed cannot reach the manifest.
-		var presence_state := {}
-		if presentation != null and presentation.has_method("presence_state_for_tests"):
-			presence_state = presentation.call("presence_state_for_tests") as Dictionary
 		record["presentation_reduced_motion"] = bool(presence_state.get("reduced_motion", false))
 		record["presentation_photosensitivity_safe"] = bool(presence_state.get("photosensitivity_safe", false))
 		record["reduced_motion_substitute_applied"] = bool(presence_state.get("reduced_motion_substitute_applied", false))
 		record["presentation_hitstop_ms"] = float(presence_state.get("hitstop_ms", -1.0))
+		## Which authored arena nodes actually reached the frame. The declared
+		## reduction is about this set, not about the backdrop alone.
+		record["phase_nodes_drawn"] = _sorted_strings(presence_state.get("phase_nodes_drawn", PackedStringArray()))
+		record["camera_shake_triggered"] = bool(presence_state.get("camera_shake_triggered", false))
 		record["backdrop_alpha"] = snappedf(float(presence_state.get("backdrop_alpha", -1.0)), 0.001)
 		record["cast_pose_scale"] = snappedf(float(presence_state.get("cast_pose_scale", -1.0)), 0.001)
 		record["silhouette_scale"] = snappedf(float(presence_state.get("silhouette_scale", -1.0)), 0.001)
@@ -302,7 +339,10 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		record["engine_time_scale"] = snappedf(Engine.time_scale, 0.001)
 		record["presentation_scene"] = str(_weapon_manifest.get(weapon_id, {}).get("scene_path", ""))
 		record["hazards_placed"] = hazards.size()
-		_records.append(record)
+		if mode_id == str(SHAKE_OFF_PASS["id"]):
+			_shake_off_records.append(record)
+		else:
+			_records.append(record)
 		_store_panel(viewport, weapon_id, mode_id, str(beat["phase"]), frame)
 		if not _frame_dir.is_empty():
 			frame.save_png("%s/sniper_%s_%s_%s_%s.png" % [
@@ -584,14 +624,23 @@ func _player_contrast(bytes: PackedByteArray, size: Vector2i, player: Node2D) ->
 	return _rect_contrast(bytes, size, Rect2(center - Vector2.ONE * half, Vector2.ONE * half * 2.0))
 
 
-func _required_nodes_present(presentation: Node2D, beat: Dictionary) -> bool:
-	if presentation == null:
+func _required_nodes_present(presentation: Node2D, required_nodes: Array) -> bool:
+	if presentation == null or required_nodes.is_empty():
 		return false
-	for raw_name in beat.get("required_nodes", []) as Array:
+	for raw_name in required_nodes:
 		var node := presentation.get_node_or_null(NodePath(str(raw_name))) as CanvasItem
 		if node == null or not node.is_visible_in_tree():
 			return false
 	return true
+
+
+## The declared reduced-motion treatment, as scene paths, read from the shipped
+## runner so the capture cannot drift from the production table.
+func _treatment_node_paths(weapon_id: String) -> Array:
+	var paths: Array = []
+	for raw_path in Presentation.REDUCED_MOTION_TREATMENT.get(weapon_id, []) as Array:
+		paths.append("PhaseNodes/%s" % str(raw_path))
+	return paths
 
 
 ## The live presentation scene, wherever the shared adapter parented it.
@@ -645,7 +694,7 @@ func _crowd_cap(weapon_id: String) -> int:
 
 
 func _store_panel(viewport: Dictionary, weapon_id: String, mode_id: String, beat_id: String, frame: Image) -> void:
-	if beat_id != SHEET_BEAT:
+	if beat_id != SHEET_BEAT or mode_id == str(SHAKE_OFF_PASS["id"]):
 		return
 	var cell := matrix_cell_rect(viewport["size"] as Vector2i, WEAPON_IDS.find(weapon_id), _mode_index(mode_id))
 	var panel := frame.duplicate() as Image
@@ -801,6 +850,16 @@ func _write_capture_manifest() -> int:
 		},
 		"sheets": _sheets,
 		"samples": _records,
+		"shake_off_pass": {
+			"id": str(SHAKE_OFF_PASS["id"]),
+			"viewport": SHAKE_OFF_VIEWPORT_ID,
+			"screen_shake": bool(SHAKE_OFF_PASS["screen_shake"]),
+			"combat_feedback": bool(SHAKE_OFF_PASS["combat_feedback"]),
+			"reduced_motion": bool(SHAKE_OFF_PASS["reduced_motion"]),
+			"photosensitivity_safe": bool(SHAKE_OFF_PASS["photosensitivity_safe"]),
+			"intent": "the ordinary screen_shake toggle removes the camera move and nothing else: same visual treatment, same declared hitstop, same time-scale dip as normal",
+			"samples": _shake_off_records,
+		},
 	}
 	var file := FileAccess.open(CAPTURE_MANIFEST_PATH, FileAccess.WRITE)
 	if file == null:
@@ -833,6 +892,18 @@ func _viewport_declarations() -> Array:
 		var size := viewport["size"] as Vector2i
 		declared.append({"id": str(viewport["id"]), "width": size.x, "height": size.y})
 	return declared
+
+
+func _sorted_strings(raw_values: Variant) -> Array:
+	var values: Array = []
+	if raw_values is PackedStringArray:
+		for raw_value in raw_values as PackedStringArray:
+			values.append(str(raw_value))
+	elif raw_values is Array:
+		for raw_value in raw_values as Array:
+			values.append(str(raw_value))
+	values.sort()
+	return values
 
 
 ## The persisted configuration for one mode. Everything else stays at the

@@ -43,6 +43,23 @@ const SUBSTITUTE_BACKDROP_ALPHA := Presentation.REDUCED_MOTION_BACKDROP_ALPHA
 const SUBSTITUTE_POSE_SCALE := Presentation.REDUCED_MOTION_POSE_SCALE
 const SUBSTITUTE_SILHOUETTE_SCALE := Presentation.REDUCED_MOTION_SILHOUETTE_SCALE
 
+## The authored arena nodes each `reduced_motion_substitute` names as reducing,
+## stated here independently of the production table: none of them may appear in
+## a reduced-motion frame, and the ordinary modes must still draw them all.
+const DECLARED_REDUCING_NODES := {
+	"sniper_deadeye_rifle": [
+		"Release/ArenaTracer", "Release/MuzzleTracer", "Active/SonicCrack",
+	],
+	"sniper_spotter_scope": [
+		"Release/SkyGridRelease", "Active/BarrageColumnWest",
+		"Active/BarrageColumnCore", "Active/BarrageColumnEast",
+	],
+	"sniper_shatter_rounds": [
+		"Release/MuzzleFlash", "Active/WaveFrontNorth", "Active/WaveFrontSouth",
+		"Active/WaveEchoNorth", "Active/WaveEchoCore", "Active/WaveEchoSouth",
+	],
+}
+
 const PNG_SIGNATURE := [137, 80, 78, 71, 13, 10, 26, 10]
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
 const SHA1_LENGTH := 40
@@ -63,6 +80,7 @@ func _initialize() -> void:
 	errors.append_array(readability_violations(manifest, class_manifest))
 	errors.append_array(mode_violations(manifest))
 	errors.append_array(accessibility_violations(manifest, class_manifest))
+	errors.append_array(shake_off_violations(manifest, class_manifest))
 	errors.append_array(sheet_violations(manifest))
 	_check_beat_source(errors)
 	_check_class_manifest_registration(class_manifest, manifest, errors)
@@ -288,10 +306,9 @@ func accessibility_violations(manifest: Dictionary, class_manifest: Dictionary) 
 		if str(quality.get("reduced_motion_substitute", "")).is_empty():
 			violations.append("%s: the class manifest no longer declares a reduced-motion substitute" % key)
 
-		## Either shipped switch selects the substitute; the photosensitivity-safe
-		## preference on its own never may.
-		var reduced := bool(sample.get("reduced_motion_setting", false)) \
-			or not bool(sample.get("screen_shake_setting", true))
+		## Only the dedicated preference selects the substitute. The ordinary
+		## shake toggle is a camera switch and changes nothing else.
+		var reduced := bool(sample.get("reduced_motion_setting", false))
 		if bool(sample.get("presentation_reduced_motion", false)) != reduced:
 			violations.append("%s: the presentation read reduced motion as %s, not %s" % [
 				key, str(sample.get("presentation_reduced_motion", "")), str(reduced)])
@@ -305,8 +322,13 @@ func accessibility_violations(manifest: Dictionary, class_manifest: Dictionary) 
 		if not is_equal_approx(float(sample.get("presentation_hitstop_ms", -1.0)), expected_hitstop):
 			violations.append("%s: the release applied %.1f ms of hitstop, expected %.1f ms" % [
 				key, float(sample.get("presentation_hitstop_ms", -1.0)), expected_hitstop])
-		if reduced and bool(sample.get("camera_shake_applied", false)):
-			violations.append("%s: a reduced-motion cast still bound a shake camera" % key)
+		var expects_shake := bool(sample.get("screen_shake_setting", true)) and not reduced
+		if bool(sample.get("camera_shake_applied", false)) != expects_shake:
+			violations.append("%s: the camera shake was %s" % [
+				key, "bound" if bool(sample.get("camera_shake_applied", false)) else "skipped"])
+		if bool(sample.get("camera_shake_triggered", false)) != expects_shake:
+			violations.append("%s: the presentation reported shake as %s" % [
+				key, str(sample.get("camera_shake_triggered", ""))])
 		if reduced and float(sample.get("engine_time_scale", 0.0)) < 0.99:
 			violations.append("%s: a reduced-motion cast froze the arena at time scale %.3f" % [
 				key, float(sample.get("engine_time_scale", 0.0))])
@@ -322,11 +344,17 @@ func accessibility_violations(manifest: Dictionary, class_manifest: Dictionary) 
 				if not is_equal_approx(float(sample.get(str(pair[0]), -1.0)), float(pair[1])):
 					violations.append("%s: %s is %.3f, expected the held %.3f" % [
 						key, str(pair[0]), float(sample.get(str(pair[0]), -1.0)), float(pair[1])])
+		violations.append_array(_arena_node_violations(sample, weapon))
 		var envelope_key := "%s/%s/%s" % [
 			str(sample.get("weapon_id", "")), str(sample.get("mode", "")), str(sample.get("viewport", ""))]
 		if not envelopes.has(envelope_key):
-			envelopes[envelope_key] = {"reduced": reduced, "alphas": []}
+			envelopes[envelope_key] = {"reduced": reduced, "alphas": [], "arena": [], "union": {}}
 		(envelopes[envelope_key]["alphas"] as Array).append(float(sample.get("backdrop_alpha", -1.0)))
+		var drawn := _sorted_strings(sample.get("phase_nodes_drawn", []))
+		(envelopes[envelope_key]["arena"] as Array).append(drawn)
+		for path in drawn:
+			(envelopes[envelope_key]["union"] as Dictionary)[path] = true
+		violations.append_array(_cross_mode_violations(sample, reduced, drawn, manifest))
 
 	## A *static* substitute holds one dim across the sampled beats, and the
 	## ordinary presentation does not. Without this pair, a runner that simply
@@ -343,7 +371,128 @@ func accessibility_violations(manifest: Dictionary, class_manifest: Dictionary) 
 			violations.append("%s: the substitute stepped its backdrop %s instead of holding one dim" % [envelope_key, str(alphas)])
 		if not bool(envelope["reduced"]) and steady:
 			violations.append("%s: the ordinary presentation stopped stepping its backdrop %s" % [envelope_key, str(alphas)])
+
+		## The arena content has to hold too. A reduction that only dimmed the
+		## backdrop leaves this stepping exactly like the ordinary cast.
+		var arena := envelope["arena"] as Array
+		var held := true
+		for drawn in arena:
+			held = held and drawn == arena[0]
+		if bool(envelope["reduced"]) and not held:
+			violations.append("%s: the substitute stepped its arena nodes %s instead of holding one treatment" % [envelope_key, str(arena)])
+		if not bool(envelope["reduced"]) and held:
+			violations.append("%s: the ordinary presentation stopped stepping its arena nodes %s" % [envelope_key, str(arena)])
+		if not bool(envelope["reduced"]):
+			var union := envelope["union"] as Dictionary
+			for path in _string_array(DECLARED_REDUCING_NODES.get(envelope_key.split("/")[0], [])):
+				if not union.has(path):
+					violations.append("%s: the ordinary presentation never drew %s, so nothing is being reduced" % [envelope_key, path])
 	return violations
+
+
+## Which authored arena nodes reached the frame. The previous candidate held the
+## backdrop, the pose and the silhouette while the tracer, the barrage columns
+## and the wave fronts still played — this is the check that sees that.
+func _arena_node_violations(sample: Dictionary, weapon: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var key := _sample_key(sample)
+	var weapon_id := str(sample.get("weapon_id", ""))
+	var drawn := _sorted_strings(sample.get("phase_nodes_drawn", []))
+	if drawn.is_empty():
+		violations.append("%s: no arena node was drawn at all" % key)
+		return violations
+	if not bool(sample.get("reduced_motion_setting", false)):
+		return violations
+	var treatment := _string_array(Presentation.REDUCED_MOTION_TREATMENT.get(weapon_id, []))
+	treatment.sort()
+	if drawn != treatment:
+		violations.append("%s: the held treatment drew %s, expected %s" % [key, str(drawn), str(treatment)])
+	for path in _string_array(DECLARED_REDUCING_NODES.get(weapon_id, [])):
+		if drawn.has(path):
+			violations.append("%s: %s is declared to reduce but was still drawn" % [key, path])
+	return violations
+
+
+## The comparison the previous report had to make by hand: a reduced-motion frame
+## must not draw the same arena nodes as the ordinary frame of the same weapon,
+## viewport and beat.
+func _cross_mode_violations(sample: Dictionary, reduced: bool, drawn: Array[String], manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	if not reduced:
+		return violations
+	var twin := _normal_twin(sample, manifest)
+	if twin.is_empty():
+		violations.append("%s: no ordinary sample to compare the reduction against" % _sample_key(sample))
+		return violations
+	if drawn == _sorted_strings(twin.get("phase_nodes_drawn", [])):
+		violations.append("%s: the reduced-motion arena content equals the ordinary one %s" % [
+			_sample_key(sample), str(drawn)])
+	return violations
+
+
+func _normal_twin(sample: Dictionary, manifest: Dictionary) -> Dictionary:
+	for raw_other in manifest.get("samples", []) as Array:
+		var other := raw_other as Dictionary
+		if str(other.get("mode", "")) != "normal":
+			continue
+		if str(other.get("weapon_id", "")) == str(sample.get("weapon_id", "")) \
+				and str(other.get("viewport", "")) == str(sample.get("viewport", "")) \
+				and str(other.get("beat", "")) == str(sample.get("beat", "")):
+			return other
+	return {}
+
+
+## The separate shake-off pass: representative live evidence that the ordinary
+## `screen_shake` toggle removes the camera move and nothing else.
+func shake_off_violations(manifest: Dictionary, class_manifest: Dictionary) -> Array[String]:
+	var violations: Array[String] = []
+	var pass_block := manifest.get("shake_off_pass", {}) as Dictionary
+	if pass_block.is_empty():
+		violations.append("the package must carry the separate shake-off pass")
+		return violations
+	if bool(pass_block.get("screen_shake", true)) or bool(pass_block.get("reduced_motion", true)) \
+			or bool(pass_block.get("photosensitivity_safe", true)):
+		violations.append("the shake-off pass must hold only the ordinary screen_shake toggle")
+	var samples := pass_block.get("samples", []) as Array
+	var expected := Capture.WEAPON_IDS.size() * Capture.BEAT_IDS.size()
+	if samples.size() != expected:
+		violations.append("the shake-off pass must carry %d samples, found %d" % [expected, samples.size()])
+	var weapons := _weapons_by_id(class_manifest)
+	var seen := {}
+	for raw_sample in samples:
+		var sample := raw_sample as Dictionary
+		var key := _sample_key(sample)
+		seen["%s/%s" % [str(sample.get("weapon_id", "")), str(sample.get("beat", ""))]] = true
+		var presence := (weapons.get(str(sample.get("weapon_id", "")), {}) as Dictionary).get("presence", {}) as Dictionary
+		if bool(sample.get("screen_shake_setting", true)):
+			violations.append("%s: the shake-off sample ran with screen_shake on" % key)
+		if bool(sample.get("camera_shake_applied", false)) or bool(sample.get("camera_shake_triggered", false)):
+			violations.append("%s: the shake toggle was off but the camera still shook" % key)
+		if bool(sample.get("presentation_reduced_motion", false)) \
+				or bool(sample.get("reduced_motion_substitute_applied", false)):
+			violations.append("%s: disabling camera shake must not enable the reduced-motion substitute" % key)
+		if not is_equal_approx(float(sample.get("presentation_hitstop_ms", -1.0)), float(presence.get("hitstop_ms", 0.0))):
+			violations.append("%s: the shake-off cast applied %.1f ms of hitstop, expected the declared %.1f ms" % [
+				key, float(sample.get("presentation_hitstop_ms", -1.0)), float(presence.get("hitstop_ms", 0.0))])
+		var twin := _normal_twin(sample, manifest)
+		if twin.is_empty():
+			violations.append("%s: no ordinary sample to compare the shake-off frame against" % key)
+			continue
+		if _sorted_strings(sample.get("phase_nodes_drawn", [])) != _sorted_strings(twin.get("phase_nodes_drawn", [])):
+			violations.append("%s: the shake toggle changed the visual treatment" % key)
+		if not is_equal_approx(float(sample.get("backdrop_alpha", -1.0)), float(twin.get("backdrop_alpha", -2.0))):
+			violations.append("%s: the shake toggle changed the backdrop" % key)
+	for weapon_id in Capture.WEAPON_IDS:
+		for beat_id in Capture.BEAT_IDS:
+			if not seen.has("%s/%s" % [weapon_id, beat_id]):
+				violations.append("the shake-off pass is missing %s/%s" % [weapon_id, beat_id])
+	return violations
+
+
+func _sorted_strings(raw_values: Variant) -> Array[String]:
+	var values := _string_array(raw_values)
+	values.sort()
+	return values
 
 
 ## Sampling follows the beats the shipped Sniper timelines declare. Only
@@ -626,6 +775,58 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 			sample["backdrop_alpha"] = SUBSTITUTE_BACKDROP_ALPHA
 	_expect(not accessibility_violations(flattened, class_manifest).is_empty(),
 		"an ordinary presentation that stopped stepping its backdrop must fail closed", errors)
+
+	## The arena-content rules, each shown red on the package's own evidence.
+	var animated := manifest.duplicate(true)
+	for raw_sample in animated.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("mode", "")) == "reduced_motion":
+			sample["phase_nodes_drawn"] = _normal_twin(sample, animated).get("phase_nodes_drawn", [])
+	_expect(not accessibility_violations(animated, class_manifest).is_empty(),
+		"a reduced-motion cast that kept the ordinary arena content must fail closed", errors)
+
+	var leaked := manifest.duplicate(true)
+	for raw_sample in leaked.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("mode", "")) == "reduced_motion":
+			var drawn := _string_array(sample.get("phase_nodes_drawn", []))
+			drawn.append(str(_string_array(DECLARED_REDUCING_NODES.get(str(sample.get("weapon_id", "")), []))[0]))
+			sample["phase_nodes_drawn"] = drawn
+	_expect(not accessibility_violations(leaked, class_manifest).is_empty(),
+		"a single declared-reducing node leaking into a reduced-motion frame must fail closed", errors)
+
+	_expect(not accessibility_violations(
+		_mutate_reduced_motion_samples(manifest, "phase_nodes_drawn", []), class_manifest).is_empty(),
+		"a substitute that simply stopped drawing must fail closed", errors)
+
+	var flattened_arena := manifest.duplicate(true)
+	for raw_sample in flattened_arena.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("mode", "")) == "normal":
+			sample["phase_nodes_drawn"] = Presentation.REDUCED_MOTION_TREATMENT.get(str(sample.get("weapon_id", "")), [])
+	_expect(not accessibility_violations(flattened_arena, class_manifest).is_empty(),
+		"an ordinary cast that dropped its declared arena content must fail closed", errors)
+
+	## The separate shake-off pass.
+	var no_pass := manifest.duplicate(true)
+	no_pass.erase("shake_off_pass")
+	_expect(not shake_off_violations(no_pass, class_manifest).is_empty(),
+		"a package without the shake-off pass must fail closed", errors)
+	for probe in [
+		["camera_shake_applied", true, "a shake-off sample that still shook must fail closed"],
+		["reduced_motion_substitute_applied", true, "a shake-off sample that enabled the substitute must fail closed"],
+		["presentation_hitstop_ms", 0.0, "a shake-off sample that dropped its declared hitstop must fail closed"],
+		["screen_shake_setting", true, "a shake-off sample taken with the shake on must fail closed"],
+	]:
+		var mutated := manifest.duplicate(true)
+		for raw_sample in (mutated.get("shake_off_pass", {}) as Dictionary).get("samples", []) as Array:
+			(raw_sample as Dictionary)[str(probe[0])] = probe[1]
+		_expect(not shake_off_violations(mutated, class_manifest).is_empty(), str(probe[2]), errors)
+
+	var short_pass := manifest.duplicate(true)
+	((short_pass.get("shake_off_pass", {}) as Dictionary).get("samples", []) as Array).remove_at(0)
+	_expect(not shake_off_violations(short_pass, class_manifest).is_empty(),
+		"an incomplete shake-off pass must fail closed", errors)
 
 	var undeclared := manifest.duplicate(true)
 	var stripped := class_manifest.duplicate(true)
