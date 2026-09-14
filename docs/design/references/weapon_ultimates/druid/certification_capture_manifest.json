@@ -4,8 +4,8 @@
   "class_id": "druid",
   "source": {
     "ref": "agent/codex-dev-sol-5-6/75d4bc3d4466",
-    "commit_sha": "6a1a682902c93b8185cc0da70a3a710d1bcbd6a6",
-    "tree_sha": "c46ec92bd0f2ba4eabbfe97f185242b7b01f048d",
+    "commit_sha": "9f494e8d0b41ee5e5ac7aad3fdaf14fbdba33c3f",
+    "tree_sha": "0732d537c03473c6efc1127b7fbbbd938139ebb0",
     "worktree_clean": true
   },
   "canonical_weapon_ids": [
@@ -99,18 +99,18 @@
       370.0
     ],
     "beat_source": "scripts/ultimates/presentation/contact_sheet_beats_contract.gd",
-    "captured_at": "2026-09-14 07:40:46"
+    "captured_at": "2026-09-14 07:57:10"
   },
   "commands": {
     "live_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/druid_certification_live_capture.gd",
     "focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/druid_certification_capture_test.gd",
     "class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/druid_ultimate_timelines.gd",
-    "static_guard": "python3 tools/quality_static_guard.py --changed-ref 6a1a682902c93b8185cc0da70a3a710d1bcbd6a6",
+    "static_guard": "python3 tools/quality_static_guard.py --changed-ref 9f494e8d0b41ee5e5ac7aad3fdaf14fbdba33c3f",
     "lfs_integrity": "git lfs fsck"
   },
   "sheets": [
     {
-      "sha256": "2ddc7a11a99f87bc123aadd787f93ae849e085c032bd35120d05d5280da780cc",
+      "sha256": "b391b42c58cd4d7b3c15cbe6832eaecadc98a82aaedf4ff6bd2aa06e115310a4",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -130,7 +130,7 @@
       ]
     },
     {
-      "sha256": "5f4bd1a124114a2ba274a78b9e88b851fd22698987ce5708fb68d84608562510",
+      "sha256": "b88c2026f4226bd46c1bb52e4166bd0312d5f547d753fa6bf8da8171e887d475",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -150,7 +150,7 @@
       ]
     },
     {
-      "sha256": "a7d8180d3658baf5debbbe5a97ee602762fd967076b05607105dcd6334d1b3a3",
+      "sha256": "00fa1c10ba093725c49f21d51712c87a6ee372dd86a6293a0b69f2caa4d7dd47",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -170,7 +170,7 @@
       ]
     },
     {
-      "sha256": "e67dcb548e9699109c8763a3de1b2fa0ecc7bc0189ba87e10134ba0380e2916d",
+      "sha256": "2fca769c9a5627925d76cddd833bc3bff28af6aa0abbc82b13b7142bc629e382",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -190,7 +190,7 @@
       ]
     },
     {
-      "sha256": "a4db72b06cdf904d44bae4f35665fdcdefc6ba059f7ebf25eb6e7616245ba874",
+      "sha256": "d3b51b61cc0f0d9ca349992be0ba5e53a2a6472213e9d216ae7cb4ace4ad0e2a",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -210,7 +210,7 @@
       ]
     },
     {
-      "sha256": "fb4ad9ab84c4ed388bf800060b2c9c8e49eb1ed127756bd89f0cf78804fdc8b7",
+      "sha256": "12560a9326d5bafd8a488215055f39140a736fe6914fdbb2a6e410d0aa5149a9",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -230,7 +230,7 @@
       ]
     },
     {
-      "sha256": "3de7a39677a211f65c731f902e103485c17c4363a7909de0e5c3dec5dcc06f18",
+      "sha256": "f67d015436bb13a9795dc8df406756ef62fbfbfec90be0968801d02e71045882",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -250,7 +250,7 @@
       ]
     },
     {
-      "sha256": "0a12999f451c2b8244cab967aa9ecd3bf7f54673cd17a90d2e12f9c5d0235009",
+      "sha256": "7351ac7265f098f04235d16313da5cb518367308d81be62b285f1b52f84587e4",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -270,7 +270,7 @@
       ]
     },
     {
-      "sha256": "392057ddec1990c5e26afdabf1e4c83af4a5f9e9a748e34e496cf5a72b167c0d",
+      "sha256": "4003864379e0aab62059d4472cbd56fb12a068d2bff92b1278c78bb6fffd43ad",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -290,7 +290,7 @@
       ]
     },
     {
-      "sha256": "e106e2adf6b0c72426d2f851969a0bd6c8890d045e9000c5bf38eaa50020192f",
+      "sha256": "59a3d7582fed6ab586fd364526ffdeeed5a849dfaf6f5d3cefb8cd6d6e3dfc67",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -310,7 +310,7 @@
       ]
     },
     {
-      "sha256": "4b6d56f60ee5ba6cf57e7f72fd23022f77ed7879ff5aa6487b6e46b2471138dc",
+      "sha256": "34da70d53ce24ccdacc0d16c50671b26d39958884ebcfd44d8ff2f32342f39ed",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -330,7 +330,7 @@
       ]
     },
     {
-      "sha256": "c9ad42e8e7d4629ae9eb35f66627fa842301257ee9b41cb450f48f85d683f1cb",
+      "sha256": "99473b07b721cc1847ec3cee38e157149be5f2dbe89f8efb50cfeb7a68e83cd7",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -395,13 +395,13 @@
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9182,
+      "changed_pixel_ratio": 0.9098,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.575,
-      "player_contrast": 0.346,
+      "hud_band_min_contrast": 0.717,
+      "player_contrast": 0.427,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -431,18 +431,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b1fa2e1b715b5b5ff58d74d00de69d61b228190faba61ab896e36ccd230a3828"
+      "record_sha256": "e72b1b7af6c09c6a5de91b8387853bb0b69debd39924c1eed570e8c7bdd36b5a"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9176,
+      "changed_pixel_ratio": 0.823,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.575,
-      "player_contrast": 0.447,
+      "hud_band_min_contrast": 0.671,
+      "player_contrast": 0.515,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -472,12 +472,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1af4fc35872e5f87345ea140ef1b470542c187fdc6d47c743fd700b602426294"
+      "record_sha256": "371918391ea5753fac599a36296bd2c061864056099ed2510e8230cf60a2d729"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9191,
+      "changed_pixel_ratio": 0.9186,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -513,18 +513,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b61104fc0e4aa3ebdf7b91564b712e8e58ccad0bbd7c11a3e1331abc44d6c390"
+      "record_sha256": "d263a2e87954d0a9c491c9d8b4059a5e584027a21b7b14b09ef6644e733f100f"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9082,
+      "changed_pixel_ratio": 0.9084,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.717,
-      "player_contrast": 0.449,
+      "player_contrast": 0.434,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -554,18 +554,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "597b1dbecfee68f2fd96f652820bf919a1d2ee4f0564eff3f5a9293cbd3f2d60"
+      "record_sha256": "008cecf6b4988916aeaa1d220eac90302f0da71c4fb21e796a9e70cd07ca370a"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9092,
+      "changed_pixel_ratio": 0.9085,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.717,
-      "player_contrast": 0.408,
+      "player_contrast": 0.494,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -595,18 +595,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1bc80c16dbf2e695c8ac26a88fb9133e34805441343ed1b5a3764f8d39188072"
+      "record_sha256": "10cfdb2ecc3f0af0fb17ece6a9a5558d51a3a86275c9b1959979839c93c50ee0"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7653,
+      "changed_pixel_ratio": 0.6361,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.716,
-      "player_contrast": 0.457,
+      "hud_band_min_contrast": 0.667,
+      "player_contrast": 0.514,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -636,100 +636,100 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ac88ce1d7936e32d471ae0e0606396eab773f2a6aa26737bac8092509f20887b"
+      "record_sha256": "ab1b54103fc47462a58d0165d4c6d991c9f64e14199a10f477a41fab78a4e286"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6366,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.667,
-      "player_contrast": 0.541,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "width": 1152,
-      "height": 648,
-      "beat": "active",
-      "beat_seconds": 1.95,
-      "declared_beat_seconds": 1.95,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 1,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "953714d97d59d382bcc66467217fc3ad2b823f8d719048c3bbc09867b4355c36"
-    },
-    {
-      "effect_box_ratio": 0.0148,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6356,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.667,
-      "player_contrast": 0.391,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "reduced_motion",
-      "viewport": "648p",
-      "width": 1152,
-      "height": 648,
-      "beat": "recovery",
-      "beat_seconds": 3.1,
-      "declared_beat_seconds": 3.1,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 1,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "3e9e2cd8062791519c42801fe81c2a3d849881bdafb7038982ba3ed9d02fb052"
-    },
-    {
-      "effect_box_ratio": 0.0192,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8045,
+      "changed_pixel_ratio": 0.8421,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.571,
-      "player_contrast": 0.485,
+      "player_contrast": 0.424,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "width": 1152,
+      "height": 648,
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "declared_beat_seconds": 1.95,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 1,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "239535a5a566d6c3c0bc1e7e77f82621a9bf1ab9057db6ee1391e385689fc3c2"
+    },
+    {
+      "effect_box_ratio": 0.0148,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.844,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.571,
+      "player_contrast": 0.291,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "reduced_motion",
+      "viewport": "648p",
+      "width": 1152,
+      "height": 648,
+      "beat": "recovery",
+      "beat_seconds": 3.1,
+      "declared_beat_seconds": 3.1,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 1,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "10031982c8dd5f0c0d6a6503304c9f6455230d8d46e1044cda0b77cdfcf3278d"
+    },
+    {
+      "effect_box_ratio": 0.0192,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.8046,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.571,
+      "player_contrast": 0.558,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -759,18 +759,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "35fba9351e3830920825ec651efb4e8fb54d12d949e58f0478751553ee5e1f5d"
+      "record_sha256": "5c32b217475abb4fa0b58399eb35ec55dd3ec5a6e24cd90f220ca8e5fa55548d"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6478,
+      "changed_pixel_ratio": 0.6485,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.715,
-      "player_contrast": 0.562,
+      "player_contrast": 0.543,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -800,18 +800,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a13b095a9ebead1e53a8517834037ca6852af1f92f5c978c766ce21a48c3d56e"
+      "record_sha256": "87b2ab8c40414df2b7905b4c083ec4b24ed6c601bf2c03932d73422792baed12"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6465,
+      "changed_pixel_ratio": 0.6448,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.715,
-      "player_contrast": 0.712,
+      "player_contrast": 0.616,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -841,12 +841,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b0019eba5e7b866005dd6e4a7cb9f9fcb8f059705ab69f09d206439ce2ca64dc"
+      "record_sha256": "40f2f1a201e4b722b884f39fdd0e13eeee7b66c6e30674a185d1a43e7df32d07"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9173,
+      "changed_pixel_ratio": 0.9174,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -882,12 +882,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "22b7eb823351360f176590fee81a50ed1f348851a95fa0f8d8742b563857bd49"
+      "record_sha256": "6a8d2ac7f42fd68d51deaebfebbd43b0044757919f281464af610dc662212898"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9096,
+      "changed_pixel_ratio": 0.9091,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -923,18 +923,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2e9de4938ca3547de550659175a312016040963c5b745eed7cace3916b458a9b"
+      "record_sha256": "836b6d269823129fd9db4ec03f1410a5a5197f6e76f498277d29fc672336c8cb"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8353,
+      "changed_pixel_ratio": 0.8347,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.671,
-      "player_contrast": 0.448,
+      "player_contrast": 0.479,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -964,12 +964,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "613fc3ac24decb4e5563f7af86b5fe981e54694b900608a40d13bb85ae99449c"
+      "record_sha256": "42e3f0d365b2b93939a5e3f51ae91e26b00e5060b5699a88fd83205ead42b84f"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9134,
+      "changed_pixel_ratio": 0.9138,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1005,7 +1005,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1e7c47862cb35f4e9ebd5f3ff3cf4535291bd87e744f662addcb9c21d54526be"
+      "record_sha256": "cdf54466e9e05f18f2c208d8a7a0c3f04236f7786cebeaefc827e10de99e2896"
     },
     {
       "effect_box_ratio": 0.0482,
@@ -1016,7 +1016,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.575,
-      "player_contrast": 0.263,
+      "player_contrast": 0.264,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -1046,18 +1046,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9ea30481b27a62ed753530efbaa8b4ca2625bd8f14c89e46407fd7f11cd9fea2"
+      "record_sha256": "ef857c56c64966e132da9ed93f878d608c2d3eccc285452e12b27c182110b267"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8336,
+      "changed_pixel_ratio": 0.8341,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.671,
-      "player_contrast": 0.452,
+      "player_contrast": 0.453,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -1087,12 +1087,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "58726ff2539c447bcc44430935bf50a54ec19d8c518b41e934f57d4dcd70f8cf"
+      "record_sha256": "fe7205c5de236e37e3ed7c727a96e4935279a63a20137ed14b99374c9d2bae39"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7823,
+      "changed_pixel_ratio": 0.782,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1128,18 +1128,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "aff96545e7ed521dfb5ac45772507cb2b5d6933d35e901f214e3c436bc42cb36"
+      "record_sha256": "c9e1e58e160dc4e88dcd1be204340627aa98363fc3553acc0e27fc0bb2192f64"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8331,
+      "changed_pixel_ratio": 0.8342,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.571,
-      "player_contrast": 0.314,
+      "player_contrast": 0.35,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -1169,18 +1169,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1895beba29b194f12b15d3002c77c4fcfd8aecdb6c3ad5c2294735c9720b8978"
+      "record_sha256": "df1508d5ed090e628763dd351a22b1f0e0fa4a6032c738d177b51764932661d7"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6377,
+      "changed_pixel_ratio": 0.6368,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.667,
-      "player_contrast": 0.418,
+      "player_contrast": 0.421,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -1210,12 +1210,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "cdd47725445271e57c577303989c6500463c79a65f0622e8f26781a14825e20e"
+      "record_sha256": "54eae4fab48f94c925ff0ca4ffa30c7c901e60857252bc49971655af47511341"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6657,
+      "changed_pixel_ratio": 0.6648,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1251,12 +1251,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f4f1b2f7c3eea7797be0427c6968a968a3ad7261d64c992f153213ab1c54dbc4"
+      "record_sha256": "899441cac7019780874dbde86c859a92d3058b902a90d6fb094750c63a8534d1"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7954,
+      "changed_pixel_ratio": 0.7948,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1292,12 +1292,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "192ee73afb51bf8a310e59279b4b3ddd00ba67548ba2d68da3c428cef3a054cc"
+      "record_sha256": "a4b11c44397b6319ab56bb9a6b6cfbb3d40209cf648f9e5505bea9b5e3744d2e"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5379,
+      "changed_pixel_ratio": 0.5381,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1333,12 +1333,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7946aadb0d4c9036c8622d6258a605424466d18b0a428e5654e0c79109f8ba2f"
+      "record_sha256": "ff1a5261ba5ae335abdeea119f4d59761a3a8710d3d12206f6553d9723f06750"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7323,
+      "changed_pixel_ratio": 0.7319,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1374,18 +1374,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "729a2168f2bca239e11d85a442849ef87e693dded0ddf9e2265bcc908a422164"
+      "record_sha256": "ad75e08f0bc489de50d349acafc586db5e44ef71907869b206382a7e8715b345"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7352,
+      "changed_pixel_ratio": 0.735,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.465,
+      "player_contrast": 0.439,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1415,18 +1415,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1f58cef7d96cf8ed0c17288bb7147b8dcd8cf3a01c6b500e1a743363ae32e110"
+      "record_sha256": "6422af928d5cb3a5faae9dae092edcb44aa1ea2cf5293ffa91670174c8c19563"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7344,
+      "changed_pixel_ratio": 0.735,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.548,
+      "player_contrast": 0.52,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1456,12 +1456,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "181926ba27aee0ea5a85f0a8cce82c1622d7fae28fe32109964dc8eb7446c212"
+      "record_sha256": "457da5c0e27785af84d13028c7070680aed9f027b5c4795d4c315bef7007f526"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.738,
+      "changed_pixel_ratio": 0.7377,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1497,18 +1497,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "581ad9794d90b99c9744ad85a462250f9819f79c9c7865d46ec4cac42797fb54"
+      "record_sha256": "dc743d072bfce0e8d9feba0756abcbc27d84477601efd5492af5c7c872a2eb90"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7388,
+      "changed_pixel_ratio": 0.7405,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.459,
+      "player_contrast": 0.478,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1538,18 +1538,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e8c6b9bf3b81b479cad4bbb6e9b509bac7f8af7fc94a27fce1659b715ab57230"
+      "record_sha256": "532763f95629ca0fe6d8947a9c507afab247fad8b4fa74b720529c66f367370e"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7412,
+      "changed_pixel_ratio": 0.7437,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.657,
+      "player_contrast": 0.742,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1579,7 +1579,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "114d0ea09c85563c4f6c334d5e710ed9af4bf7ae2ac0a905d377d7aad9da87df"
+      "record_sha256": "c5b790cb65248a655989b5709c50a0ecd33d07332464c0d2f62a7bfc2a0f7d15"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -1625,13 +1625,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5502,
+      "changed_pixel_ratio": 0.5508,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.459,
+      "player_contrast": 0.375,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1661,18 +1661,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2699c68b68be3db24f9f5b8956c8113b6f55a5b3a6e1383818463b34fdde1680"
+      "record_sha256": "1e1bd9277e0ae525a8ed22f8f378c29b0e3e70ce6267d8cc7bc1c227178d52f5"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5476,
+      "changed_pixel_ratio": 0.5533,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.562,
+      "player_contrast": 0.555,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1702,12 +1702,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fe536d2edbd099c1497635e1d44db71afe9effcff7ef417ae10fd3dd4171fd08"
+      "record_sha256": "6321afa4660a6b4dd99fe1d5977f8e38b815f5a3813c84b9c50e46de4381e20b"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4566,
+      "changed_pixel_ratio": 0.4573,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1743,18 +1743,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "832baa690e33d503d6285f445dde66e4fc3cd4a00bcc05f0c8fbe1e74d55fbd8"
+      "record_sha256": "5dc79d81dca47597d9b0d8d25b73a0d1b55637bc7a890a579cbdc452a8640a83"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4663,
+      "changed_pixel_ratio": 0.4652,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.715,
+      "player_contrast": 0.772,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1784,18 +1784,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "42b5e429b0b416425b4039021fb45a0aeae8aa44f446c3cce987e064ee34d84e"
+      "record_sha256": "b43167813ef16b942ebd05bdb07a6fbea640f688f63858a585939a6bf9038f91"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4643,
+      "changed_pixel_ratio": 0.4647,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.56,
+      "player_contrast": 0.588,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -1825,7 +1825,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "39016be279e8b28327f49aba23632275f72b94f520e9edecc17c09b0f31a668f"
+      "record_sha256": "ffd89d6c939ddeec9e74a34d77c90aecf5db8488ef626f4ab37316b9940903c0"
     },
     {
       "effect_box_ratio": 0.0192,
@@ -1871,13 +1871,13 @@
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9072,
+      "changed_pixel_ratio": 0.8216,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.458,
+      "hud_band_min_contrast": 0.666,
+      "player_contrast": 0.488,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -1907,18 +1907,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0d1e85dfe339be3b11a8de1e28e5498616c3eb3d2b6eee7d1aa2a1f8c39998aa"
+      "record_sha256": "c4554ede7d9bbec62b78d2b52e15475a71fe64a9be40b2acf0563f22b8617d9a"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9072,
+      "changed_pixel_ratio": 0.9078,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.62,
+      "player_contrast": 0.571,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -1948,18 +1948,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9060e86ab227bada0839ed43f364cd2cef13cd72c8d2da751b330f577d6944e3"
+      "record_sha256": "aa00a99bf35bd3fd3f7fe6611d6a65954802d04d0c5973a3354f03c7f501ac65"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9144,
+      "changed_pixel_ratio": 0.9044,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.573,
-      "player_contrast": 0.344,
+      "hud_band_min_contrast": 0.714,
+      "player_contrast": 0.517,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -1989,18 +1989,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3d02f69c102e045770cdabc75269384903ff67332d5e4492a00aed4d62478a2a"
+      "record_sha256": "73e8b8756e2abb717e9a6a9f59969adafa3f55120ae912e48a844277443865d6"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9133,
+      "changed_pixel_ratio": 0.9054,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.573,
-      "player_contrast": 0.384,
+      "hud_band_min_contrast": 0.714,
+      "player_contrast": 0.483,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2030,18 +2030,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2037bc99f59b921d097824396432f1102340c7b00402432dcc63301e36d1a070"
+      "record_sha256": "482051b1ec7756db5784b238900890731da87695327ba04b372f4b227ec52461"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.821,
+      "changed_pixel_ratio": 0.8222,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.421,
+      "player_contrast": 0.532,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2071,7 +2071,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "513485078dd8042fe0573ce5c94a13e28b22cdea3c4a8269092fbca3b3cb1c76"
+      "record_sha256": "39e8384f913e487755395dc45b5fe7322e5dcc1f7976c4bd5e8119c776509b0f"
     },
     {
       "effect_box_ratio": 0.0192,
@@ -2082,7 +2082,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.437,
+      "player_contrast": 0.362,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2112,18 +2112,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2e40240834fbcc2f202a52cfeebcb8c69d0ff9ca14c90fe34cff855048a0963e"
+      "record_sha256": "3b92dc6ad0cdd296200767cc8f5901f04127b8e938ae0caf72b3959ddc053f9f"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8406,
+      "changed_pixel_ratio": 0.7631,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.421,
+      "hud_band_min_contrast": 0.71,
+      "player_contrast": 0.525,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2153,18 +2153,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d7e3a873a2c2829dd6c4c7399f95a89c3790452af5a3a1e1a16eff3ecd1aa393"
+      "record_sha256": "cac0cd09856a76e61a0af2b1c44d291f642111ff3049e0c1634296154613ffef"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8429,
+      "changed_pixel_ratio": 0.7625,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.386,
+      "hud_band_min_contrast": 0.71,
+      "player_contrast": 0.538,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2194,18 +2194,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1bf013f5a82603c0c28e2dd49a3db1be7b6634b352df28caa80b6c98a1704a0c"
+      "record_sha256": "8e70095093d3c9774e4ae832bb267817d0676657a819671de5e8a2eb776299c6"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8051,
+      "changed_pixel_ratio": 0.8046,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.371,
+      "player_contrast": 0.541,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2235,18 +2235,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "dcfb0cd16cdf28f09a4accee2a6374b63746ee4bef045d80dcee950ad440d154"
+      "record_sha256": "d18e82a8d071b01ebc45d545317723409c27a029820e5b637efe16412b17e657"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6483,
+      "changed_pixel_ratio": 0.5371,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.71,
-      "player_contrast": 0.481,
+      "hud_band_min_contrast": 0.666,
+      "player_contrast": 0.495,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2276,18 +2276,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fefa50c27d57b31722b9eda77ea2c7e5257d6be0963c9505bde50c0f7f99e7aa"
+      "record_sha256": "d702b0d6599d1d1a84eb5f185a45c1d18c9dea4f3a46621c4132837a10ca4a79"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6472,
+      "changed_pixel_ratio": 0.5342,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.71,
-      "player_contrast": 0.703,
+      "hud_band_min_contrast": 0.666,
+      "player_contrast": 0.613,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -2317,12 +2317,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3b594c96c0e2a737758cc7eb5a3a3f77cd0e56e78d893520279ec4a953b89be8"
+      "record_sha256": "33121e08771f549a282d2d9d0acacd71fc004cc9c2d708752a6cf8048c52064c"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9151,
+      "changed_pixel_ratio": 0.9153,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2358,18 +2358,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5c778047cdc97ab2559029aa206a4cd84835a1d8a2d50eaf61af5f23ae3423c8"
+      "record_sha256": "2d00cf858ecb5166883839a41f31dd99724d2e166657b0a0494b96c63932a2ca"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9053,
+      "changed_pixel_ratio": 0.9056,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.573,
-      "player_contrast": 0.435,
+      "player_contrast": 0.325,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2399,12 +2399,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "82108d1ca3eb0feee5e98081a5cb8b9b41cf7f5fc8b248d45b15e28fff6d8b77"
+      "record_sha256": "52cbf37d8b2045fcaf87cc3cb02a620cbf582f5defd0af8e0a69da3a74aed1c7"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8315,
+      "changed_pixel_ratio": 0.8325,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2440,7 +2440,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "38bc7551b9ece840bc0f239caf527ab3a2c41d55484f387027587e270dd29b3a"
+      "record_sha256": "4f0352cb78adb0fe4a9ec7f1b227f4ed1c336ff64a6660e9361d5d7dce09ce6c"
     },
     {
       "effect_box_ratio": 0.0203,
@@ -2451,7 +2451,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.596,
+      "player_contrast": 0.593,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2481,18 +2481,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "956fa36072124ddd75210dee1a227711be41951143f05cf2ea3d1d14a2badd8d"
+      "record_sha256": "82b2fd72664e152cc4687208bef5230f64e9a5e01aeee053f82f939662dfb867"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9058,
+      "changed_pixel_ratio": 0.9059,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.573,
-      "player_contrast": 0.334,
+      "player_contrast": 0.331,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2522,18 +2522,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d698ee3bca213d19a523b76042bbd6f14d44837426d80115e20e89bcc1ea1c96"
+      "record_sha256": "858e994fbc18032c29ca92d74ad3925087cf96d94d1d19ffd6dd6feeab19821e"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9126,
+      "changed_pixel_ratio": 0.8327,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.714,
-      "player_contrast": 0.583,
+      "hud_band_min_contrast": 0.666,
+      "player_contrast": 0.544,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2563,12 +2563,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "337ee14bbe51cdcb8a8970fb8dc269a9f2d4b8312f5c28f8b74e7cd0c38db947"
+      "record_sha256": "da23575ddf3826fa19f4267c7e1b06bf04d415349ba78d7319c728a0ff0564b1"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7797,
+      "changed_pixel_ratio": 0.779,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2604,18 +2604,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7e682cc429de26f82f2ff767e68151bb56f1b0352e6cd0950b77f3aba7274ca3"
+      "record_sha256": "50213b012f0b8f3b8be960fa56e792211f9b60135f7df1484c12c2df171286ef"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8344,
+      "changed_pixel_ratio": 0.833,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.307,
+      "player_contrast": 0.509,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2645,18 +2645,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "65b9b98af7b0e5b0da7f614cc6791a2176072e106510ec7b3855de50ec20a232"
+      "record_sha256": "04ddb247c1684e6be242f6d66d5a906d0c029b9a9d7dc791e0ac389f643cd2b4"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6384,
+      "changed_pixel_ratio": 0.6383,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.371,
+      "player_contrast": 0.403,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2686,12 +2686,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7d817df5edba6eecd76e28947d773e5ddb25f95c7e3c104fd62018573ccf7f41"
+      "record_sha256": "e69185f1a6ba7d4492249e4c7384f251420a8948927fef5c5a70ac8d8a3d8724"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6657,
+      "changed_pixel_ratio": 0.666,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2727,7 +2727,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a5ded6cc2d20f1f4e1b1e7a117e5b757a2036b9c8f8db71cff8efbb1fe6089f6"
+      "record_sha256": "acb2b847534428e5d267ae7e5046b4b9531f4d5ef91cadff17845887f75142c7"
     },
     {
       "effect_box_ratio": 0.0482,
@@ -2738,7 +2738,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.307,
+      "player_contrast": 0.574,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2768,18 +2768,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9478743a6cfa814f0407a083cf68a03e5b01fefb80acd372743862385ceed119"
+      "record_sha256": "a824f3c82a6a085b52ef59dfdd01dc8bb206686384877bad6d738bcee97ef796"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7997,
+      "changed_pixel_ratio": 0.5408,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.569,
-      "player_contrast": 0.603,
+      "hud_band_min_contrast": 0.666,
+      "player_contrast": 0.714,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -2809,7 +2809,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "994420d1bc216f04012e2442de395b174a2ac5bd7681a3d7a5d959af3e3e38f1"
+      "record_sha256": "0d695657360a1f77cea40c1fa794e912ec8b3c14d85eb5d876a2936b36d91323"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -2855,13 +2855,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7301,
+      "changed_pixel_ratio": 0.7298,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.602,
+      "player_contrast": 0.535,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -2891,18 +2891,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0f3e30e68db585db882afde87c136cefbeef455d9072f7424303ec31343a0746"
+      "record_sha256": "f0e1efefc5dbf726bfdc9e24bfca86d55e8286c220db8e3e7ed064e744afac93"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7286,
+      "changed_pixel_ratio": 0.7288,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.639,
+      "player_contrast": 0.605,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -2932,12 +2932,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2f51f684d17abc2af2ebfbb9486353f210e3c5e8bdb6daf1c87cfe7fa321de8d"
+      "record_sha256": "4077b9f150d5819952990080f249b344c9aaa5cdd20978d18eb413de6e604986"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7351,
+      "changed_pixel_ratio": 0.734,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2973,18 +2973,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "aa7e368f41a6c47bff86753e6ab047ec49324aa6027d16835cbb6b3d50904c65"
+      "record_sha256": "17bf6d4d77b1654c9741da8ad8d5dbc38fe9b619c964ccdf9823c4386a9246fc"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8822,
+      "changed_pixel_ratio": 0.7372,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.572,
-      "player_contrast": 0.542,
+      "hud_band_min_contrast": 0.64,
+      "player_contrast": 0.545,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -3014,18 +3014,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fb8cf761a061a5e56ff8d7ff9cf0976d421f847bc2af6f683e1fcd4ce7236961"
+      "record_sha256": "13e325538a88b3591028feecbb99f9d5917efd5ea99f15c216b4271b742ff72c"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7403,
+      "changed_pixel_ratio": 0.7392,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.615,
+      "player_contrast": 0.632,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -3055,7 +3055,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a9df4a36f7ed097a97272677aaa831c87a71e739a407d9e35f046ff3ddd5a190"
+      "record_sha256": "c5999ce587befcf6b4073e5fb16b305e1e74f1cbb24c0a6fc821e00b56d3c3ec"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -3101,13 +3101,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5604,
+      "changed_pixel_ratio": 0.5603,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.497,
+      "player_contrast": 0.617,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -3137,18 +3137,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "328fbd65861e6208abff94c50272a27bd6cd18778bbbe88d0341526a656a6b43"
+      "record_sha256": "17af69819ce69d48378cc0efba75239614d6d9f7bf757c436ec1d7c340b7fc6c"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5618,
+      "changed_pixel_ratio": 0.5617,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.559,
+      "player_contrast": 0.817,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -3178,12 +3178,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8f9ec17e786f31ba24cc37be35f91557b66d3f1e5a8b72c7b82a764be8b67b88"
+      "record_sha256": "8a4f2310fb5beda8760ad214c69a5ff60ddd7ec524fc41b5fcf97a4d3eeecdf4"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4607,
+      "changed_pixel_ratio": 0.4605,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3219,18 +3219,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b66d61cb92353b3d83d5181635bc86e4783a2bdd0a82e21cc76855026e8e3bcb"
+      "record_sha256": "6b9451eb3d7dc46cea3484c441f244798681c6254c3bebb71e8eb13d14ad3921"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4732,
+      "changed_pixel_ratio": 0.4735,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.761,
+      "player_contrast": 0.768,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -3260,18 +3260,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "743aef7637621213a7bea578ca57e83e562c77b4a20d3f1d2decc3d99bf8dba1"
+      "record_sha256": "b763b72be287c2aab0921fa8a6d58ba78c5eb0d485a93dc508e085fa3d4f504f"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4687,
+      "changed_pixel_ratio": 0.4665,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.64,
-      "player_contrast": 0.697,
+      "player_contrast": 0.577,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -3301,12 +3301,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "33e9ac240f65d8915604165f9b130fc3b73bb1cb40f5b9cf0abeefa7397e3153"
+      "record_sha256": "088a4f823b3321b5620e8391d5caf714611d4f3557c82b94b3ff0ac9f84095eb"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9132,
+      "changed_pixel_ratio": 0.9142,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3342,18 +3342,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "bf47ff0beb817deba33bcb7a686e7ce4a220ad6f884e7dccb99983b4daa5dbe4"
+      "record_sha256": "622f83546d1b4cf837e91a2126010bf5506ddd419206f650d54e78024789c810"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9078,
+      "changed_pixel_ratio": 0.9138,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.855,
-      "player_contrast": 0.465,
+      "hud_band_min_contrast": 0.686,
+      "player_contrast": 0.428,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3383,18 +3383,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1a1cf3b411a3a5c776692bafc08c45639cf8fe51dfec61e1dcdc30bb9a058269"
+      "record_sha256": "2a48a3f20e9913040c58965b02069fc28ccd63d68032009cabaa1dc11c575211"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9074,
+      "changed_pixel_ratio": 0.9079,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.683,
-      "player_contrast": 0.595,
+      "player_contrast": 0.597,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3424,12 +3424,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e0c5e266864d0d1d79c37e02bc9045e379dbe4394aea7c77a51cc44e9ec2567a"
+      "record_sha256": "d2498bc49b1a03c0efb777b994e46248e4e36a8c5ce7501576653a24ac331849"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9146,
+      "changed_pixel_ratio": 0.9157,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3465,18 +3465,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a37c50db59eae24271ef0fed81b41100fe300584969953aa3df3e4d5d8abf93d"
+      "record_sha256": "04ac030aac90a6ce38150253d3ce5419e7392f7e2e613eda84ed61411b922f25"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9138,
+      "changed_pixel_ratio": 0.9151,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.686,
-      "player_contrast": 0.428,
+      "player_contrast": 0.425,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3506,18 +3506,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "bd8f2ead9ee7a88c4b05939d4a6258c06f0dde09deeb97a2fb2f66f2e4d872b2"
+      "record_sha256": "e196b7ca33b673e98fd3f1713ef1527d47e212dba831d11e46763473bf549daa"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8239,
+      "changed_pixel_ratio": 0.9139,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.556,
+      "hud_band_min_contrast": 0.546,
+      "player_contrast": 0.453,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3547,18 +3547,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "72a9be5772efe0d76ea241a737a2d25c9310882101ed20189459c9493171909d"
+      "record_sha256": "f1cde938367790fb8b1974fc902301f49d45aeb7c22b1f458b1698bf901bf0db"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8469,
+      "changed_pixel_ratio": 0.8454,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.686,
-      "player_contrast": 0.5,
+      "player_contrast": 0.509,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3588,18 +3588,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "4b6f57117c41d79b6ddfbed740e3e5aa5706f5dcbe2c33e6a229f041460c11c5"
+      "record_sha256": "7e59ad4c824350ea6cf386780a9a2f364b714a0cca78f01cce3c5c4dd6c84979"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8438,
+      "changed_pixel_ratio": 0.7652,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.685,
-      "player_contrast": 0.477,
+      "hud_band_min_contrast": 0.854,
+      "player_contrast": 0.597,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3629,18 +3629,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3740817d31b8bad44b347df0009c112ca02abbef1c96244ec281bce9248dc686"
+      "record_sha256": "c076bcf2675181ced6a30f37b45e7ab6750cde5e28e6bfa78398f75703251df3"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8459,
+      "changed_pixel_ratio": 0.7646,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.545,
-      "player_contrast": 0.389,
+      "hud_band_min_contrast": 0.682,
+      "player_contrast": 0.492,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3670,18 +3670,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1f4e7f314e9cdbfca5b80452152f849a7405aeb1089dd564e4b339d649f80990"
+      "record_sha256": "fcf97353748d3359b8fd008fcda85703c7063251cfdc9b6fed37e3c6c78cabaf"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8063,
+      "changed_pixel_ratio": 0.806,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.686,
-      "player_contrast": 0.585,
+      "player_contrast": 0.601,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3711,18 +3711,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "27f3e4caad72de94d8aeeb382893e0910265c4657cdaec4fadf7605b2e947e27"
+      "record_sha256": "bbcb2b36657db0cdb1b10e49f50fbf349ae36f083e493790523256a3bb1592b1"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5444,
+      "changed_pixel_ratio": 0.6502,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.799,
-      "player_contrast": 0.588,
+      "hud_band_min_contrast": 0.853,
+      "player_contrast": 0.609,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3752,18 +3752,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "36bce9d558db5289a27ea819a78daff0edbd24e217952305171ce67e6d453629"
+      "record_sha256": "b36b7725037d09a79c8597036fa0f9b398c2eb6c144d33ab5c112ec94ed27df9"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5413,
+      "changed_pixel_ratio": 0.6477,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.707,
+      "hud_band_min_contrast": 0.682,
+      "player_contrast": 0.757,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -3793,7 +3793,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "21f54b0f1d3c771c7e92e380e7d32b15c8b1aed915fce514ca287de70032f592"
+      "record_sha256": "b556fb34ae52ff485006f66e2ec93f196be8f0eb9b2bf7811d35fa5866b6bbca"
     },
     {
       "effect_box_ratio": 0.0203,
@@ -3804,7 +3804,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.858,
-      "player_contrast": 0.588,
+      "player_contrast": 0.589,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -3834,18 +3834,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e1f46bca4fda1bd7d30dd4a8822e8f76e0121ccc65d82489ac6e4cb65c938613"
+      "record_sha256": "30669b34c3324eb965e251cc30829aa58f710412c2997c3590e292e2ece1fef5"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9057,
+      "changed_pixel_ratio": 0.9155,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.686,
-      "player_contrast": 0.458,
+      "hud_band_min_contrast": 0.855,
+      "player_contrast": 0.575,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -3875,18 +3875,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2a779161b5126da52f5441917319ee68f65b2ee0085bc41964e20bbc05ad17b7"
+      "record_sha256": "9ad0322fe0a1eab8ac7a4ad17497035694aa2c4467f04ca70f3274dcded6ef0f"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8341,
+      "changed_pixel_ratio": 0.8343,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.466,
+      "player_contrast": 0.484,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -3916,18 +3916,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "be92a621094115c80a063347c4ea0aa6896f3d6ae119e040bfe42b2b31de3838"
+      "record_sha256": "81985d8a0bf88fd2530fe041e528631f4ef546a0c75a707c8da04cc36d8f9e2d"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9117,
+      "changed_pixel_ratio": 0.9115,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.858,
-      "player_contrast": 0.588,
+      "player_contrast": 0.589,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -3957,7 +3957,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "40b8a7a5b82326956f0c46bfb8f6e348859d390b713b19c902571e3c1bff261d"
+      "record_sha256": "03a85523c47f138d7782985b55603ba42aa8aa65a0d905d20a01338d45fec31b"
     },
     {
       "effect_box_ratio": 0.0482,
@@ -3968,7 +3968,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.686,
-      "player_contrast": 0.443,
+      "player_contrast": 0.458,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -3998,18 +3998,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "57bddf1eee4bf7dbf086f64a52dc50cfbc6f2b20852a4793e7d883134ac1062b"
+      "record_sha256": "e09124f81d0ea38ff561f79a085db612573a32624a5aa4a7b0fccea248850af1"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8334,
+      "changed_pixel_ratio": 0.8341,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.476,
+      "player_contrast": 0.479,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -4039,12 +4039,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d4e985f878be2da3daec1c30cbb79e9d8d8afca09e88287c6a01c8d9960c052e"
+      "record_sha256": "5a5b960fd781cd53ad1de9725c7851070f317ca4a8093288672f7ec7c617d254"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7826,
+      "changed_pixel_ratio": 0.7825,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4080,18 +4080,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2f8862f5b634003bd99d55cf414aa05d8dc752ae4d4dc3adaab2465611454686"
+      "record_sha256": "8a543ae6469db96abc95dd07468d086b80c89779ebd6451a3fc1680b9d4c6eb4"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7833,
+      "changed_pixel_ratio": 0.8386,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.854,
-      "player_contrast": 0.594,
+      "hud_band_min_contrast": 0.685,
+      "player_contrast": 0.38,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -4121,18 +4121,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "48a5d92917cc116c84ae33ec5acf29615cbcf4df9f348ca740adfa0c38e57f79"
+      "record_sha256": "a1bc6eaf7a5567a6c3a63ac800e766e2dd441318677f7855428e47c1b7c0a87e"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6453,
+      "changed_pixel_ratio": 0.6443,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.401,
+      "player_contrast": 0.443,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -4162,12 +4162,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "842d240e12a2c21175399794de8ded208f35e83d15527cf0652fd52f71b3f489"
+      "record_sha256": "688f54e901faf361c045978387404f896b94de386791c9eed79c9ff75a47d32a"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6667,
+      "changed_pixel_ratio": 0.6662,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4203,18 +4203,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "4aa17e2510067252efdb714fb363e7cb9a2a2857e3769459a3a648191b389365"
+      "record_sha256": "d34a5181d4fc91a208b0b2860ced237b20893ca84384b9f9fe9b3ad2bc1eef1d"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8005,
+      "changed_pixel_ratio": 0.7985,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.685,
-      "player_contrast": 0.437,
+      "player_contrast": 0.478,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -4244,18 +4244,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ff27081bed57a1cd55e767a99e2bc0fe33715513f08a7d0b8cc352b632f18e3b"
+      "record_sha256": "1f6407e46134ed62b7733adf88f249f3e7dd91f975f87f819aca00a6462457eb"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5443,
+      "changed_pixel_ratio": 0.5449,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.617,
+      "player_contrast": 0.634,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -4285,7 +4285,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0c5fe4dc6ba5deb8a93ee8cb1a081f729d10e40bbb99ae7f80ca72e5ec53bef3"
+      "record_sha256": "50dd9a17caf1ea8b848b613580e73fbf81aba0395aab807cbc6042459e83442d"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -4331,13 +4331,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7324,
+      "changed_pixel_ratio": 0.7328,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.857,
-      "player_contrast": 0.528,
+      "player_contrast": 0.604,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4367,18 +4367,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "889e38323f0b758a2af7f36caffa5dc90e0de183c184bdf753f899cbac2430c6"
+      "record_sha256": "0b49d29011b33e56ce66640ef737f052dcf9a3902090f099835c38f2d19b4277"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7339,
+      "changed_pixel_ratio": 0.7309,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.745,
+      "player_contrast": 0.652,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4408,12 +4408,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f737cf746bff2cb3e99145286e07bc55fba626ad6046fca9c692b5945b4ebbb4"
+      "record_sha256": "064a05ea01f3b41fd9a0fd99c8d9c6626c37d55c14a4acd884bf63e672946f09"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7354,
+      "changed_pixel_ratio": 0.735,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4449,18 +4449,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "74215761813af211b090dae2c1f158d29da415fc7fb5c1255e26dd686a81ffd2"
+      "record_sha256": "4e8efae1120a9431de862b38369f3dba3afb519a122f4a500c53003669cb37eb"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8859,
+      "changed_pixel_ratio": 0.7381,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.686,
-      "player_contrast": 0.419,
+      "hud_band_min_contrast": 0.857,
+      "player_contrast": 0.545,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4490,18 +4490,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ec342ff49690def8d0c88b789fd0cce992942edfac7cb96b713fcf2de0833819"
+      "record_sha256": "fb5966e5d470f0d0be62ce23b264ff922909f27b39c0d4ffec89ff1d38b39969"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7417,
+      "changed_pixel_ratio": 0.7399,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.715,
+      "player_contrast": 0.677,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4531,7 +4531,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "95ac04464a555772402a74788ad8043afe82d79f0a31da47a0fb65973cf3bcb9"
+      "record_sha256": "92c1a4d0bfdd61b60165fd94ee9e2636358b607bda5ee9bac91c64f6791e5c29"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -4577,13 +4577,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.559,
+      "changed_pixel_ratio": 0.5595,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.857,
-      "player_contrast": 0.583,
+      "player_contrast": 0.556,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4613,18 +4613,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b755a695f5c9c688cf65d9314af547fd801345936340ecb7f48f4dba084a424c"
+      "record_sha256": "d11d7b580c4350c5e26aea47f07ca55251bbab4d69cde91117fc5f94d036175e"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5589,
+      "changed_pixel_ratio": 0.5586,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.785,
+      "player_contrast": 0.691,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4654,7 +4654,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "4579b64cc513c238a1971cf2ce3a5a7538fee8230b1766372002d06fa36d6183"
+      "record_sha256": "ee621b290bea07335bea3f5fa8c65158924232e67378008ba792d2d2d7cdfa2d"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -4700,13 +4700,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4784,
+      "changed_pixel_ratio": 0.4779,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.857,
-      "player_contrast": 0.848,
+      "player_contrast": 0.741,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4736,18 +4736,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fac86b2ff7e0ca74ea35109c3216a4f678905d15b5735ae7c35a676dc014b230"
+      "record_sha256": "ac275df0c8328d7157f9099e0548a036a161405fd2cd03699b3538ad31ad58b5"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.4723,
+      "changed_pixel_ratio": 0.4748,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.851,
+      "player_contrast": 0.712,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -4777,12 +4777,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b277228e8214bbf0d36b47ef805ff4b6618a95bd5a1a4c644711899a2045c492"
+      "record_sha256": "861049de115e0bbe2d80b0ae44ab3623f319efa32ab9042d8cf7259c5066a85f"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9147,
+      "changed_pixel_ratio": 0.9145,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4818,182 +4818,182 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "519e321b276cdc4f167bf6be68fa03d638db9b1029598de036c9e7bf504637a8"
+      "record_sha256": "38a5ba97830b4ba57928482d1ecff836c4654903ab836bee7594f7bfd52db690"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.907,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.833,
-      "player_contrast": 0.539,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "normal",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "active",
-      "beat_seconds": 1.95,
-      "declared_beat_seconds": 1.95,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "705e62e501b1115b2ec6f4a885947df6345ea865cc0cb72dcacd5e1a600c02b2"
-    },
-    {
-      "effect_box_ratio": 0.0148,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9064,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.833,
-      "player_contrast": 0.566,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "normal",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "recovery",
-      "beat_seconds": 3.1,
-      "declared_beat_seconds": 3.1,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "3fcf94b8dd4979cfc14a1b93efb9293da04121344f5becf89df0abf6df831fd5"
-    },
-    {
-      "effect_box_ratio": 0.0192,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.915,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.667,
-      "player_contrast": 0.459,
-      "hazards_in_frame": 24,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "crowded",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "release",
-      "beat_seconds": 1.0,
-      "declared_beat_seconds": 1.0,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 24,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "8a104941b9bf389ac597adfa337423331dfe1909c2abdaa2f02deee951c98f50"
-    },
-    {
-      "effect_box_ratio": 0.0353,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9046,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.833,
-      "player_contrast": 0.524,
-      "hazards_in_frame": 24,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "crowded",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "active",
-      "beat_seconds": 1.95,
-      "declared_beat_seconds": 1.95,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 24,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "7f461e75e0b5cd5a3601f9d48a9f29df4555c8bf3a840533efb12117002c7904"
-    },
-    {
-      "effect_box_ratio": 0.0148,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8213,
+      "changed_pixel_ratio": 0.8212,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.776,
-      "player_contrast": 0.536,
+      "player_contrast": 0.498,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "normal",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "declared_beat_seconds": 1.95,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "75b86e2c24aa9fba154e93dc53a1fd1ed9095d36c3ea9e02c134abaee09359d4"
+    },
+    {
+      "effect_box_ratio": 0.0148,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.8204,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.776,
+      "player_contrast": 0.532,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "normal",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "recovery",
+      "beat_seconds": 3.1,
+      "declared_beat_seconds": 3.1,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "28c3e80e16f6debb203c6a2af8b1879083ec33574057b06583f5a3e50777f77e"
+    },
+    {
+      "effect_box_ratio": 0.0192,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.9152,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.667,
+      "player_contrast": 0.448,
+      "hazards_in_frame": 24,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "crowded",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "release",
+      "beat_seconds": 1.0,
+      "declared_beat_seconds": 1.0,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 24,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "5c65d3b40150de14317061d20a79298154f983591fe623444e60cba3b90678d9"
+    },
+    {
+      "effect_box_ratio": 0.0353,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.9032,
+      "flash_pixel_ratio": 0.0002,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.833,
+      "player_contrast": 0.483,
+      "hazards_in_frame": 24,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "crowded",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "active",
+      "beat_seconds": 1.95,
+      "declared_beat_seconds": 1.95,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 24,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "c73984d8f50b36b0994a8dd083739446bbdb1940f65c86eb5b98cedee61ab4dd"
+    },
+    {
+      "effect_box_ratio": 0.0148,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.9039,
+      "flash_pixel_ratio": 0.0002,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.833,
+      "player_contrast": 0.551,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -5023,18 +5023,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "dd250243cccaa0238ad3b4a181c33262e29590963d3e3856b03272c665f31869"
+      "record_sha256": "26b15ad9c844b431e501afb19214ec307b251315e2f272c785af2a09aa5f05a2"
     },
     {
       "effect_box_ratio": 0.0192,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8449,
+      "changed_pixel_ratio": 0.8453,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.664,
-      "player_contrast": 0.482,
+      "player_contrast": 0.464,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -5064,18 +5064,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e472e67acfd212ed490cfccccdd2e88cbc17cdaffe4c807011708b7d22341b75"
+      "record_sha256": "84fa23841efa043dcfa008923707fcc1a8d485913aa3cffcf25b65f1c7d8ded3"
     },
     {
       "effect_box_ratio": 0.0353,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8434,
+      "changed_pixel_ratio": 0.8441,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.664,
-      "player_contrast": 0.488,
+      "player_contrast": 0.503,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -5105,100 +5105,100 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f2cf6ed001d21f5895de4e7d48544e28c09dd29f7a244e430bec1a49e91e9c16"
+      "record_sha256": "8bc12d311325fae7386db23563be3e9e3b8b0ae46e7478d7057027136353f448"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7639,
+      "changed_pixel_ratio": 0.845,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.664,
+      "player_contrast": 0.459,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "reduced_motion",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "recovery",
+      "beat_seconds": 3.1,
+      "declared_beat_seconds": 3.1,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 1,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "942e1ce0c56ba91b55b29f368017891ae0f6e1f07b708f56678bd10f8f80fca4"
+    },
+    {
+      "effect_box_ratio": 0.0192,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.8092,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.664,
+      "player_contrast": 0.583,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 2,
+      "weapon_id": "summon_amulet",
+      "mode": "photosensitivity_safe",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "release",
+      "beat_seconds": 1.0,
+      "declared_beat_seconds": 1.0,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": true,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "704031bd6a7793738be0868ad6e191efbf33c5d4ae3bef3f1ec2e16f0828b09f"
+    },
+    {
+      "effect_box_ratio": 0.0353,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.6501,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.83,
-      "player_contrast": 0.538,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "reduced_motion",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "recovery",
-      "beat_seconds": 3.1,
-      "declared_beat_seconds": 3.1,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 1,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "18bbcd9e2930ab48e70e17c9e5b29ac771e1c30a8ede83027ab78d2771f62dcd"
-    },
-    {
-      "effect_box_ratio": 0.0192,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8097,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.664,
-      "player_contrast": 0.569,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 2,
-      "weapon_id": "summon_amulet",
-      "mode": "photosensitivity_safe",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "release",
-      "beat_seconds": 1.0,
-      "declared_beat_seconds": 1.0,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": true,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "85b561d7a8e7b91d3daf921077dd139d94da763e42a0bf374977151bc6770c7e"
-    },
-    {
-      "effect_box_ratio": 0.0353,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5409,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.772,
-      "player_contrast": 0.608,
+      "player_contrast": 0.635,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -5228,18 +5228,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fa016a31f831438dc934233a9acb54240202f3cc8b175d96617daa040f5d90ee"
+      "record_sha256": "76dd26caf61448599fe4bcfa70a0033ccd40c5e10e32e2acd11ab8cebb1bf9a2"
     },
     {
       "effect_box_ratio": 0.0148,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5378,
+      "changed_pixel_ratio": 0.8082,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.772,
-      "player_contrast": 0.673,
+      "hud_band_min_contrast": 0.664,
+      "player_contrast": 0.616,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "summon_amulet",
@@ -5269,12 +5269,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0a90cf7aabf97cc7a98220574399e961abf5f6c89932529ed0c8156c672d2f6a"
+      "record_sha256": "f1f0337bdc5d263aee7144fb69d33d80aeb2b5363d103a448a98f3fed25f8821"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9136,
+      "changed_pixel_ratio": 0.9139,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5310,12 +5310,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9e6d64a1c8dc35fd85f7290e34ba2a7a86aa90d90d947b98afbfc8e1bcfac634"
+      "record_sha256": "04804028301214374bc30e2eedd086e88cff7c10aaa0bf5260862211bd8eb139"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9068,
+      "changed_pixel_ratio": 0.9062,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5351,18 +5351,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fe12a756fe7ac3fb4e39783978984dd36a44cece7703a7ffc681adb07f076cac"
+      "record_sha256": "e42716dca449843d6bc798c3fa4f47fbc6fa528c86ab6330f5c0c6b1727144cf"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8309,
+      "changed_pixel_ratio": 0.8314,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.776,
-      "player_contrast": 0.543,
+      "player_contrast": 0.553,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5392,12 +5392,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c8853adc494de659c1352dddcb323bcf30b42ce994cfc4383cd4ebbc84f69a0c"
+      "record_sha256": "20413dfc94c7134c19068716fcfa0fae893d2b05a726b03a4c0319fab9154b57"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9117,
+      "changed_pixel_ratio": 0.9115,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5433,18 +5433,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d707615e052085e725dfd3599000d6242ef075080124768069970fa98b978969"
+      "record_sha256": "5572b5a8eae04561bd09ea7ab367b2db46bac93d17b769d33dad61e8dd4051bb"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9072,
+      "changed_pixel_ratio": 0.9076,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.667,
-      "player_contrast": 0.42,
+      "player_contrast": 0.423,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5474,18 +5474,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ac270dbdad6a4b9b3a38c4fde1dbefb017435ae7a91e30a184bc614e017c0a17"
+      "record_sha256": "66bfc8c4996ff744f15fb782d37d9455fdc29bcd383805631ecc97a6b73abef7"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8315,
+      "changed_pixel_ratio": 0.8318,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.776,
-      "player_contrast": 0.456,
+      "player_contrast": 0.545,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5515,12 +5515,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c388dc8318ba1e2c0df989a10065246a01bcc77ffd3512d1422b8019970317af"
+      "record_sha256": "c47496d8139f5ffab7a23b943a619456db8b2b3d46e08abed082e278ff2fba71"
     },
     {
       "effect_box_ratio": 0.0203,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7814,
+      "changed_pixel_ratio": 0.7817,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5556,18 +5556,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e38cbfb8498615d317cc48d8e29e991d89c8ca1c8de932c55d49ac366b44ec27"
+      "record_sha256": "79e18d16f7f615d3b3fc9690fa6475aed22a93028edbb7acabed25c5d4116838"
     },
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8352,
+      "changed_pixel_ratio": 0.8368,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.664,
-      "player_contrast": 0.474,
+      "player_contrast": 0.458,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5597,18 +5597,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "71418f48057d135c5072238ce301cb4167cd5bea276501d6ec594882a280cd95"
+      "record_sha256": "fdd11110a5b60f2bc5059793b200f0588d485913aff7a5157f5553a6b0b02910"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6407,
+      "changed_pixel_ratio": 0.6405,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.776,
-      "player_contrast": 0.668,
+      "player_contrast": 0.667,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5638,7 +5638,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0665fd584a3d2490090b8ab5c48a23cabb950f3cf71b7a5b453a2754acdfb91d"
+      "record_sha256": "41915859392062160b577aefb1df052f31cc95f0206bc3953b0dbcbb819cda6f"
     },
     {
       "effect_box_ratio": 0.0203,
@@ -5684,13 +5684,13 @@
     {
       "effect_box_ratio": 0.0482,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8026,
+      "changed_pixel_ratio": 0.8028,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.664,
-      "player_contrast": 0.449,
+      "player_contrast": 0.456,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5720,18 +5720,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "443bd5962e26ecac7333b73f79400952478d4096ef860c04730a1d598a292b15"
+      "record_sha256": "d7f07a6948fd5cc76b0a20c7f2941566344c7ffb8667f764c87e876ab08ec717"
     },
     {
       "effect_box_ratio": 0.0206,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5434,
+      "changed_pixel_ratio": 0.543,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.772,
-      "player_contrast": 0.723,
+      "player_contrast": 0.725,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "briar_staff",
@@ -5761,7 +5761,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "28b1436f3eb83ae7de7bcfa46caeaf7b6aee97e4e1086e61bd3db0b9baf02bf2"
+      "record_sha256": "74b66e522d4fded7cdc75665da16bef9348bcf2857aab6327f749ea85be4ba62"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -5807,13 +5807,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7332,
+      "changed_pixel_ratio": 0.7331,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.83,
-      "player_contrast": 0.645,
+      "player_contrast": 0.538,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -5843,18 +5843,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "4614136c8b1b1b1baaa23a9f634fa6ffbb0f1a93375da7721c22fbe47fad0e9a"
+      "record_sha256": "685f6b853dcb810bcc105f1ab2fe01815203600039a5736eac7091d5557b8ceb"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7324,
+      "changed_pixel_ratio": 0.7348,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.83,
-      "player_contrast": 0.742,
+      "player_contrast": 0.732,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -5884,12 +5884,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b47cd55f92890b7b3c225d980c3019a4921b3ff43753777ff6d233600df7f0f1"
+      "record_sha256": "f5fc0366984869441b24aa45075bed25b32a22dfc950ce1223eda72e4ed3c2cf"
     },
     {
       "effect_box_ratio": 0.0093,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7372,
+      "changed_pixel_ratio": 0.7376,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5925,18 +5925,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1134375062f42c8469ba5dac3becf346420169464bd41c06c911f8aac1bf82c8"
+      "record_sha256": "d209bbd4a6601c5c79da54a2f558f3913a2e66ed4ed18b78e706b6387b934d31"
     },
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7393,
-      "flash_pixel_ratio": 0.0002,
+      "changed_pixel_ratio": 0.8839,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.83,
-      "player_contrast": 0.518,
+      "hud_band_min_contrast": 0.664,
+      "player_contrast": 0.408,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -5966,18 +5966,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2ea848905fc52b6937a169b03467d09db40e9e234da44ae9cf7b7add6f3ef824"
+      "record_sha256": "5dd2ba7f38151f511b0ddd6f63c2d91f910f28644b794b0d0cb01fb7ef896652"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7419,
+      "changed_pixel_ratio": 0.7432,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.83,
-      "player_contrast": 0.689,
+      "player_contrast": 0.736,
       "hazards_in_frame": 22,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -6007,7 +6007,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d3a5d0304d1692b254b54ab466210130ad759389b50eb0f7cd2bfa2b2fcf8569"
+      "record_sha256": "c95249e7eecf10e08b4c9004b137468d2295d31fc3ba4d4f5da0848c2d9f0710"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -6053,13 +6053,13 @@
     {
       "effect_box_ratio": 0.051,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5601,
+      "changed_pixel_ratio": 0.56,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.829,
-      "player_contrast": 0.703,
+      "player_contrast": 0.77,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -6089,18 +6089,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8089ece8709383bd3134fb56099a171cdde73d369ddb0439cafee8aad097bc4e"
+      "record_sha256": "8df1d0afe04803cd8ae8e5f0ea841b3a12cb0b156e7641117fa9900454167b3b"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5581,
+      "changed_pixel_ratio": 0.5607,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.829,
-      "player_contrast": 0.782,
+      "player_contrast": 0.809,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -6130,7 +6130,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "41e6d5edee9caada4f0087701dba4edea6dcd03cf747a36ffc74da048311476b"
+      "record_sha256": "8bc4ff28458d9c8f0a81d94bbc15492ea1f9423c3a597e2b739bec805fefee65"
     },
     {
       "effect_box_ratio": 0.0093,
@@ -6182,7 +6182,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.828,
-      "player_contrast": 0.807,
+      "player_contrast": 0.802,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -6212,18 +6212,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ffca43dddeb473fa592f120a337b2bc2fbaabad02d26d9c786202d801cd2a2fb"
+      "record_sha256": "1bcef153030d777dd57613b09d3562006c12b53d8b424aa64b78fb598ea07f2c"
     },
     {
       "effect_box_ratio": 0.0174,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.47,
+      "changed_pixel_ratio": 0.4704,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.828,
-      "player_contrast": 0.757,
+      "player_contrast": 0.763,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 2,
       "weapon_id": "raven_totem",
@@ -6253,8 +6253,8 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "63c9303a22635d07223d3776c7eed73749dc9dc9a8709a4a9c16ceff26489733"
+      "record_sha256": "d99f144dd8eb1088cbd8388f80dac5523a7ff342fd17f2096eaf8492927f0015"
     }
   ],
-  "attestation_sha256": "651fbf1fe13f121fff3980f6994da7fe338ce2c7a57cff02f5e879c9ae372e7b"
+  "attestation_sha256": "05a96d2560fff3b8072a1ef2dc71a56a9b198f5496da5a54c89fcbdd7880fb5b"
 }
