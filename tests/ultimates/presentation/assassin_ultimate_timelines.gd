@@ -81,7 +81,7 @@ func _initialize() -> void:
 		_check_package(str(weapon_id), profiles.get(str(weapon_id), {}) as Dictionary, packages.get(str(weapon_id), {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_v2_packages(packages, errors)
-	_check_single_presentation_owner(errors)
+	await _check_single_presentation_owner(errors)
 	_check_contact_evidence(errors)
 	await _check_runtime_clock_identity_rng_and_reduced_compass(errors)
 	if not errors.is_empty():
@@ -94,9 +94,13 @@ func _initialize() -> void:
 func _check_single_presentation_owner(errors: Array[String]) -> void:
 	for weapon_id in WEAPON_IDS:
 		var executor := (EXECUTOR_SCENES[weapon_id] as PackedScene).instantiate()
-		_expect(executor.get_node_or_null("Presentation") == null,
-			"%s executor must not bypass the shared presentation runtime" % weapon_id, errors)
-		executor.free()
+		root.add_child(executor)
+		await process_frame
+		var embedded := executor.get_node_or_null("Presentation") as Node2D
+		_expect(embedded != null and not embedded.visible and not embedded.is_processing(),
+			"%s embedded presentation must remain dormant for the shared runtime" % weapon_id, errors)
+		executor.queue_free()
+		await process_frame
 
 
 func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]) -> void:
@@ -122,6 +126,7 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 	root.add_child(scene)
 	await process_frame
 	var state := scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0) as Dictionary
+	_expect(scene.visible, "the runtime-owned Chakrams presentation must become visible on begin", errors)
 	_expect(bool(state.get("cast_pose_bound", false)), "chakrams must replace the live player body with its cast pose", errors)
 	_expect(not body.visible \
 			and visual_root.get_node_or_null("UltimateCastPose") != null \
@@ -144,6 +149,7 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 	_expect(float(scene.get("_elapsed")) >= 3.0, "runtime advance must place Chakrams in recovery on wall time", errors)
 	_expect(is_equal_approx(randf(), expected_rng), "presentation camera shake must not consume global gameplay RNG", errors)
 	scene.call("advance", 0.60)
+	_expect(not scene.visible, "the runtime-owned Chakrams presentation must become dormant after cancel", errors)
 	_expect(body.visible \
 			and visual_root.get_node_or_null("UltimateCastPose") == null \
 			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") == null \

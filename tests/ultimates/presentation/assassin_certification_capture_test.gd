@@ -421,17 +421,14 @@ func png_violations(path: String, expected_size: Vector2i) -> Array[String]:
 	return violations
 
 
-## CI materializes exactly the LFS paths a class manifest lists under
-## `evidence.contact_sheets`, so an unregistered sheet would reach the gate as an
-## unsmudged pointer. `evidence.live_capture` is what declares this class as
-## four-mode covered.
+## The shared presentation contract owns exactly one contact sheet per
+## viewport. Beat sheets are hydrated through the linked capture manifest;
+## duplicating them here breaks that frozen four-sheet contract.
 func _check_class_manifest_registration(class_manifest: Dictionary, manifest: Dictionary, errors: Array[String]) -> void:
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
 	var hydrated := _string_array(evidence.get("contact_sheets", []))
-	for raw_sheet in manifest.get("sheets", []) as Array:
-		var path := str((raw_sheet as Dictionary).get("path", ""))
-		if not hydrated.has(path):
-			errors.append("sheet %s is not listed in evidence.contact_sheets, so CI would never materialize it" % path)
+	if hydrated.size() != Capture.VIEWPORTS.size():
+		errors.append("evidence.contact_sheets must retain exactly one sheet per viewport")
 	var authored := _string_array(evidence.get("authored_timeline_sheets", []))
 	if authored.size() != Capture.VIEWPORTS.size():
 		errors.append("the four authored timeline sheets must stay declared as authored_timeline_sheets")

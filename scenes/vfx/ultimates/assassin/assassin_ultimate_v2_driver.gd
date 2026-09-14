@@ -49,14 +49,19 @@ var _cast_pose_binding_error := "not_started"
 
 func _ready() -> void:
 	process_priority = 1000
+	# The legacy executor scenes still embed these presentation scenes. Keep
+	# those copies inert; WeaponUltimatePresentationRuntime owns the one live
+	# instance and explicitly activates it through begin().
+	hide()
 	_apply_accessibility_snapshot()
-	set_process(true)
+	set_process(false)
 
 
 ## Runtime-compatible signature. The registry and handles stay owned by the
 ## shared presentation runtime; the scene only restarts its authored timeline.
 func begin(registry = null, _handles: Dictionary = {}, _headless_mode := -1) -> Dictionary:
 	_reset_run()
+	show()
 	_apply_accessibility_snapshot()
 	_bind_cast_pose(registry)
 	_shake_rng.seed = hash(str(get_meta("ultimate_id", name)))
@@ -130,6 +135,7 @@ func finish(_reason: String) -> void:
 	_hitstop_remaining = 0.0
 	_shake_remaining = 0.0
 	_release_cast_pose()
+	hide()
 
 
 func presence_snapshot() -> Dictionary:
