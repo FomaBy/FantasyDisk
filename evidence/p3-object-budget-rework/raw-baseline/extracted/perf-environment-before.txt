@@ -1,0 +1,39 @@
+utc=2026-09-09T00:48:48Z
+local_timezone=EEST +0300
+candidate_sha=d192be10bbe52dd89971cab0acc66eb92ccab37f
+candidate_tree=e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf
+godot_version=4.7.stable.official.5b4e0cb0f
+ProductName:		macOS
+ProductVersion:		26.5.1
+BuildVersion:		25F80
+Darwin MacBook-Pro-Sergey.local 25.5.0 Darwin Kernel Version 25.5.0: Mon Apr 27 20:41:15 PDT 2026; root:xnu-12377.121.6~2/RELEASE_ARM64_T6041 arm64
+Apple M4 Pro
+51539607552
+Graphics/Displays:
+
+    Apple M4 Pro:
+
+      Chipset Model: Apple M4 Pro
+      Type: GPU
+      Bus: Built-In
+      Total Number of Cores: 20
+      Vendor: Apple (0x106b)
+      Metal Support: Metal 4
+      Displays:
+        Color LCD:
+          Display Type: Built-in Liquid Retina XDR Display
+          Resolution: 3024 x 1964 Retina
+          Main Display: Yes
+          Mirror: Off
+          Online: Yes
+          Automatically Adjust Brightness: Yes
+          Connection Type: Internal
+
+Note: No thermal warning level has been recorded
+Note: No performance warning level has been recorded
+Note: No CPU power status has been recorded
+ 3:48  up 16 days, 16:36, 1 user, load averages: 4.57 4.94 6.39
+competing_godot_processes_begin
+89569   1.3  0.0 /bin/zsh -lc \012{\012  date -u '+utc=%Y-%m-%dT%H:%M:%SZ'\012  printf 'local_timezone=%s\n' "$(date '+%Z %z')"\012  printf 'candidate_sha=%s\n' "$(git rev-parse HEAD)"\012  printf 'candidate_tree=%s\n' "$(git rev-parse 'HEAD^{tree}')"\012  printf 'godot_version=%s\n' "$(/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --version)"\012  sw_vers\012  uname -a\012  sysctl -n machdep.cpu.brand_string\012  sysctl -n hw.memsize\012  system_profiler SPDisplaysDataType | sed -n '1,80p'\012  pmset -g therm\012  uptime\012  printf 'competing_godot_processes_begin\n'\012  ps -Ao pid=,pcpu=,pmem=,command= | rg '/Godot( |$)|Godot\\.app' || true\012  printf 'competing_godot_processes_end\n'\012} | tee evidence/FAN-3877/perf-environment-before.txt\012
+89571   0.9  0.0 /bin/zsh -lc \012{\012  date -u '+utc=%Y-%m-%dT%H:%M:%SZ'\012  printf 'local_timezone=%s\n' "$(date '+%Z %z')"\012  printf 'candidate_sha=%s\n' "$(git rev-parse HEAD)"\012  printf 'candidate_tree=%s\n' "$(git rev-parse 'HEAD^{tree}')"\012  printf 'godot_version=%s\n' "$(/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --version)"\012  sw_vers\012  uname -a\012  sysctl -n machdep.cpu.brand_string\012  sysctl -n hw.memsize\012  system_profiler SPDisplaysDataType | sed -n '1,80p'\012  pmset -g therm\012  uptime\012  printf 'competing_godot_processes_begin\n'\012  ps -Ao pid=,pcpu=,pmem=,command= | rg '/Godot( |$)|Godot\\.app' || true\012  printf 'competing_godot_processes_end\n'\012} | tee evidence/FAN-3877/perf-environment-before.txt\012
+competing_godot_processes_end

@@ -1,0 +1,7 @@
+driver_pid=86168
+driver_argv=['evidence/p3-object-budget-rework/round6/run_observed.py', '/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3934-0b5c06167c31/workdir/FantasyDisk']
+start_utc=2026-09-09T19:38:27Z
+git_head=8d4d7d62b017856f43c735bfb06814fde54d939c
+git_tree=eda3ca682a7a359b9a84b7098a4372cd6a4925c1
+godot=4.7.stable.official.5b4e0cb0f
+probe_sha256=57d817d2effc2627f5d5b115b8094ebdb6bda541e5a3640fab2a9f7f03eaa6f5

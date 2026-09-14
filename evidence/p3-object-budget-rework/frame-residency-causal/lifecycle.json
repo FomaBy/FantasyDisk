@@ -1,0 +1,56 @@
+{
+  "a1_instance_equals_a2": true,
+  "candidate_sha": "df46819a5046cb7cd0578498546471b8859c0308",
+  "frames": {
+    "a1": {
+      "instance": -9223369976411322031,
+      "path": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres"
+    },
+    "a2": {
+      "instance": -9223369976411322031,
+      "path": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres"
+    },
+    "b1": {
+      "instance": -9223369935189702113,
+      "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres"
+    }
+  },
+  "kind": "consumer-lifecycle-diagnostic",
+  "steps": [
+    {
+      "nodes": 4,
+      "objects": 1512,
+      "step": "baseline"
+    },
+    {
+      "nodes": 11,
+      "objects": 1970,
+      "step": "first consumer kind A (small_biter)"
+    },
+    {
+      "nodes": 18,
+      "objects": 1978,
+      "step": "second same-kind consumer A"
+    },
+    {
+      "nodes": 25,
+      "objects": 2358,
+      "step": "additional kind B (shieldbearer)"
+    },
+    {
+      "nodes": 18,
+      "objects": 2350,
+      "step": "release one A (A2 still live)"
+    },
+    {
+      "nodes": 11,
+      "objects": 1970,
+      "step": "release last A (B still live)"
+    },
+    {
+      "nodes": 4,
+      "objects": 1590,
+      "step": "release last B"
+    }
+  ]
+}

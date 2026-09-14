@@ -1,0 +1,4 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+Presentation v2 migration allowlist: 23/51 pair(s) still on the v1 envelope; the ratchet only shrinks and its target state is empty.
+Weapon ultimate presentation contract passed (51 stable manifests, pause/cleanup and headless no-op).

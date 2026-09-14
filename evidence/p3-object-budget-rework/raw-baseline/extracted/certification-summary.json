@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3877",
+  "issue_id": "01a06a31-7387-79fd-a7e9-d9d37ec5dffa",
+  "verdict": "FAILED",
+  "candidate_sha": "d192be10bbe52dd89971cab0acc66eb92ccab37f",
+  "candidate_tree": "e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf",
+  "candidate_base_sha": "51cc690145039f326b4f533c252faf41d6bb8f2c",
+  "reviewer_id": "f992a646-a8ea-4935-ba94-212595803052",
+  "reviewer_task_id": "01a08377-5ff9-7188-9eaa-a1569137e23f",
+  "acceptance": {
+    "1_dependencies": "PASS",
+    "2_candidate_identity": "PASS",
+    "3_quality_accessibility_victim_impact": "FAIL",
+    "4_contact_sheet_beats": "PASS",
+    "5_four_mode_four_viewport_evidence": "FAIL",
+    "6_runtime_contours": "FAIL",
+    "7_every_ultimate_readability_and_gates": "FAIL",
+    "8_independent_read_only_report": "PASS"
+  },
+  "coverage": {
+    "classes": 17,
+    "weapons": 51,
+    "victim_impact_classes": 17,
+    "quality_classes": 7,
+    "quality_weapons": 23,
+    "four_mode_classes": 2,
+    "four_mode_weapons": 6,
+    "presentation_v2_allowlisted_pairs": 23,
+    "beats_allowlisted_classes": 0,
+    "capture_files": 68,
+    "capture_files_valid": 68,
+    "hydrated_lfs_files": 24
+  },
+  "quality_gate": {
+    "status": "passed",
+    "python_tests_executed": 771,
+    "static_checks_passed": 16,
+    "candidate_godot_suites_passed": 5,
+    "focused_godot_suites_passed": 42
+  },
+  "performance": {
+    "p1": {
+      "pass": true,
+      "average_fps": 119.892,
+      "one_percent_low_fps": 118.383,
+      "peak_objects": 2716,
+      "object_limit": null,
+      "peak_memory_mib": 123.518,
+      "cleanup_orphan_delta": 0
+    },
+    "p2": {
+      "pass": true,
+      "average_fps": 111.700,
+      "one_percent_low_fps": 108.377,
+      "peak_objects": 4810,
+      "object_limit": 5000,
+      "peak_memory_mib": 132.043,
+      "cleanup_orphan_delta": 0
+    },
+    "p3_run_1": {
+      "pass": false,
+      "average_fps": 117.924,
+      "one_percent_low_fps": 109.523,
+      "peak_objects": 4411,
+      "object_limit": 4000,
+      "frames_above_object_limit": 2124,
+      "peak_memory_mib": 132.310,
+      "cleanup_orphan_delta": 0
+    },
+    "p3_run_2": {
+      "pass": false,
+      "average_fps": 117.669,
+      "one_percent_low_fps": 114.717,
+      "peak_objects": 4610,
+      "object_limit": 4000,
+      "frames_above_object_limit": 6037,
+      "peak_memory_mib": 132.718,
+      "cleanup_orphan_delta": 0
+    }
+  },
+  "tracked_repository_changes": 0,
+  "integration_performed": false
+}

@@ -1,196 +1,751 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_east.png" id="1_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south_east.png" id="2_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south.png" id="3_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south_west.png" id="4_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_west.png" id="5_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north_west.png" id="6_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north.png" id="7_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north_east.png" id="8_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_00.png" id="9_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_01.png" id="10_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_02.png" id="11_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_03.png" id="12_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_04.png" id="13_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_05.png" id="14_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_00.png" id="15_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_01.png" id="16_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_02.png" id="17_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_03.png" id="18_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_04.png" id="19_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_05.png" id="20_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_00.png" id="21_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_01.png" id="22_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_02.png" id="23_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_03.png" id="24_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_04.png" id="25_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_05.png" id="26_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_00.png" id="27_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_01.png" id="28_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_02.png" id="29_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_03.png" id="30_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_04.png" id="31_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_05.png" id="32_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_00.png" id="33_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_01.png" id="34_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_02.png" id="35_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_03.png" id="36_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_04.png" id="37_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_05.png" id="38_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_00.png" id="39_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_01.png" id="40_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_02.png" id="41_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_03.png" id="42_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_04.png" id="43_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_05.png" id="44_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_00.png" id="45_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_01.png" id="46_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_02.png" id="47_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_03.png" id="48_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_04.png" id="49_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_05.png" id="50_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_00.png" id="51_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_01.png" id="52_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_02.png" id="53_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_03.png" id="54_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_04.png" id="55_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_05.png" id="56_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_00.png" id="57_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_01.png" id="58_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_02.png" id="59_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_03.png" id="60_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_04.png" id="61_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_05.png" id="62_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_00.png" id="63_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_01.png" id="64_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_02.png" id="65_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_03.png" id="66_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_04.png" id="67_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_05.png" id="68_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_00.png" id="69_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_01.png" id="70_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_02.png" id="71_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_03.png" id="72_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_04.png" id="73_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_05.png" id="74_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_00.png" id="75_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_01.png" id="76_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_02.png" id="77_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_03.png" id="78_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_04.png" id="79_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_05.png" id="80_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_00.png" id="81_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_01.png" id="82_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_02.png" id="83_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_03.png" id="84_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_04.png" id="85_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_05.png" id="86_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_00.png" id="87_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_01.png" id="88_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_02.png" id="89_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_03.png" id="90_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_04.png" id="91_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_05.png" id="92_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_00.png" id="93_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_01.png" id="94_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_02.png" id="95_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_03.png" id="96_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_04.png" id="97_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_05.png" id="98_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_00.png" id="99_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_01.png" id="100_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_02.png" id="101_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_03.png" id="102_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_04.png" id="103_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_05.png" id="104_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_00.png" id="105_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_01.png" id="106_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_02.png" id="107_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_03.png" id="108_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_00.png" id="109_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_01.png" id="110_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_02.png" id="111_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_03.png" id="112_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_00.png" id="113_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_01.png" id="114_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_02.png" id="115_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_03.png" id="116_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_00.png" id="117_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_01.png" id="118_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_02.png" id="119_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_03.png" id="120_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_00.png" id="121_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_01.png" id="122_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_02.png" id="123_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_03.png" id="124_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_00.png" id="125_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_01.png" id="126_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_02.png" id="127_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_03.png" id="128_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_00.png" id="129_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_01.png" id="130_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_02.png" id="131_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_03.png" id="132_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_00.png" id="133_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_01.png" id="134_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_02.png" id="135_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_03.png" id="136_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_00.png" id="137_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_01.png" id="138_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_02.png" id="139_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_03.png" id="140_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_04.png" id="141_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_05.png" id="142_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_00.png" id="143_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_01.png" id="144_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_02.png" id="145_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_03.png" id="146_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_04.png" id="147_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_05.png" id="148_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_00.png" id="149_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_01.png" id="150_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_02.png" id="151_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_03.png" id="152_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_04.png" id="153_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_05.png" id="154_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_00.png" id="155_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_01.png" id="156_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_02.png" id="157_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_03.png" id="158_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_04.png" id="159_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_05.png" id="160_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_00.png" id="161_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_01.png" id="162_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_02.png" id="163_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_03.png" id="164_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_04.png" id="165_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_05.png" id="166_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_00.png" id="167_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_01.png" id="168_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_02.png" id="169_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_03.png" id="170_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_04.png" id="171_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_05.png" id="172_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_00.png" id="173_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_01.png" id="174_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_02.png" id="175_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_03.png" id="176_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_04.png" id="177_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_05.png" id="178_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_00.png" id="179_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_01.png" id="180_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_02.png" id="181_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_03.png" id="182_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_04.png" id="183_sbf"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_05.png" id="184_sbf"]
 
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter_atlas_0.png" id="0_atlas"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter_atlas_1.png" id="1_atlas"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/small_biter_atlas_2.png" id="2_atlas"]
+
+[sub_resource type="AtlasTexture" id="Atlas_0"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_1"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_2"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_3"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_4"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_5"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_6"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_7"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_8"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_9"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_10"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_11"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_12"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_13"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_14"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_15"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_16"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_17"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_18"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_19"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_20"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_21"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_22"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_23"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_24"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_25"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_26"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_27"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_28"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_29"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_30"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_31"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_32"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_33"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_34"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_35"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_36"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_37"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_38"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_39"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_40"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_41"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_42"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_43"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_44"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_45"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_46"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_47"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_48"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_49"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_50"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_51"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_52"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_53"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_54"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_55"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_56"]
+atlas = ExtResource("0_atlas")
+region = Rect2(0, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_57"]
+atlas = ExtResource("0_atlas")
+region = Rect2(512, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_58"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1024, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_59"]
+atlas = ExtResource("0_atlas")
+region = Rect2(1536, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_60"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2048, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_61"]
+atlas = ExtResource("0_atlas")
+region = Rect2(2560, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_62"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3072, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_63"]
+atlas = ExtResource("0_atlas")
+region = Rect2(3584, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_64"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_65"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_66"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_67"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_68"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_69"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_70"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_71"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_72"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_73"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_74"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_75"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_76"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_77"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_78"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_79"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_80"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_81"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_82"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_83"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_84"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_85"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_86"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_87"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_88"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_89"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_90"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_91"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_92"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_93"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_94"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_95"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_96"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_97"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_98"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_99"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_100"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_101"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_102"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_103"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_104"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_105"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_106"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_107"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_108"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_109"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_110"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_111"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_112"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_113"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_114"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_115"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_116"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_117"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_118"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_119"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_120"]
+atlas = ExtResource("1_atlas")
+region = Rect2(0, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_121"]
+atlas = ExtResource("1_atlas")
+region = Rect2(512, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_122"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1024, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_123"]
+atlas = ExtResource("1_atlas")
+region = Rect2(1536, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_124"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2048, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_125"]
+atlas = ExtResource("1_atlas")
+region = Rect2(2560, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_126"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3072, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_127"]
+atlas = ExtResource("1_atlas")
+region = Rect2(3584, 3584, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_128"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_129"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_130"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_131"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_132"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_133"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_134"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_135"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_136"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_137"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_138"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_139"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_140"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_141"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_142"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_143"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_144"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_145"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_146"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_147"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_148"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_149"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_150"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_151"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_152"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_153"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_154"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_155"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_156"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_157"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_158"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_159"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_160"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_161"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_162"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_163"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_164"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_165"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_166"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_167"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_168"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_169"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_170"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_171"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_172"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_173"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_174"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_175"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 2560, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_176"]
+atlas = ExtResource("2_atlas")
+region = Rect2(0, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_177"]
+atlas = ExtResource("2_atlas")
+region = Rect2(512, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_178"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1024, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_179"]
+atlas = ExtResource("2_atlas")
+region = Rect2(1536, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_180"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2048, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_181"]
+atlas = ExtResource("2_atlas")
+region = Rect2(2560, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_182"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3072, 3072, 512, 512)
+
+[sub_resource type="AtlasTexture" id="Atlas_183"]
+atlas = ExtResource("2_atlas")
+region = Rect2(3584, 3072, 512, 512)
 [resource]
 animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_sbf")
+"texture": SubResource("Atlas_0")
 }],
 "loop": true,
 "name": &"idle_east",
@@ -199,7 +754,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_sbf")
+"texture": SubResource("Atlas_1")
 }],
 "loop": true,
 "name": &"idle_south_east",
@@ -208,7 +763,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_sbf")
+"texture": SubResource("Atlas_2")
 }],
 "loop": true,
 "name": &"idle_south",
@@ -217,7 +772,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_sbf")
+"texture": SubResource("Atlas_3")
 }],
 "loop": true,
 "name": &"idle_south_west",
@@ -226,7 +781,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_sbf")
+"texture": SubResource("Atlas_4")
 }],
 "loop": true,
 "name": &"idle_west",
@@ -235,7 +790,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_sbf")
+"texture": SubResource("Atlas_5")
 }],
 "loop": true,
 "name": &"idle_north_west",
@@ -244,7 +799,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_sbf")
+"texture": SubResource("Atlas_6")
 }],
 "loop": true,
 "name": &"idle_north",
@@ -253,7 +808,7 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_sbf")
+"texture": SubResource("Atlas_7")
 }],
 "loop": true,
 "name": &"idle_north_east",
@@ -262,27 +817,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("9_sbf")
+"texture": SubResource("Atlas_8")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("10_sbf")
+"texture": SubResource("Atlas_9")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("11_sbf")
+"texture": SubResource("Atlas_10")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("12_sbf")
+"texture": SubResource("Atlas_11")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("13_sbf")
+"texture": SubResource("Atlas_12")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("14_sbf")
+"texture": SubResource("Atlas_13")
 }],
 "loop": true,
 "name": &"move_east",
@@ -291,27 +846,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("15_sbf")
+"texture": SubResource("Atlas_14")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("16_sbf")
+"texture": SubResource("Atlas_15")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("17_sbf")
+"texture": SubResource("Atlas_16")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("18_sbf")
+"texture": SubResource("Atlas_17")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("19_sbf")
+"texture": SubResource("Atlas_18")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_sbf")
+"texture": SubResource("Atlas_19")
 }],
 "loop": true,
 "name": &"move_south_east",
@@ -320,27 +875,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("21_sbf")
+"texture": SubResource("Atlas_20")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_sbf")
+"texture": SubResource("Atlas_21")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_sbf")
+"texture": SubResource("Atlas_22")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_sbf")
+"texture": SubResource("Atlas_23")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("25_sbf")
+"texture": SubResource("Atlas_24")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_sbf")
+"texture": SubResource("Atlas_25")
 }],
 "loop": true,
 "name": &"move_south",
@@ -349,27 +904,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("27_sbf")
+"texture": SubResource("Atlas_26")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_sbf")
+"texture": SubResource("Atlas_27")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_sbf")
+"texture": SubResource("Atlas_28")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_sbf")
+"texture": SubResource("Atlas_29")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("31_sbf")
+"texture": SubResource("Atlas_30")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("32_sbf")
+"texture": SubResource("Atlas_31")
 }],
 "loop": true,
 "name": &"move_south_west",
@@ -378,27 +933,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("33_sbf")
+"texture": SubResource("Atlas_32")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("34_sbf")
+"texture": SubResource("Atlas_33")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("35_sbf")
+"texture": SubResource("Atlas_34")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("36_sbf")
+"texture": SubResource("Atlas_35")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("37_sbf")
+"texture": SubResource("Atlas_36")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("38_sbf")
+"texture": SubResource("Atlas_37")
 }],
 "loop": true,
 "name": &"move_west",
@@ -407,27 +962,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("39_sbf")
+"texture": SubResource("Atlas_38")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("40_sbf")
+"texture": SubResource("Atlas_39")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("41_sbf")
+"texture": SubResource("Atlas_40")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("42_sbf")
+"texture": SubResource("Atlas_41")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("43_sbf")
+"texture": SubResource("Atlas_42")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("44_sbf")
+"texture": SubResource("Atlas_43")
 }],
 "loop": true,
 "name": &"move_north_west",
@@ -436,27 +991,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("45_sbf")
+"texture": SubResource("Atlas_44")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("46_sbf")
+"texture": SubResource("Atlas_45")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("47_sbf")
+"texture": SubResource("Atlas_46")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("48_sbf")
+"texture": SubResource("Atlas_47")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("49_sbf")
+"texture": SubResource("Atlas_48")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("50_sbf")
+"texture": SubResource("Atlas_49")
 }],
 "loop": true,
 "name": &"move_north",
@@ -465,27 +1020,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("51_sbf")
+"texture": SubResource("Atlas_50")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("52_sbf")
+"texture": SubResource("Atlas_51")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("53_sbf")
+"texture": SubResource("Atlas_52")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("54_sbf")
+"texture": SubResource("Atlas_53")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("55_sbf")
+"texture": SubResource("Atlas_54")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("56_sbf")
+"texture": SubResource("Atlas_55")
 }],
 "loop": true,
 "name": &"move_north_east",
@@ -494,27 +1049,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("57_sbf")
+"texture": SubResource("Atlas_56")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("58_sbf")
+"texture": SubResource("Atlas_57")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("59_sbf")
+"texture": SubResource("Atlas_58")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("60_sbf")
+"texture": SubResource("Atlas_59")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("61_sbf")
+"texture": SubResource("Atlas_60")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("62_sbf")
+"texture": SubResource("Atlas_61")
 }],
 "loop": false,
 "name": &"attack_east",
@@ -523,27 +1078,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("63_sbf")
+"texture": SubResource("Atlas_62")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("64_sbf")
+"texture": SubResource("Atlas_63")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("65_sbf")
+"texture": SubResource("Atlas_64")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("66_sbf")
+"texture": SubResource("Atlas_65")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("67_sbf")
+"texture": SubResource("Atlas_66")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("68_sbf")
+"texture": SubResource("Atlas_67")
 }],
 "loop": false,
 "name": &"attack_south_east",
@@ -552,27 +1107,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("69_sbf")
+"texture": SubResource("Atlas_68")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("70_sbf")
+"texture": SubResource("Atlas_69")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("71_sbf")
+"texture": SubResource("Atlas_70")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("72_sbf")
+"texture": SubResource("Atlas_71")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("73_sbf")
+"texture": SubResource("Atlas_72")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("74_sbf")
+"texture": SubResource("Atlas_73")
 }],
 "loop": false,
 "name": &"attack_south",
@@ -581,27 +1136,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("75_sbf")
+"texture": SubResource("Atlas_74")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("76_sbf")
+"texture": SubResource("Atlas_75")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("77_sbf")
+"texture": SubResource("Atlas_76")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("78_sbf")
+"texture": SubResource("Atlas_77")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("79_sbf")
+"texture": SubResource("Atlas_78")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("80_sbf")
+"texture": SubResource("Atlas_79")
 }],
 "loop": false,
 "name": &"attack_south_west",
@@ -610,27 +1165,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("81_sbf")
+"texture": SubResource("Atlas_80")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("82_sbf")
+"texture": SubResource("Atlas_81")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("83_sbf")
+"texture": SubResource("Atlas_82")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("84_sbf")
+"texture": SubResource("Atlas_83")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("85_sbf")
+"texture": SubResource("Atlas_84")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("86_sbf")
+"texture": SubResource("Atlas_85")
 }],
 "loop": false,
 "name": &"attack_west",
@@ -639,27 +1194,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("87_sbf")
+"texture": SubResource("Atlas_86")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("88_sbf")
+"texture": SubResource("Atlas_87")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("89_sbf")
+"texture": SubResource("Atlas_88")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("90_sbf")
+"texture": SubResource("Atlas_89")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("91_sbf")
+"texture": SubResource("Atlas_90")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("92_sbf")
+"texture": SubResource("Atlas_91")
 }],
 "loop": false,
 "name": &"attack_north_west",
@@ -668,27 +1223,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("93_sbf")
+"texture": SubResource("Atlas_92")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("94_sbf")
+"texture": SubResource("Atlas_93")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("95_sbf")
+"texture": SubResource("Atlas_94")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("96_sbf")
+"texture": SubResource("Atlas_95")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("97_sbf")
+"texture": SubResource("Atlas_96")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("98_sbf")
+"texture": SubResource("Atlas_97")
 }],
 "loop": false,
 "name": &"attack_north",
@@ -697,27 +1252,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("99_sbf")
+"texture": SubResource("Atlas_98")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("100_sbf")
+"texture": SubResource("Atlas_99")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("101_sbf")
+"texture": SubResource("Atlas_100")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("102_sbf")
+"texture": SubResource("Atlas_101")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("103_sbf")
+"texture": SubResource("Atlas_102")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("104_sbf")
+"texture": SubResource("Atlas_103")
 }],
 "loop": false,
 "name": &"attack_north_east",
@@ -726,19 +1281,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("105_sbf")
+"texture": SubResource("Atlas_104")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("106_sbf")
+"texture": SubResource("Atlas_105")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("107_sbf")
+"texture": SubResource("Atlas_106")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("108_sbf")
+"texture": SubResource("Atlas_107")
 }],
 "loop": false,
 "name": &"hit_east",
@@ -747,19 +1302,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("109_sbf")
+"texture": SubResource("Atlas_108")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("110_sbf")
+"texture": SubResource("Atlas_109")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("111_sbf")
+"texture": SubResource("Atlas_110")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("112_sbf")
+"texture": SubResource("Atlas_111")
 }],
 "loop": false,
 "name": &"hit_south_east",
@@ -768,19 +1323,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("113_sbf")
+"texture": SubResource("Atlas_112")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("114_sbf")
+"texture": SubResource("Atlas_113")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("115_sbf")
+"texture": SubResource("Atlas_114")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("116_sbf")
+"texture": SubResource("Atlas_115")
 }],
 "loop": false,
 "name": &"hit_south",
@@ -789,19 +1344,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("117_sbf")
+"texture": SubResource("Atlas_116")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("118_sbf")
+"texture": SubResource("Atlas_117")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("119_sbf")
+"texture": SubResource("Atlas_118")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("120_sbf")
+"texture": SubResource("Atlas_119")
 }],
 "loop": false,
 "name": &"hit_south_west",
@@ -810,19 +1365,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("121_sbf")
+"texture": SubResource("Atlas_120")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("122_sbf")
+"texture": SubResource("Atlas_121")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("123_sbf")
+"texture": SubResource("Atlas_122")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("124_sbf")
+"texture": SubResource("Atlas_123")
 }],
 "loop": false,
 "name": &"hit_west",
@@ -831,19 +1386,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("125_sbf")
+"texture": SubResource("Atlas_124")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("126_sbf")
+"texture": SubResource("Atlas_125")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("127_sbf")
+"texture": SubResource("Atlas_126")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("128_sbf")
+"texture": SubResource("Atlas_127")
 }],
 "loop": false,
 "name": &"hit_north_west",
@@ -852,19 +1407,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("129_sbf")
+"texture": SubResource("Atlas_128")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("130_sbf")
+"texture": SubResource("Atlas_129")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("131_sbf")
+"texture": SubResource("Atlas_130")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("132_sbf")
+"texture": SubResource("Atlas_131")
 }],
 "loop": false,
 "name": &"hit_north",
@@ -873,19 +1428,19 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("133_sbf")
+"texture": SubResource("Atlas_132")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("134_sbf")
+"texture": SubResource("Atlas_133")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("135_sbf")
+"texture": SubResource("Atlas_134")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("136_sbf")
+"texture": SubResource("Atlas_135")
 }],
 "loop": false,
 "name": &"hit_north_east",
@@ -894,27 +1449,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("137_sbf")
+"texture": SubResource("Atlas_136")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("138_sbf")
+"texture": SubResource("Atlas_137")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("139_sbf")
+"texture": SubResource("Atlas_138")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("140_sbf")
+"texture": SubResource("Atlas_139")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("141_sbf")
+"texture": SubResource("Atlas_140")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("142_sbf")
+"texture": SubResource("Atlas_141")
 }],
 "loop": false,
 "name": &"death_east",
@@ -923,27 +1478,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("143_sbf")
+"texture": SubResource("Atlas_142")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("144_sbf")
+"texture": SubResource("Atlas_143")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("145_sbf")
+"texture": SubResource("Atlas_144")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("146_sbf")
+"texture": SubResource("Atlas_145")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("147_sbf")
+"texture": SubResource("Atlas_146")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("148_sbf")
+"texture": SubResource("Atlas_147")
 }],
 "loop": false,
 "name": &"death_south_east",
@@ -952,27 +1507,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("149_sbf")
+"texture": SubResource("Atlas_148")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("150_sbf")
+"texture": SubResource("Atlas_149")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("151_sbf")
+"texture": SubResource("Atlas_150")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("152_sbf")
+"texture": SubResource("Atlas_151")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("153_sbf")
+"texture": SubResource("Atlas_152")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("154_sbf")
+"texture": SubResource("Atlas_153")
 }],
 "loop": false,
 "name": &"death_south",
@@ -981,27 +1536,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("155_sbf")
+"texture": SubResource("Atlas_154")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("156_sbf")
+"texture": SubResource("Atlas_155")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("157_sbf")
+"texture": SubResource("Atlas_156")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("158_sbf")
+"texture": SubResource("Atlas_157")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("159_sbf")
+"texture": SubResource("Atlas_158")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("160_sbf")
+"texture": SubResource("Atlas_159")
 }],
 "loop": false,
 "name": &"death_south_west",
@@ -1010,27 +1565,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("161_sbf")
+"texture": SubResource("Atlas_160")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("162_sbf")
+"texture": SubResource("Atlas_161")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("163_sbf")
+"texture": SubResource("Atlas_162")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("164_sbf")
+"texture": SubResource("Atlas_163")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("165_sbf")
+"texture": SubResource("Atlas_164")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("166_sbf")
+"texture": SubResource("Atlas_165")
 }],
 "loop": false,
 "name": &"death_west",
@@ -1039,27 +1594,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("167_sbf")
+"texture": SubResource("Atlas_166")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("168_sbf")
+"texture": SubResource("Atlas_167")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("169_sbf")
+"texture": SubResource("Atlas_168")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("170_sbf")
+"texture": SubResource("Atlas_169")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("171_sbf")
+"texture": SubResource("Atlas_170")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("172_sbf")
+"texture": SubResource("Atlas_171")
 }],
 "loop": false,
 "name": &"death_north_west",
@@ -1068,27 +1623,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("173_sbf")
+"texture": SubResource("Atlas_172")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("174_sbf")
+"texture": SubResource("Atlas_173")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("175_sbf")
+"texture": SubResource("Atlas_174")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("176_sbf")
+"texture": SubResource("Atlas_175")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("177_sbf")
+"texture": SubResource("Atlas_176")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("178_sbf")
+"texture": SubResource("Atlas_177")
 }],
 "loop": false,
 "name": &"death_north",
@@ -1097,27 +1652,27 @@ animations = [
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("179_sbf")
+"texture": SubResource("Atlas_178")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("180_sbf")
+"texture": SubResource("Atlas_179")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("181_sbf")
+"texture": SubResource("Atlas_180")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("182_sbf")
+"texture": SubResource("Atlas_181")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("183_sbf")
+"texture": SubResource("Atlas_182")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("184_sbf")
+"texture": SubResource("Atlas_183")
 }],
 "loop": false,
 "name": &"death_north_east",

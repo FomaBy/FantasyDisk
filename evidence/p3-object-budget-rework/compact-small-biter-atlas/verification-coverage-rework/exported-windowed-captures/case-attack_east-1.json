@@ -1,0 +1,12 @@
+{
+  "animation": "attack_east",
+  "case": 1,
+  "flip": true,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "3207e2a400120e31e60637dc224604126a2f8d7de6f44b8bdf680dd4c6091e5e",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_56"
+}

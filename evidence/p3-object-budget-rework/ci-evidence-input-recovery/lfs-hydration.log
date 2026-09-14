@@ -1,0 +1,5 @@
+command: python3 tools/quality_gate.py --list-manifest-lfs-evidence (engineer paths) | xargs git lfs pull --include  (hydrated per CI materialization step semantics)
+  actual: git lfs pull --include='docs/design/reference-assets-lfs/ultimate-certification/engineer/*'
+source: a09bca47f56fdc71dc37cc29da5179c20c35c4a4
+Mon Sep 14 01:20:07 UTC 2026
+pull exit_status=0

@@ -28,6 +28,7 @@ class HandleProbe extends RefCounted:
 
 func _initialize() -> void:
 	var errors: Array[String] = []
+	_check_accounting_negatives(errors)
 	var registry = Registry.new(PD.WEAPONS_BY_CLASS)
 	_expect(registry.is_valid(), "weapon registry must be valid", errors)
 	var manifests := Pack.manifests(registry)
@@ -250,6 +251,38 @@ func _test_v2_scene_bindings(registry, weapon_id: String, errors: Array[String])
 ## sprites) is sampled every scheduled frame; the hold is the run of frames
 ## it stays frozen after the first impact, summed in wall-clock seconds, and
 ## must sit inside the v2 envelope of 80-150 ms within half a frame.
+var _dip_diag_dir := ""
+var _dip_diag: Array[Dictionary] = []
+
+
+static func _diag_requested() -> bool:
+	var args := OS.get_cmdline_user_args()
+	for i in range(args.size() - 1):
+		if String(args[i]) == "--dip-diag":
+			return true
+	return false
+
+
+func _dip_diag_init() -> void:
+	var args := OS.get_cmdline_user_args()
+	for i in range(args.size() - 1):
+		if String(args[i]) == "--dip-diag":
+			_dip_diag_dir = String(args[i + 1])
+			DirAccess.make_dir_recursive_absolute(_dip_diag_dir)
+			break
+
+
+func _dip_diag_flush(weapon_id: String) -> void:
+	if _dip_diag_dir == "" or _dip_diag.is_empty():
+		return
+	var f := FileAccess.open("%s/dip-%s.json" % [_dip_diag_dir, weapon_id], FileAccess.WRITE)
+	if f == null:
+		return
+	f.store_string(JSON.stringify({"weapon_id": weapon_id, "frames": _dip_diag}, "  ") + "\n")
+	f.close()
+	_dip_diag = []
+
+
 func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String]) -> void:
 	var packed: PackedScene = load(str(SCENE_PATHS.get(weapon_id, "")))
 	if packed == null:
@@ -259,6 +292,8 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 	var declared_seconds := float(presence.get("hitstop_ms", 0.0)) / 1000.0
 	var declared_dip := float(presence.get("time_scale_dip", 1.0))
 	var active := float(timing.get("active", 0.0))
+	if _dip_diag_dir == "" and _diag_requested():
+		_dip_diag_init()
 	var scene := packed.instantiate() as Node2D
 	root.add_child(scene)
 	await process_frame
@@ -275,6 +310,8 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 	var dip_seconds := 0.0
 	var lowest_scale := Engine.time_scale
 	var restored_after := -1.0
+	var dip_closed := false
+	var closing_frame_wall := 0.0
 	while wall < active + 1.0 and not hold_closed:
 		await process_frame
 		var delta := _wall_delta()
@@ -283,10 +320,26 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 		lowest_scale = minf(lowest_scale, Engine.time_scale)
 		if Engine.time_scale < 0.99:
 			dip_seconds += delta
+		elif dip_seconds > 0.0 and not dip_closed:
+			# First scheduled frame after the dip: its wall time bounds the
+			# un-sampled closing partial frame during which the wall-clock
+			# dip timer fired and restored the scale (event-based bound).
+			dip_closed = true
+			closing_frame_wall = delta
 		# The hold is the run of scheduled frames the driver reports its
 		# first-impact hitstop live after processing; the drawn pose must be
 		# identical across all of them and move again on the frame after.
 		var holding := float(scene.get("_hitstop_remaining")) > 0.0
+		if _dip_diag_dir != "":
+			_dip_diag.append({
+				"i": _dip_diag.size(),
+				"raw_delta": root.get_process_delta_time(),
+				"scale": Engine.time_scale,
+				"wall_delta": delta,
+				"wall": wall,
+				"hitstop_remaining": float(scene.get("_hitstop_remaining")),
+				"holding": holding,
+			})
 		var pose := _scene_pose(scene)
 		if not hold_open:
 			if holding:
@@ -307,14 +360,38 @@ func _test_scheduled_hitstop(registry, weapon_id: String, errors: Array[String])
 	_expect(hold_closed, "%s scheduled: the drawn pose must freeze on the first impact and resume (hold never closed by %.2f s)" % [weapon_id, wall], errors)
 	_expect(pose_frozen and hold_frames > 0 and pose_after != hold_pose, "%s scheduled: the drawn pose must stay identical across the %d held frames and move on the frame after" % [weapon_id, hold_frames], errors)
 	_expect(hold_seconds >= 0.08 - half_frame and hold_seconds <= 0.15 + half_frame, "%s scheduled: the actual pose hold must stay inside 80-150 ms, held %.1f ms (%d frames) for a declared %.0f ms at dip %.2f" % [weapon_id, hold_seconds * 1000.0, hold_frames, declared_seconds * 1000.0, declared_dip], errors)
-	_expect(absf(hold_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the actual hold must match the declared %.0f ms within a frame, held %.1f ms" % [weapon_id, declared_seconds * 1000.0, hold_seconds * 1000.0], errors)
+	_expect(_declared_matches_sampled(hold_seconds, closing_frame_wall, declared_seconds, frame_seconds), "%s scheduled: the actual hold must match the declared %.0f ms within a frame, held %.1f ms (+ up to %.1f ms closing partial)" % [weapon_id, declared_seconds * 1000.0, hold_seconds * 1000.0, closing_frame_wall * 1000.0], errors)
 	if declared_dip < 1.0:
 		_expect(is_equal_approx(lowest_scale, declared_dip), "%s scheduled: the declared time-scale dip %.2f must be live during the hold (lowest %.2f)" % [weapon_id, declared_dip, lowest_scale], errors)
-		_expect(absf(dip_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the dip must last the declared %.0f ms within a frame, lasted %.1f ms" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0], errors)
+		_expect(_declared_matches_sampled(dip_seconds, closing_frame_wall, declared_seconds, frame_seconds), "%s scheduled: the dip must last the declared %.0f ms within a frame, sampled %.1f ms (+ up to %.1f ms closing partial)" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0, closing_frame_wall * 1000.0], errors)
 	_expect(restored_after >= 0.0 and is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: Engine.time_scale must be restored when the hold ends" % weapon_id, errors)
+	_dip_diag_flush(weapon_id)
 	scene.finish("cancel")
 	scene.free()
 	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: cleanup must leave Engine.time_scale at 1" % weapon_id, errors)
+
+
+## Event-bounded within-one-frame accounting. The sampled window sums WHOLE
+## scheduled frames; the mid-frame closing boundary (the wall-clock dip timer
+## firing inside a frame) is un-sampled, so the true duration lies in
+## [sampled, sampled + closing_frame_wall]. The declared value must sit in
+## that interval widened by at most one frame of scheduling slack — the same
+## within-one-frame semantics, corrected for the frame-boundary omission.
+static func _declared_matches_sampled(sampled: float, closing_frame_wall: float, declared: float, frame_seconds: float) -> bool:
+	return declared >= sampled - frame_seconds and declared <= sampled + closing_frame_wall + frame_seconds
+
+
+## Negative controls for the accounting rule: deliberately wrong declared
+## durations (short and long) and an implausible closing bound must be
+## rejected. Executed once per run; a regression in the rule fails the suite.
+func _check_accounting_negatives(errors: Array[String]) -> void:
+	var frame := 0.007
+	if _declared_matches_sampled(0.097, 0.007, 0.080, frame):
+		_expect(false, "accounting negative: an 80 ms declared dip must be rejected against a ~97 ms sample", errors)
+	if _declared_matches_sampled(0.097, 0.007, 0.130, frame):
+		_expect(false, "accounting negative: a 130 ms declared dip must be rejected against a ~97 ms sample", errors)
+	if _declared_matches_sampled(0.097, 0.007, 0.100, frame) == false:
+		_expect(false, "accounting negative: the true 100 ms declaration must be accepted against a ~97 ms sample with a ~7 ms closing bound", errors)
 
 
 ## Wall-clock seconds of one scheduled frame: the engine hands nodes a delta

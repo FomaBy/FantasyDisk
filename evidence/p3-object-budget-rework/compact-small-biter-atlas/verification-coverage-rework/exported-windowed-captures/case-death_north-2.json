@@ -1,0 +1,12 @@
+{
+  "animation": "death_north",
+  "case": 2,
+  "flip": false,
+  "frame": 0,
+  "scale": [
+    0.300000011920929,
+    0.300000011920929
+  ],
+  "sprite_sha": "cc5b0f1b80044c0b2380f330ecbff4a6fb253152cd30944e5ff34d4c588fb468",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_172"
+}

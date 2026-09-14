@@ -1,0 +1,8 @@
+command: python3 -m unittest tests.test_quality_workflow tests.test_quality_static_guard
+Sun Sep 13 14:12:55 UTC 2026
+.............................................................................................
+----------------------------------------------------------------------
+Ran 93 tests in 10.131s
+
+OK
+contracts exit=0

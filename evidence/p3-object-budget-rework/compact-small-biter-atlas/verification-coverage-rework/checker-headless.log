@@ -1,0 +1,9 @@
+command: FSD_GODOT_RUN_TIMEOUT=700 FSD_GODOT_MAXWAIT=900 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --headless --path . --script res://tests/full_frame_atlas_parity_test.gd
+source: 686a78ba625512142fdc21a1c87ca42fc9905ea4 tree 3933a684bacf1d7f1c98ff3944539f7bc2699260
+godot: 4.7.stable.official.5b4e0cb0f (headless)
+started_utc: 2026-09-13T14:04:16Z
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+FULL_FRAME_ATLAS_PARITY_TEST render-capture stage UNAVAILABLE in headless (run windowed with 'render' arg)
+FULL_FRAME_ATLAS_PARITY_TEST PASS
+exit_status=0

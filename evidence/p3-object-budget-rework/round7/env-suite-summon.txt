@@ -1,0 +1,10 @@
+command=python3 tools/godot_gate.py --headless --path . --script res://tests/boss_summon_cap_test.gd
+env_extra={'GODOT_BIN': '/Applications/Godot.app/Contents/MacOS/Godot'}
+observed_utc=2026-09-10T00:38:47Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)
+--- during sampled_utc=2026-09-10T00:38:47Z
+(no foreign godot processes)
+observed_utc=2026-09-10T00:38:52Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)

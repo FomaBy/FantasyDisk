@@ -1,0 +1,22 @@
+{
+  "aligned_baseline_sha": "26d85f3c7b274b13b70b02971253f31bdafd06dcf692e9207a163c1e5f625e71",
+  "asymmetric_frame_used": "attack_east",
+  "displacement": {
+    "detected": true,
+    "detector_outcome": "MISMATCH detected",
+    "reference_position": [
+      0,
+      0
+    ],
+    "sprite_position": [
+      64,
+      0
+    ]
+  },
+  "mirroring": {
+    "detected": true,
+    "detector_outcome": "MISMATCH detected",
+    "reference_flip_h": false,
+    "sprite_flip_h": true
+  }
+}

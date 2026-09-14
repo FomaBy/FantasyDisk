@@ -66,8 +66,10 @@ class QualityWorkflowContractTests(unittest.TestCase):
         checkout = self.candidate_job[:checkout_end]
         required_paths = (
             "docs/design/reports/fan1455_seeded_combat_variety_slice_metrics.json",
-            "docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json",
-            "docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json",
+            # FAN-3934 CI repair: the whole fragments subtree materializes
+            # the convergence fixtures together with the atlas/offensive
+            # fragment inputs the A5 suites read.
+            "docs/design/reports/fan1438_a5_balance/fragments",
             "docs/design/references/unified_master_frame/unified_master_frame_metadata.json",
             "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json",
             "docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json",
@@ -78,7 +80,9 @@ class QualityWorkflowContractTests(unittest.TestCase):
 
         for required_path in required_paths:
             with self.subTest(required_path=required_path):
-                self.assertTrue((ROOT / required_path).is_file())
+                # Cone entries may be directories (the fragments subtree) or
+                # files; every entry must resolve to tracked content.
+                self.assertTrue((ROOT / required_path).exists())
                 self.assertIn(f"          {required_path}\n", checkout)
 
     def test_candidate_materializes_only_manifest_declared_lfs_evidence(self) -> None:
@@ -212,7 +216,89 @@ class QualityWorkflowContractTests(unittest.TestCase):
             )
 
     def test_job_has_bounded_runtime(self) -> None:
-        self.assertIn("timeout-minutes: 60", self.candidate_job)
+        # FAN-3934: the budget explanation must separate observed from
+        # extrapolated numbers (job 102722773634, run 34429832208). OBSERVED:
+        # 14m52s import warmup (02:33:59-02:48:51), cancelled ~60-minute job,
+        # suites 02:57:17-03:32:02 completing 210 of 537. EXTRAPOLATED at the
+        # observed ~9.9 s/suite: 537 suites ~89 min, full run ~110 min
+        # estimated. The contract pins the 180-minute bound, the observed/
+        # estimated distinction, and the job id, so a silent bump or a
+        # relabelled estimate cannot pass review.
+        self.assertIn("timeout-minutes: 180", self.candidate_job)
+        self.assertIn("34429832208", self.candidate_job)
+        self.assertIn("102722773634", self.candidate_job)
+        self.assertIn("OBSERVED", self.candidate_job)
+        self.assertIn("EXTRAPOLATED", self.candidate_job)
+        self.assertIn("estimated ~110 min", self.candidate_job)
+        # A "measured total" claim for a run that was cancelled is forbidden.
+        self.assertNotIn("measured total", self.candidate_job)
+        # A budget without a bound, or a bound without evidence, must fail.
+        self.assertNotIn("timeout-minutes: 60", self.candidate_job)
+
+    def test_sparse_cone_materializes_vfx_reference_directories(self) -> None:
+        # FAN-3934 CI evidence-input recovery: the scrum895/scrum924 VFX
+        # suites read manifest.json and frame_qa_report.json from their
+        # reference directories at runtime; both directories were absent from
+        # the cone and the suites failed in CI on identical base blobs.
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        for required_path in (
+            "docs/design/references/scrum895_berserk_axe_hammer_vfx",
+            "docs/design/references/scrum924_holy_flail_spiral_vfx",
+        ):
+            self.assertIn(f"          {required_path}\n", checkout)
+            self.assertTrue((ROOT / required_path / "manifest.json").is_file())
+            self.assertTrue((ROOT / required_path / "frame_qa_report.json").is_file())
+
+    def test_sparse_cone_materializes_a5_fragment_inputs(self) -> None:
+        # FAN-3934 CI repair (run 34715975730): the atlas attribution suite
+        # reads a tracked fragment that the old cone never materialized; the
+        # offensive fragments had the same latent gap. The cone must include
+        # the whole fragments subtree so both required inputs exist on the
+        # runner without relying on a full checkout.
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        self.assertIn(
+            "docs/design/reports/fan1438_a5_balance/fragments\n",
+            checkout,
+        )
+        # Failure case: the pre-repair cone (explicit conditional/defensive
+        # files only) must be recognized as missing the required inputs.
+        repaired = checkout.replace(
+            "            # FAN-3934 CI repair: the whole fragments subtree must be\n"
+            "            # materialized — the atlas attribution suite reads\n"
+            "            # fragments/ultimate_atlas/… and the offensive fragments are the\n"
+            "            # same latent gap (run 34715975730, job 103613162708).\n"
+            "            docs/design/reports/fan1438_a5_balance/fragments\n",
+            "            docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json\n"
+            "            docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json\n",
+        )
+        self.assertNotEqual(repaired, checkout, "pre-repair cone reconstruction failed")
+        self.assertNotIn(
+            "docs/design/reports/fan1438_a5_balance/fragments\n",
+            repaired,
+        )
+        # Both required fragment-backed inputs live under the included subtree.
+        fragments = ROOT / "docs/design/reports/fan1438_a5_balance/fragments"
+        self.assertTrue((fragments / "ultimate_atlas/ultimate_atlas_attribution.json").is_file())
+        self.assertTrue((fragments / "offensive/offensive_family_ab.json").is_file())
+
+    def test_shallow_candidates_fetch_a5_integrity_provenance_commits(self) -> None:
+        # The A5 balance integrity suite resolves the shipped dataset's
+        # raw/legacy and supplemental provenance commits as exact ancestors
+        # (run 34429832208 failed all four provenance checks on the depth-2
+        # checkout). Both commits must be pinned AND fed into the bounded
+        # ancestor-deepening loop.
+        for commit in (
+            "be90b38df38788fc53190c862a873f4aab80ea28",
+            "055aad7cc6fce8dfc1210ae3ea63b91de1401142",
+        ):
+            self.assertIn(commit, self.candidate_job)
+            self.assertIn(f'grep -qxF {commit} "$sources_file"', self.candidate_job)
+        # Failure case: a workflow pinning the commits but skipping the
+        # deepening feed would still fail ancestor resolution in CI.
+        without_feed = self.candidate_job.replace('grep -qxF be90b38df38788fc53190c862a873f4aab80ea28 "$sources_file"', "")
+        self.assertNotEqual(without_feed, self.candidate_job)
 
     def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
         self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [

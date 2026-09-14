@@ -656,28 +656,27 @@ func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
 		return
 	var critical := bool(feedback.get("critical", false))
 	var damage_type := str(feedback.get("damage_type", "true"))
-	var label := Label.new()
-	label.name = "CombatCritNumber" if critical else "CombatDamageNumber"
-	label.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
-	label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
-	# Крит перебивает тип красным (ожидаемо, см. combat.md); иначе — цвет по типу.
-	label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else damage_type_color(damage_type)
-	label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
-		SemanticTypography.ROLE_HUD, 30 if critical else 22
-	))
-	label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
-	label.add_theme_constant_override("outline_size", 6 if critical else 5)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.custom_minimum_size = Vector2(96.0, 34.0)
-	label.z_index = 3000
-	_feedback_parent().add_child(label)
-	label.global_position = global_position + Vector2(randf_range(-18.0, 18.0) - 48.0, -_feedback_height() - 20.0 + randf_range(-6.0, 6.0))
-	var target_position := label.global_position + Vector2(0.0, -44.0)
-	var tween := label.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(label, "global_position", target_position, 0.62).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(label, "modulate:a", 0.0, 0.42).set_delay(0.20)
-	tween.chain().tween_callback(label.queue_free)
+	# FAN-3934: цифра урона живёт в общем pooled-таймлайне — те же текст,
+	# типографика, цвета, кривые и тайминги (0.62s cubic rise, fade 0.42s c
+	# задержкой 0.20s), но без создания Label+Tween на каждый хит.
+	var timeline := CombatFeedbackTimeline.for_scene(_feedback_parent())
+	if timeline == null:
+		return
+	var start_position := global_position + Vector2(randf_range(-18.0, 18.0) - 48.0, -_feedback_height() - 20.0 + randf_range(-6.0, 6.0))
+	var number_setup := func(label: Label) -> void:
+		label.name = "CombatCritNumber" if critical else "CombatDamageNumber"
+		label.text = "! %d" % int(round(amount)) if critical else str(int(round(amount)))
+		# Крит перебивает тип красным (ожидаемо, см. combat.md); иначе — цвет по типу.
+		label.modulate = Color(1.0, 0.24, 0.16, 1.0) if critical else damage_type_color(damage_type)
+		label.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(
+			SemanticTypography.ROLE_HUD, 30 if critical else 22
+		))
+		label.add_theme_color_override("font_outline_color", Color(0.04, 0.02, 0.01, 0.95))
+		label.add_theme_constant_override("outline_size", 6 if critical else 5)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.custom_minimum_size = Vector2(96.0, 34.0)
+		label.z_index = 3000
+	timeline.spawn_number(number_setup, start_position, 44.0, 0.62, 0.20, 0.42, false)
 	if critical:
 		_show_critical_marker()
 
@@ -685,24 +684,20 @@ func _show_combat_feedback(amount: float, feedback: Dictionary) -> void:
 func _show_critical_marker() -> void:
 	if _feedback_group_count(COMBAT_FEEDBACK_LABEL_GROUP) >= COMBAT_FEEDBACK_MAX_LABELS:
 		return
-	var marker := Label.new()
-	marker.name = "CombatCritMarker"
-	marker.add_to_group(COMBAT_FEEDBACK_LABEL_GROUP)
-	marker.text = "!"
-	marker.modulate = Color(1.0, 0.06, 0.02, 1.0)
-	marker.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 34))
-	marker.add_theme_color_override("font_outline_color", Color(1.0, 0.78, 0.20, 0.95))
-	marker.add_theme_constant_override("outline_size", 4)
-	marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	marker.custom_minimum_size = Vector2(34.0, 38.0)
-	marker.z_index = 3001
-	_feedback_parent().add_child(marker)
-	marker.global_position = global_position + Vector2(18.0, -_feedback_height() - 36.0)
-	var tween := marker.create_tween()
-	tween.set_parallel(true)
-	tween.tween_property(marker, "global_position", marker.global_position + Vector2(0.0, -28.0), 0.48).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.tween_property(marker, "modulate:a", 0.0, 0.28).set_delay(0.20)
-	tween.chain().tween_callback(marker.queue_free)
+	var timeline := CombatFeedbackTimeline.for_scene(_feedback_parent())
+	if timeline == null:
+		return
+	var marker_setup := func(marker: Label) -> void:
+		marker.name = "CombatCritMarker"
+		marker.text = "!"
+		marker.modulate = Color(1.0, 0.06, 0.02, 1.0)
+		marker.add_theme_font_size_override("font_size", SemanticTypography.resolve_fixed(SemanticTypography.ROLE_HUD, 34))
+		marker.add_theme_color_override("font_outline_color", Color(1.0, 0.78, 0.20, 0.95))
+		marker.add_theme_constant_override("outline_size", 4)
+		marker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		marker.custom_minimum_size = Vector2(34.0, 38.0)
+		marker.z_index = 3001
+	timeline.spawn_number(marker_setup, global_position + Vector2(18.0, -_feedback_height() - 36.0), 28.0, 0.48, 0.20, 0.28, true)
 
 
 func _show_hit_flash() -> void:
@@ -711,23 +706,19 @@ func _show_hit_flash() -> void:
 	# SCRUM-611: мягкий радиальный тёплый тик вместо чёрно-красной рамки (Line2D
 	# читалась как UI-артефакт). Аддитивный impact_flash, низкая alpha, быстрый угас.
 	var sprite_size := _visible_sprite_size()
-	var tick := Sprite2D.new()
-	tick.name = "CombatHitTick"
-	tick.add_to_group(COMBAT_FEEDBACK_FLASH_GROUP)
-	tick.texture = HIT_FLASH_TEXTURE
-	var tick_material := CanvasItemMaterial.new()
-	tick_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	tick.material = tick_material
-	tick.modulate = Color(1.0, 0.46, 0.36, 0.40)
+	# FAN-3934: тик и body-вспышка живут в общем pooled-таймлайне — та же
+	# геометрия, цвет, аддитивный материал и кривые (alpha 0.40 -> 0 за 0.16s
+	# quad-ease-out; restore модуляции за 0.16s), без узлов/tween'ов на каждый хит.
+	var timeline := CombatFeedbackTimeline.for_scene(_feedback_parent())
+	if timeline == null:
+		return
 	# impact_flash 128px; масштабируем под видимый размер цели (мягкое покрытие).
 	var tick_reach := maxf(maxf(sprite_size.x, sprite_size.y) * 0.95, 48.0)
-	tick.scale = Vector2.ONE * (tick_reach / 128.0)
-	tick.z_index = 2999
-	_feedback_parent().add_child(tick)
-	tick.global_position = global_position + Vector2(0.0, -sprite_size.y * 0.04)
-	var tick_tween := tick.create_tween()
-	tick_tween.tween_property(tick, "modulate:a", 0.0, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tick_tween.tween_callback(tick.queue_free)
+	timeline.spawn_tick(
+		global_position + Vector2(0.0, -sprite_size.y * 0.04),
+		Vector2.ONE * (tick_reach / 128.0),
+		Color(1.0, 0.46, 0.36, 0.40),
+		COMBAT_FEEDBACK_FLASH_GROUP)
 
 	var body := _feedback_flash_body()
 	if body == null:
@@ -735,8 +726,7 @@ func _show_hit_flash() -> void:
 	# Смягчённая body-вспышка: меньше lerp и тёплый цвет (не слепит на светлых аренах).
 	var original_modulate := body.modulate
 	body.modulate = original_modulate.lerp(Color(1.0, 0.42, 0.34, original_modulate.a), 0.40)
-	var body_tween := body.create_tween()
-	body_tween.tween_property(body, "modulate", original_modulate, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	timeline.flash_body(body, original_modulate)
 
 
 func _combat_feedback_enabled() -> bool:

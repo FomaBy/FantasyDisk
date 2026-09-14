@@ -1102,6 +1102,51 @@ class QualityGateTests(unittest.TestCase):
             "nested/deeper_smoke_test.gd",
         })
 
+    def _gate_module(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "quality_gate_under_test", Path("tools/quality_gate.py")
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_live_capture_certification_manifest_declaration_is_read(self) -> None:
+        # FAN-3934 CI evidence-input recovery: the Engineer class manifest
+        # publishes live_capture.certification_manifest; a key the lister does
+        # not read is evidence CI never hydrates.
+        gate = self._gate_module()
+        evidence = {
+            "live_capture": {
+                "certification_manifest": "docs/design/references/weapon_ultimates/engineer/certification_capture_manifest.json",
+                "capture_script": "res://tests/ultimates/presentation/engineer_certification_capture_test.gd",
+            }
+        }
+        declarations = gate._certification_capture_declarations(evidence, "engineer")
+        self.assertTrue(any(d[2] == "certification_manifest" for d in declarations))
+        self.assertTrue(any(d[2] == "capture_manifest" for d in gate._certification_capture_declarations(
+            {"live_capture": {"capture_manifest": "docs/x.json"}}, "z"
+        )))
+
+    def test_certification_artifact_paths_reads_engineer_samples_shape(self) -> None:
+        gate = self._gate_module()
+        payload = json.loads(Path(
+            "docs/design/references/weapon_ultimates/engineer/certification_capture_manifest.json"
+        ).read_text(encoding="utf-8"))
+        paths = gate._certification_artifact_paths(payload, "engineer.certification")
+        self.assertEqual(len(paths), 48)
+        self.assertTrue(all(p.startswith("docs/") for p in paths))
+
+    def test_certification_artifact_paths_rejects_unsafe_and_empty(self) -> None:
+        gate = self._gate_module()
+        with self.assertRaises(RuntimeError):
+            gate._certification_artifact_paths({"samples": [{"path": "../etc/passwd"}]}, "neg")
+        with self.assertRaises(RuntimeError):
+            gate._certification_artifact_paths({"viewports": [{"width": 10}]}, "neg2")
+        with self.assertRaises(RuntimeError):
+            gate._certification_artifact_paths({"samples": "not-a-list"}, "neg3")
+
     def test_changed_profile_selects_typography_inventory_suite_for_scanned_paths(self) -> None:
         cases = {
             "scripts/ui/ultimate_hud/ultimate_hud_widget.gd": True,

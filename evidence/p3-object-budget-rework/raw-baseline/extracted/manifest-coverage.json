@@ -1,0 +1,181 @@
+{
+  "class_count": 17,
+  "weapon_count": 51,
+  "quality_classes": 7,
+  "quality_weapons": 23,
+  "four_mode_classes": 2,
+  "four_mode_weapons": 6,
+  "details": [
+    {
+      "class_id": "assassin",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 2,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "berserk",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "biologist",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "chemist",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "dark_mage",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "doctor",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "druid",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "elementalist",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "engineer",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "guitarist",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "knight",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "priest",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "ranger",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "live_capture_weapons": [
+        "moon_crossbow",
+        "storm_longbow",
+        "hunter_trap"
+      ],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "robot",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "sniper",
+      "weapon_count": 3,
+      "quality_declared": true,
+      "quality_weapon_count": 3,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "soldier",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [],
+      "live_capture_weapons": [],
+      "live_capture_sheets": 4
+    },
+    {
+      "class_id": "thief",
+      "weapon_count": 3,
+      "quality_declared": false,
+      "quality_weapon_count": 0,
+      "live_capture_modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "live_capture_weapons": [
+        "thief_coin_pouch",
+        "thief_shadow_cloak",
+        "thief_smoke_bomb"
+      ],
+      "live_capture_sheets": 4
+    }
+  ]
+}

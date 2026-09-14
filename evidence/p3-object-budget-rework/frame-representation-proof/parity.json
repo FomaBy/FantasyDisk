@@ -1,0 +1,9 @@
+{
+  "animation_metadata_parity": true,
+  "animation_names_equal": true,
+  "pixel_parity_frames_checked": 184,
+  "pixel_parity_in_engine": true,
+  "pixel_parity_offline": "see pixel-parity.json: 184/184 byte-identical",
+  "reload_ok": true,
+  "simultaneous_consumers_rendered": true
+}

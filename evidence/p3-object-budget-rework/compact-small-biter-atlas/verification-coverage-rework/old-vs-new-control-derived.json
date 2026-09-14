@@ -1,0 +1,48 @@
+{
+ "_producer": {
+  "file": "old-vs-new-control.gd",
+  "sha256": "e8d4161d8d9493db5cc6f791db9e4a99890c80c3d1bf2a8bee04992d7ce34b91"
+ },
+ "_executed": {
+  "source": "33179647c09b9b2c14548bf607764b07256604ec",
+  "exit_status": 1,
+  "raw_log": "old-vs-new-control-raw.log (unedited)"
+ },
+ "_inputs": {
+  "tres_sha256": "c56e3817e55e7b98de7c66ce2ba257fe97b3e6a6369af21a88e1d8fd7550940b",
+  "checker_sha256": "81e84236bfed22062fc398158943cdb48bf7235fe6c41d7995304ea5788ea77d"
+ },
+ "_transformation": {
+  "description": "Every field below is computed from exactly one raw input; no field cites absent data.",
+  "old_checker_misses_duration_mutant": {
+   "raw_input": "producer JSON field old_checker_misses_duration_mutant (runtime-emulated +0.5 list checked against positivity rule)",
+   "value": true
+  },
+  "new_checker_detects_duration_mutant": {
+   "raw_input": "producer JSON field new_checker_detects_duration_mutant",
+   "value": true
+  },
+  "old_accepts_spatially_different_renders": {
+   "status": "WITHDRAWN after committed-processor execution",
+   "raw_input": "capture_histogram_processor.py run on committed capture-attack_east-case1-sprite.png vs capture-attack_east-case0-reference.png (the flipped-vs-unflipped pair): old_checker_histogram_equal=false, spatial_sha_differ=true",
+   "explanation": "The earlier assertion was based on pre-publication console measurements and is NOT supported by the committed capture blobs: on the retained renders the 8th-pixel histogram DOES distinguish the flipped render. The old histogram's spatial blindness therefore stands as QA's principled inspection finding (report 01a09a91), not as an executed miss on retained evidence. The only EXECUTED old-checker miss retained is the duration mutant."
+  },
+  "new_spatial_sha_detects_difference": {
+   "flip_pair": {
+    "raw_input": "capture_histogram_processor.py executed on capture-attack_east-case1-sprite.png (flip=true) vs capture-attack_east-case0-reference.png (flip=false): spatial_sha_differ=true",
+    "value": true
+   },
+   "matched_pair": {
+    "raw_input": "SECOND retained processor execution on capture-attack_east-case0-sprite.png vs capture-attack_east-case0-reference.png (matched pair): spatial_sha_differ=false (see capture-processor-run-matched.log)",
+    "value": false
+   }
+  }
+ },
+ "_strict_limitation": "The producer's strict exit-1 outcome is retained: its in-probe aligned-grid histogram DOES distinguish a direct image mirror on this content, and the committed-processor flip-pair run likewise measured histogram inequality. NO render-level spatial old-checker miss is claimed as executed on retained evidence (the earlier assertion is withdrawn at _transformation.old_accepts_spatially_different_renders); the histogram's spatial blindness is QA report 01a09a91's inspection finding. The single retained executed old-checker miss is the duration mutant.",
+ "_prior_disclosure": "",
+ "_provenance": {
+  "capture_source_commit": "5fe0b8e148f47b56f49560ea815075d428d01c81 is the retained capture-CONTAINER commit (the captures' packaging into the evidence tree); the captures were EXECUTED at the export instrumentation source named in checker-windowed-render-exported.log \u2014 a capture is not relabeled as executed at a later packaging commit",
+  "processor_source_commit": "c5b5a487114a2c8d2c141736b1b9b280c19bb764 (the commit whose tree contains the processor and its inputs; processor file sha256 recorded in capture-processor-run.log header)",
+  "argv_note": "capture-processor-run.log's header command line is an ABBREVIATED reconstruction; the exact executed argv paths are recorded verbatim inside the processor's own JSON output (inputs field) and are preserved unedited"
+ }
+}
