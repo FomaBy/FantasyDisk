@@ -591,7 +591,11 @@ func _presentation_root(main: Node, weapon_id: String) -> Node2D:
 	var pending: Array[Node] = [main]
 	while not pending.is_empty():
 		var node: Node = pending.pop_back()
-		if str(node.get_meta("ultimate_id", "")) == key:
+		# Legacy Assassin executor scenes retain an embedded, deliberately
+		# dormant copy. Evidence must bind to the visible instance owned and
+		# started by WeaponUltimatePresentationRuntime.
+		if node is Node2D and (node as Node2D).visible \
+				and str(node.get_meta("ultimate_id", "")) == key:
 			return node as Node2D
 		for child in node.get_children():
 			pending.append(child)
