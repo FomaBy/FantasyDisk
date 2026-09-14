@@ -333,13 +333,16 @@ func _bind_cast_pose(registry) -> void:
 	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
 	_cast_pose_backdrop.polygon = PackedVector2Array([Vector2(0, -36), Vector2(36, 0), Vector2(0, 36), Vector2(-36, 0)])
 	_cast_pose_backdrop.color = Color(0.025, 0.018, 0.035, 0.92)
-	_cast_pose_backdrop.z_index = 0
+	# The presentation runtime mounts its scene after Player in the arena tree.
+	# Keep the cast identity above that later sibling so wide attack layers do
+	# not flatten the player's contrast at release or recovery.
+	_cast_pose_backdrop.z_index = 100
 	visual_root.add_child(_cast_pose_backdrop)
 	_cast_pose_highlight = Polygon2D.new()
 	_cast_pose_highlight.name = "UltimateCastPoseHighlight"
 	_cast_pose_highlight.polygon = PackedVector2Array([Vector2(0, -30), Vector2(30, 0), Vector2(0, 30), Vector2(-30, 0)])
 	_cast_pose_highlight.color = Color(0.92, 0.76, 0.38, 0.78)
-	_cast_pose_highlight.z_index = 1
+	_cast_pose_highlight.z_index = 101
 	visual_root.add_child(_cast_pose_highlight)
 	_cast_pose = Sprite2D.new()
 	_cast_pose.name = "UltimateCastPose"
@@ -347,7 +350,7 @@ func _bind_cast_pose(registry) -> void:
 	_cast_pose.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_cast_pose.self_modulate = Color(1.25, 1.25, 1.25, 1.0)
 	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
-	_cast_pose.z_index = 2
+	_cast_pose.z_index = 102
 	visual_root.add_child(_cast_pose)
 	_cast_pose_binding_error = ""
 

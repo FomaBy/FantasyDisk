@@ -133,6 +133,8 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") != null \
 			and visual_root.get_node_or_null("UltimateCastPoseHighlight") != null,
 		"chakrams cast pose and contrast sigil must replace the Player body", errors)
+	_expect((visual_root.get_node("UltimateCastPose") as CanvasItem).z_index > 100,
+		"chakrams cast pose must stay above the later-mounted presentation layers", errors)
 	var bearings := {}
 	for index in range(1, 9):
 		var moon := scene.get_node("Orbit/Moon%s" % ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][index - 1]) as AnimatedSprite2D
