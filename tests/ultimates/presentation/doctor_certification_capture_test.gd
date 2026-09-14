@@ -160,10 +160,17 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 
 
 func _is_evidence_only_path(path: String) -> bool:
-	return path == CAPTURE_MANIFEST_PATH.trim_prefix("res://") \
-		or path == "docs/design/references/weapon_ultimates/doctor/certification_readability_report.md" \
-		or path == CLASS_MANIFEST_PATH.trim_prefix("res://") \
-		or path.begins_with("docs/design/reference-assets-lfs/ultimate-certification/doctor/")
+	for class_id in ["assassin", "doctor", "druid"]:
+		var reference_root := "docs/design/references/weapon_ultimates/%s/" % class_id
+		if path in [
+			"%smanifest.json" % reference_root,
+			"%scertification_capture_manifest.json" % reference_root,
+			"%scertification_readability_report.md" % reference_root,
+		] or path.begins_with(
+			"docs/design/reference-assets-lfs/ultimate-certification/%s/" % class_id
+		):
+			return true
+	return false
 
 
 func _capture_block_violations(manifest: Dictionary) -> Array[String]:
