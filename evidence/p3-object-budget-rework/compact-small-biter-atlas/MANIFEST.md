@@ -1,14 +1,14 @@
-# FAN-3934 canonical SHA-256 manifest (thief-hitstop-ci-recovery successor)
+# FAN-3934 canonical SHA-256 manifest (ci-evidence-input-recovery successor)
 
-- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `7113cb0c0821741417f11e1271256ca7449a281b` (frozen inventory; manifest commit changes only this file).
+- Changed paths vs dev base `b0ebba8f36721842ee2bb5606733979986433a45`; hashes = Git blobs at `d0188c33981fc16205197b76055df95969f8bee2` (frozen inventory; manifest commit changes only this file).
 - Audit: compact-small-biter-atlas/publication-correction/audit_manifest.py (self-test negatives).
-- Nonrecursive self-exclusion: compact-small-biter-atlas MANIFEST.md + REPORT.md only (their own frozen inventories remain in force).
+- Nonrecursive self-exclusion: compact-small-biter-atlas MANIFEST.md + REPORT.md only.
 
 ## excluded generated outputs
 - 48 `*.translation` + 4 `*.csv.import` engine cache outputs (derived).
 
-## canonical changed-path inventory (commit 7113cb0c0821741417f11e1271256ca7449a281b)
-- `.github/workflows/quality.yml` `dc093d2424e9846cef752fb3e71bae927b300d09b9b61cadd6282f176bbb2dba`
+## canonical changed-path inventory (commit d0188c33981fc16205197b76055df95969f8bee2)
+- `.github/workflows/quality.yml` `1bfbdfdbabb35ee5ee7ccfef8eff13185ee61684ca5531f274a1ba39fc8cfcaf`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png` `36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_0.png.import` `5f0709b48839c2111de73004f004c945b5fb1f7f33dfa2142a708b048f96c802`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_1.png` `7201238e7c0e1be892e2582963cce912f83ecaf0dd33df9363094902c588705c`
@@ -17,6 +17,7 @@
 - `assets/sprites/enemies/full_frame/small_biter_atlas_2.png.import` `16b52cd9093ecd867734469fd0a0ede7ea3a44f5279966127ad49acc0efa01b4`
 - `assets/sprites/enemies/full_frame/small_biter_atlas_manifest.json` `cbf4987813019388ad5504053120590cc5026eafdbdffb71dc3d859676148dc6`
 - `assets/sprites/enemies/full_frame/small_biter_spriteframes.tres` `c56e3817e55e7b98de7c66ce2ba257fe97b3e6a6369af21a88e1d8fd7550940b`
+- `docs/design/mockups/scrum1061_semantic_typography/typography_inventory.json` `4b92a7b5debdd3578121a9be4d3b167f1777c6b9a7989f0fe6f296ceb3ab4d64`
 - `evidence/p3-object-budget-rework/.gitignore` `2e3474251d0b9a92faa257d36348b95090d1f8a9a7fa0d4c089dabfc527ef47d`
 - `evidence/p3-object-budget-rework/DIAGNOSTIC.md` `a2817ad2e7c5f0df7247c891fcbd4ffddc962651d8af47e009d84f34d4fe79ac`
 - `evidence/p3-object-budget-rework/REWORK-RESULT.md` `4b66088f5a531aeb7abe070e9a7a0a10c2e8d1f79fd80ac72ca58d8ba3c41589`
@@ -55,6 +56,14 @@
 - `evidence/p3-object-budget-rework/ci-atlas-diagnosis/corrected-cone-suite-pass.log` `495c74da1ad96ade4f0752af1631b94aac4901781616e945a1cc9fd276417c5b`
 - `evidence/p3-object-budget-rework/ci-atlas-diagnosis/full-checkout-suite-pass.log` `e8b80604be93df23e6a744921f5d65cc95253f4baedd39f5c39907d78a873f7e`
 - `evidence/p3-object-budget-rework/ci-atlas-diagnosis/sparse-cone-suite-fail.log` `f442bf4764253bf66321b1f2866a01cb8179439454759a6b2dc1d022df4cb82f`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/DIAGNOSIS.md` `ff084853c1066e766c22d9fd648081aed73c57a023efb6abeb0ecfc6f942792d`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/feature-list-check.log` `aa0438f688f8a3d52434c042d8bb3e528a6f853bb0e7b2bf70b42a68f4b9f089`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/static-gate.log` `1af899aa015a54784fe650b36ece9fcadfa1e09e69d5271aa9488e1ca62e7220`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-engineer_certification_capture_test.log` `d7f00f6331b5aa5b3a725ef54ab577122a22d57c03dae7d730bb339f882184ef`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-scrum895_berserk_axe_hammer_vfx_test.log` `281474fb59cb0fd84cfa51def922e895df8235a19851b952a929afa20406c03d`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-scrum924_holy_flail_spiral_vfx_test.log` `57937a956a2baca2cceceab03baf8bcf7ce4cde679ac7fc88e908beabd8262da`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-semantic_typography_scrum1061_test.log` `cde1882f8679ffb439529503d5469e2f7b40f55e42c6e5f3c50e2bc99eb99a19`
+- `evidence/p3-object-budget-rework/ci-evidence-input-recovery/suite-thief_ultimate_presentation_test.log` `dc48dd9714ec204e2da16ef6b0c4f4fa4f240d2f2656b6a4da8983247495190b`
 - `evidence/p3-object-budget-rework/ci-feedback-lifetime/DIAGNOSIS.md` `5f7ebb46abcee77ec3f0c40e0fd1697cadccbac3c0a38b917aa2d72a38fc0863`
 - `evidence/p3-object-budget-rework/ci-feedback-lifetime/MANIFEST.md` `93f4b1651bc25f45ee219a884ed4679b1019158f800db0371848a4f90bdf9190`
 - `evidence/p3-object-budget-rework/ci-feedback-lifetime/ci-suite-fail-before-fix.log` `b9a5412b729bbfa126530623bfafa849181a8d6629688d97a2501c4a0cc53e98`
@@ -1050,7 +1059,9 @@
 - `tests/p3_feedback_allocation_test.gd` `f5e6b53e19daebc694af633b5d9e8258b907f9a095e1eb6a25637cbda9929915`
 - `tests/p3_feedback_allocation_test.gd.uid` `dce733c624efe33b9b60c07c02c3a7b663c17ac6248c74911ed2e948c9799081`
 - `tests/test_headless_capture_guard_contract.py` `791dad47d47930e276b40b48105473549c08afd652e2161e5f9c546c3f896eee`
-- `tests/test_quality_workflow.py` `5c2949632e670b0a5fdab0188b7c5bd26021b02000560d2420f984bd5a7d0ebc`
+- `tests/test_quality_tools.py` `ac3d0a5eb7542155a483eccee5472373cbda689ee1616169441d361daddc233f`
+- `tests/test_quality_workflow.py` `71943a34794ee23ac4d902541ee0004699fd929644f88f38101d0447603eaca5`
 - `tests/ultimates/presentation/engineer_accessibility_modes_test.gd` `79d095a0f8a99b32957a23f602cb383a521a6336aa901b19b094534770b9dbde`
 - `tests/ultimates/presentation/thief_ultimate_presentation_test.gd` `f6817cbd4a7cf974ebb0e80ee52569e7df2996be6f11dcc1e158487629f9355f`
 - `tools/build_small_biter_atlas.py` `26fb800a7963a86b9a392220c3b8baecce9bf3342a2ffb632da524c34379a30e`
+- `tools/quality_gate.py` `f1890f78059d27511a4369cc27be5bfbf73a4650175f610fc89f5d0cb9005bd4`
