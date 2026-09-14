@@ -286,6 +286,9 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(_visual_node_count(instance) <= int(instance.get_meta("max_visual_nodes", 0)), "%s scene must stay within its visual-node budget" % weapon_id, errors)
 	for node_path in REQUIRED_NODES.get(weapon_id, []) as Array:
 		_expect(instance.get_node_or_null(str(node_path)) != null, "%s required silhouette node missing: %s" % [weapon_id, node_path], errors)
+	var backdrop_layer := instance.get_node_or_null("BackdropLayer") as CanvasLayer
+	_expect(backdrop_layer != null and backdrop_layer.layer < 0,
+		"%s backdrop must render behind the player cast identity" % weapon_id, errors)
 	if GENERATED_SPRITE_PATHS.has(weapon_id):
 		_check_generated_binding(weapon_id, instance, errors)
 	instance.queue_free()

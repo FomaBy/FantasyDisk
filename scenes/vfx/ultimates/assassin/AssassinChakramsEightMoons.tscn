@@ -225,7 +225,7 @@ metadata/max_unique_materials = 1
 metadata/max_fullscreen_materials = 1
 
 [node name="BackdropLayer" type="CanvasLayer" parent="."]
-layer = 0
+layer = -1
 
 [node name="BackdropVeil" type="ColorRect" parent="BackdropLayer"]
 metadata/fullscreen_layer = true
