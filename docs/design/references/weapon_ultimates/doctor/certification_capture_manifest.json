@@ -3,9 +3,9 @@
   "issue": "FAN-3942",
   "class_id": "doctor",
   "source": {
-    "ref": "agent/codex-dev-sol-5-6/75d4bc3d4466",
-    "commit_sha": "9f494e8d0b41ee5e5ac7aad3fdaf14fbdba33c3f",
-    "tree_sha": "0732d537c03473c6efc1127b7fbbbd938139ebb0",
+    "ref": "capture/fan3942-doctor-112e",
+    "commit_sha": "112e9dacfa5406f7a2ad9907091d59fe36ad4c51",
+    "tree_sha": "65d83634c9441ed1448219d6fac881ceb57c2e24",
     "worktree_clean": true
   },
   "canonical_weapon_ids": [
@@ -99,18 +99,18 @@
       370.0
     ],
     "beat_source": "scripts/ultimates/presentation/contact_sheet_beats_contract.gd",
-    "captured_at": "2026-09-14 07:55:38"
+    "captured_at": "2026-09-17 11:37:14"
   },
   "commands": {
     "live_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/doctor_certification_live_capture.gd",
     "focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/doctor_certification_capture_test.gd",
     "class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/doctor_ultimate_timelines.gd",
-    "static_guard": "python3 tools/quality_static_guard.py --changed-ref 9f494e8d0b41ee5e5ac7aad3fdaf14fbdba33c3f",
+    "static_guard": "python3 tools/quality_static_guard.py --changed-ref 112e9dacfa5406f7a2ad9907091d59fe36ad4c51",
     "lfs_integrity": "git lfs fsck"
   },
   "sheets": [
     {
-      "sha256": "e6f9094b13da04c872dc584196607050eb2324623cf53c5a4d0b64d73133de74",
+      "sha256": "027a9eaee4fe89e70f4b20ca4a346165216f24d9a8fb633f8a7202f892fa8de0",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -130,7 +130,7 @@
       ]
     },
     {
-      "sha256": "5387338caa1d0ce155a3aee735fa7bb49143b5513734ec981d8e203fd33ded5f",
+      "sha256": "65e7f4ace503519e8927a8aaeb6b98aac85ec76cec39f5cddf2da79834046f24",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -150,7 +150,7 @@
       ]
     },
     {
-      "sha256": "b0c714639ac2511354228fb4323754dd355fcfff75734ffcaa5c7d43028410ec",
+      "sha256": "dfe9643207359f45ff955270c850948d52166fcb3f28ef7429511a8254dbd820",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -170,7 +170,7 @@
       ]
     },
     {
-      "sha256": "a6c30f25bea2cb30d455ac550aa3d79acecf7483bad960a8fea4f2c82f599cc8",
+      "sha256": "c093f2957957b4f921efefe85118e416827cca5b97cdbcc5bb49c0aed02b3e0f",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -190,7 +190,7 @@
       ]
     },
     {
-      "sha256": "07a9067033d819171236813be997414cf565021e88142df44d6f756871f42e2b",
+      "sha256": "50f0958df72aee59e38a723b1c961de090e99c5dd5085d2b2b15e53e89f8b375",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -210,7 +210,7 @@
       ]
     },
     {
-      "sha256": "94d505228496ff0526b6166b48a7c27506ec3c70e45c599589b77fdb49dc49d3",
+      "sha256": "8ac31f6b6cd83043fce92b51558553a988e922321b7a3fd8902474bf93f9d961",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -230,7 +230,7 @@
       ]
     },
     {
-      "sha256": "b5ee1cce63920789a6e12bd3809d1bcb7b43335c7a8a9aeaaabd56d4728d98a6",
+      "sha256": "083411fcb6cd2d73809e273bafa857d11b3b42e02039a53f014e2d3b6650f57a",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -250,7 +250,7 @@
       ]
     },
     {
-      "sha256": "20ee6550daeacfe132d4402e6faf18895d4256c01eb2eb11903ee98015886749",
+      "sha256": "28b8c34009e96d171c8dd76a7be84091e303ff14f5c0ff31c3199e4cd407713b",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -270,7 +270,7 @@
       ]
     },
     {
-      "sha256": "8879dc46224ab206ca64576ca8dc777768a9ea5388d953e2f14af543a3014ea1",
+      "sha256": "91276cf801e4707500dd87286e4149e07f0081a3e30aff9aa91df6cdaf78f936",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -290,7 +290,7 @@
       ]
     },
     {
-      "sha256": "e8eb17482adedb424e900fa363cf6344e4a2a221d9dce707c9f27e1cca0cb1cb",
+      "sha256": "b07d3ca1d07d0aec40b641d722445fc4a11c1eb4e71c5317449b79ebdf2a2fab",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -310,7 +310,7 @@
       ]
     },
     {
-      "sha256": "d59416b4c512d7466874d0f2bcc8e9957fad3850241ab389343e18ffc5c5b6a7",
+      "sha256": "3a32cd579e61bb7b8235a31cef06e87e85d57ead3adb986e120123f648495fee",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -330,7 +330,7 @@
       ]
     },
     {
-      "sha256": "e0081b47dfbd0d19b5f61589fdb6629f2c636eddfd2acc6e99232109ceca0e9e",
+      "sha256": "350768efcf232b0a1e5d8efbf6b1222ddefef1f7b90adb1a7e5a51fb04bc335a",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -395,15 +395,15 @@
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8244,
+      "changed_pixel_ratio": 0.8246,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.679,
-      "player_contrast": 0.407,
+      "player_contrast": 0.5,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "648p",
@@ -431,12 +431,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6b6e29da18ea68016f42dedbb1ce68a30f671a326edf402c6ba9c051a48b70d4"
+      "record_sha256": "769dcc7d13d090a20a86d4dceb980dbe05ecb5144a8bdf6ac7a1ad64434b2cf5"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9174,
+      "changed_pixel_ratio": 0.917,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -444,7 +444,7 @@
       "hud_band_min_contrast": 0.582,
       "player_contrast": 0.486,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "648p",
@@ -472,12 +472,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "69c6fa403c5aeedb2f5c1e23a303337a76414c9cbf8647941c5d58492a908805"
+      "record_sha256": "8ab4352571e92378857da9aac8af258ed7548c07b3e5145e6a7747bd67939f6f"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9053,
+      "changed_pixel_ratio": 0.9057,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -513,20 +513,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6001ba8fe2909fec6a92fb07407b941fb638d7a24c0b679fa320dea0535b9855"
+      "record_sha256": "bc9d3eb5c72590be7f03444f3bf29912fdd0a608f472645b7c6c01e0b13ad42f"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8248,
+      "changed_pixel_ratio": 0.8256,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.679,
-      "player_contrast": 0.515,
+      "player_contrast": 0.517,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "648p",
@@ -554,20 +554,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "992c949104a423cabc3c90f7a7c571dbe0215f0f5b0fe0f236fdb170a400f1c0"
+      "record_sha256": "164071a6a2ffa62be7c26b5dbd0db2b601b34097cd292e9dbf12a464500d677e"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9179,
+      "changed_pixel_ratio": 0.9178,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.582,
-      "player_contrast": 0.457,
+      "player_contrast": 0.436,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "648p",
@@ -595,7 +595,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ddabdd6d224185130bccd21172d88ec03f33af8fa84033a1f3f1b16d11b395d9"
+      "record_sha256": "92a549c1d76a676d2fbdc5cfb7d5f1b167f80a82049c4f874fd89cb5c1f5e71a"
     },
     {
       "effect_box_ratio": 0.0233,
@@ -641,15 +641,15 @@
     {
       "effect_box_ratio": 0.0283,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6513,
+      "changed_pixel_ratio": 0.6515,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.594,
+      "player_contrast": 0.513,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "648p",
@@ -677,20 +677,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2f9ee209ca9fedfd51546e2270234ffd0e5518f4c63367258f0be2406525957b"
+      "record_sha256": "0ff18948bef4ee3a898a6abcedee84aafefed291735148ad31b8724835a5427e"
     },
     {
       "effect_box_ratio": 0.0262,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8543,
+      "changed_pixel_ratio": 0.8538,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.582,
-      "player_contrast": 0.528,
+      "player_contrast": 0.535,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "648p",
@@ -718,12 +718,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "828c71c90723661c357f0f8664d8dc1eb05804b1f4e83ac44c4a7552e887e5a4"
+      "record_sha256": "e5ed25574b5f3f0ff76b104dc7d2010a83a77e411324d0e2d5ab5879bfc71183"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6542,
+      "changed_pixel_ratio": 0.6539,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -759,20 +759,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0c11a7f3993188d0d4ada51a693996311f4b9d0435779a8b5d89b93a1dc5f991"
+      "record_sha256": "34f9988ca0f629622c177615a8f3cdf19547a991f6e70e96135c8ea06d286756"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5512,
+      "changed_pixel_ratio": 0.5509,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.487,
+      "player_contrast": 0.572,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "648p",
@@ -800,20 +800,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d958c3880eb791dc3f5114e18cb83a25a2c659751670efda041aba3b90510682"
+      "record_sha256": "b5548ef0f4dbc0c33c200c0417d941711798cd9dda359c4e19576011143605fb"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.813,
+      "changed_pixel_ratio": 0.8131,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.579,
-      "player_contrast": 0.509,
+      "player_contrast": 0.563,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "648p",
@@ -841,12 +841,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a9e5cd13b18be6ff6ed2647c834362a5b37c073c933aca2f10729b7b89c8c061"
+      "record_sha256": "e095d1807a6959aeb651bec6da53a2ecb82f5c8b80f3eb406ac8c48340d4890a"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8209,
+      "changed_pixel_ratio": 0.821,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -882,12 +882,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "30922b5e1be7172381dd4be68e1ad467cdde250e3c9cf3e4829a6bdc874ac4f8"
+      "record_sha256": "661a17fee96bcd8f8659f0f4fb1a9b7ce9660eecbf45f917cd8e32f007f9ffd1"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9055,
+      "changed_pixel_ratio": 0.9057,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -923,18 +923,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9c8294070d5a44436216182f3f83e2e1ed469b571f467832d090eea29d71c391"
+      "record_sha256": "c40f33eac2d4135d6bee38f141b0d745811b4a3289a8cd88a6f6a363b2422abd"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8212,
+      "changed_pixel_ratio": 0.8213,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.679,
-      "player_contrast": 0.314,
+      "player_contrast": 0.358,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -964,7 +964,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d7f07943e8a2bd401e0d803701e6d9a47bc5ebbeb2c14fb3c4566854170fb0d0"
+      "record_sha256": "3eebd81148a252e7dad359278ac42b48f6fe5c42b23d02b7ae8d481c2798217d"
     },
     {
       "effect_box_ratio": 0.0242,
@@ -1010,7 +1010,7 @@
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9052,
+      "changed_pixel_ratio": 0.9053,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1046,7 +1046,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "cc5b4eae517201186d7cab3a7ff1b91b16b4c40e4fe867cc4abe46788bc41cdb"
+      "record_sha256": "b29722a49e2974b987aad1b97bbd52c6cc376f752ef5595d6ab1924f3010a0eb"
     },
     {
       "effect_box_ratio": 0.0027,
@@ -1133,13 +1133,13 @@
     {
       "effect_box_ratio": 0.0272,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7753,
+      "changed_pixel_ratio": 0.7749,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.727,
-      "player_contrast": 0.629,
+      "player_contrast": 0.478,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "plague_syringe",
@@ -1169,18 +1169,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e48f8247388c8588d9db5f757c57b87887fc7c5b6c0b2278cb1f09b724c1de83"
+      "record_sha256": "039c641398c5af8e833a25a585833aaaf29af02f605e50097a2cf72c3d050ca2"
     },
     {
       "effect_box_ratio": 0.0055,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6459,
+      "changed_pixel_ratio": 0.646,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.523,
+      "player_contrast": 0.409,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -1210,12 +1210,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1b847a526a30722c9d94b19bb4236373c3c2d35001a28b4d551a6a7bbe5dd99a"
+      "record_sha256": "87b701113e8bfdd263616017c46016e40ac9f7131a30f2df366c1f800ddd37fd"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5465,
+      "changed_pixel_ratio": 0.5463,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1251,12 +1251,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "86d6b2a7a1c55f7d925ab1a5cc3f0aadbbdc1ae7bb7621a1d8b57692a8701ea5"
+      "record_sha256": "318bb408cd5cc585b74b0c9420652f7993ee412e8329c4dd41d1370dc2e7071c"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6541,
+      "changed_pixel_ratio": 0.6536,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1292,18 +1292,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e51323e6fe74835b96ae96413dcc6dcee64d636760738f18fe0227c31cee7f63"
+      "record_sha256": "f4184bf8c1e23bd5943a88e0cc0773cb0fdefd334f9425b82250c2ee84121155"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5464,
+      "changed_pixel_ratio": 0.5461,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.712,
+      "player_contrast": 0.631,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -1333,12 +1333,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "57e1837e20b91e3a5e789a4b03ec26074e06bad20f9c2b2f38ab35513c9bbec9"
+      "record_sha256": "47e73329175130e7dd6a8189be53769498602b30f957fb829a9e88c0472c1a80"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.918,
+      "changed_pixel_ratio": 0.9179,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1374,7 +1374,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d3729006f98577e667c2ca538df7e68c3e8b765dfd5b3d98192092e40aa420fa"
+      "record_sha256": "430583d2d636db8ca6cbaec28dcd50b0fd51bd1ade6251dbfd458eb2d7590972"
     },
     {
       "effect_box_ratio": 0.0147,
@@ -1385,9 +1385,9 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.558,
+      "player_contrast": 0.529,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "normal",
       "viewport": "648p",
@@ -1415,18 +1415,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d2e928235dfb1afe97daf92eaf690c4f8616dafac6a3887442c42cdff2b58ff3"
+      "record_sha256": "e5e61ff2447b2fe13594157633bdae86e736363d79c134da3d4c7f960b3593c0"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9057,
+      "changed_pixel_ratio": 0.9056,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.538,
+      "player_contrast": 0.526,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -1456,12 +1456,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "07b16b02b21029817ff5ebcee7bf73cf720b287d72c79f8251f591dce1bbdefa"
+      "record_sha256": "83206c9e9b64dd1f54e3808af4cba33ba4e69e47834b43a95b649afd430d3465"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9187,
+      "changed_pixel_ratio": 0.9186,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1497,20 +1497,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5ace503bcecb42233527b1c2d10151280ffffff468a9641396d71f7bc5768b18"
+      "record_sha256": "645fd853f1fcf86ea150f83e768262de7c3b7ef7b388b812a6b739820bce03f9"
     },
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9039,
+      "changed_pixel_ratio": 0.9041,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.55,
+      "player_contrast": 0.558,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "crowded",
       "viewport": "648p",
@@ -1538,18 +1538,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e21ef6869d11867d6f68a979f2b9bd7e0a8e8ce3b99aa1f9f019f3d8595edcdb"
+      "record_sha256": "29c20609383aea6b6a84acec28c5153be560e73be3ebb235635be2acb1324881"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9046,
+      "changed_pixel_ratio": 0.9052,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.527,
+      "player_contrast": 0.543,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -1579,12 +1579,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "90e1bd889a6767599913333e83ce38190d4dd912f42ce7fd2a44a707ec29af9a"
+      "record_sha256": "8aed975017dc1f3c1dd1a7f111db3cd75931875b45857c52177824e38345e67c"
     },
     {
       "effect_box_ratio": 0.0117,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8553,
+      "changed_pixel_ratio": 0.8555,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1620,20 +1620,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "04618753b0c8fce3e87deed09145d1a0393c158c72f75f027687347c5e5b3ebc"
+      "record_sha256": "278ff7afc405e7c6df38d050af441eaa7f7c83b99e0f822aa30c91f64bca0c7c"
     },
     {
       "effect_box_ratio": 0.0173,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6481,
+      "changed_pixel_ratio": 0.6473,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.648,
+      "player_contrast": 0.649,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "reduced_motion",
       "viewport": "648p",
@@ -1661,18 +1661,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7b5f8d30a7fbeba073d5bcb704007d5669d4d85c03caf38a37906a3aa7077378"
+      "record_sha256": "d081104fa5e455c4c0a4b5d8cf230720a0d10b814a2eae069a38a7311e33aaaa"
     },
     {
       "effect_box_ratio": 0.0073,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7749,
+      "changed_pixel_ratio": 0.7747,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.588,
+      "player_contrast": 0.57,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -1702,7 +1702,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0df0a5a6c65be9bf5fc2c20b6a9520988a610a72da06225a92a9e65e5e405892"
+      "record_sha256": "85b57a9a4d3e02bf99c237b4beb2e5615841f4ea5418ffcd19c20967687aded0"
     },
     {
       "effect_box_ratio": 0.0108,
@@ -1748,7 +1748,7 @@
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5516,
+      "changed_pixel_ratio": 0.5514,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1756,7 +1756,7 @@
       "hud_band_min_contrast": 0.623,
       "player_contrast": 0.654,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "photosensitivity_safe",
       "viewport": "648p",
@@ -1784,18 +1784,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d195da6d70e311de11321f12e369552161876743ce985815ecf3e050d68d557e"
+      "record_sha256": "63864cd2480b161c4e4bb076551358faf0343a9bc8d4277b2350481c50a007c9"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.653,
+      "changed_pixel_ratio": 0.6531,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.623,
-      "player_contrast": 0.685,
+      "player_contrast": 0.676,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -1825,7 +1825,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8e572a404d3b2167185f089d8d28e3d8c0fe643f0041894167a95b2d58a95756"
+      "record_sha256": "976693722fe19a04c9b0bcc87e6c414bd3b67a798f181df0fca4e1abb9580cf6"
     },
     {
       "effect_box_ratio": 0.0268,
@@ -1879,7 +1879,7 @@
       "hud_band_min_contrast": 0.666,
       "player_contrast": 0.519,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "720p",
@@ -1907,20 +1907,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "47041b7934b596879924b5d99bcde7a35a65503e2014b02ff0cf8643601eecc0"
+      "record_sha256": "593f10994957ae8f6e7b29467496e565b961d9ede2051fcb4ed5bd71c271f51d"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9169,
+      "changed_pixel_ratio": 0.9023,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.572,
-      "player_contrast": 0.415,
+      "hud_band_min_contrast": 0.713,
+      "player_contrast": 0.522,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "720p",
@@ -1948,12 +1948,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "4f4421613d2a0ec4e0b70ddd0c1036110ae2d2634ad2d622f7cccba0e0456e3e"
+      "record_sha256": "ef4ce481c095bd5ffa6a23ff6d08cc698380f7e76e5e81f0c1ab9338d8be11d6"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9008,
+      "changed_pixel_ratio": 0.9011,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1989,20 +1989,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3a447d1c97c6518788f8b59efa91a13a15921dab5503e110332135dff48e5d43"
+      "record_sha256": "ff30269d675980abbbbe8f584e4467b7fb99e334aa7db8c9249e6bcf89186b69"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8204,
+      "changed_pixel_ratio": 0.8206,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.539,
+      "player_contrast": 0.47,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "720p",
@@ -2030,7 +2030,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ef972878e66c545f76c37cefcf067cd92514104840c2643981fdfe1ffa7b0e54"
+      "record_sha256": "356fe609787950b9fa746270b441040edbcb3af8f86cf960f19f914333e2cb9e"
     },
     {
       "effect_box_ratio": 0.0293,
@@ -2041,9 +2041,9 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.572,
-      "player_contrast": 0.38,
+      "player_contrast": 0.399,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "720p",
@@ -2071,12 +2071,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "07636687a003b157fbe02e18897b7a85577615b0dcb2b027fc761321df00e0d7"
+      "record_sha256": "5facd6a371f59b5d2ade5c977a5c1b9e1301b8215758b6585565e6f6b4efd4ec"
     },
     {
       "effect_box_ratio": 0.0233,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7707,
+      "changed_pixel_ratio": 0.771,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2112,20 +2112,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2f25680267a0cee067368f76fcd8636d055ff5f56fdbb701e76617bdba6482fb"
+      "record_sha256": "a52f5b92eb2b3e684b0d31ed7099c068cf165b90cfc332dfcb93de948dbe5158"
     },
     {
       "effect_box_ratio": 0.0283,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6601,
+      "changed_pixel_ratio": 0.6597,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.621,
+      "player_contrast": 0.648,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "720p",
@@ -2153,20 +2153,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f746b698f3a52da528585461dc3c9e0ff34cf048e57dceac0c87df47dfdd4cd0"
+      "record_sha256": "92f15b3b7f0b6500eecea710530ffb6fe869cbccf29296f799e59cc625c285c0"
     },
     {
       "effect_box_ratio": 0.0262,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8531,
+      "changed_pixel_ratio": 0.8538,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.572,
-      "player_contrast": 0.45,
+      "player_contrast": 0.472,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "720p",
@@ -2194,12 +2194,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e994815e12b608cae009642b82d39d7bf25aa6f85b4f4d90dd0047f3614428f2"
+      "record_sha256": "07973bdd7762e7de1eab47fa8665e982d5b99378782185f10daa1d7de274bc75"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6639,
+      "changed_pixel_ratio": 0.6638,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2235,7 +2235,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "41cc1e5afc59f5c47a0e16a62e3b3e838badbd2cb21ada1061f20bb587d53b37"
+      "record_sha256": "b0cab987803e4159623cc485761eec8f5e6dee6c869b5ee17ab957408f877cb4"
     },
     {
       "effect_box_ratio": 0.021,
@@ -2246,9 +2246,9 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.548,
+      "player_contrast": 0.534,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "720p",
@@ -2276,20 +2276,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "27109b2ff00a9e4d0393bdd70ce88f6320386212fc0f05ebb3f49e883202c9ee"
+      "record_sha256": "7b9bb2903d13bd020180cdbc7ae36ed038e4fe33882a15a5bca3cbe43fb3591c"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8148,
+      "changed_pixel_ratio": 0.814,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.572,
-      "player_contrast": 0.511,
+      "player_contrast": 0.516,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "720p",
@@ -2317,12 +2317,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ba22491b420029cc5c57987b8a94c94e30ea732ef6b0a9198817430c3fec947a"
+      "record_sha256": "f108466a7d156e29b642ed9d94ae1530620687fceaf23cb5a3d1d8c8a1e2fc30"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8171,
+      "changed_pixel_ratio": 0.8172,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2358,12 +2358,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "aeb689b9721827b72678eb1ff4eabda5c70ed5b82cc9deed400c1c5ee53a0e4b"
+      "record_sha256": "9e55505d11d989268377e21705320118953f01db781037054f26791f0d5dedcf"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9019,
+      "changed_pixel_ratio": 0.9024,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2399,18 +2399,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "37c3132b720878d1793f04d2fafd34c5de27cdedbe14c31c8c453b9971ac06fc"
+      "record_sha256": "70bfe3137b30a2845c82be15c125f23682dc7201e73fb8d00cc87a8d57a11e63"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8174,
+      "changed_pixel_ratio": 0.8181,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.354,
+      "player_contrast": 0.343,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -2440,12 +2440,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "67c7ad657d807160ca432769b35b65be68637421fa3f87705dc62449702289a5"
+      "record_sha256": "c5ef8bdc44fb11dee3add6590d0b17449756a4d371eee52f66b1d7c02aea5b56"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8166,
+      "changed_pixel_ratio": 0.8169,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2481,18 +2481,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "084d06272bd7012713d1140a2d31ec6409369e754823ef8d9b53cc3b6d311b41"
+      "record_sha256": "0d3e764809911929bff514796782f8875768c345a33be18a16f0ebeb76e7faf1"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9002,
+      "changed_pixel_ratio": 0.9,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.591,
+      "player_contrast": 0.608,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 6,
       "weapon_id": "plague_syringe",
@@ -2522,18 +2522,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1f8dc28722c3e798edbba975e8da7b7fc1c0555a4cf8e2eb24b755b5c5308bdd"
+      "record_sha256": "add4cdf2553c3b8160d27872393066c454939b1e3fdb56c7c79588263674e9d4"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9172,
+      "changed_pixel_ratio": 0.8176,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.572,
-      "player_contrast": 0.383,
+      "hud_band_min_contrast": 0.666,
+      "player_contrast": 0.564,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -2563,7 +2563,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ffe85fe971b1ff4aeab6855d7624126ca5447e1c8a9f141757361e94c82e722c"
+      "record_sha256": "82c65490d7d0a5661e702ef3583cc5e4c6518f8adcb31e89f7ace4d5c4d2996d"
     },
     {
       "effect_box_ratio": 0.0243,
@@ -2609,7 +2609,7 @@
     {
       "effect_box_ratio": 0.0272,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7709,
+      "changed_pixel_ratio": 0.7713,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2645,18 +2645,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ca07695aca2aecedf64da5a7c306b66120299b673109e639d9e9b4bba1a79328"
+      "record_sha256": "5d384185dd8f7f27dfa9af0044b2e10b77b15d89b170be6ee44a7d46277bb59a"
     },
     {
       "effect_box_ratio": 0.0055,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6552,
+      "changed_pixel_ratio": 0.6548,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.436,
+      "player_contrast": 0.411,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -2686,7 +2686,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6595de1e57d84f48fbf32270258957c829b7fcc6e44104588f70c556a846ea01"
+      "record_sha256": "9fd4b0c5b288797aa5505d461e798cf75c2c1f29a7037348ae965a1e47afb92a"
     },
     {
       "effect_box_ratio": 0.0242,
@@ -2732,13 +2732,13 @@
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6633,
+      "changed_pixel_ratio": 0.6637,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.762,
+      "player_contrast": 0.568,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "plague_syringe",
@@ -2768,18 +2768,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6c85e69625e3a61d964e62ec52cd4400e2319a604d7a1d0bf0c2fb97b6bdec78"
+      "record_sha256": "e74d10eb8a93693080932c00778268a64564e3d184cb96b933dc3e41f8c7f9b2"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5604,
+      "changed_pixel_ratio": 0.5602,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.712,
+      "player_contrast": 0.694,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -2809,12 +2809,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "55fe5feb3cfbd5c4b78fe545f81f9cae35ee5d76ba4d94b5ab6fe75b8d264a78"
+      "record_sha256": "c8e1ff55a21598730919cfb5bdf3f6a3bd5a87e4c61ad6106f16d8a982242b33"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9173,
+      "changed_pixel_ratio": 0.9174,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2850,12 +2850,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d0578aa54111dfd0c92795e2e7ca2e53c7f5f50b220dc03b591fb610299040bd"
+      "record_sha256": "43b5a5a26cdf9ae87c950b8a887be44f7c4b4ba683135b036a207ad081222850"
     },
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8184,
+      "changed_pixel_ratio": 0.8178,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2863,7 +2863,7 @@
       "hud_band_min_contrast": 0.666,
       "player_contrast": 0.554,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "normal",
       "viewport": "720p",
@@ -2891,7 +2891,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "450396047090b057cd5506d1ca3c3731a854ed2423cf6a445fea6468f99944b2"
+      "record_sha256": "c254bb45e39704d6617fd8786aa57342862e8cbf5fcd31bc6e7bac5cdd794582"
     },
     {
       "effect_box_ratio": 0.011,
@@ -2902,7 +2902,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.595,
+      "player_contrast": 0.582,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -2932,12 +2932,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f9b3d04408e3b3b5ad2b6c1116f6f6e43fdd7ce342cbbd1d47ae1748e6bf8c14"
+      "record_sha256": "9510db4b8a1dddea58356adfb97cdb098554d460bc9275ccf43212bbc0aaa14a"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9175,
+      "changed_pixel_ratio": 0.9173,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2973,20 +2973,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a8480cb29d329f3c899feefa43cd859fb48bbb8d34174f5352592b8d99e85388"
+      "record_sha256": "7f1ea9f705ba1a149f0626efca9d6c51cac5f22dc0c64c750149137b8230c80b"
     },
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9006,
+      "changed_pixel_ratio": 0.9003,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.53,
+      "player_contrast": 0.536,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "crowded",
       "viewport": "720p",
@@ -3014,18 +3014,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "91c93e4f9c017e11c8cbd261fb5bfa505e4b49226df1623d0c594c30ef09bb93"
+      "record_sha256": "910855283a369ff8090a5c9cdd5f3d50faa520ca68bff4007efffb2fee3bb80b"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9011,
+      "changed_pixel_ratio": 0.9013,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.591,
+      "player_contrast": 0.592,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -3055,7 +3055,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b907d55f773a4b806ad0b091217c018ce2d08d6cd82010b38285eaa3d24067eb"
+      "record_sha256": "cea06c2f18d63a9880444cdae2f3cdc44a33025f110215e2f77c4e179a7838a5"
     },
     {
       "effect_box_ratio": 0.0117,
@@ -3101,7 +3101,7 @@
     {
       "effect_box_ratio": 0.0173,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6567,
+      "changed_pixel_ratio": 0.6561,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3109,7 +3109,7 @@
       "hud_band_min_contrast": 0.666,
       "player_contrast": 0.645,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "reduced_motion",
       "viewport": "720p",
@@ -3137,18 +3137,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6ec59a842e7b343469977ce3e98aa47dcf79fc14df57abe459fd0fcb340e0d6f"
+      "record_sha256": "1e99e7d387e05dc63f44a9330eab066563558fac8e9d627c62d4f0666e1c1c59"
     },
     {
       "effect_box_ratio": 0.0073,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7717,
+      "changed_pixel_ratio": 0.8545,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.699,
+      "hud_band_min_contrast": 0.572,
+      "player_contrast": 0.559,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -3178,7 +3178,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2454f57bedc8694af4fc242eadfcc7c575a223686b1f655b8557982d1b202a4c"
+      "record_sha256": "85e33ea865cd0345d136a0672ddc12fbacbce716216f71615ceacc2018f9902c"
     },
     {
       "effect_box_ratio": 0.0108,
@@ -3224,15 +3224,15 @@
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5636,
+      "changed_pixel_ratio": 0.5631,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.666,
-      "player_contrast": 0.7,
+      "player_contrast": 0.699,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "photosensitivity_safe",
       "viewport": "720p",
@@ -3260,18 +3260,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "dde1789941c158ca1a055466546c40b8261e071bbdc434767f1fe8f41d944c45"
+      "record_sha256": "cdc032186e0e66f2a2fcb8dd7a77aa8ae88955b65055cc01870fa2e888d2847d"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6626,
+      "changed_pixel_ratio": 0.6633,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.713,
-      "player_contrast": 0.777,
+      "player_contrast": 0.735,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -3301,12 +3301,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d6fffcf424941f0811d00db84374f6b5aafc67142fed6143919d8485105b3ba7"
+      "record_sha256": "d754d5f1b376bd00126f4e5e87603f3ce142c07168289b771cc1550ae4d6d318"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9058,
+      "changed_pixel_ratio": 0.9057,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3342,20 +3342,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "09fa091f6b3d02571d82d971c7918d410e54c68c8891cbf80c337e0bf32a6631"
+      "record_sha256": "a56bacdd2558ca9c125700af4432b50a143412fae3338a08d3e0293de5537b13"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8255,
+      "changed_pixel_ratio": 0.8256,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.799,
-      "player_contrast": 0.568,
+      "player_contrast": 0.571,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "1080p",
@@ -3383,12 +3383,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "63af94f4a368bcadaa2e5bade33ceedd38403383940b7eacc625f63a65ff4370"
+      "record_sha256": "63ec698c87337819e74077c3eb05a06900a1c2a8bdff744854ea11b60446fec9"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9165,
+      "changed_pixel_ratio": 0.9164,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3396,7 +3396,7 @@
       "hud_band_min_contrast": 0.546,
       "player_contrast": 0.489,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "1080p",
@@ -3424,7 +3424,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "561f06d9181021bbfc0070658284c7432a9313c8b13c3e819bb27c975bfc2f7b"
+      "record_sha256": "0c10827c945689cf187189cae095863ffaf3a6c7b2055640c64e3cccb23fd847"
     },
     {
       "effect_box_ratio": 0.0268,
@@ -3470,15 +3470,15 @@
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8257,
+      "changed_pixel_ratio": 0.8262,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.799,
-      "player_contrast": 0.529,
+      "player_contrast": 0.576,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "1080p",
@@ -3506,20 +3506,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "26ff4acda68fd188c7461f7dd047adce874107848182ae5d8bb566b7fc622bb0"
+      "record_sha256": "0d2c61360880736f4d2b5894b2d4abc92526968026b84c99968acb304e56963b"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9164,
+      "changed_pixel_ratio": 0.9162,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.546,
-      "player_contrast": 0.49,
+      "player_contrast": 0.487,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "1080p",
@@ -3547,12 +3547,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "4f8fe81208fa9410b58d9534cab28c8d425e70f14665ef43b644b42d941cc056"
+      "record_sha256": "9b291861e2c19b6d013ca1ac822a868c2ec4ba13dfb1909a61e75096e01c4efb"
     },
     {
       "effect_box_ratio": 0.0233,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7786,
+      "changed_pixel_ratio": 0.7785,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3588,20 +3588,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "da423cf59a4b14c676a044f7591a807ff183d2696cfecc41c55d6e0453dd901f"
+      "record_sha256": "66148b0380a6d49812eeb3951e9deeab1c7235666b30f6c36bc9546513f97379"
     },
     {
       "effect_box_ratio": 0.0283,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6586,
+      "changed_pixel_ratio": 0.6585,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.799,
-      "player_contrast": 0.645,
+      "player_contrast": 0.614,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "1080p",
@@ -3629,12 +3629,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8bd586ed740a5995a84bde78c7e1bf75b041c9e963c296aca7454be6ceebbd13"
+      "record_sha256": "e9740b362a7b63e6488a26a6f1a7a658851fd8e6847939e0a284313513e79f9e"
     },
     {
       "effect_box_ratio": 0.0262,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8524,
+      "changed_pixel_ratio": 0.8523,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3642,7 +3642,7 @@
       "hud_band_min_contrast": 0.545,
       "player_contrast": 0.572,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "1080p",
@@ -3670,7 +3670,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0c23148c22d93af0e7ee9f8195dadeec2cadd74a91c32073a9a38b1441e10f92"
+      "record_sha256": "7cce0fd851932e4e4f527c05bc6ab5e368edf75c0fdb8b5cb00611e7ae95ae4e"
     },
     {
       "effect_box_ratio": 0.0268,
@@ -3716,7 +3716,7 @@
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5532,
+      "changed_pixel_ratio": 0.553,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3724,7 +3724,7 @@
       "hud_band_min_contrast": 0.799,
       "player_contrast": 0.661,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "1080p",
@@ -3752,20 +3752,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "293e89f61aa7fdf55c200e0d08345127584a9dac0ff7fe54e1443d361ad86684"
+      "record_sha256": "8184cdaa13c5af852d23586876ccec64b9e1dd859e3592f4f178397f5f5ff01d"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.816,
+      "changed_pixel_ratio": 0.8162,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.545,
-      "player_contrast": 0.577,
+      "player_contrast": 0.596,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "1080p",
@@ -3793,7 +3793,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7811b1443fe107f599949c3c9d863a6d1df91b2045f7809b7e03de66547be320"
+      "record_sha256": "9c056f40c7308d3c790ac981c69cb1b7c3e94b0cf27faa928827b4142a7b116e"
     },
     {
       "effect_box_ratio": 0.0242,
@@ -3839,13 +3839,13 @@
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9057,
+      "changed_pixel_ratio": 0.9167,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.854,
-      "player_contrast": 0.544,
+      "hud_band_min_contrast": 0.686,
+      "player_contrast": 0.485,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "plague_syringe",
@@ -3875,18 +3875,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d6b34858547a36638ed94cac207fa2840a21f8e14fa172b03867a347fadb5388"
+      "record_sha256": "64c591c04b8395b1f5cb651d3f71349b40fcc0902cfdb30bd01cbd52e35b1191"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8235,
+      "changed_pixel_ratio": 0.8231,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.459,
+      "player_contrast": 0.563,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -3916,12 +3916,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "bbae0fead536d454b555ed5e8a472d0c1b8175d2e1eb22a2304807d1eb419e3a"
+      "record_sha256": "b56588d85388ae23b24721fd396c1ce4f9984b9e9a5fd462265ce01e19c822a5"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8229,
+      "changed_pixel_ratio": 0.8231,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3957,12 +3957,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "604ef603625a5e288a335f39939b9df1314021f7ab422e0f261d0856e191a796"
+      "record_sha256": "d48e55abb31ce55e973e0b72e4fdfd1aefa3b1b138784c61787746e1e385d9a1"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9051,
+      "changed_pixel_ratio": 0.9047,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3998,18 +3998,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "92df3203b737dbb82117e10118816ea7eeed04631ff76f35e472f641149d1023"
+      "record_sha256": "233057654a739c79541208fa75e8e16c7b7672c82d99cf1759504ea7235ee26a"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8228,
+      "changed_pixel_ratio": 0.823,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.366,
+      "player_contrast": 0.565,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -4039,7 +4039,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "489b5ba0bd8a6788a670bdff4b795b307856fa9e6e4a0e4d21d008ad9532eb0c"
+      "record_sha256": "eaf19dc128b0865199a199aa83a093887efb1dadb101ba16fac396935548fbe8"
     },
     {
       "effect_box_ratio": 0.0243,
@@ -4085,13 +4085,13 @@
     {
       "effect_box_ratio": 0.0272,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7791,
+      "changed_pixel_ratio": 0.7793,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.853,
-      "player_contrast": 0.647,
+      "player_contrast": 0.639,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "plague_syringe",
@@ -4121,18 +4121,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "646286bef5b7df738e8fd47af5846f4aa8b4edb9920b83c20b1a514cb6f61ae4"
+      "record_sha256": "32f2ae3a01ad8e1e146e46b6877bf1e346ae887b1f19d3b579e564e6e1544e56"
     },
     {
       "effect_box_ratio": 0.0055,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6531,
+      "changed_pixel_ratio": 0.6544,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.662,
+      "player_contrast": 0.468,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -4162,12 +4162,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3eee13eb09dad3d7da467c58e3cea5ba00852254b00c78574453bb195b7826b1"
+      "record_sha256": "e7bca794ebb13283bcbcc001956a9f6f79bafa63d050ffe2ae10b640065887af"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5499,
+      "changed_pixel_ratio": 0.5498,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4203,18 +4203,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7fcda7f52b8182a22767f2bb6689e1020386fa210aff1b960388dd7eae57f847"
+      "record_sha256": "6ec0acc0ab46efd8cb643e37a159ffb675521cde72e16b1c3d5b457f917e4ee0"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6639,
+      "changed_pixel_ratio": 0.664,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.853,
-      "player_contrast": 0.762,
+      "player_contrast": 0.685,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "plague_syringe",
@@ -4244,7 +4244,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "59004cd7ccbd98d364c50d46918a54acf64ee07da11016bd9b3a78959fcfb94e"
+      "record_sha256": "266fc20f2538d790b4e1d743ab3623263e2d875be8d8d445dbe78ee0a21a6f97"
     },
     {
       "effect_box_ratio": 0.0027,
@@ -4255,7 +4255,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.695,
+      "player_contrast": 0.672,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -4285,7 +4285,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c89e3ba388691650572286042c6d3697d713b3536698ab61631194dec8e5f838"
+      "record_sha256": "a4e5ff74f0dcccd705ce7aaf6933656ad5ac4607c6f5323a1cadc0720945e9fc"
     },
     {
       "effect_box_ratio": 0.0108,
@@ -4331,15 +4331,15 @@
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8232,
+      "changed_pixel_ratio": 0.8231,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.799,
-      "player_contrast": 0.558,
+      "player_contrast": 0.556,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "normal",
       "viewport": "1080p",
@@ -4367,7 +4367,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "be9a2d6406156cd31fa94236259c0128641a15567e2239843d66715bf924eede"
+      "record_sha256": "ddaf4f028a61444cebbba940a564af254104a8d13b9a46e053aba388d3cb329d"
     },
     {
       "effect_box_ratio": 0.011,
@@ -4378,7 +4378,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.847,
-      "player_contrast": 0.589,
+      "player_contrast": 0.592,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -4408,12 +4408,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "758212c153f727b1ccae945ae32fa12c36880e65c2d3a39b602f4eb22dac8230"
+      "record_sha256": "0c9a232049f6f44a570416a6063db621055f78814088e96aa82164e3ade8c446"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9172,
+      "changed_pixel_ratio": 0.9173,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4449,20 +4449,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "429f246cfad2817ca0a23a8a40f46a762890b1d50cbdf1bbe2d0cc055285e0cf"
+      "record_sha256": "2c315d60544bf6ae921c19fe79feed24afe94128dca121bd5a1ac6f5a71477e3"
     },
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9042,
+      "changed_pixel_ratio": 0.9045,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.847,
-      "player_contrast": 0.594,
+      "player_contrast": 0.599,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "crowded",
       "viewport": "1080p",
@@ -4490,18 +4490,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a7b248bc2c5e1412ac9dd141d17b9cbec06d3fa83d8cad312ad7ce7614c9db84"
+      "record_sha256": "0c1a42291aa008a8104f434463ddf74870ccb6e504fb8f018fdc505ad32a58e7"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9044,
+      "changed_pixel_ratio": 0.9052,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.847,
-      "player_contrast": 0.614,
+      "player_contrast": 0.593,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -4531,7 +4531,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "43450a12c2883d1965fa7cf996619d9a1dbbfdf6dd81456320162e1c9ec42024"
+      "record_sha256": "8b483b09bae5f6ea091a00d1e53519dd47d5d7be561f14124589da493e154cc4"
     },
     {
       "effect_box_ratio": 0.0117,
@@ -4577,7 +4577,7 @@
     {
       "effect_box_ratio": 0.0173,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6546,
+      "changed_pixel_ratio": 0.6544,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4585,7 +4585,7 @@
       "hud_band_min_contrast": 0.799,
       "player_contrast": 0.653,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "reduced_motion",
       "viewport": "1080p",
@@ -4613,18 +4613,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6a179ea15b7b505c82a80469dbca964100a3b6191fb11de1c13d25b3ac5b5b84"
+      "record_sha256": "24ea3a50f5a8601e6cdc1a47057e81a34d36e9c86aa3daaed9fd446c3c971b13"
     },
     {
       "effect_box_ratio": 0.0073,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7797,
+      "changed_pixel_ratio": 0.7798,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.847,
-      "player_contrast": 0.689,
+      "player_contrast": 0.695,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -4654,7 +4654,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "74dd0ff68cb7be1828a333e81699d0be14402b8716cd8038d13798dcd252c2ec"
+      "record_sha256": "adf67a3f539e59f09a0f6345ed146fbd62f8ed15f5313f6e7c485fc62ff6dfb6"
     },
     {
       "effect_box_ratio": 0.0108,
@@ -4700,7 +4700,7 @@
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5546,
+      "changed_pixel_ratio": 0.554,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4708,7 +4708,7 @@
       "hud_band_min_contrast": 0.799,
       "player_contrast": 0.7,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "photosensitivity_safe",
       "viewport": "1080p",
@@ -4736,18 +4736,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0018f2bd9f0d77df21c8f4ef77af641183cc08dbcbe52d5eb3bbb24b0cea3c63"
+      "record_sha256": "758fe79ad51e8725e91f28c4195e7b0f87ec62cb2c1cd65666f8e0120e07fede"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6632,
+      "changed_pixel_ratio": 0.6635,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.847,
-      "player_contrast": 0.777,
+      "player_contrast": 0.771,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -4777,12 +4777,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d82caa2f189dddca7e57db6582f1b186d34a69bd857db343918bdf211771941e"
+      "record_sha256": "53ad46cba954e1c8ac5c0bd76fe0e55845e7ea9ec4f0fd244330b18722e68b24"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9049,
+      "changed_pixel_ratio": 0.9048,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4818,12 +4818,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "aaa96f76292b678ef1dea43ac7965e1b7999d4c5b9bfb6acee6ab2fcccd230ac"
+      "record_sha256": "c76731161759db0199c0202c4990667b20faf88bd4ac4ee68527d8d16fd5f89f"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.823,
+      "changed_pixel_ratio": 0.8232,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4831,7 +4831,7 @@
       "hud_band_min_contrast": 0.783,
       "player_contrast": 0.555,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "2k",
@@ -4859,20 +4859,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fa7069245c51a299686af55b14da52a54c7fc45b67f55bc839dd84287d2b965a"
+      "record_sha256": "58569ae5e8dbb98437d33a767684c799a79be6d19cc1f237c05ce60b9d11f1da"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9188,
+      "changed_pixel_ratio": 0.9185,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.671,
-      "player_contrast": 0.461,
+      "player_contrast": 0.441,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "normal",
       "viewport": "2k",
@@ -4900,12 +4900,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "00d30a403da9b1d99c7577467f0010a56e33b0932f652a7551297129ff8501e0"
+      "record_sha256": "8e330462408c432b9450be71a72646b6beefe250c6922854064c2c4ff36e6427"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9029,
+      "changed_pixel_ratio": 0.9033,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4941,20 +4941,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "98960470b8f421a3a0290c340b406ac98e140ee3738f4a437fd2bbbef952d7d1"
+      "record_sha256": "c1c46563018e3dbb9d28a25ebf96e4cb6319974cff208024caff2d7acec7aa68"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8231,
+      "changed_pixel_ratio": 0.8233,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.783,
-      "player_contrast": 0.573,
+      "player_contrast": 0.576,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "2k",
@@ -4982,20 +4982,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1a02e58783733f59d4a1ce8218acce21b6fde8d9b091b02b0217dab03c4033f8"
+      "record_sha256": "ab0a7b84b02d78b59390d3a5278e95a1c6da279f98a75effa5a146072d790341"
     },
     {
       "effect_box_ratio": 0.0293,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9186,
+      "changed_pixel_ratio": 0.919,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.671,
-      "player_contrast": 0.489,
+      "player_contrast": 0.463,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "crowded",
       "viewport": "2k",
@@ -5023,12 +5023,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "841487752aa2a69ca5a16e75d65b7b200fc0f8177702acacb98134e4df331c02"
+      "record_sha256": "4dd3fb26c1716152f3f63833f371f4de961d473a8b4a473e5312891886680df3"
     },
     {
       "effect_box_ratio": 0.0233,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7728,
+      "changed_pixel_ratio": 0.7727,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5064,20 +5064,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a600a3afa0fac0ae361f8fbfd8610c418b171c5815d9a320f60b819fbc569c30"
+      "record_sha256": "4b289a8eb5e77c9b1225f4861e31213e73a4af8fbe88866d658230b088dde952"
     },
     {
       "effect_box_ratio": 0.0283,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.657,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.7761,
+      "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.783,
-      "player_contrast": 0.652,
+      "hud_band_min_contrast": 0.84,
+      "player_contrast": 0.699,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "2k",
@@ -5105,20 +5105,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3940e15c6b297d96cc7e5ce4a0d022650f77aa126119157cfc99918add7429a4"
+      "record_sha256": "c93b64f6af55b13b54a0a256235f5d7e72dfcd1568a289684805b85fa038f2d0"
     },
     {
       "effect_box_ratio": 0.0262,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7729,
-      "flash_pixel_ratio": 0.0002,
+      "changed_pixel_ratio": 0.8557,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.84,
-      "player_contrast": 0.652,
+      "hud_band_min_contrast": 0.671,
+      "player_contrast": 0.538,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "reduced_motion",
       "viewport": "2k",
@@ -5146,12 +5146,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2644d7833522a80f7a0ac711b1bae9adf4b4381ba5809006bbbde3f8692d3dd7"
+      "record_sha256": "502109fdf608bebd87c593ddbfd6b4c839a222fb8e3e69f2f2e0c0275838a263"
     },
     {
       "effect_box_ratio": 0.0268,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6612,
+      "changed_pixel_ratio": 0.6615,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5187,20 +5187,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e8bf03bc8f453e3ad2cbcb9bc15ac4d0f538003f030a6d0b42ba2932d6b9199b"
+      "record_sha256": "7d5a11975fb33a717d5c4a1915d4a6bb340d5d9cf53b1288fc8013a4fc79a05d"
     },
     {
       "effect_box_ratio": 0.021,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6627,
-      "flash_pixel_ratio": 0.0002,
+      "changed_pixel_ratio": 0.555,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.837,
-      "player_contrast": 0.551,
+      "hud_band_min_contrast": 0.783,
+      "player_contrast": 0.656,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 4,
+      "effect_nodes_drawn": 5,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "2k",
@@ -5228,7 +5228,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e11392bb630dc5bf2f3a91bc6dafaaa675e66a4ddf0bffbd417715e480166652"
+      "record_sha256": "67319c541e3b48dca6f2a2cb6cdf32994f8b51de647756673d42a46e1ead78c5"
     },
     {
       "effect_box_ratio": 0.0293,
@@ -5239,9 +5239,9 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.67,
-      "player_contrast": 0.554,
+      "player_contrast": 0.574,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 3,
+      "effect_nodes_drawn": 4,
       "weapon_id": "restore_potion",
       "mode": "photosensitivity_safe",
       "viewport": "2k",
@@ -5269,12 +5269,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d88460ec0ac46058b8daf747fafa3159f01455ba5f25d1e50b03a55cfcd0507e"
+      "record_sha256": "63b44357d9e8ff442405602d90006c3346d4149406088b6e9d02d0c3ba84e8d3"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8199,
+      "changed_pixel_ratio": 0.8198,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5310,7 +5310,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ae7f27a1c4acb96def56a06a1adb22afda8806694a5013f9a2a8c68c606baac3"
+      "record_sha256": "85c2f7d0a7c538970d90bc85ce0ab1cf81778327f473f9a736d5149f31329502"
     },
     {
       "effect_box_ratio": 0.0198,
@@ -5356,13 +5356,13 @@
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.82,
+      "changed_pixel_ratio": 0.8202,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.783,
-      "player_contrast": 0.569,
+      "player_contrast": 0.534,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -5392,12 +5392,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7bf32c7cf30600360a4f2b61be1e225eafc6a19ac366745864b253e07d741f17"
+      "record_sha256": "f8d1e3193119cff71415b2019f270d6d0438eb943fd5b61664e950b279673c07"
     },
     {
       "effect_box_ratio": 0.0242,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.82,
+      "changed_pixel_ratio": 0.8199,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5433,12 +5433,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c1efd638535d75521b705f6a3ae3f456e803da9066a80ec16e7d38bf67c997de"
+      "record_sha256": "6d2c57e2d831c61e49e025f2fd8c438775adc44bdd3687f205618964ee78e2c6"
     },
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9031,
+      "changed_pixel_ratio": 0.9029,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5474,18 +5474,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5c35bb8091758f948c3e508849b1031c49e9642ff0d1d96955bee5c36b28757f"
+      "record_sha256": "02815df3b051db7523ad580c2645bf6146ddbb84d8ebe2efc1ae2a850f97dcbe"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8202,
+      "changed_pixel_ratio": 0.8204,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.783,
-      "player_contrast": 0.43,
+      "player_contrast": 0.429,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 4,
       "weapon_id": "plague_syringe",
@@ -5515,7 +5515,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b78fed96366b8e6c4cfd3ca10ac2371751842a9bb33f87cc299f538ee4ba57f5"
+      "record_sha256": "e9d912deb9082562ea1579f04ec1b33fcc9cc5d026d4683d21c67683e720040c"
     },
     {
       "effect_box_ratio": 0.0243,
@@ -5561,7 +5561,7 @@
     {
       "effect_box_ratio": 0.0272,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7731,
+      "changed_pixel_ratio": 0.773,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5597,7 +5597,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e420802e18fe9397decc639c214fc525612784093290ea3e42619af5f4db51bf"
+      "record_sha256": "98e4ef273262c2b98c10d7684dad1281fc6390c114ba1a9cc87c8357ab0129c4"
     },
     {
       "effect_box_ratio": 0.0055,
@@ -5684,7 +5684,7 @@
     {
       "effect_box_ratio": 0.0198,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6616,
+      "changed_pixel_ratio": 0.6618,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5720,12 +5720,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "583fe2bbbb881f4731af1a98fd1b98b43aaa2252eb902d33485b3852998311e3"
+      "record_sha256": "9c0f3c11802f6cb533a3ab5c1971987fa8df6207a3920656297c9a463a611c5e"
     },
     {
       "effect_box_ratio": 0.0027,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5527,
+      "changed_pixel_ratio": 0.5524,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5761,12 +5761,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "43d3559ee399590902ced71580aaccbd03e52de6fa14ed23885e9c99ebf58449"
+      "record_sha256": "bcf82162918e4cad39d9fce52e9f9da4de974d8c2adc65b32c7f7d60477ce65e"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9196,
+      "changed_pixel_ratio": 0.9197,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5802,20 +5802,20 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0db1f15312d2d5678720842116d5b8cfd4efca8636f886a05c7dd0918b1d0fb8"
+      "record_sha256": "b251ea33e55a9b064a1c9d13531ca8b4a1470e9ddff343dcf9499428a22cef52"
     },
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.8207,
+      "changed_pixel_ratio": 0.8204,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.783,
-      "player_contrast": 0.558,
+      "player_contrast": 0.556,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "normal",
       "viewport": "2k",
@@ -5843,18 +5843,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ed2410cc849aaa1d70831dbf944e7a381997dba56277bd3a58ef26ee6bcfa0bd"
+      "record_sha256": "1df3b0fef230f3311414b8bcf21f1300dd744c33cd29da3e79d799ceed3ca7ff"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9048,
+      "changed_pixel_ratio": 0.9046,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.84,
-      "player_contrast": 0.598,
+      "player_contrast": 0.594,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -5884,12 +5884,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7fc5873ac142a73d8010d22ca40508520912e7f82d6717d8aa96bc1255356445"
+      "record_sha256": "908106fe2f90eba930a810c57af6c13030b22f728ed7fcf7d78513c28ad579ef"
     },
     {
       "effect_box_ratio": 0.0108,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9195,
+      "changed_pixel_ratio": 0.9197,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5925,12 +5925,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "cea97cbcfdd252f971134d2cd2be06dcc41a3fa1df2608c661e55a6ef714a0b9"
+      "record_sha256": "ffa0739627d615c0086ac6985ba1ceee8319fea247e7e6a0d23e3b5cf36c04e5"
     },
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9022,
+      "changed_pixel_ratio": 0.9023,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5938,7 +5938,7 @@
       "hud_band_min_contrast": 0.84,
       "player_contrast": 0.597,
       "hazards_in_frame": 12,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "crowded",
       "viewport": "2k",
@@ -5966,18 +5966,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1dcfa467ac1eba4606bfd311375da6f9fd54b127cad8ba8c118098f8fd57df06"
+      "record_sha256": "57dd424ebbc71faa2529066d1fa8004f7f708b42b7a9489ae77ad724e8be6341"
     },
     {
       "effect_box_ratio": 0.011,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.9029,
+      "changed_pixel_ratio": 0.9026,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.84,
-      "player_contrast": 0.606,
+      "player_contrast": 0.602,
       "hazards_in_frame": 12,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -6007,7 +6007,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1aa185980686509d11de75ce67faab2101585596f849700a7dcbda55e7f278e0"
+      "record_sha256": "753a64afa801aca6fd04075cf356693e9e258b11fdd431c81672e64a033aaaa7"
     },
     {
       "effect_box_ratio": 0.0117,
@@ -6053,7 +6053,7 @@
     {
       "effect_box_ratio": 0.0173,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6534,
+      "changed_pixel_ratio": 0.6535,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6061,7 +6061,7 @@
       "hud_band_min_contrast": 0.783,
       "player_contrast": 0.666,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "reduced_motion",
       "viewport": "2k",
@@ -6089,12 +6089,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3435035d8c8712282adc1dca007fa4d64b94b36fb52b0a2a0a4bc6cef0e61f42"
+      "record_sha256": "ad290f5d806859d7105ce12f081d193c0e06a74558e641041e5abf01f1e6bfc8"
     },
     {
       "effect_box_ratio": 0.0073,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7735,
+      "changed_pixel_ratio": 0.7737,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6130,7 +6130,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7fa34f81ea369ac33ef129ee2ba479ef1a81c152eb7edfb89878d159be1f7449"
+      "record_sha256": "7952155bebeabdfb8c61af0c6259e0fbbe637e486f56d50cc12a488e13237327"
     },
     {
       "effect_box_ratio": 0.0108,
@@ -6176,7 +6176,7 @@
     {
       "effect_box_ratio": 0.0147,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5568,
+      "changed_pixel_ratio": 0.5571,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6184,7 +6184,7 @@
       "hud_band_min_contrast": 0.783,
       "player_contrast": 0.7,
       "hazards_in_frame": 6,
-      "effect_nodes_drawn": 7,
+      "effect_nodes_drawn": 8,
       "weapon_id": "bone_saw",
       "mode": "photosensitivity_safe",
       "viewport": "2k",
@@ -6212,7 +6212,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8cc20216c38da512d27fb3cd0423dd7f7a24fc97973486d8af4e250fb99f7221"
+      "record_sha256": "393db6c4c906c2d61e70166e38489967266512234e4cef128359c8ac5f474ca9"
     },
     {
       "effect_box_ratio": 0.011,
@@ -6223,7 +6223,7 @@
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.837,
-      "player_contrast": 0.75,
+      "player_contrast": 0.745,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 6,
       "weapon_id": "bone_saw",
@@ -6253,8 +6253,8 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "04970e82d311b1941bb77e69e205b93c3069818e7d5e721e96fe9e57e0bb055c"
+      "record_sha256": "db29f445a61a952fb965a79c1fbb8c82d4aaac93cd758caec73d89fbdcf1f774"
     }
   ],
-  "attestation_sha256": "f036a304697de580a49731a35655389f1209155c6e5f3f058fe28ac7f89f5374"
+  "attestation_sha256": "f7ca7e60f1dbc9f28fa5b346563eba56395179b2a043be79b642b86f38f205d2"
 }

@@ -412,9 +412,9 @@
     "authored_focused_test": "tests/ultimates/presentation/doctor_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "agent/codex-dev-sol-5-6/75d4bc3d4466",
-      "source_commit_sha": "9f494e8d0b41ee5e5ac7aad3fdaf14fbdba33c3f",
-      "source_tree_sha": "0732d537c03473c6efc1127b7fbbbd938139ebb0",
+      "source_ref": "capture/fan3942-doctor-112e",
+      "source_commit_sha": "112e9dacfa5406f7a2ad9907091d59fe36ad4c51",
+      "source_tree_sha": "65d83634c9441ed1448219d6fac881ceb57c2e24",
       "capture_manifest": "docs/design/references/weapon_ultimates/doctor/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/doctor/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",
