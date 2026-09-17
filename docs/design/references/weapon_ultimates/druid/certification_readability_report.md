@@ -7,8 +7,8 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `9f494e8d0b41ee5e5ac7aad3fdaf14fbdba33c3f`; source tree:
-`0732d537c03473c6efc1127b7fbbbd938139ebb0`. Godot 4.7 stable used the
+Source commit: `112e9dacfa5406f7a2ad9907091d59fe36ad4c51`; source tree:
+`65d83634c9441ed1448219d6fac881ceb57c2e24`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
