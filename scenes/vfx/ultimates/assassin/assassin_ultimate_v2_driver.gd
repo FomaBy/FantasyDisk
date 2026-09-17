@@ -21,6 +21,7 @@ const PresentationManifest := preload("res://scripts/ultimates/presentation/weap
 const BACKDROP_PATH := NodePath("BackdropLayer/BackdropVeil")
 const REDUCED_BACKDROP_ALPHA := 0.72
 const PHOTO_BACKDROP_ALPHA := 0.58
+const REDUCED_CHAKRAMS_ORBIT_SCALE := Vector2(2.8, 2.8)
 
 static var _duck_refs := 0
 static var _duck_volume_before_db := 0.0
@@ -184,6 +185,7 @@ func _apply_accessibility_snapshot() -> void:
 	_restore_motion_tracks()
 	if _reduced_motion:
 		_disable_fast_motion_tracks()
+		_apply_reduced_motion_substitute()
 	_apply_frame_safety()
 
 
@@ -202,6 +204,20 @@ func _disable_fast_motion_tracks() -> void:
 	# Scene-authored transforms are the reduced-motion substitute. In
 	# particular, the Chakrams scene's eight distinct compass positions and
 	# 0.24 disc scale must not collapse to one default transform.
+
+
+func _apply_reduced_motion_substitute() -> void:
+	if str(get_meta("ultimate_id", "")) != "assassin/chakrams":
+		return
+	var orbit := get_node_or_null("Orbit") as Node2D
+	if orbit == null:
+		return
+	# Autoplay can apply the 0.14 windup key before `_ready()`. Once the fast
+	# scale track is disabled, preserving that sampled value would collapse the
+	# eight moons into an unreadable dot. Hold a deliberate arena-scale compass
+	# instead; alpha still carries the exact release/active/recovery envelope.
+	orbit.rotation = 0.0
+	orbit.scale = REDUCED_CHAKRAMS_ORBIT_SCALE
 
 
 func _restore_motion_tracks() -> void:

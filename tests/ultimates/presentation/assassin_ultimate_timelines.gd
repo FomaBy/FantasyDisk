@@ -135,12 +135,19 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 		"chakrams cast pose and contrast sigil must replace the Player body", errors)
 	_expect((visual_root.get_node("UltimateCastPose") as CanvasItem).z_index > 100,
 		"chakrams cast pose must stay above the later-mounted presentation layers", errors)
+	var orbit := scene.get_node("Orbit") as Node2D
+	_expect(orbit.scale.x >= 2.5 and orbit.scale.y >= 2.5,
+		"reduced-motion Chakrams must hold an arena-readable compass scale", errors)
 	var bearings := {}
+	var global_bearings := {}
 	for index in range(1, 9):
 		var moon := scene.get_node("Orbit/Moon%s" % ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][index - 1]) as AnimatedSprite2D
 		bearings[str(moon.position)] = true
+		global_bearings[str(moon.global_position.round())] = true
 		_expect(moon.scale.length() > 0.1, "reduced-motion moon %d must retain a readable authored scale" % index, errors)
 	_expect(bearings.size() == 8, "reduced-motion Chakrams must retain eight distinct compass bearings", errors)
+	_expect(global_bearings.size() == 8 and (scene.get_node("Orbit/MoonOne") as Node2D).global_position.length() >= 160.0,
+		"reduced-motion Chakrams must realize eight separated screen-space bearings", errors)
 	scene.call("finish", "cancel")
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
 	seed(3942)

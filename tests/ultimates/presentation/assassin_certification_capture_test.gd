@@ -37,6 +37,7 @@ const MIN_HUD_BANDS := 3
 ## frame whose near-white pixels pass this share is a full-screen flash.
 const MAX_FLASH_PIXEL_RATIO := 0.05
 const MIN_EFFECT_NODES_DRAWN := 1
+const MIN_REDUCED_CHAKRAMS_COMPASS_RATIO := 0.04
 
 const PNG_SIGNATURE := [137, 80, 78, 71, 13, 10, 26, 10]
 const LFS_POINTER_PREFIX := "version https://git-lfs.github.com/spec/v1"
@@ -293,6 +294,11 @@ func readability_violations(manifest: Dictionary, class_manifest: Dictionary) ->
 			violations.append("%s: the class manifest declares no coverage cap" % key)
 		elif coverage > cap:
 			violations.append("%s: measured coverage %.4f is over the declared cap %.2f" % [key, coverage, cap])
+		if str(sample.get("weapon_id", "")) == "chakrams" \
+				and mode_id == "reduced_motion" \
+				and str(sample.get("beat", "")) in ["active", "recovery"] \
+				and coverage < MIN_REDUCED_CHAKRAMS_COMPASS_RATIO:
+			violations.append("%s: reduced-motion compass coverage %.4f is below the readable %.2f floor" % [key, coverage, MIN_REDUCED_CHAKRAMS_COMPASS_RATIO])
 		if bool(presence.get("fullscreen_footprint", false)) and float(sample.get("backdrop_box_ratio", 0.0)) < 1.0:
 			violations.append("%s: the declared full-screen backdrop did not reach the viewport" % key)
 		if not bool(sample.get("hud_bands_clear", false)):
@@ -428,20 +434,21 @@ func png_violations(path: String, expected_size: Vector2i) -> Array[String]:
 	return violations
 
 
-## The shared presentation contract owns exactly one contact sheet per
-## viewport. Beat sheets are hydrated through the linked capture manifest;
-## duplicating them here breaks that frozen four-sheet contract.
+## The CI selector hydrates evidence.contact_sheets. Keep the four current
+## certification sheets plus the four retained authored timeline sheets there.
 func _check_class_manifest_registration(class_manifest: Dictionary, manifest: Dictionary, errors: Array[String]) -> void:
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
 	var hydrated := _string_array(evidence.get("contact_sheets", []))
-	if hydrated.size() != Capture.VIEWPORTS.size():
-		errors.append("evidence.contact_sheets must retain exactly one sheet per viewport")
 	var authored := _string_array(evidence.get("authored_timeline_sheets", []))
 	if authored.size() != Capture.VIEWPORTS.size():
 		errors.append("the four authored timeline sheets must stay declared as authored_timeline_sheets")
 	for path in authored:
+		if path not in hydrated:
+			errors.append("authored timeline sheet %s must be reachable through evidence.contact_sheets" % path)
 		if not FileAccess.file_exists("res://%s" % path):
 			errors.append("authored timeline sheet %s must still exist" % path)
+	if hydrated.size() != Capture.VIEWPORTS.size() + authored.size():
+		errors.append("evidence.contact_sheets must contain four certification and four authored sheets")
 	var live := evidence.get("live_capture", {}) as Dictionary
 	if live.is_empty():
 		errors.append("the class manifest must declare evidence.live_capture")

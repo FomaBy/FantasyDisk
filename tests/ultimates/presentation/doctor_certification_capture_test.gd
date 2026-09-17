@@ -428,20 +428,21 @@ func png_violations(path: String, expected_size: Vector2i) -> Array[String]:
 	return violations
 
 
-## The shared presentation contract owns exactly one contact sheet per
-## viewport. Beat sheets are hydrated through the linked capture manifest;
-## duplicating them here breaks that frozen four-sheet contract.
+## The CI selector hydrates evidence.contact_sheets. Keep the four current
+## certification sheets plus the four retained authored timeline sheets there.
 func _check_class_manifest_registration(class_manifest: Dictionary, manifest: Dictionary, errors: Array[String]) -> void:
 	var evidence := class_manifest.get("evidence", {}) as Dictionary
 	var hydrated := _string_array(evidence.get("contact_sheets", []))
-	if hydrated.size() != Capture.VIEWPORTS.size():
-		errors.append("evidence.contact_sheets must retain exactly one sheet per viewport")
 	var authored := _string_array(evidence.get("authored_timeline_sheets", []))
 	if authored.size() != Capture.VIEWPORTS.size():
 		errors.append("the four authored timeline sheets must stay declared as authored_timeline_sheets")
 	for path in authored:
+		if path not in hydrated:
+			errors.append("authored timeline sheet %s must be reachable through evidence.contact_sheets" % path)
 		if not FileAccess.file_exists("res://%s" % path):
 			errors.append("authored timeline sheet %s must still exist" % path)
+	if hydrated.size() != Capture.VIEWPORTS.size() + authored.size():
+		errors.append("evidence.contact_sheets must contain four certification and four authored sheets")
 	var live := evidence.get("live_capture", {}) as Dictionary
 	if live.is_empty():
 		errors.append("the class manifest must declare evidence.live_capture")
