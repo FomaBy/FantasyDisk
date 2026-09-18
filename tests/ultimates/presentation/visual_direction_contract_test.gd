@@ -141,6 +141,15 @@ func _check_gates_go_red(errors: Array[String]) -> void:
 	(missing_viewport["evidence"]["contact_sheets"] as Array).remove_at(0)
 	_expect_violation(missing_viewport, "capture.viewport_missing", errors)
 
+	var partial_authored_hydration := _fixture(baseline)
+	(partial_authored_hydration["evidence"]["contact_sheets"] as Array).pop_back()
+	_expect_violation(partial_authored_hydration, "capture.authored_subset", errors)
+
+	var duplicated_sheet := _fixture(baseline)
+	var duplicated_path: String = str((duplicated_sheet["evidence"]["contact_sheets"] as Array)[0])
+	(duplicated_sheet["evidence"]["contact_sheets"] as Array).append(duplicated_path)
+	_expect_violation(duplicated_sheet, "capture.sheet_duplicate", errors)
+
 	var absent_viewport := _fixture(baseline)
 	(absent_viewport["evidence"]["contact_sheets"] as Array)[1] = \
 		"docs/design/references/weapon_ultimates/doctor/never_captured_720p.png"
@@ -151,6 +160,18 @@ func _check_gates_go_red(errors: Array[String]) -> void:
 	var wrong_viewport := _fixture(baseline)
 	(wrong_viewport["evidence"]["contact_sheets"] as Array)[1] = _write_undersized_sheet()
 	_expect_violation(wrong_viewport, "capture.viewport_size", errors)
+
+	var absent_authored := _fixture(baseline)
+	var absent_authored_path := "docs/design/references/weapon_ultimates/doctor/never_authored_648p.png"
+	(absent_authored["evidence"]["contact_sheets"] as Array)[4] = absent_authored_path
+	(absent_authored["evidence"]["authored_timeline_sheets"] as Array)[0] = absent_authored_path
+	_expect_violation(absent_authored, "capture.file_absent", errors)
+
+	var wrong_authored := _fixture(baseline)
+	var undersized_authored := _write_undersized_sheet()
+	(wrong_authored["evidence"]["contact_sheets"] as Array)[5] = undersized_authored
+	(wrong_authored["evidence"]["authored_timeline_sheets"] as Array)[1] = undersized_authored
+	_expect_violation(wrong_authored, "capture.viewport_size", errors)
 
 	var absent_script := _fixture(baseline)
 	absent_script["evidence"]["capture_script"] = ""

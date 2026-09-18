@@ -79,15 +79,15 @@ func _initialize() -> void:
 	_player.set_process(false)
 	_player.set_physics_process(false)
 	_host = PlayerHost.for_player(_player)
+	var equipped_weapon := _player.get("equipped_weapon") as Node
+	if equipped_weapon != null:
+		equipped_weapon.set_process(false)
+		equipped_weapon.set_physics_process(false)
 	# The berserk/sword equip flourish (WeaponSignatureVfx_*) self-frees ~0.28s
-	# after configure_character. Left alive it races the per-pair baselines
-	# below: its queue_free can land inside a release-check window and shift
-	# the child count for a pair that leaked nothing (FAN-3061 hit exactly
-	# this on soldier/soldier_rifle). Removing the unrelated transient keeps
-	# every assertion below byte-identical and deterministic.
-	for child in (_host.ultimate_host_effect_parent() as Node).get_children():
-		if str((child as Node).name).begins_with("WeaponSignatureVfx"):
-			(child as Node).free()
+	# after configure_character's already-started attack reaches its delayed
+	# damage window. Wait for that exact unrelated transient, remove only it,
+	# then begin the authored-presentation baselines.
+	await _remove_delayed_weapon_signature_flourish()
 
 	_test_quality_block_reaches_the_runtime_manifest()
 	_test_no_pale_blue_constants_left_in_host_source()
@@ -102,6 +102,21 @@ func _initialize() -> void:
 	_holder.queue_free()
 	await process_frame
 	_report()
+
+
+func _remove_delayed_weapon_signature_flourish() -> void:
+	var parent := _host.ultimate_host_effect_parent() as Node
+	var deadline_msec := Time.get_ticks_msec() + 1000
+	while Time.get_ticks_msec() < deadline_msec:
+		var removed := false
+		for child in parent.get_children():
+			if str((child as Node).name).begins_with("WeaponSignatureVfx_"):
+				(child as Node).free()
+				removed = true
+		if removed:
+			await process_frame
+			return
+		await create_timer(0.01).timeout
 
 
 func _registry():

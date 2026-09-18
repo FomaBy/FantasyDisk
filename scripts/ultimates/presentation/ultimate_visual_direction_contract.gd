@@ -689,8 +689,11 @@ static func _check_direction(weapons: Array[Dictionary], class_id: String, error
 				seen[normalized] = key
 
 
-## Live captures: one reproducible contact sheet per supported viewport, each
-## file committed at exactly that size.
+## Live captures: one reproducible certification sheet per supported viewport,
+## each file committed at exactly that size. Some class packages also keep a
+## complete authored-timeline set in contact_sheets so CI hydrates those files;
+## only paths explicitly declared in authored_timeline_sheets are excluded from
+## the certification set.
 static func _check_capture(manifest: Dictionary, class_id: String, errors: Array[String]) -> void:
 	var evidence: Variant = manifest.get("evidence")
 	if not evidence is Dictionary:
@@ -706,9 +709,53 @@ static func _check_capture(manifest: Dictionary, class_id: String, errors: Array
 	if not sheets is Array:
 		errors.append("capture.sheets_missing: %s" % class_id)
 		return
-	var listed := sheets as Array
-	if listed.size() != REQUIRED_CAPTURES.size():
-		errors.append("capture.sheet_count: %s lists %d of %d" % [class_id, listed.size(), REQUIRED_CAPTURES.size()])
+	var declared_authored := {}
+	var authored: Variant = (evidence as Dictionary).get("authored_timeline_sheets", [])
+	if not authored is Array:
+		errors.append("capture.authored_sheets_type: %s must declare an Array" % class_id)
+	else:
+		for raw_path in authored as Array:
+			var path := str(raw_path)
+			if declared_authored.has(path):
+				errors.append("capture.authored_duplicate: %s lists %s more than once" % [class_id, path])
+			else:
+				declared_authored[path] = true
+
+	var listed_seen := {}
+	var certification: Array[String] = []
+	var hydrated_authored: Array[String] = []
+	for raw_path in sheets as Array:
+		var path := str(raw_path)
+		if listed_seen.has(path):
+			errors.append("capture.sheet_duplicate: %s lists %s more than once" % [class_id, path])
+			continue
+		listed_seen[path] = true
+		if declared_authored.has(path):
+			hydrated_authored.append(path)
+		else:
+			certification.append(path)
+
+	if not hydrated_authored.is_empty() and hydrated_authored.size() != declared_authored.size():
+		errors.append(
+			"capture.authored_subset: %s hydrates %d of %d declared authored sheets"
+			% [class_id, hydrated_authored.size(), declared_authored.size()]
+		)
+	if certification.size() != REQUIRED_CAPTURES.size():
+		errors.append(
+			"capture.sheet_count: %s lists %d certification sheets of %d"
+			% [class_id, certification.size(), REQUIRED_CAPTURES.size()]
+		)
+	_check_capture_sheet_set(certification, class_id, "", errors)
+	if not hydrated_authored.is_empty():
+		_check_capture_sheet_set(hydrated_authored, class_id, "authored_", errors)
+
+
+static func _check_capture_sheet_set(
+	listed: Array[String],
+	class_id: String,
+	code_prefix: String,
+	errors: Array[String]
+) -> void:
 	for suffix in REQUIRED_CAPTURES:
 		var expected_size: Vector2i = REQUIRED_CAPTURES[suffix]
 		var matches: Array[String] = []
@@ -716,7 +763,10 @@ static func _check_capture(manifest: Dictionary, class_id: String, errors: Array
 			if str(raw_path).ends_with("_%s.png" % suffix):
 				matches.append(str(raw_path))
 		if matches.size() != 1:
-			errors.append("capture.viewport_missing: %s/%s listed %d times" % [class_id, suffix, matches.size()])
+			errors.append(
+				"capture.%sviewport_missing: %s/%s listed %d times"
+				% [code_prefix, class_id, suffix, matches.size()]
+			)
 			continue
 		var path := _resource_path(matches[0])
 		var actual_size := png_size(path)
