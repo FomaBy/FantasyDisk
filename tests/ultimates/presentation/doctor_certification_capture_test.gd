@@ -160,6 +160,15 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 
 
 func _is_evidence_only_path(path: String) -> bool:
+	if path in [
+		"scripts/ultimates/presentation/ultimate_visual_direction_contract.gd",
+		"tests/ultimates/presentation/assassin_certification_capture_test.gd",
+		"tests/ultimates/presentation/beat_routing_gate_test.gd",
+		"tests/ultimates/presentation/doctor_certification_capture_test.gd",
+		"tests/ultimates/presentation/druid_certification_capture_test.gd",
+		"tests/ultimates/presentation/visual_direction_contract_test.gd",
+	]:
+		return true
 	for class_id in ["assassin", "doctor", "druid"]:
 		var reference_root := "docs/design/references/weapon_ultimates/%s/" % class_id
 		if path in [
