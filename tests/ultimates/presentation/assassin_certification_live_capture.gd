@@ -275,11 +275,9 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		while scene_elapsed < target - 0.0005:
 			var remaining := target - scene_elapsed
 			# Avoid crossing the requested beat on an automatic frame. The final
-			# fraction is driven while paused, using the same runtime entry point.
+			# fraction is driven synchronously through the same runtime entry point.
 			if remaining <= FIXED_STEP * 1.5:
-				paused = true
 				presentation.call("advance", remaining)
-				paused = false
 				scene_elapsed = _presentation_clock_seconds(effect_root)
 				break
 			var simulated_step := minf(SIMULATION_ACCELERATION * FIXED_STEP, remaining)
