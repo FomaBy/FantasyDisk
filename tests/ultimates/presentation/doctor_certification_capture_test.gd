@@ -566,8 +566,8 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 
 	var stale_source := manifest.duplicate(true)
 	var stale_output: Array = []
-	var source_sha := str((manifest.get("source", {}) as Dictionary).get("commit_sha", ""))
-	if OS.execute("git", ["rev-parse", "%s^" % source_sha], stale_output, true) == 0:
+	var source_base_sha := str((manifest.get("source", {}) as Dictionary).get("base_sha", ""))
+	if OS.execute("git", ["rev-parse", "%s^{commit}" % source_base_sha], stale_output, true) == 0:
 		var stale_sha := "".join(stale_output).strip_edges()
 		stale_output.clear()
 		if OS.execute("git", ["rev-parse", "%s^{tree}" % stale_sha], stale_output, true) == 0:
