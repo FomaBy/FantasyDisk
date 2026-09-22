@@ -13,6 +13,7 @@ const PresentationManifest := preload("res://scripts/ultimates/presentation/weap
 @export var recovery_at := 3.0
 @export var cancel_at := 3.6
 @export var hitstop_ms := 110.0
+@export_range(0.3, 0.5, 0.01) var time_scale_dip := 0.45
 @export var shake_seconds := 0.48
 @export var shake_amplitude := 7.0
 @export var sfx_duck_db := -8.0
@@ -30,6 +31,9 @@ var _elapsed := 0.0
 var _paused := false
 var _impact_fired := false
 var _hitstop_remaining := 0.0
+var _time_scale_before_dip := 1.0
+var _time_scale_dip_active := false
+var _minimum_time_scale_observed := 1.0
 var _shake_remaining := 0.0
 var _reduced_motion := false
 var _photosensitivity_safe := false
@@ -92,15 +96,20 @@ func advance(delta: float) -> void:
 func _step(delta: float) -> void:
 	if _paused:
 		return
+	var elapsed_before := _elapsed
 	_elapsed += maxf(delta, 0.0)
+	var hitstop_step := delta
 	if not _impact_fired and _elapsed >= impact_at:
 		_impact_fired = true
 		_hitstop_remaining = hitstop_ms / 1000.0
 		_shake_remaining = shake_seconds
 		_pause_timeline()
+		_begin_time_scale_dip()
+		hitstop_step = maxf(_elapsed - impact_at, 0.0) if elapsed_before < impact_at else delta
 	if _hitstop_remaining > 0.0:
-		_hitstop_remaining = maxf(_hitstop_remaining - delta, 0.0)
+		_hitstop_remaining = maxf(_hitstop_remaining - hitstop_step, 0.0)
 		if _hitstop_remaining <= 0.0:
+			_end_time_scale_dip()
 			_resume_timeline_at_clock()
 	if _elapsed >= release_at and _elapsed < recovery_at:
 		_begin_sfx_ducking()
@@ -133,6 +142,7 @@ func finish(_reason: String) -> void:
 		timeline.stop()
 	_end_sfx_ducking()
 	_end_camera_shake()
+	_end_time_scale_dip()
 	_hitstop_remaining = 0.0
 	_shake_remaining = 0.0
 	_release_cast_pose()
@@ -146,6 +156,8 @@ func presence_snapshot() -> Dictionary:
 		"motion_tracks_disabled": _disabled_tracks.size(),
 		"photosensitive_nodes": photosensitive_nodes.size(),
 		"hitstop_ms": hitstop_ms,
+		"time_scale_dip": time_scale_dip,
+		"minimum_time_scale_observed": _minimum_time_scale_observed,
 		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
 		"sfx_ducking": true,
 		"cast_pose_bound": _cast_pose != null and is_instance_valid(_cast_pose),
@@ -161,18 +173,41 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		_end_sfx_ducking()
 		_end_camera_shake()
+		_end_time_scale_dip()
 
 
 func _reset_run() -> void:
 	_end_sfx_ducking()
 	_end_camera_shake()
+	_end_time_scale_dip()
 	_elapsed = 0.0
 	_paused = false
 	_impact_fired = false
 	_hitstop_remaining = 0.0
+	_minimum_time_scale_observed = Engine.time_scale
 	_shake_remaining = 0.0
 	_release_cast_pose()
 	_restore_motion_tracks()
+
+
+## The host advances the presentation on wall time, so the global gameplay dip
+## can add impact weight without stretching release/recovery/cancel timing.
+## Reduced motion suppresses the global speed change together with camera shake.
+func _begin_time_scale_dip() -> void:
+	if _reduced_motion or _time_scale_dip_active or Engine.time_scale < 0.99:
+		return
+	_time_scale_before_dip = Engine.time_scale
+	Engine.time_scale = time_scale_dip
+	_time_scale_dip_active = true
+	_minimum_time_scale_observed = minf(_minimum_time_scale_observed, Engine.time_scale)
+
+
+func _end_time_scale_dip() -> void:
+	if not _time_scale_dip_active:
+		return
+	if is_equal_approx(Engine.time_scale, time_scale_dip):
+		Engine.time_scale = _time_scale_before_dip
+	_time_scale_dip_active = false
 
 
 func _apply_accessibility_snapshot() -> void:

@@ -131,7 +131,8 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 		violations.append("source.ref must name the captured checkout")
 	var commit_sha := str(source.get("commit_sha", ""))
 	var tree_sha := str(source.get("tree_sha", ""))
-	for field in ["commit_sha", "tree_sha"]:
+	var base_sha := str(source.get("base_sha", ""))
+	for field in ["commit_sha", "tree_sha", "base_sha"]:
 		var value := str(source.get(field, ""))
 		if not _is_hex(value, SHA1_LENGTH):
 			violations.append("source.%s must be a lowercase 40-hex object id, found %s" % [field, value])
@@ -140,6 +141,9 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 		if OS.execute("git", ["cat-file", "-e", "%s^{commit}" % commit_sha], output, true) != 0:
 			violations.append("source.commit_sha must resolve to a Git commit in this checkout")
 		else:
+			output.clear()
+			if OS.execute("git", ["merge-base", "--is-ancestor", base_sha, commit_sha], output, true) != 0:
+				violations.append("source.base_sha must be an ancestor of source.commit_sha")
 			output.clear()
 			var status := OS.execute("git", ["rev-parse", "%s^{tree}" % commit_sha], output, true)
 			var resolved_tree := "".join(output).strip_edges().to_lower()
@@ -205,6 +209,9 @@ func _capture_block_violations(manifest: Dictionary) -> Array[String]:
 			violations.append("commands.%s must be recorded" % field)
 		elif str(commands.get(field, "")).contains("<"):
 			violations.append("commands.%s contains an unresolved placeholder" % field)
+	var expected_static_guard := "python3 tools/quality_static_guard.py --changed-ref %s" % str((manifest.get("source", {}) as Dictionary).get("base_sha", ""))
+	if str(commands.get("static_guard", "")) != expected_static_guard:
+		violations.append("commands.static_guard must run against the recorded source base")
 	return violations
 
 

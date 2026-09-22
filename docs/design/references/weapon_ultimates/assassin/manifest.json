@@ -96,12 +96,13 @@
         "backdrop": "darken",
         "camera_shake": true,
         "hitstop_ms": 110,
+        "time_scale_dip": 0.45,
         "sfx_ducking": true
       },
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.assassin.moonlit_orbit_stance",
         "weapon_silhouette_asset": "res://assets/sprites/weapons/chakrams.png",
-        "class_palette_id": "palette.assassin.violet_venom"
+        "class_palette_id": "assassin_violet_moonlight_palette"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.3,
@@ -166,7 +167,7 @@
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.assassin.silent_execution",
         "weapon_silhouette_asset": "res://assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_04.png",
-        "class_palette_id": "palette.assassin.violet_venom"
+        "class_palette_id": "assassin_violet_moonlight_palette"
       }
     },
     {
@@ -209,7 +210,7 @@
       "identity": {
         "cast_pose_id": "weapon_ultimate.cast_pose.assassin.silent_execution",
         "weapon_silhouette_asset": "res://assets/sprites/weapons/venom_wire.png",
-        "class_palette_id": "palette.assassin.violet_venom"
+        "class_palette_id": "assassin_violet_moonlight_palette"
       },
       "quality": {
         "max_viewport_coverage_ratio": 0.24,

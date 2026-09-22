@@ -148,13 +148,25 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 	_expect(bearings.size() == 8, "reduced-motion Chakrams must retain eight distinct compass bearings", errors)
 	_expect(global_bearings.size() == 8 and (scene.get_node("Orbit/MoonOne") as Node2D).global_position.length() >= 160.0,
 		"reduced-motion Chakrams must realize eight separated screen-space bearings", errors)
+	scene.call("advance", 1.01)
+	_expect(is_equal_approx(Engine.time_scale, 1.0),
+		"reduced-motion Chakrams must replace the global time-scale dip", errors)
 	scene.call("finish", "cancel")
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
 	seed(3942)
 	var expected_rng := randf()
 	seed(3942)
 	scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0)
-	scene.call("advance", 3.05)
+	scene.call("advance", 1.0)
+	var impact_state := scene.call("presence_snapshot") as Dictionary
+	_expect(is_equal_approx(Engine.time_scale, 0.45),
+		"normal Chakrams impact must realize the declared 0.45 time-scale dip", errors)
+	_expect(is_equal_approx(float(impact_state.get("minimum_time_scale_observed", 1.0)), 0.45),
+		"Chakrams presence evidence must record the realized time-scale dip", errors)
+	scene.call("advance", 0.12)
+	_expect(is_equal_approx(Engine.time_scale, 1.0),
+		"Chakrams hitstop must restore the prior Engine.time_scale", errors)
+	scene.call("advance", 1.93)
 	_expect(float(scene.get("_elapsed")) >= 3.0, "runtime advance must place Chakrams in recovery on wall time", errors)
 	_expect(is_equal_approx(randf(), expected_rng), "presentation camera shake must not consume global gameplay RNG", errors)
 	scene.call("advance", 0.60)
@@ -164,6 +176,7 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") == null \
 			and visual_root.get_node_or_null("UltimateCastPoseHighlight") == null,
 		"cast pose cleanup must restore the Player body and remove the contrast sigil", errors)
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "Chakrams cleanup must leave Engine.time_scale restored", errors)
 	scene.queue_free()
 	player.queue_free()
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
@@ -338,6 +351,7 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 
 
 func _check_v2_packages(packages: Dictionary, errors: Array[String]) -> void:
+	var palette_ids := {}
 	for weapon_id in WEAPON_IDS:
 		var key := "assassin/%s" % weapon_id
 		var package := packages.get(weapon_id, {}) as Dictionary
@@ -361,8 +375,14 @@ func _check_v2_packages(packages: Dictionary, errors: Array[String]) -> void:
 		var silhouette_path := str(identity.get("weapon_silhouette_asset", ""))
 		_expect(not silhouette_path.is_empty() and FileAccess.file_exists(silhouette_path), "%s identity.weapon_silhouette_asset must name a shipped weapon silhouette" % weapon_id, errors)
 		_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s identity.class_palette_id must be declared" % weapon_id, errors)
+		palette_ids[str(identity.get("class_palette_id", ""))] = true
+		if weapon_id == "chakrams":
+			_expect(is_equal_approx(float(presence.get("time_scale_dip", 0.0)), 0.45),
+				"chakrams must retain and realize its canonical 0.45 time-scale dip", errors)
 		var materials := package.get("performance", {}) as Dictionary
 		_expect(int(materials.get("max_unique_materials", 0)) > 0 and int(materials.get("max_fullscreen_materials", 0)) > 0, "%s must declare a material budget ahead of the FAN-2972 assert" % weapon_id, errors)
+	_expect(palette_ids.size() == 1 and palette_ids.has("assassin_violet_moonlight_palette"),
+		"all Assassin packages must retain the canonical provenance palette identity", errors)
 
 
 func _check_contact_evidence(errors: Array[String]) -> void:

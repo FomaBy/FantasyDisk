@@ -132,7 +132,8 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 		violations.append("source.ref must name the captured checkout")
 	var commit_sha := str(source.get("commit_sha", ""))
 	var tree_sha := str(source.get("tree_sha", ""))
-	for field in ["commit_sha", "tree_sha"]:
+	var base_sha := str(source.get("base_sha", ""))
+	for field in ["commit_sha", "tree_sha", "base_sha"]:
 		var value := str(source.get(field, ""))
 		if not _is_hex(value, SHA1_LENGTH):
 			violations.append("source.%s must be a lowercase 40-hex object id, found %s" % [field, value])
@@ -141,6 +142,9 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 		if OS.execute("git", ["cat-file", "-e", "%s^{commit}" % commit_sha], output, true) != 0:
 			violations.append("source.commit_sha must resolve to a Git commit in this checkout")
 		else:
+			output.clear()
+			if OS.execute("git", ["merge-base", "--is-ancestor", base_sha, commit_sha], output, true) != 0:
+				violations.append("source.base_sha must be an ancestor of source.commit_sha")
 			output.clear()
 			var status := OS.execute("git", ["rev-parse", "%s^{tree}" % commit_sha], output, true)
 			var resolved_tree := "".join(output).strip_edges().to_lower()
@@ -206,6 +210,9 @@ func _capture_block_violations(manifest: Dictionary) -> Array[String]:
 			violations.append("commands.%s must be recorded" % field)
 		elif str(commands.get(field, "")).contains("<"):
 			violations.append("commands.%s contains an unresolved placeholder" % field)
+	var expected_static_guard := "python3 tools/quality_static_guard.py --changed-ref %s" % str((manifest.get("source", {}) as Dictionary).get("base_sha", ""))
+	if str(commands.get("static_guard", "")) != expected_static_guard:
+		violations.append("commands.static_guard must run against the recorded source base")
 	return violations
 
 
@@ -230,6 +237,7 @@ func attestation_violations(manifest: Dictionary) -> Array[String]:
 func coverage_violations(manifest: Dictionary, class_manifest: Dictionary) -> Array[String]:
 	var violations: Array[String] = []
 	var scenes := _scene_paths(class_manifest)
+	var weapons := _weapons_by_id(class_manifest)
 	var viewports := _viewports_by_id(manifest)
 	var seen := {}
 	for raw_sample in manifest.get("samples", []) as Array:
@@ -267,6 +275,17 @@ func coverage_violations(manifest: Dictionary, class_manifest: Dictionary) -> Ar
 			violations.append("sample %s did not realize the declared cast pose" % key)
 		if not str(state.get("cast_pose_binding_error", "missing_diagnostic")).is_empty():
 			violations.append("sample %s cast-pose binding reported %s" % [key, str(state.get("cast_pose_binding_error"))])
+		if str(sample.get("weapon_id", "")) == "chakrams":
+			var presence := ((weapons.get("chakrams", {}) as Dictionary).get("presence", {}) as Dictionary)
+			var declared_dip := float(presence.get("time_scale_dip", 0.0))
+			if not is_equal_approx(float(state.get("time_scale_dip", 0.0)), declared_dip):
+				violations.append("sample %s time-scale declaration does not match the live scene" % key)
+			if str(sample.get("beat", "")) in ["active", "recovery"]:
+				var observed_minimum := float(state.get("minimum_time_scale_observed", 1.0))
+				if bool(mode.get("reduced_motion", false)) and observed_minimum < 0.99:
+					violations.append("sample %s reduced motion did not suppress the global time-scale dip" % key)
+				elif not bool(mode.get("reduced_motion", false)) and observed_minimum > declared_dip + 0.001:
+					violations.append("sample %s did not realize the declared time-scale dip" % key)
 	for weapon_id in _string_array(manifest.get("canonical_weapon_ids", [])):
 		for mode_id in _capture_mode_ids():
 			for raw_viewport in Capture.VIEWPORTS:
@@ -581,6 +600,14 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	var wrong_scene := manifest.duplicate(true)
 	((wrong_scene.get("samples", []) as Array)[0] as Dictionary)["presentation_scene"] = "res://scenes/vfx/ultimates/assassin/NotShipped.tscn"
 	_expect(not coverage_violations(wrong_scene, class_manifest).is_empty(), "a sample that names an unshipped scene must fail closed", errors)
+
+	var missing_time_dip := manifest.duplicate(true)
+	for raw_sample in missing_time_dip.get("samples", []) as Array:
+		var sample := raw_sample as Dictionary
+		if str(sample.get("weapon_id", "")) == "chakrams" and str(sample.get("mode", "")) == "normal" and str(sample.get("beat", "")) == "active":
+			(sample.get("presentation_state", {}) as Dictionary)["minimum_time_scale_observed"] = 1.0
+			break
+	_expect(not coverage_violations(missing_time_dip, class_manifest).is_empty(), "a declaration-only Chakrams time-scale dip must fail closed", errors)
 
 	var occluded := manifest.duplicate(true)
 	((occluded.get("samples", []) as Array)[0] as Dictionary)["hud_bands_clear"] = false

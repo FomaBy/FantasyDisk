@@ -784,7 +784,7 @@ func _write_capture_manifest() -> int:
 			"live_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/druid_certification_live_capture.gd",
 			"focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/druid_certification_capture_test.gd",
 			"class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/druid_ultimate_timelines.gd",
-			"static_guard": "python3 tools/quality_static_guard.py --changed-ref %s" % str(_source["commit_sha"]),
+			"static_guard": "python3 tools/quality_static_guard.py --changed-ref %s" % str(_source["base_sha"]),
 			"lfs_integrity": "git lfs fsck",
 		},
 		"sheets": _sheets,
@@ -802,12 +802,13 @@ func _write_capture_manifest() -> int:
 func _clean_source() -> Dictionary:
 	var head := _git(["rev-parse", "HEAD"]).to_lower()
 	var tree := _git(["rev-parse", "HEAD^{tree}"]).to_lower()
+	var base := _git(["merge-base", "HEAD", "origin/dev"]).to_lower()
 	var branch := _git(["branch", "--show-current"])
 	var dirty := _git(["status", "--porcelain", "--untracked-files=no"])
-	if head.length() != 40 or tree.length() != 40 or branch.is_empty() or not dirty.is_empty():
+	if head.length() != 40 or tree.length() != 40 or base.length() != 40 or branch.is_empty() or not dirty.is_empty():
 		push_error("FAN-3942 Druid certification capture: source checkout must be a clean named branch")
 		return {}
-	return {"ref": branch, "commit_sha": head, "tree_sha": tree, "worktree_clean": true}
+	return {"ref": branch, "commit_sha": head, "tree_sha": tree, "base_sha": base, "worktree_clean": true}
 
 
 func _git(args: Array) -> String:

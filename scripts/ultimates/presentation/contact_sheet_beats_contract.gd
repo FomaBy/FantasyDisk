@@ -313,8 +313,8 @@ const FRAMES_BY_CLASS := {
 	"doctor": {
 		"restore_potion": [
 			{"phase": "release", "time": 1.10, "required_nodes": ["GiantFlask", "GlassImpact"]},
-			{"phase": "active", "time": 2.10, "required_nodes": ["GiantFlask", "OuterPoisonPool", "ShieldCrystal"]},
-			{"phase": "recovery", "time": 3.05, "required_nodes": ["OuterPoisonPool", "ShieldCrystal"]},
+			{"phase": "active", "time": 2.10, "required_nodes": ["GiantFlask", "OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"]},
+			{"phase": "recovery", "time": 3.05, "required_nodes": ["OuterPoisonPool", "InnerHealingSpiral", "ShieldCrystal"]},
 		],
 		"plague_syringe": [
 			{"phase": "release", "time": 1.00, "required_nodes": ["OversizedSyringe", "PatientZero"]},
