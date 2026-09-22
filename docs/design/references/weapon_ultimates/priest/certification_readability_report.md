@@ -8,7 +8,7 @@ This package certifies the shipped Priest ultimate trio after full presentation-
 
 | Field | Value |
 | --- | --- |
-| Source ref / commit / tree | `agent/codex-dev-sol-5-6/3fbc2f531de0` / `fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2` / `61e18a3744066df4ef34fd5611b3e3dcaddb3c8c` |
+| Source ref / commit / tree | `agent/codex-dev-sol-5-6/35ec58924559` / `8d45fe7e6a6f2a443e8317ca3a764a83b4bdb5fe` / `86da8c13eb7108274e8ae639617a3156c7730559` |
 | Engine / renderer | Godot `4.7.stable.official.5b4e0cb0f` / GL Compatibility (OpenGL API 4.1 Metal, Apple M4 Pro) |
 | Controlled seed | `394401`, reseeded per phase/weapon/mode cell |
 | Workload exclusion | `FSD_GODOT_EXCLUSIVE=1` machine-wide Godot lease |
@@ -25,7 +25,7 @@ Twelve native 3 × 4 matrices cover release, active, and recovery at 1152×648, 
 | `priest_censer` | 0.80s release, 1.40s active, 3.15s recovery: the censer orbit, smoke ward, counter-wave recovery, hazard lane, and HUD retain distinct silhouettes. |
 | `priest_chime` | 0.75s release, 1.50s active, 2.85s recovery: the sequential silver/gold/dawn arcs and guard sigil remain readable without covering the player or hazard bands. |
 
-Reduced-motion cells read the shipped `screen_shake` setting as off, keeping the camera still and clamping the darkening veil to a calm fade without moving any beat. Photosensitivity-safe cells suppress the fullscreen veil while keeping authored foreground identity and real runtime fixtures. The evidence is spatial still-image proof at named beats; the focused gate separately validates runtime ownership, mode state, executor advancement, timing, and cleanup.
+Reduced-motion cells read the shipped `screen_shake` setting as off, keeping the camera still and clamping the darkening veil to a calm fade without moving any beat. Photosensitivity-safe cells suppress the fullscreen veil while keeping authored foreground identity and real runtime fixtures. The fresh exact-runtime sheets also retain shipped localized combat feedback: red hit plumes and damage numbers can appear over impacted targets, including in the photosensitivity-safe column. They remain bounded to combat contacts rather than becoming a fullscreen flash, and the shrine, weapon arcs, player, hazard bands, and HUD stay distinguishable at every named beat and viewport. The evidence is spatial still-image proof at named beats; the focused gate separately validates runtime ownership, mode state, executor advancement, timing, and cleanup.
 
 ## Native output integrity
 

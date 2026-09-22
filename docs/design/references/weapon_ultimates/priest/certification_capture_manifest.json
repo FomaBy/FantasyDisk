@@ -6,9 +6,9 @@
   "focused_test": "tests/ultimates/presentation/priest_certification_capture_test.gd",
   "readability_report": "docs/design/references/weapon_ultimates/priest/certification_readability_report.md",
   "capture_source": {
-    "source_ref": "agent/codex-dev-sol-5-6/3fbc2f531de0",
-    "source_commit_sha": "fd3d25ff193cbc52ffc3a387ca6c7cfa62f2a3d2",
-    "source_tree_sha": "61e18a3744066df4ef34fd5611b3e3dcaddb3c8c",
+    "source_ref": "agent/codex-dev-sol-5-6/35ec58924559",
+    "source_commit_sha": "8d45fe7e6a6f2a443e8317ca3a764a83b4bdb5fe",
+    "source_tree_sha": "86da8c13eb7108274e8ae639617a3156c7730559",
     "controlled_seed": 394401,
     "godot_version": "4.7.stable.official.5b4e0cb0f",
     "renderer": "gl_compatibility (OpenGL API 4.1 Metal compatibility, Apple M4 Pro)",
@@ -187,7 +187,7 @@
       "width": 2560,
       "height": 1440,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_2k_release.png",
-      "sha256": "84b608f67681d8109a11ecfecbe6d6c0f4c1c2ad2d160d289ca5928b848d690f"
+      "sha256": "471731022d35518ce408f4671726b9889b6457b2f5fd2fade76c954049e9c060"
     },
     {
       "id": "2k-active",
@@ -196,7 +196,7 @@
       "width": 2560,
       "height": 1440,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_2k.png",
-      "sha256": "a788847599031462e361887b9930077439d14bcedaea920ed60967e95eacfd58"
+      "sha256": "83ec7fc906124ddfcd73151f1bdbd74b33e9d8a91fbaf3a2d917509b750c8afd"
     },
     {
       "id": "2k-recovery",
@@ -205,7 +205,7 @@
       "width": 2560,
       "height": 1440,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/priest/priest_certification_2k_recovery.png",
-      "sha256": "2d660cbe51c0d33975b19a2d600194372b4a295c60349051209cad724048339d"
+      "sha256": "371c1ade4fee1ac831a710fe3cd322a05cd6805108050e7e08a7b1d171398ca3"
     }
   ],
   "scope_boundary": "FAN-3944 adopts the existing Priest presentation into the full V2 timing/presence/identity/accessibility contract and adds class-owned live evidence; damage, cooldown, charge, targeting, saves, and canonical IDs remain unchanged."

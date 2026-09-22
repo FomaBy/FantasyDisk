@@ -6,9 +6,9 @@
   "focused_test": "tests/ultimates/presentation/robot_certification_capture_test.gd",
   "readability_report": "docs/design/references/weapon_ultimates/robot/certification_readability_report.md",
   "capture_source": {
-    "source_ref": "agent/codex-dev-sol-5-6/3fbc2f531de0",
-    "source_commit_sha": "3ffe04e8c8f22d175b0303e6e63e8e33185175e6",
-    "source_tree_sha": "1dcc00f516103ec68a064ff71af5ae5763f7de6e",
+    "source_ref": "agent/codex-dev-sol-5-6/35ec58924559",
+    "source_commit_sha": "8d45fe7e6a6f2a443e8317ca3a764a83b4bdb5fe",
+    "source_tree_sha": "86da8c13eb7108274e8ae639617a3156c7730559",
     "controlled_seed": 394402,
     "godot_version": "4.7.stable.official.5b4e0cb0f",
     "renderer": "gl_compatibility (OpenGL API 4.1 Metal compatibility, Apple M4 Pro)",
@@ -106,7 +106,7 @@
       "width": 1152,
       "height": 648,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_648p_release.png",
-      "sha256": "7798a8ea94963b8568b7ff57ffe916e278390379430c01317f1b593d69b6b8a6"
+      "sha256": "5853e419f3461a9a02759b4a7c43d2c8f13206a5dfb6db7c7cebe5555ff93176"
     },
     {
       "id": "648p-active",
@@ -115,7 +115,7 @@
       "width": 1152,
       "height": 648,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_648p.png",
-      "sha256": "951104d8a67bb9672dc79a264ea6a0cf0bbcfcfba39fe7238e9e05ca502fcd5c"
+      "sha256": "b52d38807518a393f6e5a2c0120f7f3395855d88a2c2913becbe263e1eb0fcef"
     },
     {
       "id": "648p-recovery",
@@ -124,7 +124,7 @@
       "width": 1152,
       "height": 648,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_648p_recovery.png",
-      "sha256": "e0c9a9e18f99ecc5776eb7eca70ff78f0ef07fba3f6e5663352f87fc8feab04e"
+      "sha256": "46d500bfbb0ff116374ce5f45d309ccb474c9f36e1ad56368f3a5789eb8115db"
     },
     {
       "id": "720p-release",
@@ -133,7 +133,7 @@
       "width": 1280,
       "height": 720,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_720p_release.png",
-      "sha256": "efcf0ca9185ace652b49ef0e643e07faf9c787b12531fc2171f59726b3451758"
+      "sha256": "89185a6272b8dcd486cf8824de15789641326b2947b87412116da950dcca016c"
     },
     {
       "id": "720p-active",
@@ -142,7 +142,7 @@
       "width": 1280,
       "height": 720,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_720p.png",
-      "sha256": "269883c4783f79d8035be9af2d5019aa6b49dc5f911cff1d0999f1aa1a9fd4ba"
+      "sha256": "bb68552d5f88611c882cf5b764d5025a454fec6320137d262c6e3a646508a9d1"
     },
     {
       "id": "720p-recovery",
@@ -151,7 +151,7 @@
       "width": 1280,
       "height": 720,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_720p_recovery.png",
-      "sha256": "ebb9b4290d59acc182f7940184cac46d077ba29024ccc67347065b445f2e0bd8"
+      "sha256": "0fbcdc1d51d2469c35de183d9589d73682191f173fb95959da8abb4aadd0d4f5"
     },
     {
       "id": "1080p-release",
@@ -160,7 +160,7 @@
       "width": 1920,
       "height": 1080,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_1080p_release.png",
-      "sha256": "46d86c67efb668fd60e8310a819e09cb3af6083ac8ea0f4e8a0fac1f805be0d8"
+      "sha256": "03855e533c0766d54df821d973749006d4fd8c5f4586dd0a3fbff36af5970f9a"
     },
     {
       "id": "1080p-active",
@@ -169,7 +169,7 @@
       "width": 1920,
       "height": 1080,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_1080p.png",
-      "sha256": "94693434e8a3ebaa451aa697cde2ab5dbdd08ed3e6afc4b3899598cd7adddb97"
+      "sha256": "86b93f01585a67f7e297d956a664d7ac7b384a405ba1999dc559ce2ecc881f93"
     },
     {
       "id": "1080p-recovery",
@@ -178,7 +178,7 @@
       "width": 1920,
       "height": 1080,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_1080p_recovery.png",
-      "sha256": "3ed87e312016585a5bb89bf4220d7e5ce57cda8b6538e9eb05d1af99b374f61b"
+      "sha256": "8900d88f3675837c6bd0f828fd92fe5aeafdae055fc650d0640b35eb9f127399"
     },
     {
       "id": "2k-release",
@@ -187,7 +187,7 @@
       "width": 2560,
       "height": 1440,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_2k_release.png",
-      "sha256": "88ec48483ee375becb50f2cd4b1f766abd00945d530a194ecdef9af61a1bd74c"
+      "sha256": "a957f2a5d97f063195426b5e7b14fa4750d7a3fb99db0a5f6e8b8c3f3774e014"
     },
     {
       "id": "2k-active",
@@ -196,7 +196,7 @@
       "width": 2560,
       "height": 1440,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_2k.png",
-      "sha256": "2c2a8f704874fae23f4e397c516e3573ade99c482c84bb465cbe30a1cfb4c3e1"
+      "sha256": "1a8bfb84b7d87ebe3ac31fc19d4ea81298222854b21865002e32162e6e8c491f"
     },
     {
       "id": "2k-recovery",
@@ -205,7 +205,7 @@
       "width": 2560,
       "height": 1440,
       "path": "res://docs/design/reference-assets-lfs/ultimate-certification/robot/robot_certification_2k_recovery.png",
-      "sha256": "9973030409e3f49ec9f24e5317db5a5aefecb849266faab19df82ef8f650eaf5"
+      "sha256": "dbef4efb641a825fb0741a703624e914cc735997cc5ef67e0e00f8005349c230"
     }
   ],
   "scope_boundary": "FAN-3944 adopts the existing Robot presentation into the full V2 timing/presence/identity/accessibility contract and adds class-owned live evidence; damage, cooldown, charge, targeting, saves, and canonical IDs remain unchanged."
