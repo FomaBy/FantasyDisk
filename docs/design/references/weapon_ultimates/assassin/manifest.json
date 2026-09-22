@@ -248,9 +248,9 @@
     "authored_focused_test": "tests/ultimates/presentation/assassin_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "agent/codex-dev-sol-5-6/61aea8b25e1e",
-      "source_commit_sha": "c1399112ef3284facf22b1cad5503c29ac20da0b",
-      "source_tree_sha": "cb691c582a317af172db4cb43d388de9d8ae27d1",
+      "source_ref": "agent/codex-dev-sol-5-6/ec7ed6b7af16",
+      "source_commit_sha": "172401c58b0889f34fc4b81634b1a16e69ca177d",
+      "source_tree_sha": "09a2ded8a27f4e29a9eff4dac091dbeb8fe4857e",
       "capture_manifest": "docs/design/references/weapon_ultimates/assassin/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/assassin/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/assassin_certification_live_capture.gd",
