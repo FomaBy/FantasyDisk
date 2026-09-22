@@ -14,6 +14,7 @@ extends Node2D
 const Pack := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const CLEANUP_REASONS: Array[String] = ["cancel", "death", "node_end"]
 
 ## Beat payload key naming the enemies a beat actually damaged. The Doctor
@@ -34,6 +35,11 @@ const POOL_ACTIVE_PLAYS := 4.0
 ## rides the cumulative turn count for the same reason the orbit does: a
 ## phase-local spin resets at every boundary and snaps the blades back.
 const SAW_SPIN_PER_TURN := 3.5
+const REDUCED_PHASE_HOLD := 0.75
+const PHOTO_SPRITE_ALPHA := 0.68
+
+static var _duck_refs := 0
+static var _duck_volume_before_db := 0.0
 
 @export var weapon_id: String = Pack.RESTORE_POTION
 
@@ -48,25 +54,51 @@ signal timeline_finished(reason: String)
 var _timeline = null
 var _visuals := {}
 var _impacts: Node2D = null
+var _backdrop_layer: CanvasLayer = null
+var _backdrop: ColorRect = null
+var _presence := {}
+var _reduced_motion := false
+var _photosensitivity_safe := false
+var _impact_fired := false
+var _hitstop_remaining := 0.0
+var _shake_remaining := 0.0
+var _camera: Camera2D = null
+var _camera_offset_before_shake := Vector2.ZERO
+var _duck_active := false
+var _sfx_bus_index := -1
+var _shake_rng := RandomNumberGenerator.new()
+var _cast_pose: Sprite2D = null
+var _cast_pose_backdrop: Polygon2D = null
+var _cast_pose_highlight: Polygon2D = null
+var _player_body: CanvasItem = null
+var _player_body_was_visible := true
+var _cast_pose_binding_error := "not_started"
 
 
 func _ready() -> void:
+	process_priority = 1000
 	_apply_metadata()
+	_apply_accessibility_snapshot()
 	set_process(false)
 
 
 func begin(registry, handles: Dictionary = {}, headless_mode := -1) -> Dictionary:
 	finish("node_end")
+	_apply_accessibility_snapshot()
 	var manifest := Pack.manifest_for(registry, weapon_id)
 	if manifest.is_empty():
 		push_error("DoctorUltimateTimelineScene: no manifest for %s" % weapon_id)
 		return {}
+	_presence = (manifest.get("presence", {}) as Dictionary).duplicate(true)
+	_bind_cast_pose(manifest)
+	_shake_rng.seed = hash("doctor/%s" % weapon_id)
+	scale = Vector2.ONE * _content_scale()
 	_timeline = Timeline.new(manifest, headless_mode)
 	var snapshot: Dictionary = _timeline.begin(handles)
 	if str(snapshot.get("state", "")) == Timeline.ACTIVE_STATE:
 		_build_visuals()
 		preview_at(0.0)
-		set_process(true)
+		set_process(false)
 	return snapshot
 
 
@@ -84,24 +116,54 @@ func is_active() -> bool:
 func step(delta: float) -> void:
 	if _timeline == null:
 		return
+	var before: float = _timeline.elapsed_seconds()
 	for event in _timeline.advance(delta):
 		phase_entered.emit(event)
-	preview_at(_timeline.elapsed_seconds())
+	var elapsed: float = _timeline.elapsed_seconds()
+	var active_at := float((Pack.weapon_config(weapon_id).get("timing", {}) as Dictionary).get("active", INF))
+	if not _impact_fired and before < active_at and elapsed >= active_at:
+		_impact_fired = true
+		_hitstop_remaining = float(_presence.get("hitstop_ms", 0.0)) / 1000.0
+		_shake_remaining = 0.48
+	if _hitstop_remaining > 0.0:
+		_hitstop_remaining = maxf(_hitstop_remaining - delta, 0.0)
+	else:
+		preview_at(elapsed)
+	var timing := Pack.weapon_config(weapon_id).get("timing", {}) as Dictionary
+	if elapsed >= float(timing.get("release", INF)) and elapsed < float(timing.get("recovery", -INF)):
+		_begin_sfx_ducking()
+	else:
+		_end_sfx_ducking()
+	if _shake_remaining > 0.0:
+		_shake_remaining = maxf(_shake_remaining - delta, 0.0)
+		_apply_camera_shake(_shake_remaining)
+	_apply_photo_safe_impacts()
 	if _timeline != null and _timeline.elapsed_seconds() >= Pack.timeline_seconds(weapon_id):
 		finish("node_end")
+
+
+## WeaponUltimatePresentationRuntime supplies wall-clock delta, including while
+## gameplay is under a time-scale dip. This is the scene's sole live clock.
+func advance(delta: float) -> void:
+	step(delta)
 
 
 func preview_at(elapsed: float) -> void:
 	if _visuals.is_empty():
 		_build_visuals()
 	var phase := Pack.phase_at(weapon_id, elapsed)
+	var phase_name := str(phase["name"])
+	var progress := float(phase["progress"])
+	if _reduced_motion and phase_name in ["windup", "release", "active", "recovery"]:
+		progress = REDUCED_PHASE_HOLD
 	match weapon_id:
 		Pack.RESTORE_POTION:
-			_preview_restore(str(phase["name"]), float(phase["progress"]))
+			_preview_restore(phase_name, progress)
 		Pack.PLAGUE_SYRINGE:
-			_preview_plague(str(phase["name"]), float(phase["progress"]))
+			_preview_plague(phase_name, progress)
 		Pack.BONE_SAW:
-			_preview_saw(str(phase["name"]), float(phase["progress"]))
+			_preview_saw(phase_name, progress)
+	_apply_photo_safe_visuals()
 
 
 ## One executor beat. A beat that names the enemies it actually damaged gets the
@@ -118,7 +180,14 @@ func present(_event_id: String, payload: Dictionary) -> void:
 		return
 	if _impacts == null or not is_instance_valid(_impacts):
 		_impacts = ImpactPlayer.new()
-		add_child(_impacts)
+		## Victim bursts follow the enemies they annotate and have their own pool
+		## budget; keep them beside the caster presentation so its declared
+		## footprint and node budget measure only the authored caster spectacle.
+		var impact_parent := get_parent()
+		if impact_parent != null:
+			impact_parent.add_child(_impacts)
+		else:
+			add_child(_impacts)
 		_impacts.play(impact_frames, victims, global_position)
 		return
 	# Later beats join the running ripple instead of replacing it, so a
@@ -131,7 +200,14 @@ func finish(reason: String) -> Dictionary:
 	# already gone: `begin()` finishes the previous run before it builds the new
 	# one, so a repeat activation can never inherit live bursts.
 	_clear_impacts()
+	_end_sfx_ducking()
+	_end_camera_shake()
+	_hitstop_remaining = 0.0
+	_shake_remaining = 0.0
+	_impact_fired = false
+	_release_cast_pose()
 	if _timeline == null:
+		_clear_visuals()
 		return {}
 	var snapshot: Dictionary = _timeline.finish(reason)
 	_timeline = null
@@ -163,11 +239,14 @@ func _apply_metadata() -> void:
 	set_meta("impact_language", str(config.get("impact", "")))
 	set_meta("max_visual_nodes", int(config.get("max_visual_nodes", 0)))
 	set_meta("crowd_cap", Pack.MAX_VISUAL_NODES)
+	set_meta("max_unique_materials", int(config.get("max_unique_materials", 0)))
+	set_meta("max_fullscreen_materials", int(config.get("max_fullscreen_materials", 0)))
 
 
 func _build_visuals() -> void:
 	_clear_visuals()
 	_apply_metadata()
+	_build_backdrop()
 	match weapon_id:
 		Pack.RESTORE_POTION:
 			_build_restore()
@@ -337,13 +416,13 @@ func _preview_saw(phase: String, progress: float) -> void:
 			turns = progress * 0.35
 			alpha = 0.45 + progress * 0.45
 		"release":
-			radius = lerpf(58.0, 105.0, progress)
+			radius = lerpf(58.0, 96.0, progress)
 			turns = 0.35 + progress * 1.2
 		"active":
-			radius = 105.0 + sin(progress * TAU * 4.0) * 12.0
+			radius = 96.0 + sin(progress * TAU * 4.0) * 10.0
 			turns = 1.55 + progress * 5.5
 		"recovery":
-			radius = lerpf(105.0, 40.0, progress)
+			radius = lerpf(96.0, 40.0, progress)
 			turns = 7.05 + progress * 0.8
 			alpha = 0.88 * (1.0 - progress * 0.45)
 		"cancel":
@@ -358,7 +437,7 @@ func _preview_saw(phase: String, progress: float) -> void:
 		_play(saw, alpha, turns)
 		saw.position = center + Vector2.from_angle(angle) * radius
 		saw.rotation = angle + turns * SAW_SPIN_PER_TURN
-		saw.scale = Vector2.ONE * (0.38 + (0.08 if phase == "active" else 0.0))
+		saw.scale = Vector2.ONE * (0.35 + (0.08 if phase == "active" else 0.0))
 	var arc := _visuals["arc"] as AnimatedSprite2D
 	# One pass of the serration pack per revolution of the orbit it draws.
 	_play(arc, 0.76 if phase in ["release", "active"] else 0.32 * (1.0 - progress), turns)
@@ -478,6 +557,276 @@ func _clear_visuals() -> void:
 		if is_instance_valid(visual):
 			(visual as Node).free()
 	_visuals.clear()
+	if _backdrop_layer != null and is_instance_valid(_backdrop_layer):
+		_backdrop_layer.free()
+	_backdrop_layer = null
+	_backdrop = null
+
+
+func _build_backdrop() -> void:
+	_backdrop_layer = CanvasLayer.new()
+	_backdrop_layer.name = "BackdropLayer"
+	_backdrop_layer.layer = 0
+	add_child(_backdrop_layer)
+	_backdrop = ColorRect.new()
+	_backdrop.name = "BackdropVeil"
+	_backdrop.set_meta("fullscreen_layer", true)
+	_backdrop_layer.add_child(_backdrop)
+	_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_backdrop.color = Color(0.025, 0.06, 0.035, 0.38)
+	_apply_backdrop_safety()
+
+
+func _apply_accessibility_snapshot() -> void:
+	var tree := get_tree() if is_inside_tree() else null
+	var snapshot := Accessibility.read_snapshot(tree.root if tree != null else null)
+	_reduced_motion = bool(snapshot[Accessibility.REDUCED_MOTION_KEY])
+	_photosensitivity_safe = bool(snapshot[Accessibility.PHOTOSENSITIVITY_SAFE_KEY])
+	set_meta(Accessibility.REDUCED_MOTION_KEY, _reduced_motion)
+	set_meta(Accessibility.PHOTOSENSITIVITY_SAFE_KEY, _photosensitivity_safe)
+	_apply_backdrop_safety()
+
+
+func _apply_backdrop_safety() -> void:
+	if _backdrop == null or not is_instance_valid(_backdrop):
+		return
+	var alpha := 1.0
+	if _reduced_motion:
+		alpha = minf(alpha, 0.72)
+	if _photosensitivity_safe:
+		alpha = minf(alpha, 0.58)
+	_backdrop.modulate.a = alpha
+
+
+func _apply_photo_safe_visuals() -> void:
+	_apply_backdrop_safety()
+	if not _photosensitivity_safe:
+		return
+	for raw_visual in _visuals.values():
+		var visual := raw_visual as CanvasItem
+		if visual is AnimatedSprite2D:
+			visual.modulate.a = minf(visual.modulate.a, PHOTO_SPRITE_ALPHA)
+	for node_name in _photosensitive_names():
+		var visual := _find_visual(node_name)
+		if visual != null and visual.visible:
+			visual.modulate.a = minf(visual.modulate.a, 0.12)
+
+
+func _photosensitive_names() -> PackedStringArray:
+	match weapon_id:
+		Pack.RESTORE_POTION:
+			return PackedStringArray(["GlassImpact"])
+		Pack.PLAGUE_SYRINGE:
+			return PackedStringArray(["MaskVaporBurst"])
+		Pack.BONE_SAW:
+			return PackedStringArray(["MetalSparks"])
+	return PackedStringArray()
+
+
+func _find_visual(node_name: String) -> CanvasItem:
+	for raw_visual in _visuals.values():
+		var visual := raw_visual as CanvasItem
+		if visual != null and visual.name == node_name:
+			return visual
+	return null
+
+
+func presence_snapshot() -> Dictionary:
+	return {
+		"reduced_motion": _reduced_motion,
+		"photosensitivity_safe": _photosensitivity_safe,
+		"motion_tracks_disabled": 1 if _reduced_motion else 0,
+		"hitstop_ms": float(_presence.get("hitstop_ms", 0.0)),
+		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
+		"sfx_ducking": bool(_presence.get("sfx_ducking", false)),
+		"photosensitive_nodes": _photosensitive_names().size(),
+		"cast_pose_bound": _cast_pose != null and is_instance_valid(_cast_pose),
+		"cast_pose_binding_error": _cast_pose_binding_error,
+	}
+
+
+func _screen_shake_enabled() -> bool:
+	var tree := get_tree() if is_inside_tree() else null
+	return tree == null or bool(tree.root.get_meta("screen_shake", true))
+
+
+func _apply_camera_shake(remaining: float) -> void:
+	if _reduced_motion or not bool(_presence.get("camera_shake", false)) or not _screen_shake_enabled():
+		return
+	if _camera == null or not is_instance_valid(_camera):
+		_camera = _find_current_camera()
+		if _camera == null:
+			return
+		_camera_offset_before_shake = _camera.offset
+	var strength := 7.0 * remaining / 0.48
+	_camera.offset = _camera_offset_before_shake + Vector2(
+		_shake_rng.randf_range(-strength, strength), _shake_rng.randf_range(-strength, strength)
+	)
+	if remaining <= 0.0:
+		_end_camera_shake()
+
+
+func _find_current_camera() -> Camera2D:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree == null:
+		return null
+	for node in tree.root.find_children("*", "Camera2D", true, false):
+		var camera := node as Camera2D
+		if camera != null and camera.enabled and camera.is_current():
+			return camera
+	return null
+
+
+func _end_camera_shake() -> void:
+	if _camera != null and is_instance_valid(_camera):
+		_camera.offset = _camera_offset_before_shake
+	_camera = null
+
+
+func _content_scale() -> float:
+	match weapon_id:
+		Pack.RESTORE_POTION:
+			return 0.78
+		Pack.PLAGUE_SYRINGE:
+			return 0.90
+		Pack.BONE_SAW:
+			return 0.72
+	return 1.0
+
+
+func _bind_cast_pose(manifest: Dictionary) -> void:
+	var asset := str((manifest.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	var texture := load(asset) as Texture2D
+	_cast_pose_binding_error = "silhouette_unavailable:%s" % asset
+	if texture == null:
+		return
+	var player := _nearest_player()
+	_cast_pose_binding_error = "eligible_player_unavailable"
+	if player == null:
+		return
+	var visual_root := player.get_node_or_null("VisualRoot") as Node2D
+	_player_body = player.get_node_or_null("VisualRoot/Body") as CanvasItem
+	_cast_pose_binding_error = "player_visual_tree_unavailable"
+	if visual_root == null or _player_body == null:
+		return
+	_player_body_was_visible = _player_body.visible
+	_player_body.visible = false
+	_cast_pose_backdrop = Polygon2D.new()
+	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
+	_cast_pose_backdrop.polygon = PackedVector2Array([Vector2(0, -36), Vector2(36, 0), Vector2(0, 36), Vector2(-36, 0)])
+	_cast_pose_backdrop.color = Color(0.025, 0.018, 0.035, 0.92)
+	_cast_pose_backdrop.z_index = 0
+	visual_root.add_child(_cast_pose_backdrop)
+	_cast_pose_highlight = Polygon2D.new()
+	_cast_pose_highlight.name = "UltimateCastPoseHighlight"
+	_cast_pose_highlight.polygon = PackedVector2Array([Vector2(0, -30), Vector2(30, 0), Vector2(0, 30), Vector2(-30, 0)])
+	_cast_pose_highlight.color = Color(0.92, 0.76, 0.38, 0.78)
+	_cast_pose_highlight.z_index = 1
+	visual_root.add_child(_cast_pose_highlight)
+	_cast_pose = Sprite2D.new()
+	_cast_pose.name = "UltimateCastPose"
+	_cast_pose.texture = texture
+	_cast_pose.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_cast_pose.self_modulate = Color(1.25, 1.25, 1.25, 1.0)
+	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
+	_cast_pose.z_index = 2
+	visual_root.add_child(_cast_pose)
+	_cast_pose_binding_error = ""
+
+
+func _release_cast_pose() -> void:
+	if _cast_pose != null and is_instance_valid(_cast_pose):
+		_cast_pose.free()
+	_cast_pose = null
+	if _cast_pose_highlight != null and is_instance_valid(_cast_pose_highlight):
+		_cast_pose_highlight.free()
+	_cast_pose_highlight = null
+	if _cast_pose_backdrop != null and is_instance_valid(_cast_pose_backdrop):
+		_cast_pose_backdrop.free()
+	_cast_pose_backdrop = null
+	if _player_body != null and is_instance_valid(_player_body):
+		_player_body.visible = _player_body_was_visible
+	_player_body = null
+
+
+func _nearest_player() -> Node2D:
+	var tree := get_tree() if is_inside_tree() else null
+	if tree == null:
+		return null
+	var nearest: Node2D = null
+	var distance := INF
+	for raw_player in tree.get_nodes_in_group("player"):
+		var player := raw_player as Node2D
+		if player == null \
+				or not player.get_node_or_null("VisualRoot") is Node2D \
+				or not player.get_node_or_null("VisualRoot/Body") is CanvasItem:
+			continue
+		var candidate := player.global_position.distance_squared_to(global_position)
+		if candidate < distance:
+			distance = candidate
+			nearest = player
+	return nearest
+
+
+## Freeze and dim both presentation-routed and Doctor-executor victim players.
+## Executor impacts live outside `_visuals`, so they need an explicit adapter.
+func _apply_photo_safe_impacts() -> void:
+	if not _photosensitivity_safe:
+		return
+	var sprites: Array[Node] = []
+	if _impacts != null and is_instance_valid(_impacts):
+		sprites.append_array(_impacts.find_children("*", "AnimatedSprite2D", true, false))
+	if get_tree() != null:
+		for raw_sprite in get_tree().root.find_children("*", "AnimatedSprite2D", true, false):
+			if _is_doctor_executor_impact(raw_sprite as Node):
+				sprites.append(raw_sprite)
+	for raw_sprite in sprites:
+		var sprite := raw_sprite as AnimatedSprite2D
+		if sprite == null:
+			continue
+		sprite.stop()
+		sprite.frame = clampi(4, 0, maxi(sprite.sprite_frames.get_frame_count(sprite.animation) - 1, 0)) \
+			if sprite.sprite_frames != null else 0
+		sprite.scale = Vector2.ONE * 0.24
+		sprite.modulate.a = minf(sprite.modulate.a, 0.12)
+		sprite.set_meta("photosensitivity_safe", true)
+
+
+func _is_doctor_executor_impact(node: Node) -> bool:
+	if node == null:
+		return false
+	var cursor := node.get_parent()
+	while cursor != null:
+		var script := cursor.get_script() as Script
+		if script != null and script.resource_path.contains("/scripts/ultimates/classes/doctor/"):
+			return true
+		cursor = cursor.get_parent()
+	return false
+
+
+func _begin_sfx_ducking() -> void:
+	if _duck_active or not bool(_presence.get("sfx_ducking", false)):
+		return
+	_sfx_bus_index = AudioServer.get_bus_index("SFX")
+	if _sfx_bus_index < 0:
+		return
+	_duck_active = true
+	if _duck_refs == 0:
+		_duck_volume_before_db = AudioServer.get_bus_volume_db(_sfx_bus_index)
+		AudioServer.set_bus_volume_db(_sfx_bus_index, _duck_volume_before_db - 8.0)
+	_duck_refs += 1
+
+
+func _end_sfx_ducking() -> void:
+	if not _duck_active:
+		return
+	_duck_active = false
+	_duck_refs = maxi(_duck_refs - 1, 0)
+	if _duck_refs == 0 and _sfx_bus_index >= 0:
+		if is_equal_approx(AudioServer.get_bus_volume_db(_sfx_bus_index), _duck_volume_before_db - 8.0):
+			AudioServer.set_bus_volume_db(_sfx_bus_index, _duck_volume_before_db)
+	_sfx_bus_index = -1
 
 
 ## The impact service pools its own bursts, so releasing it is what returns the

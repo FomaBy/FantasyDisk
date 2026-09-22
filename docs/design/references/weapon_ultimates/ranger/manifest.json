@@ -4,7 +4,13 @@
   "class_id": "ranger",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
-    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
     "max_timeline_seconds": 10.0,
     "headless_fallback": "no_op",
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
@@ -43,7 +49,13 @@
       "silhouette": "silver crescent mark, focused bolt, and four split bolts",
       "motion_path": "mark bloom, aimed bolt, then four diagonal split bolts",
       "impact_language": "moon-mark flash followed by a four-way silver split",
-      "timing_seconds": {"windup": 0.0, "release": 0.7, "active": 1.05, "recovery": 2.6, "cancel": 3.1},
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.05,
+        "recovery": 2.6,
+        "cancel": 3.1
+      },
       "timing_rhythm": "0.70 s mark ceremony under a swelling night veil, the aimed bolt lands at 1.05 s with a 95 ms hitstop, four split bolts hold the arena to 2.60 s, then the veil lifts",
       "phase_ids": {
         "windup": "weapon_ultimate.phase.ranger.moon_crossbow.windup",
@@ -67,6 +79,15 @@
         "hitstop_ms": 95,
         "sfx_ducking": true
       },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the moon mark bloom, the aimed bolt and the four split bolts carry the beat on their own on the unchanged timing; the backdrop veil still swells to 0.30 and the 95 ms hitstop still freezes the drawn pose on the first impact",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0041 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      },
       "identity": {
         "cast_pose_id": "cast_pose.ranger.hunter_draw",
         "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_moon_crossbow.png",
@@ -80,7 +101,13 @@
       "silhouette": "one long storm arrow corridor with tail-to-tip lightning beats",
       "motion_path": "charged arrow corridor followed by seven sequential lightning beats",
       "impact_language": "sequential electric corridor strikes that push away from the axis",
-      "timing_seconds": {"windup": 0.0, "release": 0.6, "active": 0.95, "recovery": 2.85, "cancel": 3.45},
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.95,
+        "recovery": 2.85,
+        "cancel": 3.45
+      },
       "timing_rhythm": "0.60 s draw, one arena-wide storm flash on the release beat, the corridor walks tail to tip with a 120 ms hitstop at 0.95 s and holds to 2.85 s before the sky settles",
       "phase_ids": {
         "windup": "weapon_ultimate.phase.ranger.storm_longbow.windup",
@@ -104,6 +131,15 @@
         "hitstop_ms": 120,
         "sfx_ducking": true
       },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the corridor draw and the seven tail-to-tip lightning beats carry the beat as sequential contrast steps on the unchanged timing; the release-beat veil flash and the 120 ms hitstop stay as shipped",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a single-shot full-viewport flash peaking at 0.28 with one rise per cast (0 Hz repetition, coverage 1.0); it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      },
       "identity": {
         "cast_pose_id": "cast_pose.ranger.hunter_draw",
         "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_storm_longbow.png",
@@ -117,7 +153,13 @@
       "silhouette": "three heavy spectral trap rings with inward-facing jaws",
       "motion_path": "three edge sigils close toward the center in staggered jaw-lock rings",
       "impact_language": "green-blue jaw snap, chain net closure, and a fading bleed rune",
-      "timing_seconds": {"windup": 0.0, "release": 0.95, "active": 1.4, "recovery": 2.7, "cancel": 3.8},
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.95,
+        "active": 1.4,
+        "recovery": 2.7,
+        "cancel": 3.8
+      },
       "timing_rhythm": "0.95 s sigil ceremony under a thickening forest veil, the jaws snap at 1.40 s with a 145 ms hitstop, the chain net holds to 2.70 s and the longest recovery lets the rune bleed out",
       "phase_ids": {
         "windup": "weapon_ultimate.phase.ranger.hunter_trap.windup",
@@ -141,6 +183,15 @@
         "hitstop_ms": 145,
         "sfx_ducking": true
       },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.02,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the three closing jaw rings and the chain-net closure carry the beat as a shrinking silhouette on the unchanged timing; the backdrop veil still thickens to 0.34 and the 145 ms hitstop still freezes the drawn pose on the snap",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0116 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.34 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      },
       "identity": {
         "cast_pose_id": "cast_pose.ranger.hunter_draw",
         "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_hunter_trap.png",
@@ -160,19 +211,73 @@
     ],
     "frame_local_beats": {
       "moon_crossbow": [
-        {"phase": "release", "time": 0.70, "required_nodes": ["@visible_effect"]},
-        {"phase": "active", "time": 1.05, "required_nodes": ["@visible_effect"]},
-        {"phase": "recovery", "time": 2.60, "required_nodes": ["@visible_effect"]}
+        {
+          "phase": "release",
+          "time": 0.7,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "active",
+          "time": 1.05,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "recovery",
+          "time": 2.6,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        }
       ],
       "storm_longbow": [
-        {"phase": "release", "time": 0.60, "required_nodes": ["@visible_effect"]},
-        {"phase": "active", "time": 0.95, "required_nodes": ["@visible_effect"]},
-        {"phase": "recovery", "time": 2.85, "required_nodes": ["@visible_effect"]}
+        {
+          "phase": "release",
+          "time": 0.6,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "active",
+          "time": 0.95,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "recovery",
+          "time": 2.85,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        }
       ],
       "hunter_trap": [
-        {"phase": "release", "time": 0.95, "required_nodes": ["@visible_effect"]},
-        {"phase": "active", "time": 1.40, "required_nodes": ["@visible_effect"]},
-        {"phase": "recovery", "time": 2.70, "required_nodes": ["@visible_effect"]}
+        {
+          "phase": "release",
+          "time": 0.95,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "active",
+          "time": 1.4,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        },
+        {
+          "phase": "recovery",
+          "time": 2.7,
+          "required_nodes": [
+            "@visible_effect"
+          ]
+        }
       ]
     },
     "live_capture": {
@@ -208,6 +313,44 @@
       "panels_per_sheet": 12,
       "note": "Twelve live panels per sheet: three canonical weapons by four presentation modes, each rendered from its shipped scene at a fixed beat. `crowded` draws the declared crowd cap, `reduced_motion` renders with the shipped screen_shake toggle off, and `photosensitivity_safe` suppresses the arena-wide backdrop veil at capture time. No production scene, VFX, gameplay or balance value is changed."
     },
-    "contact_sheet_script": "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd"
+    "contact_sheet_script": "scenes/vfx/ultimates/ranger/ranger_ultimate_contact_sheet.gd",
+    "certification": {
+      "issue": "FAN-3941",
+      "capture_manifest": "docs/design/references/weapon_ultimates/ranger/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/ranger/certification_readability_report.md",
+      "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/ranger",
+      "capture_script": "tests/ultimates/presentation/ranger_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/ranger_certification_capture_test.gd",
+      "source_ref": "agent/fable/e50731ad6088",
+      "source_commit_sha": "739dab121abc5662a617f4c7469c0243dcb20ef7",
+      "source_tree_sha": "0afb5107365afe959bf63ad5c89ab3b5dd246d1c",
+      "accessibility_policy": "scripts/settings/ultimate_accessibility_settings.gd",
+      "exclusive_gate": true,
+      "weapon_ids": [
+        "moon_crossbow",
+        "storm_longbow",
+        "hunter_trap"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "impact",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "frames": 84,
+      "note": "Real-runtime captures: one cast per weapon x mode x viewport through UltimatePlayerHost with the shipped Player (own current Camera2D), real Enemy scenes, a real hazard telegraph and enemy projectile, and the live ultimate HUD adapter, under a fixed 60 fps clock and the exclusive process admission, with the reduced-motion and photosensitivity-safe modes published through the production ultimate_accessibility_settings snapshot; the active beat and every payoff beat at every viewport plus release/impact/recovery at 1152x648. The capture manifest pins every file hash, the engine, the command, per-frame camera/world state, the measured coverage and the per-run camera-offset traces behind the mode effects."
+    }
   }
 }

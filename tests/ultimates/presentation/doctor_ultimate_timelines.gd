@@ -7,6 +7,7 @@ const PD := preload("res://scripts/progression_data.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const PresentationRuntime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const Pack := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_presentation_pack.gd")
 const TimelineScene := preload("res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd")
 const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
@@ -56,7 +57,7 @@ const PACKS := [
 		"color": Color(1.0, 0.72, 0.42),
 		"frames": [
 			{"phase": "release", "time": 0.85, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "SurgicalOrbitArc"]},
-			{"phase": "active", "time": 1.70, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonGreen"]},
+			{"phase": "active", "time": 1.70, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonRed", "DrainRibbonGreen"]},
 			{"phase": "recovery", "time": 2.55, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "ShieldStitches"]},
 		],
 	},
@@ -363,8 +364,9 @@ func _check_phase_visuals(errors: Array[String]) -> void:
 			scene.preview_at(lerpf(start, end, 0.5))
 			signatures[_scene_pose(scene)] = true
 		_expect(signatures.size() == PHASE_ORDER.size(), "%s must have a different visible pose for every U5 phase" % key, errors)
-		_expect(scene.get_child_count() == int(Pack.weapon_config(key).get("max_visual_nodes", -1)), "%s must build its declared visual-node count" % key, errors)
-		_expect(scene.get_child_count() <= Pack.MAX_VISUAL_NODES, "%s must stay inside the crowd cap" % key, errors)
+		var drawn := PresentationRuntime._drawing_node_count(scene)
+		_expect(drawn == int(Pack.weapon_config(key).get("max_visual_nodes", -1)), "%s must build its declared visual-node count" % key, errors)
+		_expect(drawn <= Pack.MAX_VISUAL_NODES, "%s must stay inside the crowd cap" % key, errors)
 		scene.free()
 
 
@@ -597,7 +599,7 @@ func _check_repeat_activation(registry, weapon_id: String, errors: Array[String]
 		scene.begin(registry, probes, 0)
 		scene.step(0.10)
 		_expect(scene.is_active(), "%s run %d must start active" % [weapon_id, run + 1], errors)
-		_expect(scene.get_child_count() == declared, "%s run %d must rebuild its declared visual nodes" % [weapon_id, run + 1], errors)
+		_expect(PresentationRuntime._drawing_node_count(scene) == declared, "%s run %d must rebuild its declared visual nodes" % [weapon_id, run + 1], errors)
 		var opening := _scene_pose(scene)
 		scene.step(0.10)
 		_expect(_scene_pose(scene) != opening, "%s run %d must keep advancing" % [weapon_id, run + 1], errors)
@@ -635,6 +637,7 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 	var impacts := _impact_player(scene)
 	_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
 	if impacts != null:
+		_expect(impacts.get_parent() == root, "%s victim impacts must live beside the caster presentation" % weapon_id, errors)
 		var planned := impacts.call("snapshot") as Dictionary
 		_expect(int(planned.get("victims", 0)) == victims.size(), "%s must enqueue every actually affected enemy" % weapon_id, errors)
 		_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6,
@@ -666,6 +669,7 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 
 	scene.finish("cancel")
 	_expect(scene.get_child_count() == 0, "%s must release every impact node with the scene" % weapon_id, errors)
+	_expect(impacts == null or not is_instance_valid(impacts), "%s must release its sibling victim-impact service" % weapon_id, errors)
 	for victim in victims:
 		victim.free()
 	scene.free()
@@ -984,9 +988,9 @@ func _free_victims(victims: Array) -> void:
 
 
 func _impact_player(scene: Node) -> Node:
-	for child in scene.get_children():
-		if child.get_script() == ImpactPlayer:
-			return child
+	var impacts: Variant = scene.get("_impacts")
+	if impacts is Node and is_instance_valid(impacts):
+		return impacts as Node
 	return null
 
 

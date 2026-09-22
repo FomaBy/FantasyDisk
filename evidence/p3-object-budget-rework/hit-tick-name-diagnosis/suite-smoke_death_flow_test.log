@@ -1,0 +1,5 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+ERROR: Error calling deferred method: 'RefCounted(ui_screens.gd)::_install_global_tooltips_for_root': Cannot convert argument 1 from Object to Object.
+   at: _call_function (core/object/message_queue.cpp:220)
+Combat smoke death-flow suite passed.

@@ -1,0 +1,7 @@
+command: FSD_GODOT_RUN_TIMEOUT=600 FSD_GODOT_MAXWAIT=900 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --headless --path . --script res://tests/combat/smoke_contact_feedback_test.gd
+source: d716cb90c569f027e26b0b1cd4ae5a0e2923ce38
+Sun Sep 13 14:35:03 UTC 2026
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+Combat smoke contact-feedback suite passed.
+exit_status=0

@@ -1,0 +1,22 @@
+{
+  "cold_activation": {
+    "admitted": true,
+    "cold_admission_us": 16454,
+    "retained_delta": 21,
+    "same_instance_on_repeat": true,
+    "warm_admission_us": 11
+  },
+  "ignore_load": {
+    "cached_after_ref_drop": false,
+    "cached_while_held": false,
+    "delta_after_ref_drop": 0,
+    "delta_while_held": 0,
+    "path": "res://scripts/ultimates/classes/priest/staff.gd"
+  },
+  "plain_load": {
+    "cached_after_ref_drop": false,
+    "delta_after_ref_drop": 0,
+    "delta_while_held": 0,
+    "path": "res://scripts/ultimates/classes/ranger/bow.gd"
+  }
+}

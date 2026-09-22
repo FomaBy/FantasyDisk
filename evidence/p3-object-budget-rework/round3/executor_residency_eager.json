@@ -1,0 +1,9 @@
+{
+  "after_load_objects": 2326,
+  "base_objects": 1526,
+  "executor_files": 51,
+  "per_script": 15.6862745098039,
+  "reference_held": 51,
+  "retained_objects": 800,
+  "scripts_loaded": 51
+}

@@ -1,0 +1,9 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[hazard-gate] CAP: _hazard_hit(1e9) → 64.00 (cap 64.00)
+[hazard-gate] PASSTHROUGH: _hazard_hit(8.0) → 8.00 (< cap 64.00)
+[hazard-gate] E2E: full-HP 80 → drop 64.00 (<= 64.00, выжил)
+Boss hazard cap gate passed: зоны/сламы/хазарды босса капятся 80%% max HP, full-HP герой переживает тик, слабый тик проходит без срезки.
+
+exit_status=0
+start/end recorded by driver; end_utc=2026-09-12T14:51:12Z

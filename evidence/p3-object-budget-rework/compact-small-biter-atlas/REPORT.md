@@ -1,0 +1,200 @@
+# FAN-3934 — compact lossless Small Biter atlas: repair report
+
+## Implementation (granted paths only)
+
+- `tools/build_small_biter_atlas.py` — deterministic packer (shelf layout, fixed
+  slot order from the committed frame list); `--check` re-verifies the committed
+  pages, manifest and converted tres byte-for-byte (exit 0 on the candidate).
+- `assets/sprites/enemies/full_frame/small_biter_atlas_{0,1,2}.png` (+ committed
+  `.png.import` sidecars, lossless compress/mode=0, no mipmaps) — three 4096x4096
+  pages = exactly 192 frame-equivalents, within the PM bound; 184 of 192 slots
+  used (8 slot-equivalents theoretical padding).
+- `small_biter_atlas_manifest.json` — layout, per-frame region map, source and
+  page SHA-256 hashes, effective import settings.
+- `small_biter_spriteframes.tres` — converted in place: identical structure,
+  animation names/order/speed/loops/durations; every standalone texture becomes
+  an AtlasTexture region. Original PNGs and their sidecars untouched
+  (provenance intact).
+
+## Verification
+
+- **Dedicated regression** `tests/full_frame_atlas_parity_test.gd` (+uid), PASS
+  headless AND windowed:
+  - bijective pixel mapping — every (animation, frame) texture matches EXACTLY
+    ONE manifest slot's original PNG byte-for-byte (SHA-256 over pixel data),
+    every slot used exactly once, regions equal the manifest rectangles,
+    durations positive;
+  - negative fixture: a deliberately shifted region IS detected (detector not
+    vacuous);
+  - captured-render comparison (windowed, real renderer): SubViewport captures
+    of the AnimatedSprite2D vs `draw_texture_rect_region` reference across every
+    animation row, with flip, 0.3 scale and two simultaneous consumers — color
+    histograms match; `is_playing()` is never used as render evidence, and the
+    headless run explicitly records the render stage UNAVAILABLE rather than
+    substituting;
+  - lifecycle: full release, cold reload with byte-identical re-verification,
+    orphan-free; import-sidecar settings checked (lossless, no mipmaps).
+- **Unchanged suites green** on the converted resource: full_frame registry
+  integrity/shard-validation/eight-direction/row-scale-invariant, combat contact
+  feedback + runtime combat smokes, take_damage routing, p3_feedback_allocation,
+  berserk balance.
+
+## Predeclared 2-orig / 2-compact cold comparison (separate processes, gate,
+exclusive; all 4 runs + logs retained; every result kept, no re-rolls)
+
+| phase metric (steady) | orig (standalone) | compact (3 pages) | delta |
+|---|---:|---:|---:|
+| OBJECT_COUNT at load | +368 (1878−1510) | **+190 (1700−1510)** | **−178 objects** |
+| resources | 191 | 195 | +4 |
+| static memory (absolute KiB) | 218,813–218,890 | 226,822–226,900 | **+7.8–8.0 MiB** (within the 8 MiB theoretical padding bound) |
+| load (cold) | 89.6–119.1 ms | 44.2–122.6 ms | overlapping; one compact outlier 122.6 ms |
+| first use | 3.3–3.5 ms | 3.7 ms / 87.2 ms (one outlier) | see disclosure |
+| release-one / release-last | −1 / full | identical | same semantics |
+| cold reload | ok | ok | — |
+
+Absolute-vs-delta distinction: static figures above are ABSOLUTE sampled KiB;
+the deltas between arms are differences of absolutes. GPU/VRAM telemetry is
+UNAVAILABLE in this environment and is marked so in the raw records (never
+zero-substituted). Observer bracket: two consecutive idle snapshots identical
+(measured zero in this protocol). The single 87.2 ms first-use outlier (compact
+ rep 2) did not reproduce in rep 1 (3.7 ms) and is disclosed as-is.
+
+## Census diagnostics (2 samples, unchanged scenario, separate from the decisive probe)
+
+Both: Rift Warden + Rift Cutter + 6 Small Biters, 3 unique frame sets,
+floors **3,513 / 3,553** (pre-conversion comparable floors were 3,421–3,520),
+peaks 3,782 / 3,830. Small Biter's live-set cost dropped by its measured
+~178-object margin, offset in these absolute floors by one-random-kind variance.
+
+## Decisive original matrix on the committed compact source `5b3ff607…`
+
+| Run | Peak / limit | FPS avg / 1% | Mem | Result |
+|---|---:|---:|---:|---|
+| P3 run 1 | 3,831 / 4,000 | 772.8 / 421.7 | 163.6 MiB | PASS |
+| P3 run 2 | 3,843 / 4,000 | 717.7 / 514.2 | 162.1 MiB | PASS |
+| P1 | 2,246 | 499.9 / 382.7 | 137.0 MiB ≤ 400 | PASS |
+| P2 (exactly 48) | 4,040 / 5,000 | 80.9 / 49.7 | 126.9 MiB | PASS |
+
+All 10 driver exits 0; strict foreign-overlap check NONE in every window; every
+in-JSON check true (boss alive, 1/18 ultimates, orphans 0, non-monotonic).
+P2's 1% low of 49.7 passes the ≥45 floor with reduced margin — disclosed.
+
+## Corrections (prior files preserved, not rewritten)
+
+- The previous experiment's "73.5 MiB / padding" explanation was wrong in
+  mechanism: the 8192-atlas occupied 256 frame-equivalents; the compact 3-page
+  layout occupies exactly 192 (measured +7.8–8.0 MiB, matching the bound).
+- The prior experiment's manifest named an uncommitted prototype import
+  sidecar; all three sidecars here are committed and hash-verified.
+- The prior invalid 4-run batch (both arms measured the packed file) remains
+  deleted history; its replacement and this stage's 4 retained runs supersede.
+- Historical failed-sample kind census remains missing; census diagnostics here
+  are separate from the decisive probe and reconstruct nothing.
+
+
+## Publication correction (10:26 decision; prior raws preserved)
+
+The original handoff claimed a complete manifest; that claim was wrong. The
+previous MANIFEST.md listed 110 entries of which 52 named files absent from
+the candidate commit — 48 generated `.translation` and 4 generated
+`.csv.import` engine cache outputs, hashed from the local working tree during
+generation before the commit (local ignored files must never be treated as
+delivered evidence). The three committed atlas `.png.import` sidecars and
+`tests/full_frame_atlas_parity_test.gd.uid` were omitted. The canonical
+manifest above is rebuilt from Git blobs of the successor's inventory commit,
+includes the sidecars and the UID, states its self-hash convention, and
+classifies the generated outputs as reproducible-derived exclusions rather
+than publishing them. `publication-correction/audit_manifest.py` audits any
+manifest against any commit by reading blobs from Git and demonstrates the
+expected HASH-MISMATCH/ABSENT failures in a self-test; its full run on the
+final successor is recorded in `publication-correction/audit-result.txt`.
+No measurement, raw file or production byte changed in this correction.
+
+
+## Dated correction — final checker and executed evidence (2026-09-13, 12:55 decision)
+
+The canonical report previously described the ORIGINAL checker (positive
+durations; subsampled color-histogram "captured" comparison). The FINAL checker
+at the successor is different and stronger: every frame duration is asserted
+EQUAL to the original authored value via tres-text parsing with a real
+corrupted-duration negative fixture; captured-render parity is SPATIAL
+byte-equality (image SHA) between the AnimatedSprite2D render and a reference
+Sprite2D under identical transform, per animation row and per explicit
+unflipped/flipped/scaled case; simultaneous-consumer evidence requires the
+second consumer's pixels to change the capture and hide/show to restore exact
+bytes. The dead `if 0.0 > 0.0` branch is deleted.
+
+Actually executed evidence for the final checker (raw logs with command,
+argv, source/tree, engine and exits): headless run exit 0 (render stage
+explicitly UNAVAILABLE), windowed real-renderer `-- render` run exit 0 with
+all rows/cases spatially equal — see `verification-coverage-rework/` (EVIDENCE.md
+plus both logs; internal negative fixtures executed and retained). Missing
+historical artifacts disclosed: the earlier "old-checker" control logs were
+misnamed duplicates (working tree was already the new test) and were removed
+rather than relabeled; QA's own inspection remains the authority on the old
+checker's insufficiency. No earlier product/performance sample is relabeled:
+product content of `f400eabd` is byte-identical to QA-reviewed `68afccda`
+(test-only diff), which is the exact unchanged-input proof for evidence reuse.
+
+
+## Dated correction — 2026-09-13 publication diagnosis (14:01 decision)
+
+Two evidence defects in successor `686a78ba` are corrected additively:
+(1) the recorded windowed checker log was an INVALID run — a zsh unquoted
+variable passed "-- render" as one word, so the render stage was honestly
+skipped and the handoff's windowed-capture claim was unsupported for that
+record; the invalid log is preserved verbatim and the run re-executed with
+correctly split arguments (exit 0, spatial stage executed). (2) the canonical
+manifest hashed the pre-whitespace-fix version of one log; the manifest is
+rebuilt from the FINAL successor's Git inventory after all corrections, with
+an explicit nonrecursive self-exclusion convention (MANIFEST.md and REPORT.md
+only), and re-audited with real negatives. The verification subtree now
+carries commands, numeric exits, per-negative outcomes, preserved invalid
+attempts and an explicit missing-artifact inventory (old-checker control
+never executed — not recreated; no PNG captures exist by design — stated as a
+limitation). No production byte changed; product content remains byte-identical
+to QA-reviewed `68afccda`.
+
+
+## Dated correction — 15:34 decision (executed controls, clean gate, coverage table)
+
+The remaining gaps are closed with executed evidence: (1) an actual old/new
+checker control (`old-vs-new-control.gd/.json`) ran two runtime mutants — the
+old assertions miss the +0.5 duration mutant (positivity passes; the dead
+branch cannot fire) and accepted spatially different renders via the color
+histogram (histogram(case0 sprite)==histogram(case0 reference) while the
+spatial SHA differs; the strict flip-vs-flip histogram distinction on THIS
+content is recorded honestly rather than overclaimed); the new checker detects
+both. (2) The windowed checker now exports real artifacts — 485 files: 144
+rendered captures (PNG), 120 per-case spatial hashes all matching,
+simultaneous-consumer identities/SHAs with contribution and hide/show
+determinism, and individual negative-outcome JSONs with fixture identities
+(`exported-windowed-captures/`). (3) The dirty-worktree static-gate attempts
+are preserved in static-gate.log with cause analysis (FSD_GODOT_EXCLUSIVE
+blocks the gate's own unit fixtures; recording output inside the worktree
+dirtied it); the required clean run is static-gate-clean.log — resolved
+source/tree/base, QUALITY PASSED 16 static, exit 0 — executed with output
+outside the worktree and a verified-clean tree. (4) The complete
+coverage/accounting table is `verification-coverage-rework/coverage-accounting.md`,
+binding every reused result to its unchanged-input proof. No production byte
+changed; static-only execution is not claimed as a full Godot or CI PASS.
+
+
+## Dated correction — 16:50 decision (source binding, control provenance, completed comparisons)
+
+(1) The prior exported-run log named source `ea0f6d16` whose committed test had
+no export support — the executed source was that commit plus an uncommitted
+test patch. Limitation disclosed; the export instrumentation is now committed
+FIRST and a bounded fresh execution ran at the committed source with complete
+argv, source/tree/base, dirty-file count and numeric exit
+(`checker-windowed-render-exported.log`, 490 artifacts). (2) The control JSON's
+Python post-processor is disclosed in `old-vs-new-control-derived.json`; the
+immutable producer's unedited output and its exit-1 strict outcome are
+published in `old-vs-new-control-raw.log`, and the strict in-probe mirror
+histogram is explicitly NOT claimed as an old-checker miss. (3) The
+simultaneous-consumer record now carries both consumers' frame/texture/flip/
+position/scale identities with matched alone-render references, and executed
+captured displacement/mirroring negatives (on a runtime-verified asymmetric
+frame) are published with PNGs. (4) `coverage-accounting.md` now enumerates
+per-check bindings with corrected counts and the original-vs-current
+engine/renderer/import/workload comparison. No production byte changed.

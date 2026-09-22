@@ -1,4 +1,4 @@
-extends Node2D
+extends "res://scenes/vfx/ultimates/engineer/engineer_ultimate_accessibility_driver.gd"
 
 ## Инженер / Ремонтный дрон — «Рой микродронов».
 ##
@@ -16,21 +16,13 @@ extends Node2D
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_repair_drone"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_repair_drone"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_repair_drone.gd"
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_repair_microdrone.png"
 )
-const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
-const VICTIM_FRAMES := preload(
-	"res://assets/sprites/effects/engineer/repair_drone/repair_drone_spriteframes.tres"
-)
-
-var _impacts: Node2D = null
-var _impacts_started := false
-
-
 static func parameter_contract() -> Dictionary:
 	return {
 		"drone_count": {"type": "integer", "minimum": 1, "maximum": 16},
@@ -50,13 +42,17 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
+static func new_victim_impact_player() -> Node2D:
+	return ImpactPlayer.new()
+
+
 static func execute(activation) -> float:
 	var drone_count: int = activation.param_int("drone_count", 12)
 	var devices: Array[Node] = activation.deploy_temporary(DEVICE_SCENE, {}, drone_count)
 	if devices.size() != drone_count:
 		return 0.0
 	var formation_radius: float = activation.param_float("formation_radius", 150.0)
-	decorate_and_place(devices, ring_points(activation.origin(), drone_count, formation_radius))
+	decorate_and_place(activation, devices, ring_points(activation.origin(), drone_count, formation_radius))
 	if not activation.configure_repair(activation.scaled_damage("repair_total", 8.0)):
 		return 0.0
 	if not activation.set_control_resistance_policy({
@@ -112,7 +108,8 @@ static func ram_wave(activation, devices: Array[Node], wave: int) -> void:
 			"",
 			{}
 		)
-		activation.deal_damage(
+		deal_damage_with_accessibility(
+			activation,
 			target,
 			activation.scaled_damage("ram_damage", 0.65),
 			{"source": "engineer_microdrone_ram"},
@@ -164,7 +161,7 @@ static func place(devices: Array[Node], points: PackedVector2Array) -> void:
 			device.global_position = points[index]
 
 
-static func decorate_and_place(devices: Array[Node], points: PackedVector2Array) -> void:
+static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	place(devices, points)
 	for raw_device in devices:
 		var device := raw_device as Node2D
@@ -177,6 +174,7 @@ static func decorate_and_place(devices: Array[Node], points: PackedVector2Array)
 		sprite.scale = Vector2.ONE * 0.42
 		sprite.modulate.a = 0.88
 		device.add_child(sprite)
+		configure_device_visual(activation, device, sprite)
 
 
 ## Target discovery is read-only. Repair mutation remains inside the accepted
@@ -199,31 +197,3 @@ static func repair_targets(activation) -> Array[Node]:
 			if device != null and is_instance_valid(device) and not targets.has(device):
 				targets.append(device)
 	return targets
-
-
-func present(_event_id: String, payload: Dictionary) -> void:
-	_play_impacts(payload.get("victims"))
-
-
-func finish(_reason: String) -> void:
-	if _impacts != null and is_instance_valid(_impacts):
-		_impacts.finish()
-
-
-func _play_impacts(raw_victims: Variant) -> void:
-	if not raw_victims is Array or (raw_victims as Array).is_empty():
-		return
-	if _impacts == null or not is_instance_valid(_impacts):
-		_impacts = ImpactPlayer.new()
-		add_child(_impacts)
-		_impacts_started = false
-	if _impacts_started:
-		_impacts.enqueue(raw_victims as Array, global_position)
-	else:
-		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
-		_impacts_started = true
-
-
-func _exit_tree() -> void:
-	_impacts = null
-	_impacts_started = false

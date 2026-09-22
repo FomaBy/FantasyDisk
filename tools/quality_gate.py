@@ -164,6 +164,8 @@ GENERATED_IMPORT_SIDECARS = (
     "after_berserk_648p.png.import",
 )
 LFS_EVIDENCE_PREFIX = "docs/design/reference-assets-lfs/"
+GODOT_RESOURCE_PREFIX = "res://"
+_URI_SCHEME_PREFIX_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 
 
 def _weapon_ultimate_manifest_paths() -> list[Path]:
@@ -187,13 +189,19 @@ def _load_json_object(path: Path, description: str) -> dict:
 def _repository_relative_path(raw_path: object, description: str) -> str:
     if not isinstance(raw_path, str) or not raw_path:
         raise RuntimeError(f"{description} must be a non-empty repository-relative path")
+    if "\\" in raw_path:
+        raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
+    if _URI_SCHEME_PREFIX_RE.match(raw_path):
+        raise RuntimeError(f"{description} must not use an unsupported URI scheme: {raw_path!r}")
     path = Path(raw_path)
-    if path.is_absolute() or ".." in path.parts or "\\" in raw_path:
+    if path.is_absolute() or ".." in path.parts:
         raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
     return path.as_posix()
 
 
 def _lfs_evidence_path(raw_path: object, description: str) -> str:
+    if isinstance(raw_path, str):
+        raw_path = raw_path.removeprefix(GODOT_RESOURCE_PREFIX)
     path = _repository_relative_path(raw_path, description)
     if not path.startswith(LFS_EVIDENCE_PREFIX):
         raise RuntimeError(
@@ -217,23 +225,46 @@ def _certification_capture_declarations(
     if certification is not None:
         if not isinstance(certification, dict):
             raise RuntimeError(f"{description}.certification_capture must be an object")
+        runner_key = "runner" if "runner" in certification else "capture_script"
         declarations.append((
             "certification_capture",
             certification,
             "manifest",
-            "runner",
+            runner_key,
         ))
+    # FAN-3941: the Ranger, Thief and Soldier class manifests publish their
+    # certification link as `evidence.certification` with `capture_manifest`,
+    # `capture_script` and `focused_test`.  A link this lister does not read is
+    # evidence CI never hydrates, so the certification gate then fails on LFS
+    # pointers instead of judging the frames.
+    class_certification = evidence.get("certification")
+    if class_certification is not None:
+        if not isinstance(class_certification, dict):
+            raise RuntimeError(f"{description}.certification must be an object")
+        if "capture_manifest" in class_certification:
+            declarations.append((
+                "certification",
+                class_certification,
+                "capture_manifest",
+                "capture_script",
+            ))
     live_capture = evidence.get("live_capture")
     if live_capture is not None:
         if not isinstance(live_capture, dict):
             raise RuntimeError(f"{description}.live_capture must be an object")
-        if "capture_manifest" in live_capture:
-            declarations.append((
-                "live_capture",
-                live_capture,
-                "capture_manifest",
-                "capture_script",
-            ))
+        # FAN-3934 CI evidence-input recovery: the Engineer class manifest
+        # publishes its certification link as
+        # `live_capture.certification_manifest`. A key this lister does not
+        # read is evidence CI never hydrates, so the certification gate
+        # fails on LFS pointers instead of judging the frames.
+        for manifest_key in ("capture_manifest", "certification_manifest"):
+            if manifest_key in live_capture:
+                declarations.append((
+                    "live_capture",
+                    live_capture,
+                    manifest_key,
+                    "capture_script",
+                ))
     return declarations
 
 
@@ -253,25 +284,41 @@ def _linked_certification_manifest_path(
 
 
 def _certification_artifact_paths(payload: dict, description: str) -> list[str]:
-    """Every LFS artifact declared by a linked certification manifest."""
-    records: object | None = None
-    record_key = ""
-    for key in ("captures", "sheets", "viewports"):
-        if key in payload:
-            records = payload[key]
-            record_key = key
-            break
-    if not isinstance(records, list) or not records:
-        raise RuntimeError(
-            f"{description} must declare a non-empty captures, sheets, or viewports list"
-        )
+    """Every LFS artifact declared by a linked certification manifest.
+
+    FAN-3934: manifests may publish several record lists (the Engineer
+    certification manifest carries hydrated PNGs in `samples` and geometry-only
+    `viewports`). Paths are collected from every present list; a record
+    without a `path` is a geometry descriptor and carries no evidence, but at
+    least one artifact path must resolve overall.
+    """
     paths: list[str] = []
-    for index, record in enumerate(records):
-        if not isinstance(record, dict):
-            raise RuntimeError(f"{description}.{record_key}[{index}] must be an object")
-        paths.append(_lfs_evidence_path(
-            record.get("path"), f"{description}.{record_key}[{index}].path"
-        ))
+    for record_key in ("captures", "sheets", "viewports", "samples"):
+        if record_key not in payload:
+            continue
+        records = payload[record_key]
+        # FAN-3934: some manifests publish `viewports` as a geometry DICT
+        # (not an artifact list); non-list geometry shapes carry no paths and
+        # are skipped, while a list that declares records keeps the original
+        # non-empty contract.
+        if not isinstance(records, list):
+            continue
+        if not records:
+            raise RuntimeError(
+                f"{description}.{record_key} must be a non-empty list"
+            )
+        for index, record in enumerate(records):
+            if not isinstance(record, dict):
+                raise RuntimeError(f"{description}.{record_key}[{index}] must be an object")
+            if "path" not in record:
+                continue
+            paths.append(_lfs_evidence_path(
+                record.get("path"), f"{description}.{record_key}[{index}].path"
+            ))
+    if not paths:
+        raise RuntimeError(
+            f"{description} declared no evidence artifact paths"
+        )
     return paths
 
 
@@ -313,6 +360,46 @@ def manifest_declared_lfs_evidence_paths() -> list[str]:
     if not paths:
         raise RuntimeError("no manifest-declared LFS evidence found")
     return sorted(paths)
+
+
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+
+def manifest_declared_capture_source_commits() -> list[str]:
+    """Source commits every linked certification manifest records it was rendered from.
+
+    The certification gates prove each recorded `source.commit_sha` is an
+    ancestor of the checked-out candidate.  A shallow candidate checkout
+    cannot prove that on its own, so CI fetches enough history for exactly
+    these commits before the gates run; a manifest that records no usable
+    commit fails the candidate here rather than passing as unprovable.
+    """
+    manifest_paths = _weapon_ultimate_manifest_paths()
+    if not manifest_paths:
+        raise RuntimeError("no ultimate manifests found for capture sources")
+    commits: set[str] = set()
+    for manifest_path in manifest_paths:
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        for declaration in _certification_capture_declarations(evidence, description):
+            nested_path = _linked_certification_manifest_path(declaration, description)
+            nested_description = nested_path.relative_to(ROOT).as_posix()
+            nested = _load_json_object(nested_path, "certification capture manifest")
+            source = nested.get("source")
+            if source is None:
+                continue
+            if not isinstance(source, dict):
+                raise RuntimeError(f"{nested_description}.source must be an object")
+            commit = source.get("commit_sha")
+            if not isinstance(commit, str) or not _COMMIT_SHA_RE.match(commit):
+                raise RuntimeError(
+                    f"{nested_description}.source.commit_sha must be a full lowercase commit SHA"
+                )
+            commits.add(commit)
+    return sorted(commits)
 
 
 def _certification_test_script_path(raw_path: object, description: str) -> str:
@@ -1622,6 +1709,11 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         action="store_true",
         help="list fail-closed manifest-declared LFS evidence paths and exit",
     )
+    parser.add_argument(
+        "--list-manifest-capture-sources",
+        action="store_true",
+        help="list the source commits linked certification manifests record and exit",
+    )
     parser.add_argument("--report", default="build/quality_gate_report.json")
     parser.add_argument(
         "--combine-reports",
@@ -1642,6 +1734,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             for path in manifest_declared_lfs_evidence_paths():
                 print(path)
+        except RuntimeError as exc:
+            print(f"quality_gate: {exc}", file=sys.stderr)
+            return 2
+        return 0
+    if args.list_manifest_capture_sources:
+        try:
+            for commit in manifest_declared_capture_source_commits():
+                print(commit)
         except RuntimeError as exc:
             print(f"quality_gate: {exc}", file=sys.stderr)
             return 2

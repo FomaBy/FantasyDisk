@@ -16,6 +16,8 @@ const FRAME_COUNT := 8
 
 var _radius := 0.0
 var _sweep_degrees := 0.0
+var _swing_tween: Tween
+var _active := false
 
 
 func _ready() -> void:
@@ -52,15 +54,35 @@ func configure(
 		axe_ghost.sprite_frames.get_animation_speed(&"cleave"), 0.001
 	)
 	axe_ghost.play(&"cleave")
-	var swing := create_tween()
-	swing.set_parallel(true)
-	swing.tween_property(weapon_pivot, "rotation", half_sweep, maxf(duration, 0.08)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	swing.tween_property(self, "modulate:a", 0.0, 0.12).set_delay(maxf(duration - 0.03, 0.05))
-	swing.chain().tween_callback(queue_free)
+	if _swing_tween != null and _swing_tween.is_valid():
+		_swing_tween.kill()
+	_active = true
+	visible = true
+	modulate = Color(1.0, 1.0, 1.0, 1.0)
+	_swing_tween = create_tween()
+	_swing_tween.set_parallel(true)
+	_swing_tween.tween_property(weapon_pivot, "rotation", half_sweep, maxf(duration, 0.08)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_swing_tween.tween_property(self, "modulate:a", 0.0, 0.12).set_delay(maxf(duration - 0.03, 0.05))
+	# FAN-3934: bounded reuse — эффект больше не удаляет сам себя, а уходит в
+	# скрытый idle, и владелец переиспользует тот же узел на следующем взмахе
+	# (идентичный визуал и тайминги; принудительное освобождение владельцем
+	# по-прежнему гасит узел вместе с его tween'ами).
+	_swing_tween.chain().tween_callback(_finish_swing)
 	set_meta("radius_px", _radius)
 	set_meta("sweep_degrees", _sweep_degrees)
 	set_meta("weapon_ghost_present", true)
 	set_meta("sword_changed", false)
+
+
+func _finish_swing() -> void:
+	_active = false
+	visible = false
+	if axe_ghost != null and is_instance_valid(axe_ghost):
+		axe_ghost.stop()
+
+
+func is_busy() -> bool:
+	return _active
 
 
 func _ensure_nodes() -> void:

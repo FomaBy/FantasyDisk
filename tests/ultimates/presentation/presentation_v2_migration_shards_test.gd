@@ -23,7 +23,7 @@ const Shards := preload("res://scripts/ultimates/presentation/presentation_v2_mi
 const SHARDS_SCRIPT_PATH := "res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd"
 const SCHEMA_SCRIPT_PATH := "res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd"
 const EXPECTED_CLASS_COUNT := 17
-const EXPECTED_PAIR_COUNT := 17
+const EXPECTED_PAIR_COUNT := 9
 const FROZEN_CEILING_PAIR_COUNT := 23
 const EXPECTED_CATALOG_SIZE := 51
 const REFERENCE_CLASS := "doctor"
@@ -61,18 +61,10 @@ const FROZEN_CEILING_ALLOWLIST := {
 	"robot/robot_reactor_core": LEGACY_REASON,
 }
 
-## FAN-3944 removes only its six now-certified Priest and Robot pairs. This is
-## deliberately independent from the live aggregate, so any accidental shard
-## deletion still fails closed while the immutable split ceiling stays intact.
+## FAN-3942 removed its eight certified pairs, then FAN-3944 removed the six
+## certified Priest and Robot pairs. This remains an independent exact map, so
+## an accidental shard deletion fails closed while the frozen ceiling stays intact.
 const EXPECTED_LIVE_ALLOWLIST := {
-	"assassin/shadow_daggers": LEGACY_REASON,
-	"assassin/venom_wire": LEGACY_REASON,
-	"doctor/restore_potion": LEGACY_REASON,
-	"doctor/plague_syringe": LEGACY_REASON,
-	"doctor/bone_saw": LEGACY_REASON,
-	"druid/summon_amulet": LEGACY_REASON,
-	"druid/briar_staff": LEGACY_REASON,
-	"druid/raven_totem": LEGACY_REASON,
 	"elementalist/elementalist_orb_ring": LEGACY_REASON,
 	"elementalist/elementalist_prism_focus": LEGACY_REASON,
 	"elementalist/elementalist_meteor_core": LEGACY_REASON,

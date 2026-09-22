@@ -1,0 +1,8 @@
+command (complete argv): python3 <capture_histogram_processor.py> <case0-sprite.png> <case0-reference.png> true false
+  (header argv abbreviated; exact input paths/hashes are in the unedited processor JSON below)
+processor_sha256: c147849b9c33018188afeac9d9587f2b8d28a609a03dfff9e3b875dc9fd55f37
+source: 8fd82053a65881f40a184055082a93b1aaa93fe9
+purpose: matched-pair control for new_spatial_sha_detects_difference.matched_pair
+Sun Sep 13 18:52:34 UTC 2026
+FAN3934_CAPTURE_PROCESSOR {"processor": "capture_histogram_processor.py", "inputs": {"evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-sprite.png": "cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12", "evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-reference.png": "cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12"}, "old_checker_histogram_equal": true, "spatial_sha_differ": false, "matches_derived_record": true}
+exit_status=0

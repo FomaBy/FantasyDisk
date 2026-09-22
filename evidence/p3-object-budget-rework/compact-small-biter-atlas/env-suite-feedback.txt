@@ -1,0 +1,16 @@
+command=python3 tools/godot_gate.py --headless --path . --script res://tests/p3_feedback_allocation_test.gd
+env_extra={'GODOT_BIN': '/Applications/Godot.app/Contents/MacOS/Godot'}
+observed_utc=2026-09-13T09:39:35Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)
+--- during sampled_utc=2026-09-13T09:39:35Z
+(no foreign godot processes)
+--- during sampled_utc=2026-09-13T09:39:40Z
+95730  65.1   0:03.52 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/p3_feedback_allocation_test.gd
+--- during sampled_utc=2026-09-13T09:39:45Z
+95730   1.5   0:04.31 /Applications/Godot.app/Contents/MacOS/Godot --headless --path . --script res://tests/p3_feedback_allocation_test.gd
+--- during sampled_utc=2026-09-13T09:39:50Z
+(no foreign godot processes)
+observed_utc=2026-09-13T09:39:55Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)

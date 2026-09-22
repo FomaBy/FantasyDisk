@@ -1,0 +1,45 @@
+{
+  "alone_sha": "7f89f4bc72602d033f11bb04ff41ed17884031c482654383ca56030c72e6dd61",
+  "first": {
+    "alone_reference_sha": "7f89f4bc72602d033f11bb04ff41ed17884031c482654383ca56030c72e6dd61",
+    "animation": "attack_east",
+    "flip_h": false,
+    "frame": 0,
+    "position": [
+      0,
+      0
+    ],
+    "scale": [
+      0.5,
+      0.5
+    ],
+    "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_56"
+  },
+  "first_reference_match": true,
+  "first_reference_mismatch_rate": 0.0,
+  "first_reference_sha": "7f89f4bc72602d033f11bb04ff41ed17884031c482654383ca56030c72e6dd61",
+  "hide_show_deterministic": true,
+  "hide_show_reproducible_note": "field removed — the executed determinism evidence is hide_show_deterministic (together vs restored) plus first/second alone-reference matches below",
+  "match_rule": ">=99.5% of sampled pixels byte-equal between the consumer's alone render and its matched reference (same frame/transform/renderer path); measured mismatch rate recorded — full-frame SHA equality is defeated by GPU antialiasing nondeterminism between two renders of identical content",
+  "restored_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536",
+  "second": {
+    "alone_reference_sha": "a2ce002a6b4b0d6c56abd43dc936261e0fc8a05b67f1253fa876d7099063373a",
+    "animation": "attack_north",
+    "flip_h": true,
+    "frame": 0,
+    "position": [
+      256,
+      256
+    ],
+    "scale": [
+      0.5,
+      0.5
+    ],
+    "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_92"
+  },
+  "second_contributed_pixels": true,
+  "second_reference_match": true,
+  "second_reference_mismatch_rate": 0.00128173828125,
+  "second_reference_sha": "fd2eed9e056f8a919459adfbf76246d9305eee83c9e31ff0deb96df36c5b422f",
+  "together_sha": "af8863215ec62787dc6f173ee692b6a2a2a236ac196f965b65157e059823f536"
+}

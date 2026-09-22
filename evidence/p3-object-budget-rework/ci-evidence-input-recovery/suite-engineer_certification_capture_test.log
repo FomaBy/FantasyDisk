@@ -1,0 +1,244 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_sentry_wrench__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_repair_drone__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/648p/engineer_pressure_mines__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_sentry_wrench__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_repair_drone__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/720p/engineer_pressure_mines__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_sentry_wrench__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_repair_drone__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/1080p/engineer_pressure_mines__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_sentry_wrench__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_repair_drone__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__normal__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__crowded__release.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__reduced_motion__active.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+ERROR: FAN-3939 Engineer certification capture package: capture PNG is an unsmudged LFS pointer: res://docs/design/reference-assets-lfs/ultimate-certification/engineer/2k/engineer_pressure_mines__photosensitivity_safe__recovery.png
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:1020)
+       [1] _initialize (res://tests/ultimates/presentation/engineer_certification_capture_test.gd:140)
+Mon Sep 14 00:44:50 UTC 2026
+foreign: 0

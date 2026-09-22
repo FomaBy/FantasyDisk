@@ -1,0 +1,10 @@
+{
+ "atlas": [
+  8192,
+  8192
+ ],
+ "frames_total": 184,
+ "pixel_equal_frames": 184,
+ "mismatched": [],
+ "atlas_png_sha256": "db661651a15d842b88d45b39beea2195e84092b4bab241e3b29f9dc438089732"
+}

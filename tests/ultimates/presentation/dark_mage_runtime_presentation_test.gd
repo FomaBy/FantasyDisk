@@ -1,7 +1,8 @@
 extends SceneTree
 
 ## FAN-2528: the Dark Mage's V2 presence must be mounted by the live runtime,
-## not only declared in its reference manifest.
+## not only declared in its reference manifest. FAN-3946 adds the ordinary-mode
+## regression: absent settings leave the presentation exactly as authored.
 
 const Runtime := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
@@ -65,6 +66,15 @@ func _test_live_runtime(holder: Node2D, registry: Registry, weapon_id: String) -
 			"%s must render its Dark Mage cast pose and unique weapon silhouette" % weapon_id)
 		_check(str(state.get("cast_pose_asset", "")) != str(state.get("silhouette_asset", "")),
 			"%s pose and weapon assets must remain distinct" % weapon_id)
+		# FAN-3946: with no accessibility snapshot published, the ordinary
+		# presentation is unchanged — the authored `ultimate` timeline plays and
+		# neither mode is reported as applied.
+		_check(str(state.get("timeline_animation", "")) == "ultimate",
+			"%s must play its ordinary timeline by default" % weapon_id)
+		_check(not bool(state.get("reduced_motion", false)) and not bool(state.get("photosensitivity_safe", false)),
+			"%s must apply no accessibility mode by default" % weapon_id)
+		_check(float(state.get("backdrop_max_alpha_step", 0.0)) >= 0.14,
+			"%s ordinary backdrop must keep its authored release step" % weapon_id)
 		_check_backdrop_covers_camera_edge(scene as Node2D, camera, weapon_id)
 	runtime.finish("cancel")
 	await process_frame

@@ -1,0 +1,6 @@
+Sat Sep 12 15:18:57 UTC 2026
+source: 51db8d23c48a98f842b69d21d9357f10e15ec7ad tree 07a34b4a45273c91084878c88d86eada5e80b651
+command: GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/engineer_accessibility_modes_test.gd  (windowed: no --headless)
+display: macOS windowed (real renderer, non-headless)
+Sat Sep 12 15:18:57 UTC 2026
+       0

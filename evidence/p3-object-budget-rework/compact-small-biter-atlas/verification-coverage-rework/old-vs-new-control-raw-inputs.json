@@ -1,0 +1,9 @@
+{
+  "control_pass": false,
+  "new_checker_detects_duration_mutant": true,
+  "new_checker_detects_spatial_mutant": true,
+  "new_source_identity": "successor checker (tres-parse equality + spatial image SHA)",
+  "old_checker_misses_duration_mutant": true,
+  "old_checker_misses_spatial_mutant": false,
+  "old_source_identity": "failed candidate 68afccda test assertions (positivity + dead branch + histogram)"
+}

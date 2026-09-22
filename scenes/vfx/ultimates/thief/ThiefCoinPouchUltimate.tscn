@@ -1,7 +1,35 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/thief/thief_ultimate_timeline_scene.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/full_frame/thief_pixellab/thief_idle_south.png" id="2_hero_pose"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.85, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [node name="ThiefCoinPouchUltimate" type="Node2D"]
+z_index = 3
 script = ExtResource("1_script")
 weapon_id = "thief_coin_pouch"
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+visible = false
+z_as_relative = false
+z_index = 2
+self_modulate = Color(1, 1, 1, 0)
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+metadata/fullscreen_layer = true
+
+[node name="HeroPose" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(1, 1, 1, 0)
+position = Vector2(-20, -16)
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("2_hero_pose")

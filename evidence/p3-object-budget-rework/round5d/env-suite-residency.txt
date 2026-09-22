@@ -1,0 +1,24 @@
+command=python3 tools/godot_gate.py --headless --path . --script res://tests/p3_executor_residency_test.gd
+env_extra={'GODOT_BIN': '/Applications/Godot.app/Contents/MacOS/Godot'}
+observed_utc=2026-09-09T18:24:14Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+53429  82.5   0:02.88 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:14Z
+53429  82.5   0:02.90 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:19Z
+53429  81.3   0:06.78 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:24Z
+53429  85.2   0:11.08 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:29Z
+53429  87.7   0:15.39 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:34Z
+53429  83.8   0:19.62 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:39Z
+53429  87.5   0:23.95 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:45Z
+53429  82.2   0:28.29 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+--- during sampled_utc=2026-09-09T18:24:50Z
+53429  79.3   0:32.62 /Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot --path . --windowed --always-on-top --position 20,20 --script res://tests/ultimates/presentation/robot_certification_live_capture.gd
+observed_utc=2026-09-09T18:24:55Z
+ps_query=ps axo pid,pcpu,time,command | grep -i godot | grep -v grep | grep -v godot_gate | grep -v run_observed
+(no foreign godot processes)

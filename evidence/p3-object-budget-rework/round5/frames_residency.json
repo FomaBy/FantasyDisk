@@ -1,0 +1,27 @@
+{
+  "per_kind_marginal_after_registry": {
+    "ash_marksman": 369,
+    "bone_caller": 369,
+    "bone_shaman": 369,
+    "rift_cutter": 449,
+    "rift_shieldbearer": 369,
+    "small_biter": 369,
+    "spark_runner": 417,
+    "stone_bruiser": 433,
+    "venom_spitter": 369,
+    "void_mage": 369,
+    "winged_spark": 449
+  },
+  "post_release": {
+    "after_all_references_dropped": 1511,
+    "small_biter_still_cached": false,
+    "while_consumer_holds": 1881
+  },
+  "registry_init": {
+    "after_init_objects": 1510,
+    "base_objects": 1511,
+    "enemy_kinds_registered": 11,
+    "kinds_cached_after_init": 0,
+    "retained": -1
+  }
+}

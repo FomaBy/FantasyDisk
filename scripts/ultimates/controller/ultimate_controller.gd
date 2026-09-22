@@ -44,6 +44,10 @@ func activate(class_id: String, weapon_id: String, commit := Callable()) -> bool
 	var executor = profile.get("executor")
 	if not executor is Dictionary:
 		return false
+	# A new cast replaces whatever a naturally completed one is still draining
+	# on the host, whether or not this profile brings a presentation of its own.
+	if _host.has_method("ultimate_host_release_drained_presentation"):
+		_host.call("ultimate_host_release_drained_presentation", "cancel")
 	var strategy_id := str((executor as Dictionary).get("strategy_id", ""))
 	var package_executor = null
 	if _registry.has_method("executor_for"):
@@ -120,13 +124,32 @@ func record_guard_prevention(event: Dictionary) -> float:
 
 
 ## Death, node end or a new run: drop the cast and everything it is still
-## holding, presentation included.
+## holding, presentation included — also a presentation a completed cast
+## left draining on the host after the activation itself was cleared.
 func cancel(reason := "cancel") -> void:
+	if _activation == null:
+		if _host != null and is_instance_valid(_host) and _host.has_method("ultimate_host_release_drained_presentation"):
+			_host.call("ultimate_host_release_drained_presentation", reason)
+		return
 	_shutdown(true, reason)
 
 
+## Natural completion, reached only from the cast's own scheduled end (never
+## from an explicit finish, whose reason may also read "node_end"): gameplay
+## tears down at this instant, the presentation drains to its declared cancel.
 func _complete() -> void:
-	_shutdown(false, "node_end")
+	if _activation == null:
+		return
+	var activation := _activation
+	_activation = null
+	if _host != null and is_instance_valid(_host):
+		if _host.has_method("ultimate_host_drain_presentation"):
+			_host.call("ultimate_host_drain_presentation")
+		elif _host.has_method("ultimate_host_finish_presentation"):
+			_host.call("ultimate_host_finish_presentation", "node_end")
+	activation.shutdown(false)
+	if _host != null and is_instance_valid(_host) and _host.has_method("ultimate_host_set_active"):
+		_host.call("ultimate_host_set_active", false)
 
 
 func _shutdown(free_presentation: bool, reason: String) -> void:

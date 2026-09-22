@@ -40,19 +40,19 @@ const EVIDENCE_BY_CLASS := {
 const FRAMES_BY_CLASS := {
 	"assassin": {
 		"chakrams": [
-			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropDarken", "ImpactFlash", "Orbit/MoonOne", "Orbit/MoonEight"]},
-			{"phase": "active", "time": 2.4, "required_nodes": ["BackdropDarken", "Orbit/MoonFour", "ReturnCrescents"]},
+			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropLayer/BackdropVeil", "ImpactFlash", "Orbit/MoonOne", "Orbit/MoonEight"]},
+			{"phase": "active", "time": 2.4, "required_nodes": ["BackdropLayer/BackdropVeil", "Orbit/MoonFour", "ReturnCrescents"]},
 			{"phase": "recovery", "time": 3.2, "required_nodes": ["Orbit/MoonOne", "ReturnCrescents"]},
 		],
 		"shadow_daggers": [
-			{"phase": "release", "time": 0.5, "required_nodes": ["FreezeMarks", "Afterimages/BackstabOne"]},
-			{"phase": "active", "time": 2.0, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
-			{"phase": "recovery", "time": 5.2, "required_nodes": ["FreezeMarks", "FinalReveal"]},
+			{"phase": "release", "time": 0.9, "required_nodes": ["BackdropLayer/BackdropVeil", "FreezeMarks", "Afterimages/BackstabOne"]},
+			{"phase": "active", "time": 2.05, "required_nodes": ["Afterimages/BackstabOne", "FinalReveal"]},
+			{"phase": "recovery", "time": 3.0, "required_nodes": ["FreezeMarks", "FinalReveal"]},
 		],
 		"venom_wire": [
-			{"phase": "release", "time": 0.7, "required_nodes": ["Anchors/NeedleOne", "HexWeb"]},
-			{"phase": "active", "time": 2.4, "required_nodes": ["HexWeb", "SnapCollapse"]},
-			{"phase": "recovery", "time": 5.5, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
+			{"phase": "release", "time": 0.8, "required_nodes": ["BackdropLayer/BackdropVeil", "Anchors/NeedleOne", "HexWeb"]},
+			{"phase": "active", "time": 2.8, "required_nodes": ["HexWeb", "SnapCollapse"]},
+			{"phase": "recovery", "time": 3.25, "required_nodes": ["Anchors/NeedleOne", "SnapCollapse"]},
 		],
 	},
 	"berserk": {
@@ -125,19 +125,19 @@ const FRAMES_BY_CLASS := {
 	},
 	"druid": {
 		"summon_amulet": [
-			{"phase": "release", "time": 1.50, "required_nodes": ["WildHunt"]},
-			{"phase": "active", "time": 3.50, "required_nodes": ["WildHunt"]},
-			{"phase": "recovery", "time": 6.20, "required_nodes": ["WildHunt"]},
+			{"phase": "release", "time": 1.0, "required_nodes": ["BackdropLayer/BackdropVeil", "WildHunt"]},
+			{"phase": "active", "time": 1.95, "required_nodes": ["WildHunt"]},
+			{"phase": "recovery", "time": 3.1, "required_nodes": ["WildHunt"]},
 		],
 		"briar_staff": [
-			{"phase": "release", "time": 1.70, "required_nodes": ["BriarLattice"]},
-			{"phase": "active", "time": 4.20, "required_nodes": ["BriarLattice"]},
-			{"phase": "recovery", "time": 7.30, "required_nodes": ["BriarLattice"]},
+			{"phase": "release", "time": 1.1, "required_nodes": ["BackdropLayer/BackdropVeil", "BriarLattice"]},
+			{"phase": "active", "time": 2.0, "required_nodes": ["BriarLattice"]},
+			{"phase": "recovery", "time": 3.2, "required_nodes": ["BriarLattice"]},
 		],
 		"raven_totem": [
-			{"phase": "release", "time": 1.80, "required_nodes": ["RavenVortex"]},
-			{"phase": "active", "time": 4.50, "required_nodes": ["RavenVortex"]},
-			{"phase": "recovery", "time": 7.80, "required_nodes": ["RavenVortex"]},
+			{"phase": "release", "time": 0.75, "required_nodes": ["BackdropLayer/BackdropVeil", "RavenVortex"]},
+			{"phase": "active", "time": 1.65, "required_nodes": ["RavenVortex"]},
+			{"phase": "recovery", "time": 2.9, "required_nodes": ["RavenVortex"]},
 		],
 	},
 	"elementalist": {
@@ -211,18 +211,18 @@ const FRAMES_BY_CLASS := {
 	"priest": {
 		"priest_reliquary": [
 			{"phase": "release", "time": 0.90, "required_nodes": ["Shrine", "ShrineRays"]},
-			{"phase": "active", "time": 1.25, "required_nodes": ["Shrine", "ShrineRays", "RingJudgment"]},
-			{"phase": "recovery", "time": 7.80, "required_nodes": ["Shrine", "RingJudgment", "Pillar", "Halo"]},
+			{"phase": "active", "time": 1.20, "required_nodes": ["Shrine", "ShrineRays", "RingJudgment"]},
+			{"phase": "recovery", "time": 3.30, "required_nodes": ["Shrine", "RingJudgment", "RingSanctify"]},
 		],
 		"priest_censer": [
-			{"phase": "release", "time": 0.60, "required_nodes": ["Orbit/Censer", "Orbit/Chain"]},
-			{"phase": "active", "time": 0.95, "required_nodes": ["Orbit/Censer", "Orbit/Chain"]},
-			{"phase": "recovery", "time": 6.90, "required_nodes": ["Orbit/Censer", "Orbit/Chain", "SlamWave"]},
+			{"phase": "release", "time": 0.80, "required_nodes": ["Orbit/Censer", "Orbit/Chain"]},
+			{"phase": "active", "time": 1.30, "required_nodes": ["Orbit/Censer", "Orbit/Chain"]},
+			{"phase": "recovery", "time": 3.00, "required_nodes": ["Orbit/Censer", "Orbit/Chain", "WardEdge", "Beads"]},
 		],
 		"priest_chime": [
-			{"phase": "release", "time": 0.50, "required_nodes": ["Bell", "TollSilver"]},
-			{"phase": "active", "time": 0.80, "required_nodes": ["Bell", "TollSilver"]},
-			{"phase": "recovery", "time": 5.60, "required_nodes": ["Bell", "TollDawn", "DawnGuard"]},
+			{"phase": "release", "time": 0.75, "required_nodes": ["Bell", "TollSilver"]},
+			{"phase": "active", "time": 1.40, "required_nodes": ["Bell", "TollSilver"]},
+			{"phase": "recovery", "time": 2.70, "required_nodes": ["Bell", "TollSilver", "TollGold"]},
 			],
 		},
 	"ranger": {
@@ -244,19 +244,19 @@ const FRAMES_BY_CLASS := {
 	},
 	"robot": {
 		"robot_magnetic_anchor": [
-			{"phase": "release", "time": 0.45, "required_nodes": ["RobotMagneticAnchorSingularity"]},
-			{"phase": "active", "time": 1.05, "required_nodes": ["RobotMagneticAnchorSingularity"]},
-			{"phase": "recovery", "time": 4.25, "required_nodes": ["RobotMagneticAnchorSingularity"]},
+			{"phase": "release", "time": 0.80, "required_nodes": ["RobotMagneticAnchorSingularity"]},
+			{"phase": "active", "time": 1.25, "required_nodes": ["RobotMagneticAnchorSingularity"]},
+			{"phase": "recovery", "time": 3.05, "required_nodes": ["RobotMagneticAnchorSingularity"]},
 		],
 		"robot_hydraulic_press": [
-			{"phase": "release", "time": 0.72, "required_nodes": ["RobotHydraulicPressProtocol"]},
-			{"phase": "active", "time": 1.32, "required_nodes": ["RobotHydraulicPressProtocol"]},
-			{"phase": "recovery", "time": 3.48, "required_nodes": ["RobotHydraulicPressProtocol"]},
+			{"phase": "release", "time": 0.85, "required_nodes": ["RobotHydraulicPressProtocol"]},
+			{"phase": "active", "time": 1.30, "required_nodes": ["RobotHydraulicPressProtocol"]},
+			{"phase": "recovery", "time": 3.20, "required_nodes": ["RobotHydraulicPressProtocol"]},
 		],
 		"robot_reactor_core": [
-			{"phase": "release", "time": 0.56, "required_nodes": ["RobotReactorCoreRedZone"]},
-			{"phase": "active", "time": 1.08, "required_nodes": ["RobotReactorCoreRedZone"]},
-			{"phase": "recovery", "time": 5.42, "required_nodes": ["RobotReactorCoreRedZone"]},
+			{"phase": "release", "time": 0.90, "required_nodes": ["RobotReactorCoreRedZone"]},
+			{"phase": "active", "time": 1.35, "required_nodes": ["RobotReactorCoreRedZone"]},
+			{"phase": "recovery", "time": 3.35, "required_nodes": ["RobotReactorCoreRedZone"]},
 		],
 	},
 	"sniper": {
@@ -323,7 +323,7 @@ const FRAMES_BY_CLASS := {
 		],
 		"bone_saw": [
 			{"phase": "release", "time": 0.85, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "SurgicalOrbitArc"]},
-			{"phase": "active", "time": 1.70, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonGreen"]},
+			{"phase": "active", "time": 1.70, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "SurgicalOrbitArc", "MetalSparks", "DrainRibbonRed", "DrainRibbonGreen"]},
 			{"phase": "recovery", "time": 2.55, "required_nodes": ["OrbitSaw1", "OrbitSaw2", "OrbitSaw3", "ShieldStitches"]},
 		],
 	},

@@ -1,0 +1,63 @@
+{
+  "arm": "compact",
+  "before_load": {
+    "nodes": 3,
+    "objects": 1510,
+    "resources": 7,
+    "static_kib": 29969
+  },
+  "cold_reload_ok": true,
+  "first_render": {
+    "nodes": 5,
+    "objects": 1702,
+    "resources": 195,
+    "static_kib": 226897
+  },
+  "first_use_us": 87212,
+  "gpu_memory_telemetry": "UNAVAILABLE in this environment (headless; not substituted)",
+  "load_us": 122573,
+  "loaded": {
+    "nodes": 3,
+    "objects": 1700,
+    "resources": 195,
+    "static_kib": 226822
+  },
+  "observer_bracket": [
+    {
+      "nodes": 3,
+      "objects": 1700,
+      "resources": 195,
+      "static_kib": 226893
+    },
+    {
+      "nodes": 3,
+      "objects": 1700,
+      "resources": 195,
+      "static_kib": 226894
+    }
+  ],
+  "release_last": {
+    "nodes": 3,
+    "objects": 1510,
+    "resources": 7,
+    "static_kib": 30046
+  },
+  "release_one": {
+    "nodes": 5,
+    "objects": 1702,
+    "resources": 195,
+    "static_kib": 226899
+  },
+  "repeated_use": {
+    "nodes": 5,
+    "objects": 1702,
+    "resources": 195,
+    "static_kib": 226897
+  },
+  "second_consumer_simultaneous": {
+    "nodes": 6,
+    "objects": 1703,
+    "resources": 195,
+    "static_kib": 226900
+  }
+}

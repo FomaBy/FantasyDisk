@@ -242,7 +242,10 @@ func _apply_camera_shake(remaining: float, window: float, amplitude: float) -> v
 	if not _screen_shake_enabled() or amplitude <= 0.0:
 		return
 	if _camera == null or not is_instance_valid(_camera):
-		_camera = get_viewport().get_camera_2d()
+		var viewport := get_viewport()
+		if viewport == null:
+			return
+		_camera = viewport.get_camera_2d()
 		if _camera == null:
 			return
 		_camera_offset_before_shake = _camera.offset
@@ -285,8 +288,6 @@ func seek_for_capture(seconds: float) -> void:
 		_build_elements()
 	_apply_presence(seconds)
 	_apply_formation(seconds)
-	set_meta("capture_seconds", seconds)
-	set_process(false)
 	set_meta("capture_seconds", seconds)
 	set_process(false)
 

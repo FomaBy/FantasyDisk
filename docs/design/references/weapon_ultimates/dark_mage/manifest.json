@@ -276,6 +276,14 @@
       "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/dark_mage_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/dark_mage/certification_capture_manifest.json",
+      "capture_script": "tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
+      "readability_report": "docs/design/references/weapon_ultimates/dark_mage/certification_readability_report.md",
+      "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/dark_mage",
+      "note": "FAN-3938 captures the real persisted production accessibility modes and crowded hazard load at native release, active, and recovery frames. The older contact sheets above remain legacy timeline evidence, not four-mode certification."
+    }
   }
 }

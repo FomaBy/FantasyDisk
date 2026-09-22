@@ -1,0 +1,12 @@
+{
+  "animation": "attack_north_west",
+  "case": 1,
+  "flip": true,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "9ebbd8b6ff55d881b8140ca76e028257f23b11bc9960e65b470c043e773032cc",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_86"
+}
