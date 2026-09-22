@@ -80,9 +80,16 @@ func _check_v2_contract(catalog: Dictionary, expected_profiles: Dictionary, erro
 		"v2-ready manifest must validate outside the allowlist; got %s" % [Schema.validate_catalog(v2_ready, v2_profiles, {})],
 		errors
 	)
-	_expect(
-		not Schema.validate_catalog(_manifest_array(catalog), expected_profiles, {}).is_empty(),
-		"v1 catalog outside the allowlist must be asserted against v2 and fail closed",
+	# The shipped catalog is fully v2. Keep the old fail-closed guarantee with an
+	# isolated synthetic pre-v2 shape instead of assuming a live exemption still
+	# exists in production data.
+	var synthetic_v1: Dictionary = (catalog[key] as Dictionary).duplicate(true)
+	synthetic_v1.erase("presence")
+	_expect_catalog_code(
+		[synthetic_v1],
+		v2_profiles,
+		"presentation.v2.presence",
+		"synthetic v1 manifest outside the allowlist must fail closed",
 		errors
 	)
 

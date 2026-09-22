@@ -23,11 +23,12 @@ const Shards := preload("res://scripts/ultimates/presentation/presentation_v2_mi
 const SHARDS_SCRIPT_PATH := "res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd"
 const SCHEMA_SCRIPT_PATH := "res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd"
 const EXPECTED_CLASS_COUNT := 17
-const EXPECTED_PAIR_COUNT := 9
+const EXPECTED_PAIR_COUNT := 0
 const FROZEN_CEILING_PAIR_COUNT := 23
 const EXPECTED_CATALOG_SIZE := 51
 const REFERENCE_CLASS := "doctor"
 const MIGRATED_KEY := "berserk/sword"
+const SYNTHETIC_V1_KEY := "doctor/bone_saw"
 const FIXTURE_ROOT := "user://fan3933_migration_shards"
 
 const LEGACY_REASON := "shipped under the v1 envelope before FAN-2948; awaiting its class rework card"
@@ -61,20 +62,12 @@ const FROZEN_CEILING_ALLOWLIST := {
 	"robot/robot_reactor_core": LEGACY_REASON,
 }
 
-## FAN-3942 removed its eight certified pairs, then FAN-3944 removed the six
-## certified Priest and Robot pairs. This remains an independent exact map, so
-## an accidental shard deletion fails closed while the frozen ceiling stays intact.
-const EXPECTED_LIVE_ALLOWLIST := {
-	"elementalist/elementalist_orb_ring": LEGACY_REASON,
-	"elementalist/elementalist_prism_focus": LEGACY_REASON,
-	"elementalist/elementalist_meteor_core": LEGACY_REASON,
-	"guitarist/electric_guitar": LEGACY_REASON,
-	"guitarist/bass_guitar": LEGACY_REASON,
-	"guitarist/sound_amp": LEGACY_REASON,
-	"knight/long_spear": LEGACY_REASON,
-	"knight/tower_shield": LEGACY_REASON,
-	"knight/holy_flail": LEGACY_REASON,
-}
+## FAN-3942 removed its eight certified pairs, FAN-3944 removed the six
+## certified Priest and Robot pairs, and FAN-3943 removed the final nine
+## Elementalist, Guitarist and Knight pairs. This remains an independent exact
+## map, so any reintroduced exemption fails closed while the frozen ceiling
+## stays intact.
+const EXPECTED_LIVE_ALLOWLIST := {}
 
 var _catalog: Dictionary = {}
 var _profiles: Dictionary = {}
@@ -170,20 +163,22 @@ func _check_ratchet(errors: Array[String]) -> void:
 ## Old and new aggregate gate outcomes are identical: the catalog gate, the
 ## runtime single-manifest gate and the visual-direction contract report the
 ## same violations whether they read the shards (default argument) or the
-## exact live map (explicit override), and an explicit empty override still asserts
-## the full v2 contract.
+## exact live map (explicit override). An isolated synthetic v1 manifest proves
+## that the now-empty override still asserts the full v2 contract.
 func _check_gate_outcomes_match(errors: Array[String]) -> void:
 	var manifests := _manifest_array()
 	var default_catalog := Schema.validate_catalog(manifests, _profiles)
 	var legacy_catalog := Schema.validate_catalog(manifests, _profiles, EXPECTED_LIVE_ALLOWLIST)
 	if default_catalog != legacy_catalog:
 		errors.append("catalog outcome differs: shards %s vs legacy %s" % [str(default_catalog), str(legacy_catalog)])
-	var enforced := Schema.validate_catalog(manifests, _profiles, {})
-	if enforced.is_empty():
-		errors.append("an explicit empty allowlist must still assert the full v2 contract on the v1 pairs")
-	for raw_key in EXPECTED_LIVE_ALLOWLIST:
-		if not _has_code_detail(enforced, "presentation.v2.", str(raw_key)):
-			errors.append("explicit empty allowlist must report %s" % str(raw_key))
+	var synthetic_profiles := {SYNTHETIC_V1_KEY: _profiles[SYNTHETIC_V1_KEY]}
+	var synthetic_v1 := [_synthetic_v1_manifest(SYNTHETIC_V1_KEY)]
+	var synthetic_default := Schema.validate_catalog(synthetic_v1, synthetic_profiles)
+	var synthetic_explicit := Schema.validate_catalog(synthetic_v1, synthetic_profiles, EXPECTED_LIVE_ALLOWLIST)
+	if synthetic_default != synthetic_explicit:
+		errors.append("synthetic v1 outcome differs: shards %s vs explicit empty %s" % [str(synthetic_default), str(synthetic_explicit)])
+	if not _has_code_detail(synthetic_explicit, "presentation.v2.presence", SYNTHETIC_V1_KEY):
+		errors.append("an explicit empty allowlist must assert synthetic v1 pair %s, got %s" % [SYNTHETIC_V1_KEY, str(synthetic_explicit)])
 	var keys: Array = _catalog.keys()
 	keys.sort()
 	for raw_key in keys:
@@ -386,15 +381,17 @@ func _check_loader_goes_red(errors: Array[String]) -> void:
 	_expect_error(Shards.load_shards("%s/never_created" % FIXTURE_ROOT), "v2_migration.root_missing:", errors)
 
 	# Broken class data reaches the schema as a smaller allowlist, never a
-	# larger one. Every still-live exemption dropped by this incomplete fixture
-	# is asserted against v2 and fails closed. The Doctor fixture itself is now
-	# intentionally v2 and remains useful only for the loader's frozen ceiling.
+	# larger one. With no live exemptions left, an isolated synthetic v1 Doctor
+	# manifest proves that a rejected Doctor shard still fails closed instead of
+	# silently restoring its former exemption.
 	var fail_closed: Dictionary = envelope_result["allowlist"]
-	for raw_key in EXPECTED_LIVE_ALLOWLIST:
-		var key := str(raw_key)
-		var outcome := Schema.validate_catalog([_catalog[key]], {key: _profiles[key]}, fail_closed)
-		if not _has_code_prefix(outcome, "presentation.v2."):
-			errors.append("a pair dropped by a rejected shard must fail the v2 contract, %s passed" % key)
+	var synthetic_outcome := Schema.validate_catalog(
+		[_synthetic_v1_manifest(SYNTHETIC_V1_KEY)],
+		{SYNTHETIC_V1_KEY: _profiles[SYNTHETIC_V1_KEY]},
+		fail_closed
+	)
+	if not _has_code_detail(synthetic_outcome, "presentation.v2.presence", SYNTHETIC_V1_KEY):
+		errors.append("a synthetic v1 pair dropped by a rejected shard must fail the v2 contract, got %s" % str(synthetic_outcome))
 
 	_check_stale_goes_red(errors)
 
@@ -452,6 +449,14 @@ func _manifest_array() -> Array:
 	for key in keys:
 		manifests.append((_catalog[key] as Dictionary).duplicate(true))
 	return manifests
+
+
+## Creates one isolated pre-v2 shape without relying on a live catalog entry
+## remaining behind the migration ratchet.
+func _synthetic_v1_manifest(key: String) -> Dictionary:
+	var manifest: Dictionary = (_catalog[key] as Dictionary).duplicate(true)
+	manifest.erase("presence")
+	return manifest
 
 
 func _expect_same_allowlist(actual: Dictionary, expected: Dictionary, label: String, errors: Array[String]) -> void:

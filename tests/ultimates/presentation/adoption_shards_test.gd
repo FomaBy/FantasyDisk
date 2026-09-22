@@ -23,17 +23,14 @@ const FIXTURE_ROOT := "user://fan3910_adoption_shards"
 ## the pairs adopted since: FAN-3941 retired Thief's phases, direction, capture
 ## and provenance gaps and the Ranger, Soldier and Thief quality gaps; FAN-3942
 ## retired the Assassin and Druid quality gaps; FAN-3944 retired the Priest and
-## Robot quality gaps.
+## Robot quality gaps; FAN-3943 retired the Elementalist, Guitarist and Knight
+## quality gaps.
 const LEGACY_ADOPTION_GAPS := {
 	"phases": {},
 	"direction": {},
 	"capture": {},
 	"provenance": {},
-	"quality": {
-		"elementalist": "awaiting the readability/accessibility declaration",
-		"guitarist": "awaiting the readability/accessibility declaration",
-		"knight": "awaiting the readability/accessibility declaration",
-	},
+	"quality": {},
 	"victim_impact": {},
 }
 
