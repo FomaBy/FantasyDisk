@@ -3,9 +3,9 @@
   "issue": "FAN-3943",
   "class_id": "elementalist",
   "source": {
-    "ref": "agent/codex-dev-sol-5-6/7c21cbb1a757",
-    "commit_sha": "e120e4cdeef54b7229529afcc3524aac3f6ea156",
-    "tree_sha": "5368a38320e1fa43f298e01bdd1f90652758eeeb"
+    "ref": "agent/codex-dev-sol-5-6/039dfddda019",
+    "commit_sha": "38dfb001db2d9f6ff89223ee857a97366acdf324",
+    "tree_sha": "aa85ef09ec03a1cf996944aa8cede21d3359c849"
   },
   "canonical_weapon_ids": [
     "elementalist_orb_ring",

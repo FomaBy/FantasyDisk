@@ -6,8 +6,8 @@ fresh live evidence for the canonical Elementalist trio. Every sample comes from
 shipped Enemy hazards remain visible while the ultimate is activated through
 `UltimatePlayerHost.activate()`. The windowed capture uses Godot 4.7 Compatibility
 on Apple M4 Pro and is pinned to source commit
-`e120e4cdeef54b7229529afcc3524aac3f6ea156`, tree
-`5368a38320e1fa43f298e01bdd1f90652758eeeb`, fixed 60 fps and seed
+`38dfb001db2d9f6ff89223ee857a97366acdf324`, tree
+`aa85ef09ec03a1cf996944aa8cede21d3359c849`, fixed 60 fps and seed
 `394320260909`.
 
 ## Coverage
@@ -66,9 +66,9 @@ committed artifacts against corruption rather than promising identical reruns.
 ## Reproduce
 
 ```bash
-ELEMENTALIST_CERT_SOURCE_REF=agent/codex-dev-sol-5-6/7c21cbb1a757 \
-ELEMENTALIST_CERT_SOURCE_SHA=e120e4cdeef54b7229529afcc3524aac3f6ea156 \
-ELEMENTALIST_CERT_SOURCE_TREE=5368a38320e1fa43f298e01bdd1f90652758eeeb \
+ELEMENTALIST_CERT_SOURCE_REF=agent/codex-dev-sol-5-6/039dfddda019 \
+ELEMENTALIST_CERT_SOURCE_SHA=38dfb001db2d9f6ff89223ee857a97366acdf324 \
+ELEMENTALIST_CERT_SOURCE_TREE=aa85ef09ec03a1cf996944aa8cede21d3359c849 \
 FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed \
   --fixed-fps 60 --script res://tests/ultimates/presentation/elementalist_certification_live_capture.gd
 

@@ -280,9 +280,9 @@
     "authored_focused_test": "tests/ultimates/presentation/elementalist_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3943",
-      "source_ref": "agent/codex-dev-sol-5-6/7c21cbb1a757",
-      "source_commit_sha": "e120e4cdeef54b7229529afcc3524aac3f6ea156",
-      "source_tree_sha": "5368a38320e1fa43f298e01bdd1f90652758eeeb",
+      "source_ref": "agent/codex-dev-sol-5-6/039dfddda019",
+      "source_commit_sha": "38dfb001db2d9f6ff89223ee857a97366acdf324",
+      "source_tree_sha": "aa85ef09ec03a1cf996944aa8cede21d3359c849",
       "capture_manifest": "docs/design/references/weapon_ultimates/elementalist/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/elementalist/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/elementalist_certification_live_capture.gd",
