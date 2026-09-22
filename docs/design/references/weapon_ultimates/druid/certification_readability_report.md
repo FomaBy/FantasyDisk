@@ -7,17 +7,17 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `8842b18d5efdb122d1390cad2f4f31249675c100`; source tree:
-`7acb9ef64dc6ae5cbc1057c16b39e4a6e9536b3f`. Godot 4.7 stable used the
+Source commit: `7ed776a8ff5273ffd78bf70e31e25e8c801e35c7`; source tree:
+`2053c9cfe4f564c2d750fd2001ee352c71fa0b0a`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
 
 | Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Summon amulet | 0.0353 | 0.546 | 0.391 | 0.0002 | 24 | 2 |
+| Summon amulet | 0.0353 | 0.569 | 0.279 | 0.0002 | 24 | 2 |
 | Briar staff | 0.0482 | 0.569 | 0.263 | 0.0002 | 20 | 2 |
-| Raven totem | 0.0510 | 0.572 | 0.456 | 0.0002 | 22 | 2 |
+| Raven totem | 0.0510 | 0.571 | 0.384 | 0.0002 | 22 | 2 |
 
 ## Beat observations
 

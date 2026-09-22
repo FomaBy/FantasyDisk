@@ -277,8 +277,8 @@
     "live_capture": {
       "issue": "FAN-3942",
       "source_ref": "agent/codex-dev-sol-5-6/61aea8b25e1e",
-      "source_commit_sha": "8842b18d5efdb122d1390cad2f4f31249675c100",
-      "source_tree_sha": "7acb9ef64dc6ae5cbc1057c16b39e4a6e9536b3f",
+      "source_commit_sha": "7ed776a8ff5273ffd78bf70e31e25e8c801e35c7",
+      "source_tree_sha": "2053c9cfe4f564c2d750fd2001ee352c71fa0b0a",
       "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
@@ -306,18 +306,18 @@
         "2k": "2560x1440"
       },
       "sheet_sha256": {
-        "648p_release": "46bc27b0e7fc5beb4215b19d5c0c53f1d9bbef66a209180e093c9910a4126897",
-        "648p_active": "33c42513f0fe8c615082793adf1735940859b2c80c7b0dcea4367be7ac8365d0",
-        "648p_recovery": "e42aaebedf924df282667f52aedbf8d562467465e3c144816bf64087af220f3e",
-        "720p_release": "1faad86c2fecaf76a50fd9132bc5ad1516c80906df9ba5e84fb0879971729fca",
-        "720p_active": "ca22315f601994cca006fe14a39bd4f728e585b105b82779401451f7c8e42124",
-        "720p_recovery": "8e5c88b0321efc5a84a643b757fc2cb23bfe35d0788fe3a213bfca607451c5d4",
-        "1080p_release": "a6289f28c71821b7bff1b54d9b5c3954a64b3236183b6465fa4c497036356425",
-        "1080p_active": "1ee9138e32542020de9cc78692c8b648f0c80739c1d5db5e9d930c17e1dde60a",
-        "1080p_recovery": "5418551a01b0d6a3c51d484ab930c60406147efc2ea10c9c0fb5a257c804d1bb",
-        "2k_release": "2ccb3d2f69091b64418b94a981ecde476735a43ee978b8b2cb20441e8294c07c",
-        "2k_active": "5996ffa45360a5fcc71e43577689a0ae50ab71b2cd91508495dbcd0d5916c598",
-        "2k_recovery": "e590982b864780c72cc295b2a1e8b03408d27cf0d1d3f88e97e0b4a82598c3f2"
+        "648p_release": "c342caed913ed5b839c26f894538ba38827ff5886f92024b2d08e4164dbca183",
+        "648p_active": "ed8cee627c95d40902ce9981ea62cd79d3c3d47bbe882594c31156a7c019f43d",
+        "648p_recovery": "a314548409c82943a40462683bee7fc1709f187ce30d283f944cab0708ff5a8d",
+        "720p_release": "3205fcd185368c7c4d632194553f4f22bdfc205edff758ac6bb64fbdcbc1f5d1",
+        "720p_active": "204fcf02a95a3d556bf1185f16dc866c01e610f2e830106a5ab18450ca0b6d3b",
+        "720p_recovery": "35200acaec5fc248a1c0890e4982ea6a71578d1238cf15c6b993c54710e04e74",
+        "1080p_release": "4bcba2df6e83ac36ece5811fe14479ac9e5b32bf98bae95bcd1eaed78ca3d4b7",
+        "1080p_active": "b803f81249bed0c117d0d0dd81dc74cf85c4b0cfb87fba87175b2e92de68d24e",
+        "1080p_recovery": "a2a57265ef534b969fc1780b0ea231df9ce0c6a9024b3b952cc9ca4dcf4741db",
+        "2k_release": "4d51dc5b4492ebf5a91f5776264bcf2fcfcab0d8cf2d274b9f0d08598815a14d",
+        "2k_active": "dcb856d9c11afb0df803e98e6133754f2dddb730937b056dfd6f42d9fc4c5fa0",
+        "2k_recovery": "97d517d16006f615a0637a1adb3c098b7d68fda3b8e1558d46cc56a1db9a16a3"
       },
       "live_samples": 144,
       "note": "Twelve native-size beat/mode matrices index 144 fresh measurements from real Main.tscn combat runs with Player.activate_ultimate(), the shared presentation runtime, shipped executors, cast-pose replacement, HUD, Enemy hazards, victim impacts, and independent reduced-motion/photosensitivity-safe variants."
