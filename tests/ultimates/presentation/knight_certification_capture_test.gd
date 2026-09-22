@@ -220,10 +220,8 @@ func readability_violations(manifest: Dictionary, class_manifest: Dictionary) ->
 	return violations
 
 
-## Sampling follows the certified frame-local beats. Only `recovery` may be
-## pulled back, and only as far as the class manifest's own recovery time, where
-## a live cast releases the presentation node. Everything else must land on its
-## declared beat.
+## The generic presentation tail keeps the authored scene live through recovery,
+## so every sample must land on its exact declared beat.
 func _beat_time_violations(key: String, sample: Dictionary, weapon: Dictionary) -> Array[String]:
 	var violations: Array[String] = []
 	var beat_id := str(sample.get("beat", ""))
@@ -237,19 +235,8 @@ func _beat_time_violations(key: String, sample: Dictionary, weapon: Dictionary) 
 			key, str(sample.get("declared_beat_seconds", "")), declared_time,
 		])
 	var sampled := float(sample.get("beat_seconds", -1.0))
-	if sampled <= 0.0 or sampled > declared_time + 0.001:
-		violations.append("%s: sampled at %.3fs, past the declared beat %.3fs" % [key, sampled, declared_time])
-		return violations
-	if beat_id != "recovery":
-		if not is_equal_approx(sampled, declared_time):
-			violations.append("%s: sampled at %.3fs instead of its declared beat %.3fs" % [key, sampled, declared_time])
-		return violations
-	var live_release := float(timing.get("recovery", 0.0))
-	var active_time := float(timing.get("active", 0.0))
-	if sampled < minf(live_release, declared_time) - 0.05 or sampled <= active_time:
-		violations.append("%s: recovery sampled at %.3fs, outside the live recovery window (%.3fs..%.3fs)" % [
-			key, sampled, minf(live_release, declared_time), declared_time,
-		])
+	if not is_equal_approx(sampled, declared_time):
+		violations.append("%s: sampled at %.3fs instead of its declared beat %.3fs" % [key, sampled, declared_time])
 	return violations
 
 

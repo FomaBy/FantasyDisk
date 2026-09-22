@@ -193,19 +193,19 @@ const FRAMES_BY_CLASS := {
 	},
 	"knight": {
 		"long_spear": [
-			{"phase": "release", "time": 0.60, "required_nodes": ["SpearPlant", "CorridorGuide"]},
-			{"phase": "active", "time": 0.90, "required_nodes": ["CorridorGuide", "Phalanx/RankOne"]},
-			{"phase": "recovery", "time": 5.20, "required_nodes": ["CorridorGuide", "Phalanx/RankOne", "BannerLine"]},
+			{"phase": "release", "time": 0.65, "required_nodes": ["SpearPlant", "CorridorGuide"]},
+			{"phase": "active", "time": 0.95, "required_nodes": ["CorridorGuide", "Phalanx/RankOne"]},
+			{"phase": "recovery", "time": 2.80, "required_nodes": ["CorridorGuide", "Phalanx/RankOne", "BannerLine"]},
 		],
 		"tower_shield": [
 			{"phase": "release", "time": 0.90, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
-			{"phase": "active", "time": 1.30, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
-			{"phase": "recovery", "time": 7.60, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
+			{"phase": "active", "time": 1.20, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
+			{"phase": "recovery", "time": 3.15, "required_nodes": ["GuardStance", "ShieldWall/WallCore", "ShieldWall/Rampart"]},
 		],
 		"holy_flail": [
-			{"phase": "release", "time": 1.20, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
-			{"phase": "active", "time": 1.60, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
-			{"phase": "recovery", "time": 6.60, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
+			{"phase": "release", "time": 0.85, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
+			{"phase": "active", "time": 1.10, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
+			{"phase": "recovery", "time": 3.20, "required_nodes": ["ChainRise", "FlailHead", "SpiralPath"]},
 		],
 	},
 	"priest": {

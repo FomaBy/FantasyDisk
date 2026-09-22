@@ -596,24 +596,22 @@ func _presentation_root(main: Node) -> Node2D:
 	return null
 
 
-## The source-pinned class manifest owns the certified phase boundaries. A live
-## cast releases its presentation node at `recovery`, so that sample is pulled
-## back to the last frame the live scene still draws. Both times are published.
+## The source-pinned class manifest owns the certified phase boundaries. The
+## host keeps the authored presentation alive through recovery and releases it
+## at cancel, so every sample lands on its exact declared beat.
 func _beats_for(weapon_id: String) -> Array:
 	var weapon := _weapon_manifest.get(weapon_id, {}) as Dictionary
 	var timing := weapon.get("timing_seconds", {}) as Dictionary
-	var last_drawn_frame := float(timing.get("recovery", 0.0)) - 2.0 * FIXED_STEP
 	var ordered: Array = []
 	for beat_id in BEAT_IDS:
 		var declared_time := float(timing.get(beat_id, 0.0))
 		if declared_time <= 0.0:
 			return []
-		var sample_time := minf(declared_time, last_drawn_frame) if beat_id == "recovery" else declared_time
 		ordered.append({
 			"phase": beat_id,
 			"required_nodes": REQUIRED_NODES_BY_WEAPON.get(weapon_id, []),
 			"declared_time": declared_time,
-			"sample_time": sample_time,
+			"sample_time": declared_time,
 		})
 	return ordered if ordered.size() == BEAT_IDS.size() else []
 
