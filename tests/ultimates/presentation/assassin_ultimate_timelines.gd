@@ -178,6 +178,23 @@ func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]
 		"cast pose cleanup must restore the Player body and remove the contrast sigil", errors)
 	_expect(is_equal_approx(Engine.time_scale, 1.0), "Chakrams cleanup must leave Engine.time_scale restored", errors)
 	scene.queue_free()
+	await process_frame
+	for weapon_id in ["shadow_daggers", "venom_wire"]:
+		var sibling := (SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(sibling)
+		await process_frame
+		var sibling_state := sibling.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0) as Dictionary
+		_expect(is_zero_approx(float(sibling_state.get("time_scale_dip", -1.0))),
+			"%s must not inherit an undeclared global time-scale dip" % weapon_id, errors)
+		sibling.call("advance", float(sibling.get("impact_at")))
+		sibling_state = sibling.call("presence_snapshot") as Dictionary
+		_expect(is_equal_approx(Engine.time_scale, 1.0),
+			"%s impact must leave Engine.time_scale unchanged" % weapon_id, errors)
+		_expect(float(sibling_state.get("minimum_time_scale_observed", 0.0)) >= 0.99,
+			"%s evidence must prove no undeclared time-scale dip" % weapon_id, errors)
+		sibling.call("finish", "cancel")
+		sibling.queue_free()
+		await process_frame
 	player.queue_free()
 	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
 	await process_frame

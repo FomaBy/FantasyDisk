@@ -13,7 +13,7 @@ const PresentationManifest := preload("res://scripts/ultimates/presentation/weap
 @export var recovery_at := 3.0
 @export var cancel_at := 3.6
 @export var hitstop_ms := 110.0
-@export_range(0.3, 0.5, 0.01) var time_scale_dip := 0.45
+@export_range(0.0, 0.5, 0.01) var time_scale_dip := 0.0
 @export var shake_seconds := 0.48
 @export var shake_amplitude := 7.0
 @export var sfx_duck_db := -8.0
@@ -158,6 +158,7 @@ func presence_snapshot() -> Dictionary:
 		"hitstop_ms": hitstop_ms,
 		"time_scale_dip": time_scale_dip,
 		"minimum_time_scale_observed": _minimum_time_scale_observed,
+		"elapsed_seconds": _elapsed,
 		"camera_shake": not _reduced_motion and _screen_shake_enabled(),
 		"sfx_ducking": true,
 		"cast_pose_bound": _cast_pose != null and is_instance_valid(_cast_pose),
@@ -194,7 +195,7 @@ func _reset_run() -> void:
 ## can add impact weight without stretching release/recovery/cancel timing.
 ## Reduced motion suppresses the global speed change together with camera shake.
 func _begin_time_scale_dip() -> void:
-	if _reduced_motion or _time_scale_dip_active or Engine.time_scale < 0.99:
+	if time_scale_dip <= 0.0 or _reduced_motion or _time_scale_dip_active or Engine.time_scale < 0.99:
 		return
 	_time_scale_before_dip = Engine.time_scale
 	Engine.time_scale = time_scale_dip

@@ -262,17 +262,51 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		return "%s/%s/%s did not activate through Player (%s)" % [weapon_id, mode_id, viewport["id"], PlayerHost.activation_failure(player)]
 	Engine.time_scale = SIMULATION_ACCELERATION
 	var presentation = host.get("_presentation")
+	var effect_root := _presentation_root(main, weapon_id)
+	var scene_elapsed := _presentation_clock_seconds(effect_root)
+	if presentation == null or effect_root == null or scene_elapsed < 0.0:
+		Engine.time_scale = 1.0
+		main.queue_free()
+		await process_frame
+		return "%s/%s/%s presentation scene clock was unavailable after activation" % [weapon_id, mode_id, viewport["id"]]
 
-	var elapsed := 0.0
 	for beat in beats:
 		var target := float(beat["sample_time"])
-		while elapsed < target:
+		while scene_elapsed < target - 0.0005:
+			var remaining := target - scene_elapsed
+			# Avoid crossing the requested beat on an automatic frame. The final
+			# fraction is driven while paused, using the same runtime entry point.
+			if remaining <= FIXED_STEP * 1.5:
+				paused = true
+				presentation.call("advance", remaining)
+				paused = false
+				scene_elapsed = _presentation_clock_seconds(effect_root)
+				break
+			var simulated_step := minf(SIMULATION_ACCELERATION * FIXED_STEP, remaining)
+			var elapsed_before_frame := scene_elapsed
 			await process_frame
-			var simulated_step := minf(SIMULATION_ACCELERATION * FIXED_STEP, target - elapsed)
-			var automatic_step := root.get_process_delta_time() / Engine.time_scale
-			if presentation != null and simulated_step > automatic_step:
-				presentation.call("advance", simulated_step - automatic_step)
-			elapsed += simulated_step
+			effect_root = _presentation_root(main, weapon_id)
+			var elapsed_after_frame := _presentation_clock_seconds(effect_root)
+			if effect_root == null or elapsed_after_frame < elapsed_before_frame or elapsed_after_frame > target + 0.0005:
+				Engine.time_scale = 1.0
+				main.queue_free()
+				await process_frame
+				return "%s/%s/%s scene clock crossed %s beat: %.4f -> %.4f, target %.4f" % [
+					weapon_id, mode_id, viewport["id"], str(beat["phase"]),
+					elapsed_before_frame, elapsed_after_frame, target,
+				]
+			var automatic_step := elapsed_after_frame - elapsed_before_frame
+			var manual_step := minf(maxf(simulated_step - automatic_step, 0.0), target - elapsed_after_frame)
+			if manual_step > 0.0:
+				presentation.call("advance", manual_step)
+			scene_elapsed = _presentation_clock_seconds(effect_root)
+		if not is_equal_approx(scene_elapsed, target):
+			Engine.time_scale = 1.0
+			main.queue_free()
+			await process_frame
+			return "%s/%s/%s scene clock missed %s beat: %.4f, target %.4f" % [
+				weapon_id, mode_id, viewport["id"], str(beat["phase"]), scene_elapsed, target,
+			]
 		paused = true
 		RenderingServer.force_draw()
 		var frame := root.get_texture().get_image()
@@ -284,7 +318,6 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 				"null" if frame == null else str(frame.get_size()), str(size),
 			]
 		frame.convert(Image.FORMAT_RGB8)
-		var effect_root := _presentation_root(main, weapon_id)
 		var record := _measure(frame, baseline, size, effect_root, player, hud_root, hazards)
 		record["weapon_id"] = weapon_id
 		record["mode"] = mode_id
@@ -292,14 +325,15 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		record["width"] = size.x
 		record["height"] = size.y
 		record["beat"] = str(beat["phase"])
-		record["beat_seconds"] = snappedf(target, 0.001)
+		var presentation_state := effect_root.call("presence_snapshot") as Dictionary
+		record["beat_seconds"] = snappedf(float(presentation_state.get("elapsed_seconds", -1.0)), 0.001)
 		record["declared_beat_seconds"] = float(beat["declared_time"])
 		record["required_nodes_present"] = _required_nodes_present(effect_root, beat)
 		record["presentation_scene"] = str(_weapon_manifest.get(weapon_id, {}).get("scene_path", ""))
 		record["hazards_placed"] = hazards.size()
 		record["activation_started"] = true
 		record["accessibility"] = Accessibility.read_snapshot(root)
-		record["presentation_state"] = effect_root.call("presence_snapshot") if effect_root != null and effect_root.has_method("presence_snapshot") else {}
+		record["presentation_state"] = presentation_state
 		record["record_sha256"] = _record_digest(record)
 		_records.append(record)
 		_store_panel(viewport, weapon_id, mode_id, str(beat["phase"]), frame)
@@ -600,6 +634,13 @@ func _presentation_root(main: Node, weapon_id: String) -> Node2D:
 		for child in node.get_children():
 			pending.append(child)
 	return null
+
+
+func _presentation_clock_seconds(effect_root: Node2D) -> float:
+	if effect_root == null or not effect_root.has_method("presence_snapshot"):
+		return -1.0
+	var state := effect_root.call("presence_snapshot") as Dictionary
+	return float(state.get("elapsed_seconds", -1.0))
 
 
 ## The certified frame-local beats come from the shared contact-sheet contract

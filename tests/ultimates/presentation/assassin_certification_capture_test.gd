@@ -275,17 +275,18 @@ func coverage_violations(manifest: Dictionary, class_manifest: Dictionary) -> Ar
 			violations.append("sample %s did not realize the declared cast pose" % key)
 		if not str(state.get("cast_pose_binding_error", "missing_diagnostic")).is_empty():
 			violations.append("sample %s cast-pose binding reported %s" % [key, str(state.get("cast_pose_binding_error"))])
-		if str(sample.get("weapon_id", "")) == "chakrams":
-			var presence := ((weapons.get("chakrams", {}) as Dictionary).get("presence", {}) as Dictionary)
-			var declared_dip := float(presence.get("time_scale_dip", 0.0))
-			if not is_equal_approx(float(state.get("time_scale_dip", 0.0)), declared_dip):
-				violations.append("sample %s time-scale declaration does not match the live scene" % key)
-			if str(sample.get("beat", "")) in ["active", "recovery"]:
-				var observed_minimum := float(state.get("minimum_time_scale_observed", 1.0))
-				if bool(mode.get("reduced_motion", false)) and observed_minimum < 0.99:
-					violations.append("sample %s reduced motion did not suppress the global time-scale dip" % key)
-				elif not bool(mode.get("reduced_motion", false)) and observed_minimum > declared_dip + 0.001:
-					violations.append("sample %s did not realize the declared time-scale dip" % key)
+		var presence := ((weapons.get(str(sample.get("weapon_id", "")), {}) as Dictionary).get("presence", {}) as Dictionary)
+		var declared_dip := float(presence.get("time_scale_dip", 0.0))
+		if not is_equal_approx(float(state.get("time_scale_dip", -1.0)), declared_dip):
+			violations.append("sample %s time-scale declaration does not match the live scene" % key)
+		if str(sample.get("beat", "")) in ["active", "recovery"]:
+			var observed_minimum := float(state.get("minimum_time_scale_observed", 1.0))
+			if bool(mode.get("reduced_motion", false)) and observed_minimum < 0.99:
+				violations.append("sample %s reduced motion did not suppress the global time-scale dip" % key)
+			elif not bool(mode.get("reduced_motion", false)) and declared_dip > 0.0 and observed_minimum > declared_dip + 0.001:
+				violations.append("sample %s did not realize the declared time-scale dip" % key)
+			elif declared_dip <= 0.0 and observed_minimum < 0.99:
+				violations.append("sample %s realized an undeclared global time-scale dip" % key)
 	for weapon_id in _string_array(manifest.get("canonical_weapon_ids", [])):
 		for mode_id in _capture_mode_ids():
 			for raw_viewport in Capture.VIEWPORTS:
@@ -365,6 +366,9 @@ func _beat_time_violations(key: String, sample: Dictionary, _weapon: Dictionary,
 		violations.append("%s: declared beat time does not match the shared contract %.3f" % [key, declared_time])
 	if not is_equal_approx(float(sample.get("beat_seconds", -1.0)), declared_time):
 		violations.append("%s: sampled at %.3fs instead of its declared beat %.3fs" % [key, float(sample.get("beat_seconds", -1.0)), declared_time])
+	var observed_time := float((sample.get("presentation_state", {}) as Dictionary).get("elapsed_seconds", -1.0))
+	if not is_equal_approx(observed_time, declared_time):
+		violations.append("%s: live scene clock was %.3fs at declared beat %.3fs" % [key, observed_time, declared_time])
 	return violations
 
 
@@ -632,6 +636,10 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	var retimed := manifest.duplicate(true)
 	((retimed.get("samples", []) as Array)[0] as Dictionary)["beat_seconds"] = 9.0
 	_expect(not readability_violations(retimed, class_manifest).is_empty(), "a sample taken past its declared beat must fail closed", errors)
+
+	var clock_drifted := manifest.duplicate(true)
+	(((clock_drifted.get("samples", []) as Array)[0] as Dictionary).get("presentation_state", {}) as Dictionary)["elapsed_seconds"] = 9.0
+	_expect(not readability_violations(clock_drifted, class_manifest).is_empty(), "a frame whose live scene clock drifted past its declared beat must fail closed", errors)
 
 	var first_sheet := (manifest.get("sheets", []) as Array)[0] as Dictionary
 	var real_path := "res://%s" % str(first_sheet.get("path", ""))

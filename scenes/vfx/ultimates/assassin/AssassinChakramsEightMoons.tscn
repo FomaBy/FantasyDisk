@@ -214,6 +214,7 @@ impact_at = 1.0
 recovery_at = 3.0
 cancel_at = 3.6
 hitstop_ms = 110.0
+time_scale_dip = 0.45
 photosensitive_nodes = PackedStringArray("ImpactFlash")
 metadata/ultimate_id = "assassin/chakrams"
 metadata/silhouette = "eight silver moon-discs in a compass orbit over a darkened arena"
