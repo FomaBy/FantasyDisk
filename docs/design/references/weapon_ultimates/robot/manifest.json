@@ -4,8 +4,14 @@
   "class_id": "robot",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
-    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
-    "max_timeline_seconds": 10.0,
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
+    "max_timeline_seconds": 10,
     "headless_fallback": "no_op",
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
@@ -41,7 +47,13 @@
       "silhouette": "black-point anchor with cyan inward debris arcs",
       "motion_path": "concentric debris contracts into a singularity then expands as an EMP ring",
       "impact_language": "black-point implosion followed by one cyan EMP release",
-      "timing_seconds": {"windup": 0.0, "release": 0.45, "active": 1.05, "recovery": 4.25, "cancel": 4.75},
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.8,
+        "active": 1.25,
+        "recovery": 3.05,
+        "cancel": 3.65
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.robot.robot_magnetic_anchor.windup",
         "release": "weapon_ultimate.phase.robot.robot_magnetic_anchor.execute",
@@ -49,7 +61,37 @@
         "recovery": "weapon_ultimate.phase.robot.robot_magnetic_anchor.recover",
         "cancel": "weapon_ultimate.phase.robot.robot_magnetic_anchor.cleanup"
       },
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 9,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "timing_rhythm": "readable 0.75–0.90s ceremony, decisive hitstop-anchored active beat, sustained arena-readable state, and visible recovery inside a 4.0s envelope",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 105,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.robot.magnetic_lock",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png",
+        "class_palette_id": "palette.robot.cyan_induction"
+      }
     },
     {
       "weapon_id": "robot_hydraulic_press",
@@ -58,7 +100,13 @@
       "silhouette": "two colossal steel press walls and a narrow horizontal corridor",
       "motion_path": "warning rails hold wide, press walls repeatedly crush inward, then recoil",
       "impact_language": "opposing steel crush with sparks followed by hydraulic release",
-      "timing_seconds": {"windup": 0.0, "release": 0.72, "active": 1.32, "recovery": 3.48, "cancel": 4.05},
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.85,
+        "active": 1.3,
+        "recovery": 3.2,
+        "cancel": 3.8
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.robot.robot_hydraulic_press.windup",
         "release": "weapon_ultimate.phase.robot.robot_hydraulic_press.execute",
@@ -66,7 +114,37 @@
         "recovery": "weapon_ultimate.phase.robot.robot_hydraulic_press.recover",
         "cancel": "weapon_ultimate.phase.robot.robot_hydraulic_press.cleanup"
       },
-      "performance": {"max_visual_nodes": 2, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 3,
+        "crowd_cap": 9,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "timing_rhythm": "readable 0.75–0.90s ceremony, decisive hitstop-anchored active beat, sustained arena-readable state, and visible recovery inside a 4.0s envelope",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.robot.hydraulic_brace",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png",
+        "class_palette_id": "palette.robot.brass_hydraulic"
+      }
     },
     {
       "weapon_id": "robot_reactor_core",
@@ -75,7 +153,13 @@
       "silhouette": "eight red-orange orbiting reactor vents around an exposed core",
       "motion_path": "vents unfold, accelerate around the core, then lift as a cooling exhaust column",
       "impact_language": "accelerating plasma vent wave ending in a vertical white-hot exhaust",
-      "timing_seconds": {"windup": 0.0, "release": 0.56, "active": 1.08, "recovery": 5.42, "cancel": 6.02},
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.9,
+        "active": 1.35,
+        "recovery": 3.35,
+        "cancel": 3.95
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.robot.robot_reactor_core.windup",
         "release": "weapon_ultimate.phase.robot.robot_reactor_core.execute",
@@ -83,23 +167,88 @@
         "recovery": "weapon_ultimate.phase.robot.robot_reactor_core.recover",
         "cancel": "weapon_ultimate.phase.robot.robot_reactor_core.cleanup"
       },
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 8, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 9,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "timing_rhythm": "readable 0.75–0.90s ceremony, decisive hitstop-anchored active beat, sustained arena-readable state, and visible recovery inside a 4.0s envelope",
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.robot.reactor_overdrive",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_reactor_core.png",
+        "class_palette_id": "palette.robot.red_heat"
+      }
     }
   ],
   "effectiveness_evidence": {
     "runner": "res://tools/ultimate_effectiveness_report.gd",
     "baseline_source_sha": "fef0e5e5cca9332ad742d3945c928e081ac89427",
-    "scenario_order": ["solo", "crowd_5", "crowd_10", "crowd_20", "elite", "boss"],
+    "scenario_order": [
+      "solo",
+      "crowd_5",
+      "crowd_10",
+      "crowd_20",
+      "elite",
+      "boss"
+    ],
     "rows": [
       {
         "weapon_id": "robot_magnetic_anchor",
         "baseline": {
-          "targets_struck": [1, 5, 10, 20, 1, 1],
-          "damage_applied": [1533.64387176, 7668.2193588, 15336.4387176, 30672.8774352, 1533.64387176, 1533.64387176]
+          "targets_struck": [
+            1,
+            5,
+            10,
+            20,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1533.64387176,
+            7668.2193588,
+            15336.4387176,
+            30672.8774352,
+            1533.64387176,
+            1533.64387176
+          ]
         },
         "final": {
-          "targets_struck": [1, 5, 10, 20, 1, 1],
-          "damage_applied": [1533.64387176, 7668.2193588, 15336.4387176, 30672.8774352, 1533.64387176, 1533.64387176]
+          "targets_struck": [
+            1,
+            5,
+            10,
+            20,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1533.64387176,
+            7668.2193588,
+            15336.4387176,
+            30672.8774352,
+            1533.64387176,
+            1533.64387176
+          ]
         },
         "total_boss_cap": 0.08,
         "normal_charge": 34.7,
@@ -109,12 +258,40 @@
       {
         "weapon_id": "robot_hydraulic_press",
         "baseline": {
-          "targets_struck": [1, 5, 10, 18, 1, 1],
-          "damage_applied": [1389.7755144, 6948.877572, 13897.755144, 25015.9592592, 1389.7755144, 1389.7755144]
+          "targets_struck": [
+            1,
+            5,
+            10,
+            18,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1389.7755144,
+            6948.877572,
+            13897.755144,
+            25015.9592592,
+            1389.7755144,
+            1389.7755144
+          ]
         },
         "final": {
-          "targets_struck": [1, 5, 10, 18, 1, 1],
-          "damage_applied": [1389.7755144, 6948.877572, 13897.755144, 25015.9592592, 1389.7755144, 1389.7755144]
+          "targets_struck": [
+            1,
+            5,
+            10,
+            18,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1389.7755144,
+            6948.877572,
+            13897.755144,
+            25015.9592592,
+            1389.7755144,
+            1389.7755144
+          ]
         },
         "total_boss_cap": 0.08,
         "normal_charge": 34.7,
@@ -124,12 +301,40 @@
       {
         "weapon_id": "robot_reactor_core",
         "baseline": {
-          "targets_struck": [1, 5, 9, 16, 1, 1],
-          "damage_applied": [1340.696448, 3188.41272, 5888.4264, 8253.265968, 1340.696448, 1340.696448]
+          "targets_struck": [
+            1,
+            5,
+            9,
+            16,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1340.696448,
+            3188.41272,
+            5888.4264,
+            8253.265968,
+            1340.696448,
+            1340.696448
+          ]
         },
         "final": {
-          "targets_struck": [1, 5, 9, 16, 1, 1],
-          "damage_applied": [1340.696448, 3188.41272, 5888.4264, 8253.265968, 1340.696448, 1340.696448]
+          "targets_struck": [
+            1,
+            5,
+            9,
+            16,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1340.696448,
+            3188.41272,
+            5888.4264,
+            8253.265968,
+            1340.696448,
+            1340.696448
+          ]
         },
         "total_boss_cap": 0.08,
         "normal_charge": 34.7,
@@ -146,6 +351,12 @@
       "docs/design/references/weapon_ultimates/robot/robot_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/robot_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/robot_ultimate_presentation_test.gd"
+    "focused_test": "tests/ultimates/presentation/robot_ultimate_presentation_test.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/robot/certification_capture_manifest.json",
+      "report": "docs/design/references/weapon_ultimates/robot/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/robot_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/robot_certification_capture_test.gd"
+    }
   }
 }

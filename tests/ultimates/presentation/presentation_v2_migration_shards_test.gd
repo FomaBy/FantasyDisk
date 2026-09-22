@@ -23,7 +23,7 @@ const Shards := preload("res://scripts/ultimates/presentation/presentation_v2_mi
 const SHARDS_SCRIPT_PATH := "res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd"
 const SCHEMA_SCRIPT_PATH := "res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd"
 const EXPECTED_CLASS_COUNT := 17
-const EXPECTED_PAIR_COUNT := 15
+const EXPECTED_PAIR_COUNT := 9
 const FROZEN_CEILING_PAIR_COUNT := 23
 const EXPECTED_CATALOG_SIZE := 51
 const REFERENCE_CLASS := "doctor"
@@ -61,9 +61,9 @@ const FROZEN_CEILING_ALLOWLIST := {
 	"robot/robot_reactor_core": LEGACY_REASON,
 }
 
-## FAN-3942 removes only its eight now-certified pairs. This is deliberately an
-## exact expectation rather than a copy of the live aggregate, so an accidental
-## shard deletion still fails closed.
+## FAN-3942 removed its eight certified pairs, then FAN-3944 removed the six
+## certified Priest and Robot pairs. This remains an independent exact map, so
+## an accidental shard deletion fails closed while the frozen ceiling stays intact.
 const EXPECTED_LIVE_ALLOWLIST := {
 	"elementalist/elementalist_orb_ring": LEGACY_REASON,
 	"elementalist/elementalist_prism_focus": LEGACY_REASON,
@@ -74,12 +74,6 @@ const EXPECTED_LIVE_ALLOWLIST := {
 	"knight/long_spear": LEGACY_REASON,
 	"knight/tower_shield": LEGACY_REASON,
 	"knight/holy_flail": LEGACY_REASON,
-	"priest/priest_reliquary": LEGACY_REASON,
-	"priest/priest_censer": LEGACY_REASON,
-	"priest/priest_chime": LEGACY_REASON,
-	"robot/robot_magnetic_anchor": LEGACY_REASON,
-	"robot/robot_hydraulic_press": LEGACY_REASON,
-	"robot/robot_reactor_core": LEGACY_REASON,
 }
 
 var _catalog: Dictionary = {}

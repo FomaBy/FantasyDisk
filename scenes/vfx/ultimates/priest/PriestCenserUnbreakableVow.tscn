@@ -1,6 +1,15 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_priest_censer.png" id="1_censer"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd" id="2_v2_driver"]
+
+[sub_resource type="Gradient" id="Gradient_backdrop"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_backdrop"]
+gradient = SubResource("Gradient_backdrop")
+width = 2
+height = 2
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -122,12 +131,32 @@ tracks/8/keys = {
 _data = {"ultimate": SubResource("Animation_unbreakable_vow")}
 
 [node name="PriestCenserUnbreakableVow" type="Node2D"]
+script = ExtResource("2_v2_driver")
+release_at = 0.8
+impact_at = 1.3
+recovery_at = 3.0
+cancel_at = 3.7
+hitstop_ms = 105.0
+shake_seconds = 0.5
+shake_amplitude = 7.0
 metadata/ultimate_id = "priest/priest_censer"
 metadata/silhouette = "giant_censer_chain_orbit_in_smoke_ward"
 metadata/motion_path = "accelerating_censer_orbit_ward_thickens_beads_grow"
 metadata/impact_language = "capped_mitigation_sustain_then_censer_slam_counter_wave"
 metadata/max_visual_nodes = 10
 metadata/crowd_cap = 20
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+metadata/presence = {"backdrop": "darken", "camera_shake": true, "fullscreen_footprint": true, "hitstop_ms": 105.0, "sfx_ducking": true, "time_scale_dip": 0.4}
+metadata/identity = {"cast_pose_id": "cast_pose.priest.censer_vow", "class_palette_id": "palette.priest.smoke_gold", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_censer.png"}
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = -100
+texture = SubResource("GradientTexture2D_backdrop")
+centered = false
+modulate = Color(0.085, 0.060, 0.035, 1)
+self_modulate = Color(1, 1, 1, 0.60)
+metadata/fullscreen_layer = true
 
 [node name="Orbit" type="Node2D" parent="."]
 modulate = Color(1, 1, 1, 0)
@@ -201,3 +230,4 @@ modulate = Color(1, 1, 1, 0)
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_unbreakable_vow")}
 autoplay = "ultimate"
+speed_scale = 2.0540541

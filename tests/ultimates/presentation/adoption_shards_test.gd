@@ -22,7 +22,8 @@ const FIXTURE_ROOT := "user://fan3910_adoption_shards"
 ## update (cffc4e486bb6455b6e0f2bca63ff9ae3fc9a9047), before the shards, minus
 ## the pairs adopted since: FAN-3941 retired Thief's phases, direction, capture
 ## and provenance gaps and the Ranger, Soldier and Thief quality gaps; FAN-3942
-## retired the Assassin and Druid quality gaps.
+## retired the Assassin and Druid quality gaps; FAN-3944 retired the Priest and
+## Robot quality gaps.
 const LEGACY_ADOPTION_GAPS := {
 	"phases": {},
 	"direction": {},
@@ -32,8 +33,6 @@ const LEGACY_ADOPTION_GAPS := {
 		"elementalist": "awaiting the readability/accessibility declaration",
 		"guitarist": "awaiting the readability/accessibility declaration",
 		"knight": "awaiting the readability/accessibility declaration",
-		"priest": "awaiting the readability/accessibility declaration",
-		"robot": "awaiting the readability/accessibility declaration",
 	},
 	"victim_impact": {},
 }
