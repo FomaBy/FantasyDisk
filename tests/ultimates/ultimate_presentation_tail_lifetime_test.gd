@@ -9,7 +9,7 @@ extends SceneTree
 ## 3.4-second presentation cancel, and covers every way a visual tail can end.
 ##
 ## Run:
-## python3 tools/godot_gate.py --headless --path . --fixed-fps 60 \
+## python3 tools/godot_gate.py --headless --path . \
 ##   --script res://tests/ultimates/ultimate_presentation_tail_lifetime_test.gd
 
 const PlayerScene := preload("res://scenes/Player.tscn")
@@ -28,6 +28,8 @@ const RECOVERY_SECONDS := 2.8
 const CANCEL_SECONDS := 3.4
 const CLEANUP_FRAMES := 2
 const FRAME_SECONDS := 1.0 / 60.0
+const UNSCALED_PROBE_SECONDS := 0.40
+const MIN_UNSCALED_ADVANCE := 0.25
 
 var _errors: Array[String] = []
 var _holder: Node2D = null
@@ -183,10 +185,9 @@ func _test_pause_and_time_scale() -> void:
 	await _advance_until(GAMEPLAY_SECONDS + 0.15)
 	var before_scale := _presentation_elapsed()
 	Engine.time_scale = 0.35
-	for _frame in 18:
-		await process_frame
+	await create_timer(UNSCALED_PROBE_SECONDS, false, false, true).timeout
 	var after_scale := _presentation_elapsed()
-	_check(after_scale - before_scale >= 0.20,
+	_check(after_scale - before_scale >= MIN_UNSCALED_ADVANCE,
 		"presentation tail must use the unscaled presentation clock under non-default time scale")
 	paused = true
 	var before_pause := _presentation_elapsed()
