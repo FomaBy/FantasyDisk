@@ -92,3 +92,40 @@ The gradient veil is a scene-local procedural texture rather than a drawn
 PixelLab frame; this is the same accepted route the other six class packs use
 for the darken layer and the standard explicitly allows textured layers. If the
 owner wants a painted veil bitmap, that is a separate art card.
+
+## Rework 1 (QA F1: untracked import sidecars)
+
+Independent QA on `0dbbb4bc0` found that the 32 capture PNGs under
+`captures/` were imported by Godot with no tracked `.import` sidecar and no
+ignore rule, so every checkout grew 32 untracked files after a Godot run and
+`tools/quality_gate.py` reported `partial_pass` (non-certifying).
+
+Fix: an empty `evidence/FAN-3966/.gdignore` (the repository's convention for
+`docs/`, `build/` and PixelLab source folders). Godot no longer scans the
+evidence folder, so no sidecars are generated and the screenshots are not
+exported. Also from the QA notes: `run_live_captures.sh` now resolves the
+repository root from its own location, and `list_pck_paths.py` lists the
+directory of an exported `.pck` (formats 2–4).
+
+Proof, all in `logs/rework/`:
+
+- `f1_repro_*` — forced `godot --headless --import --quit` on `0dbbb4bc0`:
+  `git status --porcelain --untracked-files=all` shows exactly 32
+  `evidence/FAN-3966/**/*.png.import` files (reproduces F1).
+- `import_after_gdignore.log`, `status_after_gdignore.txt` — the same import
+  pass with `.gdignore`: 0 sidecars; the only entries are the rework files
+  themselves before they were committed.
+- `export_pack_macos.log` — `--export-pack "macOS"` on the fixed tree,
+  exit 0. `list_pck_paths.py` on the pack: 47137 packed files, 0 under
+  `evidence/FAN-3966/` (for contrast, 1233 files from
+  `evidence/p3-object-budget-rework/`, which has no `.gdignore`, are packed);
+  the six repaired scenes are present as exported `.scn` + `.tscn.remap`.
+- `static_gate_run1*` — `quality_gate.py --profile static --changed-ref
+  origin/dev` on the clean committed tree: `certifying: true`,
+  `worktree_clean: true`; the run FAILED on one static check,
+  `repository-invariants` = `quality_static_guard.py --changed-ref`, whose
+  ownership guard requires a `cross-domain: FAN-<id> <rationale>` commit
+  declaration for a candidate that spans `class/elementalist` and
+  `class/knight`. The card is owner-scoped to both classes, so the
+  declaration is carried by the rework commit; `static_gate_run2*` is the
+  rerun after it.
