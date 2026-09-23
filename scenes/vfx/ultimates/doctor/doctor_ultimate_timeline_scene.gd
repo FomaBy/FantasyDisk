@@ -740,7 +740,7 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	_cast_pose_backdrop = Sprite2D.new()
 	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
 	_cast_pose_backdrop.texture = backdrop_texture
-	_cast_pose_backdrop.scale = Vector2.ONE * (84.0 / 64.0)
+	_cast_pose_backdrop.scale = Vector2.ONE * (108.0 / 64.0)
 	_cast_pose_backdrop.modulate = Color(0.025, 0.018, 0.035, 0.92)
 	_cast_pose_backdrop.z_index = 0
 	visual_root.add_child(_cast_pose_backdrop)
@@ -749,7 +749,7 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	_cast_pose_highlight.sprite_frames = signature_frames
 	_cast_pose_highlight.animation = halo_animation
 	_cast_pose_highlight.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_cast_pose_highlight.scale = Vector2.ONE * 0.32
+	_cast_pose_highlight.scale = Vector2.ONE * 0.4
 	_cast_pose_highlight.modulate.a = 0.78
 	_cast_pose_highlight.z_index = 1
 	visual_root.add_child(_cast_pose_highlight)
@@ -758,7 +758,7 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	_cast_pose.texture = texture
 	_cast_pose.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_cast_pose.self_modulate = Color(1.25, 1.25, 1.25, 1.0)
-	_cast_pose.scale = Vector2.ONE * clampf(72.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
+	_cast_pose.scale = Vector2.ONE * clampf(104.0 / maxf(texture.get_size().x, texture.get_size().y), 0.12, 0.7)
 	_cast_pose.z_index = 2
 	visual_root.add_child(_cast_pose)
 	_cast_pose_binding_error = ""
