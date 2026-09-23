@@ -1,0 +1,239 @@
+{
+  "schema": 1,
+  "card": "FAN-3963",
+  "stage": "early-exact-tag-package-capability-preflight",
+  "measured_at_utc": "2026-09-23",
+  "host": {
+    "platform": "macOS",
+    "product_version": "26.5.1",
+    "build": "25F80",
+    "developer_dir": "/Library/Developer/CommandLineTools",
+    "full_xcode": false,
+    "python": "3.9.6",
+    "locale_en_US_UTF8_available": true,
+    "git_lfs": "3.7.1"
+  },
+  "mode": {
+    "read_only": true,
+    "tag_created": false,
+    "build_run": false,
+    "export_run": false,
+    "staging_written": false,
+    "release_root_written": false,
+    "app_installed": false,
+    "credentials_printed": false,
+    "publication": false,
+    "macos_channel_selected": "signed (default, unchanged)",
+    "unsigned_downgrade": false
+  },
+  "source_state": {
+    "dev_head": "e33bded444e301919dc93c8c9b9f0257e640a1ea",
+    "dev_tree": "9a8401ca1a6dda8a4b446fe45de3fa4f97074426",
+    "dev_certification": "FAN-3877 done, independent QA PASSED on this exact commit",
+    "dev_version_mapping_0_3_1": "FAILS (project.godot/export_presets.cfg still 0.3.0; release inputs belong to FAN-3961)",
+    "release_input_candidate": {
+      "card": "FAN-3961",
+      "commit": "3f82abace4953414a72922f7e99997db6d556b96",
+      "tree": "f7ed06cea7cc28658fbd77d037ad11ae542c5813",
+      "ref": "refs/heads/agent/codex-dev-sol-5-6/18d2aef5d9bc",
+      "base_is_ancestor": true,
+      "qa_status": "FAILED (capture-applicability gate), in bounded rework",
+      "version_mapping_0_3_1": "PASS: macOS 0.3.1 / 1.3.10; Windows 0.3.1 / 0.3.1.0",
+      "changelog_section": "## [0.3.1] — 2026-09-23 present, Unreleased empty",
+      "client_macos_update_channel": "signed",
+      "poster_path_in_candidate": "assets/marketing/fantasydisk_0.3.1_announcement.png",
+      "poster_path_required_by_tooling": "assets/marketing/fantasydisk_031_announcement.png",
+      "poster_name_matches_tooling": false,
+      "build_inputs_identical_to_dev": "15 of 16 required inputs identical; export_presets.cfg differs only by version fields; custom_template fields empty"
+    },
+    "tags": {
+      "origin_v0_3_1": "absent (verified via git ls-remote)",
+      "origin_v0_3_0_commit": "fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb",
+      "origin_main": "02f358149d08b3cbe895ca87847452836d1e3c70",
+      "shared_cache_tag_anomaly": {
+        "tag": "v0.2.4",
+        "local": "71da64d148708b80160abd6d7caf4f75529dba54",
+        "origin": "f49f90861c1dbdcc59a706d3f3a139a886f59db5",
+        "consequence": "final build must verify the local v0.3.1 tag against origin before git rev-parse"
+      }
+    }
+  },
+  "toolchain": {
+    "godot": {
+      "path": "/Users/sergeyfomin/Downloads/Godot.app/Contents/MacOS/Godot",
+      "version": "4.7.stable.official.5b4e0cb0f",
+      "size_bytes": 346722704,
+      "sha256": "445c6f95030e2ca767dd921be1e91bd99e50c3703f91d22a22cd31216c93a80f",
+      "project_feature": "4.7",
+      "GODOT_BIN_env": "unset (script default path used)"
+    },
+    "export_templates": {
+      "dir": "~/Library/Application Support/Godot/export_templates/4.7.stable",
+      "version_txt": "4.7.stable",
+      "macos_zip": {
+        "size_bytes": 123345600,
+        "sha256": "b9b036261c18dac2c6ade52ffb592e3842cb9b76d8c8d0f55bc7b99ac4dfeae0",
+        "entries": 10,
+        "uncompressed_bytes": 356108314
+      },
+      "windows_release_x86_64_exe": {
+        "size_bytes": 109160448,
+        "sha256": "c42eb5d17f683eb8bcd52c19a9f36ebf811b1788623878d5276a7d9ffc09f95c"
+      },
+      "presets_use_custom_templates": false
+    },
+    "export_presets": {
+      "macOS": {
+        "architecture": "universal",
+        "codesign_in_preset": 0,
+        "notarization_in_preset": 0,
+        "export_path": "build/FantasyDisk-macOS.zip"
+      },
+      "Windows Desktop": {
+        "architecture": "x86_64",
+        "embed_pck": true,
+        "codesign_in_preset": false,
+        "export_path": "build/FantasyDisk-Windows.exe"
+      }
+    },
+    "nsis": {
+      "makensis": "/usr/local/bin/makensis",
+      "version": "v3.12",
+      "unicode": true,
+      "crc_support": true,
+      "nsisdir": "/usr/local/Cellar/makensis/3.12/share/nsis",
+      "script_includes_required": [],
+      "compressor": "zlib",
+      "crccheck": "on"
+    },
+    "apple_tools": {
+      "codesign": "/usr/bin/codesign",
+      "xcrun": "version 72",
+      "notarytool": "1.1.2 (41)",
+      "stapler": "present",
+      "spctl": "/usr/sbin/spctl",
+      "hdiutil": "/usr/bin/hdiutil",
+      "ditto": "/usr/bin/ditto",
+      "sips": "/usr/bin/sips"
+    }
+  },
+  "signed_channel_capability": {
+    "developer_id_application_identities_valid": 1,
+    "developer_id_certificate_not_after": "2031-08-11T16:05:07Z",
+    "MACOS_SIGN_IDENTITY_env": "unset",
+    "MACOS_NOTARY_PROFILE_env": "unset",
+    "notarytool_keychain_profile_items_found": {
+      "login.keychain-db": 0,
+      "openvpn.keychain-db": 0,
+      "System.keychain": 0
+    },
+    "notarytool_authentication_exercised": false,
+    "notarytool_authentication_reason": "no keychain profile is discoverable and no profile name is configured; the build script gate (xcrun notarytool history --keychain-profile) cannot be exercised without inventing a name",
+    "build_script_gate_outcome_now": "signed channel would exit 2 at the credential gate before any worktree/build step (fail-closed, no unsigned downgrade)",
+    "prior_signed_proof_on_this_host": {
+      "installed_app": "/Applications/FantasyDisk.app",
+      "version": "0.3.0 (1.3.0)",
+      "codesign_verify_deep_strict": "OK",
+      "stapler_validate": "OK",
+      "spctl_assess_execute": "accepted, source=Notarized Developer ID",
+      "retained_local_release_channel": "signed"
+    },
+    "identity_and_team_values": "not recorded by design"
+  },
+  "durable_target": {
+    "config_file": "~/.config/fantasydisk/release.json",
+    "local_root": "/Users/sergeyfomin/FantasyDisk",
+    "macos_app": "/Applications/FantasyDisk.app",
+    "godot_projects_file": "~/Library/Application Support/Godot/projects.cfg",
+    "releases_v0_3_1_exists": false,
+    "existing_entries": [
+      "v0.3.0",
+      "v0.3.0-godot-registration-20260908T0537Z",
+      "v0.3.0-rejected-7f35f010",
+      "v0.3.0-snapshot-quarantine-20260907T0358Z",
+      "current-project -> v0.3.0/godot-project"
+    ],
+    "current_project_favorite_in_projects_cfg": true,
+    "retained_v0_3_0": {
+      "total_kb": 7283872,
+      "dmg_bytes": 432476946,
+      "setup_bytes": 408114374,
+      "poster_bytes": 1099252,
+      "project_kb": 2998588,
+      "godot_project_kb": 3463272,
+      "local_release_schema": 1,
+      "macos_channel": "signed"
+    }
+  },
+  "disk_budget": {
+    "volume": "/dev/disk3s5 (/System/Volumes/Data) — same volume for local_root, /tmp build worktree, HOME, task workdir and /Applications",
+    "total_1k_blocks": 971350180,
+    "used_1k_blocks": 572698360,
+    "available_1k_blocks": 356527612,
+    "available_bytes": 365084274688,
+    "required_bytes_estimate": 15401214880,
+    "required_bytes_estimate_with_2x_margin": 30802429760,
+    "estimate_breakdown_bytes": {
+      "build_worktree_checkout": 3471663104,
+      "godot_import_cache": 611180544,
+      "staging_artifacts": 3387827104,
+      "materialized_release_root": 7458684928,
+      "macos_app_install": 471859200
+    },
+    "estimate_basis": "task worktree du; retained v0.3.0 package/project sizes; local_root .godot cache size; local_release.py performs no disk-space check of its own",
+    "headroom_ratio": 23.7,
+    "verdict": "sufficient"
+  },
+  "mandatory_package_files_0_3_1": {
+    "release_dir": [
+      "FantasyDisk-0.3.1-macos.dmg",
+      "FantasyDisk-0.3.1-windows-setup.exe",
+      "SHA256SUMS.txt",
+      "CHANGELOG-0.3.1.md",
+      "fantasydisk_031_announcement.png",
+      "update-manifest.json"
+    ],
+    "retained_root_extra": [
+      "LOCAL_RELEASE.json",
+      "project/ (exact git archive of v0.3.1)",
+      "godot-project/ (separate editable copy)",
+      "releases/current-project -> v0.3.1/godot-project"
+    ],
+    "forbidden_downloads": [
+      "FantasyDisk-Windows.exe",
+      "FantasyDisk-0.3.1-windows.zip"
+    ],
+    "update_manifest": {
+      "schema_version": 1,
+      "minimum_supported_version": "0.2.2",
+      "asset_url_pattern": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1/<asset>",
+      "release_url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.1"
+    },
+    "candidate_provenance_json": "tag path does not emit CANDIDATE_PROVENANCE.json (candidate mode only)"
+  },
+  "blocking_findings_for_final_build": [
+    {
+      "id": "poster-name",
+      "severity": "blocking",
+      "detail": "FAN-3961 candidate ships assets/marketing/fantasydisk_0.3.1_announcement.png; tools/build_release.sh:548, local_release.py:324, github_release_verify.py:152, telegram_publish.py:113 and release_publish.py:104 require fantasydisk_031_announcement.png. build_release.sh checks the poster only after export, signing, notarization and NSIS, so the tag build would fail late and waste an Apple notarization round-trip.",
+      "owner": "FAN-3961 rework (or pre-tag source fix under FAN-3962)"
+    },
+    {
+      "id": "notary-profile",
+      "severity": "blocking",
+      "detail": "No notarytool keychain profile is discoverable on this host and MACOS_SIGN_IDENTITY/MACOS_NOTARY_PROFILE are unset; the signed build exits 2 at its credential gate. The operator must supply both values at build time (identity must match the single installed Developer ID Application identity; profile must pass xcrun notarytool history).",
+      "owner": "operator (Sergey) at final build time; no credential mutation by agents"
+    },
+    {
+      "id": "release-inputs",
+      "severity": "expected-dependency",
+      "detail": "origin/dev still carries version 0.3.0; the 0.3.1 release inputs are on the FAN-3961 candidate whose QA is FAILED and in rework. FAN-3962 must promote the accepted inputs and tag v0.3.1 first.",
+      "owner": "FAN-3961 → FAN-3962"
+    }
+  ],
+  "residual_risks": [
+    "Shared bare repository cache holds a local v0.2.4 tag that differs from origin; verify v0.3.1 local tag == origin peeled tag before build_release.sh resolves it.",
+    "Developer directory is Command Line Tools only (no full Xcode); codesign/notarytool/stapler are present and were sufficient for the retained 0.3.0 signed release.",
+    "Apple notarization is a network round-trip whose availability cannot be proven read-only in advance."
+  ]
+}
