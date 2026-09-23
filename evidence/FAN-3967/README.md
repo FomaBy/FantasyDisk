@@ -4,6 +4,24 @@ Base: `e33bded444e301919dc93c8c9b9f0257e640a1ea` (pinned `dev`).
 Code commit: `ee434eeba` on `agent/claude-dev-fable/9426dc35badb` (the exact
 candidate SHA/tree is recorded on the Multica card).
 
+## Rework after the first QA FAILED verdict (candidate `fe3cacb63`)
+
+- F2: this folder carries a `.gdignore`, so Godot never imports the evidence
+  PNGs and a Godot run leaves the tree clean.
+- F1: the Druid certification suite rejects any change under `scenes/**`,
+  `scripts/**` or `evidence/**` made after the committed package's
+  `source.commit_sha`. Both class packages are therefore recaptured on this
+  branch in the following commit order, so that every commit after a
+  recorded source commit touches only that class's package paths:
+  1. this evidence/ignore commit (last code-or-evidence change);
+  2. the Guitarist package recapture, sourced from commit 1;
+  3. the Druid package recapture, sourced from commit 2.
+  The logs of the checks run on the final commit cannot be committed
+  (they would count as a post-capture change), so they are attached to the
+  Multica handoff comment instead. The earlier
+  `candidate_druid_certification_capture_test.log` was taken before the
+  first candidate commit and did not reproduce at that SHA; it is removed.
+
 ## What changed
 
 - Six scene veils: `ColorRect` (Druid, screen-space `BackdropLayer`) and
@@ -31,8 +49,8 @@ the other repair slices.
 
 ## Checks (all exit 0 unless noted)
 
-Headless: Druid/Guitarist timelines, Druid/Guitarist certification capture
-suites, presence driver, presentation budget, contact-sheet beats, migration
+Headless: Druid/Guitarist timelines, Guitarist certification capture suite
+(the Druid one is re-run on the final commit, see above), presence driver, presentation budget, contact-sheet beats, migration
 shards, Druid live/package and Guitarist live/mechanics suites.
 Windowed: both certification live captures (144 samples each) and both
 contact captures (648p/720p/1080p/2K). Static guard, `git diff --check` and a
