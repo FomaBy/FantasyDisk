@@ -1,0 +1,16 @@
+# Author re-run of the independent QA offline reproduction (qa_repro_fan3965.py, attached to
+# FAN-3965 comment 01a0d04a-7c87-743d-aafd-1c18e868754b). Drives the real publish() through the
+# repository's stateful mock GitHub harness (tests/test_update_release_pipeline.py) with a fake clock.
+# No network, no gh, no proofs from disk, no tag/draft/upload/send. Run 2026-09-24 against
+# candidate scripts identical to origin/dev e33bded444e301919dc93c8c9b9f0257e640a1ea.
+#
+# Question: must the FIRST owner App-inventory proof still be <=120 s old when it is re-validated
+# after the owner's second export and Enter?  Answer: yes (github_release_publish.py:422 via :458/:474).
+
+upload=60s  refresh=30s first-proof-age-at-second-check=90s  -> PUBLISHED; tag_claimed=True draft_created=True public_edit=True  release_state=public
+upload=100s refresh=30s first-proof-age-at-second-check=130s -> RuntimeError: owner attestation is stale or has an invalid future observation time; tag_claimed=True draft_created=True public_edit=False release_state=draft
+upload=240s refresh=45s first-proof-age-at-second-check=285s -> RuntimeError: owner attestation is stale or has an invalid future observation time; tag_claimed=True draft_created=True public_edit=False release_state=draft
+
+# Retained v0.3.0 installer bytes the 0.3.1 uploads will resemble:
+#   FantasyDisk-0.3.0-macos.dmg           432476946 B
+#   FantasyDisk-0.3.0-windows-setup.exe   408114374 B   (total ~840 MB)
