@@ -174,7 +174,7 @@ func _is_evidence_only_path(path: String, source_sha: String) -> bool:
 		"tests/ultimates/presentation/visual_direction_contract_test.gd",
 	]:
 		return true
-	if path == "CHANGELOG.md" or path == "assets/marketing/fantasydisk_0.3.1_announcement.png" \
+	if path == "CHANGELOG.md" or path == "assets/marketing/fantasydisk_031_announcement.png" \
 		or path.begins_with("docs/design/references/release_0_3_1/"):
 		return true
 	if path in ["project.godot", "export_presets.cfg", "scripts/patch_notes_data.gd"]:
