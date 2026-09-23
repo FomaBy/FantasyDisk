@@ -7,23 +7,23 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `2543f32642bd23e5475787f585eae8d73bfb1f62`; source tree:
-`70c76d66c8dd3e9975d7891d97fbdb90ae421d5a`. Godot 4.7 stable used the
+Source commit: `0c92815c108a082886357b8581b186b0175174de`; source tree:
+`b2a96c62519adc0aaeaab286bf5d477a6ba1e7a3`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
 
 | Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Restore potion | 0.0293 | 0.545 | 0.383 | 0.0002 | 12 | 5 |
-| Plague syringe | 0.0272 | 0.572 | 0.311 | 0.0002 | 12 | 6 |
-| Bone saw | 0.0173 | 0.572 | 0.477 | 0.0002 | 12 | 8 |
+| Restore potion | 0.0293 | 0.545 | 0.423 | 0.0002 | 12 | 5 |
+| Plague syringe | 0.0272 | 0.666 | 0.240 | 0.0002 | 12 | 6 |
+| Bone saw | 0.0173 | 0.572 | 0.499 | 0.0002 | 12 | 8 |
 
 ## Beat observations
 
 | Weapon | Release | Active | Recovery |
 | --- | --- | --- | --- |
-| Restore potion | At 1.10s the giant flask and glass impact establish the heal/poison identity. | At 2.10s the poison pool, restored white healing spiral, and shield crystal remain present within five drawn nodes. | At 3.05s the pool, healing spiral, and shield recede while the HUD remains clear; the minimum player contrast across the matrix is 0.383. |
+| Restore potion | At 1.10s the giant flask and glass impact establish the heal/poison identity. | At 2.10s the poison pool, restored white healing spiral, and shield crystal remain present within five drawn nodes. | At 3.05s the pool, healing spiral, and shield recede while the HUD remains clear; the minimum player contrast across the matrix is 0.423. |
 | Plague syringe | At 1.00s the oversized syringe and patient-zero marker are present. | Across the active phase all three staggered infection waves are authored; the 2.60s wave-three beat reaches the largest measured extent, 0.0272, without exceeding six simultaneously drawn nodes. | At 3.55s the recovery footprint falls as low as 0.0027; this sparse tail remains intentional and traceable rather than substituting a blank frame. |
 | Bone saw | At 0.85s three saws and the surgical orbit arc establish direction. | At 1.70s the orbit, metal sparks, and restored red/green paired drain ribbons identify the active cut. | At 2.55s the saws and shield stitches remain visible with at most six nodes. |
 
