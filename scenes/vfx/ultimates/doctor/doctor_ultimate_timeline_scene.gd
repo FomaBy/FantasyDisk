@@ -55,7 +55,7 @@ var _timeline = null
 var _visuals := {}
 var _impacts: Node2D = null
 var _backdrop_layer: CanvasLayer = null
-var _backdrop: ColorRect = null
+var _backdrop: TextureRect = null
 var _presence := {}
 var _reduced_motion := false
 var _photosensitivity_safe := false
@@ -68,8 +68,8 @@ var _duck_active := false
 var _sfx_bus_index := -1
 var _shake_rng := RandomNumberGenerator.new()
 var _cast_pose: Sprite2D = null
-var _cast_pose_backdrop: Polygon2D = null
-var _cast_pose_highlight: Polygon2D = null
+var _cast_pose_backdrop: Sprite2D = null
+var _cast_pose_highlight: AnimatedSprite2D = null
 var _player_body: CanvasItem = null
 var _player_body_was_visible := true
 var _cast_pose_binding_error := "not_started"
@@ -164,6 +164,7 @@ func preview_at(elapsed: float) -> void:
 		Pack.BONE_SAW:
 			_preview_saw(phase_name, progress)
 	_apply_photo_safe_visuals()
+	_update_cast_pose_highlight(elapsed)
 
 
 ## One executor beat. A beat that names the enemies it actually damaged gets the
@@ -568,13 +569,23 @@ func _build_backdrop() -> void:
 	_backdrop_layer.name = "BackdropLayer"
 	_backdrop_layer.layer = 0
 	add_child(_backdrop_layer)
-	_backdrop = ColorRect.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color(1.0, 1.0, 1.0, 0.72), Color.WHITE])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.width = 64
+	texture.height = 64
+	_backdrop = TextureRect.new()
 	_backdrop.name = "BackdropVeil"
 	_backdrop.set_meta("fullscreen_layer", true)
 	_backdrop_layer.add_child(_backdrop)
 	_backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_backdrop.color = Color(0.025, 0.06, 0.035, 0.38)
+	_backdrop.texture = texture
+	_backdrop.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_backdrop.self_modulate = Color(0.025, 0.06, 0.035, 0.38)
 	_apply_backdrop_safety()
 
 
@@ -701,6 +712,10 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	_cast_pose_binding_error = "silhouette_unavailable:%s" % asset
 	if texture == null:
 		return
+	var halo_animation := _pack_animation(signature_frames)
+	_cast_pose_binding_error = "cast_halo_unavailable:%s" % weapon_id
+	if halo_animation.is_empty():
+		return
 	var player := _nearest_player()
 	_cast_pose_binding_error = "eligible_player_unavailable"
 	if player == null:
@@ -712,16 +727,28 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 		return
 	_player_body_was_visible = _player_body.visible
 	_player_body.visible = false
-	_cast_pose_backdrop = Polygon2D.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color.WHITE, Color(1.0, 1.0, 1.0, 0.0)])
+	var backdrop_texture := GradientTexture2D.new()
+	backdrop_texture.gradient = gradient
+	backdrop_texture.fill = GradientTexture2D.FILL_RADIAL
+	backdrop_texture.width = 64
+	backdrop_texture.height = 64
+	_cast_pose_backdrop = Sprite2D.new()
 	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
-	_cast_pose_backdrop.polygon = PackedVector2Array([Vector2(0, -36), Vector2(36, 0), Vector2(0, 36), Vector2(-36, 0)])
-	_cast_pose_backdrop.color = Color(0.025, 0.018, 0.035, 0.92)
+	_cast_pose_backdrop.texture = backdrop_texture
+	_cast_pose_backdrop.scale = Vector2.ONE * (84.0 / 64.0)
+	_cast_pose_backdrop.modulate = Color(0.025, 0.018, 0.035, 0.92)
 	_cast_pose_backdrop.z_index = 0
 	visual_root.add_child(_cast_pose_backdrop)
-	_cast_pose_highlight = Polygon2D.new()
+	_cast_pose_highlight = AnimatedSprite2D.new()
 	_cast_pose_highlight.name = "UltimateCastPoseHighlight"
-	_cast_pose_highlight.polygon = PackedVector2Array([Vector2(0, -30), Vector2(30, 0), Vector2(0, 30), Vector2(-30, 0)])
-	_cast_pose_highlight.color = Color(0.92, 0.76, 0.38, 0.78)
+	_cast_pose_highlight.sprite_frames = signature_frames
+	_cast_pose_highlight.animation = halo_animation
+	_cast_pose_highlight.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_cast_pose_highlight.scale = Vector2.ONE * 0.32
+	_cast_pose_highlight.modulate.a = 0.78
 	_cast_pose_highlight.z_index = 1
 	visual_root.add_child(_cast_pose_highlight)
 	_cast_pose = Sprite2D.new()
@@ -733,6 +760,16 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	_cast_pose.z_index = 2
 	visual_root.add_child(_cast_pose)
 	_cast_pose_binding_error = ""
+
+
+func _update_cast_pose_highlight(elapsed: float) -> void:
+	if _cast_pose_highlight == null or not is_instance_valid(_cast_pose_highlight):
+		return
+	var count := _cast_pose_highlight.sprite_frames.get_frame_count(_cast_pose_highlight.animation)
+	if count <= 0:
+		return
+	_cast_pose_highlight.frame = count / 2 if _reduced_motion or _photosensitivity_safe else clampi(floori(elapsed / maxf(Pack.timeline_seconds(weapon_id), 0.001) * count), 0, count - 1)
+	_cast_pose_highlight.modulate.a = 0.48 if _photosensitivity_safe else 0.78
 
 
 func _release_cast_pose() -> void:

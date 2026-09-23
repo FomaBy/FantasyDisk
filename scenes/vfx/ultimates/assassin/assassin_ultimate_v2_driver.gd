@@ -7,6 +7,11 @@ extends Node2D
 
 const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const PresentationManifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
+const CAST_POSE_FRAMES := {
+	"assassin/chakrams": preload("res://assets/sprites/effects/assassin/chakrams/trail/trail_spriteframes.tres"),
+	"assassin/shadow_daggers": preload("res://assets/sprites/effects/assassin/shadow_daggers/tornado/tornado_spriteframes.tres"),
+	"assassin/venom_wire": preload("res://assets/sprites/effects/assassin/venom_wire/pulse/pulse_spriteframes.tres"),
+}
 
 @export var release_at := 0.8
 @export var impact_at := 1.0
@@ -45,8 +50,8 @@ var _sfx_bus_index := -1
 var _externally_driven := false
 var _shake_rng := RandomNumberGenerator.new()
 var _cast_pose: Sprite2D = null
-var _cast_pose_backdrop: Polygon2D = null
-var _cast_pose_highlight: Polygon2D = null
+var _cast_pose_backdrop: Sprite2D = null
+var _cast_pose_highlight: AnimatedSprite2D = null
 var _player_body: CanvasItem = null
 var _player_body_was_visible := true
 var _cast_pose_binding_error := "not_started"
@@ -121,6 +126,7 @@ func _step(delta: float) -> void:
 	if _hitstop_remaining <= 0.0:
 		_seek_timeline_to_clock()
 	_apply_frame_safety()
+	_update_cast_pose_highlight()
 	_apply_executor_impact_safety()
 	if _elapsed >= cancel_at:
 		finish("node_end")
@@ -370,6 +376,10 @@ func _bind_cast_pose(registry) -> void:
 	_cast_pose_binding_error = "silhouette_unavailable:%s" % asset
 	if texture == null:
 		return
+	var halo_frames := CAST_POSE_FRAMES.get(key, null) as SpriteFrames
+	_cast_pose_binding_error = "cast_halo_unavailable:%s" % key
+	if halo_frames == null or halo_frames.get_animation_names().is_empty():
+		return
 	var player := _nearest_player()
 	_cast_pose_binding_error = "eligible_player_unavailable"
 	if player == null:
@@ -381,19 +391,31 @@ func _bind_cast_pose(registry) -> void:
 		return
 	_player_body_was_visible = _player_body.visible
 	_player_body.visible = false
-	_cast_pose_backdrop = Polygon2D.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color.WHITE, Color(1.0, 1.0, 1.0, 0.0)])
+	var backdrop_texture := GradientTexture2D.new()
+	backdrop_texture.gradient = gradient
+	backdrop_texture.fill = GradientTexture2D.FILL_RADIAL
+	backdrop_texture.width = 64
+	backdrop_texture.height = 64
+	_cast_pose_backdrop = Sprite2D.new()
 	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
-	_cast_pose_backdrop.polygon = PackedVector2Array([Vector2(0, -36), Vector2(36, 0), Vector2(0, 36), Vector2(-36, 0)])
-	_cast_pose_backdrop.color = Color(0.025, 0.018, 0.035, 0.92)
+	_cast_pose_backdrop.texture = backdrop_texture
+	_cast_pose_backdrop.scale = Vector2.ONE * (84.0 / 64.0)
+	_cast_pose_backdrop.modulate = Color(0.025, 0.018, 0.035, 0.92)
 	# The presentation runtime mounts its scene after Player in the arena tree.
 	# Keep the cast identity above that later sibling so wide attack layers do
 	# not flatten the player's contrast at release or recovery.
 	_cast_pose_backdrop.z_index = 100
 	visual_root.add_child(_cast_pose_backdrop)
-	_cast_pose_highlight = Polygon2D.new()
+	_cast_pose_highlight = AnimatedSprite2D.new()
 	_cast_pose_highlight.name = "UltimateCastPoseHighlight"
-	_cast_pose_highlight.polygon = PackedVector2Array([Vector2(0, -30), Vector2(30, 0), Vector2(0, 30), Vector2(-30, 0)])
-	_cast_pose_highlight.color = Color(0.92, 0.76, 0.38, 0.78)
+	_cast_pose_highlight.sprite_frames = halo_frames
+	_cast_pose_highlight.animation = StringName(halo_frames.get_animation_names()[0])
+	_cast_pose_highlight.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_cast_pose_highlight.scale = Vector2.ONE * 0.32
+	_cast_pose_highlight.modulate.a = 0.78
 	_cast_pose_highlight.z_index = 101
 	visual_root.add_child(_cast_pose_highlight)
 	_cast_pose = Sprite2D.new()
@@ -405,6 +427,16 @@ func _bind_cast_pose(registry) -> void:
 	_cast_pose.z_index = 102
 	visual_root.add_child(_cast_pose)
 	_cast_pose_binding_error = ""
+
+
+func _update_cast_pose_highlight() -> void:
+	if _cast_pose_highlight == null or not is_instance_valid(_cast_pose_highlight):
+		return
+	var count := _cast_pose_highlight.sprite_frames.get_frame_count(_cast_pose_highlight.animation)
+	if count <= 0:
+		return
+	_cast_pose_highlight.frame = count / 2 if _reduced_motion or _photosensitivity_safe else clampi(floori(_elapsed / maxf(cancel_at, 0.001) * count), 0, count - 1)
+	_cast_pose_highlight.modulate.a = 0.48 if _photosensitivity_safe else 0.78
 
 
 func _release_cast_pose() -> void:

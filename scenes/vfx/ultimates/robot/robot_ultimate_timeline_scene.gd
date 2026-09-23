@@ -148,22 +148,31 @@ func _apply_identity_metadata() -> void:
 func _ensure_backdrop() -> void:
 	if get_node_or_null(Pack.BACKDROP_NODE) != null:
 		return
-	var veil := Polygon2D.new()
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 1.0])
+	gradient.colors = PackedColorArray([Color(1.0, 1.0, 1.0, 0.72), Color.WHITE])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.width = 64
+	texture.height = 64
+	var veil := Sprite2D.new()
 	veil.name = Pack.BACKDROP_NODE
+	veil.texture = texture
+	veil.centered = false
 	veil.z_index = -100
 	veil.set_meta("fullscreen_layer", true)
 	add_child(veil)
 
 
-func _backdrop() -> Polygon2D:
-	return get_node_or_null(Pack.BACKDROP_NODE) as Polygon2D
+func _backdrop() -> Sprite2D:
+	return get_node_or_null(Pack.BACKDROP_NODE) as Sprite2D
 
 
 func _reset_backdrop() -> void:
 	var veil := _backdrop()
 	if veil != null:
 		veil.visible = false
-		veil.color.a = 1.0
 		veil.self_modulate.a = 0.0
 
 
@@ -186,8 +195,7 @@ func _apply_presence(elapsed: float) -> void:
 	if not _screen_shake_enabled():
 		alpha = minf(alpha, 0.42)
 	var tint: Color = config.get("backdrop_tint", Color.BLACK)
-	veil.color = Color(tint.r, tint.g, tint.b, 1.0)
-	veil.self_modulate = Color(1.0, 1.0, 1.0, alpha)
+	veil.self_modulate = Color(tint.r, tint.g, tint.b, alpha)
 	veil.visible = alpha > 0.0
 	_fit_backdrop_to_viewport()
 
@@ -206,7 +214,8 @@ func _fit_backdrop_to_viewport() -> void:
 	var origin: Vector2 = viewport.get_canvas_transform().affine_inverse() * rect.position - overscan
 	var size := visible_size + overscan * 2.0
 	veil.top_level = true
-	veil.polygon = PackedVector2Array([origin, origin + Vector2(size.x, 0.0), origin + size, origin + Vector2(0.0, size.y)])
+	veil.position = origin
+	veil.scale = size / veil.texture.get_size()
 
 
 func _drawn_elapsed(elapsed: float) -> float:
