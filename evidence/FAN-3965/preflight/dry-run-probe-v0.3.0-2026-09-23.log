@@ -1,0 +1,42 @@
+# Read-only tooling-chain probe against the retained, already-verified signed v0.3.0 package.
+# Purpose: prove that local_release.py verify -> GitHub/Telegram/Discord publisher dry-runs work on this host.
+# This is NOT the exact-package v0.3.1 dry-run (that package does not exist yet) and is not a publisher PASS.
+# Nothing was sent, tagged, drafted or uploaded. Player Telegram link and local root path are redacted.
+# Scripts: worktree e33bded444e301919dc93c8c9b9f0257e640a1ea; identical to the operator durable checkout HEAD
+# e59886c58a85cfdb129fcd84f6887997007afc62 for skills/codex/fantasydisk-release-director/scripts (git diff empty).
+
+2026-09-23T15:01:06Z  local_release.py verify --version 0.3.0  (channel default: signed)  -> exit 0, ~38 s
+{
+  "status": "verified", "version": "0.3.0",
+  "local_release": "<local_root>/releases/v0.3.0",
+  "current_project": "<local_root>/releases/current-project",
+  "macos_app": "/Applications/FantasyDisk.app",
+  "tag_commit": null,
+  "candidate": {"commit": "fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb", "ref": "refs/heads/agent/claude-opus-5/1b7c64cf",
+                "repository": "https://github.com/FomaBy/FantasyDisk.git", "tree": "0c887fb3c3c6f551da149f923d2a21b649edea34"},
+  "macos_channel": "signed"
+}
+
+github_release_publish.py --version 0.3.0 --dry-run  -> exit 0
+[dry-run] public release: https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.0
+  • FantasyDisk-0.3.0-macos.dmg
+  • FantasyDisk-0.3.0-windows-setup.exe
+  • SHA256SUMS.txt
+  • CHANGELOG-0.3.0.md
+  • fantasydisk_030_announcement.png
+  • update-manifest.json
+[dry-run] local verification passed; the release goes public only after every draft asset, including the manifest, verifies byte-exact; nothing was published.
+
+telegram_publish.py --version 0.3.0 --dry-run  -> exit 0
+[dry-run] канал настроен; player link: <telegram-link-redacted>
+[dry-run] poster: fantasydisk_030_announcement.png
+[dry-run] file: FantasyDisk-0.3.0-macos.dmg
+[dry-run] file: FantasyDisk-0.3.0-windows-setup.exe
+[dry-run] file: SHA256SUMS.txt
+[dry-run] ничего не отправлено.
+
+release_publish.py --version 0.3.0 --dry-run  -> exit 0
+[dry-run] content: (Discord announcement with 5 main + 7 secondary highlights from the retained patch notes,
+          Telegram link, https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.0)
+[dry-run] attach: ['CHANGELOG-0.3.0.md', 'SHA256SUMS.txt', 'fantasydisk_030_announcement.png']
+2026-09-23T15:03:30Z  probe finished

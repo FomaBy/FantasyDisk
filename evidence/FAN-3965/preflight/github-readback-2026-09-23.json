@@ -1,0 +1,37 @@
+{
+  "issue": "FAN-3965",
+  "stage": "early publication capability preflight (read-only)",
+  "observed_at_utc": "2026-09-23T14:56:53Z",
+  "observer": "Claude Dev Fable (1cba3f6b-908a-4ba0-9baa-a849880b5682)",
+  "method": "gh api readbacks with the operator's existing gh login; no tag, draft, release, upload, send, credential or settings change",
+  "publisher_account": {"login": "FomaBy", "type": "User"},
+  "token": {
+    "kind": "gh keyring OAuth token",
+    "scopes": ["gist", "read:org", "repo", "workflow"],
+    "user_installations_listing": "HTTP 403 (endpoint accepts only GitHub App user-to-server tokens and even then lists only that App's installations)",
+    "repository_installation_lookup": "HTTP 401 (App JWT only)"
+  },
+  "distribution_repository": {
+    "full_name": "FomaBy/FantasyDisk-Releases",
+    "owner": "FomaBy", "owner_type": "User", "private": false, "default_branch": "main",
+    "publisher_permission_admin": true,
+    "collaborators_affiliation_all": [{"login": "FomaBy", "role": "admin"}],
+    "pending_invitations": 0,
+    "deploy_keys": 0,
+    "immutable_releases": {"enabled": true, "enforced_by_owner": false},
+    "tag_ruleset": {
+      "id": 20810935, "name": "Protect immutable release tags v*", "target": "tag", "enforcement": "active",
+      "bypass_actors": [], "include": ["refs/tags/v*"], "exclude": [], "rules": ["update", "deletion"]
+    },
+    "default_branch_recursive_tree": ["README.md"], "tree_truncated": false,
+    "public_releases": [{"tag_name": "v0.2.4", "draft": false, "prerelease": false, "immutable": false, "published_at": "2026-07-16T13:23:48Z"}],
+    "tag_v0_3_1": "absent (HTTP 404)",
+    "note": "No public v0.3.0 release exists in the distribution repository; v0.3.1 would become the first release after v0.2.4 and the first GitHub-immutable one."
+  },
+  "source_repository": {
+    "full_name": "FomaBy/FantasyDisk",
+    "tag_v0_3_1": "absent (HTTP 404)",
+    "tag_v0_3_0": "fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb"
+  },
+  "complete_github_app_writer_inventory": "UNAVAILABLE through supported operator API access; only the owner's Settings -> Applications UI export (writer-inventory proof JSON) satisfies the publisher"
+}
