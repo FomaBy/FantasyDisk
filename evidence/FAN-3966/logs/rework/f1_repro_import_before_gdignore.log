@@ -1,0 +1,125 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (32 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_meteor_core_normal_2k_active.png[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_meteor_core_normal_648p_active.png[39m[0m
+[   6% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_meteor_core_normal_720p_active.png[39m[0m
+[   9% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_meteor_core_normal_1080p_active.png[39m[0m
+[  12% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_orb_ring_normal_2k_active.png[39m[0m
+[  15% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_orb_ring_normal_648p_active.png[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_orb_ring_normal_720p_active.png[39m[0m
+[  21% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_orb_ring_normal_1080p_active.png[39m[0m
+[  24% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_prism_focus_normal_2k_active.png[39m[0m
+[  27% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_prism_focus_normal_648p_active.png[39m[0m
+[  30% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_prism_focus_normal_720p_active.png[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | elementalist_elementalist_prism_focus_normal_1080p_active.png[39m[0m
+[  36% ] [90m[1m_update_scan_actions[22m | elementalist_certification_2k.png[39m[0m
+[  39% ] [90m[1m_update_scan_actions[22m | elementalist_certification_648p.png[39m[0m
+[  42% ] [90m[1m_update_scan_actions[22m | elementalist_certification_720p.png[39m[0m
+[  45% ] [90m[1m_update_scan_actions[22m | elementalist_certification_1080p.png[39m[0m
+[  48% ] [90m[1m_update_scan_actions[22m | knight_holy_flail_normal_2k_active.png[39m[0m
+[  51% ] [90m[1m_update_scan_actions[22m | knight_holy_flail_normal_648p_active.png[39m[0m
+[  54% ] [90m[1m_update_scan_actions[22m | knight_holy_flail_normal_720p_active.png[39m[0m
+[  57% ] [90m[1m_update_scan_actions[22m | knight_holy_flail_normal_1080p_active.png[39m[0m
+[  60% ] [90m[1m_update_scan_actions[22m | knight_long_spear_normal_2k_active.png[39m[0m
+[  63% ] [90m[1m_update_scan_actions[22m | knight_long_spear_normal_648p_active.png[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | knight_long_spear_normal_720p_active.png[39m[0m
+[  69% ] [90m[1m_update_scan_actions[22m | knight_long_spear_normal_1080p_active.png[39m[0m
+[  72% ] [90m[1m_update_scan_actions[22m | knight_tower_shield_normal_2k_active.png[39m[0m
+[  75% ] [90m[1m_update_scan_actions[22m | knight_tower_shield_normal_648p_active.png[39m[0m
+[  78% ] [90m[1m_update_scan_actions[22m | knight_tower_shield_normal_720p_active.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | knight_tower_shield_normal_1080p_active.png[39m[0m
+[  84% ] [90m[1m_update_scan_actions[22m | knight_certification_2k.png[39m[0m
+[  87% ] [90m[1m_update_scan_actions[22m | knight_certification_648p.png[39m[0m
+[  90% ] [90m[1m_update_scan_actions[22m | knight_certification_720p.png[39m[0m
+[  93% ] [90m[1m_update_scan_actions[22m | knight_certification_1080p.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (32 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   3% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   6% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   9% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  12% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  18% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  21% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  24% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  27% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  30% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  33% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  36% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  39% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  42% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  45% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  48% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  51% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  54% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  57% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  60% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  63% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  66% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  69% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  72% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  75% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  78% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  81% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  84% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  87% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  90% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  93% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | knight_certification_1080p.png[39m[0m
+[   3% ] [90m[1mreimport[22m | knight_certification_720p.png[39m[0m
+[   6% ] [90m[1mreimport[22m | knight_certification_648p.png[39m[0m
+[   9% ] [90m[1mreimport[22m | knight_certification_2k.png[39m[0m
+[  12% ] [90m[1mreimport[22m | knight_tower_shield_normal_1080p_active.png[39m[0m
+[  15% ] [90m[1mreimport[22m | knight_tower_shield_normal_720p_active.png[39m[0m
+[  18% ] [90m[1mreimport[22m | knight_tower_shield_normal_648p_active.png[39m[0m
+[  21% ] [90m[1mreimport[22m | knight_tower_shield_normal_2k_active.png[39m[0m
+[  24% ] [90m[1mreimport[22m | knight_long_spear_normal_1080p_active.png[39m[0m
+[  27% ] [90m[1mreimport[22m | knight_long_spear_normal_720p_active.png[39m[0m
+[  30% ] [90m[1mreimport[22m | knight_long_spear_normal_648p_active.png[39m[0m
+[  33% ] [90m[1mreimport[22m | knight_long_spear_normal_2k_active.png[39m[0m
+[  36% ] [90m[1mreimport[22m | knight_holy_flail_normal_1080p_active.png[39m[0m
+[  39% ] [90m[1mreimport[22m | knight_holy_flail_normal_720p_active.png[39m[0m
+[  42% ] [90m[1mreimport[22m | knight_holy_flail_normal_648p_active.png[39m[0m
+[  45% ] [90m[1mreimport[22m | knight_holy_flail_normal_2k_active.png[39m[0m
+[  48% ] [90m[1mreimport[22m | elementalist_certification_1080p.png[39m[0m
+[  51% ] [90m[1mreimport[22m | elementalist_certification_720p.png[39m[0m
+[  54% ] [90m[1mreimport[22m | elementalist_certification_648p.png[39m[0m
+[  57% ] [90m[1mreimport[22m | elementalist_certification_2k.png[39m[0m
+[  60% ] [90m[1mreimport[22m | elementalist_elementalist_prism_focus_normal_1080p_active.png[39m[0m
+[  63% ] [90m[1mreimport[22m | elementalist_elementalist_prism_focus_normal_720p_active.png[39m[0m
+[  66% ] [90m[1mreimport[22m | elementalist_elementalist_prism_focus_normal_648p_active.png[39m[0m
+[  69% ] [90m[1mreimport[22m | elementalist_elementalist_prism_focus_normal_2k_active.png[39m[0m
+[  72% ] [90m[1mreimport[22m | elementalist_elementalist_orb_ring_normal_1080p_active.png[39m[0m
+[  75% ] [90m[1mreimport[22m | elementalist_elementalist_orb_ring_normal_720p_active.png[39m[0m
+[  78% ] [90m[1mreimport[22m | elementalist_elementalist_orb_ring_normal_648p_active.png[39m[0m
+[  81% ] [90m[1mreimport[22m | elementalist_elementalist_orb_ring_normal_2k_active.png[39m[0m
+[  84% ] [90m[1mreimport[22m | elementalist_elementalist_meteor_core_normal_1080p_active.png[39m[0m
+[  87% ] [90m[1mreimport[22m | elementalist_elementalist_meteor_core_normal_720p_active.png[39m[0m
+[  90% ] [90m[1mreimport[22m | elementalist_elementalist_meteor_core_normal_648p_active.png[39m[0m
+[  93% ] [90m[1mreimport[22m | elementalist_elementalist_meteor_core_normal_2k_active.png[39m[0m
+[  96% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (32 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+import exit=0

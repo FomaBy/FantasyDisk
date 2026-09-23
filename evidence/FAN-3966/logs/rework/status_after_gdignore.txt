@@ -1,0 +1,7 @@
+ M evidence/FAN-3966/run_live_captures.sh
+?? evidence/FAN-3966/.gdignore
+?? evidence/FAN-3966/list_pck_paths.py
+?? evidence/FAN-3966/logs/rework/f1_repro_import_before_gdignore.log
+?? evidence/FAN-3966/logs/rework/f1_repro_status_before_gdignore.txt
+?? evidence/FAN-3966/logs/rework/import_after_gdignore.log
+?? evidence/FAN-3966/logs/rework/status_after_gdignore.txt
