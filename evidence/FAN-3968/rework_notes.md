@@ -1,0 +1,8 @@
+# FAN-3968 first QA rework
+
+The independent QA report at Multica comment `01a0d090-9bcd-787a-818c-209496d0412d` rejected the immutable candidate `e38361ffe0849e43163bd6b362c4a91712927eee` on two bounded findings. Its successful five-of-five primitive reduction remains valid history.
+
+- Assassin and Doctor certification tests cast every screen-space veil to `ColorRect`, so the new `TextureRect` veils appeared missing. The class-local tests now require a full-viewport `CanvasLayer` child with fullscreen metadata and a radial `GradientTexture2D` for the changed weapons. Assassin Chakrams retains its historical `ColorRect` expectation. All mode, source-staleness, image-hash, readability, and negative checks remain active.
+- The two script-built cast-pose radial plates had their opaque origin at `(0, 0)`. Both now set `fill_from=(0.5, 0.5)` and `fill_to=(1.0, 0.5)`. The actual bound textures measure centre alpha `0.898` after plate modulation and corner alpha `0.000` in every runtime viewport. The capture fixture now waits for the player group to register before activation and fails if the Assassin/Doctor cast pose is absent or off centre.
+
+The refreshed `runtime_{648,720,1080,1440}.png` sheets and `capture_manifest.json` accompany this source repair. Robot production code is unchanged in the rework; its three runtime panels are pixel-identical to the failed candidate at all four resolutions. Assassin and Doctor certification capture manifests and LFS sheets are regenerated in a separate evidence-only commit after this source commit, so their recorded source remains applicable under the certification tests' strict staleness rule.

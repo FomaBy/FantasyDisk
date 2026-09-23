@@ -19,7 +19,7 @@
       1440
     ]
   },
-  "capture_note": "Contact sheets show scoped ultimate timelines; runtime sheets show each live scene independently. 648p first-pass renderer warmup was repeated before saved output. Each final PNG was decoded and visually checked for legibility, inset composition, and nonblank content.",
+  "capture_note": "Contact sheets show scoped ultimate timelines. Runtime sheets mount a registered player and bind the actual cast pose before sampling each live scene; the radial plate measures centre alpha 0.898 and corner alpha 0.000 for Assassin and Doctor in every viewport. The 648p first-frame warmup is repeated before saved output. All final PNGs decode, remain inset and show nonblank content.",
   "reuse_provenance": [
     {
       "runtime": "assets/sprites/effects/assassin/chakrams/trail/trail_spriteframes.tres",
@@ -175,15 +175,15 @@
         1920,
         1080
       ],
-      "bytes": 121624,
-      "sha256": "9420d7970b84dfc7a4893c8b670cb5ecfb0e3e117f98983f84494f026827bad9",
-      "bright_pixels_over_95": 17124,
+      "bytes": 123505,
+      "sha256": "2e2ff049f19c41f8673a6cc27c98d7a16ee73aaff2c2ff496e9c477822326bc4",
+      "bright_pixels_over_95": 17164,
       "panel_bright_pixels_over_90": {
-        "assassin_shadow": 2547,
-        "assassin_venom": 3261,
+        "assassin_shadow": 2737,
+        "assassin_venom": 3172,
         "doctor_restore": 1369,
-        "doctor_plague": 1113,
-        "doctor_saw": 2118,
+        "doctor_plague": 1064,
+        "doctor_saw": 2117,
         "robot_anchor": 4750,
         "robot_press": 466,
         "robot_reactor": 2165
@@ -195,15 +195,15 @@
         2560,
         1440
       ],
-      "bytes": 130198,
-      "sha256": "64722b19f3e99d6cd05d405f29650d6a0bd27c448ff0ac880eff554c7bad39a8",
-      "bright_pixels_over_95": 17097,
+      "bytes": 132142,
+      "sha256": "c1c8b5e7c48dbb26fe15e4eb1c8b2a063ac069ccd9a132ed2dd902f5e161fe0d",
+      "bright_pixels_over_95": 17131,
       "panel_bright_pixels_over_90": {
-        "assassin_shadow": 2563,
-        "assassin_venom": 3226,
+        "assassin_shadow": 2738,
+        "assassin_venom": 3140,
         "doctor_restore": 1362,
-        "doctor_plague": 1116,
-        "doctor_saw": 2114,
+        "doctor_plague": 1071,
+        "doctor_saw": 2113,
         "robot_anchor": 4760,
         "robot_press": 482,
         "robot_reactor": 2189
@@ -215,15 +215,15 @@
         1152,
         648
       ],
-      "bytes": 111414,
-      "sha256": "00beb6eaa51e4896051bf75eb49dfd007c572ebc0ffe95f6d6bc71d68caeb4a4",
-      "bright_pixels_over_95": 17148,
+      "bytes": 113084,
+      "sha256": "01b02d4b4e95a75b51ec227a6398a1d167ed26f85e20e91de63c2a09abedcf36",
+      "bright_pixels_over_95": 17179,
       "panel_bright_pixels_over_90": {
-        "assassin_shadow": 2538,
-        "assassin_venom": 3293,
+        "assassin_shadow": 2722,
+        "assassin_venom": 3194,
         "doctor_restore": 1353,
-        "doctor_plague": 1107,
-        "doctor_saw": 2119,
+        "doctor_plague": 1061,
+        "doctor_saw": 2124,
         "robot_anchor": 4734,
         "robot_press": 500,
         "robot_reactor": 2197
@@ -235,15 +235,15 @@
         1280,
         720
       ],
-      "bytes": 112975,
-      "sha256": "1afd712d9ebe6d1fde563fc915aca4642753500f12dc5da11b49657a82453be9",
-      "bright_pixels_over_95": 17078,
+      "bytes": 114518,
+      "sha256": "3eb767a876cf8d352de3349b67cc20621084f04ce30c7775d343c8bacfbbcbeb",
+      "bright_pixels_over_95": 17124,
       "panel_bright_pixels_over_90": {
-        "assassin_shadow": 2526,
-        "assassin_venom": 3236,
+        "assassin_shadow": 2717,
+        "assassin_venom": 3163,
         "doctor_restore": 1353,
-        "doctor_plague": 1084,
-        "doctor_saw": 2119,
+        "doctor_plague": 1046,
+        "doctor_saw": 2122,
         "robot_anchor": 4748,
         "robot_press": 477,
         "robot_reactor": 2180

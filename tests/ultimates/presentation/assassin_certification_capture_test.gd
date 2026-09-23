@@ -538,8 +538,19 @@ func _check_accessibility_modes(class_manifest: Dictionary, errors: Array[String
 				_expect(int(state.get("motion_tracks_disabled", 0)) > 0, "%s reduced motion must replace a fast motion channel" % key, errors)
 			if bool(mode["photo"]):
 				_expect(int(state.get("photosensitive_nodes", 0)) > 0, "%s photosensitivity-safe must replace a bright authored surface" % key, errors)
-			var backdrop := scene.get_node_or_null("BackdropLayer/BackdropVeil") as ColorRect
-			_expect(backdrop != null and backdrop.get_meta("fullscreen_layer", false) == true, "%s must ship the screen-space darken backdrop" % key, errors)
+			var backdrop := scene.get_node_or_null("BackdropLayer/BackdropVeil") as Control
+			var screen_space: bool = backdrop != null and backdrop.get_parent() is CanvasLayer \
+				and backdrop.get_meta("fullscreen_layer", false) == true \
+				and backdrop.anchor_left == 0.0 and backdrop.anchor_top == 0.0 \
+				and backdrop.anchor_right == 1.0 and backdrop.anchor_bottom == 1.0
+			if str(weapon.get("weapon_id", "")) == "chakrams":
+				screen_space = screen_space and backdrop is ColorRect
+			else:
+				var textured := backdrop as TextureRect
+				screen_space = screen_space and textured != null \
+					and textured.texture is GradientTexture2D \
+					and (textured.texture as GradientTexture2D).fill == GradientTexture2D.FILL_RADIAL
+			_expect(screen_space, "%s must ship the screen-space darken backdrop" % key, errors)
 			if scene.has_method("finish"):
 				scene.call("finish", "cancel")
 			scene.queue_free()

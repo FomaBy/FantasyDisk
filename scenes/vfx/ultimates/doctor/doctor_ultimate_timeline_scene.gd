@@ -733,6 +733,8 @@ func _bind_cast_pose(manifest: Dictionary) -> void:
 	var backdrop_texture := GradientTexture2D.new()
 	backdrop_texture.gradient = gradient
 	backdrop_texture.fill = GradientTexture2D.FILL_RADIAL
+	backdrop_texture.fill_from = Vector2(0.5, 0.5)
+	backdrop_texture.fill_to = Vector2(1.0, 0.5)
 	backdrop_texture.width = 64
 	backdrop_texture.height = 64
 	_cast_pose_backdrop = Sprite2D.new()

@@ -65,10 +65,26 @@ func _initialize() -> void:
 			visual_root.add_child(body)
 			viewport.add_child(player)
 			player.add_to_group("player")
+			await process_frame
 			var scene := (spec["scene"] as PackedScene).instantiate() as Node2D
 			scene.position = player.position
 			viewport.add_child(scene)
 			scene.call("begin", registry, {}, 0)
+			if not str(spec["name"]).begins_with("robot_"):
+				var plate := visual_root.get_node_or_null("UltimateCastPoseBackdrop") as Sprite2D
+				if plate == null or not (plate.texture is GradientTexture2D):
+					push_error("FAN-3968 cast pose missing: %s (%s)" % [spec["name"], str(scene.get("_cast_pose_binding_error"))])
+					quit(1)
+					return
+				var texture := plate.texture as GradientTexture2D
+				var pixels := texture.get_image()
+				var center_alpha := pixels.get_pixel(32, 32).a * plate.modulate.a
+				var corner_alpha := pixels.get_pixel(0, 0).a * plate.modulate.a
+				if center_alpha < 0.85 or corner_alpha > 0.08 or texture.fill_from != Vector2(0.5, 0.5):
+					push_error("FAN-3968 cast pose off centre: %s center=%.3f corner=%.3f" % [spec["name"], center_alpha, corner_alpha])
+					quit(1)
+					return
+				print("FAN-3968 cast pose %s/%d center=%.3f corner=%.3f" % [spec["name"], height, center_alpha, corner_alpha])
 			if scene.has_method("advance"):
 				scene.call("advance", float(spec["time"]))
 			else:
