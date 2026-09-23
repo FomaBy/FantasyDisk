@@ -1,7 +1,16 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_holy_flail.png" id="1_flail"]
 [ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="2_presence"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+width = 2
+height = 2
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -142,9 +151,12 @@ metadata/impact_language = "inward_pull_loops_ending_in_sunburst_launch_ring"
 metadata/max_visual_nodes = 8
 metadata/crowd_cap = 20
 
-[node name="BackdropVeil" type="Polygon2D" parent="."]
-color = Color(0.055, 0.04, 0.012, 0.58)
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+modulate = Color(0.055, 0.04, 0.012, 1)
+self_modulate = Color(1, 1, 1, 0.58)
 z_index = -20
+texture = SubResource("GradientTexture2D_veil")
+metadata/fullscreen_layer = true
 
 [node name="SpiralPath" type="Line2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")

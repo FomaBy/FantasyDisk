@@ -1,7 +1,16 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_tower_shield.png" id="1_shield"]
 [ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="2_presence"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+width = 2
+height = 2
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -118,9 +127,12 @@ metadata/impact_language = "stored_spark_accumulation_released_as_counter_cresce
 metadata/max_visual_nodes = 6
 metadata/crowd_cap = 16
 
-[node name="BackdropVeil" type="Polygon2D" parent="."]
-color = Color(0.04, 0.035, 0.018, 0.62)
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+modulate = Color(0.04, 0.035, 0.018, 1)
+self_modulate = Color(1, 1, 1, 0.62)
 z_index = -20
+texture = SubResource("GradientTexture2D_veil")
+metadata/fullscreen_layer = true
 
 [node name="GuardStance" type="Polygon2D" parent="."]
 z_index = -15
