@@ -16,8 +16,8 @@
     512,
     512
   ],
-  "runtime_scale": 2,
-  "runtime_bottom_padding": 16,
+  "runtime_visible_height_target": 245,
+  "runtime_bottom_padding": 32,
   "move_frame_count": 6,
   "clockwise_preview_order": [
     "south",
