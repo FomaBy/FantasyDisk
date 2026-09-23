@@ -1,0 +1,46 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+ERROR: Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: scene res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn grew from 4 to 5 allowlisted primitives; new combat primitives are banned.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: scene res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn grew from 6 to 7 allowlisted primitives; new combat primitives are banned.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: scene res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn grew from 4 to 5 allowlisted primitives; new combat primitives are banned.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: scene res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn grew from 3 to 4 allowlisted primitives; new combat primitives are banned.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: scene res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn grew from 3 to 4 allowlisted primitives; new combat primitives are banned.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: script res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd grew from 2 to 5 allowlisted primitives; new combat primitives are banned.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
+ERROR: Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/assassin/assassin_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows.
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://tests/combat_primitive_ratchet_test.gd:114)
