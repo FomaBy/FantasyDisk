@@ -159,12 +159,12 @@ func _source_violations(manifest: Dictionary) -> Array[String]:
 					violations.append("source applicability diff could not be resolved")
 				else:
 					for path in "\n".join(output).split("\n", false):
-						if not _is_evidence_only_path(path):
+						if not _is_evidence_only_path(path, commit_sha):
 							violations.append("source is stale: post-capture runtime/tooling change %s" % path)
 	return violations
 
 
-func _is_evidence_only_path(path: String) -> bool:
+func _is_evidence_only_path(path: String, source_sha: String) -> bool:
 	if path in [
 		"scripts/ultimates/presentation/ultimate_visual_direction_contract.gd",
 		"tests/ultimates/presentation/assassin_certification_capture_test.gd",
@@ -174,6 +174,14 @@ func _is_evidence_only_path(path: String) -> bool:
 		"tests/ultimates/presentation/visual_direction_contract_test.gd",
 	]:
 		return true
+	if path == "CHANGELOG.md" or path == "assets/marketing/fantasydisk_0.3.1_announcement.png" \
+		or path.begins_with("docs/design/references/release_0_3_1/"):
+		return true
+	if path in ["project.godot", "export_presets.cfg", "scripts/patch_notes_data.gd"]:
+		var original := _source_file_text(source_sha, path)
+		if original.is_empty() or not FileAccess.file_exists("res://%s" % path):
+			return false
+		return _is_release_only_content(path, original, FileAccess.get_file_as_string("res://%s" % path))
 	for class_id in ["assassin", "doctor", "druid"]:
 		var reference_root := "docs/design/references/weapon_ultimates/%s/" % class_id
 		if path in [
@@ -185,6 +193,110 @@ func _is_evidence_only_path(path: String) -> bool:
 		):
 			return true
 	return false
+
+
+func _source_file_text(source_sha: String, path: String) -> String:
+	var output: Array = []
+	if OS.execute("git", ["show", "%s:%s" % [source_sha, path]], output, true) != 0:
+		return ""
+	return "".join(output)
+
+
+## Ignore only version assignment values; every other project/export setting
+## must still match the captured source byte for byte.
+func _is_release_only_content(path: String, original: String, current: String) -> bool:
+	if path == "scripts/patch_notes_data.gd":
+		return _has_only_new_patch_notes(original, current)
+	var normalized_original := _without_release_versions(path, original)
+	return not normalized_original.is_empty() and normalized_original == _without_release_versions(path, current)
+
+
+func _without_release_versions(path: String, contents: String) -> String:
+	var rules := {
+		"project.godot": {"application": ["config/version"]},
+		"export_presets.cfg": {
+			"preset.0.options": ["application/short_version", "application/version"],
+			"preset.1.options": ["application/file_version", "application/product_version"],
+		},
+	}
+	if not rules.has(path):
+		return ""
+	var sections := rules[path] as Dictionary
+	var lines := contents.split("\n", true)
+	var section := ""
+	var seen := {}
+	for index in range(lines.size()):
+		var line := lines[index]
+		if line.begins_with("[") and line.ends_with("]"):
+			section = line.substr(1, line.length() - 2)
+			continue
+		var keys: Array = sections.get(section, [])
+		for key in keys:
+			var assignment := "%s=" % key
+			if not line.begins_with(assignment):
+				continue
+			var quoted := "%s\"" % assignment
+			if not line.begins_with(quoted) or not line.ends_with("\""):
+				return ""
+			var value := line.substr(quoted.length(), line.length() - quoted.length() - 1)
+			if not _is_dotted_version(value):
+				return ""
+			var slot := "%s/%s" % [section, key]
+			if seen.has(slot):
+				return ""
+			seen[slot] = true
+			lines[index] = "%s\"<release-version>\"" % assignment
+	for required_section in sections:
+		for key in sections[required_section] as Array:
+			if not seen.has("%s/%s" % [required_section, key]):
+				return ""
+	return "\n".join(lines)
+
+
+func _is_dotted_version(value: String) -> bool:
+	var pattern := RegEx.new()
+	return pattern.compile("^[0-9]+(\\.[0-9]+){2,3}$") == OK and pattern.search(value) != null
+
+
+## The patch notes file may gain one leading text-only release entry. The
+## captured definitions and functions below it must remain byte-identical.
+func _has_only_new_patch_notes(original: String, current: String) -> bool:
+	const MARKER := "const PATCH_NOTES := [\n"
+	var marker_at := original.find(MARKER)
+	if marker_at < 0 or current.find(MARKER) != marker_at:
+		return false
+	var split_at := marker_at + MARKER.length()
+	if not current.begins_with(original.substr(0, split_at)) or not current.ends_with(original.substr(split_at)):
+		return false
+	var added_length := current.length() - original.length()
+	if added_length <= 0:
+		return false
+	var lines := current.substr(split_at, added_length).split("\n", false)
+	if lines.size() < 7 or lines[0] != "\t{" or lines[3] != "\t\t\"highlights\": [" \
+		or lines[lines.size() - 2] != "\t\t]," or lines[lines.size() - 1] != "\t},":
+		return false
+	if not _is_dotted_version(_release_entry_value(lines[1], "version")):
+		return false
+	var date := _release_entry_value(lines[2], "date")
+	var date_pattern := RegEx.new()
+	if date_pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}$") != OK or date_pattern.search(date) == null:
+		return false
+	for index in range(4, lines.size() - 2):
+		var line := lines[index]
+		if not line.begins_with("\t\t\t\"") or not line.ends_with("\",") or line.length() <= 6:
+			return false
+		var highlight := line.substr(4, line.length() - 6)
+		if highlight.contains("\"") or highlight.contains("\\"):
+			return false
+	return true
+
+
+func _release_entry_value(line: String, key: String) -> String:
+	var prefix := "\t\t\"%s\": \"" % key
+	if not line.begins_with(prefix) or not line.ends_with("\","):
+		return ""
+	var value := line.substr(prefix.length(), line.length() - prefix.length() - 2)
+	return "" if value.contains("\"") or value.contains("\\") else value
 
 
 func _capture_block_violations(manifest: Dictionary) -> Array[String]:
@@ -585,6 +697,24 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	var wrong_tree := manifest.duplicate(true)
 	(wrong_tree.get("source", {}) as Dictionary)["tree_sha"] = "0".repeat(SHA1_LENGTH)
 	_expect(not declaration_violations(wrong_tree, profile).is_empty(), "a tree not owned by the source commit must fail closed", errors)
+
+	var source_sha := str((manifest.get("source", {}) as Dictionary).get("commit_sha", ""))
+	_expect(not _is_evidence_only_path("scripts/ultimates/presentation/contact_sheet_beats_contract.gd", source_sha),
+		"an ultimate runtime/tooling edit must make the capture stale", errors)
+	var old_project := _source_file_text(source_sha, "project.godot")
+	var current_project := FileAccess.get_file_as_string("res://project.godot")
+	_expect(_is_release_only_content("project.godot", old_project, current_project),
+		"the release version alone must leave the capture applicable", errors)
+	_expect(not _is_release_only_content("project.godot", old_project,
+		current_project + "\n[rendering]\nrenderer/rendering_method=\"gl_compatibility\"\n"),
+		"an unexpected project setting must make the capture stale", errors)
+	var old_notes := _source_file_text(source_sha, "scripts/patch_notes_data.gd")
+	var current_notes := FileAccess.get_file_as_string("res://scripts/patch_notes_data.gd")
+	_expect(_is_release_only_content("scripts/patch_notes_data.gd", old_notes, current_notes),
+		"a leading text-only patch notes entry must leave the capture applicable", errors)
+	_expect(not _is_release_only_content("scripts/patch_notes_data.gd", old_notes,
+		current_notes + "\nfunc unexpected_runtime_change() -> void:\n\tpass\n"),
+		"a patch notes code edit must make the capture stale", errors)
 
 	var stale_source := manifest.duplicate(true)
 	var stale_output: Array = []
