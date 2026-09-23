@@ -1,8 +1,20 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/ultimates/classes/guitarist/bass_guitar.gd" id="1_executor"]
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres" id="2_flipbook"]
 [ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="3_presence"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0.028, 0.015, 0.07, 0.64, 0.028, 0.015, 0.07, 0.72)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [sub_resource type="Animation" id="Animation_hell_subwoofer"]
 resource_name = "ultimate"
@@ -47,9 +59,10 @@ metadata/impact_language = "sequential pull, heavy compression, launch ripple, a
 metadata/max_visual_nodes = 6
 metadata/crowd_cap = 12
 
-[node name="BackdropVeil" type="Polygon2D" parent="."]
-color = Color(0.028, 0.015, 0.07, 0.64)
+[node name="BackdropVeil" type="Sprite2D" parent="."]
 z_index = -20
+texture = SubResource("GradientTexture2D_veil")
+metadata/fullscreen_layer = true
 
 [node name="Subwoofer" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("2_flipbook")

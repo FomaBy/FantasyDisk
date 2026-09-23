@@ -515,7 +515,7 @@ func _check_accessibility_modes(class_manifest: Dictionary, errors: Array[String
 				_expect(int(state.get("motion_tracks_disabled", 0)) > 0, "%s reduced motion must replace a fast motion channel" % key, errors)
 			if bool(mode["photo"]):
 				_expect(int(state.get("photosensitive_nodes", 0)) > 0, "%s photosensitivity-safe must replace a bright authored surface" % key, errors)
-			var backdrop := scene.get_node_or_null("BackdropLayer/BackdropVeil") as ColorRect
+			var backdrop := scene.get_node_or_null("BackdropLayer/BackdropVeil") as CanvasItem
 			_expect(backdrop != null and backdrop.get_meta("fullscreen_layer", false) == true, "%s must ship the screen-space darken backdrop" % key, errors)
 			if scene.has_method("finish"):
 				scene.call("finish", "cancel")

@@ -23,6 +23,16 @@ const REDUCED_BACKDROP_ALPHA := 0.70
 const PHOTO_BACKDROP_ALPHA := 0.56
 const REDUCED_SPRITE_ALPHA := 0.60
 const PHOTO_SPRITE_ALPHA := 0.68
+## Cast-pose halo behind the weapon silhouette: two radial GradientTexture2D
+## discs (the veil technique of the Combat VFX Art Standard), never a naked
+## primitive. Built once per process and shared by every activation.
+const CAST_POSE_BACKDROP_RADIUS := 36.0
+const CAST_POSE_BACKDROP_COLOR := Color(0.025, 0.018, 0.035, 0.92)
+const CAST_POSE_HIGHLIGHT_RADIUS := 30.0
+const CAST_POSE_HIGHLIGHT_COLOR := Color(0.92, 0.76, 0.38, 0.78)
+
+static var _cast_pose_backdrop_texture: GradientTexture2D = null
+static var _cast_pose_highlight_texture: GradientTexture2D = null
 
 static var _duck_refs := 0
 static var _duck_volume_before_db := 0.0
@@ -42,8 +52,8 @@ var _sfx_bus_index := -1
 var _externally_driven := false
 var _shake_rng := RandomNumberGenerator.new()
 var _cast_pose: Sprite2D = null
-var _cast_pose_backdrop: Polygon2D = null
-var _cast_pose_highlight: Polygon2D = null
+var _cast_pose_backdrop: Sprite2D = null
+var _cast_pose_highlight: Sprite2D = null
 var _player_body: CanvasItem = null
 var _player_body_was_visible := true
 var _cast_pose_binding_error := "not_started"
@@ -324,17 +334,12 @@ func _bind_cast_pose(registry) -> void:
 		return
 	_player_body_was_visible = _player_body.visible
 	_player_body.visible = false
-	_cast_pose_backdrop = Polygon2D.new()
-	_cast_pose_backdrop.name = "UltimateCastPoseBackdrop"
-	_cast_pose_backdrop.polygon = PackedVector2Array([Vector2(0, -36), Vector2(36, 0), Vector2(0, 36), Vector2(-36, 0)])
-	_cast_pose_backdrop.color = Color(0.025, 0.018, 0.035, 0.92)
-	_cast_pose_backdrop.z_index = 0
+	if _cast_pose_backdrop_texture == null:
+		_cast_pose_backdrop_texture = _radial_disc_texture(CAST_POSE_BACKDROP_COLOR, CAST_POSE_BACKDROP_RADIUS)
+		_cast_pose_highlight_texture = _radial_disc_texture(CAST_POSE_HIGHLIGHT_COLOR, CAST_POSE_HIGHLIGHT_RADIUS)
+	_cast_pose_backdrop = _cast_pose_halo("UltimateCastPoseBackdrop", _cast_pose_backdrop_texture, 0)
 	visual_root.add_child(_cast_pose_backdrop)
-	_cast_pose_highlight = Polygon2D.new()
-	_cast_pose_highlight.name = "UltimateCastPoseHighlight"
-	_cast_pose_highlight.polygon = PackedVector2Array([Vector2(0, -30), Vector2(30, 0), Vector2(0, 30), Vector2(-30, 0)])
-	_cast_pose_highlight.color = Color(0.92, 0.76, 0.38, 0.78)
-	_cast_pose_highlight.z_index = 1
+	_cast_pose_highlight = _cast_pose_halo("UltimateCastPoseHighlight", _cast_pose_highlight_texture, 1)
 	visual_root.add_child(_cast_pose_highlight)
 	_cast_pose = Sprite2D.new()
 	_cast_pose.name = "UltimateCastPose"
@@ -345,6 +350,28 @@ func _bind_cast_pose(registry) -> void:
 	_cast_pose.z_index = 2
 	visual_root.add_child(_cast_pose)
 	_cast_pose_binding_error = ""
+
+
+static func _radial_disc_texture(color: Color, radius: float) -> GradientTexture2D:
+	var gradient := Gradient.new()
+	gradient.offsets = PackedFloat32Array([0.0, 0.82, 1.0])
+	gradient.colors = PackedColorArray([color, color, Color(color, 0.0)])
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.0, 0.5)
+	texture.width = int(radius * 2.0)
+	texture.height = int(radius * 2.0)
+	return texture
+
+
+static func _cast_pose_halo(halo_name: String, texture: GradientTexture2D, z: int) -> Sprite2D:
+	var halo := Sprite2D.new()
+	halo.name = halo_name
+	halo.texture = texture
+	halo.z_index = z
+	return halo
 
 
 func _release_cast_pose() -> void:
