@@ -1,10 +1,17 @@
 # FantasyDisk 0.3.1 poster source and verification
 
 The publishable 1350 × 1350 RGB poster is
-`assets/marketing/fantasydisk_0.3.1_announcement.png` (SHA-256
+`assets/marketing/fantasydisk_031_announcement.png` (SHA-256
 `d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e`).
 Its five declared content zones contain the only composited text. The central
 disk and all frame decoration come from the selected PixelLab source.
+
+This is the name `tools/build_release.sh` derives for version 0.3.1. The
+first candidate committed the same image as
+`assets/marketing/fantasydisk_0.3.1_announcement.png`; it was renamed without
+re-encoding (same Git blob `13a98b431534a1d5e278309f4ce360b464e7b043` and
+SHA-256), so the fit report, debug overlay, and provenance below still
+describe these exact bytes. The old path is no longer present.
 
 ## Provenance
 
