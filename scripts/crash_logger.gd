@@ -1,0 +1,969 @@
+extends Node
+
+const INCIDENT_DIRECTORY := "user://logs/incidents"
+const INCIDENT_PREFIX := "incident_"
+const INCIDENT_SUFFIX := ".json"
+const TEMP_SUFFIX := ".tmp"
+const MAX_BREADCRUMBS := 50
+const MAX_PENDING_INCIDENTS := 64
+const MAX_INCIDENTS := 20
+const MAX_RETAINED_BYTES := 1024 * 1024
+const MAX_RECORD_BYTES := 64 * 1024
+const MAX_ERROR_TEXT_CHARS := 4096
+const MAX_ERROR_FIELD_CHARS := 2048
+const MAX_BACKTRACE_FRAMES := 64
+const MAX_BREADCRUMB_FIELD_CHARS := 96
+const DEBUG_SELF_TEST_FLAG := "--crash-logger-self-test"
+const DEBUG_OUTPUT_PREFIX := "--crash-logger-output="
+const SELF_TEST_ERROR := "FAN-3905 deterministic crash logger self-test"
+const REDACTED_VALUE := "<redacted>"
+# Final key words that identify a credential-bearing field in any casing or
+# separator form (client_secret, auth-token, Set-Cookie, clientSecret ...).
+const SENSITIVE_KEY_HEADS := {
+	"password": true, "passwd": true, "passphrase": true, "passcode": true, "pwd": true,
+	"secret": true, "token": true, "auth": true, "authorization": true,
+	"credential": true, "credentials": true, "cookie": true, "cookies": true,
+	"jwt": true, "bearer": true, "apikey": true, "privatekey": true, "secretkey": true,
+	"accesskey": true, "sessionid": true, "sessiontoken": true, "sessionkey": true,
+}
+# `<qualifier>_key` forms that are credentials; a bare `key` stays readable.
+const SENSITIVE_KEY_QUALIFIERS := {
+	"api": true, "private": true, "secret": true, "access": true, "signing": true,
+	"session": true, "auth": true, "encryption": true, "master": true, "ssh": true,
+	"client": true, "server": true, "license": true, "app": true, "consumer": true,
+	"shared": true, "security": true, "hmac": true, "aws": true,
+}
+const SENSITIVE_ID_QUALIFIERS := {"session": true, "sess": true}
+const BARE_VALUE_TERMINATORS := " \t\r\n,;}])&\"'<>"
+# Sentence punctuation that may follow a prose element or a credential; word
+# separators `-` and `/` are never trimmed, so `-secret`, `////` or
+# `secret//value` keep their separator structure and fail the prose grammar.
+const TERMINAL_PUNCTUATION := ".,;:!?"
+# RFC 7235 auth-scheme: a short name such as Basic, DPoP, SCRAM-SHA-256 or an
+# unknown extension scheme. Longer or underscore-bearing first tokens are the
+# credential itself.
+const MAX_AUTH_SCHEME_CHARS := 32
+# Bare `<scheme> <credential>` without a header name or credential key is
+# detected only for registered HTTP authentication schemes and the `X-`
+# extension convention, in any letter case (Basic, basic, BASIC, bAsIc).
+# The element after the scheme is then judged by _is_ordinary_word: an
+# arbitrary word followed by an ordinary word or number is diagnostic prose
+# and is never treated as a credential.
+const BARE_AUTH_SCHEME_PATTERN := r"(?i)(?<![A-Za-z0-9_.\-])(Basic|Bearer|Digest|DPoP|HOBA|Mutual|Negotiate|NTLM|OAuth|SCRAM-SHA-1|SCRAM-SHA-256|Signature|GNAP|PrivateToken|Concealed|AWS4-HMAC-SHA256|X-[A-Za-z0-9-]+)(?=[ \t])"
+
+
+class IncidentSink:
+	extends Logger
+
+	var _flush_owner: Node
+	var _mutex := Mutex.new()
+	var _redaction_mutex := Mutex.new()
+	var _breadcrumbs: Array[Dictionary] = []
+	var _pending: Array[Dictionary] = []
+	var _suppressed_thread_id := 0
+	var _dropped_pending := 0
+	var _flush_scheduled := false
+	var _key_value_pattern: RegEx
+	var _bare_scheme_pattern: RegEx
+	var _url_userinfo_pattern: RegEx
+	var _private_key_block_pattern: RegEx
+	var _home_path_pattern: RegEx
+
+
+	func _init(flush_owner: Node) -> void:
+		_flush_owner = flush_owner
+		# Any `key: value` / `key=value` pair, quoted or bare, escaped-JSON or
+		# plain. Sensitivity is decided per key by _is_sensitive_key so that the
+		# same rule covers text, headers and nested structured forms.
+		_key_value_pattern = RegEx.create_from_string(
+			r"(?<![A-Za-z0-9_.\-])(?:\\?[\"'])?([A-Za-z][A-Za-z0-9_.\-]*)(?:\\?[\"'])?[ \t]*[:=][ \t]*"
+		)
+		_bare_scheme_pattern = RegEx.create_from_string(BARE_AUTH_SCHEME_PATTERN)
+		_url_userinfo_pattern = RegEx.create_from_string(
+			r"(://[^/\s@:]+:)[^@/\s]+@"
+		)
+		_private_key_block_pattern = RegEx.create_from_string(
+			r"(?s)-----BEGIN [A-Z ]*PRIVATE KEY-----.*?(?:-----END [A-Z ]*PRIVATE KEY-----|$)"
+		)
+		_home_path_pattern = RegEx.create_from_string(
+			r"(?i)((?:^|[\s\"'(\[{:=,]))(?:[A-Z]:[\\/](?![\\/])|/(?:Users|home)/)[^\s\"')\]},;]+"
+		)
+
+
+	func _log_message(_message: String, _error: bool) -> void:
+		# Raw stderr/print messages do not carry structured engine error identity.
+		# Capturing them would duplicate _log_error and turn printerr() into incidents.
+		pass
+
+
+	func _log_error(
+		function: String,
+		file: String,
+		line: int,
+		code: String,
+		rationale: String,
+		editor_notify: bool,
+		error_type: int,
+		script_backtraces: Array[ScriptBacktrace],
+	) -> void:
+		if error_type == Logger.ERROR_TYPE_WARNING:
+			return
+		var record := {
+			"error": {
+				"type": _error_type_name(error_type),
+				"text": _error_text(code, rationale),
+				"function": _bounded(_redact(function), MAX_BREADCRUMB_FIELD_CHARS),
+				"file": _safe_source_path(file),
+				"line": maxi(line, 0),
+				"code": _bounded(_redact(code), MAX_ERROR_FIELD_CHARS),
+				"rationale": _bounded(_redact(rationale), MAX_ERROR_FIELD_CHARS),
+				"editor_notify": editor_notify,
+			},
+			"script_backtrace": _serialize_backtraces(script_backtraces),
+		}
+		_enqueue(record)
+
+
+	func record_breadcrumb(class_id: String, weapon_id: String, event: String, frame: int) -> void:
+		var breadcrumb := {
+			"class": _bounded(_redact(class_id), MAX_BREADCRUMB_FIELD_CHARS),
+			"weapon": _bounded(_redact(weapon_id), MAX_BREADCRUMB_FIELD_CHARS),
+			"event": _bounded(_redact(event), MAX_BREADCRUMB_FIELD_CHARS),
+			"frame": maxi(frame, 0),
+		}
+		_mutex.lock()
+		_breadcrumbs.append(breadcrumb)
+		while _breadcrumbs.size() > MAX_BREADCRUMBS:
+			_breadcrumbs.pop_front()
+		_mutex.unlock()
+
+
+	func capture_for_test(
+		error_text: String,
+		frames: Array[Dictionary],
+		code := "",
+		rationale := "",
+	) -> void:
+		var safe_frames: Array[Dictionary] = []
+		for raw_frame in frames.slice(0, MAX_BACKTRACE_FRAMES):
+			var frame: Dictionary = raw_frame
+			safe_frames.append({
+				"file": _safe_source_path(str(frame.get("file", ""))),
+				"function": _bounded(_redact(str(frame.get("function", ""))), MAX_BREADCRUMB_FIELD_CHARS),
+				"line": maxi(int(frame.get("line", 0)), 0),
+			})
+		var traces: Array[Dictionary] = []
+		if not safe_frames.is_empty():
+			traces.append({"language": "GDScript", "frames": safe_frames})
+		_enqueue({
+			"error": {
+				"type": "script",
+				"text": _bounded(_redact(error_text), MAX_ERROR_TEXT_CHARS),
+				"function": "capture_for_test",
+				"file": "res://tests/crash_logger_test.gd",
+				"line": 0,
+				"code": _bounded(_redact(code if not code.is_empty() else error_text), MAX_ERROR_FIELD_CHARS),
+				"rationale": _bounded(_redact(rationale), MAX_ERROR_FIELD_CHARS),
+				"editor_notify": false,
+			},
+			"script_backtrace": _backtrace_payload(traces),
+		})
+
+
+	func take_pending() -> Array[Dictionary]:
+		_mutex.lock()
+		var result: Array[Dictionary] = _pending.duplicate(true)
+		_pending.clear()
+		_flush_scheduled = false
+		_mutex.unlock()
+		return result
+
+
+	func breadcrumb_snapshot() -> Array[Dictionary]:
+		_mutex.lock()
+		var result: Array[Dictionary] = _breadcrumbs.duplicate(true)
+		_mutex.unlock()
+		return result
+
+
+	func clear_breadcrumbs() -> void:
+		_mutex.lock()
+		_breadcrumbs.clear()
+		_mutex.unlock()
+
+
+	func set_capture_suppressed(value: bool) -> void:
+		_mutex.lock()
+		_suppressed_thread_id = OS.get_thread_caller_id() if value else 0
+		_mutex.unlock()
+
+
+	func _enqueue(record: Dictionary) -> void:
+		var schedule_flush := false
+		_mutex.lock()
+		if _suppressed_thread_id == OS.get_thread_caller_id():
+			_mutex.unlock()
+			return
+		record["breadcrumbs"] = _breadcrumbs.duplicate(true)
+		if _pending.size() >= MAX_PENDING_INCIDENTS:
+			_pending.pop_front()
+			_dropped_pending += 1
+		if _dropped_pending > 0:
+			record["dropped_pending_before"] = _dropped_pending
+			_dropped_pending = 0
+		_pending.append(record)
+		if not _flush_scheduled:
+			_flush_scheduled = true
+			schedule_flush = true
+		_mutex.unlock()
+		if schedule_flush and is_instance_valid(_flush_owner):
+			_flush_owner.call_deferred("_flush_pending")
+
+
+	func _serialize_backtraces(script_backtraces: Array[ScriptBacktrace]) -> Dictionary:
+		var traces: Array[Dictionary] = []
+		var remaining := MAX_BACKTRACE_FRAMES
+		for backtrace in script_backtraces:
+			if backtrace == null or backtrace.is_empty() or remaining <= 0:
+				continue
+			var frames: Array[Dictionary] = []
+			var frame_count := mini(backtrace.get_frame_count(), remaining)
+			for index in range(frame_count):
+				frames.append({
+					"file": _safe_source_path(backtrace.get_frame_file(index)),
+					"function": _bounded(
+						_redact(backtrace.get_frame_function(index)),
+						MAX_BREADCRUMB_FIELD_CHARS,
+					),
+					"line": maxi(backtrace.get_frame_line(index), 0),
+				})
+			remaining -= frames.size()
+			if not frames.is_empty():
+				traces.append({
+					"language": _bounded(backtrace.get_language_name(), 32),
+					"frames": frames,
+				})
+		return _backtrace_payload(traces)
+
+
+	func _backtrace_payload(traces: Array[Dictionary]) -> Dictionary:
+		if traces.is_empty():
+			return {
+				"available": false,
+				"status": "unavailable: engine callback supplied no script frames",
+				"traces": [],
+			}
+		return {"available": true, "status": "captured", "traces": traces}
+
+
+	func _error_text(code: String, rationale: String) -> String:
+		var parts: Array[String] = []
+		if not code.strip_edges().is_empty():
+			parts.append(code.strip_edges())
+		if not rationale.strip_edges().is_empty() and rationale.strip_edges() != code.strip_edges():
+			parts.append(rationale.strip_edges())
+		return _bounded(_redact(" — ".join(parts)), MAX_ERROR_TEXT_CHARS)
+
+
+	func _redact(value: String) -> String:
+		_redaction_mutex.lock()
+		var result := value
+		if _private_key_block_pattern != null:
+			result = _private_key_block_pattern.sub(result, "<redacted-private-key>", true)
+		if _key_value_pattern != null:
+			result = _redact_key_values(result)
+		if _bare_scheme_pattern != null:
+			result = _redact_bare_schemes(result)
+		if _url_userinfo_pattern != null:
+			result = _url_userinfo_pattern.sub(result, "$1<redacted>@", true)
+		if _home_path_pattern != null:
+			result = _home_path_pattern.sub(result, "$1<redacted-path>", true)
+		_redaction_mutex.unlock()
+		return result
+
+
+	# Replaces the value of every sensitive `key: value` / `key=value` pair.
+	# Values may be bare tokens, quoted strings, escaped-JSON strings, balanced
+	# `{...}` / `[...]` structures, `scheme credential` header values or
+	# `;`-separated cookie pairs. Benign keys and their values are untouched.
+	func _redact_key_values(text: String) -> String:
+		var matches := _key_value_pattern.search_all(text)
+		if matches.is_empty():
+			return text
+		var pieces := PackedStringArray()
+		var cursor := 0
+		for found in matches:
+			if found.get_start() < cursor:
+				continue
+			var key := found.get_string(1)
+			if not _is_sensitive_key(key):
+				continue
+			var value_start := found.get_end()
+			var value_end := _sensitive_value_end(text, value_start, _key_family(key))
+			if value_end <= value_start:
+				continue
+			pieces.append(text.substr(cursor, value_start - cursor))
+			pieces.append(_redacted_value(text, value_start, value_end))
+			cursor = value_end
+		if cursor == 0:
+			return text
+		pieces.append(text.substr(cursor))
+		return "".join(pieces)
+
+
+	# `Basic dXNlcjpwYXNz`, `DPoP "..."`, `X-Ext '...'` with no header name or
+	# credential key: the same credential-element parser as headers, applied
+	# after a registered or `X-` scheme name in any case. An ordinary word or
+	# plain number after the scheme (`Basic attack`, `basic Stone`, `digest 3`)
+	# is diagnostic text and is kept; quoted elements are always credentials.
+	func _redact_bare_schemes(text: String) -> String:
+		var matches := _bare_scheme_pattern.search_all(text)
+		if matches.is_empty():
+			return text
+		var pieces := PackedStringArray()
+		var cursor := 0
+		for found in matches:
+			var scheme_start := found.get_start()
+			if scheme_start < cursor:
+				continue
+			var scheme_end := found.get_end()
+			var element_start := _skip_inline_space(text, scheme_end)
+			var value_end := _header_value_end(text, scheme_start, true)
+			if value_end <= element_start:
+				continue
+			if _is_prose_element(text, element_start, value_end):
+				continue
+			var redact_end := _without_terminal_punctuation(text, element_start, value_end)
+			if redact_end <= element_start:
+				# Only sentence punctuation after the scheme word: nothing to hide.
+				continue
+			pieces.append(text.substr(cursor, element_start - cursor))
+			pieces.append(_redacted_value(text, element_start, redact_end))
+			cursor = redact_end
+		if cursor == 0:
+			return text
+		pieces.append(text.substr(cursor))
+		return "".join(pieces)
+
+
+	# Prose-versus-credential grammar for the element after a bare scheme name:
+	#   prose := word ( ("-" | "/") word )*  [ terminal-punctuation ]
+	#   word  := letters only, lowercase or Capitalised | plain number
+	# Exactly one separator between two words; a leading, trailing, repeated
+	# or word-less separator (`-secret`, `secret//value`, `secret-/value`,
+	# `////`) is outside the grammar and stays a credential element, as does
+	# anything quoted, ALL-CAPS beyond the first letter, mixed case, or with
+	# digits among letters, `_`, `+`, `=` or an inner `.`.
+	static func _is_prose_element(text: String, start: int, end: int) -> bool:
+		if end <= start:
+			return false
+		if not _quote_at(text, start).is_empty():
+			return false
+		var trimmed_end := _without_terminal_punctuation(text, start, end)
+		if trimmed_end <= start:
+			return false
+		var element := text.substr(start, trimmed_end - start)
+		for part in element.replace("/", "-").split("-", true):
+			if not _is_ordinary_word(part):
+				return false
+		return true
+
+
+	static func _without_terminal_punctuation(text: String, start: int, end: int) -> int:
+		var position := end
+		while position > start and TERMINAL_PUNCTUATION.contains(text[position - 1]):
+			position -= 1
+		return position
+
+
+	static func _is_ordinary_word(word: String) -> bool:
+		if word.is_empty():
+			return false
+		if word.is_valid_int() or word.is_valid_float():
+			return true
+		if not _is_lower(word[0]) and not _is_upper(word[0]):
+			return false
+		for index in range(1, word.length()):
+			if not _is_lower(word[index]):
+				return false
+		return true
+
+
+	static func _redacted_value(text: String, start: int, end: int) -> String:
+		var quote := _quote_at(text, start)
+		var raw := text.substr(start, end - start)
+		if not quote.is_empty() and raw.length() >= quote.length() * 2 and raw.ends_with(quote):
+			return quote + REDACTED_VALUE + quote
+		return REDACTED_VALUE
+
+
+	# A key is sensitive when its final word names a credential (client_secret,
+	# auth-token, Set-Cookie, clientSecret, CLIENT.SECRET, x_api_key ...). Keys
+	# that merely contain such a word elsewhere (secret_boss_active,
+	# reroll_tokens, token_count) stay readable.
+	static func _is_sensitive_key(key: String) -> bool:
+		var segments := _key_segments(key)
+		if segments.is_empty():
+			return false
+		var head := segments[segments.size() - 1]
+		if SENSITIVE_KEY_HEADS.has(head):
+			return true
+		if segments.size() < 2:
+			return false
+		var qualifier := segments[segments.size() - 2]
+		if head == "key" and SENSITIVE_KEY_QUALIFIERS.has(qualifier):
+			return true
+		if head == "id" and SENSITIVE_ID_QUALIFIERS.has(qualifier):
+			return true
+		return false
+
+
+	static func _key_family(key: String) -> String:
+		var segments := _key_segments(key)
+		var head := segments[segments.size() - 1] if not segments.is_empty() else ""
+		if head == "authorization" or head == "auth":
+			return "header"
+		if head == "cookie" or head == "cookies":
+			return "cookie"
+		return "value"
+
+
+	static func _key_segments(key: String) -> PackedStringArray:
+		var spaced := ""
+		for index in range(key.length()):
+			var character := key[index]
+			if index > 0 and _is_upper(character):
+				var previous := key[index - 1]
+				var next_is_lower := index + 1 < key.length() and _is_lower(key[index + 1])
+				if _is_lower(previous) or previous.is_valid_int() or (_is_upper(previous) and next_is_lower):
+					spaced += "_"
+			spaced += character
+		spaced = spaced.replace("-", "_").replace(".", "_").to_lower()
+		return spaced.split("_", false)
+
+
+	static func _is_upper(character: String) -> bool:
+		return character != character.to_lower()
+
+
+	static func _is_lower(character: String) -> bool:
+		return character != character.to_upper()
+
+
+	static func _quote_at(text: String, position: int) -> String:
+		if position >= text.length():
+			return ""
+		var character := text[position]
+		if character == "\"" or character == "'":
+			return character
+		if character == "\\" and position + 1 < text.length():
+			var escaped := text[position + 1]
+			if escaped == "\"" or escaped == "'":
+				return "\\" + escaped
+		return ""
+
+
+	# End of a quoted value that starts at `start`; a backslash-escaped inner
+	# quote does not close it. An unterminated quote consumes the remainder.
+	static func _quoted_end(text: String, start: int, quote: String) -> int:
+		var search_from := start + quote.length()
+		while true:
+			var closing := text.find(quote, search_from)
+			if closing < 0:
+				return text.length()
+			if quote.length() == 1 and closing > 0 and text[closing - 1] == "\\":
+				search_from = closing + 1
+				continue
+			return closing + quote.length()
+		return text.length()
+
+
+	static func _sensitive_value_end(text: String, start: int, family: String) -> int:
+		if start >= text.length():
+			return start
+		var quote := _quote_at(text, start)
+		if not quote.is_empty():
+			return _quoted_end(text, start, quote)
+		var opener := text[start]
+		if opener == "{" or opener == "[":
+			return _balanced_end(text, start)
+		match family:
+			"header":
+				return _header_value_end(text, start)
+			"cookie":
+				return _cookie_value_end(text, start)
+		return _bare_value_end(text, start)
+
+
+	static func _bare_value_end(text: String, start: int) -> int:
+		var position := start
+		while position < text.length() and not BARE_VALUE_TERMINATORS.contains(text[position]):
+			position += 1
+		return position
+
+
+	static func _skip_inline_space(text: String, start: int) -> int:
+		var position := start
+		while position < text.length() and (text[position] == " " or text[position] == "\t"):
+			position += 1
+		return position
+
+
+	# Authorization-family value, RFC 7235 shape and scheme-agnostic:
+	# `<scheme> <token68>` or `<scheme> name=value, name="value", ...`.
+	# The scheme name is never trusted to be known: whatever follows it, and
+	# every comma-continued auth-param, is the credential. A first token that
+	# does not look like a scheme is the credential itself. Whitespace without a
+	# comma ends the value so trailing benign context survives.
+	# `bare_prose` selects the bare `<scheme> ...` context, where a comma
+	# continues the credential only with `name=value` or a quoted item so that
+	# `attack, then heavy!` stays prose. In the sensitive header/key context
+	# every comma-separated element is part of the credential and is removed.
+	static func _header_value_end(text: String, start: int, bare_prose := false) -> int:
+		var scheme_end := _bare_value_end(text, start)
+		if scheme_end == start:
+			return start
+		if not _looks_like_auth_scheme(text.substr(start, scheme_end - start)):
+			return scheme_end
+		var element_start := _skip_inline_space(text, scheme_end)
+		if element_start == scheme_end:
+			return scheme_end
+		var position := _auth_element_end(text, element_start)
+		if position == element_start:
+			# Not a token68, auth-param or quoted element: still never leave a
+			# non-blank credential candidate behind the scheme name.
+			position = _bare_value_end(text, element_start)
+			if position == element_start:
+				return scheme_end
+		while true:
+			var comma := _skip_inline_space(text, position)
+			if comma >= text.length() or text[comma] != ",":
+				break
+			var next_start := _skip_inline_space(text, comma + 1)
+			var next_end := _auth_element_end(text, next_start)
+			if next_end == next_start:
+				break
+			if bare_prose and not _is_auth_param_or_quoted(text, next_start, next_end):
+				break
+			position = next_end
+		return position
+
+
+	static func _is_auth_param_or_quoted(text: String, start: int, end: int) -> bool:
+		if not _quote_at(text, start).is_empty():
+			return true
+		return text.substr(start, end - start).find("=") >= 0
+
+
+	static func _looks_like_auth_scheme(token: String) -> bool:
+		if token.is_empty() or token.length() > MAX_AUTH_SCHEME_CHARS:
+			return false
+		if not _is_lower(token[0]) and not _is_upper(token[0]):
+			return false
+		for index in range(token.length()):
+			var character := token[index]
+			if not (_is_lower(character) or _is_upper(character) or character.is_valid_int() or character == "-"):
+				return false
+		return true
+
+
+	# One credential element: a quoted credential (`"abc"`, `'abc'`, `\"abc\"`),
+	# a token68 (`abc/def+ghi==`) or an auth-param (`name=value`,
+	# `name="quoted value"`).
+	static func _auth_element_end(text: String, start: int) -> int:
+		var leading_quote := _quote_at(text, start)
+		if not leading_quote.is_empty():
+			return _quoted_end(text, start, leading_quote)
+		var position := start
+		while position < text.length() and _is_token68_character(text[position]):
+			position += 1
+		if position == start:
+			return start
+		if position >= text.length() or text[position] != "=":
+			return position
+		var value_start := position + 1
+		var quote := _quote_at(text, value_start)
+		if not quote.is_empty():
+			return _quoted_end(text, value_start, quote)
+		return maxi(_bare_value_end(text, value_start), value_start)
+
+
+	static func _is_token68_character(character: String) -> bool:
+		return character.is_valid_identifier() or character.is_valid_int() \
+			or character == "-" or character == "." or character == "~" \
+			or character == "+" or character == "/"
+
+
+	# `Cookie: a=1; b=2`: every `;`-separated pair belongs to the cookie value.
+	static func _cookie_value_end(text: String, start: int) -> int:
+		var position := _bare_value_end(text, start)
+		while position < text.length() and text[position] == ";":
+			var pair_start := _skip_inline_space(text, position + 1)
+			var name_end := pair_start
+			while name_end < text.length() and _is_key_character(text[name_end]):
+				name_end += 1
+			if name_end == pair_start or name_end >= text.length() or text[name_end] != "=":
+				break
+			position = _bare_value_end(text, name_end + 1)
+		return position
+
+
+	static func _is_key_character(character: String) -> bool:
+		return character.is_valid_identifier() or character.is_valid_int() \
+			or character == "-" or character == "."
+
+
+	static func _balanced_end(text: String, start: int) -> int:
+		var depth := 0
+		var position := start
+		while position < text.length():
+			var character := text[position]
+			if character == "\\":
+				position += 2
+				continue
+			if character == "\"" or character == "'":
+				var closing := text.find(character, position + 1)
+				while closing > 0 and text[closing - 1] == "\\":
+					closing = text.find(character, closing + 1)
+				if closing < 0:
+					return text.length()
+				position = closing + 1
+				continue
+			if character == "{" or character == "[":
+				depth += 1
+			elif character == "}" or character == "]":
+				depth -= 1
+				if depth <= 0:
+					return position + 1
+			position += 1
+		return text.length()
+
+
+	static func _safe_source_path(value: String) -> String:
+		var normalized := value.replace("\\", "/")
+		if normalized.begins_with("res://") or normalized.begins_with("user://"):
+			return _bounded(normalized, 256)
+		return "<external>" if not normalized.is_empty() else ""
+
+
+	static func _bounded(value: String, limit: int) -> String:
+		if value.length() <= limit:
+			return value
+		return value.substr(0, maxi(limit - 1, 0)) + "…"
+
+
+	static func _error_type_name(error_type: int) -> String:
+		match error_type:
+			Logger.ERROR_TYPE_SCRIPT:
+				return "script"
+			Logger.ERROR_TYPE_SHADER:
+				return "shader"
+			_:
+				return "engine"
+
+
+var _sink: IncidentSink
+var _output_directory := INCIDENT_DIRECTORY
+var _last_incident_path := ""
+var _sequence := 0
+var _build_identity_cache: Dictionary = {}
+
+
+func _ready() -> void:
+	_output_directory = _debug_output_directory()
+	_prepare_output_directory()
+	_sink = IncidentSink.new(self)
+	OS.add_logger(_sink)
+	get_tree().node_added.connect(_on_node_added)
+	for node in get_tree().get_nodes_in_group("player"):
+		_watch_player(node)
+	if OS.is_debug_build() and OS.get_cmdline_user_args().has(DEBUG_SELF_TEST_FLAG):
+		call_deferred("_run_debug_self_test")
+
+
+func _exit_tree() -> void:
+	if _sink != null:
+		_flush_pending()
+		OS.remove_logger(_sink)
+
+
+func _on_node_added(node: Node) -> void:
+	_watch_player(node)
+
+
+func _watch_player(node: Node) -> void:
+	if not node.has_signal("weapon_cast_observed") or not node.has_signal("weapon_animation_event"):
+		return
+	var cast_callback := _on_weapon_cast_observed.bind(node)
+	if not node.is_connected("weapon_cast_observed", cast_callback):
+		node.connect("weapon_cast_observed", cast_callback)
+	var animation_callback := _on_weapon_animation_event.bind(node)
+	if not node.is_connected("weapon_animation_event", animation_callback):
+		node.connect("weapon_animation_event", animation_callback)
+
+
+func _on_weapon_cast_observed(event: Dictionary, player: Node) -> void:
+	if _skip_non_combat_player(player):
+		return
+	_record_combat_breadcrumb(
+		str(player.get("character_id")),
+		str(event.get("weapon_id", player.get("weapon_id"))),
+		"activation:%s" % str(event.get("phase", "observed")),
+	)
+
+
+func _on_weapon_animation_event(event: Dictionary, player: Node) -> void:
+	if _skip_non_combat_player(player):
+		return
+	var phase := str(event.get("phase", "observed"))
+	var event_name := "finish:%s" % phase if phase == "release" else "phase:%s" % phase
+	_record_combat_breadcrumb(
+		str(event.get("character_id", player.get("character_id"))),
+		str(event.get("weapon_id", player.get("weapon_id"))),
+		event_name,
+	)
+
+
+func _skip_non_combat_player(player: Node) -> bool:
+	return player == null or not is_instance_valid(player) \
+		or str(player.get_meta("player_lifecycle_role", "")) == "menu_snapshot"
+
+
+func _record_combat_breadcrumb(class_id: String, weapon_id: String, event: String) -> void:
+	if _sink != null:
+		_sink.record_breadcrumb(class_id, weapon_id, event, Engine.get_process_frames())
+
+
+func _flush_pending() -> void:
+	if _sink == null:
+		return
+	var pending := _sink.take_pending()
+	for record in pending:
+		_write_incident(record)
+
+
+func _write_incident(record: Dictionary) -> void:
+	_sink.set_capture_suppressed(true)
+	var path := _write_incident_suppressed(record)
+	_sink.set_capture_suppressed(false)
+	if not path.is_empty():
+		_last_incident_path = path
+
+
+func _write_incident_suppressed(record: Dictionary) -> String:
+	if not _prepare_output_directory():
+		return ""
+	var enriched := record.duplicate(true)
+	enriched["schema_version"] = 1
+	enriched["timestamp_utc"] = Time.get_datetime_string_from_system(true, true) + "Z"
+	enriched["build_version"] = str(ProjectSettings.get_setting("application/config/version", "unknown"))
+	var identity := _build_identity()
+	for key in identity:
+		enriched[key] = identity[key]
+	var payload := _bounded_record_payload(enriched)
+	if payload.is_empty():
+		return ""
+	_rotate_for(payload.size())
+	var timestamp := str(enriched["timestamp_utc"]).replace(":", "-")
+	var final_path := ""
+	while final_path.is_empty() or FileAccess.file_exists(final_path):
+		_sequence += 1
+		var filename := "%s%s_%06d%s" % [INCIDENT_PREFIX, timestamp, _sequence, INCIDENT_SUFFIX]
+		final_path = _path_join(_output_directory, filename)
+	var temp_path := final_path + TEMP_SUFFIX
+	var file := FileAccess.open(temp_path, FileAccess.WRITE)
+	if file == null:
+		return ""
+	file.store_buffer(payload)
+	var write_error := file.get_error()
+	file.close()
+	if write_error != OK:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temp_path))
+		return ""
+	var rename_error := DirAccess.rename_absolute(
+		ProjectSettings.globalize_path(temp_path),
+		ProjectSettings.globalize_path(final_path),
+	)
+	if rename_error != OK:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temp_path))
+		return ""
+	return ProjectSettings.globalize_path(final_path)
+
+
+func _bounded_record_payload(record: Dictionary) -> PackedByteArray:
+	var payload := JSON.stringify(record).to_utf8_buffer()
+	if payload.size() <= MAX_RECORD_BYTES:
+		return payload
+	var reduced := record.duplicate(true)
+	reduced["truncated"] = true
+	var error: Dictionary = reduced.get("error", {})
+	error["text"] = str(error.get("text", "")).substr(0, 1024)
+	error["code"] = str(error.get("code", "")).substr(0, 512)
+	error["rationale"] = str(error.get("rationale", "")).substr(0, 512)
+	reduced["error"] = error
+	var backtrace: Dictionary = reduced.get("script_backtrace", {})
+	var traces: Array = backtrace.get("traces", [])
+	for trace_value in traces:
+		var trace: Dictionary = trace_value
+		trace["frames"] = (trace.get("frames", []) as Array).slice(0, 16)
+	backtrace["traces"] = traces
+	reduced["script_backtrace"] = backtrace
+	reduced["breadcrumbs"] = (reduced.get("breadcrumbs", []) as Array).slice(-20)
+	payload = JSON.stringify(reduced).to_utf8_buffer()
+	if payload.size() <= MAX_RECORD_BYTES:
+		return payload
+	reduced["breadcrumbs"] = []
+	backtrace["traces"] = []
+	backtrace["available"] = false
+	backtrace["status"] = "truncated to preserve record byte limit"
+	payload = JSON.stringify(reduced).to_utf8_buffer()
+	return payload if payload.size() <= MAX_RECORD_BYTES else PackedByteArray()
+
+
+func _build_identity() -> Dictionary:
+	if not _build_identity_cache.is_empty():
+		return _build_identity_cache
+	var executable := OS.get_executable_path()
+	var app_name := str(ProjectSettings.get_setting("application/config/name", "FantasyDisk"))
+	var candidates := [
+		executable.get_base_dir().path_join("../Resources/%s.pck" % app_name),
+		executable.get_basename() + ".pck",
+	]
+	for candidate in candidates:
+		var absolute_candidate := ProjectSettings.globalize_path(str(candidate)).simplify_path()
+		if FileAccess.file_exists(absolute_candidate):
+			var digest := FileAccess.get_sha256(absolute_candidate)
+			if not digest.is_empty():
+				_build_identity_cache = {
+					"build_sha256": digest,
+					"build_sha256_source": "exported project pack",
+				}
+				return _build_identity_cache
+	var source_digest := FileAccess.get_sha256("res://scripts/crash_logger.gd")
+	_build_identity_cache = {
+		"build_sha256": source_digest if not source_digest.is_empty() else "unavailable",
+		"build_sha256_source": "res://scripts/crash_logger.gd" if not source_digest.is_empty() else "unavailable",
+	}
+	return _build_identity_cache
+
+
+func _rotate_for(incoming_bytes: int) -> void:
+	var entries: Array[Dictionary] = []
+	var total_bytes := 0
+	for filename in DirAccess.get_files_at(_output_directory):
+		if not filename.begins_with(INCIDENT_PREFIX) or not filename.ends_with(INCIDENT_SUFFIX):
+			continue
+		var path := _path_join(_output_directory, filename)
+		var file := FileAccess.open(path, FileAccess.READ)
+		var size := 0
+		if file != null:
+			size = file.get_length()
+			file.close()
+		entries.append({"name": filename, "path": path, "size": size})
+		total_bytes += size
+	entries.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a["name"]) < str(b["name"]))
+	while not entries.is_empty() and (
+		entries.size() >= MAX_INCIDENTS or total_bytes + incoming_bytes > MAX_RETAINED_BYTES
+	):
+		var oldest: Dictionary = entries.pop_front()
+		if DirAccess.remove_absolute(ProjectSettings.globalize_path(str(oldest["path"]))) == OK:
+			total_bytes -= int(oldest["size"])
+
+
+func _prepare_output_directory() -> bool:
+	var absolute_directory := ProjectSettings.globalize_path(_output_directory)
+	if DirAccess.make_dir_recursive_absolute(absolute_directory) != OK:
+		return false
+	for filename in DirAccess.get_files_at(_output_directory):
+		if filename.begins_with(INCIDENT_PREFIX) and filename.ends_with(TEMP_SUFFIX):
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(_path_join(_output_directory, filename)))
+	return true
+
+
+func _debug_output_directory() -> String:
+	if not OS.is_debug_build():
+		return INCIDENT_DIRECTORY
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with(DEBUG_OUTPUT_PREFIX):
+			var requested := argument.trim_prefix(DEBUG_OUTPUT_PREFIX).strip_edges()
+			if not requested.is_empty():
+				return requested
+	return INCIDENT_DIRECTORY
+
+
+func _run_debug_self_test() -> void:
+	_self_test_parent()
+	_flush_pending()
+	if _last_incident_path.is_empty():
+		print("CRASH_LOGGER_SELF_TEST_FAILED")
+		get_tree().quit(2)
+		return
+	print("CRASH_LOGGER_SELF_TEST incident=%s" % _last_incident_path)
+	get_tree().quit(0)
+
+
+func _self_test_parent() -> void:
+	_self_test_leaf()
+
+
+func _self_test_leaf() -> void:
+	push_error(SELF_TEST_ERROR)
+
+
+func configure_output_directory_for_tests(path: String) -> bool:
+	if not OS.is_debug_build() or path.strip_edges().is_empty():
+		return false
+	_flush_pending()
+	_output_directory = path.strip_edges()
+	_last_incident_path = ""
+	_sequence = 0
+	_build_identity_cache.clear()
+	return _prepare_output_directory()
+
+
+func record_breadcrumb_for_tests(class_id: String, weapon_id: String, event: String, frame: int) -> void:
+	if OS.is_debug_build() and _sink != null:
+		_sink.record_breadcrumb(class_id, weapon_id, event, frame)
+
+
+func capture_error_for_tests(
+	error_text: String,
+	frames: Array[Dictionary] = [],
+	code := "",
+	rationale := "",
+) -> void:
+	if OS.is_debug_build() and _sink != null:
+		_sink.capture_for_test(error_text, frames, code, rationale)
+
+
+func flush_pending_for_tests() -> void:
+	if OS.is_debug_build():
+		_flush_pending()
+
+
+func breadcrumb_snapshot_for_tests() -> Array[Dictionary]:
+	return _sink.breadcrumb_snapshot() if OS.is_debug_build() and _sink != null else []
+
+
+func clear_breadcrumbs_for_tests() -> void:
+	if OS.is_debug_build() and _sink != null:
+		_sink.clear_breadcrumbs()
+
+
+func last_incident_path_for_tests() -> String:
+	return _last_incident_path if OS.is_debug_build() else ""
+
+
+func incident_paths_for_tests() -> PackedStringArray:
+	var result := PackedStringArray()
+	if not OS.is_debug_build():
+		return result
+	for filename in DirAccess.get_files_at(_output_directory):
+		if filename.begins_with(INCIDENT_PREFIX) and filename.ends_with(INCIDENT_SUFFIX):
+			result.append(ProjectSettings.globalize_path(_path_join(_output_directory, filename)))
+	result.sort()
+	return result
+
+
+static func _path_join(directory: String, filename: String) -> String:
+	return directory.trim_suffix("/").path_join(filename)
