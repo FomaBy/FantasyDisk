@@ -1,0 +1,253 @@
+{
+  "issue": "FAN-3968",
+  "renderer": "Godot 4.7.stable.official.5b4e0cb0f windowed, fixed 60 FPS",
+  "capture_sizes": {
+    "648p": [
+      1152,
+      648
+    ],
+    "720p": [
+      1280,
+      720
+    ],
+    "1080p": [
+      1920,
+      1080
+    ],
+    "2K": [
+      2560,
+      1440
+    ]
+  },
+  "capture_note": "Contact sheets show scoped ultimate timelines. Runtime sheets mount a registered player and bind the actual cast pose before sampling each live scene; the radial plate measures centre alpha 0.898 and corner alpha 0.000 for Assassin and Doctor in every viewport. The 648p first-frame warmup is repeated before saved output. All final PNGs decode, remain inset and show nonblank content.",
+  "reuse_provenance": [
+    {
+      "runtime": "assets/sprites/effects/assassin/chakrams/trail/trail_spriteframes.tres",
+      "source_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_chakrams_trail.json"
+    },
+    {
+      "runtime": "assets/sprites/effects/assassin/shadow_daggers/tornado/tornado_spriteframes.tres",
+      "source_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_shadow_daggers_tornado.json"
+    },
+    {
+      "runtime": "assets/sprites/effects/assassin/venom_wire/pulse/pulse_spriteframes.tres",
+      "source_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_venom_wire_pulse.json"
+    },
+    {
+      "runtime": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_spriteframes.tres",
+      "source_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_poison_pool.json"
+    },
+    {
+      "runtime": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_spriteframes.tres",
+      "source_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_infection_wave.json"
+    },
+    {
+      "runtime": "assets/sprites/effects/doctor/bone_saw/orbit_slash/orbit_slash_spriteframes.tres",
+      "source_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_orbit_slash.json"
+    }
+  ],
+  "new_bitmap_art": false,
+  "new_external_charge": false,
+  "files": [
+    {
+      "path": "evidence/FAN-3968/captures/assassin_1080.png",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 72385,
+      "sha256": "593f7dae39245808d4b1ea8d61a075f3c11c71238ab27dd72dc81fd799949678",
+      "bright_pixels_over_95": 42771
+    },
+    {
+      "path": "evidence/FAN-3968/captures/assassin_1440.png",
+      "size_px": [
+        2560,
+        1440
+      ],
+      "bytes": 85381,
+      "sha256": "ecffd933680f6c8e4a2f89f7e2a90d16686f3025a81ce1384972c3c55f8ceaab",
+      "bright_pixels_over_95": 57266
+    },
+    {
+      "path": "evidence/FAN-3968/captures/assassin_648.png",
+      "size_px": [
+        1152,
+        648
+      ],
+      "bytes": 37742,
+      "sha256": "7794333e32dd7769530529afaae138cd4e74ea548eab5974030877b209128cbc",
+      "bright_pixels_over_95": 15925
+    },
+    {
+      "path": "evidence/FAN-3968/captures/assassin_720.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "bytes": 42054,
+      "sha256": "45b230c092fece679a5ea60aa64892f2c6d61e4a2c2a2746656be7b4ffcb18f3",
+      "bright_pixels_over_95": 19197
+    },
+    {
+      "path": "evidence/FAN-3968/captures/doctor_1080.png",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 166354,
+      "sha256": "60f21ad27d6c5c53404ec0a2962822bde9fb5eca50dee8f94b733149e6ead88a",
+      "bright_pixels_over_95": 37537
+    },
+    {
+      "path": "evidence/FAN-3968/captures/doctor_1440.png",
+      "size_px": [
+        2560,
+        1440
+      ],
+      "bytes": 259083,
+      "sha256": "d4d6bc65fb49c8e444a987d458a66f67bfa8e5018fb460926c12f6a11e8a6915",
+      "bright_pixels_over_95": 66859
+    },
+    {
+      "path": "evidence/FAN-3968/captures/doctor_648.png",
+      "size_px": [
+        1152,
+        648
+      ],
+      "bytes": 75897,
+      "sha256": "9442da36f5f1c441d9be6be817bfb148a7db7c2d2873e92752b7a65b8e2baa00",
+      "bright_pixels_over_95": 14353
+    },
+    {
+      "path": "evidence/FAN-3968/captures/doctor_720.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "bytes": 87149,
+      "sha256": "f1f0dff461c62aaac2ede1ee93cf7980bf55ea01af05cf7404aa7e928dc28fb5",
+      "bright_pixels_over_95": 16787
+    },
+    {
+      "path": "evidence/FAN-3968/captures/robot_1080.png",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 118639,
+      "sha256": "40422d2d45f2b0ebdd05b6e9859cc3a82cd21a87a48f3590a29dfc497d2fd1aa",
+      "bright_pixels_over_95": 28778
+    },
+    {
+      "path": "evidence/FAN-3968/captures/robot_1440.png",
+      "size_px": [
+        2560,
+        1440
+      ],
+      "bytes": 183051,
+      "sha256": "cf40f19a9eabb90b010646f5e41e48fb43fd7e2be3b8f655206445f9c54d38b6",
+      "bright_pixels_over_95": 49841
+    },
+    {
+      "path": "evidence/FAN-3968/captures/robot_648.png",
+      "size_px": [
+        1152,
+        648
+      ],
+      "bytes": 55590,
+      "sha256": "68f52b2bc2b76030829623c066139b03336f3ffb96ad5fffea431a2fdd11f73a",
+      "bright_pixels_over_95": 11047
+    },
+    {
+      "path": "evidence/FAN-3968/captures/robot_720.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "bytes": 63982,
+      "sha256": "0d79900274901fbce033e866b9e330dc215969a13bd6540b04ec0e426d20df90",
+      "bright_pixels_over_95": 12934
+    },
+    {
+      "path": "evidence/FAN-3968/runtime_1080.png",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 123505,
+      "sha256": "2e2ff049f19c41f8673a6cc27c98d7a16ee73aaff2c2ff496e9c477822326bc4",
+      "bright_pixels_over_95": 17164,
+      "panel_bright_pixels_over_90": {
+        "assassin_shadow": 2737,
+        "assassin_venom": 3172,
+        "doctor_restore": 1369,
+        "doctor_plague": 1064,
+        "doctor_saw": 2117,
+        "robot_anchor": 4750,
+        "robot_press": 466,
+        "robot_reactor": 2165
+      }
+    },
+    {
+      "path": "evidence/FAN-3968/runtime_1440.png",
+      "size_px": [
+        2560,
+        1440
+      ],
+      "bytes": 132142,
+      "sha256": "c1c8b5e7c48dbb26fe15e4eb1c8b2a063ac069ccd9a132ed2dd902f5e161fe0d",
+      "bright_pixels_over_95": 17131,
+      "panel_bright_pixels_over_90": {
+        "assassin_shadow": 2738,
+        "assassin_venom": 3140,
+        "doctor_restore": 1362,
+        "doctor_plague": 1071,
+        "doctor_saw": 2113,
+        "robot_anchor": 4760,
+        "robot_press": 482,
+        "robot_reactor": 2189
+      }
+    },
+    {
+      "path": "evidence/FAN-3968/runtime_648.png",
+      "size_px": [
+        1152,
+        648
+      ],
+      "bytes": 113084,
+      "sha256": "01b02d4b4e95a75b51ec227a6398a1d167ed26f85e20e91de63c2a09abedcf36",
+      "bright_pixels_over_95": 17179,
+      "panel_bright_pixels_over_90": {
+        "assassin_shadow": 2722,
+        "assassin_venom": 3194,
+        "doctor_restore": 1353,
+        "doctor_plague": 1061,
+        "doctor_saw": 2124,
+        "robot_anchor": 4734,
+        "robot_press": 500,
+        "robot_reactor": 2197
+      }
+    },
+    {
+      "path": "evidence/FAN-3968/runtime_720.png",
+      "size_px": [
+        1280,
+        720
+      ],
+      "bytes": 114518,
+      "sha256": "3eb767a876cf8d352de3349b67cc20621084f04ce30c7775d343c8bacfbbcbeb",
+      "bright_pixels_over_95": 17124,
+      "panel_bright_pixels_over_90": {
+        "assassin_shadow": 2717,
+        "assassin_venom": 3163,
+        "doctor_restore": 1353,
+        "doctor_plague": 1046,
+        "doctor_saw": 2122,
+        "robot_anchor": 4748,
+        "robot_press": 477,
+        "robot_reactor": 2180
+      }
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_spriteframes.tres" id="1_dagger_frames"]
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/assassin/assassin_ultimate_v2_driver.gd" id="2_driver"]
@@ -6,6 +6,16 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 0.72, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
 
 [sub_resource type="Animation" id="Animation_moment_before_death"]
 resource_local_to_scene = true
@@ -120,7 +130,7 @@ metadata/max_fullscreen_materials = 1
 [node name="BackdropLayer" type="CanvasLayer" parent="."]
 layer = -1
 
-[node name="BackdropVeil" type="ColorRect" parent="BackdropLayer"]
+[node name="BackdropVeil" type="TextureRect" parent="BackdropLayer"]
 metadata/fullscreen_layer = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -128,7 +138,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.025, 0.012, 0.045, 0.28)
+texture = SubResource("GradientTexture2D_veil")
+expand_mode = 1
+self_modulate = Color(0.025, 0.012, 0.045, 0.28)
 
 [node name="LocalDesaturation" type="Polygon2D" parent="."]
 color = Color(0.04, 0.03, 0.07, 0.34)
