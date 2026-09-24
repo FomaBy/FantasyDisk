@@ -299,12 +299,19 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
 
 Use two independently observed Settings → Applications inventories for the same
 personal account and distribution repository. Create the first proof before the
-command. The command creates and verifies the draft, then pauses at the terminal:
-only then export the second proof and press Enter. The second observation must be
-newer than the completed draft-asset check; a pre-created, replayed, malformed,
-hidden, partial, empty-name, or duplicate selected-repository inventory is rejected
-before `--draft=false`. Unknown repository selection is unsafe even for a read-only
-App.
+command; it must be under two minutes old when the publisher validates it before
+the atomic tag claim, and a stale first proof stops the command before any tag,
+draft or upload. Once the claim is made the first proof is never aged again: the
+uploads and the draft check may legitimately take longer than its window, and it
+keeps its validated identity, inventory and sole-writer binding only as the floor
+the second observation must beat. The command creates and verifies the draft,
+then pauses at the terminal: only then export the second proof and press Enter.
+The second observation must be under two minutes old at that point and newer
+than both the first proof and the completed draft-asset check; a pre-created,
+replayed, missing, stale, malformed, hidden, partial, empty-name, or duplicate
+selected-repository inventory is rejected before `--draft=false`, leaving the
+claimed tag and unpublished draft exactly as observed (burn the version). Unknown
+repository selection is unsafe even for a read-only App.
 
 Keep proofs only in a private temporary directory, never in the checkout, shell
 history, Multica, or logs. Replace the placeholders from the actual Settings UI;
@@ -372,8 +379,12 @@ ticket: it is account-security evidence, not release metadata.
    supported proof is two owner-attested, complete Settings → Applications JSON
    inventories passed with `--writer-inventory-proof` (pre-draft then
    pre-public). Each binds account, repository, UTC observation time and full
-   selected-repository details; both expire after two minutes and the second
-   must be newer. Hidden, malformed, partial, stale, replayed, or writer-bearing
+   selected-repository details. Each proof must be under two minutes old at its
+   own boundary: the first before the atomic tag claim, the second immediately
+   before the public edit, where it must also be newer than the first proof and
+   than the draft-asset check. The first proof is not re-aged after the claim
+   (FAN-3969), so upload time never burns a correctly proven version. Hidden,
+   malformed, partial, stale, replayed, or writer-bearing
    evidence blocks publication. Keep attestations, cookies and tokens out of git,
    Multica and logs. Every draft asset is
    then re-verified byte-exact (name, size, SHA-256) as the last read before
