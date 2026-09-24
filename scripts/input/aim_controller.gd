@@ -48,8 +48,8 @@ var _stick_strength := 0.0
 var _reticle: Node2D = null
 
 
-static func normalize_mode(mode: Variant) -> String:
-	return MODE_MANUAL if str(mode) == MODE_MANUAL else MODE_AUTO
+static func normalize_mode(raw_mode: Variant) -> String:
+	return MODE_MANUAL if str(raw_mode) == MODE_MANUAL else MODE_AUTO
 
 
 static func ensure_aim_actions() -> void:
@@ -79,8 +79,8 @@ static func _action_has_axis(action_name: String, axis: int, value: float) -> bo
 
 # --- Режим ---
 
-func set_mode(mode: Variant) -> void:
-	_mode = normalize_mode(mode)
+func set_mode(raw_mode: Variant) -> void:
+	_mode = normalize_mode(raw_mode)
 
 
 func mode() -> String:
@@ -217,9 +217,9 @@ func attach(player: Node2D) -> void:
 	_reticle = reticle
 
 
-func sync(player: Node2D, deadzone := DEFAULT_STICK_DEADZONE, mode: Variant = null) -> void:
-	if mode != null:
-		set_mode(mode)
+func sync(player: Node2D, deadzone := DEFAULT_STICK_DEADZONE, raw_mode: Variant = null) -> void:
+	if raw_mode != null:
+		set_mode(raw_mode)
 	# Собственная радиальная мёртвая зона, поэтому у get_vector она 0. Без пада
 	# экшены стика читаются нулём — ветвиться по списку устройств не нужно.
 	update_stick(Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down", 0.0), deadzone)
@@ -272,22 +272,22 @@ func refresh_reticle(player: Node2D) -> void:
 	_reticle.call("set_aim", point, shown)
 
 
-static func aim_mode_hint_text(mode: Variant, gamepad_connected: bool) -> String:
-	if normalize_mode(mode) != MODE_MANUAL:
+static func aim_mode_hint_text(raw_mode: Variant, gamepad_connected: bool) -> String:
+	if normalize_mode(raw_mode) != MODE_MANUAL:
 		return "Автонаводка сама держит ближайшего врага — прицел на экране не нужен."
 	if gamepad_connected:
 		return "Ручное прицеливание: правый стик ведёт прицел на экране, курсор мыши работает одновременно."
 	return "Ручное прицеливание: цельтесь курсором мыши. Подключите геймпад — наводку возьмёт правый стик."
 
 
-static func apply_hint_label(label: Object, mode: Variant, device_manager: Object) -> void:
+static func apply_hint_label(label: Object, raw_mode: Variant, device_manager: Object) -> void:
 	# Настройки зовут это из живых hot-plug коллбэков, поэтому гардим Label.
 	if label == null or not is_instance_valid(label):
 		return
 	var connected := not Input.get_connected_joypads().is_empty()
 	if device_manager != null and is_instance_valid(device_manager) and device_manager.has_method("gamepad_connected"):
 		connected = bool(device_manager.call("gamepad_connected"))
-	label.set("text", aim_mode_hint_text(mode, connected))
+	label.set("text", aim_mode_hint_text(raw_mode, connected))
 
 
 func _manager_physical_kind(player: Node2D) -> String:

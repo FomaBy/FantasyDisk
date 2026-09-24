@@ -352,19 +352,124 @@ class GodotGateTest(unittest.TestCase):
         # log contract (exactly one cold emission), so a leak from this suite
         # would double it in every certifying run.
         captured_stderr = io.StringIO()
-        with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
-            with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
-                with contextlib.redirect_stderr(captured_stderr):
-                    self.assertEqual(
-                        self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
-                        0,
-                    )
+        with mock.patch.object(self.module.sys, "platform", "linux"):
+            with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
+                    with contextlib.redirect_stderr(captured_stderr):
+                        self.assertEqual(
+                            self.module._ensure_import_cache(["--path", "/repo"], "/godot"),
+                            0,
+                        )
         self.assertEqual(run.call_args_list[0], mock.call(
             ["/godot", "--headless", "--path", "/repo", "--import", "--quit"]
         ))
         self.assertIn(
             "godot_gate: import cache missing, running headless import first",
             captured_stderr.getvalue(),
+        )
+
+    def test_macos_import_prepass_uses_single_threaded_scene(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / "tests").mkdir()
+            (project / "tests" / "import_cache_player_load_test.gd").touch()
+            with mock.patch.object(self.module.sys, "platform", "darwin"):
+                with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                    with mock.patch.object(self.module, "_run_godot", side_effect=[0, 0]) as run:
+                        with contextlib.redirect_stderr(io.StringIO()):
+                            self.assertEqual(
+                                self.module._ensure_import_cache(
+                                    ["--path", str(project)], "/godot"
+                                ),
+                                0,
+                            )
+        self.assertEqual(
+            run.call_args_list,
+            [
+                mock.call(
+                    [
+                        "/godot",
+                        "--single-threaded-scene",
+                        "--headless",
+                        "--path",
+                        str(project),
+                        "--import",
+                        "--quit",
+                    ]
+                ),
+                mock.call(
+                    [
+                        "/godot",
+                        "--headless",
+                        "--path",
+                        str(project),
+                        "--script",
+                        "res://tests/import_cache_player_load_test.gd",
+                    ],
+                    fail_on_fatal_output=True,
+                ),
+            ],
+        )
+
+    def test_windows_import_prepass_leaves_requested_args_unchanged(self):
+        requested_args = [
+            "--headless",
+            "--path",
+            "/repo",
+            "--script",
+            "res://tests/gameplay_probe.gd",
+            "--",
+            "--requested-gameplay-flag",
+        ]
+        with mock.patch.object(self.module.sys, "platform", "win32"):
+            with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
+                    with contextlib.redirect_stderr(io.StringIO()):
+                        self.assertEqual(
+                            self.module._ensure_import_cache(requested_args, "/godot"),
+                            0,
+                        )
+        self.assertEqual(
+            requested_args,
+            [
+                "--headless",
+                "--path",
+                "/repo",
+                "--script",
+                "res://tests/gameplay_probe.gd",
+                "--",
+                "--requested-gameplay-flag",
+            ],
+        )
+        run.assert_called_once_with(
+            ["/godot", "--headless", "--path", "/repo", "--import", "--quit"]
+        )
+
+    def test_failed_macos_import_short_circuits_player_probe(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp)
+            (project / "tests").mkdir()
+            (project / "tests" / "import_cache_player_load_test.gd").touch()
+            with mock.patch.object(self.module.sys, "platform", "darwin"):
+                with mock.patch.object(self.module, "_needs_import_cache", return_value=True):
+                    with mock.patch.object(self.module, "_run_godot", return_value=17) as run:
+                        with contextlib.redirect_stderr(io.StringIO()):
+                            self.assertEqual(
+                                self.module._ensure_import_cache(
+                                    ["--path", str(project)], "/godot"
+                                ),
+                                17,
+                            )
+        run.assert_called_once_with(
+            [
+                "/godot",
+                "--single-threaded-scene",
+                "--headless",
+                "--path",
+                str(project),
+                "--import",
+                "--quit",
+            ]
         )
 
     def test_import_cache_requires_the_player_texture_artifacts(self):
@@ -439,12 +544,13 @@ class GodotGateTest(unittest.TestCase):
             project = Path(tmp)
             (project / "tests").mkdir()
             (project / "tests" / "import_cache_player_load_test.gd").touch()
-            with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
-                with mock.patch.object(self.module, "_run_godot", side_effect=[0, 0]) as run:
-                    self.assertEqual(
-                        self.module._ensure_import_cache(["--path", str(project)], "/godot"),
-                        0,
-                    )
+            with mock.patch.object(self.module.sys, "platform", "linux"):
+                with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                    with mock.patch.object(self.module, "_run_godot", side_effect=[0, 0]) as run:
+                        self.assertEqual(
+                            self.module._ensure_import_cache(["--path", str(project)], "/godot"),
+                            0,
+                        )
             self.assertEqual(
                 run.call_args_list,
                 [
@@ -484,12 +590,13 @@ class GodotGateTest(unittest.TestCase):
         """A fixture project without the Player probe script must not fail on it."""
         with tempfile.TemporaryDirectory() as tmp:
             project = Path(tmp)
-            with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
-                with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
-                    self.assertEqual(
-                        self.module._ensure_import_cache(["--path", str(project)], "/godot"),
-                        0,
-                    )
+            with mock.patch.object(self.module.sys, "platform", "linux"):
+                with mock.patch.object(self.module, "_needs_import_cache", side_effect=[True, False]):
+                    with mock.patch.object(self.module, "_run_godot", return_value=0) as run:
+                        self.assertEqual(
+                            self.module._ensure_import_cache(["--path", str(project)], "/godot"),
+                            0,
+                        )
             run.assert_called_once_with(
                 ["/godot", "--headless", "--path", str(project), "--import", "--quit"]
             )

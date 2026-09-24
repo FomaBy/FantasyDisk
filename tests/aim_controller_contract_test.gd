@@ -23,6 +23,7 @@ func _initialize() -> void:
 	_check_hot_unplug()
 	_check_reticle_visibility()
 	_check_aim_actions_idempotent()
+	_check_no_parameter_shadows_a_method()
 
 	if not _errors.is_empty():
 		for error in _errors:
@@ -217,3 +218,20 @@ func _check_aim_actions_idempotent() -> void:
 		"aim_left обязан висеть на правом стике")
 	_expect(int(AimController.AIM_ACTIONS["aim_up"]["axis"]) == JOY_AXIS_RIGHT_Y,
 		"aim_up обязан висеть на правом стике")
+
+
+# FAN-3866: параметр `mode` затенял метод `mode()` — Godot писал SHADOWED_VARIABLE
+# на каждой такой сигнатуре. Список методов скрипта даёт точные имена аргументов,
+# поэтому проверка не разбирает исходник и держит контракт целиком, а не одну строку.
+func _check_no_parameter_shadows_a_method() -> void:
+	var aim_script: Script = AimController
+	var methods: Array = aim_script.get_script_method_list()
+	var declared := {}
+	for method in methods:
+		declared[str((method as Dictionary)["name"])] = true
+	for method in methods:
+		var method_name := str((method as Dictionary)["name"])
+		for argument in ((method as Dictionary)["args"] as Array):
+			var argument_name := str((argument as Dictionary)["name"])
+			_expect(not declared.has(argument_name),
+				"параметр %s() «%s» затеняет одноимённый метод класса" % [method_name, argument_name])
