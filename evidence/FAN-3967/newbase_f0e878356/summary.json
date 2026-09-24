@@ -1,0 +1,27 @@
+{
+  "issue": "FAN-3967",
+  "reason": "dev moved to f0e878356 (FAN-3966 integrated) after the a38a3bbcd PASS; candidate merged onto the new base and both certification packages recaptured",
+  "base": {
+    "sha": "f0e878356468b8142f9f1b5d73e3d8c2c895e635",
+    "measured_in": "detached temporary worktree, fresh import cache"
+  },
+  "merge_commit": "cf557fe4bc79c0fbc3f9d7b0b4189ad0715df58d",
+  "ratchet": {
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/combat_primitive_ratchet_test.gd",
+    "base_exit": 1,
+    "candidate_exit": 1,
+    "base_count": 12,
+    "candidate_count": 5,
+    "removed": [
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/druid/druid_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows."
+    ],
+    "added": []
+  },
+  "untracked_after_godot_import_on_candidate": 0
+}

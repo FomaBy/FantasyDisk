@@ -68,3 +68,16 @@ capture path stacks the three screen-space veils; this is pre-existing.
 `candidate_<class>_certification_capture_manifest.json` carries the 144
 measured readability records per class; every floor of the certification
 suites is met and every Druid sample reports `cast_pose_bound=true`.
+
+## Rebase onto `dev` `f0e878356` (after the `a38a3bbcd` PASS)
+
+FAN-3966 integrated the Elementalist and Knight veils while `a38a3bbcd` was in
+review, and its PASS was conditioned on the old base. The branch is merged onto
+the new `dev` with the merge commit `cf557fe4b` (no history rewrite, so both
+reviewed candidates stay ancestors), then both certification packages are
+recaptured again in the same source-ordered chain: this evidence commit, the
+Guitarist package sourced from it, the Druid package sourced from the Guitarist
+commit. `newbase_f0e878356/` holds the ratchet baseline measured on the new
+`dev` in a fresh detached worktree (12 findings), the merged candidate run
+(5 findings) and their sorted diff (the same 7 owned removals, 0 additions).
+The remaining five findings belong to the Assassin, Doctor and Robot slices.
