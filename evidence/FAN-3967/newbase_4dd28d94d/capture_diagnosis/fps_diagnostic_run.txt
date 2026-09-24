@@ -1,0 +1,55 @@
+frames written: 29
+last frames:
+guitarist_sound_amp_normal_648p_active.png
+guitarist_sound_amp_normal_648p_recovery.png
+guitarist_sound_amp_normal_648p_release.png
+
+FPS lines around the stall (first 40 FPS lines):
+5:Project FPS: 94 (10.63 mspf)
+6:Project FPS: 28 (35.71 mspf)
+7:Project FPS: 67 (14.92 mspf)
+8:Project FPS: 113 (8.84 mspf)
+9:Project FPS: 36 (27.77 mspf)
+10:Project FPS: 76 (13.15 mspf)
+11:Project FPS: 78 (12.82 mspf)
+12:Project FPS: 60 (16.66 mspf)
+13:Project FPS: 82 (12.19 mspf)
+14:Project FPS: 55 (18.18 mspf)
+15:Project FPS: 58 (17.24 mspf)
+16:Project FPS: 94 (10.63 mspf)
+17:Project FPS: 46 (21.73 mspf)
+18:Project FPS: 63 (15.87 mspf)
+19:Project FPS: 68 (14.70 mspf)
+20:Project FPS: 73 (13.69 mspf)
+21:Project FPS: 61 (16.39 mspf)
+22:Project FPS: 76 (13.15 mspf)
+23:Project FPS: 67 (14.92 mspf)
+24:Project FPS: 63 (15.87 mspf)
+25:Project FPS: 82 (12.19 mspf)
+26:Project FPS: 59 (16.94 mspf)
+27:Project FPS: 67 (14.92 mspf)
+28:Project FPS: 71 (14.08 mspf)
+29:Project FPS: 79 (12.65 mspf)
+30:Project FPS: 26 (38.46 mspf)
+31:Project FPS: 66 (15.15 mspf)
+32:Project FPS: 491 (2.03 mspf)
+33:Project FPS: 1051 (0.95 mspf)
+34:Project FPS: 1088 (0.91 mspf)
+35:Project FPS: 24376 (0.04 mspf)
+36:Project FPS: 227237 (0.00 mspf)
+37:Project FPS: 230831 (0.00 mspf)
+38:Project FPS: 227935 (0.00 mspf)
+39:Project FPS: 230058 (0.00 mspf)
+40:Project FPS: 228710 (0.00 mspf)
+41:Project FPS: 233844 (0.00 mspf)
+42:Project FPS: 235352 (0.00 mspf)
+43:Project FPS: 234906 (0.00 mspf)
+44:Project FPS: 232137 (0.00 mspf)
+...
+last FPS lines:
+Project FPS: 230986 (0.00 mspf)
+Project FPS: 232243 (0.00 mspf)
+Project FPS: 227281 (0.00 mspf)
+
+capture lines:
+guitarist capture exit=124

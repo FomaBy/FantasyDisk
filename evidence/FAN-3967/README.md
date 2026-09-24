@@ -93,3 +93,16 @@ violations outside the ratchet (sorted diff: 7 removed, 0 added). The
 certification packages are recaptured after this commit in the same
 source-ordered chain (Guitarist sourced from this commit, Druid from the
 Guitarist commit).
+
+### 2K/any-viewport capture stall: root cause found (2026-09-24, on `c8e985a2a`)
+
+Two controlled runs with Godot `--print-fps` (`newbase_4dd28d94d/capture_diagnosis/`)
+show the engine loop dropping from ~60 FPS to ~230,000 iterations/s at
+0.00 ms per frame at the moment progress stops: the engine is alive but never
+draws. While stalled, the Godot window is not on screen (CGWindowList reports
+no on-screen state even at the always-on-top layer) and another GUI agent
+(ChatGPT computer-use helper) is the frontmost app driving the desktop. Godot
+skips rendering while its window is not visible, so the capture's
+`await RenderingServer.frame_post_draw` never resolves. The stall therefore
+follows desktop/Space changes on the shared session, not a viewport size or
+this branch. It reproduced at 648p, 720p, 1080p and 2K across six runs.
