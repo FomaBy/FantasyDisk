@@ -474,6 +474,37 @@ def assert_owner_attested_writer_inventory(
     first_observed = _assert_owner_attested_writer_proof(
         repository, account, first_proof, label="first"
     )
+    assert_fresh_second_writer_proof(
+        repository,
+        account,
+        first_proof,
+        first_observed,
+        second_proof,
+        observed_after=observed_after,
+    )
+
+
+def assert_fresh_second_writer_proof(
+    repository: str,
+    account: str,
+    first_proof: object,
+    first_observed: datetime,
+    second_proof: object,
+    *,
+    observed_after: datetime | None = None,
+) -> datetime:
+    """Validate the pre-public proof against an already validated first proof.
+
+    The first proof is validated complete, account- and repository-bound,
+    writer-free and fresh before the atomic tag claim. The claim, the asset
+    uploads and the draft byte check that follow legitimately take longer
+    than ``WRITER_PROOF_MAX_AGE``, so the first proof's age is never checked
+    again after the claim: re-aging it would reject a correct publication
+    after the irreversible tag claim and burn the version (FAN-3969). The
+    second proof alone must be fresh now, and it must be a new observation:
+    newer than the first proof, newer than ``observed_after`` (the completed
+    draft-asset check) when given, and never a byte-identical replay.
+    """
     second_observed = _assert_owner_attested_writer_proof(
         repository, account, second_proof, label="second"
     )
@@ -483,6 +514,7 @@ def assert_owner_attested_writer_inventory(
         or observed_after is not None and second_observed <= observed_after
     ):
         raise RuntimeError("publication requires a fresh second owner attestation, not a replay")
+    return second_observed
 
 
 def load_owner_attested_writer_proof(path: str) -> dict:
@@ -903,27 +935,36 @@ def publish(
     # final read before the irreversible edit. From that read to the edit the
     # proven sole-writer boundary is what keeps the assets frozen, and the
     # server-side tag ruleset proven before the claim keeps the tag frozen.
-    second_proof = (
-        load_owner_attested_writer_proof(second_writer_proof)
-        if isinstance(second_writer_proof, (str, os.PathLike))
-        else second_writer_proof
-    )
-    assert_owner_attested_writer_inventory(
-        repository,
-        account,
-        first_writer_proof,
-        second_proof,
-        observed_after=draft_verified_at
-        if isinstance(second_writer_proof, (str, os.PathLike))
-        else None,
-    )
-    second_proof_time = assert_sole_publisher_write_access(
-        repository, second_proof, proof_label="second"
-    )
-    if second_proof_time <= first_proof_time or second_proof == first_writer_proof:
-        raise RuntimeError(
-            "publication requires a fresh second owner attestation, not a replay"
+    # Only the second proof is aged here: the first proof was proven fresh
+    # before the claim, and the uploads that followed may legitimately exceed
+    # its window. It keeps its validated identity, inventory and sole-writer
+    # binding and serves only as the floor the second observation must beat.
+    try:
+        second_proof = (
+            load_owner_attested_writer_proof(second_writer_proof)
+            if isinstance(second_writer_proof, (str, os.PathLike))
+            else second_writer_proof
         )
+        assert_fresh_second_writer_proof(
+            repository,
+            account,
+            first_writer_proof,
+            first_proof_time,
+            second_proof,
+            observed_after=draft_verified_at
+            if isinstance(second_writer_proof, (str, os.PathLike))
+            else None,
+        )
+        assert_sole_publisher_write_access(
+            repository, second_proof, proof_label="second"
+        )
+    except RuntimeError as error:
+        raise RuntimeError(
+            f"{error}\nthe pre-public writer proof failed after the atomic tag "
+            "claim and draft upload: the public edit was refused, no public "
+            "release was created, and the claimed tag and unpublished draft "
+            f"stay exactly as observed; {RECONCILIATION_GUIDANCE}"
+        ) from error
     assert_owned_distribution_tag(repository, tag, release_commit)
     try:
         _assert_release_assets(repository, tag, files, draft=True)
