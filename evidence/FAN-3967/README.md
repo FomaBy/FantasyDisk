@@ -81,3 +81,15 @@ commit. `newbase_f0e878356/` holds the ratchet baseline measured on the new
 `dev` in a fresh detached worktree (12 findings), the merged candidate run
 (5 findings) and their sorted diff (the same 7 owned removals, 0 additions).
 The remaining five findings belong to the Assassin, Doctor and Robot slices.
+
+## Rebase onto `dev` `4dd28d94d` (FAN-3968/3969 integrated)
+
+`dev` moved again while the card was blocked on the capture host. The branch is
+merged onto `4dd28d94d` with merge commit `31e3d53f3` (no history rewrite).
+`newbase_4dd28d94d/` holds the ratchet baseline measured on that `dev` in a
+fresh detached worktree (7 findings, exactly this card's seven) and the merged
+candidate run: the global `combat_primitive_ratchet_test` now PASSES with 0
+violations outside the ratchet (sorted diff: 7 removed, 0 added). The
+certification packages are recaptured after this commit in the same
+source-ordered chain (Guitarist sourced from this commit, Druid from the
+Guitarist commit).
