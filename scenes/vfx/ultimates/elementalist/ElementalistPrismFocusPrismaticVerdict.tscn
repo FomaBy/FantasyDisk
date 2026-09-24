@@ -1,7 +1,16 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="SpriteFrames" path="res://assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres" id="1_flipbook"]
 [ext_resource type="Script" path="res://scripts/ultimates/presentation/ultimate_v2_presence_driver.gd" id="2_presence"]
+
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+width = 2
+height = 2
 
 [sub_resource type="Animation" id="Animation_prismatic_verdict"]
 resource_name = "ultimate"
@@ -45,9 +54,12 @@ metadata/impact_language = "staggered_triple_focus_hits_then_rainbow_fracture"
 metadata/max_visual_nodes = 9
 metadata/crowd_cap = 18
 
-[node name="BackdropVeil" type="Polygon2D" parent="."]
-color = Color(0.045, 0.025, 0.12, 0.56)
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+modulate = Color(0.045, 0.025, 0.12, 1)
+self_modulate = Color(1, 1, 1, 0.56)
 z_index = -20
+texture = SubResource("GradientTexture2D_veil")
+metadata/fullscreen_layer = true
 
 [node name="PrismLattice" type="AnimatedSprite2D" parent="."]
 sprite_frames = ExtResource("1_flipbook")

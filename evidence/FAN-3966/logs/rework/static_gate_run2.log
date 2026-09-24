@@ -1,0 +1,21 @@
+# python3 tools/quality_gate.py --profile static --changed-ref origin/dev (run 2, on e2b6e8d78)
+STATIC git-range-check
+STATIC shell-syntax
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-542703256/quality-empty-hj5fts99/report.json
+QUALITY PASSED: 2 static, 18 Godot; report=/tmp/multica-task-542703256/quality-feature-list-kipcjs63/report.json
+QUALITY FAILED: 2 static, 18 Godot; report=/tmp/multica-task-542703256/quality-feature-list-uqvfeot2/report.json
+QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-542703256/quality-feature-list-x1y2_wvt/report.json
+QUALITY PASSED: 2 static, 1 Godot; report=/tmp/multica-task-542703256/quality-feature-list-kopim35p/report.json
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC shell-syntax
+QUALITY PASSED: 16 static, 0 Godot; report=../fan3966_static_report_run2.json
+static gate run2 exit=0
