@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import importlib.util
 import json
@@ -261,6 +262,50 @@ def _classify_publisher_commands(
         ):
             write_commands.append(command)
     return {"write_commands": write_commands}
+
+
+def _count_publisher_side_effects(commands: list[list[str]]) -> dict[str, int]:
+    """FAN-3969: count every publisher command that changes GitHub state."""
+    counts = {"claim": 0, "create": 0, "public_edit": 0, "latest": 0, "delete": 0}
+    for command in commands:
+        if command[:2] == ["gh", "api"] and "--method" in command and "POST" in command:
+            counts["claim"] += 1
+        elif command[:3] == ["gh", "release", "create"]:
+            counts["create"] += 1
+        elif command[:3] == ["gh", "release", "edit"] and "--draft=false" in command:
+            counts["public_edit"] += 1
+        elif command[:3] == ["gh", "release", "edit"] and command[-1] == "--latest":
+            counts["latest"] += 1
+        if any("delete" in part.lower() for part in command):
+            counts["delete"] += 1
+    return counts
+
+
+class _PublisherClock:
+    """FAN-3969: a controllable UTC clock for the publisher's freshness checks.
+
+    The publisher ages owner attestations with ``datetime.now(timezone.utc)``;
+    the stateful mock advances this clock where real wall time is spent (the
+    ~840 MB asset upload and the operator's second-proof export) so the
+    120-second proof window can be crossed deterministically without sleeping.
+    """
+
+    def __init__(self) -> None:
+        self.now = datetime.now(timezone.utc)
+
+    def advance(self, seconds: float) -> None:
+        self.now += timedelta(seconds=seconds)
+
+    def datetime_class(self) -> type:
+        clock = self
+
+        class ClockedDatetime(datetime):
+            @classmethod
+            def now(cls, tz=None):  # noqa: N805 - datetime classmethod signature
+                current = clock.now
+                return current if tz is None else current.astimezone(tz)
+
+        return ClockedDatetime
 
 
 class OwnerAttestedWriterInventoryTests(unittest.TestCase):
@@ -1922,8 +1967,17 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
         *,
         mutate_asset_after_clean_verification: bool = False,
         grant_writer_after_clean_verification: bool = False,
+        clock: _PublisherClock | None = None,
+        preflight_seconds: float = 0.0,
+        upload_seconds: float = 0.0,
     ):
-        """Stateful production-sequence mock: one GitHub, mutated mid-flight."""
+        """Stateful production-sequence mock: one GitHub, mutated mid-flight.
+
+        With a ``clock`` the mock spends ``preflight_seconds`` on the read-only
+        preflight (before the tag claim) and ``upload_seconds`` inside
+        ``gh release create`` (after the claim), the two places where a real
+        publication burns wall time against the owner-attestation window.
+        """
         state = {
             "collaborators": [{"login": PUBLISHER_LOGIN}],
             "digest": self.clean_digest,
@@ -1938,6 +1992,8 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
             if command[:2] == ["gh", "auth"]:
                 return _gh(command, 0)
             if command[:3] == ["gh", "release", "create"]:
+                if clock is not None:
+                    clock.advance(upload_seconds)
                 state["release"] = "draft"
                 return _gh(command, 0)
             if command[:3] == ["gh", "release", "view"]:
@@ -1996,6 +2052,8 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                     command, 0, json.dumps({"total_count": 0, "installations": []})
                 )
             if "immutable-releases" in route:
+                if clock is not None:
+                    clock.advance(preflight_seconds)
                 return _immutability_enforced()
             if "rulesets?" in route:
                 return _ruleset_list()
@@ -2012,6 +2070,91 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
             raise AssertionError(f"unexpected gh command: {command}")
 
         return state, fake_run
+
+    def _clocked_publish(
+        self,
+        clock: _PublisherClock,
+        fake_run,
+        first_proof: dict,
+        *,
+        second_proof_path: str = "second-proof.json",
+        export_second_proof=None,
+        terminal_export=None,
+    ) -> str:
+        """Drive the real path-proof publish() under the controllable clock.
+
+        ``terminal_export(clock)`` plays the operator at the real terminal
+        pause (``FANTASYDISK_INTERACTIVE_PROOF_REFRESH=1`` on a TTY): it runs
+        inside ``input()`` after the draft-asset check and must write the
+        second proof file that the real loader then reads from
+        ``second_proof_path``. ``export_second_proof(clock)`` instead replaces
+        the loader and returns the proof object directly. With neither, the
+        real loader reads ``second_proof_path`` as it would in production.
+        """
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(
+                mock.patch.object(github_release_publish.shutil, "which", return_value="gh")
+            )
+            stack.enter_context(mock.patch.object(
+                github_release_publish,
+                "assert_safe_public_distribution_repository",
+                return_value="main",
+            ))
+            stack.enter_context(
+                mock.patch.object(github_release_publish, "run", side_effect=fake_run)
+            )
+            stack.enter_context(
+                mock.patch.object(github_release_publish, "datetime", clock.datetime_class())
+            )
+            if export_second_proof is not None:
+                stack.enter_context(mock.patch.object(
+                    github_release_publish,
+                    "load_owner_attested_writer_proof",
+                    side_effect=lambda _path: export_second_proof(clock),
+                ))
+            if terminal_export is not None:
+                stack.enter_context(mock.patch.dict(
+                    os.environ, {"FANTASYDISK_INTERACTIVE_PROOF_REFRESH": "1"}
+                ))
+                stack.enter_context(
+                    mock.patch.object(github_release_publish.sys.stdin, "isatty", return_value=True)
+                )
+                stack.enter_context(mock.patch(
+                    "builtins.input", side_effect=lambda _prompt: terminal_export(clock)
+                ))
+            return github_release_publish.publish(
+                self.REPOSITORY, self.VERSION, [self.asset], self.changelog,
+                first_proof, second_proof_path,
+            )
+
+    def _operator_exports_fresh_second_proof(
+        self, state: dict, proof_path: Path, refresh_seconds: float = 30.0
+    ):
+        """The owner exports a complete, fresh second inventory at the pause."""
+        def export(clock: _PublisherClock) -> None:
+            self.assertEqual(state["draft_views"], 1, "pause reached before the draft check")
+            self.assertEqual(state["release"], "draft")
+            self.assertFalse(proof_path.exists(), "second proof existed before the pause")
+            clock.advance(refresh_seconds)
+            proof_path.write_text(
+                json.dumps(_owner_attested_writer_proof(observed_at=clock.now)),
+                encoding="utf-8",
+            )
+
+        return export
+
+    def _assert_post_claim_refusal(self, state: dict, message: str) -> None:
+        """The claim and draft happened, nothing was published or clobbered."""
+        self.assertEqual(
+            _count_publisher_side_effects(state["commands"]),
+            {"claim": 1, "create": 1, "public_edit": 0, "latest": 0, "delete": 0},
+        )
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(state["latest"])
+        self.assertEqual(state["draft_views"], 1)
+        self.assertIn("the public edit was refused", message)
+        self.assertIn("unpublished draft", message)
+        self.assertIn("no rollback", message)
 
     def test_asset_mutation_after_clean_draft_verification_blocks_public_edit(
         self,
@@ -2253,6 +2396,179 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                     self.REPOSITORY, self.VERSION, [self.asset], self.changelog, proof, proof
                 )
         self.assertEqual(_classify_publisher_commands(state["commands"])["write_commands"], [])
+
+    # FAN-3969: the first proof's 120-second window must close before the
+    # atomic tag claim, never after ~840 MB of uploads. The 90/130/285-second
+    # timings are the FAN-3965 independent QA reproductions: a 60/100/255-second
+    # upload plus the operator's 30-second export of the second proof.
+    FAN3969_UPLOAD_SECONDS = (60, 100, 255)
+    FAN3969_EXPORT_SECONDS = 30
+
+    def _fresh_first_proof(self, clock: _PublisherClock) -> dict:
+        return _owner_attested_writer_proof(observed_at=clock.now - timedelta(seconds=1))
+
+    def test_first_proof_proven_before_claim_is_not_re_aged_after_long_uploads(
+        self,
+    ) -> None:
+        for upload_seconds in self.FAN3969_UPLOAD_SECONDS:
+            elapsed = upload_seconds + self.FAN3969_EXPORT_SECONDS
+            with self.subTest(elapsed_seconds=elapsed):
+                clock = _PublisherClock()
+                first = self._fresh_first_proof(clock)
+                proof_path = self.asset.parent / f"writer-proof-second-{elapsed}.json"
+                state, fake_run = self._stateful_github(
+                    clock=clock, upload_seconds=upload_seconds
+                )
+                url = self._clocked_publish(
+                    clock,
+                    fake_run,
+                    first,
+                    second_proof_path=os.fspath(proof_path),
+                    terminal_export=self._operator_exports_fresh_second_proof(
+                        state, proof_path, self.FAN3969_EXPORT_SECONDS
+                    ),
+                )
+                self.assertEqual(url, self.url)
+                self.assertEqual(
+                    _count_publisher_side_effects(state["commands"]),
+                    {"claim": 1, "create": 1, "public_edit": 1, "latest": 1, "delete": 0},
+                )
+                self.assertEqual(state["release"], "public")
+                self.assertTrue(state["latest"])
+                self.assertEqual(state["draft_views"], 2)
+                self.assertTrue(proof_path.exists())
+
+    def test_stale_first_proof_fails_closed_before_tag_claim(self) -> None:
+        stale_by = github_release_publish.WRITER_PROOF_MAX_AGE + timedelta(seconds=1)
+        cases = (
+            ("stale-at-start", stale_by, 0.0),
+            ("expires-during-preflight", timedelta(seconds=1), stale_by.total_seconds()),
+        )
+        for label, first_age, preflight_seconds in cases:
+            with self.subTest(case=label):
+                clock = _PublisherClock()
+                first = _owner_attested_writer_proof(observed_at=clock.now - first_age)
+                state, fake_run = self._stateful_github(
+                    clock=clock, preflight_seconds=preflight_seconds
+                )
+                exports: list[datetime] = []
+
+                def export(clock: _PublisherClock) -> dict:
+                    exports.append(clock.now)
+                    return _owner_attested_writer_proof(observed_at=clock.now)
+
+                with self.assertRaisesRegex(RuntimeError, "owner attestation is stale") as caught:
+                    self._clocked_publish(clock, fake_run, first, export_second_proof=export)
+                self.assertEqual(
+                    _classify_publisher_commands(state["commands"])["write_commands"], []
+                )
+                self.assertEqual(
+                    _count_publisher_side_effects(state["commands"]),
+                    {"claim": 0, "create": 0, "public_edit": 0, "latest": 0, "delete": 0},
+                )
+                self.assertIsNone(state["release"])
+                self.assertEqual(exports, [])
+                self.assertNotIn("after the atomic tag claim", str(caught.exception))
+
+    def test_invalid_second_proof_after_draft_refuses_public_edit_without_clobber(
+        self,
+    ) -> None:
+        stale_by = github_release_publish.WRITER_PROOF_MAX_AGE + timedelta(seconds=1)
+        late_writer = {
+            "id": 7,
+            "app_slug": "late-writer",
+            "repository_selection": "all",
+            "permissions": {"contents": "write"},
+        }
+
+        def fresh(clock: _PublisherClock, **overrides) -> dict:
+            return dict(_owner_attested_writer_proof(observed_at=clock.now), **overrides)
+
+        # Upload 60 s + export 30 s: the first proof is 91 s old at the second
+        # boundary, so every refusal below is the second proof's own fault.
+        cases = (
+            (
+                "stale",
+                lambda clock, first: _owner_attested_writer_proof(
+                    observed_at=clock.now - stale_by
+                ),
+                "owner attestation is stale",
+            ),
+            (
+                "future-observation",
+                lambda clock, first: _owner_attested_writer_proof(
+                    observed_at=clock.now + timedelta(seconds=5)
+                ),
+                "invalid future observation time",
+            ),
+            (
+                "fresh-but-older-than-draft-check",
+                lambda clock, first: _owner_attested_writer_proof(
+                    observed_at=clock.now - timedelta(seconds=40)
+                ),
+                "fresh second owner attestation, not a replay",
+            ),
+            (
+                "replayed-first-proof",
+                lambda clock, first: dict(first),
+                "fresh second owner attestation, not a replay",
+            ),
+            (
+                "malformed",
+                lambda clock, first: ["not", "an", "object"],
+                "second owner attestation is malformed",
+            ),
+            (
+                "unsupported-schema",
+                lambda clock, first: fresh(clock, schema_version=2),
+                "unsupported source or schema",
+            ),
+            (
+                "foreign-account",
+                lambda clock, first: fresh(clock, account="Mallory"),
+                "account does not match",
+            ),
+            (
+                "foreign-repository",
+                lambda clock, first: fresh(clock, repository="FomaBy/Other"),
+                "repository does not match",
+            ),
+            (
+                "incomplete",
+                lambda clock, first: fresh(clock, complete=False),
+                "not marked complete",
+            ),
+            (
+                "writer-bearing",
+                lambda clock, first: fresh(clock, installations=[late_writer]),
+                "late-writer holds contents write",
+            ),
+        )
+        for label, second_proof_for, error in cases:
+            with self.subTest(case=label):
+                clock = _PublisherClock()
+                first = self._fresh_first_proof(clock)
+                state, fake_run = self._stateful_github(clock=clock, upload_seconds=60)
+
+                def export(clock: _PublisherClock, first=first, second_proof_for=second_proof_for):
+                    self.assertEqual(state["draft_views"], 1)
+                    clock.advance(self.FAN3969_EXPORT_SECONDS)
+                    return second_proof_for(clock, first)
+
+                with self.assertRaisesRegex(RuntimeError, error) as caught:
+                    self._clocked_publish(clock, fake_run, first, export_second_proof=export)
+                self._assert_post_claim_refusal(state, str(caught.exception))
+
+    def test_missing_second_proof_file_after_draft_refuses_public_edit(self) -> None:
+        clock = _PublisherClock()
+        first = self._fresh_first_proof(clock)
+        state, fake_run = self._stateful_github(clock=clock, upload_seconds=100)
+        missing = self.asset.parent / "writer-proof-second.json"
+        with self.assertRaisesRegex(
+            RuntimeError, "must be a small regular JSON file"
+        ) as caught:
+            self._clocked_publish(clock, fake_run, first, second_proof_path=os.fspath(missing))
+        self._assert_post_claim_refusal(state, str(caught.exception))
 
     @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_sole_writer_boundary_fails_closed_on_unprovable_state(self) -> None:
