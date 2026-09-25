@@ -20,6 +20,11 @@ extends SceneTree
 ## Headless runs skip: Godot's headless display server owns no framebuffer, so a
 ## headless capture could only write empty images.
 ##
+## Frames are read after `RenderingServer.force_draw()` (the Druid capture's
+## pattern), never after `await RenderingServer.frame_post_draw`: Godot stops
+## presenting frames while its window is off-screen or occluded, and a capture
+## waiting for a post-draw signal then spins forever (FAN-3967).
+##
 ##     FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed \
 ##       --fixed-fps 60 \
 ##       --script res://tests/ultimates/presentation/guitarist_certification_live_capture.gd
@@ -251,7 +256,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 
 	for _frame in SETTLE_FRAMES:
 		await process_frame
-	await RenderingServer.frame_post_draw
+	RenderingServer.force_draw()
 	var baseline := root.get_texture().get_image()
 	if baseline == null or baseline.get_size() != size:
 		main.queue_free()
@@ -277,7 +282,7 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 		while elapsed < target:
 			await process_frame
 			elapsed += FIXED_STEP
-		await RenderingServer.frame_post_draw
+		RenderingServer.force_draw()
 		var frame := root.get_texture().get_image()
 		if frame == null or frame.get_size() != size:
 			main.queue_free()
@@ -682,7 +687,7 @@ func _render_sheet(host: Node2D, size: Vector2i, path: String) -> int:
 	viewport.add_child(host)
 	for _frame in 3:
 		await process_frame
-	await RenderingServer.frame_post_draw
+	RenderingServer.force_draw()
 	var image := viewport.get_texture().get_image()
 	viewport.queue_free()
 	await process_frame
