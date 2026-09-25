@@ -1,0 +1,1009 @@
+{
+  "job": {
+    "canvas": [
+      512,
+      512
+    ],
+    "frame_count": 1,
+    "durations_ms": [
+      100
+    ],
+    "views": [
+      {
+        "id": "poster",
+        "offset": [
+          0,
+          0
+        ]
+      }
+    ],
+    "source_bookends_exact": false,
+    "body_palette_exact": false,
+    "require_clear_border": false
+  },
+  "scene": {
+    "version": 1,
+    "template": "layered-drawing-v1",
+    "palette": {
+      "void": "#121118",
+      "stone": "#1A1822",
+      "panel": "#211F2B",
+      "iron": "#34323D",
+      "iron_light": "#514954",
+      "gold_dark": "#775B3C",
+      "gold": "#B38A52",
+      "gold_light": "#D4AE70",
+      "ember": "#873B3D",
+      "ember_light": "#B6514C",
+      "disk": "#3A3138",
+      "disk_mid": "#51404A"
+    },
+    "layers": [
+      {
+        "id": "background",
+        "name": "Background - black stone"
+      },
+      {
+        "id": "content",
+        "name": "Frame - five empty content zones"
+      },
+      {
+        "id": "ornament",
+        "name": "Frame - iron and worn gold"
+      },
+      {
+        "id": "seal",
+        "name": "Emblem - cracked dragon-forged disk"
+      }
+    ],
+    "views": {
+      "poster": {
+        "parts": {},
+        "nodes": {
+          "background": {
+            "layer": "background",
+            "draw": [
+              {
+                "op": "rect",
+                "box": [
+                  0,
+                  0,
+                  511,
+                  511
+                ],
+                "color": "void",
+                "fill": true
+              },
+              {
+                "op": "rect",
+                "box": [
+                  8,
+                  8,
+                  503,
+                  503
+                ],
+                "color": "stone",
+                "fill": true
+              }
+            ],
+            "at": [
+              0,
+              0
+            ]
+          },
+          "content": {
+            "layer": "content",
+            "draw": [
+              {
+                "op": "rect",
+                "box": [
+                  42,
+                  47,
+                  166,
+                  93
+                ],
+                "color": "panel",
+                "fill": true
+              },
+              {
+                "op": "rect",
+                "box": [
+                  193,
+                  47,
+                  317,
+                  93
+                ],
+                "color": "panel",
+                "fill": true
+              },
+              {
+                "op": "rect",
+                "box": [
+                  345,
+                  47,
+                  469,
+                  93
+                ],
+                "color": "panel",
+                "fill": true
+              },
+              {
+                "op": "rect",
+                "box": [
+                  47,
+                  218,
+                  236,
+                  378
+                ],
+                "color": "panel",
+                "fill": true
+              },
+              {
+                "op": "rect",
+                "box": [
+                  275,
+                  218,
+                  464,
+                  378
+                ],
+                "color": "panel",
+                "fill": true
+              }
+            ],
+            "at": [
+              0,
+              0
+            ]
+          },
+          "frame": {
+            "layer": "ornament",
+            "draw": [
+              {
+                "op": "rect",
+                "box": [
+                  8,
+                  8,
+                  503,
+                  503
+                ],
+                "color": "iron",
+                "fill": false,
+                "stroke_width": 3
+              },
+              {
+                "op": "rect",
+                "box": [
+                  14,
+                  14,
+                  497,
+                  497
+                ],
+                "color": "gold_dark",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  19,
+                  19,
+                  492,
+                  492
+                ],
+                "color": "iron_light",
+                "fill": false
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    20,
+                    40
+                  ],
+                  [
+                    20,
+                    27
+                  ],
+                  [
+                    27,
+                    20
+                  ],
+                  [
+                    42,
+                    20
+                  ]
+                ],
+                "color": "gold",
+                "stroke_width": 2
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    470,
+                    20
+                  ],
+                  [
+                    484,
+                    20
+                  ],
+                  [
+                    491,
+                    27
+                  ],
+                  [
+                    491,
+                    40
+                  ]
+                ],
+                "color": "gold",
+                "stroke_width": 2
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    20,
+                    471
+                  ],
+                  [
+                    20,
+                    484
+                  ],
+                  [
+                    27,
+                    491
+                  ],
+                  [
+                    42,
+                    491
+                  ]
+                ],
+                "color": "gold",
+                "stroke_width": 2
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    470,
+                    491
+                  ],
+                  [
+                    484,
+                    491
+                  ],
+                  [
+                    491,
+                    484
+                  ],
+                  [
+                    491,
+                    471
+                  ]
+                ],
+                "color": "gold",
+                "stroke_width": 2
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    26,
+                    25
+                  ],
+                  [
+                    31,
+                    30
+                  ],
+                  [
+                    26,
+                    35
+                  ],
+                  [
+                    21,
+                    30
+                  ]
+                ],
+                "color": "ember",
+                "fill": true
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    486,
+                    25
+                  ],
+                  [
+                    491,
+                    30
+                  ],
+                  [
+                    486,
+                    35
+                  ],
+                  [
+                    481,
+                    30
+                  ]
+                ],
+                "color": "ember",
+                "fill": true
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    26,
+                    476
+                  ],
+                  [
+                    31,
+                    481
+                  ],
+                  [
+                    26,
+                    486
+                  ],
+                  [
+                    21,
+                    481
+                  ]
+                ],
+                "color": "ember",
+                "fill": true
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    486,
+                    476
+                  ],
+                  [
+                    491,
+                    481
+                  ],
+                  [
+                    486,
+                    486
+                  ],
+                  [
+                    481,
+                    481
+                  ]
+                ],
+                "color": "ember",
+                "fill": true
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    37,
+                    30
+                  ],
+                  [
+                    188,
+                    30
+                  ]
+                ],
+                "color": "gold_dark",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    324,
+                    30
+                  ],
+                  [
+                    475,
+                    30
+                  ]
+                ],
+                "color": "gold_dark",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    37,
+                    487
+                  ],
+                  [
+                    475,
+                    487
+                  ]
+                ],
+                "color": "gold_dark",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    29,
+                    52
+                  ],
+                  [
+                    29,
+                    205
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    482,
+                    52
+                  ],
+                  [
+                    482,
+                    205
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    29,
+                    386
+                  ],
+                  [
+                    29,
+                    459
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    482,
+                    386
+                  ],
+                  [
+                    482,
+                    459
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "rect",
+                "box": [
+                  37,
+                  42,
+                  171,
+                  98
+                ],
+                "color": "iron",
+                "fill": false,
+                "stroke_width": 2
+              },
+              {
+                "op": "rect",
+                "box": [
+                  39,
+                  44,
+                  169,
+                  96
+                ],
+                "color": "gold_dark",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  41,
+                  46,
+                  167,
+                  94
+                ],
+                "color": "gold",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  188,
+                  42,
+                  322,
+                  98
+                ],
+                "color": "iron",
+                "fill": false,
+                "stroke_width": 2
+              },
+              {
+                "op": "rect",
+                "box": [
+                  190,
+                  44,
+                  320,
+                  96
+                ],
+                "color": "gold_dark",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  192,
+                  46,
+                  318,
+                  94
+                ],
+                "color": "gold",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  340,
+                  42,
+                  474,
+                  98
+                ],
+                "color": "iron",
+                "fill": false,
+                "stroke_width": 2
+              },
+              {
+                "op": "rect",
+                "box": [
+                  342,
+                  44,
+                  472,
+                  96
+                ],
+                "color": "gold_dark",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  344,
+                  46,
+                  470,
+                  94
+                ],
+                "color": "gold",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  42,
+                  213,
+                  241,
+                  383
+                ],
+                "color": "iron",
+                "fill": false,
+                "stroke_width": 2
+              },
+              {
+                "op": "rect",
+                "box": [
+                  44,
+                  215,
+                  239,
+                  381
+                ],
+                "color": "gold_dark",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  46,
+                  217,
+                  237,
+                  379
+                ],
+                "color": "gold",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  270,
+                  213,
+                  469,
+                  383
+                ],
+                "color": "iron",
+                "fill": false,
+                "stroke_width": 2
+              },
+              {
+                "op": "rect",
+                "box": [
+                  272,
+                  215,
+                  467,
+                  381
+                ],
+                "color": "gold_dark",
+                "fill": false
+              },
+              {
+                "op": "rect",
+                "box": [
+                  274,
+                  217,
+                  465,
+                  379
+                ],
+                "color": "gold",
+                "fill": false
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    256,
+                    221
+                  ],
+                  [
+                    256,
+                    375
+                  ]
+                ],
+                "color": "gold_dark",
+                "stroke_width": 1
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    256,
+                    226
+                  ],
+                  [
+                    260,
+                    232
+                  ],
+                  [
+                    256,
+                    238
+                  ],
+                  [
+                    252,
+                    232
+                  ]
+                ],
+                "color": "gold",
+                "fill": true
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    256,
+                    359
+                  ],
+                  [
+                    260,
+                    365
+                  ],
+                  [
+                    256,
+                    371
+                  ],
+                  [
+                    252,
+                    365
+                  ]
+                ],
+                "color": "gold",
+                "fill": true
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    37,
+                    105
+                  ],
+                  [
+                    171,
+                    105
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    188,
+                    105
+                  ],
+                  [
+                    322,
+                    105
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    340,
+                    105
+                  ],
+                  [
+                    474,
+                    105
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    42,
+                    391
+                  ],
+                  [
+                    241,
+                    391
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    270,
+                    391
+                  ],
+                  [
+                    469,
+                    391
+                  ]
+                ],
+                "color": "iron_light",
+                "stroke_width": 1
+              }
+            ],
+            "at": [
+              0,
+              0
+            ]
+          },
+          "emblem": {
+            "layer": "seal",
+            "draw": [
+              {
+                "op": "ellipse",
+                "box": [
+                  212,
+                  114,
+                  300,
+                  186
+                ],
+                "color": "gold_dark",
+                "fill": true,
+                "outline": "iron",
+                "stroke_width": 2
+              },
+              {
+                "op": "ellipse",
+                "box": [
+                  218,
+                  119,
+                  294,
+                  181
+                ],
+                "color": "disk",
+                "fill": true,
+                "outline": "gold",
+                "stroke_width": 2
+              },
+              {
+                "op": "ellipse",
+                "box": [
+                  225,
+                  124,
+                  287,
+                  176
+                ],
+                "color": "disk_mid",
+                "fill": false
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    256,
+                    127
+                  ],
+                  [
+                    274,
+                    150
+                  ],
+                  [
+                    256,
+                    173
+                  ],
+                  [
+                    238,
+                    150
+                  ]
+                ],
+                "color": "gold_dark",
+                "fill": false,
+                "stroke_width": 2
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    256,
+                    124
+                  ],
+                  [
+                    253,
+                    139
+                  ],
+                  [
+                    260,
+                    148
+                  ],
+                  [
+                    251,
+                    157
+                  ],
+                  [
+                    258,
+                    174
+                  ]
+                ],
+                "color": "gold_light",
+                "stroke_width": 2
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    239,
+                    150
+                  ],
+                  [
+                    248,
+                    148
+                  ],
+                  [
+                    253,
+                    143
+                  ]
+                ],
+                "color": "gold",
+                "stroke_width": 1
+              },
+              {
+                "op": "path",
+                "points": [
+                  [
+                    263,
+                    156
+                  ],
+                  [
+                    271,
+                    151
+                  ],
+                  [
+                    274,
+                    150
+                  ]
+                ],
+                "color": "gold",
+                "stroke_width": 1
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    256,
+                    135
+                  ],
+                  [
+                    261,
+                    145
+                  ],
+                  [
+                    256,
+                    151
+                  ],
+                  [
+                    251,
+                    145
+                  ]
+                ],
+                "color": "ember",
+                "fill": true
+              },
+              {
+                "op": "polygon",
+                "points": [
+                  [
+                    256,
+                    153
+                  ],
+                  [
+                    261,
+                    159
+                  ],
+                  [
+                    256,
+                    165
+                  ],
+                  [
+                    251,
+                    159
+                  ]
+                ],
+                "color": "gold",
+                "fill": true
+              },
+              {
+                "op": "ellipse",
+                "box": [
+                  231,
+                  146,
+                  234,
+                  149
+                ],
+                "color": "gold_light",
+                "fill": true
+              },
+              {
+                "op": "ellipse",
+                "box": [
+                  278,
+                  146,
+                  281,
+                  149
+                ],
+                "color": "gold_light",
+                "fill": true
+              }
+            ],
+            "at": [
+              0,
+              0
+            ]
+          }
+        },
+        "poses": {
+          "rest": {}
+        },
+        "frames": [
+          "rest"
+        ]
+      }
+    }
+  }
+}
