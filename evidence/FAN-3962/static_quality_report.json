@@ -1,0 +1,154 @@
+{
+  "selected_godot_tests": 0,
+  "executed_python_tests": 797,
+  "git_sha": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+  "changed_ref": "origin/dev",
+  "changed_base_sha": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+  "static_checks": [
+    {
+      "name": "repository-invariants",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 1.635
+    },
+    {
+      "name": "repository-storage-policy",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.155
+    },
+    {
+      "name": "python-unit",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 298.625,
+      "executed_tests": 790
+    },
+    {
+      "name": "python-unit:tests/tools",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.396,
+      "executed_tests": 7
+    },
+    {
+      "name": "python-syntax",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.413
+    },
+    {
+      "name": "asset-audit",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 119.094
+    },
+    {
+      "name": "constellation-validator",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.174
+    },
+    {
+      "name": "runtime-manifest-validator",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 1.1
+    },
+    {
+      "name": "git-diff-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.163
+    },
+    {
+      "name": "git-index-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.023
+    },
+    {
+      "name": "git-head-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.028
+    },
+    {
+      "name": "git-range-check",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.021
+    },
+    {
+      "name": "shell-syntax",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "duration_seconds": 0.004
+    },
+    {
+      "name": "client-secret-scan",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": []
+    },
+    {
+      "name": "windows-export-config",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": []
+    },
+    {
+      "name": "test-discovery",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": [],
+      "discovered_godot_tests": 557,
+      "selected_godot_tests": 0,
+      "selected_godot_test_scripts": [],
+      "discovered_python_tests": 43
+    }
+  ],
+  "godot_tests": [],
+  "profile": "static",
+  "certifying": true,
+  "filters": [],
+  "skip_static": false,
+  "skip_godot": false,
+  "skip_umbrella": false,
+  "godot_test_timeout_seconds": 900.0,
+  "godot_import_timeout_seconds": 1200.0,
+  "static_timeout_seconds": 1200.0,
+  "python_unit_idle_timeout_seconds": 60.0,
+  "worktree_clean": true,
+  "worktree_status": [],
+  "discovered_godot_tests": 557,
+  "selected_godot_test_scripts": [],
+  "discovered_python_tests": 43,
+  "platform": "darwin",
+  "status": "passed",
+  "duration_seconds": 422.075,
+  "godot_import_prepass": null,
+  "ultimate_feature_list_selected": false,
+  "ultimate_feature_list": null,
+  "generated_import_sidecars_removed": [],
+  "shard": {
+    "index": 0,
+    "count": 1
+  }
+}

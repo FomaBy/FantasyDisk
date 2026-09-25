@@ -1,0 +1,84 @@
+[
+  {
+    "name": "runtime_smoke_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 227.11,
+    "log": "build/FAN-3962/runtime_smoke_test.log",
+    "pass_lines": [
+      "Runtime smoke test passed."
+    ],
+    "diagnostics": [
+      "ERROR: Parameter \"t\" is null."
+    ],
+    "raw_log_sha256": "f16d39d53fc5bb6efa202c95db322c1eec6a1b9b55c30b4545dc106ebebc22e6",
+    "raw_log_size_bytes": 5558559
+  },
+  {
+    "name": "runtime_smoke_ui_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 9.22,
+    "log": "build/FAN-3962/runtime_smoke_ui_test.log",
+    "pass_lines": [
+      "Runtime UI smoke suite passed."
+    ],
+    "diagnostics": [
+      "ERROR: Parameter \"t\" is null."
+    ],
+    "raw_log_sha256": "bbf5a4e9a866c088f51ec60f0e83887aeb0503a1645f37fda64964bc46863801",
+    "raw_log_size_bytes": 435
+  },
+  {
+    "name": "runtime_smoke_combat_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_combat_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 7.24,
+    "log": "build/FAN-3962/runtime_smoke_combat_test.log",
+    "pass_lines": [
+      "Runtime combat smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "ac7c3ae62170ddd7ba78aee9f89bc9b17cff4f2eea139c3173dbff780cbf05df",
+    "raw_log_size_bytes": 106
+  },
+  {
+    "name": "runtime_smoke_progression_economy_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_progression_economy_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 9.15,
+    "log": "build/FAN-3962/runtime_smoke_progression_economy_test.log",
+    "pass_lines": [
+      "Runtime progression/economy smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "a58765f1b5e2ec91ec49d52d8cdec4ed141ba69372c879724485c948f077525c",
+    "raw_log_size_bytes": 195
+  },
+  {
+    "name": "runtime_smoke_weapon_mechanics_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_weapon_mechanics_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 94.56,
+    "log": "build/FAN-3962/runtime_smoke_weapon_mechanics_test.log",
+    "pass_lines": [
+      "Runtime weapon mechanics smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "41840ab8352b9975946baefc2b28ac942a4167d35f21207bbe710675fe6ce45a",
+    "raw_log_size_bytes": 276
+  },
+  {
+    "name": "runtime_smoke_boss_elite_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 11.79,
+    "log": "build/FAN-3962/runtime_smoke_boss_elite_test.log",
+    "pass_lines": [
+      "Runtime boss/elite smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "749db6a124aa2c06fde384879afedc1e70fd7dcae4f19ec90fb9c7b4f77339dc",
+    "raw_log_size_bytes": 110
+  }
+]
