@@ -6,8 +6,8 @@ fresh live evidence for the canonical Guitarist trio. Every sample comes from
 shipped Enemy hazards remain visible while the ultimate is activated through
 `UltimatePlayerHost.activate()`. The windowed capture uses Godot 4.7 Compatibility
 on Apple M4 Pro and is pinned to source commit
-`06e461d5796a7ed375319e073f5624580a92b646`, tree
-`02f4023b54847ff8d97b0a310e0554e3422f58bb`, fixed 60 fps and seed
+`50174fb6b1282527b68f8c33bd757bcb614dd47e`, tree
+`08663585acaa3209a58a3bc8b62cd5197db030e2`, fixed 60 fps and seed
 `394320260910`.
 
 ## Coverage
@@ -29,23 +29,23 @@ group across all viewports and beats is shown below.
 
 | Weapon | Mode | Effect box | Near-white | HUD contrast | Player contrast | Hazards |
 |---|---|---:|---:|---:|---:|---:|
-| electric guitar | normal | 0.0286 | 0.0007 | 0.789 | 0.869 | 6 |
-| electric guitar | crowded | 0.0286 | 0.0010 | 0.761 | 0.839 | 14 |
-| electric guitar | reduced motion | 0.0286 | 0.0007 | 0.781 | 0.869 | 6 |
-| electric guitar | photosensitivity safe | 0.0286 | 0.0008 | 0.777 | 0.869 | 6 |
-| bass guitar | normal | 0.0329 | 0.0008 | 0.788 | 0.950 | 6 |
-| bass guitar | crowded | 0.0329 | 0.0011 | 0.788 | 0.940 | 12 |
-| bass guitar | reduced motion | 0.0329 | 0.0009 | 0.788 | 0.950 | 6 |
-| bass guitar | photosensitivity safe | 0.0329 | 0.0011 | 0.791 | 0.952 | 6 |
-| sound amp | normal | 0.0261 | 0.0025 | 0.837 | 0.889 | 6 |
-| sound amp | crowded | 0.0261 | 0.0033 | 0.837 | 0.896 | 14 |
-| sound amp | reduced motion | 0.0261 | 0.0024 | 0.837 | 0.909 | 6 |
-| sound amp | photosensitivity safe | 0.0261 | 0.0024 | 0.837 | 0.907 | 6 |
+| electric guitar | normal | 0.0286 | 0.0008 | 0.761 | 0.852 | 6 |
+| electric guitar | crowded | 0.0286 | 0.0009 | 0.745 | 0.828 | 14 |
+| electric guitar | reduced motion | 0.0286 | 0.0007 | 0.754 | 0.848 | 6 |
+| electric guitar | photosensitivity safe | 0.0286 | 0.0007 | 0.765 | 0.864 | 6 |
+| bass guitar | normal | 0.0329 | 0.0007 | 0.788 | 0.904 | 6 |
+| bass guitar | crowded | 0.0329 | 0.0010 | 0.788 | 0.899 | 12 |
+| bass guitar | reduced motion | 0.0329 | 0.0008 | 0.788 | 0.917 | 6 |
+| bass guitar | photosensitivity safe | 0.0329 | 0.0010 | 0.791 | 0.919 | 6 |
+| sound amp | normal | 0.0261 | 0.0022 | 0.837 | 0.905 | 6 |
+| sound amp | crowded | 0.0261 | 0.0028 | 0.837 | 0.895 | 14 |
+| sound amp | reduced motion | 0.0261 | 0.0022 | 0.837 | 0.921 | 6 |
+| sound amp | photosensitivity safe | 0.0261 | 0.0022 | 0.837 | 0.921 | 6 |
 
 The authored effect box remains below the 0.30 cap, every HUD band remains clear,
-the minimum measured HUD contrast is 0.761, player contrast is at least 0.839,
+the minimum measured HUD contrast is 0.745, player contrast is at least 0.828,
 and the full-screen veil reaches at least 1.0087 of the framebuffer area. The
-highest near-white share is 0.0033. Crowded mode reaches the exact weapon crowd
+highest near-white share is 0.0028. Crowded mode reaches the exact weapon crowd
 cap at every viewport.
 
 Victim-side impact bursts remain visible in the frames and are included in the
@@ -71,8 +71,8 @@ corruption rather than promising identical reruns.
 
 ```bash
 GUITARIST_CERT_SOURCE_REF=agent/claude-dev-fable/9426dc35badb \
-GUITARIST_CERT_SOURCE_SHA=06e461d5796a7ed375319e073f5624580a92b646 \
-GUITARIST_CERT_SOURCE_TREE=02f4023b54847ff8d97b0a310e0554e3422f58bb \
+GUITARIST_CERT_SOURCE_SHA=50174fb6b1282527b68f8c33bd757bcb614dd47e \
+GUITARIST_CERT_SOURCE_TREE=08663585acaa3209a58a3bc8b62cd5197db030e2 \
 FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed \
   --fixed-fps 60 --script res://tests/ultimates/presentation/guitarist_certification_live_capture.gd
 
