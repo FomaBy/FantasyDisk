@@ -175,6 +175,7 @@ func _is_evidence_only_path(path: String, source_sha: String) -> bool:
 	]:
 		return true
 	if path == "CHANGELOG.md" or path == "assets/marketing/fantasydisk_031_announcement.png" \
+		or path == "assets/marketing/fantasydisk_031_announcement.png.import" \
 		or path.begins_with("docs/design/references/release_0_3_1/"):
 		return true
 	if path.begins_with("evidence/FAN-3966/") or path.begins_with("evidence/FAN-3967/"):
@@ -730,6 +731,10 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 		"an ultimate runtime/tooling edit must make the capture stale", errors)
 	_expect(not _is_evidence_only_path("scenes/vfx/ultimates/assassin/changed_scene.tscn", source_sha),
 		"a assassin scene edit must make the capture stale", errors)
+	_expect(_is_evidence_only_path("assets/marketing/fantasydisk_031_announcement.png.import", source_sha),
+		"the release poster import sidecar must leave the capture applicable", errors)
+	_expect(not _is_evidence_only_path("assets/marketing/unrelated_poster.png.import", source_sha),
+		"an unrelated import sidecar must not be exempted", errors)
 	_expect(_is_evidence_only_path("scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn", source_sha),
 		"an unrelated class scene must not stale the capture", errors)
 	var old_project := _source_file_text(source_sha, "project.godot")
