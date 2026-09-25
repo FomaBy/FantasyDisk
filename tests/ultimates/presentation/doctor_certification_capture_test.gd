@@ -18,6 +18,7 @@ const Capture := preload("res://tests/ultimates/presentation/doctor_certificatio
 const Beats := preload("res://scripts/ultimates/presentation/contact_sheet_beats_contract.gd")
 const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
 const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const WidgetScene := preload("res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn")
 const PD := preload("res://scripts/progression_data.gd")
 
 const CLASS_ID := "doctor"
@@ -193,6 +194,8 @@ func _is_evidence_only_path(path: String, source_sha: String) -> bool:
 			or path.begins_with("docs/design/references/weapon_ultimates/%s/" % other_class) \
 			or path.begins_with("docs/design/reference-assets-lfs/ultimate-certification/%s/" % other_class):
 			return true
+	if path == "data/ultimates/text/ru.json":
+		return _is_capture_inert_ru_text(source_sha, FileAccess.get_file_as_string("res://%s" % path))
 	if path in ["project.godot", "export_presets.cfg", "scripts/patch_notes_data.gd"]:
 		var original := _source_file_text(source_sha, path)
 		if original.is_empty() or not FileAccess.file_exists("res://%s" % path):
@@ -216,6 +219,106 @@ func _source_file_text(source_sha: String, path: String) -> String:
 	if OS.execute("git", ["show", "%s:%s" % [source_sha, path]], output, true) != 0:
 		return ""
 	return "".join(output)
+
+
+## Russian descriptions only feed the hidden Codex panel/native hover tooltip
+## during these combat captures. The visible HUD title and the full table shape
+## remain pinned; any other localized edit still stales the captured source.
+func _is_capture_inert_ru_text(source_sha: String, current_text: String) -> bool:
+	var original_text := _source_file_text(source_sha, "data/ultimates/text/ru.json")
+	if original_text.is_empty():
+		return false
+	var before_value = JSON.parse_string(original_text)
+	var after_value = JSON.parse_string(current_text)
+	if not before_value is Dictionary or not after_value is Dictionary:
+		return false
+	var before := before_value as Dictionary
+	var after := after_value as Dictionary
+	if before.keys() != after.keys() or before.get("schema_version") != 1 or after.get("schema_version") != 1 \
+		or before.get("locale") != "ru" or after.get("locale") != "ru":
+		return false
+	var before_profiles = before.get("profiles")
+	var after_profiles = after.get("profiles")
+	if not before_profiles is Dictionary or not after_profiles is Dictionary:
+		return false
+	if (before_profiles as Dictionary).keys() != (after_profiles as Dictionary).keys():
+		return false
+	var normalized := before.duplicate(true)
+	var changed := false
+	for key in (before_profiles as Dictionary).keys():
+		var old_value = (before_profiles as Dictionary)[key]
+		var new_value = (after_profiles as Dictionary)[key]
+		if not old_value is Dictionary or not new_value is Dictionary:
+			return false
+		var old_entry := old_value as Dictionary
+		var new_entry := new_value as Dictionary
+		if old_entry.keys() != new_entry.keys() or old_entry.size() != 2 \
+			or not old_entry.has("title") or not old_entry.has("description") \
+			or old_entry.get("title") != new_entry.get("title") \
+			or not old_entry.get("description") is String or not new_entry.get("description") is String \
+			or str(old_entry["description"]).strip_edges().is_empty() \
+			or str(new_entry["description"]).strip_edges().is_empty():
+			return false
+		if old_entry["description"] != new_entry["description"]:
+			changed = true
+		((normalized["profiles"] as Dictionary)[key] as Dictionary)["description"] = new_entry["description"]
+	return changed and normalized == after
+
+
+## Exercise every changed description for this class in the same HUD widget
+## used by the live capture. The adapter mounts it mouse-ignoring, and its
+## custom Codex panel stays hidden; therefore these edits cannot paint pixels.
+func _check_ru_text_visibility(old_text: String, new_text: String, errors: Array[String]) -> void:
+	var adapter_text := FileAccess.get_file_as_string("res://scripts/ui/ultimate_hud/ultimate_hud_runtime_adapter.gd")
+	_expect(adapter_text.contains("_widget.mouse_filter = Control.MOUSE_FILTER_IGNORE"),
+		"the capture HUD must ignore mouse hover tooltips", errors)
+	var old_profiles := (JSON.parse_string(old_text) as Dictionary).get("profiles", {}) as Dictionary
+	var new_profiles := (JSON.parse_string(new_text) as Dictionary).get("profiles", {}) as Dictionary
+	for key in old_profiles.keys():
+		if not str(key).begins_with("%s/" % CLASS_ID):
+			continue
+		var old_entry := old_profiles[key] as Dictionary
+		var new_entry := new_profiles.get(key, {}) as Dictionary
+		if str(old_entry.get("description", "")) == str(new_entry.get("description", "")):
+			continue
+		var widget := WidgetScene.instantiate() as Control
+		root.add_child(widget)
+		widget.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var state := {
+			"selection": {
+				"class_id": CLASS_ID,
+				"weapon_id": str(key).get_slice("/", 1),
+				"profile_id": str(key),
+				"weapon_title": "Capture weapon",
+			},
+			"ultimate": {"title": str(old_entry["title"]), "description": str(old_entry["description"])},
+			"input": {"device": "keyboard"},
+		}
+		widget.call("apply_state", state)
+		var before_labels := _visible_hud_labels(widget)
+		var before_size := widget.get_combined_minimum_size()
+		var tooltip := widget.call("codex_tooltip") as Control
+		_expect(tooltip != null and not tooltip.visible,
+			"%s old description must stay in the hidden Codex panel" % key, errors)
+		(state["ultimate"] as Dictionary)["description"] = str(new_entry["description"])
+		widget.call("apply_state", state)
+		_expect(_visible_hud_labels(widget) == before_labels and widget.get_combined_minimum_size() == before_size,
+			"%s description edit must leave visible HUD labels and size unchanged" % key, errors)
+		_expect(tooltip != null and not tooltip.visible,
+			"%s new description must stay in the hidden Codex panel" % key, errors)
+		widget.free()
+
+
+func _visible_hud_labels(node: Node) -> Array[String]:
+	var labels: Array[String] = []
+	for child in node.get_children():
+		var canvas := child as CanvasItem
+		if canvas != null and not canvas.visible:
+			continue
+		if child is Label:
+			labels.append((child as Label).text)
+		labels.append_array(_visible_hud_labels(child))
+	return labels
 
 
 ## Ignore only version assignment values; every other project/export setting
@@ -700,6 +803,25 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	_expect(not declaration_violations(wrong_tree, profile).is_empty(), "a tree not owned by the source commit must fail closed", errors)
 
 	var source_sha := str((manifest.get("source", {}) as Dictionary).get("commit_sha", ""))
+	var old_ru := _source_file_text(source_sha, "data/ultimates/text/ru.json")
+	var current_ru := FileAccess.get_file_as_string("res://data/ultimates/text/ru.json")
+	_expect(_is_capture_inert_ru_text(source_sha, current_ru),
+		"description-only Russian text correction must leave capture applicable", errors)
+	var changed_title := JSON.parse_string(current_ru) as Dictionary
+	var changed_profiles := changed_title["profiles"] as Dictionary
+	var first_key := str(changed_profiles.keys()[0])
+	(changed_profiles[first_key] as Dictionary)["title"] += " changed"
+	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(changed_title)),
+		"a changed ultimate title must stale the capture", errors)
+	var removed_profile := JSON.parse_string(current_ru) as Dictionary
+	(removed_profile["profiles"] as Dictionary).erase(first_key)
+	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(removed_profile)),
+		"a missing ultimate profile must stale the capture", errors)
+	var empty_description := JSON.parse_string(current_ru) as Dictionary
+	((empty_description["profiles"] as Dictionary)[first_key] as Dictionary)["description"] = ""
+	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(empty_description)),
+		"an empty ultimate description must stale the capture", errors)
+	_check_ru_text_visibility(old_ru, current_ru, errors)
 	_expect(not _is_evidence_only_path("scripts/ultimates/presentation/contact_sheet_beats_contract.gd", source_sha),
 		"an ultimate runtime/tooling edit must make the capture stale", errors)
 	_expect(not _is_evidence_only_path("scenes/vfx/ultimates/doctor/changed_scene.tscn", source_sha),
