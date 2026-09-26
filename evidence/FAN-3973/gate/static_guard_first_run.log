@@ -1,0 +1,2 @@
+Static quality guard passed (case/version/Windows/architecture/sidecars/credentials/ownership).
+python3 tools/quality_static_guard.py  1.19s user 0.14s system 97% cpu 1.367 total

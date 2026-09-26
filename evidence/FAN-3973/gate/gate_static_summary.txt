@@ -1,0 +1,61 @@
+STATIC repository-invariants
+FAIL: ownership guard: candidate spans ownership domains core, ui/main_menu; split the task or declare 'cross-domain: FAN-<id> <rationale>'
+Static quality guard failed: 1 error(s).
+STATIC repository-storage-policy
+STATIC python-unit
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-4292032266/quality-empty-selection-m7q7fwpx/quality_gate_report.json
+STATIC repository-storage-policy
+STATIC python-unit
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC repository-invariants
+STATIC repository-storage-policy
+STATIC python-unit
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+QUALITY PARTIAL_PASS: 1 static, 2 Godot; report=/tmp/multica-task-4292032266/quality-import-report-opcn57j6/report.json
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-4292032266/quality-godot-only-izg7tdon/report.json
+QUALITY NON-CERTIFYING: changed ref HEAD^ is not the configured integration ref origin/dev (resolves to 448a0cc12f02eb05bc16becc69fde365021a9a17)
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-4292032266/quality-changed-ref-report-u4impc_7/report.json
+STATIC repository-storage-policy
+STATIC python-unit
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC shell-syntax
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-4292032266/quality-empty-wtgees1u/report.json
+QUALITY PASSED: 2 static, 18 Godot; report=/tmp/multica-task-4292032266/quality-feature-list-hrhj70cs/report.json
+QUALITY FAILED: 2 static, 18 Godot; report=/tmp/multica-task-4292032266/quality-feature-list-0f6hl1y2/report.json
+QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-4292032266/quality-feature-list-x3281nj5/report.json
+QUALITY PASSED: 2 static, 1 Godot; report=/tmp/multica-task-4292032266/quality-feature-list-bfyzu0ir/report.json
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC shell-syntax
+QUALITY FAILED: 16 static, 0 Godot; report=build/fan3973/gate_static.json

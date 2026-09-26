@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility vsync=1 prefetch=false
+
+| phase | actor | frames | sprite_frames_for (ms) | frame delta during load (ms) |
+|---|---|---|---|---|
+| A first use (sync) | enemy/small_biter | 184 | 38.9 | 59.5 |
+| A first use (sync) | enemy/rift_cutter | 306 | 94.7 | 108.6 |
+| A first use (sync) | enemy/ash_marksman | 184 | 76.3 | 90.4 |
+| A first use (sync) | elite/iron_bastion | 344 | 137.1 | 143.6 |
+| A first use (sync) | boss/rift_warden | 448 | 135.2 | 138.4 |
+
+phase A texture memory: 28 MiB -> 1692 MiB for 5 packs
+phase A texture memory after release: 28 MiB

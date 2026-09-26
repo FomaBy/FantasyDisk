@@ -1,0 +1,304 @@
+{
+  "selected_godot_tests": 22,
+  "executed_python_tests": 0,
+  "git_sha": "6bec14811acb481b7814d108c499e689b7c76146",
+  "changed_ref": "origin/dev",
+  "changed_base_sha": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+  "static_checks": [
+    {
+      "name": "test-discovery",
+      "status": "passed",
+      "exit_code": 0,
+      "duration_seconds": 0.0,
+      "errors": [],
+      "discovered_godot_tests": 558,
+      "selected_godot_tests": 22,
+      "selected_godot_test_scripts": [
+        "res://tests/achievements_smoke_test.gd",
+        "res://tests/attack_vfx_smoke_test.gd",
+        "res://tests/actors/bone_caller_smoke_test.gd",
+        "res://tests/dev_console_smoke_test.gd",
+        "res://tests/actors/druid_ghost_lion_smoke_test.gd",
+        "res://tests/enemy_health_bar_smoke_test.gd",
+        "res://tests/full_frame_eight_direction_contract_test.gd",
+        "res://tests/full_frame_row_scale_invariant_test.gd",
+        "res://tests/global_damage_balance_smoke_test.gd",
+        "res://tests/actors/iron_bastion_smoke_test.gd",
+        "res://tests/meta_keystone_behavioral_smoke_test.gd",
+        "res://tests/actors/mini_plague_bellringer_smoke_test.gd",
+        "res://tests/actors/mini_shadow_devourer_smoke_test.gd",
+        "res://tests/actors/mini_void_phantom_smoke_test.gd",
+        "res://tests/actors/plague_prophet_smoke_test.gd",
+        "res://tests/actors/rift_warden_smoke_test.gd",
+        "res://tests/route_node_preview_test.gd",
+        "res://tests/scrum1079_route_map_horizontal_test.gd",
+        "res://tests/scrum981_route_map_gold_shell_test.gd",
+        "res://tests/actors/small_biter_smoke_test.gd",
+        "res://tests/ui_icon_registry_smoke_test.gd",
+        "res://tests/actors/winged_spark_smoke_test.gd"
+      ],
+      "discovered_python_tests": 44
+    }
+  ],
+  "godot_tests": [
+    {
+      "name": "achievements_smoke_test",
+      "script": "res://tests/achievements_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.68
+    },
+    {
+      "name": "attack_vfx_smoke_test",
+      "script": "res://tests/attack_vfx_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 1.675
+    },
+    {
+      "name": "bone_caller_smoke_test",
+      "script": "res://tests/actors/bone_caller_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.853
+    },
+    {
+      "name": "dev_console_smoke_test",
+      "script": "res://tests/dev_console_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 2.921
+    },
+    {
+      "name": "druid_ghost_lion_smoke_test",
+      "script": "res://tests/actors/druid_ghost_lion_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.578
+    },
+    {
+      "name": "enemy_health_bar_smoke_test",
+      "script": "res://tests/enemy_health_bar_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.415
+    },
+    {
+      "name": "full_frame_eight_direction_contract_test",
+      "script": "res://tests/full_frame_eight_direction_contract_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 4.825
+    },
+    {
+      "name": "full_frame_row_scale_invariant_test",
+      "script": "res://tests/full_frame_row_scale_invariant_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 7.285
+    },
+    {
+      "name": "global_damage_balance_smoke_test",
+      "script": "res://tests/global_damage_balance_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.415
+    },
+    {
+      "name": "iron_bastion_smoke_test",
+      "script": "res://tests/actors/iron_bastion_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.908
+    },
+    {
+      "name": "meta_keystone_behavioral_smoke_test",
+      "script": "res://tests/meta_keystone_behavioral_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 4.203
+    },
+    {
+      "name": "mini_plague_bellringer_smoke_test",
+      "script": "res://tests/actors/mini_plague_bellringer_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 1.021
+    },
+    {
+      "name": "mini_shadow_devourer_smoke_test",
+      "script": "res://tests/actors/mini_shadow_devourer_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.902
+    },
+    {
+      "name": "mini_void_phantom_smoke_test",
+      "script": "res://tests/actors/mini_void_phantom_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.898
+    },
+    {
+      "name": "plague_prophet_smoke_test",
+      "script": "res://tests/actors/plague_prophet_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.9
+    },
+    {
+      "name": "rift_warden_smoke_test",
+      "script": "res://tests/actors/rift_warden_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.979
+    },
+    {
+      "name": "route_node_preview_test",
+      "script": "res://tests/route_node_preview_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 1.913
+    },
+    {
+      "name": "scrum1079_route_map_horizontal_test",
+      "script": "res://tests/scrum1079_route_map_horizontal_test.gd",
+      "status": "failed",
+      "exit_code": 3,
+      "timed_out": false,
+      "fatal_diagnostic": "fatal",
+      "duration_seconds": 2.693
+    },
+    {
+      "name": "scrum981_route_map_gold_shell_test",
+      "script": "res://tests/scrum981_route_map_gold_shell_test.gd",
+      "status": "failed",
+      "exit_code": 3,
+      "timed_out": false,
+      "fatal_diagnostic": "fatal",
+      "duration_seconds": 2.828
+    },
+    {
+      "name": "small_biter_smoke_test",
+      "script": "res://tests/actors/small_biter_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.794
+    },
+    {
+      "name": "ui_icon_registry_smoke_test",
+      "script": "res://tests/ui_icon_registry_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.421
+    },
+    {
+      "name": "winged_spark_smoke_test",
+      "script": "res://tests/actors/winged_spark_smoke_test.gd",
+      "status": "passed",
+      "exit_code": 0,
+      "timed_out": false,
+      "fatal_diagnostic": "",
+      "duration_seconds": 0.921
+    }
+  ],
+  "profile": "changed",
+  "certifying": false,
+  "filters": [
+    "smoke_test",
+    "full_frame",
+    "route_",
+    "main_menu",
+    "gamepad_menu"
+  ],
+  "skip_static": true,
+  "skip_godot": false,
+  "skip_umbrella": false,
+  "godot_test_timeout_seconds": 900.0,
+  "godot_import_timeout_seconds": 1200.0,
+  "static_timeout_seconds": 1200.0,
+  "python_unit_idle_timeout_seconds": 60.0,
+  "worktree_clean": true,
+  "worktree_status": [],
+  "discovered_godot_tests": 558,
+  "selected_godot_test_scripts": [
+    "res://tests/achievements_smoke_test.gd",
+    "res://tests/attack_vfx_smoke_test.gd",
+    "res://tests/actors/bone_caller_smoke_test.gd",
+    "res://tests/dev_console_smoke_test.gd",
+    "res://tests/actors/druid_ghost_lion_smoke_test.gd",
+    "res://tests/enemy_health_bar_smoke_test.gd",
+    "res://tests/full_frame_eight_direction_contract_test.gd",
+    "res://tests/full_frame_row_scale_invariant_test.gd",
+    "res://tests/global_damage_balance_smoke_test.gd",
+    "res://tests/actors/iron_bastion_smoke_test.gd",
+    "res://tests/meta_keystone_behavioral_smoke_test.gd",
+    "res://tests/actors/mini_plague_bellringer_smoke_test.gd",
+    "res://tests/actors/mini_shadow_devourer_smoke_test.gd",
+    "res://tests/actors/mini_void_phantom_smoke_test.gd",
+    "res://tests/actors/plague_prophet_smoke_test.gd",
+    "res://tests/actors/rift_warden_smoke_test.gd",
+    "res://tests/route_node_preview_test.gd",
+    "res://tests/scrum1079_route_map_horizontal_test.gd",
+    "res://tests/scrum981_route_map_gold_shell_test.gd",
+    "res://tests/actors/small_biter_smoke_test.gd",
+    "res://tests/ui_icon_registry_smoke_test.gd",
+    "res://tests/actors/winged_spark_smoke_test.gd"
+  ],
+  "discovered_python_tests": 44,
+  "platform": "darwin",
+  "status": "failed",
+  "duration_seconds": 40.973,
+  "godot_import_prepass": {
+    "name": "godot-import-cache",
+    "status": "passed",
+    "exit_code": 0,
+    "timed_out": false,
+    "duration_seconds": 1.474
+  },
+  "ultimate_feature_list_selected": false,
+  "ultimate_feature_list": null,
+  "generated_import_sidecars_removed": [],
+  "shard": {
+    "index": 0,
+    "count": 4
+  }
+}

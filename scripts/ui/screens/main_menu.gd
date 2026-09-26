@@ -323,6 +323,9 @@ func _show_main_menu() -> void:
 	game._clear_all_game_pauses()
 	game.pending_rebind_action = ""
 	game._clear_world()
+	# FAN-3973: the run is over — drop the full-frame packs the route map
+	# prefetched so the resource cache can free them; the menu needs none.
+	FullFrameAnimationRegistry.release_prefetched()
 	game._clear_hud()
 	game._clear_ui()
 	game.current_act = 1

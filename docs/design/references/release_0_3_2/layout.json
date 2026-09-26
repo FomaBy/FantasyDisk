@@ -1,0 +1,99 @@
+{
+  "canvas": {
+    "width": 1350,
+    "height": 1350
+  },
+  "defaults": {
+    "font": "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+    "color": "#F8E8C4",
+    "stroke_fill": "#12080B",
+    "stroke_width": 3,
+    "line_spacing": 1.08,
+    "align": "center",
+    "valign": "middle"
+  },
+  "content": {
+    "game_title": "FANTASYDISK",
+    "version": "0.3.2",
+    "release_date": "26.09.2026",
+    "key_changes": "ГЛАВНОЕ\n• 51 ультимейт теперь узнаётся по имени в бою, Кодексе и паузе.\n• Приёмы 17 героев получили новые зрелищные сцены.\n• Попадания во время ультимейтов стали заметнее.",
+    "visual_updates": "МИР ОЖИВАЕТ\n• Шесть боссов получили анимации для восьми направлений.\n• Враги, союзники и герои двигаются выразительнее.\n• Исправлены рывки Вора и мерцание Элементалиста."
+  },
+  "zones": [
+    {
+      "id": "game_title",
+      "content_key": "game_title",
+      "role": "title",
+      "x": 114,
+      "y": 129,
+      "w": 322,
+      "h": 117,
+      "max_font": 44,
+      "min_font": 28,
+      "color": "#FFCE74",
+      "stroke_width": 4,
+      "uppercase": true,
+      "debug_color": "#ffcc33"
+    },
+    {
+      "id": "version",
+      "content_key": "version",
+      "role": "version",
+      "x": 514,
+      "y": 129,
+      "w": 322,
+      "h": 117,
+      "max_font": 44,
+      "min_font": 28,
+      "color": "#F8E8C4",
+      "stroke_width": 4,
+      "debug_color": "#66ccff"
+    },
+    {
+      "id": "release_date",
+      "content_key": "release_date",
+      "role": "date",
+      "x": 914,
+      "y": 129,
+      "w": 322,
+      "h": 117,
+      "max_font": 32,
+      "min_font": 20,
+      "color": "#DDAA59",
+      "stroke_width": 3,
+      "debug_color": "#cc88ff"
+    },
+    {
+      "id": "key_changes",
+      "content_key": "key_changes",
+      "role": "key_changes",
+      "x": 129,
+      "y": 579,
+      "w": 492,
+      "h": 417,
+      "max_font": 26,
+      "min_font": 22,
+      "color": "#F8E8C4",
+      "stroke_width": 3,
+      "align": "left",
+      "valign": "top",
+      "debug_color": "#66ff99"
+    },
+    {
+      "id": "visual_updates",
+      "content_key": "visual_updates",
+      "role": "visual_updates",
+      "x": 729,
+      "y": 579,
+      "w": 492,
+      "h": 417,
+      "max_font": 26,
+      "min_font": 22,
+      "color": "#F8E8C4",
+      "stroke_width": 3,
+      "align": "left",
+      "valign": "top",
+      "debug_color": "#ff9966"
+    }
+  ]
+}

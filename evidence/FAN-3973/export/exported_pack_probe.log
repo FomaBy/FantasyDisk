@@ -1,0 +1,10 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility main_pack_resources=true
+probe: main menu shown, ui_layer=true
+probe: hero select shown=true
+probe: route map shown; prefetched packs resident=11
+probe: combat ran 900 frames; enemy kinds seen=7 with full-frame body=7 static-only=0; combat_active=true
+probe: kinds: Small Biter, Rift Cutter, Bone Caller, Spark Runner, Stone Bruiser, Winged Spark, Venom Spitter
+probe: done

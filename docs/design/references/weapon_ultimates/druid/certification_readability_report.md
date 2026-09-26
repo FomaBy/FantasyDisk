@@ -7,17 +7,17 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `4955fe7e3d4e25137ae73a3f8eb60c181220cc81`; source tree:
-`eccc58cfddb9efa57b0fab84bfc68e9ac3fc6114`. Godot 4.7 stable used the
+Source commit: `cb1162c8b27e082710972a6a47b031ba6d4f9e8e`; source tree:
+`aa7e2d45a6090b37c9719b8d5cee6dd7c84b2251`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
 
 | Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Summon amulet | 0.0353 | 0.547 | 0.268 | 0.0002 | 24 | 2 |
-| Briar staff | 0.0482 | 0.569 | 0.257 | 0.0002 | 20 | 2 |
-| Raven totem | 0.0510 | 0.572 | 0.380 | 0.0002 | 22 | 2 |
+| Summon amulet | 0.0353 | 0.545 | 0.332 | 0.0002 | 24 | 2 |
+| Briar staff | 0.0482 | 0.547 | 0.256 | 0.0002 | 20 | 2 |
+| Raven totem | 0.0510 | 0.640 | 0.371 | 0.0002 | 22 | 2 |
 
 ## Beat observations
 
@@ -32,7 +32,7 @@ PNG SHA-256 hashes.
 Result: PASS. All 144 activations started through the real Player entry point,
 all 144 runtime scenes bound a real cast pose, all required beat nodes were
 present, the backdrop covered the full viewport, and every HUD band remained
-clear. Briar Staff is the tightest player-contrast case at 0.257, still above
+clear. Briar Staff is the tightest player-contrast case at 0.256, still above
 the unchanged 0.25 floor; that margin should remain a focused review point.
 The deterministic crowd fixture reaches each weapon's declared hazard cap, and
 the resulting images are representative evidence rather than a performance

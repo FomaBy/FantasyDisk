@@ -40,7 +40,28 @@ const DATA_ROOT := "res://data/animation"
 const ENTITY_KINDS := ["ally", "enemy", "elite", "boss", "hero"]
 const REQUIRED_NUMERIC_VECTOR_FIELDS := ["x", "y"]
 
+# FAN-3973 (0.3.1 release blocker, FAN-3964 QA): registry initialization runs
+# at class load, which `enemy.gd` preloads from the main scene — i.e. before
+# the main menu's first frame. It must therefore never load a frames resource:
+# the FAN-3680 `ResourceLoader.load(frames_path) is SpriteFrames` type probe
+# pulled every full-frame pack (41 SpriteFrames, 9,089 textures, ~8.5 GiB of
+# lossless 512x512 frames) through the loader just to discard it, and cold
+# start on the Windows reference host went from 5 s to 17 s. The cheap check
+# keeps the fail-closed contract at registry time: the path must exist and
+# carry an extension a SpriteFrames-capable loader serves (`.tres`/`.res`), so
+# a `.gd`/`.png`/`.tscn` path is still excluded here with the same warning.
+# Whether a `.tres`/`.res` really contains SpriteFrames cannot be known
+# without loading it, so that strict check moved to first use
+# (`_frames_for_path`): still fail-closed to the static body, remembered per
+# path so a wrong-type pack is not re-loaded on every spawn, and the whole
+# catalog is type-checked by `tests/full_frame_registry_integrity_test.gd`.
+const FRAMES_RESOURCE_TYPE := "SpriteFrames"
+
 static var FULL_FRAME_SPRITEFRAMES: Dictionary = _load_registry()
+
+# First-use loader state (see `_frames_for_path`). Paths rejected at first use
+# because the resource is not SpriteFrames; the actor keeps its static body.
+static var _rejected_frames_paths: Dictionary = {}
 
 
 static func _load_registry() -> Dictionary:
@@ -118,7 +139,7 @@ static func _entry_from_document(document: Dictionary, where: String) -> Diction
 	if not ResourceLoader.exists(frames_path):
 		push_warning("full_frame_animation_registry: %s references a nonexistent 'frames' resource — actor excluded (safe fallback)." % where)
 		return {}
-	if not (ResourceLoader.load(frames_path) is SpriteFrames):
+	if not _has_frames_resource_extension(frames_path):
 		push_warning("full_frame_animation_registry: %s references a 'frames' resource that is not SpriteFrames — actor excluded (safe fallback)." % where)
 		return {}
 	var scale: Variant = _vector2_from_document(document.get("scale"), where, "scale")
@@ -142,6 +163,24 @@ static func _entry_from_document(document: Dictionary, where: String) -> Diction
 		if bool(document.get(flag, false)):
 			entry[flag] = true
 	return entry
+
+
+# FAN-3973: cheap, deterministic stand-in for the FAN-3680 full-load type
+# probe. `ResourceLoader.get_recognized_extensions_for_type` asks the
+# registered loaders which extensions can yield a SpriteFrames (text `.tres`,
+# binary `.res`) without touching the file; `ResourceLoader.exists(path,
+# type_hint)` is not usable here because it answers true for any path that is
+# already in the resource cache regardless of type (the registry script
+# itself, for example). Exported builds remap `.tres` to a binary `.res`
+# behind the same logical path, so the declared extension is what matters.
+static func _has_frames_resource_extension(frames_path: String) -> bool:
+	var extension := frames_path.get_extension().to_lower()
+	if extension == "":
+		return false
+	for recognized in ResourceLoader.get_recognized_extensions_for_type(FRAMES_RESOURCE_TYPE):
+		if str(recognized).to_lower() == extension:
+			return true
+	return false
 
 
 # Returns null (not Vector2.ZERO) on an invalid/missing document so callers can
@@ -179,10 +218,160 @@ static func registry_config(entity_kind: String, entity_id: String) -> Dictionar
 
 static func sprite_frames_for(entity_kind: String, entity_id: String) -> SpriteFrames:
 	var config := registry_config(entity_kind, entity_id)
-	var frames_path := str(config.get("frames", ""))
-	if frames_path == "" or not ResourceLoader.exists(frames_path):
+	return _frames_for_path(str(config.get("frames", "")), "%s/%s" % [entity_kind, entity_id])
+
+
+# FAN-3973: the single place a frames resource is actually loaded. Strict
+# SpriteFrames type check lives here (registry init must stay load-free, see
+# FRAMES_RESOURCE_TYPE); a resource that is not SpriteFrames is rejected once
+# with the registry warning, remembered, and the caller falls back to the
+# static body exactly like an unregistered actor. A path with a pending
+# background prefetch (see `queue_prefetch`) is collected from the threaded
+# loader instead of being loaded a second time: that blocks only for the
+# remainder of an in-flight load, and an unstarted request runs inline — the
+# same cost the synchronous load always had.
+static func _frames_for_path(frames_path: String, where: String) -> SpriteFrames:
+	if frames_path == "" or _rejected_frames_paths.has(frames_path):
 		return null
-	return load(frames_path) as SpriteFrames
+	if _prefetched_frames.has(frames_path):
+		return _prefetched_frames[frames_path]
+	if not ResourceLoader.exists(frames_path):
+		return null
+	var loaded: Resource = null
+	if _prefetch_in_flight.has(frames_path):
+		_prefetch_in_flight.erase(frames_path)
+		loaded = ResourceLoader.load_threaded_get(frames_path)
+	if loaded == null:
+		loaded = ResourceLoader.load(frames_path)
+	if not (loaded is SpriteFrames):
+		push_warning("full_frame_animation_registry: %s references a 'frames' resource that is not SpriteFrames — actor excluded (safe fallback)." % where)
+		_rejected_frames_paths[frames_path] = true
+		return null
+	return loaded as SpriteFrames
+
+
+# FAN-3973: bounded background prefetch of the full-frame packs a fight is
+# about to use. The catalog cannot be made resident wholesale (~8.5 GiB of
+# lossless frames), so callers queue only a concrete roster at a natural
+# boundary (the route map, before any node is chosen), at most
+# MAX_PREFETCH_IN_FLIGHT threaded requests run at once so texture uploads
+# stay spread over frames instead of landing in one, completed packs are held
+# by `_prefetched_frames` for the rest of the run (the weak resource cache
+# would otherwise drop and re-load them between fights), and
+# `release_prefetched` lets go of everything when the run returns to the main
+# menu. A roster entry that is unregistered, already rejected or already
+# resident is a no-op. Progress is driven by `advance_prefetch`, which hooks
+# the scene tree's `process_frame` only while there is work to do.
+# Measured on the macOS development host (evidence/FAN-3973/first_spawn):
+# one request at a time keeps route-map frames under ~30 ms while 13 packs
+# become resident in ~0.8 s; two at a time finished in ~0.55 s but the
+# texture uploads bunched into 90-100 ms frames.
+const MAX_PREFETCH_IN_FLIGHT := 1
+
+static var _prefetch_queue: Array = []
+static var _prefetch_in_flight: Dictionary = {}
+static var _prefetched_frames: Dictionary = {}
+static var _prefetch_tick_connected := false
+
+
+static func queue_prefetch(entity_kind: String, entity_id: String) -> bool:
+	var frames_path := str(registry_config(entity_kind, entity_id).get("frames", ""))
+	if frames_path == "" or _rejected_frames_paths.has(frames_path):
+		return false
+	if _prefetched_frames.has(frames_path) or _prefetch_in_flight.has(frames_path) or _prefetch_queue.has(frames_path):
+		return false
+	_prefetch_queue.append(frames_path)
+	_connect_prefetch_tick()
+	return true
+
+
+# Queues the pack of the actor a PackedScene's root declares through a string
+# property (`elite_behavior`, `boss_behavior`) without instantiating the scene.
+static func queue_prefetch_for_scene(entity_kind: String, scene: PackedScene, id_property: String) -> bool:
+	if scene == null:
+		return false
+	var state := scene.get_state()
+	for index in range(state.get_node_property_count(0)):
+		if str(state.get_node_property_name(0, index)) == id_property:
+			return queue_prefetch(entity_kind, str(state.get_node_property_value(0, index)))
+	return false
+
+
+static func queue_prefetch_kind(entity_kind: String) -> int:
+	var queued := 0
+	var kind_table: Dictionary = FULL_FRAME_SPRITEFRAMES.get(entity_kind, {})
+	var entity_ids := kind_table.keys()
+	entity_ids.sort()
+	for entity_id in entity_ids:
+		if queue_prefetch(entity_kind, str(entity_id)):
+			queued += 1
+	return queued
+
+
+# Returns the number of packs still queued or in flight; 0 means idle.
+static func advance_prefetch() -> int:
+	for frames_path in _prefetch_in_flight.keys():
+		var status := ResourceLoader.load_threaded_get_status(frames_path)
+		if status == ResourceLoader.THREAD_LOAD_IN_PROGRESS:
+			continue
+		_prefetch_in_flight.erase(frames_path)
+		var loaded: Resource = ResourceLoader.load_threaded_get(frames_path) if status == ResourceLoader.THREAD_LOAD_LOADED else null
+		if loaded is SpriteFrames:
+			_prefetched_frames[frames_path] = loaded
+		elif loaded != null:
+			push_warning("full_frame_animation_registry: prefetched %s is not SpriteFrames — actor excluded (safe fallback)." % frames_path)
+			_rejected_frames_paths[frames_path] = true
+		else:
+			push_warning("full_frame_animation_registry: background prefetch of %s failed; the pack loads on first use instead." % frames_path)
+	while _prefetch_in_flight.size() < MAX_PREFETCH_IN_FLIGHT and not _prefetch_queue.is_empty():
+		var frames_path: String = _prefetch_queue.pop_front()
+		if _prefetched_frames.has(frames_path) or _rejected_frames_paths.has(frames_path):
+			continue
+		if ResourceLoader.load_threaded_request(frames_path, FRAMES_RESOURCE_TYPE) == OK:
+			_prefetch_in_flight[frames_path] = true
+		else:
+			push_warning("full_frame_animation_registry: background prefetch of %s could not start; the pack loads on first use instead." % frames_path)
+	var remaining := _prefetch_queue.size() + _prefetch_in_flight.size()
+	if remaining == 0:
+		_disconnect_prefetch_tick()
+	return remaining
+
+
+# Drops every resident pack and the queue. A request still in flight is
+# collected synchronously (at most MAX_PREFETCH_IN_FLIGHT packs, one pack's
+# load time) and dropped: a threaded load that is still running when the
+# engine shuts down is reported as a failed resource load, so `main.gd` calls
+# this from its exit cleanup as well as the main menu calling it at run end.
+static func release_prefetched() -> void:
+	_prefetch_queue.clear()
+	_prefetched_frames.clear()
+	for frames_path in _prefetch_in_flight.keys():
+		ResourceLoader.load_threaded_get(frames_path)
+	_prefetch_in_flight.clear()
+	_disconnect_prefetch_tick()
+
+
+static func prefetched_frames_count() -> int:
+	return _prefetched_frames.size()
+
+
+static func _connect_prefetch_tick() -> void:
+	if _prefetch_tick_connected:
+		return
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null:
+		return
+	tree.process_frame.connect(advance_prefetch)
+	_prefetch_tick_connected = true
+
+
+static func _disconnect_prefetch_tick() -> void:
+	if not _prefetch_tick_connected:
+		return
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null and tree.process_frame.is_connected(advance_prefetch):
+		tree.process_frame.disconnect(advance_prefetch)
+	_prefetch_tick_connected = false
 
 
 static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_id: String, animated_body_name := DEFAULT_ANIMATED_BODY_NAME, static_body_name := DEFAULT_STATIC_BODY_NAME) -> AnimatedSprite2D:
@@ -200,10 +389,7 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 	if config.is_empty():
 		return null
 
-	var frames_path := str(config.get("frames", ""))
-	if frames_path == "" or not ResourceLoader.exists(frames_path):
-		return null
-	var frames := load(frames_path) as SpriteFrames
+	var frames := _frames_for_path(str(config.get("frames", "")), "%s/%s" % [entity_kind, entity_id])
 	if frames == null:
 		return null
 

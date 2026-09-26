@@ -1,0 +1,100 @@
+{
+  "canvas": {
+    "width": 1350,
+    "height": 1350
+  },
+  "policy": {
+    "min_gap": 24,
+    "allow_overlap": false
+  },
+  "content": {
+    "game_title": "FANTASYDISK",
+    "version": "0.3.2",
+    "release_date": "26.09.2026",
+    "key_changes": "ГЛАВНОЕ\n• 51 ультимейт теперь узнаётся по имени в бою, Кодексе и паузе.\n• Приёмы 17 героев получили новые зрелищные сцены.\n• Попадания во время ультимейтов стали заметнее.",
+    "visual_updates": "МИР ОЖИВАЕТ\n• Шесть боссов получили анимации для восьми направлений.\n• Враги, союзники и герои двигаются выразительнее.\n• Исправлены рывки Вора и мерцание Элементалиста."
+  },
+  "elements": [
+    {
+      "id": "frame",
+      "kind": "panel",
+      "x": 0,
+      "y": 0,
+      "w": 1350,
+      "h": 1350,
+      "min_w": 1350,
+      "min_h": 1350,
+      "collision": false
+    },
+    {
+      "id": "game_title",
+      "kind": "text",
+      "parent": "frame",
+      "content_zone": true,
+      "collision": true,
+      "x": 114,
+      "y": 129,
+      "w": 322,
+      "h": 117,
+      "text_key": "game_title",
+      "max_font": 44,
+      "min_font": 28
+    },
+    {
+      "id": "version",
+      "kind": "text",
+      "parent": "frame",
+      "content_zone": true,
+      "collision": true,
+      "x": 514,
+      "y": 129,
+      "w": 322,
+      "h": 117,
+      "text_key": "version",
+      "max_font": 44,
+      "min_font": 28
+    },
+    {
+      "id": "release_date",
+      "kind": "text",
+      "parent": "frame",
+      "content_zone": true,
+      "collision": true,
+      "x": 914,
+      "y": 129,
+      "w": 322,
+      "h": 117,
+      "text_key": "release_date",
+      "max_font": 32,
+      "min_font": 20
+    },
+    {
+      "id": "key_changes",
+      "kind": "text",
+      "parent": "frame",
+      "content_zone": true,
+      "collision": true,
+      "x": 129,
+      "y": 579,
+      "w": 492,
+      "h": 417,
+      "text_key": "key_changes",
+      "max_font": 26,
+      "min_font": 22
+    },
+    {
+      "id": "visual_updates",
+      "kind": "text",
+      "parent": "frame",
+      "content_zone": true,
+      "collision": true,
+      "x": 729,
+      "y": 579,
+      "w": 492,
+      "h": 417,
+      "text_key": "visual_updates",
+      "max_font": 26,
+      "min_font": 22
+    }
+  ]
+}
