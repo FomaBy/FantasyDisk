@@ -16,7 +16,6 @@
       "guard_arc_degrees": 110.0,
       "counter_radius": 195.0,
       "counter_arc_degrees": 135.0,
-      "counter_target_cap": 4,
       "counter_damage_ratio": 0.55,
       "push_force": 230.0,
       "control_duration": 0.85,

@@ -12,12 +12,10 @@ const WEAPONS := [
 	"sniper_spotter_scope",
 	"sniper_shatter_rounds",
 ]
-const EXPECTED_CAPS := {
-	"sniper_deadeye_rifle": {"pierce_limit": 4, "headshot_multiplier": 1.5},
-	"sniper_spotter_scope": {"lock_count": 9, "max_locks_per_target": 3},
-	"sniper_shatter_rounds": {
-		"crowd_cap": 15, "trajectory_count": 5, "ricochet_jumps": 2, "cap_fraction": 0.4,
-	},
+const EXPECTED_PARAMS := {
+	"sniper_deadeye_rifle": {"arena_radius": 100000.0, "headshot_multiplier": 1.5},
+	"sniper_spotter_scope": {"arena_radius": 100000.0, "pulse_count": 9},
+	"sniper_shatter_rounds": {"arena_radius": 100000.0, "wave_count": 5},
 }
 
 var _errors: Array[String] = []
@@ -77,10 +75,10 @@ func _test_pair(registry: Registry, weapon_id: String) -> void:
 		"%s EXECUTOR_ID must match the immutable catalog" % weapon_id
 	)
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
-	for key in (EXPECTED_CAPS[weapon_id] as Dictionary):
+	for key in (EXPECTED_PARAMS[weapon_id] as Dictionary):
 		_check(
-			params.get(key) == (EXPECTED_CAPS[weapon_id] as Dictionary)[key],
-			"%s must freeze %s=%s" % [weapon_id, key, (EXPECTED_CAPS[weapon_id] as Dictionary)[key]]
+			params.get(key) == (EXPECTED_PARAMS[weapon_id] as Dictionary)[key],
+			"%s must freeze %s=%s" % [weapon_id, key, (EXPECTED_PARAMS[weapon_id] as Dictionary)[key]]
 		)
 
 

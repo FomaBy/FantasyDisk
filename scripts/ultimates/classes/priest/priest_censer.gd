@@ -3,6 +3,12 @@ extends Node2D
 const PROFILE_ID := "weapon_ultimate.profile.priest.priest_censer"
 const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_censer"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_censer.tscn"
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/priest/priest_censer/priest_censer_spriteframes.tres")
+
+## Ultimate Direction v2 (FAN-2535): the ward remains a prevention-funded
+## counter, but a funded finish now reaches every live enemy. The visible arc
+## shapes rank falloff; a per-target floor replaces its old radius/count rail.
 
 var ultimate_damage_sink: Callable = Callable()
 var stored_prevented_for_tests := 0.0
@@ -13,6 +19,8 @@ var _ultimate_host: Node = null
 var _player: Node = null
 var _equipped_weapon: Node = null
 var _last_direction := Vector2.RIGHT
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -23,9 +31,8 @@ static func parameter_contract() -> Dictionary:
 		"stored_cap": {"type": "number", "minimum": 0.0},
 		"counter_at": {"type": "number", "minimum": 0.0},
 		"counter_damage_cap": {"type": "number", "minimum": 0.0},
-		"counter_radius": {"type": "number", "minimum": 0.0},
-		"counter_target_cap": {"type": "integer", "minimum": 1},
 		"counter_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"counter_floor": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 	}
 
 
@@ -103,6 +110,13 @@ func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
 	return _ultimate_host.call("ultimate_host_present", event_id, payload)
 
 
+## Optional host channel, so the proxy forwards it only when the real host
+## exposes it and reports no presentation otherwise.
+func ultimate_host_presentation_active() -> bool:
+	return _ultimate_host.has_method("ultimate_host_presentation_active") \
+		and bool(_ultimate_host.call("ultimate_host_presentation_active"))
+
+
 func ultimate_host_set_active(active: bool) -> void:
 	_ultimate_host.call("ultimate_host_set_active", active)
 
@@ -161,8 +175,8 @@ func counter_burst() -> void:
 		return
 	var targets: Array = _activation.select_targets(
 		_activation.origin(),
-		_activation.param_float("counter_radius", 360.0),
-		_activation.param_int("counter_target_cap", 12),
+		INF,
+		0,
 		"nearest"
 	)
 	for index in targets.size():
@@ -171,7 +185,10 @@ func counter_burst() -> void:
 			continue
 		_deal(
 			target,
-			counter_burst_for_tests * pow(_activation.param_float("counter_falloff", 1.0), float(index)),
+			counter_burst_for_tests * maxf(
+				pow(_activation.param_float("counter_falloff", 1.0), float(index)),
+				_activation.param_float("counter_floor", 0.0)
+			),
 			"censer_counter:%d" % target.get_instance_id(),
 			true,
 			{"ultimate_mechanic": "censer_stored_counter", "prevented_damage": stored_prevented_for_tests}
@@ -181,6 +198,19 @@ func counter_burst() -> void:
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary) -> void:
 	if ultimate_damage_sink.is_valid():
 		ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
+		_play_impacts([target])
+
+
+func _play_impacts(victims: Array) -> void:
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _player_from_host() -> Node:
@@ -191,6 +221,10 @@ func _player_from_host() -> Node:
 
 
 func _exit_tree() -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+	_impacts = null
+	_impacts_started = false
 	_restore_equipped_weapon()
 	_erase_zero_absorb_key()
 	_ultimate_host = null

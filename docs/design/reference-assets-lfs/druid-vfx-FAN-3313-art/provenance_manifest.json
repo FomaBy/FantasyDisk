@@ -1,0 +1,652 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3618",
+  "class_id": "druid",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "flipbook_duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true
+  },
+  "packs": [
+    {
+      "weapon_id": "summon_amulet",
+      "class_id": "druid",
+      "ultimate_role": "wild_hunt",
+      "title": "Дикая Охота",
+      "pixel_lab": {
+        "object_id": "847b515a-069c-43ec-9335-4569eb72e6d8",
+        "animation_group_id": "937920c9-6252-42b8-b35c-c12dc1d2e536",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered spectral dire wolf bursting from a pale mint amulet hunt sigil, dark fantasy D&D pixel art seen from above, translucent emerald ghost fur and bone-white eyes, one clean isolated effect, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the wolf and sigil centered with stable proportions; the eight-point hunt sigil flares, the spectral wolf lunges forward, a mint impact burst blooms on the bite beat, then the wolf snaps back into the sigil; every frame has visible motion, clean silhouette, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet",
+        "generated_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/druid/summon_amulet",
+        "spriteframes": "assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres"
+      },
+      "animation": {
+        "name": "druid_summon_amulet_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f00.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f00.png",
+          "encoded_sha256": "86f2b6473fb9df11eb6f2568cd77042d33bfc0631a56bea71d691e54379ee6e2",
+          "pixel_sha256": "bdb9774078d4c07e3515f1b0e351673f83156bf9332adfef558c681cf2f73e2a",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f01.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f01.png",
+          "encoded_sha256": "b9b746ec0f1689f3efaff4d08ca9eb62628ec6fbce14ee96035d004a5a3260d0",
+          "pixel_sha256": "6bfada6eb9e8035bfa417fce42becc6015de0e4bab868342111a92759ee5b7be",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f02.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f02.png",
+          "encoded_sha256": "4e2acb31c29aa2f263f8dd41abdbc2e4996df93290584aa5d97ddffd3c150422",
+          "pixel_sha256": "69e95346cc1cc4057b28477f9174d07058c4205f8655a3cd68f69f30c66d985b",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f03.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f03.png",
+          "encoded_sha256": "65055157bb742aadd80d706bd7c5c820f6ee71e5fee9cb9602e5f698ec725605",
+          "pixel_sha256": "071d7acaa94a5696dbeb920148a989ed65e4df2ac0018289bc961f79779bd863",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f04.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f04.png",
+          "encoded_sha256": "8a16a9912b918774e4ddccf0c10ce1c8ac141a7947263d423c651fec00e4d62c",
+          "pixel_sha256": "c0c5ed1e2bd622f6d2a65c55bf4b88dba47ce0e06bafc7fd45d9813a77fff27f",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f05.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f05.png",
+          "encoded_sha256": "119e5ce6c65ba1696e0738289d9afb16d30e8b8d9a443d8db082f9bc8b4bf0a5",
+          "pixel_sha256": "68e9aee5f711bd805b2fc66bc7ade531e90aa60f7e106647b4a57ca4ee1af5fa",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f06.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f06.png",
+          "encoded_sha256": "328208d71d6c1337dd45bd3181e23989d24296f19a81ea23ceabaa88b7e3ca4f",
+          "pixel_sha256": "4713a7ac0faf272d1f24a4b8ef33d0b60e022a71fe4171589d775cdb8f878b6b",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f07.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f07.png",
+          "encoded_sha256": "05d53d6690b38dba9e8b73aca2750dfb9c4208d97be5a5e52f54b05412b2c2d3",
+          "pixel_sha256": "585b450f958dd1931252d557e10ad6380a3987e9380cdaf1a43fcf6c30a42ff4",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/summon_amulet/summon_amulet_f08.png",
+          "runtime_file": "assets/sprites/effects/druid/summon_amulet/summon_amulet_f08.png",
+          "encoded_sha256": "991dca4e5749ae02ef6a1d3e243b152e9c161dc77dc04df4243a5335faf18c36",
+          "pixel_sha256": "a763e3f023e6de3058240172f618aa9aadedcff8ddf93e65f601823a7c6519e6",
+          "source_runtime_byte_parity": true
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          39211,
+          31574,
+          33858,
+          32786,
+          38686,
+          31395,
+          32153,
+          29460,
+          29578
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            19,
+            8,
+            234,
+            244
+          ],
+          [
+            19,
+            7,
+            235,
+            244
+          ],
+          [
+            19,
+            14,
+            235,
+            244
+          ],
+          [
+            19,
+            16,
+            235,
+            244
+          ],
+          [
+            19,
+            12,
+            235,
+            244
+          ],
+          [
+            19,
+            11,
+            235,
+            244
+          ],
+          [
+            19,
+            8,
+            235,
+            244
+          ],
+          [
+            19,
+            11,
+            235,
+            244
+          ],
+          [
+            19,
+            16,
+            234,
+            244
+          ]
+        ],
+        "visible_area_spread_percent": 24.87,
+        "adjacent_changed_pixels": [
+          44643,
+          28400,
+          28953,
+          30161,
+          24705,
+          18612,
+          27774,
+          24952
+        ],
+        "adjacent_mean_abs_channel_delta": [
+          78.28,
+          28.03,
+          25.33,
+          33.2,
+          32.95,
+          13.83,
+          23.46,
+          21.17
+        ],
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "method": "Removed only large connected near-white preview matte components from raw PixelLab downloads; other pixels preserved. Runtime PNGs are byte-for-byte copies of accepted source frames.",
+        "raw_preserved": true,
+        "source_runtime_parity": true
+      }
+    },
+    {
+      "weapon_id": "briar_staff",
+      "class_id": "druid",
+      "ultimate_role": "forest_in_one_breath",
+      "title": "Лес за Одно Дыхание",
+      "pixel_lab": {
+        "object_id": "6d99402d-b74c-4bbe-a214-255194bac74b",
+        "animation_group_id": "521759be-0342-47c2-952e-0044cdcfc684",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered connected emerald bramble lattice erupting from a small thorn-staff rune, five root tips and sharp thorns, dark fantasy D&D pixel art seen from above, glowing green sap and pale leaf sparks, isolated effect, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the bramble lattice centered with stable proportions; five roots race outward one after another, thorn walls grow between their tips, sharp crowns burst on the impact beat, then the vines wither inward; every frame has clear measurable motion, clean silhouette, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff",
+        "generated_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/druid/briar_staff",
+        "spriteframes": "assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres"
+      },
+      "animation": {
+        "name": "druid_briar_staff_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f00.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f00.png",
+          "encoded_sha256": "5ad33da6967e1bebca004a901de89dda451be44d5261f92c941eaeabe07d5483",
+          "pixel_sha256": "9cf4942bbf167b2d67ec086b9b360f1dd92cf016cc834aba61bd5a1047fb1b77",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f01.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f01.png",
+          "encoded_sha256": "a46358de6d5b78c4a9c364968c4b2c7ed0f2e77dec077ca6fab5705b30b9ccc2",
+          "pixel_sha256": "fa3d6b213ba135410b117023560b11e7cd0b0a105f99dce7b30a252f373cb117",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f02.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f02.png",
+          "encoded_sha256": "297a8860efa96ec30d5d312d8c549f7f5889c8b7be762dc9caba76a615b36d2b",
+          "pixel_sha256": "f2f7f2c46b65fd30a452305e80fa63ae9180bd1b6a3e5f69bb0e8bbfa52d9149",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f03.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f03.png",
+          "encoded_sha256": "983f153c19d88c623e3e115d3e74c373e8130b8c2eafefb4f8ae206037134351",
+          "pixel_sha256": "b7cacf181b8b13a758842e7e2514b310a02c029222d3934e93056afb88fb0809",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f04.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f04.png",
+          "encoded_sha256": "8000561939ed8d5d983cd93a51fe82026e9ff8f110f73b707729dcbfae09ab9f",
+          "pixel_sha256": "be8b81038b36f6b1328fa3031a550559f8ffd4770b7e98b90a453205c3c2b69f",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f05.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f05.png",
+          "encoded_sha256": "5079cbcea3eb54a002ad3fb7cb949c1ee6deb997a601b1e1de37a2097f8d39e9",
+          "pixel_sha256": "839feb420f9b4a062e7dee399f43401579687e20fecf669b61b8253fdeb73de9",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f06.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f06.png",
+          "encoded_sha256": "511db3c9082613339890ae941988d68771dc833f9872363840263b62b9c778c2",
+          "pixel_sha256": "9b653c792050080d4bae5c6b2fae0b4e248d503f4c060652af0ee194b1af42bb",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f07.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f07.png",
+          "encoded_sha256": "0d5708d7690a6370923443762df66ee6106a0083af3cbd8ad719f45f535246eb",
+          "pixel_sha256": "ea99de147ef31349562b2767135ddede5dc806b73bae3cea0c420a1968ad24c9",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/briar_staff/briar_staff_f08.png",
+          "runtime_file": "assets/sprites/effects/druid/briar_staff/briar_staff_f08.png",
+          "encoded_sha256": "adbfdad8fb5ddd8769a125c695bd3482678b32055db84f186a39e2435935cd2e",
+          "pixel_sha256": "cbd3599cd4252df24bd3635e087ed0de31fa35155d2de90c42302bd6568081c8",
+          "source_runtime_byte_parity": true
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          19866,
+          19156,
+          21568,
+          20614,
+          20268,
+          19466,
+          19228,
+          19697,
+          20614
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            17,
+            11,
+            241,
+            244
+          ],
+          [
+            17,
+            26,
+            241,
+            244
+          ],
+          [
+            17,
+            27,
+            241,
+            244
+          ],
+          [
+            17,
+            25,
+            241,
+            244
+          ],
+          [
+            17,
+            20,
+            241,
+            244
+          ],
+          [
+            17,
+            26,
+            241,
+            244
+          ],
+          [
+            17,
+            26,
+            241,
+            244
+          ],
+          [
+            17,
+            26,
+            241,
+            244
+          ],
+          [
+            17,
+            24,
+            241,
+            244
+          ]
+        ],
+        "visible_area_spread_percent": 11.18,
+        "adjacent_changed_pixels": [
+          14706,
+          18554,
+          20862,
+          15286,
+          17436,
+          9528,
+          12658,
+          15888
+        ],
+        "adjacent_mean_abs_channel_delta": [
+          7.46,
+          18.5,
+          25.37,
+          12.26,
+          11.87,
+          2.34,
+          4.63,
+          14.74
+        ],
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "method": "Removed only large connected near-white preview matte components from raw PixelLab downloads; other pixels preserved. Runtime PNGs are byte-for-byte copies of accepted source frames.",
+        "raw_preserved": true,
+        "source_runtime_parity": true
+      }
+    },
+    {
+      "weapon_id": "raven_totem",
+      "class_id": "druid",
+      "ultimate_role": "night_of_thousand_wings",
+      "title": "Ночь Тысячи Крыльев",
+      "pixel_lab": {
+        "object_id": "bb352693-6976-463d-8bc6-e23ea8d29dcd",
+        "animation_group_id": "e26d990c-b89c-4fa8-b18a-6ffb525ea9d0",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered black raven-wing vortex around a dark carved totem glyph, violet moonlit rim light and a few returning wisps, dark fantasy D&D pixel art seen from above, isolated effect, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the totem glyph centered with stable proportions; black wings open into counter-rotating raven arcs, dive streaks slash outward on the marked-prey impact beat, violet wisps return inward, then the flock collapses to the glyph; every frame has clear measurable motion, clean silhouette, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem",
+        "generated_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/druid/raven_totem",
+        "spriteframes": "assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres"
+      },
+      "animation": {
+        "name": "druid_raven_totem_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f00.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f00.png",
+          "encoded_sha256": "1e891c88ef85a3d325ebf4b044c00dbbfc584e75daa73b200044f85526fb1ff8",
+          "pixel_sha256": "fbb02194fef1b5ef35d8a85023cb2ed458659d38ae491a2ba94e3aa5db6dd0ea",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f01.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f01.png",
+          "encoded_sha256": "c23470d1257813e7d848297cfbf68077a928e979978bcb905f1975a800ea58a5",
+          "pixel_sha256": "b5cbe532fa4655c0aa7717846af20a9d1fdaecfa8fcf858dc26a89433f26be86",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f02.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f02.png",
+          "encoded_sha256": "03e8942d13a32b05d49ef383559f713c832394768654e2d4578f9d5e72b3f5b9",
+          "pixel_sha256": "b9945ba59e257eff471d031a42304736885f031d9b0f7bbec5a9f1e21ed98f3a",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f03.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f03.png",
+          "encoded_sha256": "e84310811e70fa157ca2fbe58b14652f91699e57baef8142c0a3e7d5d298ba26",
+          "pixel_sha256": "20697d6fa0b9833df3273009f8648517511ddbd552e0af217bd2b1438dffdd4f",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f04.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f04.png",
+          "encoded_sha256": "fee9c75156d0814c720cd4afbf78a34971f75324129c0d0e8404773ffff263b1",
+          "pixel_sha256": "49f4d6df2fe626c2f8e11cc27954ebd28051876c56f94bacdecbb6dc45d3806d",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f05.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f05.png",
+          "encoded_sha256": "a4a60d40e95523f8535c7a931c29f6f1aca531e217d0f0a32760ff296d6f2cb5",
+          "pixel_sha256": "502d545e5de56e1b465c9881a37590922e607e8afaddce4b5e3462aa4346119a",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f06.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f06.png",
+          "encoded_sha256": "6f33272e0dbf4e4b12875504d91223143f8d9ff5c90cccbf233a9ba954594c3a",
+          "pixel_sha256": "5a909a1ca1e0b29d91cb303804746af9b0a0f8106671baac03d46155b70078a4",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f07.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f07.png",
+          "encoded_sha256": "a7ecc3411c90a0eaba846815d40da4bd533b609e5115b071acdd75a15de3732d",
+          "pixel_sha256": "c9a51f431141b5e1a205d6fe7882604650cf92398a9706ea1442d815880e8449",
+          "source_runtime_byte_parity": true
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/raven_totem/raven_totem_f08.png",
+          "runtime_file": "assets/sprites/effects/druid/raven_totem/raven_totem_f08.png",
+          "encoded_sha256": "f3928d2b244db7901c697afba020fff81ddcf50dfe6dc76016fa115202115a29",
+          "pixel_sha256": "29ecf8a430e3098d3e8355546e899a2d8c36ea652776f191133e3708717a2d93",
+          "source_runtime_byte_parity": true
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          28683,
+          29077,
+          26570,
+          23109,
+          24947,
+          19778,
+          11530,
+          14851,
+          12654
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            30,
+            26,
+            226,
+            223
+          ],
+          [
+            28,
+            29,
+            227,
+            225
+          ],
+          [
+            28,
+            30,
+            226,
+            224
+          ],
+          [
+            32,
+            28,
+            225,
+            228
+          ],
+          [
+            33,
+            27,
+            225,
+            230
+          ],
+          [
+            31,
+            39,
+            220,
+            229
+          ],
+          [
+            30,
+            47,
+            205,
+            222
+          ],
+          [
+            42,
+            65,
+            221,
+            215
+          ],
+          [
+            63,
+            65,
+            192,
+            193
+          ]
+        ],
+        "visible_area_spread_percent": 60.35,
+        "adjacent_changed_pixels": [
+          21036,
+          21082,
+          20647,
+          19662,
+          19172,
+          18481,
+          18658,
+          13080
+        ],
+        "adjacent_mean_abs_channel_delta": [
+          6.38,
+          11.91,
+          13.34,
+          12.42,
+          11.21,
+          18.13,
+          23.9,
+          15.27
+        ],
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "method": "Removed only large connected near-white preview matte components from raw PixelLab downloads; other pixels preserved. Runtime PNGs are byte-for-byte copies of accepted source frames.",
+        "raw_preserved": true,
+        "source_runtime_parity": true
+      }
+    }
+  ],
+  "scope_note": "Class-local art source/runtime packs only. Scene wiring, mechanics, gameplay, balance, shared registries, tests and CI remain unchanged."
+}

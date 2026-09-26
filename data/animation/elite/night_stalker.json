@@ -1,0 +1,14 @@
+{
+	"provenance": "FAN-3118: restore the approved normalized 512x512 eight-direction snapshot; preserve its live footline and disable horizontal mirroring.",
+	"frames": "res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres",
+	"scale": {
+		"x": 0.62,
+		"y": 0.62
+	},
+	"position": {
+		"x": 0.0,
+		"y": -82.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

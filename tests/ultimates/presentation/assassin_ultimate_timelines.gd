@@ -3,23 +3,53 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/assassin.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/assassin/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_registry.gd")
+const PD := preload("res://scripts/progression_data.gd")
 const WEAPON_IDS := ["chakrams", "shadow_daggers", "venom_wire"]
 const SCENES := {
 	"chakrams": preload("res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn"),
 	"shadow_daggers": preload("res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn"),
 	"venom_wire": preload("res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn"),
 }
+const EXECUTOR_SCENES := {
+	"chakrams": preload("res://scripts/ultimates/classes/assassin/chakrams.tscn"),
+	"shadow_daggers": preload("res://scripts/ultimates/classes/assassin/shadow_daggers.tscn"),
+	"venom_wire": preload("res://scripts/ultimates/classes/assassin/venom_wire.tscn"),
+}
 const REQUIRED_NODES := {
-	"chakrams": ["Orbit/MoonOne", "Orbit/MoonEight", "ReturnCrescents"],
+	"chakrams": ["Orbit/MoonOne", "Orbit/MoonEight", "ReturnCrescents", "BackdropLayer/BackdropVeil", "ImpactFlash"],
 	"shadow_daggers": ["FreezeMarks", "Afterimages/BackstabOne", "FinalReveal"],
 	"venom_wire": ["Anchors/NeedleOne", "Anchors/NeedleSix", "HexWeb", "SnapCollapse"],
 }
+# FAN-3942: the full class has left PRESENTATION_V2_MIGRATION_ALLOWLIST, so
+# every package must carry the full v2 envelope, presence and identity contract.
+const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const V2_PRESENCE_FIELDS := {
+	"fullscreen_footprint": true,
+	"camera_shake": true,
+	"sfx_ducking": true,
+}
 const CAPTURES := [
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"path": "res://docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"path": "res://docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
+const PIXELLAB_WEAPON_IDS := ["chakrams", "shadow_daggers"]
+const REUSED_WEAPON_IDS := ["venom_wire"]
+const GENERATED_ANIMATIONS := {"chakrams": "eight_moons", "shadow_daggers": "backstab_afterimages"}
+const GENERATED_FRAME_SIZE := Vector2i(256, 256)
+const GENERATED_SPRITE_PATHS := {
+	"chakrams": [
+		"Orbit/MoonOne", "Orbit/MoonTwo", "Orbit/MoonThree", "Orbit/MoonFour",
+		"Orbit/MoonFive", "Orbit/MoonSix", "Orbit/MoonSeven", "Orbit/MoonEight",
+	],
+	"shadow_daggers": [
+		"Afterimages/BackstabOne", "Afterimages/BackstabTwo",
+		"Afterimages/BackstabThree", "Afterimages/BackstabFour",
+	],
+}
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const PHASE_BINDINGS := {"windup": "windup", "release": "execute", "active": "active", "recovery": "recover", "cancel": "cleanup"}
 const MAX_TIMELINE_SECONDS := 10.0
@@ -50,7 +80,10 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(str(weapon_id), profiles.get(str(weapon_id), {}) as Dictionary, packages.get(str(weapon_id), {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
+	_check_v2_packages(packages, errors)
+	await _check_single_presentation_owner(errors)
 	_check_contact_evidence(errors)
+	await _check_runtime_clock_identity_rng_and_reduced_compass(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
@@ -58,18 +91,196 @@ func _initialize() -> void:
 	quit(0)
 
 
+func _check_single_presentation_owner(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var executor := (EXECUTOR_SCENES[weapon_id] as PackedScene).instantiate()
+		root.add_child(executor)
+		await process_frame
+		var embedded := executor.get_node_or_null("Presentation") as Node2D
+		_expect(embedded != null and not embedded.visible and not embedded.is_processing(),
+			"%s embedded presentation must remain dormant for the shared runtime" % weapon_id, errors)
+		executor.queue_free()
+		await process_frame
+
+
+func _check_runtime_clock_identity_rng_and_reduced_compass(errors: Array[String]) -> void:
+	var player := Node2D.new()
+	var visual_root := Node2D.new()
+	visual_root.name = "VisualRoot"
+	player.add_child(visual_root)
+	var body := Sprite2D.new()
+	body.name = "Body"
+	visual_root.add_child(body)
+	var camera := Camera2D.new()
+	camera.enabled = true
+	player.add_child(camera)
+	root.add_child(player)
+	player.add_to_group("player")
+	await process_frame
+	camera.make_current()
+	Accessibility.apply_snapshot(root, {
+		Accessibility.REDUCED_MOTION_KEY: true,
+		Accessibility.PHOTOSENSITIVITY_SAFE_KEY: false,
+	})
+	var scene := (SCENES["chakrams"] as PackedScene).instantiate() as Node2D
+	root.add_child(scene)
+	await process_frame
+	var state := scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0) as Dictionary
+	_expect(scene.visible, "the runtime-owned Chakrams presentation must become visible on begin", errors)
+	_expect(bool(state.get("cast_pose_bound", false)), "chakrams must replace the live player body with its cast pose", errors)
+	_expect(not body.visible \
+			and visual_root.get_node_or_null("UltimateCastPose") != null \
+			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") != null \
+			and visual_root.get_node_or_null("UltimateCastPoseHighlight") != null,
+		"chakrams cast pose and contrast sigil must replace the Player body", errors)
+	_expect((visual_root.get_node("UltimateCastPose") as CanvasItem).z_index > 100,
+		"chakrams cast pose must stay above the later-mounted presentation layers", errors)
+	var orbit := scene.get_node("Orbit") as Node2D
+	_expect(orbit.scale.x >= 2.5 and orbit.scale.y >= 2.5,
+		"reduced-motion Chakrams must hold an arena-readable compass scale", errors)
+	var bearings := {}
+	var global_bearings := {}
+	for index in range(1, 9):
+		var moon := scene.get_node("Orbit/Moon%s" % ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"][index - 1]) as AnimatedSprite2D
+		bearings[str(moon.position)] = true
+		global_bearings[str(moon.global_position.round())] = true
+		_expect(moon.scale.length() > 0.1, "reduced-motion moon %d must retain a readable authored scale" % index, errors)
+	_expect(bearings.size() == 8, "reduced-motion Chakrams must retain eight distinct compass bearings", errors)
+	_expect(global_bearings.size() == 8 and (scene.get_node("Orbit/MoonOne") as Node2D).global_position.length() >= 160.0,
+		"reduced-motion Chakrams must realize eight separated screen-space bearings", errors)
+	scene.call("advance", 1.01)
+	_expect(is_equal_approx(Engine.time_scale, 1.0),
+		"reduced-motion Chakrams must replace the global time-scale dip", errors)
+	scene.call("finish", "cancel")
+	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
+	seed(3942)
+	var expected_rng := randf()
+	seed(3942)
+	scene.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0)
+	scene.call("advance", 1.0)
+	var impact_state := scene.call("presence_snapshot") as Dictionary
+	_expect(is_equal_approx(Engine.time_scale, 0.45),
+		"normal Chakrams impact must realize the declared 0.45 time-scale dip", errors)
+	_expect(is_equal_approx(float(impact_state.get("minimum_time_scale_observed", 1.0)), 0.45),
+		"Chakrams presence evidence must record the realized time-scale dip", errors)
+	scene.call("advance", 0.12)
+	_expect(is_equal_approx(Engine.time_scale, 1.0),
+		"Chakrams hitstop must restore the prior Engine.time_scale", errors)
+	scene.call("advance", 1.93)
+	_expect(float(scene.get("_elapsed")) >= 3.0, "runtime advance must place Chakrams in recovery on wall time", errors)
+	_expect(is_equal_approx(randf(), expected_rng), "presentation camera shake must not consume global gameplay RNG", errors)
+	scene.call("advance", 0.60)
+	_expect(not scene.visible, "the runtime-owned Chakrams presentation must become dormant after cancel", errors)
+	_expect(body.visible \
+			and visual_root.get_node_or_null("UltimateCastPose") == null \
+			and visual_root.get_node_or_null("UltimateCastPoseBackdrop") == null \
+			and visual_root.get_node_or_null("UltimateCastPoseHighlight") == null,
+		"cast pose cleanup must restore the Player body and remove the contrast sigil", errors)
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "Chakrams cleanup must leave Engine.time_scale restored", errors)
+	scene.queue_free()
+	await process_frame
+	for weapon_id in ["shadow_daggers", "venom_wire"]:
+		var sibling := (SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(sibling)
+		await process_frame
+		var sibling_state := sibling.call("begin", Registry.new(PD.WEAPONS_BY_CLASS), {}, 0) as Dictionary
+		_expect(is_zero_approx(float(sibling_state.get("time_scale_dip", -1.0))),
+			"%s must not inherit an undeclared global time-scale dip" % weapon_id, errors)
+		sibling.call("advance", float(sibling.get("impact_at")))
+		sibling_state = sibling.call("presence_snapshot") as Dictionary
+		_expect(is_equal_approx(Engine.time_scale, 1.0),
+			"%s impact must leave Engine.time_scale unchanged" % weapon_id, errors)
+		_expect(float(sibling_state.get("minimum_time_scale_observed", 0.0)) >= 0.99,
+			"%s evidence must prove no undeclared time-scale dip" % weapon_id, errors)
+		sibling.call("finish", "cancel")
+		sibling.queue_free()
+		await process_frame
+	player.queue_free()
+	Accessibility.apply_snapshot(root, Accessibility.default_snapshot())
+	await process_frame
+
+
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must explain the no-new-raster route", errors)
+	_expect(str(provenance.get("route", "")) == "pixellab_animation_source_for_chakrams_and_shadow_daggers_reused_approved_asset_for_venom_wire", "provenance must explain the mixed PixelLab/reuse route", errors)
 	var created = provenance.get("new_pixellab_assets", [])
-	_expect(created is Array and (created as Array).is_empty(), "no PixelLab asset may be declared when no raster was generated", errors)
+	_expect(created is Array and (created as Array).size() == PIXELLAB_WEAPON_IDS.size(), "provenance must declare exactly the PixelLab-generated weapons", errors)
+	var generated := {}
+	for raw_asset in created as Array:
+		if raw_asset is Dictionary:
+			generated[str((raw_asset as Dictionary).get("weapon_id", ""))] = raw_asset as Dictionary
+	for weapon_id in PIXELLAB_WEAPON_IDS:
+		var asset := generated.get(str(weapon_id), {}) as Dictionary
+		_expect(not asset.is_empty(), "%s must declare its PixelLab provenance" % weapon_id, errors)
+		if asset.is_empty():
+			continue
+		for id_field in ["pixel_lab_object_id", "pixel_lab_animation_group_id"]:
+			_expect(not str(asset.get(id_field, "")).is_empty(), "%s must record its %s" % [weapon_id, id_field], errors)
+		for path_field in ["source_dir", "runtime_spriteframes", "runtime_scene", "generation_script", "provenance_manifest"]:
+			var path := str(asset.get(path_field, ""))
+			_expect(not path.is_empty() and (FileAccess.file_exists("res://%s" % path) or DirAccess.dir_exists_absolute(ProjectSettings.globalize_path("res://%s" % path))), "%s %s must exist: %s" % [weapon_id, path_field, path], errors)
+		_check_generated_frames(str(weapon_id), asset, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
-	for weapon_id in WEAPON_IDS:
+	for weapon_id in PIXELLAB_WEAPON_IDS:
+		_expect(not sources.has(str(weapon_id)), "%s must no longer be declared as a reused static asset" % weapon_id, errors)
+	for weapon_id in REUSED_WEAPON_IDS:
 		var source := sources.get(str(weapon_id), {}) as Dictionary
 		var source_path := str(source.get("source_path", ""))
 		var runtime_scene := str(source.get("runtime_scene", ""))
 		_expect(not source_path.is_empty() and FileAccess.file_exists("res://%s" % source_path), "%s approved source must exist" % weapon_id, errors)
 		_expect(not runtime_scene.is_empty() and FileAccess.file_exists("res://%s" % runtime_scene), "%s runtime scene must exist" % weapon_id, errors)
+
+
+func _check_generated_frames(weapon_id: String, asset: Dictionary, errors: Array[String]) -> void:
+	var frames := ResourceLoader.load("res://%s" % str(asset.get("runtime_spriteframes", ""))) as SpriteFrames
+	_expect(frames != null, "%s runtime SpriteFrames must load" % weapon_id, errors)
+	if frames == null:
+		return
+	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	_expect(frames.has_animation(animation_name), "%s SpriteFrames must expose the %s animation" % [weapon_id, animation_name], errors)
+	if not frames.has_animation(animation_name):
+		return
+	_expect(frames.get_frame_count(animation_name) == int(asset.get("frame_count", -1)), "%s must ship the declared frame count" % weapon_id, errors)
+	# Every generated frame must be a real transparent-background texture: an
+	# opaque or missing frame means the pack was substituted or lost its alpha.
+	for frame_index in frames.get_frame_count(animation_name):
+		var texture := frames.get_frame_texture(animation_name, frame_index)
+		_expect(texture != null, "%s frame %d must have a texture" % [weapon_id, frame_index], errors)
+		if texture == null:
+			continue
+		var image := texture.get_image()
+		_expect(image != null and image.get_size() == GENERATED_FRAME_SIZE, "%s frame %d must keep the generated frame size" % [weapon_id, frame_index], errors)
+		if image != null:
+			image.decompress()
+			_expect(image.get_pixel(0, 0).a == 0.0 and image.get_pixel(image.get_width() - 1, image.get_height() - 1).a == 0.0, "%s frame %d must keep a transparent background" % [weapon_id, frame_index], errors)
+
+
+func _check_generated_binding(weapon_id: String, instance: Node2D, errors: Array[String]) -> void:
+	var expected_frames := "res://%s" % str(((_generated_asset(weapon_id)) as Dictionary).get("runtime_spriteframes", ""))
+	var animation_name := StringName(GENERATED_ANIMATIONS.get(weapon_id, ""))
+	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+	var ultimate := timeline.get_animation(&"ultimate") if timeline != null and timeline.has_animation(&"ultimate") else null
+	var bound := 0
+	for node_path in GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array:
+		var sprite := instance.get_node_or_null(str(node_path)) as AnimatedSprite2D
+		_expect(sprite != null, "%s generated sprite missing: %s" % [weapon_id, node_path], errors)
+		if sprite == null:
+			continue
+		_expect(sprite.sprite_frames != null and sprite.sprite_frames.resource_path == expected_frames, "%s %s must bind its own generated SpriteFrames" % [weapon_id, node_path], errors)
+		_expect(sprite.animation == animation_name, "%s %s must play the %s animation" % [weapon_id, node_path, animation_name], errors)
+		# A bound but untracked sprite would freeze on one generated frame, so the
+		# timeline must drive each instance's frame itself.
+		_expect(ultimate != null and ultimate.find_track(NodePath("%s:frame" % node_path), Animation.TYPE_VALUE) >= 0, "%s %s must be driven by its own frame track" % [weapon_id, node_path], errors)
+		bound += 1
+	_expect(bound == (GENERATED_SPRITE_PATHS.get(weapon_id, []) as Array).size(), "%s must bind every generated sprite" % weapon_id, errors)
+
+
+func _generated_asset(weapon_id: String) -> Dictionary:
+	var manifest := _load_json(MANIFEST_PATH, [] as Array[String])
+	for raw_asset in (manifest.get("generator_provenance", {}) as Dictionary).get("new_pixellab_assets", []) as Array:
+		if raw_asset is Dictionary and str((raw_asset as Dictionary).get("weapon_id", "")) == weapon_id:
+			return raw_asset as Dictionary
+	return {}
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
@@ -112,6 +323,11 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(_visual_node_count(instance) <= int(instance.get_meta("max_visual_nodes", 0)), "%s scene must stay within its visual-node budget" % weapon_id, errors)
 	for node_path in REQUIRED_NODES.get(weapon_id, []) as Array:
 		_expect(instance.get_node_or_null(str(node_path)) != null, "%s required silhouette node missing: %s" % [weapon_id, node_path], errors)
+	var backdrop_layer := instance.get_node_or_null("BackdropLayer") as CanvasLayer
+	_expect(backdrop_layer != null and backdrop_layer.layer < 0,
+		"%s backdrop must render behind the player cast identity" % weapon_id, errors)
+	if GENERATED_SPRITE_PATHS.has(weapon_id):
+		_check_generated_binding(weapon_id, instance, errors)
 	instance.queue_free()
 
 
@@ -149,6 +365,41 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		for weapon_id in WEAPON_IDS:
 			values[str((packages.get(str(weapon_id), {}) as Dictionary).get(field, ""))] = true
 		_expect(values.size() == WEAPON_IDS.size() and not values.has(""), "all Assassin weapons must have unique %s" % field, errors)
+
+
+func _check_v2_packages(packages: Dictionary, errors: Array[String]) -> void:
+	var palette_ids := {}
+	for weapon_id in WEAPON_IDS:
+		var key := "assassin/%s" % weapon_id
+		var package := packages.get(weapon_id, {}) as Dictionary
+		_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must have left the v2 migration allowlist" % key, errors)
+		_expect(not package.is_empty(), "%s v2 package must exist" % weapon_id, errors)
+		if package.is_empty():
+			continue
+		var envelope := V2_SCHEMA.v2_envelope_errors(package.get("timing_seconds", {}), key)
+		_expect(envelope.is_empty(), "%s timing must satisfy the v2 envelope: %s" % [weapon_id, ", ".join(envelope)], errors)
+		var presence := package.get("presence", {}) as Dictionary
+		for field in V2_PRESENCE_FIELDS:
+			_expect(presence.get(field) == V2_PRESENCE_FIELDS[field], "%s presence.%s must be %s" % [weapon_id, field, str(V2_PRESENCE_FIELDS[field])], errors)
+		_expect(V2_SCHEMA.V2_BACKDROP_TREATMENTS.has(str(presence.get("backdrop", ""))), "%s presence.backdrop must be a v2 treatment" % weapon_id, errors)
+		var hitstop := float(presence.get("hitstop_ms", -1.0))
+		_expect(hitstop >= V2_SCHEMA.V2_HITSTOP_RANGE_MS[0] and hitstop <= V2_SCHEMA.V2_HITSTOP_RANGE_MS[1], "%s presence.hitstop_ms must stay in 80-150" % weapon_id, errors)
+		var dip = presence.get("time_scale_dip", null)
+		if dip != null:
+			_expect(float(dip) >= V2_SCHEMA.V2_TIME_SCALE_DIP_RANGE[0] and float(dip) <= V2_SCHEMA.V2_TIME_SCALE_DIP_RANGE[1], "%s presence.time_scale_dip must stay in 0.3-0.5" % weapon_id, errors)
+		var identity := package.get("identity", {}) as Dictionary
+		_expect(str(identity.get("cast_pose_id", "")).begins_with("weapon_ultimate.cast_pose.assassin."), "%s identity.cast_pose_id must be the assassin cast pose" % weapon_id, errors)
+		var silhouette_path := str(identity.get("weapon_silhouette_asset", ""))
+		_expect(not silhouette_path.is_empty() and FileAccess.file_exists(silhouette_path), "%s identity.weapon_silhouette_asset must name a shipped weapon silhouette" % weapon_id, errors)
+		_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s identity.class_palette_id must be declared" % weapon_id, errors)
+		palette_ids[str(identity.get("class_palette_id", ""))] = true
+		if weapon_id == "chakrams":
+			_expect(is_equal_approx(float(presence.get("time_scale_dip", 0.0)), 0.45),
+				"chakrams must retain and realize its canonical 0.45 time-scale dip", errors)
+		var materials := package.get("performance", {}) as Dictionary
+		_expect(int(materials.get("max_unique_materials", 0)) > 0 and int(materials.get("max_fullscreen_materials", 0)) > 0, "%s must declare a material budget ahead of the FAN-2972 assert" % weapon_id, errors)
+	_expect(palette_ids.size() == 1 and palette_ids.has("assassin_violet_moonlight_palette"),
+		"all Assassin packages must retain the canonical provenance palette identity", errors)
 
 
 func _check_contact_evidence(errors: Array[String]) -> void:

@@ -1,16 +1,31 @@
-extends RefCounted
+extends "res://scenes/vfx/ultimates/engineer/engineer_ultimate_accessibility_driver.gd"
+
+## Инженер / Прессующие мины — «Умное минное поле».
+##
+## Ultimate Direction v2 (FAN-2955): every detonation is an arena-wide pressure
+## wave that reaches every live enemy, and the sixteen seeded mines all detonate
+## exactly once inside the active window — the local chain first, the finale
+## outer-to-inner for whatever is left. `blast_radius` is what the wave looks
+## like, never how far it reaches. The field's one bound is per TARGET, not per
+## count: `target_cap_fraction` keeps a single enemy from being finished by one
+## activation, which is the field's anti-one-shot identity.
+##
+## Doubles as the root script of the authored presentation scene
+## (EngineerPressureMinesUltimate.tscn): the static half executes the
+## mechanics, and the presentation instance receives beat payloads while the
+## scene is the live channel and plays the shared per-victim impact for the
+## enemies each detonation actually pressed.
 
 const PROFILE_ID := "weapon_ultimate.profile.engineer.engineer_pressure_mines"
 const EXECUTOR_ID := "weapon_ultimate.executor.engineer.engineer_pressure_mines"
 const SELF_PATH := "res://scripts/ultimates/classes/engineer/engineer_pressure_mines.gd"
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const DEVICE_SCENE := preload(
 	"res://scripts/ultimates/classes/engineer/temporary_engineer_device.tscn"
 )
 const DEVICE_TEXTURE := preload(
 	"res://assets/sprites/effects/ultimates/engineer/engineer_smart_mine.png"
 )
-
-
 static func parameter_contract() -> Dictionary:
 	return {
 		"mine_count": {"type": "integer", "minimum": 1, "maximum": 16},
@@ -32,6 +47,10 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
+static func new_victim_impact_player() -> Node2D:
+	return ImpactPlayer.new()
+
+
 static func execute(activation) -> float:
 	var count: int = activation.param_int("mine_count", 16)
 	var inner: float = activation.param_float("inner_radius", 80.0)
@@ -49,7 +68,7 @@ static func execute(activation) -> float:
 	var devices: Array[Node] = activation.deploy_temporary(DEVICE_SCENE, {}, count)
 	if points.size() != count or devices.size() != count:
 		return 0.0
-	decorate_and_place(devices, points)
+	decorate_and_place(activation, devices, points)
 	if not activation.set_per_target_damage_cap(
 		activation.param_float("target_cap_fraction", 0.65),
 		activation.param_float("target_cap_flat", 0.0)
@@ -101,6 +120,8 @@ static func smart_chain(activation, state: Dictionary) -> void:
 	var points := state.get("points", PackedVector2Array()) as PackedVector2Array
 	var trigger_index := -1
 	for index in points.size():
+		# The plate asks "is anyone standing on this mine", so one hit answers it.
+		# It selects which mine goes off early, never how many enemies it reaches.
 		if not activation.targets(
 			points[index], activation.param_float("trigger_radius", 90.0), 1
 		).is_empty():
@@ -158,18 +179,22 @@ static func detonate_mine(
 		return
 	detonated[index] = true
 	(state.get("trace", []) as Array).append({"phase": phase, "index": index, "position": points[index]})
-	for raw_target in activation.targets(points[index], blast_radius, 0):
+	var victims: Array = []
+	for raw_target in activation.select_targets(points[index], INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
-			activation.deal_damage(
+			deal_damage_with_accessibility(
+				activation,
 				target,
 				damage,
 				{"source": "engineer_smart_mine", "phase": phase},
 				"mine:%d" % index,
 				secondary
 			)
+			victims.append(target)
 	activation.present(EXECUTOR_ID + "." + phase, {
 		"position": points[index], "radius": blast_radius, "shape": "orb_burst",
+		"victims": victims,
 	})
 	var nodes := state.get("nodes", []) as Array
 	if index < nodes.size():
@@ -191,7 +216,7 @@ static func outer_to_inner_order(points: PackedVector2Array, center: Vector2) ->
 	return order
 
 
-static func decorate_and_place(devices: Array[Node], points: PackedVector2Array) -> void:
+static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(devices.size(), points.size()):
 		var device := devices[index] as Node2D
 		if device == null or not is_instance_valid(device):
@@ -204,3 +229,4 @@ static func decorate_and_place(devices: Array[Node], points: PackedVector2Array)
 		sprite.scale = Vector2.ONE * 0.34
 		sprite.modulate.a = 0.88
 		device.add_child(sprite)
+		configure_device_visual(activation, device, sprite)

@@ -1,0 +1,56 @@
+[gd_resource type="SpriteFrames" load_steps=10 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f00.png" id="1_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f01.png" id="2_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f02.png" id="3_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f03.png" id="4_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f04.png" id="5_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f05.png" id="6_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f06.png" id="7_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f07.png" id="8_magnetic_anchor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/robot/magnetic_anchor/magnetic_anchor_f08.png" id="9_magnetic_anchor"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_magnetic_anchor")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_magnetic_anchor")
+}
+],
+"loop": false,
+"name": &"robot_magnetic_anchor_ultimate",
+"speed": 3.0
+}])

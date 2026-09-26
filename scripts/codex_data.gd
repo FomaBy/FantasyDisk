@@ -8,6 +8,7 @@ extends RefCounted
 
 const PROGRESSION_DATA := preload("res://scripts/progression_data.gd")
 const STAT_FORMULAS := preload("res://scripts/stat_formulas.gd")
+const ULTIMATE_PLAYER_HOST := preload("res://scripts/ultimates/controller/ultimate_player_host.gd")
 
 # Канонические умения монстров: ability id -> игровое имя (RU).
 # Источник истины имен: docs/design/content_registry.md, раздел «Умения Монстров».
@@ -312,6 +313,9 @@ const CHARACTER_PLAYSTYLE := {
 
 static func characters() -> Array:
 	var result := []
+	# FAN-2515: ульта Кодекса — канонический weapon-ultimate каждого оружия
+	# из живого реестра, а не одна legacy-ульта класса.
+	var ultimate_registry = ULTIMATE_PLAYER_HOST.shared_registry()
 	for character_id in PROGRESSION_DATA.character_ids():
 		var config: Dictionary = PROGRESSION_DATA.character_config(character_id)
 		var trait_config: Dictionary = PROGRESSION_DATA.class_trait(character_id)
@@ -323,6 +327,7 @@ static func characters() -> Array:
 				"id": str(weapon.get("id", weapon_id)),
 				"title": str(weapon.get("title", "")),
 				"description": str(weapon.get("description", "")),
+				"ultimate": ultimate_registry.ultimate_text(character_id, str(weapon_id)),
 			})
 		result.append({
 			"id": character_id,
@@ -338,7 +343,6 @@ static func characters() -> Array:
 				"description": str(trait_config.get("short_description", trait_config.get("description", ""))),
 				"details": str(trait_config.get("description", "")),
 			},
-			"ultimate": PROGRESSION_DATA.ultimate_config(character_id),
 			"weapons": weapons,
 		})
 	return result

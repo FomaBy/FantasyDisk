@@ -1,5 +1,8 @@
 extends Node2D
 
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres")
+
 const PROFILE_ID := "weapon_ultimate.profile.druid.summon_amulet"
 const EXECUTOR_ID := "weapon_ultimate.executor.druid.summon_amulet"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/druid/summon_amulet.tscn"
@@ -9,9 +12,15 @@ var pack_count_for_tests := 0
 var hunt_waves_for_tests := 0
 
 var _activation = null
-var _targets: Array = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
+## Ultimate Direction v2 (FAN-2944): the Wild Hunt reaches every live enemy on
+## the map — every beast sweeps the whole arena on the stampede and on every
+## hunt wave, so no count-shaped parameter bounds the reach. `target_cap` and
+## `hunt_splash_target_cap` stay declared only because the frozen class-wide
+## catalog tests pin them; the executor never reads them.
 static func parameter_contract() -> Dictionary:
 	return {
 		"lifetime": {"type": "number", "minimum": 0.1},
@@ -61,18 +70,18 @@ func configure(activation) -> void:
 func stampede() -> void:
 	if _activation == null or _activation.is_finished():
 		return
-	_targets = _activation.select_targets(
-		_activation.origin(),
-		_activation.param_float("hunt_range", 560.0),
-		_activation.param_int("target_cap", 12),
-		"highest_hp"
-	)
+	var targets := _live_targets()
+	var splash_targets: Array = _activation.select_targets(_activation.origin(), INF, 0, "nearest")
+	var splash_radius: float = _activation.param_float("hunt_splash_radius", 160.0)
+	var splash_index: Dictionary = _splash_index(splash_targets, splash_radius)
+	var splash_neighbors: Dictionary = {}
 	for beast in pack_count_for_tests:
-		var target := _target_for(beast)
-		if target != null:
+		for target in targets:
 			_strike(target, _activation.scaled_damage("stampede_damage", 7.0),
-				"wild_hunt:stampede:%d" % beast,
-				{"ultimate_mechanic": "wild_hunt_stampede", "beast": beast})
+				"wild_hunt:stampede:%d:%d" % [beast, target.get_instance_id()],
+				{"ultimate_mechanic": "wild_hunt_stampede", "beast": beast},
+				splash_index, splash_radius, splash_neighbors)
+	_play_impacts(targets)
 	_activation.present(EXECUTOR_ID + ".stampede", {
 		"position": _activation.origin(), "radius": _activation.param_float("hunt_range", 560.0),
 		"shape": "ring_pulse",
@@ -83,41 +92,107 @@ func hunt(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	hunt_waves_for_tests += 1
+	var targets := _live_targets()
+	var splash_targets: Array = _activation.select_targets(_activation.origin(), INF, 0, "nearest")
+	var splash_radius: float = _activation.param_float("hunt_splash_radius", 160.0)
+	var splash_index: Dictionary = _splash_index(splash_targets, splash_radius)
+	var splash_neighbors: Dictionary = {}
 	for beast in pack_count_for_tests:
-		var target := _target_for(beast)
-		if target != null:
+		for target in targets:
 			_strike(target, _activation.scaled_damage("hunt_damage", 2.5),
-				"wild_hunt:hunt:%d:%d" % [wave, beast],
-				{"ultimate_mechanic": "wild_hunt_priority", "wave": wave, "beast": beast})
+				"wild_hunt:hunt:%d:%d:%d" % [wave, beast, target.get_instance_id()],
+				{"ultimate_mechanic": "wild_hunt_priority", "wave": wave, "beast": beast},
+				splash_index, splash_radius, splash_neighbors)
+	_play_impacts(targets)
 
 
-func _target_for(index: int) -> Node:
-	if _targets.is_empty():
-		return null
-	var target := _targets[index % _targets.size()] as Node
-	return target if target != null and is_instance_valid(target) else null
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
-func _strike(target: Node, amount: float, event_id: String, feedback: Dictionary) -> void:
+## Every live enemy on the map, re-read on each wave so enemies that spawn or
+## die during the hunt stay correctly covered.
+func _live_targets() -> Array:
+	var live: Array = []
+	if _activation == null:
+		return live
+	for raw_target in _activation.select_targets(_activation.origin(), INF, 0, "highest_hp"):
+		var target := raw_target as Node
+		if target != null and is_instance_valid(target) \
+				and (target.get("health") == null or float(target.get("health")) > 0.0):
+			live.append(target)
+	return live
+
+
+func _strike(
+	target: Node,
+	amount: float,
+	event_id: String,
+	feedback: Dictionary,
+	splash_index: Dictionary,
+	splash_radius: float,
+	splash_neighbors: Dictionary
+) -> void:
 	_deal(target, amount, event_id, feedback)
 	var anchor := target as Node2D
 	if anchor == null:
 		return
-	var splashed := 0
-	for raw_neighbor in _activation.select_targets(
-		anchor.global_position,
-		_activation.param_float("hunt_splash_radius", 160.0),
-		_activation.param_int("hunt_splash_target_cap", 4),
-		"nearest"
-	):
+	var target_id := target.get_instance_id()
+	if not splash_neighbors.has(target_id):
+		splash_neighbors[target_id] = _neighbors_for(anchor, splash_index, splash_radius)
+	var splash_feedback := feedback.duplicate(true)
+	splash_feedback["ultimate_mechanic"] = "wild_hunt_splash"
+	for raw_neighbor in splash_neighbors[target_id]:
 		var neighbor := raw_neighbor as Node
-		if neighbor == null or neighbor == target or not is_instance_valid(neighbor):
+		var neighbor_anchor := neighbor as Node2D
+		if neighbor_anchor == null or neighbor == target or not is_instance_valid(neighbor):
 			continue
-		splashed += 1
-		var splash_feedback := feedback.duplicate(true)
-		splash_feedback["ultimate_mechanic"] = "wild_hunt_splash"
 		_deal(neighbor, amount * _activation.param_float("splash_damage_ratio", 0.65),
-			"%s:splash:%d" % [event_id, splashed], splash_feedback, true)
+			"%s:splash:%d" % [event_id, neighbor.get_instance_id()], splash_feedback, true)
+
+
+func _splash_index(candidates: Array, radius: float) -> Dictionary:
+	var index: Dictionary = {}
+	var cell_size := maxf(radius, 0.001)
+	for raw_candidate in candidates:
+		var candidate := raw_candidate as Node2D
+		if candidate == null or not is_instance_valid(candidate):
+			continue
+		var cell := _splash_cell(candidate.global_position, cell_size)
+		var bucket: Array = index.get(cell, [])
+		bucket.append(candidate)
+		index[cell] = bucket
+	return index
+
+
+func _splash_cell(position: Vector2, cell_size: float) -> Vector2i:
+	return Vector2i(floori(position.x / cell_size), floori(position.y / cell_size))
+
+
+func _neighbors_for(anchor: Node2D, index: Dictionary, radius: float) -> Array:
+	var neighbors: Array = []
+	var radius_squared := radius * radius
+	var cell_size := maxf(radius, 0.001)
+	var cell := _splash_cell(anchor.global_position, cell_size)
+	for x in range(cell.x - 1, cell.x + 2):
+		for y in range(cell.y - 1, cell.y + 2):
+			var bucket: Array = index.get(Vector2i(x, y), [])
+			for candidate in bucket:
+				if candidate == anchor or not is_instance_valid(candidate):
+					continue
+				if anchor.global_position.distance_squared_to(candidate.global_position) <= radius_squared:
+					neighbors.append(candidate)
+	return neighbors
 
 
 func _deal(
@@ -128,5 +203,6 @@ func _deal(
 
 
 func _exit_tree() -> void:
-	_targets.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null

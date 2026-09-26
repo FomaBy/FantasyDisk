@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T11:07:51Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "bb352693-6976-463d-8bc6-e23ea8d29dcd",
+    "pixel_lab_animation_group_id": "e26d990c-b89c-4fa8-b18a-6ffb525ea9d0",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered black raven-wing vortex around a dark carved totem glyph, violet moonlit rim light and a few returning wisps, dark fantasy D&D pixel art seen from above, isolated effect, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the totem glyph centered with stable proportions; black wings open into counter-rotating raven arcs, dive streaks slash outward on the marked-prey impact beat, violet wisps return inward, then the flock collapses to the glyph; every frame has clear measurable motion, clean silhouette, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "raven_totem_f00.png",
+      "bytes": 23788,
+      "url_kind": "template",
+      "encoded_sha256": "eab063ef067985a7933c9afbd66a42246c1d41d539b248169f68cd7b0e4fb994",
+      "pixel_sha256": "fbb02194fef1b5ef35d8a85023cb2ed458659d38ae491a2ba94e3aa5db6dd0ea"
+    },
+    {
+      "file": "raven_totem_f01.png",
+      "bytes": 28748,
+      "url_kind": "template",
+      "encoded_sha256": "aa9b0c8c0001999203def15fab06006f04ebd3ac83654ef3fd0b6a1cd444bbb5",
+      "pixel_sha256": "b5cbe532fa4655c0aa7717846af20a9d1fdaecfa8fcf858dc26a89433f26be86"
+    },
+    {
+      "file": "raven_totem_f02.png",
+      "bytes": 27839,
+      "url_kind": "template",
+      "encoded_sha256": "2420a787b1d47240614345a66e22dd8b5b0d9e808517755b8b7ef4f045d928e9",
+      "pixel_sha256": "b9945ba59e257eff471d031a42304736885f031d9b0f7bbec5a9f1e21ed98f3a"
+    },
+    {
+      "file": "raven_totem_f03.png",
+      "bytes": 25308,
+      "url_kind": "template",
+      "encoded_sha256": "ec3a89bd1761237bd48466b90ab26f53f52c863739f58317af76e3f4b70e9da9",
+      "pixel_sha256": "20697d6fa0b9833df3273009f8648517511ddbd552e0af217bd2b1438dffdd4f"
+    },
+    {
+      "file": "raven_totem_f04.png",
+      "bytes": 24841,
+      "url_kind": "template",
+      "encoded_sha256": "9ea4869f3508f458d573807eac8404b25337693c4eab737939595a24f98f033c",
+      "pixel_sha256": "49f4d6df2fe626c2f8e11cc27954ebd28051876c56f94bacdecbb6dc45d3806d"
+    },
+    {
+      "file": "raven_totem_f05.png",
+      "bytes": 21022,
+      "url_kind": "template",
+      "encoded_sha256": "7d7ed6a054abee401fd6fadc8762395dd835f68464ce87e27d67188dd7766d2a",
+      "pixel_sha256": "502d545e5de56e1b465c9881a37590922e607e8afaddce4b5e3462aa4346119a"
+    },
+    {
+      "file": "raven_totem_f06.png",
+      "bytes": 16468,
+      "url_kind": "template",
+      "encoded_sha256": "79cda69a5ec0b0befa3a01e2110589988434725cc9d61e9ec94cd48557925581",
+      "pixel_sha256": "5a909a1ca1e0b29d91cb303804746af9b0a0f8106671baac03d46155b70078a4"
+    },
+    {
+      "file": "raven_totem_f07.png",
+      "bytes": 17748,
+      "url_kind": "template",
+      "encoded_sha256": "546e1d02efb14874306e37de8718c57cadaa0c50eae0a1127b6606de6a710924",
+      "pixel_sha256": "510b5a98dd51fd6e4d358d055e2c8c28643409ff6cf27f6c30848267d510cb53"
+    },
+    {
+      "file": "raven_totem_f08.png",
+      "bytes": 14224,
+      "url_kind": "template",
+      "encoded_sha256": "cdefcb92cc939e1771555e4435537c3807c73e9e38502bbbc1b382b308e561e1",
+      "pixel_sha256": "29ecf8a430e3098d3e8355546e899a2d8c36ea652776f191133e3708717a2d93"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

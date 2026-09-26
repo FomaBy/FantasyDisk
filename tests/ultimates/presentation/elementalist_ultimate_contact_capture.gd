@@ -5,8 +5,14 @@ const CAPTURE_SPEC := preload("res://tests/ultimates/presentation/elementalist_u
 
 func _initialize() -> void:
 	if DisplayServer.get_name() == "headless":
-		print("FAN-1476 Elementalist ultimate contact capture skipped (headless); run windowed for PNGs.")
+		print("FAN-3715 Elementalist ultimate contact capture skipped (headless); run windowed for PNGs.")
 		quit(0)
+		return
+	var output_dir := _capture_output_dir()
+	var mkdir_error := DirAccess.make_dir_recursive_absolute(output_dir)
+	if mkdir_error != OK:
+		push_error("Elementalist ultimate contact capture could not create %s: %s" % [output_dir, error_string(mkdir_error)])
+		quit(1)
 		return
 	for capture in CAPTURE_SPEC.CAPTURES:
 		var spec := capture as Dictionary
@@ -20,8 +26,8 @@ func _initialize() -> void:
 		viewport.add_child(host)
 		await process_frame
 		await RenderingServer.frame_post_draw
-		var output := str(spec["path"])
-		var error := viewport.get_texture().get_image().save_png(ProjectSettings.globalize_path(output))
+		var output := output_dir.path_join(str(spec["file"]))
+		var error := viewport.get_texture().get_image().save_png(output)
 		viewport.queue_free()
 		await process_frame
 		if error != OK:
@@ -30,6 +36,13 @@ func _initialize() -> void:
 			return
 		print("Elementalist ultimate contact capture saved: %s" % output)
 	quit(0)
+
+
+func _capture_output_dir() -> String:
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--output-dir="):
+			return ProjectSettings.globalize_path(argument.trim_prefix("--output-dir="))
+	return ProjectSettings.globalize_path("user://fan_3715_elementalist_evidence")
 
 
 func _make_sheet(size: Vector2i) -> Node2D:

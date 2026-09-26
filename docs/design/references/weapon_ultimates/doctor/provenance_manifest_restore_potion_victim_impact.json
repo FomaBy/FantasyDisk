@@ -1,0 +1,319 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "weapon_id": "restore_potion",
+  "weapon": "doctor/restore_potion",
+  "effect_id": "victim_impact",
+  "effect_role": "victim_impact",
+  "generated_at": "2026-08-28T03:22:06Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "pixellab": {
+    "object_id": "3f7d7db4-c668-483e-ad83-392cb5936a8c",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single glass potion impact burst with emerald shards, pale healing star and small toxic droplets, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+      "animation_group_id": "837ebe05-3342-4e55-af62-9dd5f1a6ed5f",
+      "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same potion impact stays centered with stable palette; a tight pale healing star and emerald glass shards burst outward, peak, then fade while droplets arc visibly, with measurable distinct motion every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the stored PixelLab reference image; f01..f08 are the eight generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/restore_potion/victim_impact",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_00.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_01.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_02.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_03.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_04.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_05.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_06.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_07.png",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_00.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_01.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_02.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_03.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_04.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_05.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_06.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_07.png.import",
+      "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": false,
+    "fps": 16
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Removed two generated flat background rectangles from f00 only: plague_syringe_infection_wave and plague_syringe_victim_impact; no other frames were altered."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_00.png",
+      "bytes": 31417,
+      "source_encoded_sha256": "8728374c521360305b38b08b53f9ed2bebc4cbbcb7b2d94f3739fab7a0bc9995",
+      "source_pixel_sha256": "cc79c79732a22c9a13820bafe9582bd254e537884399b5e9a2491a61928bb0f3",
+      "runtime_encoded_sha256": "8728374c521360305b38b08b53f9ed2bebc4cbbcb7b2d94f3739fab7a0bc9995",
+      "runtime_pixel_sha256": "cc79c79732a22c9a13820bafe9582bd254e537884399b5e9a2491a61928bb0f3",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        19,
+        24,
+        239,
+        230
+      ],
+      "visible_pixels": 20471,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": null
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_01.png",
+      "bytes": 43651,
+      "source_encoded_sha256": "7d74136ec1406d9b73d0b88c2bd26c0c6308dd4185f81d9fd1884dafc71fd8c6",
+      "source_pixel_sha256": "cf63c3d4134ee9d541f644484d51f5f43b9c162460ea470e8d1d76daab3586a0",
+      "runtime_encoded_sha256": "7d74136ec1406d9b73d0b88c2bd26c0c6308dd4185f81d9fd1884dafc71fd8c6",
+      "runtime_pixel_sha256": "cf63c3d4134ee9d541f644484d51f5f43b9c162460ea470e8d1d76daab3586a0",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        16,
+        21,
+        239,
+        233
+      ],
+      "visible_pixels": 22238,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18356
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_02.png",
+      "bytes": 38329,
+      "source_encoded_sha256": "bfdc22637aed36044352ddbc5dac5c1fc7ecd6982a61cb96c36262c6c00225b8",
+      "source_pixel_sha256": "3e6e47db80ed9733a918b5303c31e66536ae6dd47aa1c1c782d274a29b2baa94",
+      "runtime_encoded_sha256": "bfdc22637aed36044352ddbc5dac5c1fc7ecd6982a61cb96c36262c6c00225b8",
+      "runtime_pixel_sha256": "3e6e47db80ed9733a918b5303c31e66536ae6dd47aa1c1c782d274a29b2baa94",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        17,
+        22,
+        239,
+        233
+      ],
+      "visible_pixels": 21676,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 17466
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_03.png",
+      "bytes": 37277,
+      "source_encoded_sha256": "24dce1d88daa7a23c6a995fdeaaf6efc003211a13d4e071cf3e7bb754f2737e0",
+      "source_pixel_sha256": "4fdafa38626da112e701bba8801f86a98d663a546be51aaf1dda72fc89790cc4",
+      "runtime_encoded_sha256": "24dce1d88daa7a23c6a995fdeaaf6efc003211a13d4e071cf3e7bb754f2737e0",
+      "runtime_pixel_sha256": "4fdafa38626da112e701bba8801f86a98d663a546be51aaf1dda72fc89790cc4",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        16,
+        22,
+        239,
+        233
+      ],
+      "visible_pixels": 17701,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 19792
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_04.png",
+      "bytes": 27712,
+      "source_encoded_sha256": "f13310505665175e0dc37a4219fd4a4ccc2284faf79001fbf3a999ff56c36e6e",
+      "source_pixel_sha256": "f4ef52b67dd407bb471ea812189d98ea7db3d366ed3e2fb918980707051bc5bd",
+      "runtime_encoded_sha256": "f13310505665175e0dc37a4219fd4a4ccc2284faf79001fbf3a999ff56c36e6e",
+      "runtime_pixel_sha256": "f4ef52b67dd407bb471ea812189d98ea7db3d366ed3e2fb918980707051bc5bd",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        17,
+        22,
+        239,
+        233
+      ],
+      "visible_pixels": 12417,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18150
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_05.png",
+      "bytes": 24071,
+      "source_encoded_sha256": "10e7cdcdc48c141155c7401bb35752a7ae7c0950fdc5031af65b9ad739fda078",
+      "source_pixel_sha256": "76bf9fa2e7149622068f4f38f93a7c205e8e540d56002e291f946450f73f0655",
+      "runtime_encoded_sha256": "10e7cdcdc48c141155c7401bb35752a7ae7c0950fdc5031af65b9ad739fda078",
+      "runtime_pixel_sha256": "76bf9fa2e7149622068f4f38f93a7c205e8e540d56002e291f946450f73f0655",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        17,
+        21,
+        239,
+        233
+      ],
+      "visible_pixels": 9476,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 12709
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_06.png",
+      "bytes": 17629,
+      "source_encoded_sha256": "8813e4613687608968205ab247b49b6f9ace4d5f59dbfebdb4ff37c961d2aae3",
+      "source_pixel_sha256": "46c40042bcea90eb506362defe141fbd76b4410c425bfd4b05702879dbe0f078",
+      "runtime_encoded_sha256": "8813e4613687608968205ab247b49b6f9ace4d5f59dbfebdb4ff37c961d2aae3",
+      "runtime_pixel_sha256": "46c40042bcea90eb506362defe141fbd76b4410c425bfd4b05702879dbe0f078",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        16,
+        22,
+        239,
+        233
+      ],
+      "visible_pixels": 8030,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 11193
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_07.png",
+      "bytes": 14436,
+      "source_encoded_sha256": "221925ad8a74fcc984538b656164a3a8eae058e3b21401f293ce246122f8cb5f",
+      "source_pixel_sha256": "49814ffdff68c5d547d966be2b7f7c45932085261e16e772723c785de74be321",
+      "runtime_encoded_sha256": "221925ad8a74fcc984538b656164a3a8eae058e3b21401f293ce246122f8cb5f",
+      "runtime_pixel_sha256": "49814ffdff68c5d547d966be2b7f7c45932085261e16e772723c785de74be321",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        17,
+        22,
+        239,
+        233
+      ],
+      "visible_pixels": 7410,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 9602
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact/restore_potion_victim_impact_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_08.png",
+      "bytes": 7777,
+      "source_encoded_sha256": "f3215a5a4cf81b8d39a9882054b53a6406f27a5dd7329df53c37e119744160cf",
+      "source_pixel_sha256": "eec161ec4b2db9edb345a6a7342c29a3f28e5b4c9d0b15f820160c783e797d70",
+      "runtime_encoded_sha256": "f3215a5a4cf81b8d39a9882054b53a6406f27a5dd7329df53c37e119744160cf",
+      "runtime_pixel_sha256": "eec161ec4b2db9edb345a6a7342c29a3f28e5b4c9d0b15f820160c783e797d70",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        17,
+        26,
+        238,
+        231
+      ],
+      "visible_pixels": 7639,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 9427
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 9427,
+    "consecutive_changed_pixels_max": 19792,
+    "loop_wrap_pixel_hashes_differ": true
+  }
+}

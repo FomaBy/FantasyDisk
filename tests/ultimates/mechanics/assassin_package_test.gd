@@ -9,9 +9,9 @@ const PD := preload("res://scripts/progression_data.gd")
 const CLASS_ID := "assassin"
 const WEAPONS := ["chakrams", "shadow_daggers", "venom_wire"]
 const EXPECTED := {
-	"chakrams": {"return_steps": 6, "targets_per_lane": 4, "execute_threshold": 0.25},
-	"shadow_daggers": {"target_count": 7, "untargetable_duration": 1.75},
-	"venom_wire": {"target_limit": 24, "cut_pulses": 3, "max_cuts_per_pulse": 3},
+	"chakrams": {"return_steps": 6, "execute_threshold": 0.25},
+	"shadow_daggers": {"backstab_waves": 7, "untargetable_duration": 1.75},
+	"venom_wire": {"cut_pulses": 3, "max_cuts_per_pulse": 3},
 }
 
 var _errors: Array[String] = []

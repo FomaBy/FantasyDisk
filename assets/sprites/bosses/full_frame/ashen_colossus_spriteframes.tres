@@ -1,35 +1,309 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_00.png" id="1_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_01.png" id="2_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_02.png" id="3_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_03.png" id="4_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_04.png" id="5_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_attack_primary_05.png" id="6_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_00.png" id="7_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_01.png" id="8_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_02.png" id="9_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_03.png" id="10_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_04.png" id="11_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_death_05.png" id="12_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_00.png" id="13_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_01.png" id="14_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_02.png" id="15_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_03.png" id="16_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_04.png" id="17_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_move_05.png" id="18_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_00.png" id="19_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_01.png" id="20_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_02.png" id="21_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_03.png" id="22_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_04.png" id="23_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_molten_slam_05.png" id="24_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_00.png" id="25_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_01.png" id="26_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_02.png" id="27_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_03.png" id="28_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_04.png" id="29_ashen_colossus"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/ashen_colossus/ashen_colossus_skill_armor_pulse_05.png" id="30_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_east_00.png" id="1_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_south_east_00.png" id="2_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_south_00.png" id="3_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_south_west_00.png" id="4_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_west_00.png" id="5_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_north_west_00.png" id="6_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_north_00.png" id="7_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_idle_north_east_00.png" id="8_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_00.png" id="9_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_01.png" id="10_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_02.png" id="11_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_03.png" id="12_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_04.png" id="13_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_05.png" id="14_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_east_06.png" id="15_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_00.png" id="16_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_01.png" id="17_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_02.png" id="18_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_03.png" id="19_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_04.png" id="20_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_05.png" id="21_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_east_06.png" id="22_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_00.png" id="23_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_01.png" id="24_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_02.png" id="25_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_03.png" id="26_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_04.png" id="27_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_05.png" id="28_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_06.png" id="29_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_00.png" id="30_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_01.png" id="31_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_02.png" id="32_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_03.png" id="33_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_04.png" id="34_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_05.png" id="35_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_south_west_06.png" id="36_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_00.png" id="37_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_01.png" id="38_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_02.png" id="39_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_03.png" id="40_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_04.png" id="41_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_05.png" id="42_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_west_06.png" id="43_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_00.png" id="44_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_01.png" id="45_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_02.png" id="46_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_03.png" id="47_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_04.png" id="48_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_05.png" id="49_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_west_06.png" id="50_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_00.png" id="51_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_01.png" id="52_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_02.png" id="53_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_03.png" id="54_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_04.png" id="55_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_05.png" id="56_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_06.png" id="57_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_00.png" id="58_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_01.png" id="59_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_02.png" id="60_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_03.png" id="61_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_04.png" id="62_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_05.png" id="63_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_move_north_east_06.png" id="64_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_east_00.png" id="65_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_east_01.png" id="66_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_east_02.png" id="67_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_east_03.png" id="68_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_east_04.png" id="69_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_east_05.png" id="70_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_east_00.png" id="71_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_east_01.png" id="72_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_east_02.png" id="73_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_east_03.png" id="74_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_east_04.png" id="75_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_east_05.png" id="76_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_00.png" id="77_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_01.png" id="78_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_02.png" id="79_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_03.png" id="80_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_04.png" id="81_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_05.png" id="82_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_west_00.png" id="83_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_west_01.png" id="84_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_west_02.png" id="85_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_west_03.png" id="86_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_west_04.png" id="87_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_south_west_05.png" id="88_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_west_00.png" id="89_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_west_01.png" id="90_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_west_02.png" id="91_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_west_03.png" id="92_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_west_04.png" id="93_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_west_05.png" id="94_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_west_00.png" id="95_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_west_01.png" id="96_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_west_02.png" id="97_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_west_03.png" id="98_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_west_04.png" id="99_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_west_05.png" id="100_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_00.png" id="101_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_01.png" id="102_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_02.png" id="103_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_03.png" id="104_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_04.png" id="105_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_05.png" id="106_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_east_00.png" id="107_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_east_01.png" id="108_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_east_02.png" id="109_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_east_03.png" id="110_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_east_04.png" id="111_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_attack_north_east_05.png" id="112_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_east_00.png" id="113_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_east_01.png" id="114_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_east_02.png" id="115_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_east_03.png" id="116_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_east_04.png" id="117_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_east_05.png" id="118_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_east_00.png" id="119_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_east_01.png" id="120_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_east_02.png" id="121_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_east_03.png" id="122_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_east_04.png" id="123_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_east_05.png" id="124_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_00.png" id="125_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_01.png" id="126_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_02.png" id="127_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_03.png" id="128_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_04.png" id="129_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_05.png" id="130_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_west_00.png" id="131_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_west_01.png" id="132_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_west_02.png" id="133_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_west_03.png" id="134_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_west_04.png" id="135_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_south_west_05.png" id="136_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_west_00.png" id="137_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_west_01.png" id="138_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_west_02.png" id="139_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_west_03.png" id="140_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_west_04.png" id="141_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_west_05.png" id="142_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_west_00.png" id="143_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_west_01.png" id="144_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_west_02.png" id="145_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_west_03.png" id="146_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_west_04.png" id="147_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_west_05.png" id="148_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_00.png" id="149_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_01.png" id="150_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_02.png" id="151_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_03.png" id="152_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_04.png" id="153_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_05.png" id="154_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_east_00.png" id="155_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_east_01.png" id="156_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_east_02.png" id="157_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_east_03.png" id="158_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_east_04.png" id="159_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_hit_north_east_05.png" id="160_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_east_00.png" id="161_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_east_01.png" id="162_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_east_02.png" id="163_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_east_03.png" id="164_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_east_04.png" id="165_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_east_05.png" id="166_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_east_00.png" id="167_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_east_01.png" id="168_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_east_02.png" id="169_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_east_03.png" id="170_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_east_04.png" id="171_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_east_05.png" id="172_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_00.png" id="173_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_01.png" id="174_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_02.png" id="175_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_03.png" id="176_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_04.png" id="177_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_05.png" id="178_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_west_00.png" id="179_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_west_01.png" id="180_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_west_02.png" id="181_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_west_03.png" id="182_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_west_04.png" id="183_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_south_west_05.png" id="184_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_west_00.png" id="185_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_west_01.png" id="186_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_west_02.png" id="187_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_west_03.png" id="188_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_west_04.png" id="189_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_west_05.png" id="190_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_west_00.png" id="191_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_west_01.png" id="192_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_west_02.png" id="193_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_west_03.png" id="194_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_west_04.png" id="195_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_west_05.png" id="196_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_00.png" id="197_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_01.png" id="198_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_02.png" id="199_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_03.png" id="200_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_04.png" id="201_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_05.png" id="202_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_east_00.png" id="203_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_east_01.png" id="204_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_east_02.png" id="205_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_east_03.png" id="206_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_east_04.png" id="207_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_death_north_east_05.png" id="208_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_east_00.png" id="209_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_east_01.png" id="210_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_east_02.png" id="211_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_east_03.png" id="212_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_east_04.png" id="213_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_east_05.png" id="214_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_east_00.png" id="215_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_east_01.png" id="216_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_east_02.png" id="217_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_east_03.png" id="218_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_east_04.png" id="219_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_east_05.png" id="220_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_00.png" id="221_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_01.png" id="222_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_02.png" id="223_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_03.png" id="224_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_04.png" id="225_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_05.png" id="226_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_west_00.png" id="227_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_west_01.png" id="228_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_west_02.png" id="229_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_west_03.png" id="230_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_west_04.png" id="231_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_south_west_05.png" id="232_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_west_00.png" id="233_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_west_01.png" id="234_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_west_02.png" id="235_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_west_03.png" id="236_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_west_04.png" id="237_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_west_05.png" id="238_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_west_00.png" id="239_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_west_01.png" id="240_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_west_02.png" id="241_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_west_03.png" id="242_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_west_04.png" id="243_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_west_05.png" id="244_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_00.png" id="245_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_01.png" id="246_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_02.png" id="247_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_03.png" id="248_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_04.png" id="249_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_05.png" id="250_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_east_00.png" id="251_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_east_01.png" id="252_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_east_02.png" id="253_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_east_03.png" id="254_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_east_04.png" id="255_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_molten_slam_north_east_05.png" id="256_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_east_00.png" id="257_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_east_01.png" id="258_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_east_02.png" id="259_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_east_03.png" id="260_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_east_04.png" id="261_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_east_05.png" id="262_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_east_00.png" id="263_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_east_01.png" id="264_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_east_02.png" id="265_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_east_03.png" id="266_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_east_04.png" id="267_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_east_05.png" id="268_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_00.png" id="269_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_01.png" id="270_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_02.png" id="271_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_03.png" id="272_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_04.png" id="273_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_05.png" id="274_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_west_00.png" id="275_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_west_01.png" id="276_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_west_02.png" id="277_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_west_03.png" id="278_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_west_04.png" id="279_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_south_west_05.png" id="280_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_west_00.png" id="281_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_west_01.png" id="282_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_west_02.png" id="283_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_west_03.png" id="284_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_west_04.png" id="285_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_west_05.png" id="286_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_west_00.png" id="287_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_west_01.png" id="288_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_west_02.png" id="289_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_west_03.png" id="290_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_west_04.png" id="291_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_west_05.png" id="292_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_00.png" id="293_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_01.png" id="294_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_02.png" id="295_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_03.png" id="296_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_04.png" id="297_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_05.png" id="298_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_east_00.png" id="299_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_east_01.png" id="300_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_east_02.png" id="301_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_east_03.png" id="302_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_east_04.png" id="303_ashen_colossus"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/ashen_colossus_8dir/runtime/ashen_colossus_skill_armor_pulse_north_east_05.png" id="304_ashen_colossus"]
 
 [resource]
 animations = [
@@ -37,192 +311,2192 @@ animations = [
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_ashen_colossus")
 }],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_ashen_colossus")
-}, {
-"duration": 1.0,
 "texture": ExtResource("2_ashen_colossus")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("3_ashen_colossus")
-}, {
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("4_ashen_colossus")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("5_ashen_colossus")
-}, {
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("6_ashen_colossus")
 }],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("7_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("8_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("9_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_ashen_colossus")
 }],
-"loop": false,
-"name": &"death",
-"speed": 10.0
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("16_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("17_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("18_ashen_colossus")
+"texture": ExtResource("8_ashen_colossus")
 }],
 "loop": true,
-"name": &"move",
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("20_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("21_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("22_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("23_ashen_colossus")
-}, {
-"duration": 1.0,
-"texture": ExtResource("24_ashen_colossus")
-}],
-"loop": false,
-"name": &"skill_molten_slam",
-"speed": 12.0
+"texture": ExtResource("16_ashen_colossus")
 },
 {
-"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ashen_colossus")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("19_ashen_colossus")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("20_ashen_colossus")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("21_ashen_colossus")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("22_ashen_colossus")
-}, {
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("23_ashen_colossus")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("24_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("33_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("57_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("58_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_ashen_colossus")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_ashen_colossus")
 }],
 "loop": false,
-"name": &"attack_molten_slam",
+"name": &"attack_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_ashen_colossus")
-}, {
+"texture": ExtResource("71_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_ashen_colossus")
-}, {
+"texture": ExtResource("72_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_ashen_colossus")
-}, {
+"texture": ExtResource("73_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_ashen_colossus")
-}, {
+"texture": ExtResource("74_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_ashen_colossus")
-}, {
+"texture": ExtResource("75_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_ashen_colossus")
+"texture": ExtResource("76_ashen_colossus")
 }],
 "loop": false,
-"name": &"skill_armor_pulse",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_ashen_colossus")
-}, {
+"texture": ExtResource("77_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_ashen_colossus")
-}, {
+"texture": ExtResource("78_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_ashen_colossus")
-}, {
+"texture": ExtResource("79_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_ashen_colossus")
-}, {
+"texture": ExtResource("80_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_ashen_colossus")
-}, {
+"texture": ExtResource("81_ashen_colossus")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_ashen_colossus")
+"texture": ExtResource("82_ashen_colossus")
 }],
 "loop": false,
-"name": &"attack_armor_pulse",
+"name": &"attack_south",
 "speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("119_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("131_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_ashen_colossus")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("185_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("191_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("197_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("203_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_ashen_colossus")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_molten_slam_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_ashen_colossus")
+}],
+"loop": false,
+"name": &"skill_armor_pulse_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("71_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("77_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_molten_slam_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_ashen_colossus")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_ashen_colossus")
+}],
+"loop": false,
+"name": &"attack_armor_pulse_north_east",
+"speed": 10.0
 }
 ]

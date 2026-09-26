@@ -15,7 +15,7 @@ const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_reso
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const PD := preload("res://scripts/progression_data.gd")
 
-const GAMEPLAY_TIME_SCALE := 0.5
+const GAMEPLAY_TIME_SCALE := 1.0
 const COMPLETION_GRACE_SECONDS := 1.0
 const PLAYER_SPACING := 2500.0
 const WARD_PREVENTION_PROBE := 40.0
@@ -37,14 +37,14 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "druid", "weapon_id": "briar_staff", "lifecycle": 7.9, "deadline": 8.9},
 	{"class_id": "priest", "weapon_id": "priest_censer", "lifecycle": 7.6, "deadline": 8.6},
 	{"class_id": "knight", "weapon_id": "holy_flail", "lifecycle": 7.6, "deadline": 8.6},
-	{"class_id": "berserk", "weapon_id": "sword", "lifecycle": 7.45, "deadline": 8.45},
+	{"class_id": "berserk", "weapon_id": "sword", "lifecycle": 3.1, "deadline": 4.1},
 	{"class_id": "elementalist", "weapon_id": "elementalist_prism_focus", "lifecycle": 7.2, "deadline": 8.2},
 	{"class_id": "druid", "weapon_id": "summon_amulet", "lifecycle": 6.6, "deadline": 7.6},
 	{"class_id": "priest", "weapon_id": "priest_chime", "lifecycle": 6.4, "deadline": 7.4},
-	{"class_id": "dark_mage", "weapon_id": "cursed_skull", "lifecycle": 6.37, "deadline": 7.37},
+	{"class_id": "dark_mage", "weapon_id": "cursed_skull", "lifecycle": 3.62, "deadline": 4.62},
 	{"class_id": "robot", "weapon_id": "robot_reactor_core", "lifecycle": 6.01, "deadline": 7.01},
 	{"class_id": "guitarist", "weapon_id": "sound_amp", "lifecycle": 6.0, "deadline": 7.0},
-	{"class_id": "berserk", "weapon_id": "axe", "lifecycle": 5.85, "deadline": 6.85},
+	{"class_id": "berserk", "weapon_id": "axe", "lifecycle": 2.7, "deadline": 3.7},
 	{"class_id": "doctor", "weapon_id": "plague_syringe", "lifecycle": 5.85, "deadline": 6.85},
 	{"class_id": "guitarist", "weapon_id": "bass_guitar", "lifecycle": 5.8, "deadline": 6.8},
 	{"class_id": "soldier", "weapon_id": "soldier_rifle", "lifecycle": 5.6, "deadline": 6.6},
@@ -52,11 +52,11 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "guitarist", "weapon_id": "electric_guitar", "lifecycle": 5.4, "deadline": 6.4},
 	{"class_id": "ranger", "weapon_id": "hunter_trap", "lifecycle": 5.35, "deadline": 6.35},
 	{"class_id": "ranger", "weapon_id": "moon_crossbow", "lifecycle": 4.80, "deadline": 5.80},
-	{"class_id": "dark_mage", "weapon_id": "dark_book", "lifecycle": 5.21, "deadline": 6.21},
+	{"class_id": "dark_mage", "weapon_id": "dark_book", "lifecycle": 3.12, "deadline": 4.12},
 	{"class_id": "robot", "weapon_id": "robot_magnetic_anchor", "lifecycle": 4.75, "deadline": 5.75},
 	{"class_id": "engineer", "weapon_id": "engineer_sentry_wrench", "lifecycle": 4.6, "deadline": 5.6},
 	{"class_id": "ranger", "weapon_id": "storm_longbow", "lifecycle": 4.45, "deadline": 5.45},
-	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 4.4, "deadline": 5.4},
+	{"class_id": "sniper", "weapon_id": "sniper_spotter_scope", "lifecycle": 3.4, "deadline": 4.4},
 	{"class_id": "soldier", "weapon_id": "soldier_bayonet", "lifecycle": 4.25, "deadline": 5.25},
 	{"class_id": "chemist", "weapon_id": "homunculus_vial", "lifecycle": 4.2, "deadline": 5.2},
 	{"class_id": "robot", "weapon_id": "robot_hydraulic_press", "lifecycle": 4.05, "deadline": 5.05},
@@ -65,21 +65,23 @@ const LIFECYCLE_SPECS := [
 	{"class_id": "thief", "weapon_id": "thief_smoke_bomb", "lifecycle": 4.0, "deadline": 5.0},
 	{"class_id": "doctor", "weapon_id": "bone_saw", "lifecycle": 3.85, "deadline": 4.85},
 	{"class_id": "chemist", "weapon_id": "acid_flask", "lifecycle": 3.7, "deadline": 4.7},
-	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 3.4, "deadline": 4.4},
-	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.87, "deadline": 4.87},
-	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 2.82, "deadline": 3.82},
+	{"class_id": "berserk", "weapon_id": "hammer", "lifecycle": 2.35, "deadline": 3.35},
+	{"class_id": "dark_mage", "weapon_id": "dark_wand", "lifecycle": 3.92, "deadline": 4.92},
+	{"class_id": "sniper", "weapon_id": "sniper_shatter_rounds", "lifecycle": 3.1, "deadline": 4.1},
 	{"class_id": "chemist", "weapon_id": "blast_powder", "lifecycle": 2.2, "deadline": 3.2},
 	{"class_id": "assassin", "weapon_id": "chakrams", "lifecycle": 1.72, "deadline": 2.72},
 	{"class_id": "assassin", "weapon_id": "shadow_daggers", "lifecycle": 1.72, "deadline": 2.72},
 	{"class_id": "knight", "weapon_id": "long_spear", "lifecycle": 1.4, "deadline": 2.4},
 	{"class_id": "thief", "weapon_id": "thief_shadow_cloak", "lifecycle": 1.26, "deadline": 2.26},
 	{"class_id": "assassin", "weapon_id": "venom_wire", "lifecycle": 1.05, "deadline": 2.05},
-	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.0, "deadline": 2.0},
-	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 0.25, "deadline": 1.25},
+	{"class_id": "thief", "weapon_id": "thief_coin_pouch", "lifecycle": 1.3, "deadline": 2.3},
+	{"class_id": "sniper", "weapon_id": "sniper_deadeye_rifle", "lifecycle": 2.9, "deadline": 3.9},
 ]
 
 var _errors: Array[String] = []
 var _holder: Node2D = null
+## Widest slice of cast time this run ever left unobserved between two polls.
+var _observation_step := 0.0
 
 
 func _initialize() -> void:
@@ -104,6 +106,7 @@ func _initialize() -> void:
 		_check(false, error)
 	_assert_inventory_falsifications(ready_pairs)
 	_assert_contract_falsifications()
+	_assert_sampling_falsifications()
 	if not _errors.is_empty() or not inventory_errors.is_empty():
 		_report()
 		return
@@ -115,7 +118,15 @@ func _initialize() -> void:
 
 	var original_time_scale := Engine.time_scale
 	Engine.time_scale = GAMEPLAY_TIME_SCALE
-	for state in states:
+	var start_order: Array[Dictionary] = []
+	start_order.append_array(states)
+	# Each state records its own admission time, but batch setup still runs before
+	# the first observation frame. Start long lifecycles first so no short pair can
+	# finish its pre-completion window while later pairs are being admitted.
+	start_order.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return float(left["lifecycle"]) > float(right["lifecycle"])
+	)
+	for state in start_order:
 		_start_case(state)
 	await _wait_for_natural_completion(states)
 	Engine.time_scale = original_time_scale
@@ -251,10 +262,13 @@ func _expect_inventory_failure(errors: Array[String], required_keys: Array, scen
 
 
 ## Ownership channels are package-specific: deploy packages spawn nodes,
-## choreography packages (guitarist) own presentation handles instead. The
-## tracked tween is deliberately not a channel here — every pair is already
-## asserted to own exactly one, so counting it would satisfy the disjunction
-## unconditionally and constrain nothing.
+## choreography packages (guitarist) show a presentation instead. The
+## presentation count is the activation's own presentation nodes plus the live
+## authored scene the host runs for it (FAN-3015 — the host owns and frees that
+## scene, the activation only accounts it). The tracked tween is deliberately
+## not a channel here — every pair is already asserted to own exactly one, so
+## counting it would satisfy the disjunction unconditionally and constrain
+## nothing.
 func _live_ownership_errors(
 	label: String,
 	spawned_count: int,
@@ -303,6 +317,75 @@ func _encounter_gate_errors(
 	if new_encounter_second_accepted:
 		errors.append("%s next encounter must buy exactly one cast" % label)
 	return errors
+
+
+## FAN-3279: the pre-completion window is only `pre_margin` of cast time wide,
+## and a starved server frame can be wider. The observer then steps straight
+## from "tween short of the window" to "tween already gone" and never gets a
+## live sample to assert on — a gap in observation, not a gameplay failure.
+## The excuse is bounded by the cast's own clock: the gap must be wide enough
+## that a cast running to its declared lifecycle would also have ended inside
+## it. A cast that really vanishes early is seen at a fine sampling step and
+## still reddens here, and `_late_completion_errors` keeps the other bound.
+func _precompletion_sampling_errors(
+	label: String,
+	prechecked: bool,
+	last_live_elapsed: float,
+	observation_step: float,
+	lifecycle: float
+) -> Array[String]:
+	var errors: Array[String] = []
+	if prechecked:
+		return errors
+	if last_live_elapsed + maxf(observation_step, 0.0) < lifecycle:
+		errors.append(
+			"%s must reach its pre-completion checkpoint, last seen live at %.2fs of %.2fs on a %.2fs sampling step"
+			% [label, last_live_elapsed, lifecycle, observation_step]
+		)
+	return errors
+
+
+## The first poll that finds a cast gone can land arbitrarily long after it
+## actually ended, so that timestamp measures the observer, not the cast.
+## Lateness is judged on the last poll that still saw the cast live: that is a
+## real instant it was running, so a genuine overrun is still caught the moment
+## it is observed past its grace, while a slow frame alone can never manufacture
+## one.
+func _late_completion_errors(label: String, last_live_elapsed: float, deadline: float) -> Array[String]:
+	var errors: Array[String] = []
+	if last_live_elapsed > deadline:
+		errors.append(
+			"%s still live at %.2fs, beyond lifecycle + %.1fs"
+			% [label, last_live_elapsed, COMPLETION_GRACE_SECONDS]
+		)
+	return errors
+
+
+func _assert_sampling_falsifications() -> void:
+	_check(
+		_precompletion_sampling_errors("falsification/observed", true, 2.30, 0.02, 2.70).is_empty(),
+		"an observed pre-completion checkpoint must pass the sampling contract"
+	)
+	_check(
+		_precompletion_sampling_errors("falsification/coarse", false, 2.30, 0.45, 2.70).is_empty(),
+		"a sampling step wider than the pre-completion window must not fail a healthy cast"
+	)
+	_check(
+		not _precompletion_sampling_errors("falsification/early", false, 2.30, 0.02, 2.70).is_empty(),
+		"a cast that vanishes early under fine sampling must fail closed"
+	)
+	_check(
+		not _precompletion_sampling_errors("falsification/unobserved", false, 0.0, -1.0, 2.70).is_empty(),
+		"a cast never observed live must fail closed"
+	)
+	_check(
+		_late_completion_errors("falsification/lagged", 3.30, 3.35).is_empty(),
+		"a finish reported late but last seen live inside the grace must pass"
+	)
+	_check(
+		not _late_completion_errors("falsification/overrun", 3.36, 3.35).is_empty(),
+		"a cast still live past lifecycle + grace must fail closed"
+	)
 
 
 func _assert_contract_falsifications() -> void:
@@ -416,7 +499,8 @@ func _build_state(spec: Dictionary, index: int, registry) -> Dictionary:
 		"baseline_statuses": baseline_statuses,
 		"baseline_modifiers": (player.get("run_modifiers") as Dictionary).duplicate(true),
 		"started_ms": -1,
-		"finished_ms": -1,
+		"last_active_ms": -1,
+		"tween_elapsed": 0.0,
 		"prechecked": false,
 		"controller": null,
 		"activation": null,
@@ -465,8 +549,11 @@ func _start_case(state: Dictionary) -> void:
 	var player: Node2D = state["player"]
 	var label := str(state["label"])
 	player.set("ultimate_charge", float(player.get("ultimate_max_charge")))
-	state["started_ms"] = Time.get_ticks_msec()
 	_check(bool(player.call("activate_ultimate")), "%s must activate through real Player" % label)
+	# Start the wall-clock deadline after admission. Presentation loading and
+	# package setup happen inside activate_ultimate(), so measuring before it can
+	# consume the Linux-side startup cost and inspect an already-finished cast.
+	state["started_ms"] = Time.get_ticks_msec()
 	var controller = PlayerHost.for_player(player).controller()
 	var activation = controller.active_activation()
 	state["controller"] = controller
@@ -487,8 +574,38 @@ func _start_case(state: Dictionary) -> void:
 	_check(is_zero_approx(float(player.get("ultimate_charge"))), "%s must spend charge once" % label)
 	_check(bool(player.get("_ultimate_active")), "%s must set the Player active latch" % label)
 	_check(not bool(player.call("activate_ultimate")), "%s must refuse live re-entry" % label)
+	_assert_coin_pouch_selection(state)
 	_feed_ward_prevention(state)
 	_feed_tower_shield_guard_prevention(state)
+
+
+func _assert_coin_pouch_selection(state: Dictionary) -> void:
+	if str(state["label"]) != "thief/thief_coin_pouch":
+		return
+	var activation = state.get("activation")
+	var selected = activation.primitive_value("targets", []) if activation != null else []
+	_check(selected is Array and (selected as Array).size() == 13,
+		"thief_coin_pouch must select exactly 13 nearest live targets")
+	if not selected is Array:
+		return
+	var source = activation.primitive_value("source") if activation != null else null
+	_check(source is Vector2, "thief_coin_pouch must select from its recorded source")
+	if not source is Vector2:
+		return
+	var expected: Array = activation.select_targets(source as Vector2, 999999.0, 13, "nearest")
+	_check(selected == expected,
+		"thief_coin_pouch targets must remain deterministically nearest-first")
+	var reaches_beyond_declared_radius := false
+	for raw_target in selected as Array:
+		var target := raw_target as Node2D
+		_check(target != null and is_instance_valid(target),
+			"thief_coin_pouch must select only live targets")
+		if target == null or not is_instance_valid(target):
+			continue
+		reaches_beyond_declared_radius = reaches_beyond_declared_radius \
+				or (source as Vector2).distance_to(target.global_position) > 620.0
+	_check(reaches_beyond_declared_radius,
+		"thief_coin_pouch must retain map-wide reach while capping the wave")
 
 
 ## A ward package reaches its damage step only after it actually absorbed
@@ -592,8 +709,25 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 				continue
 			var lifecycle := float(state["lifecycle"])
 			var pre_margin := minf(0.35, lifecycle * 0.4)
-			var pre_at := int(state["started_ms"]) + int((lifecycle - pre_margin) * 1000.0)
-			if not bool(state["prechecked"]) and now >= pre_at:
+			var pre_elapsed := lifecycle - pre_margin
+			var reached_precompletion := false
+			for tween in state["tweens"]:
+				if tween == null or not tween.is_valid():
+					continue
+				var tween_elapsed := float(tween.get_total_elapsed_time())
+				# Sampling resolution is measured on the cast clock, never on the
+				# observer's: a starved frame is charged to the tween on the frame
+				# after the observer already logged the stall, so `wall_delta` and
+				# the cast's own progress are one frame out of step. This is the
+				# widest slice of cast time that ever passed unobserved.
+				_observation_step = maxf(
+					_observation_step, tween_elapsed - float(state["tween_elapsed"])
+				)
+				state["tween_elapsed"] = tween_elapsed
+				if tween_elapsed >= pre_elapsed:
+					reached_precompletion = true
+					break
+			if not bool(state["prechecked"]) and reached_precompletion:
 				var activation = state.get("activation")
 				_check(controller.is_active(), "%s must be active immediately before completion" % state["label"])
 				_check(
@@ -612,7 +746,7 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 					for error in _live_ownership_errors(
 						str(state["label"]),
 						(activation.spawned_for_tests() as Array).size(),
-						(activation.presentation_for_tests() as Array).size()
+						activation.live_presentation_count()
 					):
 						_check(false, error)
 					for tween in state["tweens"]:
@@ -630,8 +764,7 @@ func _wait_for_natural_completion(states: Array[Dictionary]) -> void:
 				state["prechecked"] = true
 			if controller.is_active():
 				all_finished = false
-			elif int(state["finished_ms"]) < 0:
-				state["finished_ms"] = now
+				state["last_active_ms"] = now
 		if all_finished:
 			return
 		await process_frame
@@ -643,22 +776,36 @@ func _assert_natural_cleanup(states: Array[Dictionary]) -> void:
 		var player: Node2D = state["player"]
 		var controller = state.get("controller")
 		var activation = state.get("activation")
-		_check(bool(state["prechecked"]), "%s must reach its pre-completion checkpoint" % label)
+		for error in _precompletion_sampling_errors(
+			label,
+			bool(state["prechecked"]),
+			float(state["tween_elapsed"]),
+			_observation_step,
+			float(state["lifecycle"])
+		):
+			_check(false, error)
+		if not bool(state["prechecked"]):
+			print(
+				"tracked_tween_natural_completion_test: %s pre-completion window skipped by a %.2fs sampling step"
+				% [label, _observation_step]
+			)
 		_check(controller != null and not controller.is_active(), "%s must finish naturally by lifecycle + 1s" % label)
 		_check(not bool(player.get("_ultimate_active")), "%s must clear the Player active latch" % label)
 		_check(activation != null and activation.is_finished(), "%s activation must finish" % label)
 		if activation == null:
 			continue
-		if int(state["finished_ms"]) >= 0:
-			var elapsed := float(int(state["finished_ms"]) - int(state["started_ms"])) / 1000.0
-			_check(
-				elapsed <= float(state["deadline"]),
-				"%s finished after %.2fs, beyond lifecycle + 1s" % [label, elapsed]
-			)
+		if int(state["last_active_ms"]) >= 0:
+			for error in _late_completion_errors(
+				label,
+				float(state["tween_elapsed"]),
+				float(state["deadline"])
+			):
+				_check(false, error)
 		_check(activation.applied_total > 0.0, "%s must execute a real gameplay damage step" % label)
 		_check(activation.tweens_for_tests().is_empty(), "%s must drop tween ownership" % label)
 		_check(activation.spawned_for_tests().is_empty(), "%s must drop spawn/deploy ownership" % label)
 		_check(activation.presentation_for_tests().is_empty(), "%s must drop presentation handles" % label)
+		_check(activation.live_presentation_count() == 0, "%s must drop every live presentation channel" % label)
 		_check(activation.summon_snapshot_count_for_tests() == 0, "%s must drop summon handles" % label)
 		_check(activation.target_ledger_size_for_tests() == 0, "%s must clear target state" % label)
 		if state.has("tower_shield_guard_owner_id"):

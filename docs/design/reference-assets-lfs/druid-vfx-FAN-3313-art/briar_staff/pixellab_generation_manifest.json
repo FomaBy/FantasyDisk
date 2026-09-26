@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T11:04:11Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "6d99402d-b74c-4bbe-a214-255194bac74b",
+    "pixel_lab_animation_group_id": "521759be-0342-47c2-952e-0044cdcfc684",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered connected emerald bramble lattice erupting from a small thorn-staff rune, five root tips and sharp thorns, dark fantasy D&D pixel art seen from above, glowing green sap and pale leaf sparks, isolated effect, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the bramble lattice centered with stable proportions; five roots race outward one after another, thorn walls grow between their tips, sharp crowns burst on the impact beat, then the vines wither inward; every frame has clear measurable motion, clean silhouette, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "briar_staff_f00.png",
+      "bytes": 37761,
+      "url_kind": "template",
+      "encoded_sha256": "78ca29805d0ff058982c310cd55ff84c87f4c433494f0c8321e8bcf3f1160900",
+      "pixel_sha256": "9cf4942bbf167b2d67ec086b9b360f1dd92cf016cc834aba61bd5a1047fb1b77"
+    },
+    {
+      "file": "briar_staff_f01.png",
+      "bytes": 41318,
+      "url_kind": "template",
+      "encoded_sha256": "61fa9a7d2df07d5ed7acaade60456d9e17b9140afa466385bf48936ff474dd86",
+      "pixel_sha256": "fa3d6b213ba135410b117023560b11e7cd0b0a105f99dce7b30a252f373cb117"
+    },
+    {
+      "file": "briar_staff_f02.png",
+      "bytes": 46743,
+      "url_kind": "template",
+      "encoded_sha256": "10968772585e4cb3ec4ce651dbe7170a8c6549c39bb16407d6b3e082f4ed034b",
+      "pixel_sha256": "f2f7f2c46b65fd30a452305e80fa63ae9180bd1b6a3e5f69bb0e8bbfa52d9149"
+    },
+    {
+      "file": "briar_staff_f03.png",
+      "bytes": 45489,
+      "url_kind": "template",
+      "encoded_sha256": "594df479a6d58675d60389457d86ec30a008c31f094ce1519418d0272da24eee",
+      "pixel_sha256": "b7cacf181b8b13a758842e7e2514b310a02c029222d3934e93056afb88fb0809"
+    },
+    {
+      "file": "briar_staff_f04.png",
+      "bytes": 44467,
+      "url_kind": "template",
+      "encoded_sha256": "50d6b10110e387a41a0a6455f3f1f222f9297fcfaef7050b0123f76087e7777f",
+      "pixel_sha256": "be8b81038b36f6b1328fa3031a550559f8ffd4770b7e98b90a453205c3c2b69f"
+    },
+    {
+      "file": "briar_staff_f05.png",
+      "bytes": 41219,
+      "url_kind": "template",
+      "encoded_sha256": "35768804db4668591474bc11982f11df59203be1a94966e84a2552d095fd23a8",
+      "pixel_sha256": "839feb420f9b4a062e7dee399f43401579687e20fecf669b61b8253fdeb73de9"
+    },
+    {
+      "file": "briar_staff_f06.png",
+      "bytes": 38750,
+      "url_kind": "template",
+      "encoded_sha256": "946e8e377026c0bcf48aa32e327c96350d910a353465ba5b0a37fa6e91b55f79",
+      "pixel_sha256": "9b653c792050080d4bae5c6b2fae0b4e248d503f4c060652af0ee194b1af42bb"
+    },
+    {
+      "file": "briar_staff_f07.png",
+      "bytes": 43605,
+      "url_kind": "template",
+      "encoded_sha256": "3e8ed8ab99bee998ea077d86a95d7756b530f43b1ae430e2d3b7b0cb95d6b857",
+      "pixel_sha256": "ea99de147ef31349562b2767135ddede5dc806b73bae3cea0c420a1968ad24c9"
+    },
+    {
+      "file": "briar_staff_f08.png",
+      "bytes": 41048,
+      "url_kind": "template",
+      "encoded_sha256": "122fc6488cf50671555a5c56be622d1201b9bc40f607a56369ca5e2b3fc6a1c1",
+      "pixel_sha256": "cbd3599cd4252df24bd3635e087ed0de31fa35155d2de90c42302bd6568081c8"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

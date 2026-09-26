@@ -1,0 +1,140 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T20:15:35Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "dafb294e-a7be-4999-9126-f6ad4a7b326a",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single clockwork engineer ultimate effect: a large upright bronze-and-teal wrench sigil with a hexagonal gear hub and one bright cyan lens at the center, dark fantasy D&D pixel art seen straight from above, centered isolated sprite on a transparent background, crisp readable silhouette, workshop teal and copper palette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same single clockwork wrench sigil stays centered and keeps the exact same outline, proportions, palette and position in every frame: only the hex hub rotates slightly, the cyan center lens pulses, two thin teal energy arcs travel along the wrench, and tiny copper sparks flicker at the head; every frame remains visibly occupied, clean and readable, with nothing entering or leaving the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "sentry_wrench_f00.png",
+      "bytes": 32304,
+      "url_kind": "template",
+      "encoded_sha256": "6602770f91b9d19fa5817aa17a236a7fc39df1d7c1beb6559d499f10ee8c4579",
+      "pixel_sha256": "47a225bace9a0b1329b66a18b715daca9c0dc3a37c0a99527fa2e50611c549f5"
+    },
+    {
+      "file": "sentry_wrench_f01.png",
+      "bytes": 35463,
+      "url_kind": "template",
+      "encoded_sha256": "b769a7df7eb85035c2a63b054697028d181e09120093af9bd901a67fc92e7da5",
+      "pixel_sha256": "eec0f3f51a800d5985951507746647032383fb9ede35e7ef9b3efd1117f7ff42"
+    },
+    {
+      "file": "sentry_wrench_f02.png",
+      "bytes": 33204,
+      "url_kind": "template",
+      "encoded_sha256": "250e965dfd157c75f9fdfd3d5fcc778525f7bc7e871959f97f3945c56a1449bf",
+      "pixel_sha256": "bee070c30437982ddf42b2cf717103498d98d1d4a22f069faa17da4fa648328d"
+    },
+    {
+      "file": "sentry_wrench_f03.png",
+      "bytes": 35124,
+      "url_kind": "template",
+      "encoded_sha256": "eb148cd400826e64c2db8152c57353de8b7dd101a06e1001b5028da28d8bf71a",
+      "pixel_sha256": "055988d8d183324c9dd8262259b8279ef294e558eb9165ed3a12dd2ca719d79b"
+    },
+    {
+      "file": "sentry_wrench_f04.png",
+      "bytes": 34736,
+      "url_kind": "template",
+      "encoded_sha256": "f797d369f347c2ca8de51e8be5625b5661b42eab222f70021f13a5ceb3891c35",
+      "pixel_sha256": "9e8fba01bbe723590fb37fb89b034c3cbbd47b8178851667fe6b59513572c4dd"
+    },
+    {
+      "file": "sentry_wrench_f05.png",
+      "bytes": 35688,
+      "url_kind": "template",
+      "encoded_sha256": "bf8a6ef97d21d2d15b48402f6f94a7aa27c415a5a2963d42af4ce8ead350795b",
+      "pixel_sha256": "6927e8e65721896f077225a1dd64c622b1470ff39347b034d22994cf4c98f6cd"
+    },
+    {
+      "file": "sentry_wrench_f06.png",
+      "bytes": 32681,
+      "url_kind": "template",
+      "encoded_sha256": "19603fe9250c884c42d95ac03d67218b5295cc45952d70abfeda59440832169e",
+      "pixel_sha256": "fcdb8ed0c9bff3ad13bb7d977f777091837ba293fd3fdc44450402fc6beee32f"
+    },
+    {
+      "file": "sentry_wrench_f07.png",
+      "bytes": 35015,
+      "url_kind": "template",
+      "encoded_sha256": "fe7b06714040b8d9da8d8e4d99f0e346fb7c1b82ade1946dfb03ec6281435a0d",
+      "pixel_sha256": "ecda25d2f6c9a8cf296040d0e4de28fd98af35f1c4663f8a5f6698a07f6b2c52"
+    },
+    {
+      "file": "sentry_wrench_f08.png",
+      "bytes": 34257,
+      "url_kind": "template",
+      "encoded_sha256": "6e9b1749a73a61db92077caeb4c7612ccad9be3437fb236ee90e1b32b724a400",
+      "pixel_sha256": "42832fb1d8f6d47f720e9b325c1a59b2907926dcf6d8816f12772e4902e309ca"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3702",
+  "weapon_id": "engineer_sentry_wrench",
+  "title": "Часовой ключ",
+  "source_dir": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench",
+  "pixel_lab": {
+    "tool": "create_1_direction_object + animate_object",
+    "object_id": "dafb294e-a7be-4999-9126-f6ad4a7b326a",
+    "animation_group_id": "3ea90354-40a8-49a7-9606-662bc9e0f617",
+    "mode": "v3",
+    "size": 256,
+    "view": "top-down"
+  },
+  "generation_cost": {
+    "unit": "PixelLab generations",
+    "per_pack": "not exposed by the blocking CLI or get_object response",
+    "balance_snapshot_after_generation": {
+      "credits": "$0.00",
+      "generations_remaining": 4819,
+      "generations_used": 5181,
+      "generations_total": 10000
+    },
+    "note": "No paid operation, purchase, or credit top-up was performed; the live response did not expose a per-job cost."
+  },
+  "runtime": {
+    "runtime_dir": "assets/sprites/effects/engineer/sentry_wrench",
+    "frame_prefix": "sentry_wrench_f",
+    "frame_order": [
+      "sentry_wrench_f00.png",
+      "sentry_wrench_f01.png",
+      "sentry_wrench_f02.png",
+      "sentry_wrench_f03.png",
+      "sentry_wrench_f04.png",
+      "sentry_wrench_f05.png",
+      "sentry_wrench_f06.png",
+      "sentry_wrench_f07.png",
+      "sentry_wrench_f08.png"
+    ],
+    "spriteframes": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres",
+    "animation_name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0,
+    "class_palette_id": "class_palette.engineer.workshop_teal_copper",
+    "motion_contract": "hub rotation, cyan lens pulse, traveling teal arcs, copper sparks",
+    "source_runtime_policy": "runtime PNGs are byte-for-byte copies of the verified PixelLab source frames",
+    "godot_import_policy": "lossless CompressedTexture2D, mipmaps disabled, nearest filtering"
+  }
+}

@@ -1,0 +1,12 @@
+Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/assassin/assassin_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/druid/druid_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/robot/robot_ultimate_timeline_scene.gd (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+Combat primitive ratchet: scene res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn grew from 3 to 4 allowlisted primitives; new combat primitives are banned.
+Combat primitive ratchet: scene res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn grew from 3 to 4 allowlisted primitives; new combat primitives are banned.
+Combat primitive ratchet: script res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd grew from 2 to 5 allowlisted primitives; new combat primitives are banned.

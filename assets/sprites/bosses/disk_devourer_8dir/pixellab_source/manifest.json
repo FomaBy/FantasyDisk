@@ -1,0 +1,32 @@
+{
+  "character_id": "disk_devourer",
+  "pixel_lab_character_id": "b4c5d6bf-a14b-4114-b862-91c7340c4d3a",
+  "source": "PixelLab MCP (create_character v3 + animate_character v3 custom)",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 255,
+  "bottom_padding": 48,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states_requested": [
+    "idle",
+    "move",
+    "attack",
+    "hit",
+    "death",
+    "skill_vampiric_bite",
+    "skill_rift_zone"
+  ],
+  "incomplete": {},
+  "auth": "PIXELLAB_BEARER_TOKEN / AUTH_HEADER (never committed)"
+}

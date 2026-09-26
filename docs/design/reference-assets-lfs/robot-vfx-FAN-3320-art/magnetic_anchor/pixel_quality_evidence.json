@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3863",
+  "class_id": "robot",
+  "weapon_id": "robot_magnetic_anchor",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "object_id": "8bcd4f97-b6a7-4c45-b1e9-d2d5c5d4cad7",
+  "animation_group_id": "600f080f-f2d7-4e42-a5bc-dcbcaf6a6ae5",
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_contact_sheet.png",
+    "silhouette": "clear and weapon-specific in every frame",
+    "movement": "core charge, coil convergence, expanding attraction rings, electrical arcs, implosion pulse and recoil",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection",
+    "opaque_background": "none; all four corners are transparent and edges are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f00.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f00.png",
+      "alpha_bbox_gt_8": [
+        50,
+        40,
+        206,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 10994,
+      "raw_pixel_sha256": "3d9ca4bc02f6ca7ce68adaa1d42eab314539ecfc0a0ae968c8d00ad366d70df3",
+      "source_pixel_sha256": "50e7036154b8942661e3f5f45da2a999374e20b637ed41fa9b600ec72b0e13a7",
+      "runtime_pixel_sha256": "50e7036154b8942661e3f5f45da2a999374e20b637ed41fa9b600ec72b0e13a7"
+    },
+    {
+      "index": 1,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f01.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f01.png",
+      "alpha_bbox_gt_8": [
+        50,
+        39,
+        206,
+        222
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 11354,
+      "raw_pixel_sha256": "936b3e0bc018ec9831bf2e8bb27bf29a0ea8bd3ff9ba1cd28055884a14bc59a6",
+      "source_pixel_sha256": "9462dae011c44a51d002302b76f2f651e0e767b3d7c8da46a7ec6ef55ed0f682",
+      "runtime_pixel_sha256": "9462dae011c44a51d002302b76f2f651e0e767b3d7c8da46a7ec6ef55ed0f682"
+    },
+    {
+      "index": 2,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f02.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f02.png",
+      "alpha_bbox_gt_8": [
+        48,
+        38,
+        205,
+        221
+      ],
+      "minimum_gutter_px": 35,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14437,
+      "raw_pixel_sha256": "66aaba99ec091b3d722a95478764db0c7663e094a3eb9c5e0b2e6514800c4e04",
+      "source_pixel_sha256": "00839c260be3eb81797203a1ffc60e1470ae6d8adc59852d81e7007b4efae1e0",
+      "runtime_pixel_sha256": "00839c260be3eb81797203a1ffc60e1470ae6d8adc59852d81e7007b4efae1e0"
+    },
+    {
+      "index": 3,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f03.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f03.png",
+      "alpha_bbox_gt_8": [
+        50,
+        38,
+        206,
+        222
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 13810,
+      "raw_pixel_sha256": "2288408e86b28575e8a20db79c669a4397cb1ca2e819343a568ed8bd552f7da9",
+      "source_pixel_sha256": "3dd0fed968886275fa5c540d78957491f40c53f249a0fa91488aca78be29ed9f",
+      "runtime_pixel_sha256": "3dd0fed968886275fa5c540d78957491f40c53f249a0fa91488aca78be29ed9f"
+    },
+    {
+      "index": 4,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f04.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f04.png",
+      "alpha_bbox_gt_8": [
+        51,
+        39,
+        208,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 13169,
+      "raw_pixel_sha256": "f8ac3987d31627b7ef8823445afdb9bfbb4994ce93a7d32f57a24c666ec0cf94",
+      "source_pixel_sha256": "eee6770a759cb341d85f61832d8194ac03d6751032dba4ba394804f3e19d6267",
+      "runtime_pixel_sha256": "eee6770a759cb341d85f61832d8194ac03d6751032dba4ba394804f3e19d6267"
+    },
+    {
+      "index": 5,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f05.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f05.png",
+      "alpha_bbox_gt_8": [
+        45,
+        40,
+        211,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12379,
+      "raw_pixel_sha256": "8bad4db81ac17a40f9a4b505844901474f814a7878189073a1c18f4add3502e0",
+      "source_pixel_sha256": "b3a1ed2cb0a92bd2b7e0eae46e34fbfbe2719577ab043f9964d1b487d70ee8ae",
+      "runtime_pixel_sha256": "b3a1ed2cb0a92bd2b7e0eae46e34fbfbe2719577ab043f9964d1b487d70ee8ae"
+    },
+    {
+      "index": 6,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f06.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f06.png",
+      "alpha_bbox_gt_8": [
+        47,
+        34,
+        209,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12737,
+      "raw_pixel_sha256": "787d469c65b3d558f7fb8283b4f9b4c75813cc438550c83ee50e2bd560e5ec6d",
+      "source_pixel_sha256": "d47b6c3d29e2ff5b176bcd71495004b75181b353ffe51464c92a1e10bb63e028",
+      "runtime_pixel_sha256": "d47b6c3d29e2ff5b176bcd71495004b75181b353ffe51464c92a1e10bb63e028"
+    },
+    {
+      "index": 7,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f07.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f07.png",
+      "alpha_bbox_gt_8": [
+        40,
+        32,
+        216,
+        222
+      ],
+      "minimum_gutter_px": 32,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12361,
+      "raw_pixel_sha256": "b1ed43c09e049790d9de8b8c9c64ee10f6dbbc88a9b496212f7cb75064a9bd64",
+      "source_pixel_sha256": "a8c228db74e795aee8f7a488a6c802f138860a9ed392c676f102afe21c1b265c",
+      "runtime_pixel_sha256": "a8c228db74e795aee8f7a488a6c802f138860a9ed392c676f102afe21c1b265c"
+    },
+    {
+      "index": 8,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/raw/magnetic_anchor_f08.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/magnetic_anchor/magnetic_anchor_f08.png",
+      "alpha_bbox_gt_8": [
+        35,
+        38,
+        221,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12566,
+      "raw_pixel_sha256": "7948a0b0e87080cf9074241ebbeb0e4b00eed4d91c48846aecd0d8d4bd672e47",
+      "source_pixel_sha256": "7ecafe8c7f7d3c8930a7a791f6e772606b532d76c7db062c7e0d3678e5ed373f",
+      "runtime_pixel_sha256": "7ecafe8c7f7d3c8930a7a791f6e772606b532d76c7db062c7e0d3678e5ed373f"
+    }
+  ]
+}

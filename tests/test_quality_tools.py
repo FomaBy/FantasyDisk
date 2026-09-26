@@ -8,6 +8,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -18,6 +19,7 @@ from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "quality.yml"
+LIFECYCLE_TEST = ROOT / "tests" / "ultimates" / "tracked_tween_natural_completion_test.gd"
 
 
 def _pinned_engine_build_id() -> str:
@@ -116,6 +118,83 @@ class QualityGateTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.quality = _load_module("quality_gate_tested", "tools/quality_gate.py")
 
+    def test_lifecycle_measurement_starts_after_activation_admission(self) -> None:
+        source = LIFECYCLE_TEST.read_text(encoding="utf-8")
+        body = _gdscript_func_body(source, "_start_case")
+        admitted = body.index('player.call("activate_ultimate")')
+        measured = body.index('state["started_ms"] = Time.get_ticks_msec()')
+        self.assertGreater(measured, admitted)
+
+    def test_lifecycle_precompletion_checkpoint_uses_tween_progress(self) -> None:
+        source = LIFECYCLE_TEST.read_text(encoding="utf-8")
+        self.assertIn("get_total_elapsed_time()", source)
+        self.assertNotIn("now >= pre_at", source)
+
+    def test_lifecycle_sampling_repair_stays_fail_closed(self) -> None:
+        """FAN-3279: a starved observation frame must not read as a lifecycle
+        defect, and the two bounds that still catch a real one must stay."""
+        source = LIFECYCLE_TEST.read_text(encoding="utf-8")
+        # Lateness is judged on the last poll that still saw the cast live. The
+        # first poll that finds it gone measures the observer, not the cast, so
+        # that timestamp must not come back as a deadline.
+        cleanup = _gdscript_func_body(source, "_assert_natural_cleanup")
+        self.assertIn("last_active_ms", cleanup)
+        self.assertNotIn("finished_ms", source)
+        # Sampling resolution is read off the cast's own tween clock: a starved
+        # frame reaches the tween one frame after the observer logged it, so
+        # `wall_delta` measures the wrong thing here.
+        observer = _gdscript_func_body(source, "_wait_for_natural_completion")
+        step = re.search(
+            r"_observation_step = maxf\(\s*_observation_step,([^)]*)\)", observer
+        )
+        assert step is not None, "observer must measure its own sampling step"
+        self.assertIn("tween_elapsed", step.group(1))
+        self.assertNotIn("wall_delta", step.group(1))
+        # Both directions stay deterministically falsifiable without a clock.
+        falsifications = _gdscript_func_body(source, "_assert_sampling_falsifications")
+        for healthy in ("observed", "coarse", "lagged"):
+            self.assertRegex(falsifications, rf'(?<!not )_\w+_errors\("falsification/{healthy}"')
+        for defect in ("early", "unobserved", "overrun"):
+            self.assertRegex(falsifications, rf'not _\w+_errors\("falsification/{defect}"')
+
+    def test_known_import_sidecars_are_removed_without_broad_cleanup(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-sidecars-") as scratch:
+            root = Path(scratch)
+            for name in self.quality.GENERATED_IMPORT_SIDECARS:
+                (root / name).write_text("generated\n", encoding="utf-8")
+            (root / "unrelated.png.import").write_text("keep\n", encoding="utf-8")
+            (root / "nested").mkdir()
+            (root / "nested" / "asset.png.import").write_text("keep\n", encoding="utf-8")
+            with mock.patch.object(self.quality, "ROOT", root), mock.patch.object(
+                self.quality.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess([], 1),
+            ):
+                removed = self.quality._cleanup_generated_import_sidecars()
+            self.assertEqual(set(removed), set(self.quality.GENERATED_IMPORT_SIDECARS))
+            for name in self.quality.GENERATED_IMPORT_SIDECARS:
+                self.assertFalse((root / name).exists())
+            self.assertTrue((root / "unrelated.png.import").exists())
+            self.assertTrue((root / "nested" / "asset.png.import").exists())
+
+    def test_known_tracked_import_sidecars_are_never_removed(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="quality-sidecars-") as scratch:
+            root = Path(scratch)
+            sidecar = root / self.quality.GENERATED_IMPORT_SIDECARS[0]
+            sidecar.write_text("tracked\n", encoding="utf-8")
+            with mock.patch.object(self.quality, "ROOT", root), mock.patch.object(
+                self.quality.subprocess,
+                "run",
+                return_value=subprocess.CompletedProcess([], 0),
+            ):
+                removed = self.quality._cleanup_generated_import_sidecars()
+            self.assertEqual(removed, [])
+            self.assertTrue(sidecar.exists())
+
+    def test_quality_gate_runs_known_import_sidecar_cleanup_before_status_reads(self) -> None:
+        source = (ROOT / "tools" / "quality_gate.py").read_text(encoding="utf-8")
+        self.assertGreaterEqual(source.count("_cleanup_generated_import_sidecars()"), 2)
+
     def _captured_shell_exclusive_flag(self, shell: str, command: str) -> str:
         """Run one shell call with a fake Godot launcher and capture its env."""
         with tempfile.TemporaryDirectory(prefix="quality-shell-gate-") as scratch:
@@ -180,6 +259,294 @@ class QualityGateTests(unittest.TestCase):
             {"flat_test.gd", "registry_contract_test.gd", "registry_validator_test.gd"},
         )
         self.assertEqual(discovered, selected)
+
+    def test_visual_capture_utility_is_not_a_godot_suite(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/visual_regression/capture.gd": "extends SceneTree\n",
+                "tests/visual_regression/real_visual_test.gd": "extends SceneTree\n",
+            })
+            discovered = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.discover_godot_tests()
+            }
+        self.assertEqual(discovered, {"visual_regression/real_visual_test.gd"})
+
+    def test_certification_capture_evidence_includes_nested_manifests(self) -> None:
+        paths = set(self.quality.manifest_declared_lfs_evidence_paths())
+        biologist_paths = {
+            path for path in paths
+            if path.startswith(
+                "docs/design/reference-assets-lfs/ultimate-certification/biologist/"
+            )
+        }
+        berserk_paths = {
+            path for path in paths
+            if path.startswith(
+                "docs/design/reference-assets-lfs/ultimate-certification/berserk/"
+            )
+        }
+        chemist_paths = {
+            path for path in paths
+            if path.startswith(
+                "docs/design/reference-assets-lfs/ultimate-certification/chemist/"
+            )
+        }
+        self.assertEqual(len(biologist_paths), 48)
+        self.assertEqual(len(berserk_paths), 4)
+        # FAN-3954: Chemist capture manifests use Godot's res:// form.  The
+        # selector must expose canonical repository paths for CI hydration.
+        self.assertEqual(len(chemist_paths), 12)
+        self.assertTrue(all(not path.startswith("res:") for path in chemist_paths))
+
+    def test_class_certification_link_hydrates_every_certification_frame(self) -> None:
+        # FAN-3941: Ranger, Thief and Soldier link their capture manifests as
+        # `evidence.certification.capture_manifest`.  CI hydrated only what the
+        # lister returned, so the Ranger/Thief certification gates failed on
+        # unsmudged LFS pointers while Soldier (also linked through
+        # live_capture) was complete.  Every declared frame must be listed.
+        paths = set(self.quality.manifest_declared_lfs_evidence_paths())
+        expected = {"ranger": 84, "thief": 84, "soldier": 132}
+        for class_id, count in expected.items():
+            with self.subTest(class_id=class_id):
+                manifest = json.loads(
+                    (self.quality.ROOT / "docs/design/references/weapon_ultimates" / class_id
+                     / "certification_capture_manifest.json").read_text(encoding="utf-8")
+                )
+                declared = {
+                    record["path"].removeprefix("res://") for record in manifest["captures"]
+                }
+                self.assertEqual(len(declared), count)
+                self.assertTrue(declared <= paths, sorted(declared - paths)[:3])
+
+    def test_class_certification_link_is_read_from_a_synthetic_manifest(self) -> None:
+        frame = (
+            "docs/design/reference-assets-lfs/ultimate-certification/test/"
+            "weapon__normal__active__648p.png"
+        )
+        root_manifest = {
+            "evidence": {
+                "certification": {
+                    "capture_manifest": "docs/design/references/weapon_ultimates/test/certification_capture_manifest.json",
+                    "capture_script": "tests/ultimates/presentation/test_certification_live_capture.gd",
+                    "focused_test": "tests/ultimates/presentation/test_certification_capture_test.gd",
+                }
+            }
+        }
+        capture_manifest = {
+            "source": {"commit_sha": "a" * 40},
+            "captures": [{"path": f"res://{frame}"}],
+        }
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "docs/design/references/weapon_ultimates/test/manifest.json": json.dumps(root_manifest),
+                "docs/design/references/weapon_ultimates/test/certification_capture_manifest.json": json.dumps(capture_manifest),
+                "tests/ultimates/presentation/test_certification_live_capture.gd": "extends SceneTree\n",
+                "tests/ultimates/presentation/test_certification_capture_test.gd": "extends SceneTree\n",
+            })
+            paths = self.quality.manifest_declared_lfs_evidence_paths()
+            pairs = self.quality.certification_capture_pairs()
+            commits = self.quality.manifest_declared_capture_source_commits()
+        self.assertEqual(paths, [frame])
+        self.assertEqual(pairs, {
+            "tests/ultimates/presentation/test_certification_live_capture.gd":
+                "tests/ultimates/presentation/test_certification_capture_test.gd",
+        })
+        self.assertEqual(commits, ["a" * 40])
+
+    def test_manifest_capture_sources_list_every_recorded_source_commit(self) -> None:
+        # The shallow candidate checkout deepens its history for exactly these
+        # commits; the Soldier gate failed in CI because its recorded source
+        # was not an ancestor of the depth-2 checkout.
+        commits = self.quality.manifest_declared_capture_source_commits()
+        for class_id in ("ranger", "thief", "soldier"):
+            manifest = json.loads(
+                (self.quality.ROOT / "docs/design/references/weapon_ultimates" / class_id
+                 / "certification_capture_manifest.json").read_text(encoding="utf-8")
+            )
+            with self.subTest(class_id=class_id):
+                self.assertIn(manifest["source"]["commit_sha"], commits)
+        self.assertTrue(all(len(commit) == 40 for commit in commits))
+        self.assertEqual(commits, sorted(set(commits)))
+
+    def test_manifest_capture_sources_fail_closed_on_a_malformed_source(self) -> None:
+        root_manifest = {
+            "evidence": {
+                "certification": {
+                    "capture_manifest": "docs/design/references/weapon_ultimates/test/capture.json",
+                    "capture_script": "tests/ultimates/presentation/test_certification_live_capture.gd",
+                    "focused_test": "tests/ultimates/presentation/test_certification_capture_test.gd",
+                }
+            }
+        }
+        for source in ({"commit_sha": "739dab121"}, {"commit_sha": 42}, {"tree_sha": "b" * 40}, "739dab121"):
+            capture_manifest = {"source": source, "captures": [{"path": "docs/design/reference-assets-lfs/x/y.png"}]}
+            with self.subTest(source=source), contextlib.ExitStack() as stack:
+                self._use_synthetic_tree(stack, {
+                    "docs/design/references/weapon_ultimates/test/manifest.json": json.dumps(root_manifest),
+                    "docs/design/references/weapon_ultimates/test/capture.json": json.dumps(capture_manifest),
+                })
+                with self.assertRaises(RuntimeError):
+                    self.quality.manifest_declared_capture_source_commits()
+
+    def test_candidate_workflow_deepens_history_for_manifest_capture_sources(self) -> None:
+        source = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            "python3 tools/quality_gate.py --list-manifest-capture-sources", source
+        )
+        self.assertIn('git merge-base --is-ancestor "$commit" "$head_sha"', source)
+
+    def test_certification_capture_evidence_canonicalizes_godot_resource_paths(self) -> None:
+        chemist_viewport = (
+            "docs/design/reference-assets-lfs/ultimate-certification/chemist/"
+            "chemist_certification_648p_release.png"
+        )
+        chemist_active_viewport = (
+            "docs/design/reference-assets-lfs/ultimate-certification/chemist/"
+            "chemist_certification_648p.png"
+        )
+        root_manifest = {
+            "evidence": {
+                "certification_capture": {
+                    "manifest": "docs/design/references/weapon_ultimates/test/capture.json"
+                }
+            }
+        }
+        capture_manifest = {
+            "viewports": [
+                {"path": f"res://{chemist_viewport}"},
+                {"path": chemist_viewport},
+                {"path": f"res://{chemist_active_viewport}"},
+            ]
+        }
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "docs/design/references/weapon_ultimates/test/manifest.json": json.dumps(root_manifest),
+                "docs/design/references/weapon_ultimates/test/capture.json": json.dumps(capture_manifest),
+            })
+            paths = self.quality.manifest_declared_lfs_evidence_paths()
+        self.assertEqual(paths, [chemist_active_viewport, chemist_viewport])
+
+    def test_lfs_evidence_path_rejects_unsafe_or_unsupported_paths(self) -> None:
+        unsafe_paths = (
+            ("", "non-empty repository-relative path"),
+            (None, "non-empty repository-relative path"),
+            ("/docs/design/reference-assets-lfs/escape.png", "stay within the repository"),
+            ("docs/design/reference-assets-lfs/../escape.png", "stay within the repository"),
+            ("docs\\design\\reference-assets-lfs\\escape.png", "stay within the repository"),
+            ("file:///docs/design/reference-assets-lfs/escape.png", "unsupported URI scheme"),
+            ("user://docs/design/reference-assets-lfs/escape.png", "unsupported URI scheme"),
+            ("res:/docs/design/reference-assets-lfs/escape.png", "unsupported URI scheme"),
+            ("res:///docs/design/reference-assets-lfs/escape.png", "stay within the repository"),
+            ("res://../docs/design/reference-assets-lfs/escape.png", "stay within the repository"),
+            ("res://docs/design/references/not-lfs.png", "must be under"),
+        )
+        for raw_path, message in unsafe_paths:
+            with self.subTest(raw_path=raw_path):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    self.quality._lfs_evidence_path(raw_path, "capture.path")
+
+    def test_certification_capture_evidence_rejects_invalid_nested_artifact(self) -> None:
+        root_manifest = {
+            "evidence": {
+                "certification_capture": {
+                    "manifest": "docs/design/references/weapon_ultimates/test/capture.json",
+                    "runner": "tests/ultimates/presentation/test_live_capture.gd",
+                    "focused_test": "tests/ultimates/presentation/test_capture_test.gd",
+                }
+            }
+        }
+        capture_manifest = {"captures": [{"path": "docs/design/references/not-lfs.png"}]}
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "docs/design/references/weapon_ultimates/test/manifest.json": json.dumps(root_manifest),
+                "docs/design/references/weapon_ultimates/test/capture.json": json.dumps(capture_manifest),
+            })
+            with self.assertRaisesRegex(RuntimeError, "must be under"):
+                self.quality.manifest_declared_lfs_evidence_paths()
+
+    def test_certification_live_capture_routes_to_headless_verification_suite(self) -> None:
+        pairs = self.quality.certification_capture_pairs()
+        expected = {
+            "tests/ultimates/presentation/biologist_certification_live_capture.gd":
+                "tests/ultimates/presentation/biologist_certification_capture_test.gd",
+            "tests/ultimates/presentation/berserk_certification_live_capture.gd":
+                "tests/ultimates/presentation/berserk_certification_capture_test.gd",
+            "tests/ultimates/presentation/chemist_certification_live_capture.gd":
+                "tests/ultimates/presentation/chemist_certification_capture_test.gd",
+        }
+        self.assertEqual({path: pairs[path] for path in expected}, expected)
+
+        discovered = {
+            path.relative_to(self.quality.ROOT).as_posix()
+            for path in self.quality.discover_godot_tests()
+        }
+        for runner, focused_test in expected.items():
+            with self.subTest(runner=runner):
+                self.assertNotIn(runner, discovered)
+                self.assertIn(focused_test, discovered)
+            for changed_path in (runner, f"{runner}.uid"):
+                with self.subTest(changed_path=changed_path), mock.patch.object(
+                    self.quality, "_git_changed_paths", return_value={changed_path}
+                ):
+                    selected = {
+                        path.relative_to(self.quality.ROOT).as_posix()
+                        for path in self.quality.select_godot_tests(
+                            "changed", [], "base", False
+                        )
+                    }
+                self.assertIn(focused_test, selected)
+                self.assertNotIn(runner, selected)
+
+    def test_candidate_workflow_uses_the_fail_closed_lfs_evidence_list(self) -> None:
+        source = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            "python3 tools/quality_gate.py --list-manifest-lfs-evidence", source
+        )
+
+    def test_candidate_workflow_keeps_all_contact_sheets_validated(self) -> None:
+        source = WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(
+            'for raw_path in manifest.get("evidence", {}).get("contact_sheets", []):',
+            source,
+        )
+        self.assertIn("missing manifest contact sheet", source)
+
+    def test_runtime_smoke_helper_is_not_an_executable_suite(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/support/runtime_smoke_helpers.gd": "extends SceneTree\n",
+                "tests/runtime_smoke_test.gd": (
+                    'extends "res://tests/support/runtime_smoke_helpers.gd"\n'
+                ),
+                "tests/runtime_smoke_ui_test.gd": (
+                    'extends "res://tests/runtime_smoke_test.gd"\n'
+                ),
+                "tests/nested/deeper_smoke_test.gd": (
+                    'extends "res://tests/runtime_smoke_ui_test.gd"\n'
+                ),
+                "tests/support/real_support_test.gd": "extends SceneTree\n",
+                "tests/unrelated_test.gd": "extends SceneTree\n",
+            })
+            discovered = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.discover_godot_tests()
+            }
+            full = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.select_godot_tests(
+                    "full", [], "origin/dev", False
+                )
+            }
+        expected = {
+            "runtime_smoke_test.gd",
+            "runtime_smoke_ui_test.gd",
+            "nested/deeper_smoke_test.gd",
+            "support/real_support_test.gd",
+            "unrelated_test.gd",
+        }
+        self.assertEqual(discovered, expected)
+        self.assertEqual(full, expected)
 
     def test_nested_suite_runs_from_its_own_resource_path(self) -> None:
         nested = ROOT / "tests" / "ultimates" / "registry_contract_test.gd"
@@ -272,7 +639,7 @@ class QualityGateTests(unittest.TestCase):
 
     def test_only_timing_sensitive_suites_request_machine_exclusive(self) -> None:
         expected_exclusive = {
-            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
             "res://tests/live_balance_simulation_test.gd",
             "res://tests/pool_dot_runaway_gate.gd",
         }
@@ -323,7 +690,7 @@ class QualityGateTests(unittest.TestCase):
         self.assertEqual(len(timing_calls), 4)
         required_scripts = {
             "res://tests/live_balance_simulation_test.gd",
-            "res://tests/berserk_dps_runaway_gate.gd",
+            "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
             "res://tests/pool_dot_runaway_gate.gd",
             "res://tools/character_balance_csv.gd",
         }
@@ -417,6 +784,44 @@ class QualityGateTests(unittest.TestCase):
             with self.assertRaises(RuntimeError) as raised:
                 self.quality.select_godot_tests("full", [], "origin/dev", False)
         self.assertIn("registry_contract_test", str(raised.exception))
+
+    def test_real_assassin_and_berserk_suites_are_unique_and_selected_once(self) -> None:
+        expected = {
+            ROOT / "tests" / "ultimates" / "assassin_balance_test.gd",
+            ROOT / "tests" / "ultimates" / "mechanics" / "assassin_mechanics_balance_test.gd",
+            ROOT / "tests" / "ultimates" / "berserk_balance_test.gd",
+            ROOT / "tests" / "ultimates" / "mechanics" / "berserk_mechanics_balance_test.gd",
+        }
+        discovered = self.quality.discover_godot_tests()
+        self.assertTrue(expected <= set(discovered))
+        self.assertEqual(len(discovered), len({path.stem for path in discovered}))
+
+        for changed_path, expected_path in (
+            (
+                "tests/ultimates/mechanics/assassin_mechanics_balance_test.gd",
+                ROOT / "tests" / "ultimates" / "mechanics" / "assassin_mechanics_balance_test.gd",
+            ),
+            (
+                "tests/ultimates/mechanics/berserk_mechanics_balance_test.gd",
+                ROOT / "tests" / "ultimates" / "mechanics" / "berserk_mechanics_balance_test.gd",
+            ),
+        ):
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                changed_selected = self.quality.select_godot_tests(
+                    "changed", [], "base", False
+                )
+            self.assertEqual(
+                [path for path in changed_selected if path in expected],
+                [expected_path],
+            )
+            self.assertEqual(
+                self.quality.select_godot_tests(
+                    "full", [expected_path.stem], "origin/dev", False
+                ),
+                [expected_path],
+            )
 
     def test_python_discovery_covers_nested_directories(self) -> None:
         with contextlib.ExitStack() as stack:
@@ -664,6 +1069,84 @@ class QualityGateTests(unittest.TestCase):
         self.assertIn("enemy_separation_behavior_test", names)
         self.assertIn(self.quality.RUNTIME_SMOKE, names)
 
+    def test_runtime_smoke_helper_change_selects_transitive_suites(self) -> None:
+        with contextlib.ExitStack() as stack:
+            self._use_synthetic_tree(stack, {
+                "tests/support/runtime_smoke_helpers.gd": "extends SceneTree\n",
+                "tests/runtime_smoke_test.gd": (
+                    'extends "res://tests/support/runtime_smoke_helpers.gd"\n'
+                ),
+                "tests/runtime_smoke_ui_test.gd": (
+                    'extends "res://tests/runtime_smoke_test.gd"\n'
+                ),
+                "tests/nested/deeper_smoke_test.gd": (
+                    'extends "res://tests/runtime_smoke_ui_test.gd"\n'
+                ),
+                "tests/support/real_support_test.gd": "extends SceneTree\n",
+                "tests/unrelated_test.gd": "extends SceneTree\n",
+            })
+            stack.enter_context(mock.patch.object(
+                self.quality,
+                "_git_changed_paths",
+                return_value={"tests/support/runtime_smoke_helpers.gd"},
+            ))
+            selected = {
+                path.relative_to(self.quality.TEST_DIR).as_posix()
+                for path in self.quality.select_godot_tests(
+                    "changed", [], "origin/dev", False
+                )
+            }
+        self.assertEqual(selected, {
+            "runtime_smoke_test.gd",
+            "runtime_smoke_ui_test.gd",
+            "nested/deeper_smoke_test.gd",
+        })
+
+    def _gate_module(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "quality_gate_under_test", Path("tools/quality_gate.py")
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_live_capture_certification_manifest_declaration_is_read(self) -> None:
+        # FAN-3934 CI evidence-input recovery: the Engineer class manifest
+        # publishes live_capture.certification_manifest; a key the lister does
+        # not read is evidence CI never hydrates.
+        gate = self._gate_module()
+        evidence = {
+            "live_capture": {
+                "certification_manifest": "docs/design/references/weapon_ultimates/engineer/certification_capture_manifest.json",
+                "capture_script": "res://tests/ultimates/presentation/engineer_certification_capture_test.gd",
+            }
+        }
+        declarations = gate._certification_capture_declarations(evidence, "engineer")
+        self.assertTrue(any(d[2] == "certification_manifest" for d in declarations))
+        self.assertTrue(any(d[2] == "capture_manifest" for d in gate._certification_capture_declarations(
+            {"live_capture": {"capture_manifest": "docs/x.json"}}, "z"
+        )))
+
+    def test_certification_artifact_paths_reads_engineer_samples_shape(self) -> None:
+        gate = self._gate_module()
+        payload = json.loads(Path(
+            "docs/design/references/weapon_ultimates/engineer/certification_capture_manifest.json"
+        ).read_text(encoding="utf-8"))
+        paths = gate._certification_artifact_paths(payload, "engineer.certification")
+        self.assertEqual(len(paths), 48)
+        self.assertTrue(all(p.startswith("docs/") for p in paths))
+
+    def test_certification_artifact_paths_rejects_unsafe_and_empty(self) -> None:
+        gate = self._gate_module()
+        with self.assertRaises(RuntimeError):
+            gate._certification_artifact_paths({"samples": [{"path": "../etc/passwd"}]}, "neg")
+        with self.assertRaises(RuntimeError):
+            gate._certification_artifact_paths({"viewports": [{"width": 10}]}, "neg2")
+        with self.assertRaises(RuntimeError):
+            gate._certification_artifact_paths({"samples": "not-a-list"}, "neg3")
+
     def test_changed_profile_selects_typography_inventory_suite_for_scanned_paths(self) -> None:
         cases = {
             "scripts/ui/ultimate_hud/ultimate_hud_widget.gd": True,
@@ -705,6 +1188,45 @@ class QualityGateTests(unittest.TestCase):
                     for path in self.quality.select_godot_tests("changed", [], "base", False)
                 }
             self.assertLessEqual(expected, names)
+
+    SHARED_PRESENTATION_TRIGGER_PATHS = (
+        "scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd",
+        "scripts/ultimates/presentation/ultimate_visual_direction_contract.gd",
+        "scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd",
+    )
+    REQUIRED_SHARED_PRESENTATION_SUITES = frozenset({
+        "fan1541_activation_integration_test",
+        "ultimate_player_host_time_scale_test",
+        "presentation_contract_test",
+        "presentation_contract_validator_test",
+        "presentation_failure_contract_test",
+        "ultimate_player_host_presentation_constructor_test",
+        "beat_routing_gate_test",
+        "doctor_ultimate_timelines",
+        "guitarist_ultimate_timelines",
+        "robot_ultimate_presentation_test",
+        "sniper_runtime_presentation_test",
+        "visual_direction_contract_test",
+        "weapon_ultimate_presentation_budget_test",
+    })
+
+    def test_shared_presentation_runtime_paths_select_every_consumer_suite(self) -> None:
+        directory_suites = {
+            path.stem
+            for path in self.quality.discover_godot_tests()
+            if self.quality.PRESENTATION_TEST_DIR in path.parents
+        }
+        self.assertTrue(directory_suites)
+        for changed_path in self.SHARED_PRESENTATION_TRIGGER_PATHS:
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertLessEqual(self.REQUIRED_SHARED_PRESENTATION_SUITES, names)
+            self.assertLessEqual(directory_suites, names)
 
     def test_offensive_cadence_and_balance_paths_select_focused_regressions(self) -> None:
         cases = {
@@ -797,6 +1319,50 @@ class QualityGateTests(unittest.TestCase):
             self.assertEqual(selected_names, sorted(expected))
             self.assertEqual(len(selected_names), len(set(selected_names)))
 
+    def test_defensive_fixture_paths_resolve_to_files(self) -> None:
+        # FAN-3818: consumability-гейт читает DEFENSIVE_FIXTURES сырым FileAccess
+        # по литеральному пути, а сам гейт не входит в changed-профиль — перенос
+        # фикстуры (FAN-3814 Фаза 2) был виден только full-профилю. Этот контракт
+        # исполняется python-unit'ом в КАЖДОМ профиле и воспроизводимо падает на
+        # первом же устаревшем пути с его именем.
+        paths = self.quality.defensive_fixture_paths()
+        self.assertLessEqual(
+            {
+                "tests/balance/knight/knight_kit_test.gd",
+                "tests/balance/priest/priest_kit_test.gd",
+                "tests/balance/priest/priest_sustain_softcap_test.gd",
+                "tests/balance/robot/robot_kit_test.gd",
+                "tests/balance/thief/thief_kit_test.gd",
+            },
+            paths,
+        )
+        missing = sorted(path for path in paths if not (ROOT / path).is_file())
+        self.assertEqual(missing, [])
+
+    def test_defensive_fixture_changes_select_consumability_gate(self) -> None:
+        # FAN-3818: касание любого пути из DEFENSIVE_FIXTURES (в т.ч. удаление
+        # старого пути при переносе — он остаётся в списке и попадает в diff)
+        # обязано выбирать consumability-гейт в changed-профиле.
+        fixture_paths = sorted(self.quality.defensive_fixture_paths())
+        self.assertTrue(fixture_paths)
+        for changed_path in fixture_paths:
+            with self.subTest(changed_path=changed_path), mock.patch.object(
+                self.quality, "_git_changed_paths", return_value={changed_path}
+            ):
+                names = {
+                    path.stem
+                    for path in self.quality.select_godot_tests("changed", [], "base", False)
+                }
+            self.assertIn(self.quality.CONSUMABILITY_GATE_TEST, names)
+        with mock.patch.object(
+            self.quality, "_git_changed_paths", return_value={"docs/process/qa_protocol.md"}
+        ):
+            names = {
+                path.stem
+                for path in self.quality.select_godot_tests("changed", [], "base", False)
+            }
+        self.assertNotIn(self.quality.CONSUMABILITY_GATE_TEST, names)
+
     def test_class_package_paths_select_player_integration_regression(self) -> None:
         # A ready-package rollout under the class data/executor trees changes
         # Player-visible routing, so the certifying changed profile must select
@@ -820,6 +1386,18 @@ class QualityGateTests(unittest.TestCase):
                 }
             self.assertLessEqual(expected, names)
             self.assertIn("tracked_tween_natural_completion_test", names)
+
+    def test_coin_pouch_executor_selects_thief_contract_suites(self) -> None:
+        expected = {"thief_live_test", "thief_balance_test"}
+        with mock.patch.object(
+            self.quality, "_git_changed_paths",
+            return_value={"scripts/ultimates/classes/thief/thief_coin_pouch.gd"},
+        ):
+            names = {
+                path.stem
+                for path in self.quality.select_godot_tests("changed", [], "base", False)
+            }
+        self.assertLessEqual(expected, names)
 
     def test_full_filter_and_skip_umbrella(self) -> None:
         selected = self.quality.select_godot_tests(
@@ -986,6 +1564,69 @@ class QualityGateTests(unittest.TestCase):
         self.assertFalse(descendant_survived)
         self.assertFalse(descendant_alive)
         self.assertFalse(reader_alive)
+
+    @unittest.skipIf(os.name == "nt", "POSIX session semantics; Windows uses a job object")
+    def test_watchdog_kills_descendant_that_left_the_process_group(self) -> None:
+        """FAN-3831: a nested gate call starts its own session, so killpg misses it.
+
+        The live-engine probes above run tools/godot_gate.py through a nested
+        ``_run_captured``, which means the real Godot process is neither in the
+        watchdog's process group nor reachable from it.  Before the descendant
+        sweep, killpg left that engine running, it kept the inherited stdout
+        open, and the capture reader blocked for as long as the orphan lived —
+        the certifying run then looked hung instead of failing closed.
+        """
+        with tempfile.TemporaryDirectory(prefix="quality-session-orphan-") as scratch:
+            marker = Path(scratch) / "orphan-survived"
+            env = os.environ.copy()
+            env["QUALITY_ORPHAN_MARKER"] = str(marker)
+            env["QUALITY_ORPHAN_CODE"] = (
+                "import os,time; time.sleep(20.0); "
+                "open(os.environ['QUALITY_ORPHAN_MARKER'], 'w').write('alive')"
+            )
+            parent = (
+                "import os,subprocess,sys,time; "
+                "child=subprocess.Popen([sys.executable, '-c', "
+                "os.environ['QUALITY_ORPHAN_CODE']], start_new_session=True); "
+                "print(f'parent-done child={child.pid}', flush=True); "
+                "time.sleep(20.0)"
+            )
+            started = time.monotonic()
+            code, output, timed_out = self.quality._run_captured(
+                [sys.executable, "-u", "-c", parent],
+                env,
+                20.0,
+                idle_timeout=1.0,
+            )
+            elapsed = time.monotonic() - started
+            child_match = re.search(r"child=(\d+)", output)
+            self.assertIsNotNone(child_match, output)
+            child_pid = int(child_match.group(1))
+
+            def child_is_alive() -> bool:
+                try:
+                    os.kill(child_pid, 0)
+                except ProcessLookupError:
+                    return False
+                except PermissionError:
+                    return True
+                return True
+
+            deadline = time.monotonic() + 1.0
+            while child_is_alive() and time.monotonic() < deadline:
+                time.sleep(0.01)
+            descendant_alive = child_is_alive()
+            if descendant_alive:
+                os.kill(child_pid, signal.SIGKILL)
+            descendant_survived = marker.exists()
+
+        self.assertEqual(code, 124)
+        self.assertTrue(timed_out)
+        # The watchdog fired at 1s: returning near the descendant's own 20s
+        # lifetime is the hang this guards, not a slow machine.
+        self.assertLess(elapsed, 10.0, f"capture blocked on the orphan for {elapsed:.1f}s")
+        self.assertFalse(descendant_alive)
+        self.assertFalse(descendant_survived)
 
     def test_watchdog_accepts_parent_exit_after_descendant_closes_stdout(self) -> None:
         with tempfile.TemporaryDirectory(prefix="quality-descendant-control-") as scratch:
@@ -1209,21 +1850,65 @@ class QualityGateTests(unittest.TestCase):
         # The suite side of the same contract: the success exit re-asserts a
         # failure that `_fail()` already recorded, instead of letting the
         # deferred `quit(1)` be overwritten by the final `quit()`.
-        source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(encoding="utf-8")
-        fail_body = _gdscript_func_body(source, "_fail")
-        self.assertIn("_failure_reported = true", fail_body)
-        self.assertLess(
-            fail_body.index("_failure_reported = true"),
-            fail_body.index("push_error("),
-            "the failure flag must be set before anything that can itself fail",
+        umbrella_source = (ROOT / "tests" / "runtime_smoke_test.gd").read_text(
+            encoding="utf-8"
         )
-        finish_body = _gdscript_func_body(source, "_finish")
-        guard = finish_body.index("if _failure_reported:")
-        self.assertLess(guard, finish_body.index("print("))
-        self.assertLess(finish_body.index("quit(1)"), finish_body.index("print("))
-        # The success message may only leave the suite through that guard.
-        self.assertIn('_finish("Runtime smoke test passed.")', source)
-        self.assertNotIn('print("Runtime smoke test passed.")', source)
+        helper_source = (
+            ROOT / "tests" / "support" / "runtime_smoke_helpers.gd"
+        ).read_text(encoding="utf-8")
+
+        def assert_contract(umbrella: str, helper: str) -> None:
+            self.assertEqual(
+                umbrella.splitlines()[0],
+                'extends "res://tests/support/runtime_smoke_helpers.gd"',
+            )
+            self.assertNotRegex(umbrella, r"(?m)^func _(?:fail|finish)\(")
+
+            fail_body = _gdscript_func_body(helper, "_fail")
+            self.assertIn("_failure_reported = true", fail_body)
+            self.assertLess(
+                fail_body.index("_failure_reported = true"),
+                fail_body.index("push_error("),
+                "the failure flag must be set before anything that can itself fail",
+            )
+
+            finish_body = _gdscript_func_body(helper, "_finish")
+            ordered_exit = (
+                finish_body.index("if _failure_reported:"),
+                finish_body.index("quit(1)"),
+                finish_body.index("return"),
+                finish_body.index("print("),
+            )
+            self.assertEqual(ordered_exit, tuple(sorted(ordered_exit)))
+
+            # The success message may only leave the umbrella through the
+            # inherited guard; a local implementation could bypass it later.
+            self.assertIn('_finish("Runtime smoke test passed.")', umbrella)
+            self.assertNotIn('print("Runtime smoke test passed.")', umbrella)
+
+        assert_contract(umbrella_source, helper_source)
+
+        missing_sticky_state = helper_source.replace(
+            "\t_failure_reported = true\n", "", 1
+        )
+        success_before_failure = helper_source.replace(
+            "\tif _failure_reported:\n\t\tquit(1)\n\t\treturn\n\tprint(passed_message)",
+            "\tprint(passed_message)\n\tif _failure_reported:\n\t\tquit(1)\n\t\treturn",
+            1,
+        )
+        umbrella_bypass = umbrella_source.replace(
+            '_finish("Runtime smoke test passed.")',
+            'print("Runtime smoke test passed.")',
+            1,
+        )
+        for label, mutated_umbrella, mutated_helper in (
+            ("missing sticky failure state", umbrella_source, missing_sticky_state),
+            ("success before failure exit", umbrella_source, success_before_failure),
+            ("umbrella bypass", umbrella_bypass, helper_source),
+        ):
+            with self.subTest(rejects=label):
+                with self.assertRaises(AssertionError):
+                    assert_contract(mutated_umbrella, mutated_helper)
 
 
 class LiveEngineSignatureTests(unittest.TestCase):

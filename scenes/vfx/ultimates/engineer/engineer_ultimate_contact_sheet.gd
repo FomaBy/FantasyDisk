@@ -22,6 +22,11 @@ const CELL := Vector2i(232, 184)
 ## width) still fits inside one cell; cells are clipped as well, so a future
 ## formation cannot silently bleed into its neighbour and misread as motion.
 const VIEW_SCALE := 0.50
+## The FAN-2960 v2 sentry hexagon is arena-wide (520px), so its row renders at
+## its own scale to keep the whole formation inside one cell.
+const VIEW_SCALES := {
+	"engineer_sentry_wrench": 0.15,
+}
 
 const BACKGROUND := Color(0.055, 0.062, 0.078, 1.0)
 const CELL_TINT := Color(0.085, 0.098, 0.120, 1.0)
@@ -39,16 +44,22 @@ func _initialize() -> void:
 	var errors: Array[String] = []
 	for row in rows:
 		var weapon_id := str(Pack.WEAPON_IDS[row])
-		var texture: Texture2D = load(Pack.element_runtime_path(weapon_id))
-		if texture == null:
-			errors.append("missing runtime frame for %s" % weapon_id)
+		var frames: Array[Image] = []
+		for path in Pack.element_frame_paths(weapon_id):
+			var texture: Texture2D = load(path)
+			if texture == null:
+				errors.append("missing runtime frame %s" % path)
+				break
+			var frame := texture.get_image()
+			frame.convert(Image.FORMAT_RGBA8)
+			frames.append(frame)
+		if frames.size() != Pack.element_frame_paths(weapon_id).size():
 			continue
-		var element := texture.get_image()
-		element.convert(Image.FORMAT_RGBA8)
 		var pivot: Dictionary = Pack.weapon_config(weapon_id).get("pivot", {})
 		for column in columns:
 			var phase_name := PHASE_ORDER[column / SAMPLES_PER_PHASE]
 			var progress := float(column % SAMPLES_PER_PHASE) / float(maxi(SAMPLES_PER_PHASE - 1, 1))
+			var element := frames[mini(Pack.frame_index(weapon_id, phase_name, progress), frames.size() - 1)]
 			_draw_cell(sheet, Vector2i(column, row), column % SAMPLES_PER_PHASE == 0)
 			_draw_formation(sheet, Vector2i(column, row), element, pivot, weapon_id, phase_name, progress)
 
@@ -96,16 +107,17 @@ func _draw_formation(
 ) -> void:
 	var bounds := Rect2i(cell * CELL, CELL)
 	var center := Vector2(bounds.position) + Vector2(CELL) * 0.5
+	var view_scale := float(VIEW_SCALES.get(weapon_id, VIEW_SCALE))
 	for point in Pack.formation_points(weapon_id, phase_name, progress):
 		var alpha := float(point.get("alpha", 0.0))
-		var scale := float(point.get("scale", 0.0)) * VIEW_SCALE
+		var scale := float(point.get("scale", 0.0)) * view_scale
 		if alpha <= 0.01 or scale <= 0.01:
 			continue
 		var position: Vector2 = point.get("position", Vector2.ZERO)
 		_blit_element(
 			sheet,
 			element,
-			center + position * VIEW_SCALE,
+			center + position * view_scale,
 			scale,
 			alpha,
 			float(point.get("rotation", 0.0)),

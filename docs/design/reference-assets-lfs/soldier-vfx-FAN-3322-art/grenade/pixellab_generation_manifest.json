@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T08:54:23Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "b3ca7a06-1f1e-4316-8629-4d7875232325",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single centered ultimate VFX emblem for a soldier grenade barrage: seven oversized olive military grenades arranged in a tight radial seed pattern, worn brass safety rings and pins, glowing amber fuse tips with restrained cyan ghost accents, dark fantasy D&D pixel art seen from above, isolated transparent sprite, crisp readable silhouette, no character body, no hands, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the seven grenades in the same centered formation with stable proportions and olive-brass palette; fuse sparks ignite in a clear outside-in countdown, individual grenades pulse and flare on staggered impact beats, an amber blast ring contracts toward the center, then a compact smoke ember fades; every frame has clear measurable motion, no static duplicates, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "grenade_f00.png",
+      "bytes": 41452,
+      "url_kind": "template",
+      "encoded_sha256": "feaf3f5772086fbe02f5f26bdb3530d3e0dd453b7e6caf9a31118137fa73a35f",
+      "pixel_sha256": "76608db324a24f86ff75dd7e0222806af47f4686f31d525fc57c97ea713c7198"
+    },
+    {
+      "file": "grenade_f01.png",
+      "bytes": 41251,
+      "url_kind": "template",
+      "encoded_sha256": "a8f858e3b0d351a84c44109df09727101518d96bf3099ee56059c09b7ecc4769",
+      "pixel_sha256": "bb8f4178fff2b8cb7a6df13a9a575c0b4176fbb325bb1cc6f4ef56ea7ce54686"
+    },
+    {
+      "file": "grenade_f02.png",
+      "bytes": 37837,
+      "url_kind": "template",
+      "encoded_sha256": "e6f70b9221ec564f6191c79dade12b1d9013fcb7ca29731cc75001e84046affa",
+      "pixel_sha256": "094071e90340845fcb257151d735ce6ac5851015491a7c4c51b6311d4a970e7e"
+    },
+    {
+      "file": "grenade_f03.png",
+      "bytes": 37004,
+      "url_kind": "template",
+      "encoded_sha256": "b221cc5c5e3da9c406239b219bbe1ee40102b4d51ce031f13a2b8f964bdb64e2",
+      "pixel_sha256": "0a3fba53373c2a44fc357a4bc34bdca3a258813221c99f460b40c0721e85c693"
+    },
+    {
+      "file": "grenade_f04.png",
+      "bytes": 35419,
+      "url_kind": "template",
+      "encoded_sha256": "345a4fef3b3ad39b7f5295adb2253a51cbad71f093e7e02708fc894a8a851b9d",
+      "pixel_sha256": "eca79d76111d72e4143ff3d3510d8ee57617b1aa9fe3e1c7eaf50adaee92baab"
+    },
+    {
+      "file": "grenade_f05.png",
+      "bytes": 34250,
+      "url_kind": "template",
+      "encoded_sha256": "99435c2b69e38a612fc4c8fecbb0ae531efcf0409cdd30a54d4180f09d92e021",
+      "pixel_sha256": "890fcaaacf2c805d1db17aec88ba03717b830ac8727685b127a4d372bdae9da2"
+    },
+    {
+      "file": "grenade_f06.png",
+      "bytes": 34245,
+      "url_kind": "template",
+      "encoded_sha256": "8f4d52673972c44855927606ca72093ab80437e54cd9346f1e119bd474b20181",
+      "pixel_sha256": "cf8f0030a3a40e6959a5d9fbea13e9f2ba1e82b6b90146321e49aa35211b7549"
+    },
+    {
+      "file": "grenade_f07.png",
+      "bytes": 35727,
+      "url_kind": "template",
+      "encoded_sha256": "aa26a2f9da9366f5ed7e49cd9e44f1658d0cbc672751bac5945a3afa3c1f0456",
+      "pixel_sha256": "0b98265e9b49c496f8d5a6d43184739568feb7d31656f26009b3711d1b2c6148"
+    },
+    {
+      "file": "grenade_f08.png",
+      "bytes": 33387,
+      "url_kind": "template",
+      "encoded_sha256": "7335dc50f61dc9cb8fbec8e04fe6e7049781a6004a34bf75a26922235ffa0798",
+      "pixel_sha256": "095ba728b60f7b2c1bf5fd404935b941ef3ab8359704337c4c2706be0ff7a09a"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

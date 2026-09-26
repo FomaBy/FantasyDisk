@@ -3,6 +3,8 @@ extends SceneTree
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/chemist.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/chemist/manifest.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const WEAPON_IDS := ["blast_powder", "acid_flask", "homunculus_vial"]
 const SCENES := {
 	"blast_powder": preload("res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn"),
@@ -13,29 +15,32 @@ const PACKS := [
 	{
 		"weapon_id": "blast_powder",
 		"scene": SCENES["blast_powder"],
-		"time": 1.6,
-		"title": "BLAST POWDER — PENTAGRAM",
+		"time": 1.45,
+		"title": "BLAST POWDER — PHILOSOPHERS' EXPLOSION",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(1.0, 0.78, 0.28),
-		"required_nodes": ["PowderPentagram/PentagramLines", "PowderPentagram/PowderOne", "CrystalImplosion", "TransmutationBlast", "GoldRadiance"],
+		"required_nodes": ["BackdropVeil", "PhilosophersRitual"],
 	},
 	{
 		"weapon_id": "acid_flask",
 		"scene": SCENES["acid_flask"],
-		"time": 2.3,
+		"time": 3.3,
 		"title": "ACID FLASK — TSAR LAKE",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.58, 1.0, 0.34),
-		"required_nodes": ["PourArc", "AcidWave", "AcidLake", "ChargePillars/PillarTwo", "EvaporationSmoke"],
+		"required_nodes": ["TsarFlask", "LakeRing", "ChargePillars/PillarTwo", "EvaporationSmoke"],
 	},
 	{
 		"weapon_id": "homunculus_vial",
 		"scene": SCENES["homunculus_vial"],
-		"time": 2.6,
+		# Just after the second stomp beat rather than on it: the sheet has to
+		# show the arena-wide ring sweeping outward, and on the beat itself the
+		# ring has only just reset to its smallest scale.
+		"time": 2.85,
 		"title": "HOMUNCULUS VIAL — FUSION",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.48, 1.0, 0.52),
-		"required_nodes": ["AlchemicalCircle", "Avatar", "TauntHalo", "StompWave", "ToxicCascade"],
+		"required_nodes": ["BackdropVeil", "FusionGlow", "AlchemicalCircle", "Avatar", "TauntHalo", "StompWave", "ToxicCascade"],
 	},
 ]
 const CAPTURES := [
@@ -54,6 +59,19 @@ const PANEL_CONTENT_MARGIN_RATIO := 0.03
 const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const MAX_TIMELINE_SECONDS := 10.0
+const AVATAR_FRAME_COUNT := 9
+const AVATAR_SLAM_BEATS := [1.75, 2.6, 3.45]
+## Manual stepping budget for the blast_powder driver gate: one step is finer
+## than every device window, and the shake window is the driver's own constant.
+const DRIVER_STEP := 0.01
+const DRIVER_SHAKE_WINDOW := 0.55
+const DRIVER_DUCK_DB := -9.0
+
+
+var _blast_package := {}
+var _acid_package := {}
+var _homunculus_package := {}
+var _failed := false
 
 
 class HandleProbe extends RefCounted:
@@ -61,6 +79,18 @@ class HandleProbe extends RefCounted:
 
 	func release() -> void:
 		released += 1
+
+
+## Stands in for a hit enemy: the impact service calls the victim's own white
+## flash by name, so the probe answers exactly the two methods it looks for.
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
 
 
 func _initialize() -> void:
@@ -79,6 +109,10 @@ func _initialize() -> void:
 	_expect(packages.size() == 3, "manifest must contain exactly three Chemist packages", errors)
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
+	_check_blast_v2(packages.get("blast_powder", {}) as Dictionary, errors)
+	_check_blast_primitive_budget(errors)
+	_check_acid_v2(packages.get("acid_flask", {}) as Dictionary, errors)
+	_check_homunculus_v2(packages.get("homunculus_vial", {}) as Dictionary, errors)
 	_check_distinction(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_text(errors)
@@ -86,17 +120,65 @@ func _initialize() -> void:
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Chemist ultimate timelines passed (distinct scenes, frozen phases, lifecycle, text fit, and evidence).")
+	_blast_package = packages.get("blast_powder", {}) as Dictionary
+	_acid_package = packages.get("acid_flask", {}) as Dictionary
+	_homunculus_package = packages.get("homunculus_vial", {}) as Dictionary
+
+
+## _initialize runs before the root window joins the tree, so nothing added
+## there gets _ready, autoplay or a current camera. The driver gate needs all
+## three, so it runs on the first real frame instead.
+func _process(_delta: float) -> bool:
+	if _failed:
+		return true
+	var errors: Array[String] = []
+	_check_blast_driver(_blast_package, errors)
+	_check_acid_driver(_acid_package, errors)
+	_check_homunculus_driver(_homunculus_package, errors)
+	for weapon_id in WEAPON_IDS:
+		_check_victim_impacts(weapon_id, errors)
+	if not errors.is_empty():
+		_finish(errors)
+		return true
+	print("Chemist ultimate timelines passed (distinct scenes, frozen phases, lifecycle, driver devices, text fit, and evidence).")
 	quit(0)
+	return true
 
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must identify approved-asset reuse", errors)
-	_expect((provenance.get("new_pixellab_assets", null) is Array) and (provenance.get("new_pixellab_assets") as Array).is_empty(), "no new PixelLab asset IDs should be declared", errors)
+	var route := str(provenance.get("route", ""))
+	var new_assets := provenance.get("new_pixellab_assets", []) as Array
+	_expect(route.contains("pixellab"), "provenance route must own the new PixelLab frames", errors)
+	var pixellab_weapons := {}
+	for raw_asset in new_assets:
+		var asset := raw_asset as Dictionary
+		var weapon_id := str(asset.get("weapon_id", ""))
+		pixellab_weapons[weapon_id] = true
+		var frame_count := int(asset.get("frame_count", 0))
+		_expect(frame_count >= 4, "%s PixelLab animation must declare a real frame count" % weapon_id, errors)
+		if weapon_id == "homunculus_vial":
+			_expect(not str(asset.get("job_id", "")).is_empty() and asset.get("seed", null) != null, "the homunculus_vial PixelLab pack must record its job id and seed", errors)
+			for index in AVATAR_FRAME_COUNT:
+				_expect(
+					FileAccess.file_exists("res://%s/avatar_stomp_%02d.png" % [str(asset.get("frames_dir", "")), index]),
+					"avatar stomp frame %02d must exist" % index,
+					errors
+				)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("asset_manifest", ""))), "avatar pack asset manifest must exist", errors)
+		else:
+			_expect(not str(asset.get("pixel_lab_object_id", "")).is_empty(), "%s PixelLab object id must be recorded" % weapon_id, errors)
+			_expect(not str(asset.get("pixel_lab_animation_group_id", "")).is_empty(), "%s PixelLab animation group id must be recorded" % weapon_id, errors)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("runtime_spriteframes", ""))), "%s runtime SpriteFrames must exist" % weapon_id, errors)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("runtime_scene", ""))), "%s runtime scene must exist" % weapon_id, errors)
+			_expect(FileAccess.file_exists("res://%s" % str(asset.get("provenance_manifest", ""))), "%s provenance manifest must exist" % weapon_id, errors)
+	for weapon_id in WEAPON_IDS:
+		_expect(pixellab_weapons.has(weapon_id), "%s PixelLab pack must be declared" % weapon_id, errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
+		if source.is_empty():
+			continue
 		_expect(FileAccess.file_exists("res://%s" % str(source.get("source_path", ""))), "%s reused source must exist" % weapon_id, errors)
 		_expect(FileAccess.file_exists("res://%s" % str(source.get("runtime_scene", ""))), "%s runtime scene must exist" % weapon_id, errors)
 
@@ -133,12 +215,35 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	_expect(timeline != null and timeline.has_animation(&"ultimate"), "%s must expose an ultimate animation" % weapon_id, errors)
 	if timeline != null and timeline.has_animation(&"ultimate"):
 		_expect(is_equal_approx(timeline.get_animation(&"ultimate").length, float((package.get("timing_seconds", {}) as Dictionary).get("cancel", -1.0))), "%s scene animation must end at cancel" % weapon_id, errors)
+		if weapon_id == "homunculus_vial":
+			_check_avatar_frame_track(timeline.get_animation(&"ultimate"), errors)
 	_expect(str(instance.get_meta("ultimate_id", "")) == "chemist/%s" % weapon_id, "%s scene must retain exact profile key" % weapon_id, errors)
 	for field in ["silhouette", "motion_path", "impact_language"]:
 		_expect(not str(instance.get_meta(field, "")).is_empty(), "%s %s declaration missing" % [weapon_id, field], errors)
 	_expect(instance.get_child_count() <= int(instance.get_meta("crowd_cap", 0)), "%s visible scene nodes must stay within crowd cap" % weapon_id, errors)
 	_expect(int(instance.get_meta("max_visual_nodes", 0)) <= int(instance.get_meta("crowd_cap", 0)), "%s declared visual budget must stay within crowd cap" % weapon_id, errors)
 	instance.queue_free()
+
+
+## The FAN-2552 avatar plays its PixelLab stomp cycle through a discrete
+## texture track, and each slam frame lands exactly on a mechanics beat
+## (fuse_at + beat_interval * n), so presentation and damage read as one hit.
+func _check_avatar_frame_track(animation: Animation, errors: Array[String]) -> void:
+	var track := animation.find_track("Avatar:texture", Animation.TYPE_VALUE)
+	_expect(track != -1, "homunculus avatar must animate its stomp frames", errors)
+	if track == -1:
+		return
+	_expect(animation.value_track_get_update_mode(track) == Animation.UPDATE_DISCRETE, "avatar frame track must switch textures discretely", errors)
+	var distinct := {}
+	for key_index in animation.track_get_key_count(track):
+		var texture := animation.track_get_key_value(track, key_index) as Texture2D
+		if texture != null:
+			distinct[texture.resource_path] = true
+	_expect(distinct.size() == AVATAR_FRAME_COUNT, "avatar frame track must play all %d stomp frames" % AVATAR_FRAME_COUNT, errors)
+	for beat_time in AVATAR_SLAM_BEATS:
+		var key := animation.track_find_key(track, float(beat_time), Animation.FIND_MODE_NEAREST)
+		var on_beat := key != -1 and absf(animation.track_get_key_time(track, key) - float(beat_time)) < 0.01
+		_expect(on_beat, "an avatar frame key must land on the %.2fs stomp beat" % float(beat_time), errors)
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary, errors: Array[String]) -> void:
@@ -161,6 +266,338 @@ func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary,
 		_expect(cleanup_timeline.active_handle_count() == 0, "%s %s cleanup must release every handle" % [weapon_id, reason], errors)
 		for handle in handles.values():
 			_expect((handle as HandleProbe).released == 1, "%s %s must release each handle once" % [weapon_id, reason], errors)
+
+
+## FAN-2957: the v2 presentation contract for the migrated blast_powder pair.
+## The envelope itself is asserted by the shared distinctness test once the
+## allowlist entry is gone; this gate owns the class-local declarations that
+## make the effect full-screen and identity-bearing.
+func _check_blast_v2(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_v2("blast_powder", package, errors)
+
+
+func _check_blast_primitive_budget(errors: Array[String]) -> void:
+	var scene := SCENES["blast_powder"].instantiate() as Node2D
+	_expect(scene != null, "blast_powder scene must instantiate for its primitive budget", errors)
+	if scene == null:
+		return
+	root.add_child(scene)
+	_expect(_naked_primitive_count(scene) == 1, "blast_powder must retain only its one ratcheted backdrop primitive", errors)
+	_expect(scene.get_node_or_null("BackdropVeil") is Polygon2D, "blast_powder must retain its fitted backdrop veil", errors)
+	for retired_node in ["AlchemistGlow", "PentagramSigil", "GoldRadiance"]:
+		_expect(scene.get_node_or_null(retired_node) == null, "blast_powder must not restore naked primitive %s" % retired_node, errors)
+	scene.queue_free()
+
+
+func _naked_primitive_count(node: Node) -> int:
+	var count := 1 if node is Polygon2D or (node is Line2D and (node as Line2D).texture == null) else 0
+	for child in node.get_children():
+		count += _naked_primitive_count(child)
+	return count
+
+
+## FAN-2958: the same v2 contract for the migrated acid_flask pair, plus the
+## pair-local proof that its own PixelLab frames are the visual core and that
+## the migration ratchet entry is really gone.
+func _check_acid_v2(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_v2("acid_flask", package, errors)
+	_expect(
+		not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("chemist/acid_flask"),
+		"chemist/acid_flask must have left the v2 migration allowlist",
+		errors
+	)
+	var silhouette := str((package.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	_expect(
+		silhouette.contains("fan2551_acid_flask_ultimate"),
+		"acid_flask weapon silhouette must be its own FAN-2551 PixelLab frame: %s" % silhouette,
+		errors
+	)
+
+
+## FAN-2959: the same v2 contract for the migrated homunculus_vial pair. This
+## pair is the one whose presentation had to shrink (5.40s -> 3.80s) to reach the
+## v2 envelope while the mechanics beats stayed frozen, so on top of the shared
+## gate it proves the retimed envelope still covers every stomp the executor
+## deals: all three mechanics beats stay inside the active window, and the
+## avatar is the visual core rather than a reusable burst.
+func _check_homunculus_v2(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_v2("homunculus_vial", package, errors)
+	_expect(
+		not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has("chemist/homunculus_vial"),
+		"chemist/homunculus_vial must have left the v2 migration allowlist",
+		errors
+	)
+	var silhouette := str((package.get("identity", {}) as Dictionary).get("weapon_silhouette_asset", ""))
+	_expect(
+		silhouette.contains("ultimates/chemist/homunculus_vial"),
+		"homunculus_vial weapon silhouette must be its own FAN-2552 PixelLab frame: %s" % silhouette,
+		errors
+	)
+	# The executor keeps fuse_at/beat_interval/beat_count: shortening the drawn
+	# envelope may never leave a stomp that still damages without a drawn hit.
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var release := float(timing.get("release", -1.0))
+	var recovery := float(timing.get("recovery", -1.0))
+	for beat_time in AVATAR_SLAM_BEATS:
+		_expect(
+			float(beat_time) >= release and float(beat_time) <= recovery,
+			"mechanics stomp beat %.2fs must stay inside the drawn active window %.2f-%.2fs"
+				% [float(beat_time), release, recovery],
+			errors
+		)
+
+
+func _check_weapon_v2(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	_expect(not package.is_empty(), "%s package must exist for the v2 gate" % weapon_id, errors)
+	if package.is_empty():
+		return
+	var scene := SCENES[weapon_id].instantiate() as Node2D
+	root.add_child(scene)
+	var presence := package.get("presence", {}) as Dictionary
+	_expect(presence.get("fullscreen_footprint") == true, "%s must declare a fullscreen footprint" % weapon_id, errors)
+	_expect(str(presence.get("backdrop", "")) == "darken", "%s must declare the darken backdrop" % weapon_id, errors)
+	_expect(presence.get("camera_shake") == true, "%s must declare camera shake" % weapon_id, errors)
+	var hitstop := float(presence.get("hitstop_ms", 0.0))
+	_expect(hitstop >= 80.0 and hitstop <= 150.0, "%s hitstop must stay in the 80-150ms corridor" % weapon_id, errors)
+	_expect(presence.get("sfx_ducking") == true, "%s must declare SFX ducking" % weapon_id, errors)
+	var identity := package.get("identity", {}) as Dictionary
+	_expect(not str(identity.get("cast_pose_id", "")).is_empty(), "%s must declare its hero cast pose" % weapon_id, errors)
+	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
+	_expect(not silhouette.is_empty() and FileAccess.file_exists(silhouette), "%s weapon silhouette asset must exist: %s" % [weapon_id, silhouette], errors)
+	_expect(not str(identity.get("class_palette_id", "")).is_empty(), "%s must resolve its class palette" % weapon_id, errors)
+	var performance := package.get("performance", {}) as Dictionary
+	_expect(int(performance.get("max_unique_materials", 0)) > 0, "%s must declare a positive material budget" % weapon_id, errors)
+	_expect(int(performance.get("max_fullscreen_materials", 0)) > 0, "%s must declare its full-screen material budget" % weapon_id, errors)
+	var veil := scene.get_node_or_null("BackdropVeil") as CanvasItem
+	_expect(veil != null and veil.visible, "%s must carry a backdrop veil node" % weapon_id, errors)
+	if veil != null:
+		_expect(bool(veil.get_meta("fullscreen_layer", false)), "the backdrop veil must be marked as the fullscreen layer", errors)
+	for budget_key in ["max_unique_materials", "max_fullscreen_materials"]:
+		_expect(
+			int(scene.get_meta(budget_key, 0)) == int(performance.get(budget_key, -1)),
+			"scene and manifest must agree on %s" % budget_key,
+			errors
+		)
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var driver := scene.get_script() as GDScript
+	_expect(is_equal_approx(float(timing.get("release", -1.0)), float(driver.get_script_constant_map().get("RELEASE_AT", -1.0))), "scene driver release beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("active", -1.0)), float(driver.get_script_constant_map().get("IMPACT_AT", -1.0))), "scene driver impact beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("recovery", -1.0)), float(driver.get_script_constant_map().get("RECOVERY_AT", -1.0))), "scene driver recovery beat must match the manifest", errors)
+	_expect(is_equal_approx(float(timing.get("cancel", -1.0)), float(driver.get_script_constant_map().get("CANCEL_AT", -1.0))), "scene driver cancel beat must match the manifest", errors)
+	_expect(is_equal_approx(float(driver.get_script_constant_map().get("HITSTOP_MS", -1.0)), hitstop), "scene driver hitstop must match the declared presence value", errors)
+	scene.queue_free()
+
+
+## FAN-2987: the four driver-owned devices the manifest cannot assert, proven by
+## stepping the live scene. Each one shipped broken once, so each one is gated:
+## pause must not touch a property AnimationPlayer does not have, the shake must
+## obey the player's setting, overlapping casts must hand the SFX bus back, and
+## the envelope must end where the manifest says it does.
+func _check_weapon_driver(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	if package.is_empty():
+		return
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	_check_driver_pause(weapon_id, errors)
+	_check_driver_shake_setting(weapon_id, float(timing.get("active", 1.3)), errors)
+	_check_driver_sfx_overlap(weapon_id, float(timing.get("release", 0.95)), errors)
+	_check_driver_envelope(weapon_id, float(timing.get("cancel", 3.6)), errors)
+
+
+func _check_blast_driver(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_driver("blast_powder", package, errors)
+
+
+func _check_acid_driver(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_driver("acid_flask", package, errors)
+
+
+func _check_homunculus_driver(package: Dictionary, errors: Array[String]) -> void:
+	_check_weapon_driver("homunculus_vial", package, errors)
+
+
+func _check_driver_pause(weapon_id: String, errors: Array[String]) -> void:
+	var scene := _driver_scene(weapon_id)
+	var timeline := scene.get_node("Timeline") as AnimationPlayer
+	_expect(timeline.is_playing(), "the %s timeline must autoplay" % weapon_id, errors)
+	scene.set_paused(true)
+	_expect(not timeline.is_playing(), "pause must hold the drawn timeline", errors)
+	scene.set_paused(false)
+	_expect(timeline.is_playing(), "unpause must resume the drawn timeline", errors)
+	_release_driver_scene(scene)
+
+
+## The player's screen_shake toggle is the whole gate: with it off the effect may
+## not move the camera by a single pixel, exactly like enemy.gd slam shake.
+func _check_driver_shake_setting(weapon_id: String, impact_at: float, errors: Array[String]) -> void:
+	var camera := Camera2D.new()
+	root.add_child(camera)
+	camera.make_current()
+	var restore: Variant = root.get_meta("screen_shake") if root.has_meta("screen_shake") else null
+	for shake_enabled in [true, false]:
+		root.set_meta("screen_shake", shake_enabled)
+		camera.offset = Vector2.ZERO
+		var scene := _driver_scene(weapon_id)
+		var veil := scene.get_node("BackdropVeil") as CanvasItem
+		_expect(
+			is_equal_approx(veil.self_modulate.a, 1.0) == shake_enabled,
+			"the declared reduced-motion fade must follow the screen_shake setting",
+			errors
+		)
+		var peak := 0.0
+		var elapsed := 0.0
+		while elapsed < impact_at + DRIVER_SHAKE_WINDOW:
+			scene._process(DRIVER_STEP)
+			elapsed += DRIVER_STEP
+			peak = maxf(peak, camera.offset.length())
+		if shake_enabled:
+			_expect(peak > 0.0, "the impact must shake the camera while screen_shake is on", errors)
+		else:
+			_expect(is_zero_approx(peak), "screen_shake off must leave the camera at 0.000 px, saw %.3f px" % peak, errors)
+		_release_driver_scene(scene)
+	if restore == null:
+		root.remove_meta("screen_shake")
+	else:
+		root.set_meta("screen_shake", restore)
+	root.remove_child(camera)
+	camera.free()
+
+
+## Two casts crossing over: the second one must not record the already-ducked
+## level as the value to restore, and the earlier one finishing first must not
+## strand the bus below its pre-cast volume.
+func _check_driver_sfx_overlap(weapon_id: String, release_at: float, errors: Array[String]) -> void:
+	var created := AudioServer.get_bus_index("SFX") == -1
+	if created:
+		AudioServer.add_bus(AudioServer.bus_count)
+		AudioServer.set_bus_name(AudioServer.bus_count - 1, "SFX")
+	var bus := AudioServer.get_bus_index("SFX")
+	var before := AudioServer.get_bus_volume_db(bus)
+	var first := _driver_scene(weapon_id)
+	var second := _driver_scene(weapon_id)
+	first._process(release_at + DRIVER_STEP)
+	second._process(release_at + DRIVER_STEP)
+	_expect(
+		is_equal_approx(AudioServer.get_bus_volume_db(bus), before + DRIVER_DUCK_DB),
+		"overlapping casts must duck the SFX bus once, saw %.2f dB" % AudioServer.get_bus_volume_db(bus),
+		errors
+	)
+	_release_driver_scene(first)
+	_release_driver_scene(second)
+	_expect(
+		is_equal_approx(AudioServer.get_bus_volume_db(bus), before),
+		"overlapping casts must hand the SFX bus back at %.2f dB, saw %.2f dB" % [before, AudioServer.get_bus_volume_db(bus)],
+		errors
+	)
+	if created:
+		AudioServer.remove_bus(bus)
+
+
+## The hitstop freeze may not be added on top of the declared envelope: the
+## driver stops exactly at the manifest cancel, freeze included.
+func _check_driver_envelope(weapon_id: String, cancel_at: float, errors: Array[String]) -> void:
+	var scene := _driver_scene(weapon_id)
+	var elapsed := 0.0
+	while scene.is_processing() and elapsed < cancel_at * 2.0:
+		scene._process(DRIVER_STEP)
+		elapsed += DRIVER_STEP
+	_expect(
+		absf(elapsed - cancel_at) <= DRIVER_STEP * 2.0,
+		"the driver envelope must end at the declared %.2fs cancel, ended at %.3fs" % [cancel_at, elapsed],
+		errors
+	)
+	_release_driver_scene(scene)
+
+
+func _driver_scene(weapon_id: String) -> Node2D:
+	var scene := SCENES[weapon_id].instantiate() as Node2D
+	root.add_child(scene)
+	return scene
+
+
+## queue_free() only lands at the end of the frame, long after the next check
+## reads the SFX bus, so every stepped instance releases its devices explicitly.
+func _release_driver_scene(scene: Node2D) -> void:
+	scene.finish("node_end")
+	root.remove_child(scene)
+	scene.free()
+
+
+## Per-victim impacts (FAN-3879/FAN-3886 AC-4). Chemist spawns no separate
+## effect scene, so the v2 driver is the only live effect channel: a beat
+## naming the enemies it actually hit bursts the weapon's own victim-impact
+## pack on exactly those enemies, a beat naming none draws nothing at all, and
+## the whole ripple is released with the scene — the runtime-contour half of
+## the mapping this card wires (FAN-3879 acceptance #3/#4), on top of the
+## source-level gate the roster ratchet (`ADOPTION_GAPS["victim_impact"]`)
+## already fails closed on.
+##
+## Rework (independent QA FAILED on `303f65f9`): the real cast already draws
+## each victim's ordinary hit flash on the `UltimateActivation.deal_damage`
+## path before the executor's beat ever reaches this scene's `present()`. The
+## probe below models that exact sequence — successful damage, then normal
+## enemy feedback, then the victim-impact presentation — and asserts exactly
+## one ordinary flash per damage event: the shared `ImpactPlayer` must run with
+## `extra_hit_flash = false` here so its own burst never repeats the flash the
+## damage path already drew.
+func _check_victim_impacts(weapon_id: String, errors: Array[String]) -> void:
+	var scene := _driver_scene(weapon_id)
+	var declared := scene.get_child_count()
+
+	scene.present("fixture.beat", {"position": Vector2.ZERO})
+	_expect(scene.get_child_count() == declared, "%s must draw no impact for a beat that hit nobody" % weapon_id, errors)
+
+	var victims: Array[Node2D] = []
+	for index in 3:
+		var victim := VictimProbe.new()
+		victim.global_position = Vector2(80.0 + float(index) * 120.0, 0.0)
+		root.add_child(victim)
+		victims.append(victim)
+	# Successful damage -> normal enemy feedback: the real deal_damage path
+	# already fired this flash before the executor ever calls present().
+	for victim in victims:
+		victim.call("_show_hit_flash")
+	scene.present("fixture.beat", {"position": Vector2.ZERO, "victims": victims})
+	var impacts := _impact_player(scene)
+	_expect(impacts != null, "%s must start its own victim-impact burst" % weapon_id, errors)
+	if impacts != null:
+		_expect(bool(impacts.get("extra_hit_flash")) == false,
+			"%s victim-impact burst must not repeat the ordinary damage-path flash" % weapon_id, errors)
+		var planned := impacts.call("snapshot") as Dictionary
+		_expect(int(planned.get("victims", 0)) == victims.size(), "%s must enqueue every actually affected enemy" % weapon_id, errors)
+		# A later beat joins the running ripple instead of restarting it.
+		var extra_victim := victims[0]
+		extra_victim.call("_show_hit_flash")
+		scene.present("fixture.beat", {"victims": [extra_victim]})
+		_expect(int((impacts.call("snapshot") as Dictionary).get("victims", 0)) == victims.size() + 1,
+			"%s later beats must join the running ripple" % weapon_id, errors)
+		impacts.call("advance", 1.0)
+		_expect(int((impacts.call("snapshot") as Dictionary).get("flashes", 0)) == 0,
+			"%s victim-impact burst must draw zero ordinary flashes of its own" % weapon_id, errors)
+		var expected := "res://assets/sprites/effects/chemist/%s/victim_impact_spriteframes.tres" % weapon_id
+		var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+		_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == expected,
+			"%s victim impact must use its own integrated pack" % weapon_id, errors)
+		for victim in victims:
+			if victim == extra_victim:
+				continue
+			_expect((victim as VictimProbe).flashes == 1,
+				"%s must draw exactly one ordinary flash per damage event (got %d)" % [weapon_id, (victim as VictimProbe).flashes], errors)
+		_expect((extra_victim as VictimProbe).flashes == 2,
+			"%s extra_victim's second damage event must draw its own single ordinary flash (got %d)" % [weapon_id, (extra_victim as VictimProbe).flashes], errors)
+
+	scene.finish("node_end")
+	_expect(scene.get_child_count() == declared, "%s must release every impact node with the scene" % weapon_id, errors)
+	root.remove_child(scene)
+	scene.free()
+	for victim in victims:
+		victim.free()
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
@@ -187,7 +624,8 @@ func _check_capture_composition(errors: Array[String]) -> void:
 			for raw_path in pack.get("required_nodes", []) as Array:
 				var item := scene.get_node_or_null(str(raw_path)) as CanvasItem
 				_expect(item != null and is_capture_item_visible(item, scene), "%s required item must be visible: %s" % [context, raw_path], errors)
-				if item != null:
+				var is_fullscreen_layer := item != null and bool(item.get_meta("fullscreen_layer", false))
+				if item != null and not is_fullscreen_layer:
 					_expect(zone.grow(0.5).encloses(transformed_capture_bounds(capture_item_bounds(scene, item), scene)), "%s item must fit its panel: %s" % [context, raw_path], errors)
 			scene.queue_free()
 
@@ -272,7 +710,8 @@ static func capture_content_bounds(scene: Node2D) -> Rect2:
 		var node: Node = pending.pop_back()
 		for child in node.get_children():
 			pending.append(child)
-			if child is CanvasItem and is_capture_item_visible(child as CanvasItem, scene):
+			if child is CanvasItem and is_capture_item_visible(child as CanvasItem, scene) \
+					and not bool(child.get_meta("fullscreen_layer", false)):
 				var item_bounds := capture_item_bounds(scene, child as CanvasItem)
 				if item_bounds.has_area():
 					bounds = item_bounds if not found else bounds.merge(item_bounds)
@@ -284,6 +723,8 @@ static func capture_item_bounds(scene: Node2D, item: CanvasItem) -> Rect2:
 	var local_rect := Rect2()
 	if item is Sprite2D:
 		local_rect = (item as Sprite2D).get_rect()
+	elif item is AnimatedSprite2D:
+		local_rect = _animated_sprite_rect(item as AnimatedSprite2D)
 	elif item is Line2D:
 		local_rect = _rect_from_points((item as Line2D).points).grow((item as Line2D).width * 0.5)
 	elif item is Polygon2D:
@@ -316,6 +757,17 @@ static func is_capture_item_visible(item: CanvasItem, scene: Node2D) -> bool:
 	if item is Line2D and (item as Line2D).default_color.a <= CAPTURE_ALPHA_EPSILON:
 		return false
 	return true
+
+
+static func _animated_sprite_rect(sprite: AnimatedSprite2D) -> Rect2:
+	var frames := sprite.sprite_frames
+	if frames == null or not frames.has_animation(sprite.animation):
+		return Rect2()
+	var texture := frames.get_frame_texture(sprite.animation, sprite.frame)
+	if texture == null:
+		return Rect2()
+	var size := texture.get_size()
+	return Rect2(-size * 0.5, size)
 
 
 static func _rect_from_points(points: PackedVector2Array) -> Rect2:
@@ -366,6 +818,7 @@ func _expect(condition: bool, message: String, errors: Array[String]) -> void:
 
 
 func _finish(errors: Array[String]) -> void:
+	_failed = true
 	for error in errors:
 		push_error("Chemist ultimate timeline: %s" % error)
 	quit(1)

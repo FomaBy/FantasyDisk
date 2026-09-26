@@ -1,0 +1,140 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T20:25:53Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "f8ef1f3b-009b-4b4f-8e98-31898ef0773c",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single squat copper pressure mine for an engineer ultimate: a low armored dome on a wide hexagonal base with three short prongs and one bright cyan proximity lens, dark fantasy D&D pixel art seen straight from above, centered isolated sprite on a transparent background, crisp readable silhouette, workshop copper charcoal and amber palette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same single squat pressure mine stays centered and keeps the exact same outline, proportions, palette and position in every frame: only the cyan proximity lens pulses, amber signal rings expand and contract around the base, the three prongs vibrate slightly and tiny teal tripwire sparks travel between them; every frame remains visibly occupied, clean and readable, with nothing entering or leaving the canvas",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "pressure_mines_f00.png",
+      "bytes": 22005,
+      "url_kind": "template",
+      "encoded_sha256": "fa4da517771219b821631a263d116d1289c3743d19219996b7fba6e76778028f",
+      "pixel_sha256": "09ef2a9d4a520f4a147e629fdf3f4b0dd14eb3e914aa86e388a70e363104f7ca"
+    },
+    {
+      "file": "pressure_mines_f01.png",
+      "bytes": 28228,
+      "url_kind": "template",
+      "encoded_sha256": "b0090e81b6a0db6bfdff3ca745334c45f041b473ab7dccb82a27019a563b43f1",
+      "pixel_sha256": "3b4e1a33e8e0735478472d45861422ff5ea06b3557fd071e5a59a67cf3765953"
+    },
+    {
+      "file": "pressure_mines_f02.png",
+      "bytes": 25608,
+      "url_kind": "template",
+      "encoded_sha256": "67be6c0df6390e0441ffa1b41e13a19e3d01b2de2ff814b3d129362e76626821",
+      "pixel_sha256": "4d70f7083e0cff927fd42e0df3013e66d498b7fba54c2c8ffc0f84c3b1cd04c6"
+    },
+    {
+      "file": "pressure_mines_f03.png",
+      "bytes": 24911,
+      "url_kind": "template",
+      "encoded_sha256": "4ca76459c369a34136cc9150af22582d3ae11d478a0d88a5b8c8cba464787ebc",
+      "pixel_sha256": "34438b095e3c8fe488258d46bec8612509ef087749238397a6cd7b445ac47692"
+    },
+    {
+      "file": "pressure_mines_f04.png",
+      "bytes": 25278,
+      "url_kind": "template",
+      "encoded_sha256": "0c0614a1b7612db3546c1f32b8c63603f9a0269b5048b37339fe6725d4ad8f7c",
+      "pixel_sha256": "ba1f3ec4e8c0751777e98055fece5a8a621bf2dcaa2ba1ec93294f499c4dd26e"
+    },
+    {
+      "file": "pressure_mines_f05.png",
+      "bytes": 27753,
+      "url_kind": "template",
+      "encoded_sha256": "04191689e8fd408db0e61a5e064556ef024b55f99cfdd4efe75249dda6f89f4e",
+      "pixel_sha256": "47a2f9c9440bad7c631d70b535e0b0c0b660c2e6b069eeeb636cfab8917d7621"
+    },
+    {
+      "file": "pressure_mines_f06.png",
+      "bytes": 25716,
+      "url_kind": "template",
+      "encoded_sha256": "7ca4b132fd16c172c1ad081381faefb13bea3c96b269114ee860c0556bcc57f1",
+      "pixel_sha256": "4c74a923f2224a583219733f9564e7a3bfce781daffe5fe967c9483268f56082"
+    },
+    {
+      "file": "pressure_mines_f07.png",
+      "bytes": 25669,
+      "url_kind": "template",
+      "encoded_sha256": "715a7c4db30b07717bc0906c0be7eed3784fbaf54c5c4ea98d4a11f957aee41e",
+      "pixel_sha256": "e596756a5697cb785e1c5cb045033e307f0ca1820651e0859dfd9a3cf187155e"
+    },
+    {
+      "file": "pressure_mines_f08.png",
+      "bytes": 26240,
+      "url_kind": "template",
+      "encoded_sha256": "7ee67878754825c5f4ad3f9fec7b6491d42dbdb39947b34638bc1f8881a033a4",
+      "pixel_sha256": "d9625b9d15ac5ec2d5ecbda8f372b65e44688d243539aa30eeb94d51a55b2bbf"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "schema_version": 1,
+  "issue": "FAN-3702",
+  "weapon_id": "engineer_pressure_mines",
+  "title": "Мины давления",
+  "source_dir": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines",
+  "pixel_lab": {
+    "tool": "create_1_direction_object + animate_object",
+    "object_id": "f8ef1f3b-009b-4b4f-8e98-31898ef0773c",
+    "animation_group_id": "3629c39b-5073-4ac2-bea3-1b9bb6ec5d9d",
+    "mode": "v3",
+    "size": 256,
+    "view": "top-down"
+  },
+  "generation_cost": {
+    "unit": "PixelLab generations",
+    "per_pack": "not exposed by the blocking CLI or get_object response",
+    "balance_snapshot_after_generation": {
+      "credits": "$0.00",
+      "generations_remaining": 4819,
+      "generations_used": 5181,
+      "generations_total": 10000
+    },
+    "note": "No paid operation, purchase, or credit top-up was performed; the live response did not expose a per-job cost."
+  },
+  "runtime": {
+    "runtime_dir": "assets/sprites/effects/engineer/pressure_mines",
+    "frame_prefix": "pressure_mines_f",
+    "frame_order": [
+      "pressure_mines_f00.png",
+      "pressure_mines_f01.png",
+      "pressure_mines_f02.png",
+      "pressure_mines_f03.png",
+      "pressure_mines_f04.png",
+      "pressure_mines_f05.png",
+      "pressure_mines_f06.png",
+      "pressure_mines_f07.png",
+      "pressure_mines_f08.png"
+    ],
+    "spriteframes": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres",
+    "animation_name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0,
+    "class_palette_id": "class_palette.engineer.workshop_copper_amber",
+    "motion_contract": "cyan proximity pulse, contracting amber signal rings, prong vibration, tripwire sparks",
+    "source_runtime_policy": "runtime PNGs are byte-for-byte copies of the verified PixelLab source frames",
+    "godot_import_policy": "lossless CompressedTexture2D, mipmaps disabled, nearest filtering"
+  }
+}

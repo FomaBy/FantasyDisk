@@ -22,7 +22,7 @@ Before generating or specifying icons, record these inputs in the task notes:
 - `display_name`: player-facing name, only for prompt intent; do not bake text into the icon.
 - `target_size`: final PNG size, normally `256x256` unless the issue names another size.
 - `final_path`: exact runtime path from the asset matrix below.
-- `source_dir`: exact source/reference folder under `docs/design/references/icons/`.
+- `source_dir`: exact source/reference folder under `docs/design/reference-assets-lfs/<issue-or-pack>/icons/`.
 - `style_notes`: material, silhouette, class/stat association, palette constraints, and any must-avoid motifs.
 - `pixellab_source`: PixelLab asset/project ID or planned tag/name once generated.
 - `qa_evidence`: preview/contact-sheet path and alpha/readability report path.
@@ -33,10 +33,10 @@ Use these default paths unless the Multica issue names a newer canonical route:
 
 | Category | Runtime PNG | Source/reference folder | Preview/evidence |
 | --- | --- | --- | --- |
-| Artifact | `assets/sprites/ui/icons/artifacts/artifact_<canonical_id>.png` | `docs/design/references/icons/artifacts/<canonical_id>/` | `docs/design/previews/artifact_icons_<batch>.png` |
-| Basic stat | `assets/sprites/ui/icons/stats/stat_<canonical_id>.png` | `docs/design/references/icons/stats/<canonical_id>/` | `docs/design/previews/stat_icons_<batch>.png` |
-| Derived attribute | `assets/sprites/ui/icons/derived/attr_<canonical_id>.png` | `docs/design/references/icons/attributes/<canonical_id>/` | `docs/design/previews/attribute_icons_<batch>.png` |
-| Weapon | `assets/sprites/weapons/<canonical_id>.png` | `docs/design/references/icons/weapons/<canonical_id>/` | `docs/design/previews/weapon_icons_<batch>.png` |
+| Artifact | `assets/sprites/ui/icons/artifacts/artifact_<canonical_id>.png` | `docs/design/reference-assets-lfs/<issue-or-pack>/icons/artifacts/<canonical_id>/` | `docs/design/reference-assets-lfs/<issue-or-pack>/previews/artifact_icons_<batch>.png` |
+| Basic stat | `assets/sprites/ui/icons/stats/stat_<canonical_id>.png` | `docs/design/reference-assets-lfs/<issue-or-pack>/icons/stats/<canonical_id>/` | `docs/design/reference-assets-lfs/<issue-or-pack>/previews/stat_icons_<batch>.png` |
+| Derived attribute | `assets/sprites/ui/icons/derived/attr_<canonical_id>.png` | `docs/design/reference-assets-lfs/<issue-or-pack>/icons/attributes/<canonical_id>/` | `docs/design/reference-assets-lfs/<issue-or-pack>/previews/attribute_icons_<batch>.png` |
+| Weapon | `assets/sprites/weapons/<canonical_id>.png` | `docs/design/reference-assets-lfs/<issue-or-pack>/icons/weapons/<canonical_id>/` | `docs/design/reference-assets-lfs/<issue-or-pack>/previews/weapon_icons_<batch>.png` |
 
 For weapon attack signatures or VFX plates, use the dedicated VFX route only when the Multica issue explicitly asks for it: `assets/sprites/effects/vfx_weapon_<canonical_id>.png`.
 
@@ -81,9 +81,9 @@ canonical_id: strength
 display_name: Strength
 target_size: 64x64
 final_path: assets/sprites/ui/icons/stats/stat_strength.png
-source_dir: docs/design/references/icons/stats/strength/
+source_dir: docs/design/reference-assets-lfs/FAN-1234/icons/stats/strength/
 style_notes: heavy iron gauntlet crushing cracked black stone, warm red-gold edge light, simple silhouette.
-qa_evidence: docs/design/previews/stat_icons_strength_contact.png plus alpha/readability report.
+qa_evidence: docs/design/reference-assets-lfs/FAN-1234/previews/stat_icons_strength_contact.png plus alpha/readability report.
 ```
 
 ```text
@@ -92,9 +92,9 @@ canonical_id: long_spear
 display_name: Long Spear
 target_size: 256x256
 final_path: assets/sprites/weapons/long_spear.png
-source_dir: docs/design/references/icons/weapons/long_spear/
+source_dir: docs/design/reference-assets-lfs/FAN-1234/icons/weapons/long_spear/
 style_notes: noble dark-steel spear with aged brass socket and restrained ruby cloth wrap, full weapon visible diagonally.
-qa_evidence: docs/design/previews/weapon_icons_knight_contact.png plus alpha/readability report.
+qa_evidence: docs/design/reference-assets-lfs/FAN-1234/previews/weapon_icons_knight_contact.png plus alpha/readability report.
 ```
 
 ## QA Checklist

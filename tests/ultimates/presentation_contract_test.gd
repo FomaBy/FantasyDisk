@@ -7,6 +7,7 @@ const Registry := preload("res://scripts/ultimates/registry/weapon_ultimate_regi
 const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const MigrationShards := preload("res://scripts/ultimates/presentation/presentation_v2_migration_shards.gd")
 
 
 class HandleProbe extends RefCounted:
@@ -50,6 +51,27 @@ func _initialize() -> void:
 		presentation_ids[str(manifest.get("presentation_id", ""))] = true
 		_expect(_phase_names(manifest) == ["windup", "release", "active", "recovery", "cancel"], "%s phase order must be complete" % key, errors)
 	_expect(presentation_ids.size() == 51, "all 51 presentation IDs must be distinct", errors)
+
+	var shard_errors := MigrationShards.shard_violations()
+	_expect(
+		shard_errors.is_empty(),
+		"class-owned v2 migration shards must validate; got %s" % [shard_errors],
+		errors
+	)
+	var allowlist_errors := Schema.allowlist_integrity_errors(expected_profiles)
+	_expect(
+		allowlist_errors.is_empty(),
+		"v2 migration allowlist must name live registry pairs with reasons; got %s" % [allowlist_errors],
+		errors
+	)
+	var v1_pairs := 0
+	for raw_key in catalog.keys():
+		if Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(str(raw_key)):
+			v1_pairs += 1
+	print("Presentation v2 migration allowlist: %d/%d pair(s) still on the v1 envelope; the ratchet only shrinks and its target state is empty." % [
+		v1_pairs,
+		catalog.size(),
+	])
 
 	var first_manifest: Dictionary = catalog["berserk/sword"]
 	_test_headless_no_op(first_manifest, errors)

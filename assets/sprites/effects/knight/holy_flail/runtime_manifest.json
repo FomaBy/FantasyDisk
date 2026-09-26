@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3858",
+  "class_id": "knight",
+  "weapon_id": "holy_flail",
+  "effect_id": "expanding_spiral",
+  "pixel_lab": {
+    "object_id": "05d4354b-d4a4-4d37-af06-25b3da2bedc4",
+    "animation_group_id": "39b9d39e-ca0c-4df3-9e99-00c8862a9d3b",
+    "canonical_tag": "knight_holy_flail_expanding_spiral",
+    "generator_manifest": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/pixellab_generation_manifest.json"
+  },
+  "visual_identity": "holy knight flail with radiant silver chain, heavy morning-star head, ivory gold cobalt gems and sacred halo",
+  "motion_contract": "the chain uncoils through an expanding clockwise spiral, the flail head sweeps the arc, holy sparks trace it, then the circle closes and settles",
+  "palette_contract": "silver chain, antique gold, ivory, cobalt blue, white holy light, charcoal outlines",
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 12.0,
+    "duration_seconds": 0.75,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "224x224 nearest-neighbor art centered in 256x256 canvas",
+    "flipbook_duration_seconds": 0.75
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail",
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw",
+    "runtime_dir": "assets/sprites/effects/knight/holy_flail",
+    "spriteframes": "assets/sprites/effects/knight/holy_flail/holy_flail_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/knight/holy_flail/runtime_manifest.json",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/contact_sheet.png"
+  },
+  "source_runtime_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f00.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f00.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f00.png.import",
+      "source_encoded_sha256": "e3bcd4742d370404f07bd5f0927d3babdda8a7ae70d1f67ba26e698422cbb47f",
+      "runtime_encoded_sha256": "e3bcd4742d370404f07bd5f0927d3babdda8a7ae70d1f67ba26e698422cbb47f",
+      "source_pixel_sha256": "9df99615acee9a5caade3470806d075b8826d223303c5a6a7cff209444d75096",
+      "runtime_pixel_sha256": "9df99615acee9a5caade3470806d075b8826d223303c5a6a7cff209444d75096",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://cgimtxg305r8c",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f00.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f00.png-7abca7addc85f803f2fbec0e01cdde5f.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f00.png-7abca7addc85f803f2fbec0e01cdde5f.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f01.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f01.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f01.png.import",
+      "source_encoded_sha256": "24b5b18487c452dcf5a9ac4e571b6851e11fffab6092f29534c7d9058bc0a5aa",
+      "runtime_encoded_sha256": "24b5b18487c452dcf5a9ac4e571b6851e11fffab6092f29534c7d9058bc0a5aa",
+      "source_pixel_sha256": "9842994292227ee3d8859f26d55f687d8318a766b16e4bf7280f5cdfad13e1e6",
+      "runtime_pixel_sha256": "9842994292227ee3d8859f26d55f687d8318a766b16e4bf7280f5cdfad13e1e6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bpjnxprsgwynf",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f01.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f01.png-3f8577770e506451824727e7bc5b2533.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f01.png-3f8577770e506451824727e7bc5b2533.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f02.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f02.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f02.png.import",
+      "source_encoded_sha256": "3935254292862c6a6c2949f05c15818e7add2ad63de63897f80ec26cad98e805",
+      "runtime_encoded_sha256": "3935254292862c6a6c2949f05c15818e7add2ad63de63897f80ec26cad98e805",
+      "source_pixel_sha256": "414d74aaa715699576295a2df96016bdce92b8f79e248e45c64625d16f5d4fb8",
+      "runtime_pixel_sha256": "414d74aaa715699576295a2df96016bdce92b8f79e248e45c64625d16f5d4fb8",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://dm3iuscuh6fgx",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f02.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f02.png-ea9a42216ed20cbde8c118064a5b19cc.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f02.png-ea9a42216ed20cbde8c118064a5b19cc.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f03.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f03.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f03.png.import",
+      "source_encoded_sha256": "cd4919062eca4cf4397cd46487c1c00c98f33c3c65ab93d402a5249b333ab3a6",
+      "runtime_encoded_sha256": "cd4919062eca4cf4397cd46487c1c00c98f33c3c65ab93d402a5249b333ab3a6",
+      "source_pixel_sha256": "0bce80088fcfe051b6cc5aa8d3fb2b3ed3f786f8d3fa683dacfa5176081eb1ec",
+      "runtime_pixel_sha256": "0bce80088fcfe051b6cc5aa8d3fb2b3ed3f786f8d3fa683dacfa5176081eb1ec",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://0y0ayk83cdjt",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f03.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f03.png-9a88d8ae595b2facf54108ebf1811de0.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f03.png-9a88d8ae595b2facf54108ebf1811de0.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f04.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f04.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f04.png.import",
+      "source_encoded_sha256": "4ce2076124a1878a53968b7aca766f07148ab135a88a0cf4f4df25faca7f9323",
+      "runtime_encoded_sha256": "4ce2076124a1878a53968b7aca766f07148ab135a88a0cf4f4df25faca7f9323",
+      "source_pixel_sha256": "b43e65c53c8fe2e3c430cce86e1602043056609d98017ada752dafc06a51231a",
+      "runtime_pixel_sha256": "b43e65c53c8fe2e3c430cce86e1602043056609d98017ada752dafc06a51231a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://cahekxibt3j1k",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f04.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f04.png-60f9387ce0553a210fd5e88d914bf74d.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f04.png-60f9387ce0553a210fd5e88d914bf74d.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f05.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f05.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f05.png.import",
+      "source_encoded_sha256": "6195a96663ee11a4b64c760e6e3a8b51843d10a7aed21be247e9ff7d3a4ec6a2",
+      "runtime_encoded_sha256": "6195a96663ee11a4b64c760e6e3a8b51843d10a7aed21be247e9ff7d3a4ec6a2",
+      "source_pixel_sha256": "91fb8c1b30253016c2e8d1f05bec4ef18b0c6e5bb34bf6db590ef473d85ecb8c",
+      "runtime_pixel_sha256": "91fb8c1b30253016c2e8d1f05bec4ef18b0c6e5bb34bf6db590ef473d85ecb8c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://bunxqv0jqr1ug",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f05.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f05.png-d96cc414c80829f2079cf0c1432742a0.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f05.png-d96cc414c80829f2079cf0c1432742a0.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f06.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f06.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f06.png.import",
+      "source_encoded_sha256": "2a6512deb7e3a564615573a460757a95815a6eb5604b1e608d146ea64755bc73",
+      "runtime_encoded_sha256": "2a6512deb7e3a564615573a460757a95815a6eb5604b1e608d146ea64755bc73",
+      "source_pixel_sha256": "1b204136a426fc0fe85b6f877026d01c0db6b2d3e8b608ff5cc283f2ce620cb0",
+      "runtime_pixel_sha256": "1b204136a426fc0fe85b6f877026d01c0db6b2d3e8b608ff5cc283f2ce620cb0",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://0dtcsvxbgi32",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f06.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f06.png-02385f3724ce63584204c2786c86bbd0.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f06.png-02385f3724ce63584204c2786c86bbd0.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f07.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f07.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f07.png.import",
+      "source_encoded_sha256": "e17570b434cff091a0ea2bb1d5bad991eca7053c9d30f26fe2c03d3c2536d8b4",
+      "runtime_encoded_sha256": "e17570b434cff091a0ea2bb1d5bad991eca7053c9d30f26fe2c03d3c2536d8b4",
+      "source_pixel_sha256": "8188aa4bf7075e82e8b0bdaa3eb496b927e8e52bb54b0829cc5fdf83b17f9b47",
+      "runtime_pixel_sha256": "8188aa4bf7075e82e8b0bdaa3eb496b927e8e52bb54b0829cc5fdf83b17f9b47",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://csvlsduibc4jp",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f07.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f07.png-ca3d3b13e1ab7adde198d6d63eeede8e.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f07.png-ca3d3b13e1ab7adde198d6d63eeede8e.ctex",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/holy_flail_f08.png",
+      "runtime_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f08.png",
+      "import_file": "assets/sprites/effects/knight/holy_flail/holy_flail_f08.png.import",
+      "source_encoded_sha256": "fdc5905e4cb51d02dc70bd4b13b988463628c50f6d44ffe06d5fd3e9150b2741",
+      "runtime_encoded_sha256": "fdc5905e4cb51d02dc70bd4b13b988463628c50f6d44ffe06d5fd3e9150b2741",
+      "source_pixel_sha256": "60a018a29017b684687999d89ba874b654d5e5132cce7dd4d0387c5c1512cefa",
+      "runtime_pixel_sha256": "60a018a29017b684687999d89ba874b654d5e5132cce7dd4d0387c5c1512cefa",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://y7vd68i21adl",
+      "import_source_file": "res://assets/sprites/effects/knight/holy_flail/holy_flail_f08.png",
+      "import_dest_files": [
+        "res://.godot/imported/holy_flail_f08.png-cee75a8862f89cbdc07067f5d12466ed.ctex"
+      ],
+      "import_path": "res://.godot/imported/holy_flail_f08.png-cee75a8862f89cbdc07067f5d12466ed.ctex",
+      "import_matches_runtime": true
+    }
+  ],
+  "spriteframes_contract": {
+    "animation_name": "holy_flail_expanding_spiral",
+    "fps": 12.0,
+    "loop": false,
+    "frame_order": [
+      "holy_flail_f00.png",
+      "holy_flail_f01.png",
+      "holy_flail_f02.png",
+      "holy_flail_f03.png",
+      "holy_flail_f04.png",
+      "holy_flail_f05.png",
+      "holy_flail_f06.png",
+      "holy_flail_f07.png",
+      "holy_flail_f08.png"
+    ],
+    "imports_match_runtime": true
+  },
+  "godot_import": {
+    "engine": "Godot 4.7.stable.official.5b4e0cb0f",
+    "fresh_headless_import": true,
+    "imports_match_runtime": true
+  },
+  "canonical_ultimate_key": "knight/holy_flail"
+}

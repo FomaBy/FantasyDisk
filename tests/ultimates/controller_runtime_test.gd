@@ -249,14 +249,11 @@ func _test_aimed_sequence() -> void:
 	_check(controller.is_active(), "a timed family must stay live after activate()")
 	_check(host.damage_calls == 0, "aimed sequence must not resolve instantly")
 	_advance(activation, 0.06)
-	_check(host.damage_calls == 1, "first shot must land after one interval, got %d" % host.damage_calls)
+	_check(host.damage_calls == 3, "first volley must hit every target after one interval, got %d" % host.damage_calls)
 	_advance(activation, 0.12)
-	_check(host.damage_calls == 3, "every declared shot must land, got %d" % host.damage_calls)
-	var distinct := 0
+	_check(host.damage_calls == 9, "every declared volley must hit every target, got %d" % host.damage_calls)
 	for target in host.fixture_targets:
-		if (target as FixtureTarget).hits > 0:
-			distinct += 1
-	_check(distinct == 3, "aimed shots must spread over distinct targets, got %d" % distinct)
+		_check((target as FixtureTarget).hits == 3, "every target must receive every declared volley")
 	_advance(activation, 0.06)
 	_check(not controller.is_active(), "the cast must end when its declared duration elapses")
 	await _drop(fixture)

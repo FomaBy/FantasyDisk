@@ -90,6 +90,7 @@ func _initialize() -> void:
 	await _test_coin_pouch()
 	await _test_shadow_cloak()
 	await _test_smoke_bomb()
+	await _test_map_wide_coverage()
 	_test_charge_and_persistence_contract()
 	_holder.queue_free()
 	await process_frame
@@ -201,6 +202,29 @@ func _test_charge_and_persistence_contract() -> void:
 		var restored := Ledger.new(row)
 		restored.apply_snapshot(ledger.to_snapshot())
 		_check(is_equal_approx(restored.charge, 63.0), "%s charge must survive snapshots" % weapon_id)
+
+
+## Coin Pouch admits the nearest 13 silhouettes across the whole map; the other
+## Thief ultimates still affect every live enemy.
+func _test_map_wide_coverage() -> void:
+	for weapon_id in ["thief_coin_pouch", "thief_shadow_cloak", "thief_smoke_bomb"]:
+		var host := await _host()
+		for index in 20:
+			_target(host, Vector2(80.0 + float(index) * 180.0, float(index % 3) * 40.0), 10000.0, 10000.0)
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id), "%s map-wide cast must activate" % weapon_id)
+		var activation := controller.active_activation()
+		_advance(activation, 4.2)
+		if weapon_id == "thief_coin_pouch":
+			_check(host.damage_calls == 13, "Coin Pouch must damage exactly its 13 nearest live enemies")
+			for index in host.fixture_targets.size():
+				var target := host.fixture_targets[index] as FixtureTarget
+				_check(target.health < target.max_health if index < 13 else is_equal_approx(target.health, target.max_health),
+					"Coin Pouch must damage only the 13 nearest map-wide enemies")
+		else:
+			for target in host.fixture_targets:
+				_check(target.health < target.max_health, "%s must damage every live enemy" % weapon_id)
+		await _drop(host)
 
 
 func _host() -> FixtureHost:

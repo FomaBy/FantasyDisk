@@ -162,7 +162,11 @@ func _check_inventory() -> void:
 			var next_issue := str(entry.get("next_issue", ""))
 			if next_issue != "SCRUM-1068" and next_issue != "SCRUM-1073":
 				_errors.append("Allowlist %s routes to unexpected issue %s." % [fingerprint, next_issue])
-			var is_atlas_canvas := str(entry.get("path", "")) == "scripts/ui_screens.gd" and str(entry.get("function", "")) in ["_show_atlas_screen", "_atlas_build_canvas"]
+			# FAN-3824: топология Атласа живёт в экранных модулях разреза ui_screens.
+			var is_atlas_canvas := [str(entry.get("path", "")), str(entry.get("function", ""))] in [
+				["scripts/ui/screens/atlas_screen.gd", "_show_atlas_screen"],
+				["scripts/ui/screens/atlas_canvas.gd", "_atlas_build_canvas"],
+			]
 			if next_issue == "SCRUM-1068":
 				routed_to_atlas += 1
 				if not is_atlas_canvas:
@@ -185,19 +189,19 @@ func _check_inventory() -> void:
 	_assert_inventory_site(indexed, "scripts/ui/hero_stat_radar.gd", "_draw", "caption", "ROLE_CAPTION", "draw_string")
 	_assert_inventory_site(indexed, "scripts/threat_indicators.gd", "_draw_marker", "hud", "ROLE_HUD", "draw_string")
 	_assert_inventory_site(indexed, "scripts/enemy.gd", "_show_combat_feedback", "hud", "30 if critical else 22", "theme_override")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "title", "title.add_theme", "theme_override")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "description", "description.add_theme", "theme_override")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "value", "value_label.add_theme", "theme_override")
+	_assert_inventory_site(indexed, "scripts/ui/screens/settings_tabs.gd", "_make_settings_game_tab", "title", "title.add_theme", "theme_override")
+	_assert_inventory_site(indexed, "scripts/ui/screens/settings_tabs.gd", "_make_settings_game_tab", "description", "description.add_theme", "theme_override")
+	_assert_inventory_site(indexed, "scripts/ui/screens/settings_tabs.gd", "_make_settings_game_tab", "value", "value_label.add_theme", "theme_override")
 	_assert_inventory_site(indexed, "scripts/pause_stats_menu.gd", "_build_body", "section", "stats_title.add_theme", "theme_override")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "title", "title_label.add_theme", "theme_override")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_show_codex_screen", "title", "_codex_bind_stage_font(title_label", "semantic_binding")
-	_assert_inventory_site(indexed, "scripts/ui_screens.gd", "_make_level_up_reward_button", "title", "ROLE_TITLE", "semantic_binding")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_settings_game_tab", "title.add_theme", "semantic_native", 24, 24, "mapped")
+	_assert_inventory_site(indexed, "scripts/ui/screens/main_menu.gd", "_show_continue_run_dialog", "title", "title_label.add_theme", "theme_override")
+	_assert_inventory_site(indexed, "scripts/ui/screens/codex.gd", "_show_codex_screen", "title", "_codex_bind_stage_font(title_label", "semantic_binding")
+	_assert_inventory_site(indexed, "scripts/ui/screens/level_up_screen.gd", "_make_level_up_reward_button", "title", "ROLE_TITLE", "semantic_binding")
+	_assert_inventory_range(indexed, "scripts/ui/screens/settings_tabs.gd", "_make_settings_game_tab", "title.add_theme", "semantic_native", 24, 24, "mapped")
 	_assert_inventory_range(indexed, "scripts/pause_stats_menu.gd", "_build_header", "_title_label.add_theme", "semantic_native", 24, 26, "mapped")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_hs4_apply_wide_control_style", "button.add_theme", "semantic_native", 20, 34, "mapped")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_layout_attribute_offer_card", "title.add_theme", "semantic_native", 24, 24, "mapped")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_make_level_up_reward_button", "ROLE_TITLE", "semantic_native", 24, 26, "mapped")
-	_assert_inventory_range(indexed, "scripts/ui_screens.gd", "_show_continue_run_dialog", "subtitle_label.add_theme", "semantic_native", 18, 18, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui/screens/hero_select_kit.gd", "_hs4_apply_wide_control_style", "button.add_theme", "semantic_native", 20, 34, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui/screens/attribute_shop.gd", "_layout_attribute_offer_card", "title.add_theme", "semantic_native", 24, 24, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui/screens/level_up_screen.gd", "_make_level_up_reward_button", "ROLE_TITLE", "semantic_native", 24, 26, "mapped")
+	_assert_inventory_range(indexed, "scripts/ui/screens/main_menu.gd", "_show_continue_run_dialog", "subtitle_label.add_theme", "semantic_native", 18, 18, "mapped")
 	_assert_inventory_range(indexed, "scripts/ui_icon_registry.gd", "<class>", "display_size.x >= 55.0", "legacy_compat", 16, 18, "mapped")
 	var output := []
 	var exit_code := OS.execute("python3", PackedStringArray(["tools/typography_inventory.py", "--check"]), output, true)

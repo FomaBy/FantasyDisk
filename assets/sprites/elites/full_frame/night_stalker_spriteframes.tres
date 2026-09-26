@@ -1,284 +1,2126 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_00.png" id="1_ns1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_01.png" id="2_ns2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_02.png" id="3_ns3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_03.png" id="4_ns4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_04.png" id="5_ns5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_primary_05.png" id="6_ns6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_00.png" id="7_ns7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_01.png" id="8_ns8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_02.png" id="9_ns9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_03.png" id="10_ns10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_04.png" id="11_ns11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_05.png" id="12_ns12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_00.png" id="13_ns13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_01.png" id="14_ns14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_02.png" id="15_ns15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_03.png" id="16_ns16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_04.png" id="17_ns17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_05.png" id="18_ns18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_00.png" id="19_ns19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_01.png" id="20_ns20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_02.png" id="21_ns21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_03.png" id="22_ns22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_04.png" id="23_ns23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_05.png" id="24_ns24"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_00.png" id="25_ns25"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_01.png" id="26_ns26"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_02.png" id="27_ns27"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_03.png" id="28_ns28"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_04.png" id="29_ns29"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_05.png" id="30_ns30"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_east_00.png" id="1_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_east_01.png" id="2_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_east_02.png" id="3_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_east_03.png" id="4_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_east_00.png" id="5_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_east_01.png" id="6_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_east_02.png" id="7_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_east_03.png" id="8_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_00.png" id="9_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_01.png" id="10_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_02.png" id="11_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_03.png" id="12_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_west_00.png" id="13_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_west_01.png" id="14_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_west_02.png" id="15_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_south_west_03.png" id="16_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_west_00.png" id="17_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_west_01.png" id="18_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_west_02.png" id="19_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_west_03.png" id="20_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_west_00.png" id="21_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_west_01.png" id="22_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_west_02.png" id="23_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_west_03.png" id="24_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_00.png" id="25_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_01.png" id="26_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_02.png" id="27_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_03.png" id="28_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_east_00.png" id="29_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_east_01.png" id="30_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_east_02.png" id="31_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_idle_north_east_03.png" id="32_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_00.png" id="33_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_01.png" id="34_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_02.png" id="35_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_03.png" id="36_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_04.png" id="37_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_05.png" id="38_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_06.png" id="39_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_east_07.png" id="40_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_00.png" id="41_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_01.png" id="42_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_02.png" id="43_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_03.png" id="44_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_04.png" id="45_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_05.png" id="46_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_06.png" id="47_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_east_07.png" id="48_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_00.png" id="49_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_01.png" id="50_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_02.png" id="51_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_03.png" id="52_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_04.png" id="53_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_05.png" id="54_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_06.png" id="55_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_07.png" id="56_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_00.png" id="57_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_01.png" id="58_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_02.png" id="59_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_03.png" id="60_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_04.png" id="61_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_05.png" id="62_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_06.png" id="63_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_south_west_07.png" id="64_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_00.png" id="65_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_01.png" id="66_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_02.png" id="67_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_03.png" id="68_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_04.png" id="69_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_05.png" id="70_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_06.png" id="71_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_west_07.png" id="72_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_00.png" id="73_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_01.png" id="74_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_02.png" id="75_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_03.png" id="76_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_04.png" id="77_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_05.png" id="78_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_06.png" id="79_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_west_07.png" id="80_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_00.png" id="81_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_01.png" id="82_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_02.png" id="83_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_03.png" id="84_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_04.png" id="85_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_05.png" id="86_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_06.png" id="87_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_07.png" id="88_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_00.png" id="89_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_01.png" id="90_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_02.png" id="91_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_03.png" id="92_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_04.png" id="93_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_05.png" id="94_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_06.png" id="95_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_move_north_east_07.png" id="96_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_east_00.png" id="97_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_east_01.png" id="98_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_east_02.png" id="99_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_east_03.png" id="100_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_east_04.png" id="101_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_east_05.png" id="102_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_east_00.png" id="103_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_east_01.png" id="104_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_east_02.png" id="105_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_east_03.png" id="106_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_east_04.png" id="107_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_east_05.png" id="108_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_00.png" id="109_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_01.png" id="110_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_02.png" id="111_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_03.png" id="112_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_04.png" id="113_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_05.png" id="114_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_west_00.png" id="115_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_west_01.png" id="116_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_west_02.png" id="117_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_west_03.png" id="118_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_west_04.png" id="119_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_south_west_05.png" id="120_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_west_00.png" id="121_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_west_01.png" id="122_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_west_02.png" id="123_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_west_03.png" id="124_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_west_04.png" id="125_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_west_05.png" id="126_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_west_00.png" id="127_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_west_01.png" id="128_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_west_02.png" id="129_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_west_03.png" id="130_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_west_04.png" id="131_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_west_05.png" id="132_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_00.png" id="133_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_01.png" id="134_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_02.png" id="135_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_03.png" id="136_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_04.png" id="137_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_05.png" id="138_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_east_00.png" id="139_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_east_01.png" id="140_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_east_02.png" id="141_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_east_03.png" id="142_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_east_04.png" id="143_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_hit_north_east_05.png" id="144_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_00.png" id="145_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_01.png" id="146_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_02.png" id="147_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_03.png" id="148_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_04.png" id="149_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_05.png" id="150_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_east_06.png" id="151_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_00.png" id="152_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_01.png" id="153_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_02.png" id="154_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_03.png" id="155_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_04.png" id="156_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_05.png" id="157_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_east_06.png" id="158_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_00.png" id="159_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_01.png" id="160_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_02.png" id="161_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_03.png" id="162_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_04.png" id="163_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_05.png" id="164_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_06.png" id="165_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_00.png" id="166_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_01.png" id="167_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_02.png" id="168_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_03.png" id="169_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_04.png" id="170_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_05.png" id="171_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_south_west_06.png" id="172_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_00.png" id="173_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_01.png" id="174_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_02.png" id="175_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_03.png" id="176_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_04.png" id="177_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_05.png" id="178_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_west_06.png" id="179_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_00.png" id="180_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_01.png" id="181_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_02.png" id="182_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_03.png" id="183_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_04.png" id="184_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_05.png" id="185_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_west_06.png" id="186_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_00.png" id="187_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_01.png" id="188_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_02.png" id="189_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_03.png" id="190_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_04.png" id="191_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_05.png" id="192_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_06.png" id="193_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_00.png" id="194_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_01.png" id="195_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_02.png" id="196_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_03.png" id="197_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_04.png" id="198_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_05.png" id="199_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_death_north_east_06.png" id="200_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_00.png" id="201_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_01.png" id="202_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_02.png" id="203_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_03.png" id="204_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_04.png" id="205_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_05.png" id="206_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_east_06.png" id="207_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_00.png" id="208_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_01.png" id="209_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_02.png" id="210_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_03.png" id="211_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_04.png" id="212_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_05.png" id="213_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_east_06.png" id="214_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_00.png" id="215_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_01.png" id="216_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_02.png" id="217_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_03.png" id="218_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_04.png" id="219_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_05.png" id="220_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_06.png" id="221_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_00.png" id="222_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_01.png" id="223_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_02.png" id="224_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_03.png" id="225_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_04.png" id="226_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_05.png" id="227_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_south_west_06.png" id="228_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_00.png" id="229_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_01.png" id="230_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_02.png" id="231_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_03.png" id="232_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_04.png" id="233_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_05.png" id="234_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_west_06.png" id="235_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_00.png" id="236_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_01.png" id="237_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_02.png" id="238_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_03.png" id="239_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_04.png" id="240_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_05.png" id="241_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_west_06.png" id="242_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_00.png" id="243_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_01.png" id="244_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_02.png" id="245_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_03.png" id="246_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_04.png" id="247_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_05.png" id="248_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_06.png" id="249_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_00.png" id="250_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_01.png" id="251_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_02.png" id="252_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_03.png" id="253_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_04.png" id="254_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_05.png" id="255_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_attack_north_east_06.png" id="256_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_00.png" id="257_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_01.png" id="258_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_02.png" id="259_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_03.png" id="260_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_04.png" id="261_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_05.png" id="262_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_east_06.png" id="263_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_00.png" id="264_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_01.png" id="265_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_02.png" id="266_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_03.png" id="267_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_04.png" id="268_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_05.png" id="269_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_east_06.png" id="270_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_00.png" id="271_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_01.png" id="272_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_02.png" id="273_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_03.png" id="274_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_04.png" id="275_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_05.png" id="276_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_06.png" id="277_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_00.png" id="278_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_01.png" id="279_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_02.png" id="280_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_03.png" id="281_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_04.png" id="282_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_05.png" id="283_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_south_west_06.png" id="284_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_00.png" id="285_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_01.png" id="286_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_02.png" id="287_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_03.png" id="288_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_04.png" id="289_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_05.png" id="290_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_west_06.png" id="291_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_00.png" id="292_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_01.png" id="293_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_02.png" id="294_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_03.png" id="295_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_04.png" id="296_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_05.png" id="297_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_west_06.png" id="298_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_00.png" id="299_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_01.png" id="300_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_02.png" id="301_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_03.png" id="302_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_04.png" id="303_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_05.png" id="304_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_06.png" id="305_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_00.png" id="306_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_01.png" id="307_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_02.png" id="308_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_03.png" id="309_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_04.png" id="310_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_05.png" id="311_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_shadow_strike_north_east_06.png" id="312_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_00.png" id="313_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_01.png" id="314_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_02.png" id="315_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_03.png" id="316_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_04.png" id="317_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_05.png" id="318_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_east_06.png" id="319_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_00.png" id="320_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_01.png" id="321_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_02.png" id="322_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_03.png" id="323_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_04.png" id="324_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_05.png" id="325_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_east_06.png" id="326_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_00.png" id="327_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_01.png" id="328_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_02.png" id="329_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_03.png" id="330_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_04.png" id="331_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_05.png" id="332_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_06.png" id="333_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_00.png" id="334_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_01.png" id="335_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_02.png" id="336_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_03.png" id="337_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_04.png" id="338_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_05.png" id="339_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_south_west_06.png" id="340_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_00.png" id="341_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_01.png" id="342_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_02.png" id="343_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_03.png" id="344_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_04.png" id="345_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_05.png" id="346_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_west_06.png" id="347_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_00.png" id="348_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_01.png" id="349_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_02.png" id="350_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_03.png" id="351_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_04.png" id="352_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_05.png" id="353_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_west_06.png" id="354_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_00.png" id="355_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_01.png" id="356_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_02.png" id="357_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_03.png" id="358_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_04.png" id="359_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_05.png" id="360_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_06.png" id="361_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_00.png" id="362_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_01.png" id="363_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_02.png" id="364_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_03.png" id="365_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_04.png" id="366_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_05.png" id="367_ns"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/night_stalker/night_stalker_skill_phase_dash_north_east_06.png" id="368_ns"]
 
 [resource]
 animations = [
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_ns1")
+"texture": ExtResource("1_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("2_ns2")
+"texture": ExtResource("2_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("3_ns3")
+"texture": ExtResource("3_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("4_ns4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_ns5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_ns6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_ns1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_ns2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_ns3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_ns4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_ns5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_ns6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_ns7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_ns8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_ns9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_ns10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_ns11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_ns12")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_ns13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_ns14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_ns15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_ns16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_ns17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_ns18")
-}
-],
+"texture": ExtResource("4_ns")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("7_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_ns")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_ns")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_ns")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_ns")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_ns")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("25_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_ns")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("29_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_ns")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 6.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_ns")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_ns19")
+"texture": ExtResource("41_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ns20")
+"texture": ExtResource("42_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ns21")
+"texture": ExtResource("43_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ns22")
+"texture": ExtResource("44_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_ns23")
+"texture": ExtResource("45_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_ns24")
-}
-],
+"texture": ExtResource("46_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_ns")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("49_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("51_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_ns")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_ns")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_ns")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("73_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_ns")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_ns")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_ns")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("97_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_ns")
+}],
 "loop": false,
-"name": &"skill_shadow_strike",
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("103_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_ns")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("109_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("113_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_ns")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("115_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_ns")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("121_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_ns")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("127_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_ns")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_ns")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("139_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("143_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_ns")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("145_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("149_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_ns")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("152_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_ns")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("159_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_ns")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("166_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("167_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_ns")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_ns")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("180_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_ns")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("187_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_ns")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("194_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_ns")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("201_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_ns")
+}],
+"loop": false,
+"name": &"attack_east",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_ns19")
+"texture": ExtResource("208_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_ns20")
+"texture": ExtResource("209_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_ns21")
+"texture": ExtResource("210_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_ns22")
+"texture": ExtResource("211_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_ns23")
+"texture": ExtResource("212_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_ns24")
-}
-],
+"texture": ExtResource("213_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_ns")
+}],
 "loop": false,
-"name": &"attack_shadow_strike",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_ns25")
+"texture": ExtResource("215_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_ns26")
+"texture": ExtResource("216_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_ns27")
+"texture": ExtResource("217_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_ns28")
+"texture": ExtResource("218_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_ns29")
+"texture": ExtResource("219_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_ns30")
-}
-],
+"texture": ExtResource("220_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_ns")
+}],
 "loop": false,
-"name": &"skill_phase_dash",
+"name": &"attack_south",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_ns25")
+"texture": ExtResource("222_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_ns26")
+"texture": ExtResource("223_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_ns27")
+"texture": ExtResource("224_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_ns28")
+"texture": ExtResource("225_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_ns29")
+"texture": ExtResource("226_ns")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_ns30")
-}
-],
+"texture": ExtResource("227_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_ns")
+}],
 "loop": false,
-"name": &"attack_phase_dash",
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("229_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_ns")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("236_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("239_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_ns")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("243_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_ns")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("250_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("251_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_ns")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("263_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("264_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("269_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("271_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("275_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("278_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("281_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("285_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("287_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("292_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("293_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("305_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("306_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("307_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("308_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("309_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("310_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("311_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("312_ns")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("313_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("314_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("315_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("316_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("317_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("318_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("319_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("320_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("321_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("322_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("323_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("324_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("325_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("326_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("327_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("328_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("329_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("330_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("331_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("332_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("333_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("334_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("335_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("336_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("337_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("338_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("339_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("340_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("341_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("342_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("343_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("344_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("345_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("346_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("347_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("348_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("349_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("350_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("351_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("352_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("353_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("354_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("355_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("356_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("357_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("358_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("359_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("360_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("361_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("362_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("363_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("364_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("365_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("366_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("367_ns")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("368_ns")
+}],
+"loop": false,
+"name": &"skill_phase_dash_north_east",
 "speed": 12.0
 }
 ]

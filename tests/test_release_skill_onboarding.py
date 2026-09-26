@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import base64
+import functools
 import hashlib
-import io
+import json
 import os
 import signal
 import shutil
@@ -12,7 +13,6 @@ import socket
 import stat
 import subprocess
 import sys
-import tarfile
 import tempfile
 import threading
 import time
@@ -26,6 +26,7 @@ SOURCE_SKILL = ROOT / "skills" / "codex" / "fantasydisk-release-director"
 LEGACY_SKILL_COMMIT = "2cba1b7050cb168bca70b6354cc7b654334dd53e"
 LEGACY_SKILL_PATH = "skills/codex/fantasydisk-release-director"
 PRE_FIX_ONBOARD_COMMIT = "5d23555117c11620ee0f0834e6c30877fd1dafb8"
+PRE_FIX_ONBOARD_PATH = "scripts/onboard.sh"
 LEGACY_SKILL_MD_SHA256 = "9ae5871b81165d655f262efbae410891af4eb384504dd7158c2de79d9a348a50"
 
 EXPECTED_RELEASE_SKILL_FILES = {
@@ -47,6 +48,13 @@ VERSIONS_RELATIVE_PATH = Path(
     ".fantasydisk-release-director.versions",
 )
 SELECTED_RELATIVE_PATH = Path(".codex", "skills", "fantasydisk-release-director")
+# Keep the child watchdog below quality_gate.py's 60-second idle watchdog.
+ONBOARD_WATCHDOG_SECONDS = 15.0
+_ONBOARD_CLEANUP_SECONDS = 2.0
+# Consecutive iterations of each FIFO contour in the stall/leak regression. The
+# two FAN-3837 and FAN-3848 CI failures were both cold-start effects that a
+# single attempt cannot distinguish from luck.
+_FIFO_REGRESSION_ATTEMPTS = 20
 
 
 def _file_sha256(path: Path) -> str:
@@ -74,34 +82,86 @@ def _inventory(root: Path) -> dict[str, tuple[str, ...]]:
     return entries
 
 
+# These fixtures are pinned *historical* repository content. Reading them back
+# with `git archive`/`git show <sha>:path` made every run depend on objects the
+# CI checkout does not hold: the `static-quality` job uses a sparse checkout,
+# which makes actions/checkout clone with `--filter=blob:none`, and the pinned
+# commits are then fetched by SHA at `--depth=1` — commit and trees arrive, the
+# blobs do not. Each extraction therefore triggered an on-demand promisor fetch
+# to the remote, an unbounded network round trip that exceeded the archive
+# timeout twice in run 33384764032 (FAN-3848). A timeout only renames that
+# stall; the fix is to stop needing the objects. The bytes live in the fixture
+# below, keyed by the same commit+path they were read from and verified against
+# a recorded SHA-256, so preparation is local, deterministic and instant.
+PINNED_BLOBS_PATH = ROOT / "tests" / "fixtures" / "release_skill_legacy" / "pinned_blobs.json"
+
+
+def _read_pinned_blobs(manifest_path: Path) -> dict[tuple[str, str], bytes]:
+    """Decode the pinned-blob manifest, failing closed on any content drift."""
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != 1:
+        raise AssertionError(f"unsupported pinned-blob schema: {manifest.get('schema_version')!r}")
+    blobs: dict[tuple[str, str], bytes] = {}
+    for entry in manifest["blobs"]:
+        key = (entry["commit"], entry["path"])
+        if key in blobs:
+            raise AssertionError(f"duplicate pinned fixture entry: {key[0]}:{key[1]}")
+        payload = base64.b64decode("".join(entry["base64"]), validate=True)
+        digest = hashlib.sha256(payload).hexdigest()
+        if len(payload) != entry["size"] or digest != entry["sha256"]:
+            raise AssertionError(
+                f"pinned fixture {key[0]}:{key[1]} does not match its recorded evidence: "
+                f"{len(payload)} bytes / sha256 {digest} != "
+                f"{entry['size']} bytes / sha256 {entry['sha256']}"
+            )
+        blobs[key] = payload
+    if not blobs:
+        raise AssertionError(f"pinned-blob manifest {manifest_path} declares no blobs")
+    return blobs
+
+
+@functools.lru_cache(maxsize=None)
+def _pinned_blobs() -> dict[tuple[str, str], bytes]:
+    return _read_pinned_blobs(PINNED_BLOBS_PATH)
+
+
+def _pinned_blob(commit: str, path: str) -> bytes:
+    try:
+        return _pinned_blobs()[(commit, path)]
+    except KeyError:
+        raise AssertionError(f"no pinned fixture for {commit}:{path}") from None
+
+
+def _legacy_skill_payloads() -> dict[str, bytes]:
+    """Return the pinned pre-fix skill tree as {path relative to the skill root: bytes}."""
+    prefix = f"{LEGACY_SKILL_PATH}/"
+    payloads = {
+        path[len(prefix) :]: payload
+        for (commit, path), payload in _pinned_blobs().items()
+        if commit == LEGACY_SKILL_COMMIT and path.startswith(prefix)
+    }
+    if not payloads:
+        raise AssertionError(
+            f"pinned fixture holds no files under {LEGACY_SKILL_COMMIT}:{LEGACY_SKILL_PATH}"
+        )
+    return payloads
+
+
 def _extract_legacy_skill(destination: Path) -> None:
-    """Materialize the exact repo-owned pre-fix tree from git history."""
-    archive = subprocess.run(
-        ["git", "archive", "--format=tar", LEGACY_SKILL_COMMIT, LEGACY_SKILL_PATH],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-    )
-    with tarfile.open(fileobj=io.BytesIO(archive.stdout), mode="r:") as tar:
-        for member in tar.getmembers():
-            if member.name == LEGACY_SKILL_PATH:
-                relative = Path(".")
-            elif member.name.startswith(f"{LEGACY_SKILL_PATH}/"):
-                relative = Path(member.name).relative_to(LEGACY_SKILL_PATH)
-            else:
-                continue
-            output = destination / relative
-            if member.isdir():
-                output.mkdir(parents=True, exist_ok=True)
-                output.chmod(0o755)
-            elif member.isfile():
-                output.parent.mkdir(parents=True, exist_ok=True)
-                source = tar.extractfile(member)
-                assert source is not None
-                output.write_bytes(source.read())
-                output.chmod(0o644)
-            else:
-                raise AssertionError(f"unexpected legacy archive entry: {member.name}")
+    """Materialize the exact repo-owned pre-fix tree from the pinned fixture."""
+    destination.mkdir(parents=True, exist_ok=True)
+    for relative, payload in sorted(_legacy_skill_payloads().items()):
+        output = destination / relative
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(payload)
+        output.chmod(0o644)
+    # The replaced `git archive` walk carried an explicit 0755 mode for the
+    # skill root and every directory member; keep that byte/type inventory
+    # identical instead of inheriting whatever the caller's umask produces.
+    destination.chmod(0o755)
+    for path in destination.rglob("*"):
+        if path.is_dir():
+            path.chmod(0o755)
 
 
 def _fake_multica(home: Path) -> Path:
@@ -138,15 +198,73 @@ def _run_onboard(
     *,
     path_prefix: Path | None = None,
     extra: dict[str, str] | None = None,
+    args: tuple[str, ...] = (),
+    timeout: float = ONBOARD_WATCHDOG_SECONDS,
 ) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        ["bash", str(script)],
+    command = ["bash", str(script), *args]
+    process = subprocess.Popen(
+        command,
         cwd=script.parents[1],
         env=_onboard_environment(script, home, path_prefix=path_prefix, extra=extra),
         encoding="utf-8",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        check=False,
+        start_new_session=os.name != "nt",
+    )
+    try:
+        stdout, _ = process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired as timeout_error:
+        _kill_process_group(process)
+        try:
+            stdout, _ = process.communicate(timeout=_ONBOARD_CLEANUP_SECONDS)
+        except subprocess.TimeoutExpired as cleanup_error:
+            _kill_process_group(process)
+            if process.stdout is not None:
+                process.stdout.close()
+            try:
+                process.wait(timeout=_ONBOARD_CLEANUP_SECONDS)
+            except subprocess.TimeoutExpired as wait_error:
+                raise AssertionError(
+                    "onboarding child cleanup exceeded the watchdog window; "
+                    f"process group root pid={process.pid}"
+                ) from wait_error
+            stdout = cleanup_error.output
+        captured = _captured_output(stdout)
+        raise AssertionError(
+            f"onboarding child timed out after {timeout:.2f}s; "
+            f"terminated and reaped process group root pid={process.pid}; "
+            f"task home={home}; captured output:\n{captured or '<no output captured>'}"
+        ) from timeout_error
+    _assert_process_group_exited(process.pid)
+    return subprocess.CompletedProcess(command, process.returncode, stdout=stdout)
+
+
+def _assert_process_group_exited(pgid: int) -> None:
+    """Fail loudly if a descendant outlived the onboarding child it came from.
+
+    `communicate()` returning already proves nothing still holds this call's
+    stdout pipe open, but a descendant that closed its inherited fds while
+    continuing to run (for example a detached `git gc --auto`) would keep
+    the process group alive without deadlocking this run. Left unchecked,
+    that survivor is exactly the kind of leak that stalls a *later* run.
+    """
+    if os.name == "nt":
+        return
+    # A child that exits cleanly may leave a grandchild as a momentary zombie
+    # awaiting reaping; give that ordinary teardown a brief, bounded window
+    # before treating a still-visible group as a genuine leak.
+    deadline = time.monotonic() + 1.0
+    while True:
+        try:
+            os.killpg(pgid, 0)
+        except (ProcessLookupError, PermissionError):
+            return
+        if time.monotonic() >= deadline:
+            break
+        time.sleep(0.05)
+    raise AssertionError(
+        f"onboarding process group root pid={pgid} still has live members "
+        "after the run completed; a descendant leaked"
     )
 
 
@@ -155,15 +273,14 @@ def _run_release_only(
     home: Path,
     *,
     extra: dict[str, str] | None = None,
+    timeout: float = ONBOARD_WATCHDOG_SECONDS,
 ) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        ["bash", str(script), "--release-only"],
-        cwd=script.parents[1],
-        env=_onboard_environment(script, home, extra=extra),
-        encoding="utf-8",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
+    return _run_onboard(
+        script,
+        home,
+        extra=extra,
+        args=("--release-only",),
+        timeout=timeout,
     )
 
 
@@ -182,6 +299,38 @@ def _start_onboard(
         stderr=subprocess.STDOUT,
         start_new_session=True,
     )
+
+
+def _kill_process_group(process: subprocess.Popen[str]) -> None:
+    if os.name == "nt":
+        try:
+            process.kill()
+        except ProcessLookupError:
+            pass
+        return
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        if process.poll() is None:
+            process.kill()
+
+
+def _captured_output(output: str | bytes | None) -> str:
+    if output is None:
+        return ""
+    if isinstance(output, bytes):
+        return output.decode("utf-8", errors="replace")
+    return output
+
+
+def _process_is_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
 
 
 def _wait_for_marker(marker: Path, process: subprocess.Popen[str]) -> None:
@@ -439,15 +588,95 @@ def _write_schema_valid_residue_marker(
 
 
 def _write_pre_fix_onboard(destination: Path) -> Path:
-    result = subprocess.run(
-        ["git", "show", f"{PRE_FIX_ONBOARD_COMMIT}:scripts/onboard.sh"],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-    )
-    destination.write_bytes(result.stdout)
+    # Same pinned-history dependency as the legacy skill tree above, and with no
+    # timeout at all: leaving this on `git show` would simply move FAN-3848's
+    # promisor stall to the first test that calls it, where it could only end at
+    # the shared 60-second idle watchdog.
+    destination.write_bytes(_pinned_blob(PRE_FIX_ONBOARD_COMMIT, PRE_FIX_ONBOARD_PATH))
     destination.chmod(0o755)
     return destination
+
+
+class PinnedLegacyFixtureTest(unittest.TestCase):
+    """FAN-3848: the pinned fixture replaces git history, so it carries the proof."""
+
+    def test_manifest_matches_the_pinned_commits_and_paths(self) -> None:
+        blobs = _pinned_blobs()
+        self.assertEqual(
+            sorted(blobs),
+            sorted(
+                [
+                    (LEGACY_SKILL_COMMIT, f"{LEGACY_SKILL_PATH}/SKILL.md"),
+                    (LEGACY_SKILL_COMMIT, f"{LEGACY_SKILL_PATH}/scripts/local_release.py"),
+                    (LEGACY_SKILL_COMMIT, f"{LEGACY_SKILL_PATH}/scripts/release_publish.py"),
+                    (LEGACY_SKILL_COMMIT, f"{LEGACY_SKILL_PATH}/scripts/telegram_publish.py"),
+                    (PRE_FIX_ONBOARD_COMMIT, PRE_FIX_ONBOARD_PATH),
+                ]
+            ),
+        )
+        # The SKILL.md digest is asserted independently by the migration test
+        # against the same constant, so it pins this fixture to real history.
+        self.assertEqual(
+            hashlib.sha256(
+                _pinned_blob(LEGACY_SKILL_COMMIT, f"{LEGACY_SKILL_PATH}/SKILL.md")
+            ).hexdigest(),
+            LEGACY_SKILL_MD_SHA256,
+        )
+        self.assertTrue(
+            _pinned_blob(PRE_FIX_ONBOARD_COMMIT, PRE_FIX_ONBOARD_PATH).startswith(b"#!/"),
+            "the pinned pre-fix onboarding script lost its interpreter line",
+        )
+
+    def test_extraction_is_deterministic(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-legacy-fixture-") as raw:
+            first = Path(raw) / "first"
+            second = Path(raw) / "second"
+            _extract_legacy_skill(first)
+            _extract_legacy_skill(second)
+
+            inventory = _inventory(first)
+            self.assertEqual(inventory, _inventory(second))
+            self.assertEqual(
+                sorted(inventory),
+                [
+                    "SKILL.md",
+                    "scripts",
+                    "scripts/local_release.py",
+                    "scripts/release_publish.py",
+                    "scripts/telegram_publish.py",
+                ],
+            )
+            self.assertEqual(inventory["scripts"], ("directory", "0755"))
+            self.assertEqual(inventory["SKILL.md"][:2], ("file", "0644"))
+            self.assertEqual(f"{os.lstat(first).st_mode & 0o7777:04o}", "0755")
+
+    def test_corrupt_or_incomplete_fixture_evidence_fails_closed(self) -> None:
+        manifest = json.loads(PINNED_BLOBS_PATH.read_text(encoding="utf-8"))
+        entry = manifest["blobs"][0]
+        truncated = base64.b64encode(
+            base64.b64decode("".join(entry["base64"]), validate=True)[:-1]
+        ).decode("ascii")
+        mutations = {
+            "payload drift": lambda doc: doc["blobs"][0].update(base64=[truncated]),
+            "recorded size drift": lambda doc: doc["blobs"][0].update(size=1),
+            "recorded digest drift": lambda doc: doc["blobs"][0].update(sha256="0" * 64),
+            "duplicate entry": lambda doc: doc["blobs"].append(dict(doc["blobs"][0])),
+            "unsupported schema": lambda doc: doc.update(schema_version=2),
+            "empty manifest": lambda doc: doc.update(blobs=[]),
+        }
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-legacy-manifest-") as raw:
+            for name, mutate in mutations.items():
+                with self.subTest(mutation=name):
+                    document = json.loads(json.dumps(manifest))
+                    mutate(document)
+                    path = Path(raw) / "pinned_blobs.json"
+                    path.write_text(json.dumps(document), encoding="utf-8")
+
+                    with self.assertRaises(AssertionError):
+                        _read_pinned_blobs(path)
+
+        with self.assertRaises(AssertionError):
+            _pinned_blob(LEGACY_SKILL_COMMIT, f"{LEGACY_SKILL_PATH}/never-existed.md")
 
 
 @unittest.skipIf(os.name == "nt", "release onboarding execution requires POSIX/Bash")
@@ -1018,6 +1247,103 @@ class ReleaseSkillOnboardingTest(unittest.TestCase):
             self.assertIn("BLOCK", result.stdout)
             self.assertEqual(_inventory(target), before)
             self.assertTrue(fifo.exists())
+
+    def _assert_selected_fifo_blocks(self, attempt: int) -> None:
+        """One iteration of the FIFO-inside-the-selected-tree contour."""
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-fifo-") as raw:
+            home = Path(raw)
+            target = _selected(home)
+            target.mkdir(parents=True)
+            _extract_legacy_skill(target)
+            fifo = target / "operator-pipe"
+            os.mkfifo(fifo)
+            before = _inventory(target)
+
+            result = _run_onboard(ONBOARD, home)
+
+            self.assertNotEqual(result.returncode, 0, f"attempt {attempt}: {result.stdout}")
+            self.assertIn("BLOCK", result.stdout, f"attempt {attempt}")
+            self.assertEqual(_inventory(target), before, f"attempt {attempt}")
+            self.assertTrue(stat.S_ISFIFO(os.lstat(fifo).st_mode), f"attempt {attempt}")
+
+    def _assert_versions_root_fifo_blocks(self, attempt: int) -> None:
+        """One iteration of the FIFO-as-the-whole-version-store contour."""
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-fifo-root-") as raw:
+            home = Path(raw)
+            versions = _versions(home)
+            versions.parent.mkdir(parents=True)
+            os.mkfifo(versions)
+            before = _lstat_signature(versions)
+
+            result = _run_onboard(ONBOARD, home)
+
+            self.assertNotEqual(result.returncode, 0, f"attempt {attempt}: {result.stdout}")
+            self.assertIn("BLOCK", result.stdout, f"attempt {attempt}")
+            self.assertEqual(_lstat_signature(versions), before, f"attempt {attempt}")
+            self.assertTrue(stat.S_ISFIFO(os.lstat(versions).st_mode), f"attempt {attempt}")
+            self.assertFalse(_selected(home).exists(), f"attempt {attempt}")
+            self.assertFalse(_selected(home).is_symlink(), f"attempt {attempt}")
+
+    def test_fifo_is_preserved_and_blocks_repeatedly_without_leaking(self) -> None:
+        """FAN-3837/FAN-3848 regression: CI saw these contours stall past the idle watchdog.
+
+        Both FIFO contours run back to back, `_FIFO_REGRESSION_ATTEMPTS` times.
+        Every `_run_onboard` return asserts the child's whole process group is
+        gone (see `_assert_process_group_exited`), and fixture preparation no
+        longer touches the repository at all (see `_extract_legacy_skill`), so
+        the only way this test can stall is a genuinely reintroduced leak — not
+        a cold partial-clone object fetch that happened to land here first.
+        """
+        for attempt in range(_FIFO_REGRESSION_ATTEMPTS):
+            self._assert_selected_fifo_blocks(attempt)
+            self._assert_versions_root_fifo_blocks(attempt)
+            # A heartbeat per iteration keeps the shared 60-second idle-output
+            # watchdog fed across the whole loop and pins any future stall to an
+            # exact iteration and contour instead of a silent block of wall time.
+            print(f"fifo regression iteration {attempt + 1}/{_FIFO_REGRESSION_ATTEMPTS} ok", flush=True)
+
+    def test_watchdog_terminates_process_group_and_reports_captured_output(self) -> None:
+        temp_root: Path | None = None
+        child_pids: list[int] = []
+        with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-watchdog-") as raw:
+            temp_root = Path(raw)
+            script = temp_root / "checkout" / "scripts" / "hang.sh"
+            pid_file = temp_root / "child-pids.txt"
+            script.parent.mkdir(parents=True)
+            script.write_text(
+                "#!/bin/bash\n"
+                f"printf 'parent=%s\\n' \"$$\" > {pid_file}\n"
+                "printf 'watchdog fixture started\\n'\n"
+                "sleep 300 &\n"
+                "printf 'child=%s\\n' \"$!\" >> "
+                f"{pid_file}\n"
+                "wait\n",
+                encoding="utf-8",
+            )
+            script.chmod(0o755)
+
+            with self.assertRaises(AssertionError) as raised:
+                _run_onboard(script, temp_root / "home", timeout=0.2)
+            message = str(raised.exception)
+            self.assertIn("onboarding child timed out after", message)
+            self.assertIn("captured output:\nwatchdog fixture started", message)
+
+            child_pids = [
+                int(line.split("=", 1)[1])
+                for line in pid_file.read_text(encoding="ascii").splitlines()
+            ]
+            deadline = time.monotonic() + 2
+            while time.monotonic() < deadline:
+                if all(
+                    not _process_is_alive(pid)
+                    for pid in child_pids
+                ):
+                    break
+                time.sleep(0.01)
+            self.assertTrue(all(not _process_is_alive(pid) for pid in child_pids))
+
+        self.assertIsNotNone(temp_root)
+        self.assertFalse(temp_root.exists())
 
     def test_mode_drift_is_preserved_and_blocks(self) -> None:
         with tempfile.TemporaryDirectory(prefix="fantasydisk-onboard-mode-") as raw:

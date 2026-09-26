@@ -3,7 +3,7 @@
     "task": "SCRUM-704",
     "character_id": "dark_mage",
     "pixellab_character_id": "9bb0eca8-5afe-49d4-8e56-7115a45efdcc",
-    "generated_at": "2026-07-01T05:50:19.545360",
+    "generated_at": "2026-08-17T16:17:16+00:00",
     "source_created_at": "2026-06-30T14:47:45.18859+00:00",
     "directions": [
       "south",
@@ -25,7 +25,7 @@
       "method": "alpha-bbox fit from PixelLab source, nearest-neighbor, centered X, bottom aligned",
       "target_visible_height": 246,
       "bottom_padding": 32,
-      "crop_margin": 4,
+      "crop_margin": 0,
       "alpha_threshold": 8
     },
     "source_bbox_summary": {
@@ -35,8 +35,8 @@
       "width_max": 113
     },
     "runtime_bbox_summary": {
-      "height_min": 245,
-      "height_max": 247,
+      "height_min": 246,
+      "height_max": 246,
       "width_min": 111,
       "width_max": 230
     },
@@ -58,10 +58,10 @@
         121
       ],
       "crop_box": [
+        67,
         63,
-        59,
-        184,
-        188
+        180,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -79,7 +79,7 @@
         230,
         246
       ],
-      "sha256": "db37bbf7d17a11a4eecd9bd228c21e682b6fbfb0be704da63dbdac2a078ac307"
+      "sha256": "5e1eabe267ba8fa19369c145cced7b73f98a66396d77f542d99c56825b9a1016"
     },
     "qa_contract": {
       "primary_south_idle_visible_height_px": "240..250",
@@ -249,6 +249,28 @@
       "runtime_bbox": "build/qa/scrum704_dark_mage_pixellab/alpha_bbox_report.json",
       "contact_sheet": "docs/design/previews/scrum704_dark_mage_pixellab_contact.png",
       "south_walk_gif": "docs/design/previews/scrum704_dark_mage_pixellab_south_walk.gif"
+    },
+    "regenerated": {
+      "task": "FAN-2883",
+      "regenerated_at": "2026-08-17T16:17:16+00:00",
+      "supersedes_generated_at": "2026-07-01T05:50:19.545360",
+      "reason": "SCRUM-869 re-normalized the runtime frames (commits 085b058d, 3cee6618) without regenerating this report, so its per-frame sha256 and runtime_bbox described the pre-SCRUM-869 frames. Recomputed from the live frames; the frames themselves are unchanged and remain the exact-SHA QA FAN-2731 candidate.",
+      "normalizer": "tools/update_pixellab_character_animations.py (SCRUM-869)",
+      "crop_margin_note": "SCRUM-704 cropped the source with a 4 px margin; the SCRUM-869 normalizer crops exactly at the source alpha bbox, so crop_margin is 0 and crop_box now equals source_bbox.",
+      "recomputed_fields": [
+        "crop_box",
+        "runtime_bbox",
+        "runtime_bbox_size",
+        "sha256"
+      ],
+      "confirmed_unchanged_fields": [
+        "runtime_image_size",
+        "scale",
+        "source_bbox",
+        "source_bbox_size",
+        "source_image_size",
+        "target_visible_height"
+      ]
     }
   },
   "frames": [
@@ -270,10 +292,10 @@
         121
       ],
       "crop_box": [
+        67,
         63,
-        59,
-        184,
-        188
+        180,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -291,7 +313,7 @@
         230,
         246
       ],
-      "sha256": "db37bbf7d17a11a4eecd9bd228c21e682b6fbfb0be704da63dbdac2a078ac307"
+      "sha256": "5e1eabe267ba8fa19369c145cced7b73f98a66396d77f542d99c56825b9a1016"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_00.png",
@@ -311,10 +333,10 @@
         122
       ],
       "crop_box": [
-        79,
-        59,
-        170,
-        189
+        83,
+        63,
+        166,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -332,7 +354,7 @@
         167,
         246
       ],
-      "sha256": "e3c5f230b001af4f06e3bd63f540251d875eedfccb5312f335e44f930fe4e6a4"
+      "sha256": "7d051d90f2f70e37936a6806f26d8a131006ce8b5d2c70cd19e9596f9b667a0f"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_01.png",
@@ -352,10 +374,10 @@
         119
       ],
       "crop_box": [
-        78,
-        58,
-        169,
-        185
+        82,
+        62,
+        165,
+        181
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -367,13 +389,13 @@
         170,
         234,
         342,
-        481
+        480
       ],
       "runtime_bbox_size": [
         172,
-        247
+        246
       ],
-      "sha256": "ac5c774c53519623d46ab572aab968f75f3fdef84353171e82034dda9f6de703"
+      "sha256": "08e57a79f53a576491a8b18ede81ab185de5aeb7c2cf3a4aaeba609431e46354"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_02.png",
@@ -393,10 +415,10 @@
         120
       ],
       "crop_box": [
-        79,
-        58,
-        169,
-        186
+        83,
+        62,
+        165,
+        182
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -414,7 +436,7 @@
         168,
         246
       ],
-      "sha256": "6397b4195f571fdb1676fd045b15909f8a02ae7c30d441b77189cc55a2a9cb9e"
+      "sha256": "94a2bd38c7dd69c12775b63e31af6c51e0f1644803cdbc7ec6ebb5f8c79f2361"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_03.png",
@@ -434,10 +456,10 @@
         121
       ],
       "crop_box": [
-        85,
-        59,
-        163,
-        188
+        89,
+        63,
+        159,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -448,14 +470,14 @@
       "runtime_bbox": [
         185,
         234,
-        328,
+        327,
         480
       ],
       "runtime_bbox_size": [
-        143,
+        142,
         246
       ],
-      "sha256": "4d969db508816ea1a1e5783801f73d973cfd73391dbd3495b3bee2734c8b873c"
+      "sha256": "051e2c0d5d44c52c2ac208e85517e8aba470b6c2d91375ddcbe00b0e780594b1"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_04.png",
@@ -475,10 +497,10 @@
         119
       ],
       "crop_box": [
-        84,
-        59,
-        162,
-        186
+        88,
+        63,
+        158,
+        182
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -487,16 +509,16 @@
         512
       ],
       "runtime_bbox": [
-        183,
+        184,
         234,
-        328,
-        481
+        329,
+        480
       ],
       "runtime_bbox_size": [
         145,
-        247
+        246
       ],
-      "sha256": "0c5ae9786f188de6aaec0c7a160b1c5bc3524b883ca26f1bc4a834da87bd0044"
+      "sha256": "0ef62d316313979eecbac280d7aeb296db9980ac1beb6acd4769091dfed890eb"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south_05.png",
@@ -516,10 +538,10 @@
         118
       ],
       "crop_box": [
-        85,
-        59,
-        163,
-        185
+        89,
+        63,
+        159,
+        181
       ],
       "target_visible_height": 246,
       "scale": 2.084746,
@@ -530,14 +552,14 @@
       "runtime_bbox": [
         183,
         234,
-        330,
-        481
+        329,
+        480
       ],
       "runtime_bbox_size": [
-        147,
-        247
+        146,
+        246
       ],
-      "sha256": "95839a1fae942045d6ea119dc57fc7de33a874e00db8ab4bccb35bafdf3903dc"
+      "sha256": "bdb0e0c931b42513001f0ddd8724fec1efee8ca9c4f2f7522bb61ec5d0dfe6ae"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-east.png",
@@ -557,10 +579,10 @@
         123
       ],
       "crop_box": [
-        76,
-        59,
-        181,
-        190
+        80,
+        63,
+        177,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.0,
@@ -598,10 +620,10 @@
         121
       ],
       "crop_box": [
-        73,
-        60,
-        173,
-        189
+        77,
+        64,
+        169,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -619,7 +641,7 @@
         187,
         246
       ],
-      "sha256": "cf1bef0d00ae243f6a289992c8ba15a6a95f86136d1dfac3f47b58755201d8ee"
+      "sha256": "273547268a5eb14e0d578381073c56546fa71e545ef1ec707ce02905a060a37f"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_01.png",
@@ -639,10 +661,10 @@
         122
       ],
       "crop_box": [
-        76,
-        60,
-        182,
-        190
+        80,
+        64,
+        178,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -660,7 +682,7 @@
         198,
         246
       ],
-      "sha256": "7ad10b4e03de4ef54b9fa5f1be0f2ad3cb84bae6468e70f0f35c69d55fea2fe9"
+      "sha256": "9437e8c332aa323ba753781c3d0ab94fb349375fa9b7022897a22379faefdd1d"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_02.png",
@@ -680,10 +702,10 @@
         118
       ],
       "crop_box": [
-        75,
-        60,
-        187,
-        186
+        79,
+        64,
+        183,
+        182
       ],
       "target_visible_height": 246,
       "scale": 2.084746,
@@ -692,16 +714,16 @@
         512
       ],
       "runtime_bbox": [
-        147,
+        148,
         234,
-        364,
-        481
+        365,
+        480
       ],
       "runtime_bbox_size": [
         217,
-        247
+        246
       ],
-      "sha256": "39c579f2faf7a10342f781f91135241196b482841fad40230a74d40fd40a9245"
+      "sha256": "7ea3f01ef655f1dcfb5c883e5166be3312b4ced247d4170bfdfb48cf39707b61"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_03.png",
@@ -721,10 +743,10 @@
         122
       ],
       "crop_box": [
-        77,
-        59,
-        182,
-        189
+        81,
+        63,
+        178,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -742,7 +764,7 @@
         196,
         246
       ],
-      "sha256": "1b3edb1e50d75c35c120015d5d4abb24b4d04c22b2481b1d26258a7e4a9167ba"
+      "sha256": "34bd743a31405eefe72128834b4fc136fceddca246a5f3fe0113b732022a817d"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_04.png",
@@ -762,10 +784,10 @@
         122
       ],
       "crop_box": [
-        76,
-        59,
-        181,
-        189
+        80,
+        63,
+        177,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -783,7 +805,7 @@
         196,
         246
       ],
-      "sha256": "15432006a1ea111ab2690b5b2fbf2786cc33a04cbdf223c9378222388a86e7db"
+      "sha256": "a15a2d78ca266d11c25eeafda7731a4561527d3fcc86696d4a08b4df7089c8e2"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-east_05.png",
@@ -803,10 +825,10 @@
         122
       ],
       "crop_box": [
-        77,
-        59,
-        182,
-        189
+        81,
+        63,
+        178,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -824,7 +846,7 @@
         196,
         246
       ],
-      "sha256": "5569bcb1dd478ca570b4b3f63e149e77a6a3926bd8ad6896f54d505204bd0231"
+      "sha256": "44bddf1868681220e070ac5397ee1f595767802fac286f74d839d6c7557912e5"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_east.png",
@@ -844,10 +866,10 @@
         123
       ],
       "crop_box": [
-        83,
-        59,
-        163,
-        190
+        87,
+        63,
+        159,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.0,
@@ -885,10 +907,10 @@
         121
       ],
       "crop_box": [
-        87,
-        61,
-        164,
-        190
+        91,
+        65,
+        160,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -899,14 +921,14 @@
       "runtime_bbox": [
         186,
         234,
-        327,
+        326,
         480
       ],
       "runtime_bbox_size": [
-        141,
+        140,
         246
       ],
-      "sha256": "aa555d97ad691d7c53bad7648f58efd80330a230f538097f9f24a8377584fe42"
+      "sha256": "c06769b7e149436745b086702f46b2f4ec5b0ea9f7c1e8a9707636fb943aee33"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_01.png",
@@ -926,10 +948,10 @@
         120
       ],
       "crop_box": [
-        85,
-        61,
-        164,
-        189
+        89,
+        65,
+        160,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -947,7 +969,7 @@
         146,
         246
       ],
-      "sha256": "1fc0c6ff56f7be75d4dacd2934feba09e62eceab6a861ca22b927812aca21ac4"
+      "sha256": "a27d9a263a9c897831eac65611b6789c313b51c060ff1cba8d025381743bbdc9"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_02.png",
@@ -967,10 +989,10 @@
         119
       ],
       "crop_box": [
-        85,
-        61,
-        163,
-        188
+        89,
+        65,
+        159,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -979,16 +1001,16 @@
         512
       ],
       "runtime_bbox": [
-        183,
+        184,
         234,
-        328,
-        481
+        329,
+        480
       ],
       "runtime_bbox_size": [
         145,
-        247
+        246
       ],
-      "sha256": "06257e7a5bd5b82a017e606085ae88e6be539bfdf20017d196cf85868e2212c8"
+      "sha256": "3d0d82f7ab3a5a28c9dc413dadb60d1b7a50f0e3ab51cd9ca72bcf1b92e256b7"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_03.png",
@@ -1008,10 +1030,10 @@
         120
       ],
       "crop_box": [
-        87,
-        64,
-        163,
-        192
+        91,
+        68,
+        159,
+        188
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -1022,14 +1044,14 @@
       "runtime_bbox": [
         186,
         234,
-        326,
+        325,
         480
       ],
       "runtime_bbox_size": [
-        140,
+        139,
         246
       ],
-      "sha256": "2f33d41e4c3e1bd79e8290b572f237cdd798cb441d0f5db5fe9488003800dff8"
+      "sha256": "bf121b3d8f83d30c669aaa109a55767840546ed6700d6d7041cb8bb9bce3097c"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_04.png",
@@ -1049,10 +1071,10 @@
         119
       ],
       "crop_box": [
-        85,
-        64,
-        164,
-        191
+        89,
+        68,
+        160,
+        187
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -1064,13 +1086,13 @@
         182,
         234,
         329,
-        481
+        480
       ],
       "runtime_bbox_size": [
         147,
-        247
+        246
       ],
-      "sha256": "cc1943f24cf5bd82daf6f25f3f32617573b7348898d8e9a648a5f4cb9a5e5cdb"
+      "sha256": "ad80430077a726a90d97423ff4245254f275fbfaa13f4e9c7d96492ccf5615f6"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_east_05.png",
@@ -1090,10 +1112,10 @@
         119
       ],
       "crop_box": [
-        85,
-        64,
-        164,
-        191
+        89,
+        68,
+        160,
+        187
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -1105,13 +1127,13 @@
         182,
         234,
         329,
-        481
+        480
       ],
       "runtime_bbox_size": [
         147,
-        247
+        246
       ],
-      "sha256": "cdd4d218917cc117df184826451f26a7f098a8e1cb0766bb9abb4f1e18ccb61a"
+      "sha256": "8811c4ff8381b9debbd62d72fca5ae2195ddd3ef1dcec245b2225451ee87ba7d"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-east.png",
@@ -1131,10 +1153,10 @@
         122
       ],
       "crop_box": [
-        78,
-        59,
-        174,
-        189
+        82,
+        63,
+        170,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -1143,16 +1165,16 @@
         512
       ],
       "runtime_bbox": [
-        167,
+        168,
         234,
         345,
         480
       ],
       "runtime_bbox_size": [
-        178,
+        177,
         246
       ],
-      "sha256": "d9608442109ab6d77320425c57acfc520ed7501db1486f063f47e70abfc64f96"
+      "sha256": "98b15d30da821c7399f0e76c582e3f2585a6d0a0fd9990b9a1a3afc3330a884e"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_00.png",
@@ -1172,10 +1194,10 @@
         119
       ],
       "crop_box": [
-        79,
-        61,
-        177,
-        188
+        83,
+        65,
+        173,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -1186,14 +1208,14 @@
       "runtime_bbox": [
         163,
         234,
-        350,
-        481
+        349,
+        480
       ],
       "runtime_bbox_size": [
-        187,
-        247
+        186,
+        246
       ],
-      "sha256": "871cb5cbc303007753be488e1409309e365ee2c7f322b3f1178f4fb10983f12e"
+      "sha256": "b5d05973b9d76d189248a39173a2595df1a37893d79688f0d81d2e2637c6d74e"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_01.png",
@@ -1213,10 +1235,10 @@
         117
       ],
       "crop_box": [
-        80,
-        62,
-        176,
-        187
+        84,
+        66,
+        172,
+        183
       ],
       "target_visible_height": 246,
       "scale": 2.102564,
@@ -1225,16 +1247,16 @@
         512
       ],
       "runtime_bbox": [
-        163,
+        164,
         234,
         349,
-        481
+        480
       ],
       "runtime_bbox_size": [
-        186,
-        247
+        185,
+        246
       ],
-      "sha256": "69a6a4414c43f9425c61cbf5822310424801bd3fce451832a7ae52e08fcd51f9"
+      "sha256": "f42d8b847c4bb5d7bdd02a97e00a122c41ecff2a2bffd03d8d0b5607946ff709"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_02.png",
@@ -1254,10 +1276,10 @@
         117
       ],
       "crop_box": [
-        78,
-        62,
-        175,
-        187
+        82,
+        66,
+        171,
+        183
       ],
       "target_visible_height": 246,
       "scale": 2.102564,
@@ -1268,14 +1290,14 @@
       "runtime_bbox": [
         162,
         234,
-        350,
-        481
+        349,
+        480
       ],
       "runtime_bbox_size": [
-        188,
-        247
+        187,
+        246
       ],
-      "sha256": "2d724c6ed69384d4103b6193ab6b6e15c587bb83e55323f717d5f39cb6df8bc3"
+      "sha256": "a160e8b72c7853764555ad47db59bf0b1319497b8f3c038cb6747f52a7e7c173"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_03.png",
@@ -1295,10 +1317,10 @@
         115
       ],
       "crop_box": [
-        76,
-        61,
-        172,
-        184
+        80,
+        65,
+        168,
+        180
       ],
       "target_visible_height": 246,
       "scale": 2.13913,
@@ -1309,14 +1331,14 @@
       "runtime_bbox": [
         162,
         234,
-        349,
-        479
+        350,
+        480
       ],
       "runtime_bbox_size": [
-        187,
-        245
+        188,
+        246
       ],
-      "sha256": "cbd08c1dbf821e4925ceea09ab01751d7af6957f5e8488c108e3f155a9c95243"
+      "sha256": "f87191a41404c61f8440a9f9da4b60bb4ba8e0e69c5d91195a4e4e63b11cadd7"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_04.png",
@@ -1336,10 +1358,10 @@
         114
       ],
       "crop_box": [
-        78,
-        62,
-        174,
-        184
+        82,
+        66,
+        170,
+        180
       ],
       "target_visible_height": 246,
       "scale": 2.157895,
@@ -1350,14 +1372,14 @@
       "runtime_bbox": [
         161,
         234,
-        350,
-        479
+        351,
+        480
       ],
       "runtime_bbox_size": [
-        189,
-        245
+        190,
+        246
       ],
-      "sha256": "50197eaf07eb8bea224aadf8c2c6d86635556b2376a2ab4f1e914a4bbed1e450"
+      "sha256": "2b1aaebfe65d751584d66725cc5bd187770085ce3d35cae5315c8603e36c77a9"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-east_05.png",
@@ -1377,10 +1399,10 @@
         114
       ],
       "crop_box": [
-        77,
-        62,
-        173,
-        184
+        81,
+        66,
+        169,
+        180
       ],
       "target_visible_height": 246,
       "scale": 2.157895,
@@ -1391,14 +1413,14 @@
       "runtime_bbox": [
         161,
         234,
-        350,
-        479
+        351,
+        480
       ],
       "runtime_bbox_size": [
-        189,
-        245
+        190,
+        246
       ],
-      "sha256": "3fccc7ae41d9d65327be4ef59777ec03813200e0b524e7e2019752684cd9fe43"
+      "sha256": "134b2aaabeda60afc70a5860908c356cf071186b0d5d32e49467fada1358dcf4"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north.png",
@@ -1418,10 +1440,10 @@
         120
       ],
       "crop_box": [
-        65,
-        59,
-        184,
-        187
+        69,
+        63,
+        180,
+        183
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -1439,7 +1461,7 @@
         228,
         246
       ],
-      "sha256": "3846467d4c46bfe0b427da3277dd379f51ff6fac0853e61c9bdb8dce1deb71eb"
+      "sha256": "2ddf0f5299f36c145729f250ffb0b2594765927ce6f250d2f6d49d69d477457b"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_00.png",
@@ -1459,10 +1481,10 @@
         116
       ],
       "crop_box": [
-        83,
-        60,
-        169,
-        184
+        87,
+        64,
+        165,
+        180
       ],
       "target_visible_height": 246,
       "scale": 2.12069,
@@ -1471,16 +1493,16 @@
         512
       ],
       "runtime_bbox": [
-        173,
+        174,
         234,
         339,
-        481
+        480
       ],
       "runtime_bbox_size": [
-        166,
-        247
+        165,
+        246
       ],
-      "sha256": "01609a31da1a2b2140424c9a24d45e16b8b299d5ca616df35ab22b572ee6db24"
+      "sha256": "9c603965bc6abe1d84e7862c8fe21045e95882f5bb013c6f19282d851130b01a"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_01.png",
@@ -1500,10 +1522,10 @@
         116
       ],
       "crop_box": [
-        82,
-        62,
-        167,
-        186
+        86,
+        66,
+        163,
+        182
       ],
       "target_visible_height": 246,
       "scale": 2.12069,
@@ -1514,14 +1536,14 @@
       "runtime_bbox": [
         174,
         234,
-        338,
-        481
+        337,
+        480
       ],
       "runtime_bbox_size": [
-        164,
-        247
+        163,
+        246
       ],
-      "sha256": "431279b039ee134430cc6d7da30b1326b69504a90863f27e2093517f1ca7bcd8"
+      "sha256": "c870cb965c521cc4a911882c1f600f310121398b7d2fa1c5c68f7c496a260ce7"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_02.png",
@@ -1541,10 +1563,10 @@
         115
       ],
       "crop_box": [
-        84,
-        62,
-        169,
-        185
+        88,
+        66,
+        165,
+        181
       ],
       "target_visible_height": 246,
       "scale": 2.13913,
@@ -1555,14 +1577,14 @@
       "runtime_bbox": [
         174,
         234,
-        338,
-        479
+        339,
+        480
       ],
       "runtime_bbox_size": [
-        164,
-        245
+        165,
+        246
       ],
-      "sha256": "be98bd8f973d311421fe34e42b36d7a970fe69c0bad4a09c529f2a6c88dd20be"
+      "sha256": "cfee8ad064ed75b3651863fafb93afd682a46fa56eb4f775d6f4e2b21f9085f4"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_03.png",
@@ -1582,10 +1604,10 @@
         114
       ],
       "crop_box": [
-        79,
-        60,
-        171,
-        182
+        83,
+        64,
+        167,
+        178
       ],
       "target_visible_height": 246,
       "scale": 2.157895,
@@ -1597,13 +1619,13 @@
         166,
         234,
         347,
-        479
+        480
       ],
       "runtime_bbox_size": [
         181,
-        245
+        246
       ],
-      "sha256": "9bf95cdcf60372ad468203bc32c99acd2de461072937a9dafa2804880d84f98d"
+      "sha256": "3060ca4f66850f7a50cb098e50ec6f22ffb61515fc04367ac1f9abe4dc3eb81a"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_04.png",
@@ -1623,10 +1645,10 @@
         114
       ],
       "crop_box": [
-        78,
-        61,
-        171,
-        183
+        82,
+        65,
+        167,
+        179
       ],
       "target_visible_height": 246,
       "scale": 2.157895,
@@ -1635,16 +1657,16 @@
         512
       ],
       "runtime_bbox": [
-        165,
+        164,
         234,
-        348,
-        479
+        347,
+        480
       ],
       "runtime_bbox_size": [
         183,
-        245
+        246
       ],
-      "sha256": "1bee564d514af7c7ca138b5ae3cc50fb40f49d0653360da8b5ee4766319018d1"
+      "sha256": "7596ee9208d3c633abfc05e907dc516799eec9ce530805024872586c5e5e69d9"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north_05.png",
@@ -1664,10 +1686,10 @@
         114
       ],
       "crop_box": [
-        79,
-        61,
-        171,
-        183
+        83,
+        65,
+        167,
+        179
       ],
       "target_visible_height": 246,
       "scale": 2.157895,
@@ -1679,13 +1701,13 @@
         166,
         234,
         347,
-        479
+        480
       ],
       "runtime_bbox_size": [
         181,
-        245
+        246
       ],
-      "sha256": "569dd40384d644ed6cdb63e4d374c627d4fd2d0664b6ce089297d94a3f03bd23"
+      "sha256": "5e4d91162861862951df34e3bbd65747bc40874baaf5e00417cdc9e0193782b0"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_north-west.png",
@@ -1705,10 +1727,10 @@
         122
       ],
       "crop_box": [
-        67,
-        59,
-        173,
-        189
+        71,
+        63,
+        169,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -1726,7 +1748,7 @@
         198,
         246
       ],
-      "sha256": "7b4a0a5290797a13d08573b2248de77b3a3c55d1f3500e1dcfd3dbc820a1a0bd"
+      "sha256": "09d378a255a0b77fdb3a8fb34e6611e030a23532e13eda2e23b2c4a402b5f02b"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_00.png",
@@ -1746,10 +1768,10 @@
         120
       ],
       "crop_box": [
-        73,
-        60,
-        171,
-        188
+        77,
+        64,
+        167,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -1760,14 +1782,14 @@
       "runtime_bbox": [
         164,
         234,
-        349,
+        348,
         480
       ],
       "runtime_bbox_size": [
-        185,
+        184,
         246
       ],
-      "sha256": "06a6237cc462978dcb8d31475681c629a12fff843b7e38ff367cb69e734e3fbc"
+      "sha256": "0d986159c8c8b6fc69581bbefa0b907beaee894123b4a6527750edb47e5f4106"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_01.png",
@@ -1787,10 +1809,10 @@
         120
       ],
       "crop_box": [
-        72,
-        59,
-        172,
-        187
+        76,
+        63,
+        168,
+        183
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -1808,7 +1830,7 @@
         189,
         246
       ],
-      "sha256": "c12a17e75e07e6d86b97e7f9ea7520bbe717ca406b798abe752c92fbd7849e42"
+      "sha256": "f08f09ab49acfbf92cff290b40c1d0f2f2bd624adff0a676e4969e7a26519cdc"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_02.png",
@@ -1828,10 +1850,10 @@
         119
       ],
       "crop_box": [
-        72,
-        59,
-        170,
-        186
+        76,
+        63,
+        166,
+        182
       ],
       "target_visible_height": 246,
       "scale": 2.067227,
@@ -1842,14 +1864,14 @@
       "runtime_bbox": [
         163,
         234,
-        350,
-        481
+        349,
+        480
       ],
       "runtime_bbox_size": [
-        187,
-        247
+        186,
+        246
       ],
-      "sha256": "09bfd07cf3614ee1d551c666ad932630ce9e569fc13b98a16656412fda5f118a"
+      "sha256": "31eefe981919400e466fb837f09098844147fd4770572e9ec6db335aeb56fbac"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_03.png",
@@ -1869,10 +1891,10 @@
         120
       ],
       "crop_box": [
-        67,
-        61,
-        173,
-        189
+        71,
+        65,
+        169,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -1881,16 +1903,16 @@
         512
       ],
       "runtime_bbox": [
-        155,
+        156,
         234,
-        356,
+        357,
         480
       ],
       "runtime_bbox_size": [
         201,
         246
       ],
-      "sha256": "a570e9e356561a4a236cbba74478d27be0fc02bdc63993db7c8c273b1de666e5"
+      "sha256": "c2b15793f3d7aff882e4a4aa0c3d22b481f11d345fe63e853ea9e9ba99befd56"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_04.png",
@@ -1910,10 +1932,10 @@
         121
       ],
       "crop_box": [
-        66,
-        61,
-        172,
-        190
+        70,
+        65,
+        168,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -1924,14 +1946,14 @@
       "runtime_bbox": [
         156,
         234,
-        356,
+        355,
         480
       ],
       "runtime_bbox_size": [
-        200,
+        199,
         246
       ],
-      "sha256": "58804211e00b514828e2fc9b4af39269ea5afd824f42be229bfa0730e0e59532"
+      "sha256": "9c490d30be589d56ebd7230c50813d319d09ddd00e24b00446ba34a05dfb2a07"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_north-west_05.png",
@@ -1951,10 +1973,10 @@
         121
       ],
       "crop_box": [
-        66,
-        61,
-        172,
-        190
+        70,
+        65,
+        168,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -1965,14 +1987,14 @@
       "runtime_bbox": [
         156,
         234,
-        356,
+        355,
         480
       ],
       "runtime_bbox_size": [
-        200,
+        199,
         246
       ],
-      "sha256": "e290b205fd27531d480e7443602e47b1d0d3f2ce48dcc906e5c4805b61cda1ba"
+      "sha256": "d63430deb5a5c5af036e7e2d012a363f37691714795cc255364b99ea42ca192f"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_west.png",
@@ -1992,10 +2014,10 @@
         122
       ],
       "crop_box": [
-        90,
-        59,
-        165,
-        189
+        94,
+        63,
+        161,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -2013,7 +2035,7 @@
         135,
         246
       ],
-      "sha256": "b24b160b7b2094bb93624d541260ddcfbd37ded7b86fffad1c05a344a40534a6"
+      "sha256": "a806dda3572e1b840e0498b199908101be4ddb56b500aa622f00078a0fbd4af2"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_00.png",
@@ -2033,10 +2055,10 @@
         122
       ],
       "crop_box": [
-        92,
-        59,
-        156,
-        189
+        96,
+        63,
+        152,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.016393,
@@ -2045,16 +2067,16 @@
         512
       ],
       "runtime_bbox": [
-        199,
+        200,
         234,
-        312,
+        313,
         480
       ],
       "runtime_bbox_size": [
         113,
         246
       ],
-      "sha256": "a648b73e839cc1e619b72d8ef30970818685521c7b87aa7d2691ec6fd6dda8e0"
+      "sha256": "ecb24ea24b658fe2407b1a52f0a1bc9815c3ae877bd7feb8bb4e72da653e91c0"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_01.png",
@@ -2074,10 +2096,10 @@
         121
       ],
       "crop_box": [
-        87,
-        59,
-        156,
-        188
+        91,
+        63,
+        152,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -2095,7 +2117,7 @@
         124,
         246
       ],
-      "sha256": "d4e6a9d6c301d7a0794d7e498d0b968236f04d03b087840b75524b867f30d32f"
+      "sha256": "da0a55e04f3e26b0b9ee57fe3d66a815d87a1b79643d1472d9ac8d945dc5006e"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_02.png",
@@ -2115,10 +2137,10 @@
         121
       ],
       "crop_box": [
-        93,
-        59,
-        163,
-        188
+        97,
+        63,
+        159,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -2136,7 +2158,7 @@
         126,
         246
       ],
-      "sha256": "cd7629ceb99eac77282eef1bb4312f17fef136f3d6d2a4a540820c438b9b8496"
+      "sha256": "c690a4b0985578760fc1bfb739d8f82f9dde4bbf313b23294a3413116cebfd4a"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_03.png",
@@ -2156,10 +2178,10 @@
         121
       ],
       "crop_box": [
-        93,
-        60,
-        157,
-        189
+        97,
+        64,
+        153,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -2177,7 +2199,7 @@
         114,
         246
       ],
-      "sha256": "f822eb639b3c115d831f1d55303def2b7b862c5c901246693178ac0a8c9c1b2e"
+      "sha256": "04ee8e000f32fd5c1fdafbf2b16243626ef00b566e73f4833795886b772338cc"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_04.png",
@@ -2197,10 +2219,10 @@
         121
       ],
       "crop_box": [
-        92,
-        60,
-        157,
-        189
+        96,
+        64,
+        153,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -2218,7 +2240,7 @@
         116,
         246
       ],
-      "sha256": "67a97c6579c4584008d26c340082d87a93b18d07e109e2f4527a86d622801eb6"
+      "sha256": "ed849c40aa44be0b543c13aa007e24e9377aeb35984d2b836801f8f34b1c29a8"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_west_05.png",
@@ -2238,10 +2260,10 @@
         120
       ],
       "crop_box": [
-        92,
-        60,
-        154,
-        188
+        96,
+        64,
+        150,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -2259,7 +2281,7 @@
         111,
         246
       ],
-      "sha256": "6795aaac72e3a67bd1cf5f600fab4da0ba61a9dbdee436bcd9640983d477f811"
+      "sha256": "266599ba54c3818911e51b0fde072b12e92d5c82e0ab4a8c13ed991801dc167b"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_idle_south-west.png",
@@ -2279,10 +2301,10 @@
         123
       ],
       "crop_box": [
-        73,
-        59,
-        165,
-        190
+        77,
+        63,
+        161,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.0,
@@ -2320,10 +2342,10 @@
         125
       ],
       "crop_box": [
-        73,
-        59,
-        163,
-        192
+        77,
+        63,
+        159,
+        188
       ],
       "target_visible_height": 246,
       "scale": 1.968,
@@ -2332,16 +2354,16 @@
         512
       ],
       "runtime_bbox": [
-        175,
+        176,
         234,
-        336,
+        337,
         480
       ],
       "runtime_bbox_size": [
         161,
         246
       ],
-      "sha256": "20136da68174031e4f9d0b8030376e429899045e3a11571c6fe533e27ef2a515"
+      "sha256": "7dff424ab46de8ba025624046a43093993d07067b8c6d1f99697ec1df8021eb3"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_01.png",
@@ -2361,10 +2383,10 @@
         120
       ],
       "crop_box": [
-        73,
-        57,
-        163,
-        185
+        77,
+        61,
+        159,
+        181
       ],
       "target_visible_height": 246,
       "scale": 2.05,
@@ -2382,7 +2404,7 @@
         168,
         246
       ],
-      "sha256": "0dbbbced5b262282821b11971d637d87a1dd8103f10f50480addbf92ce334092"
+      "sha256": "3dbb77877dd4da0f86bc43d1adf5053469f556554855a336b703c2234e70271d"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_02.png",
@@ -2402,10 +2424,10 @@
         123
       ],
       "crop_box": [
-        73,
-        58,
-        163,
-        189
+        77,
+        62,
+        159,
+        185
       ],
       "target_visible_height": 246,
       "scale": 2.0,
@@ -2443,10 +2465,10 @@
         121
       ],
       "crop_box": [
-        72,
-        59,
-        160,
-        188
+        76,
+        63,
+        156,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -2455,16 +2477,16 @@
         512
       ],
       "runtime_bbox": [
-        175,
+        174,
         234,
-        338,
+        337,
         480
       ],
       "runtime_bbox_size": [
         163,
         246
       ],
-      "sha256": "26ebfcda209b34238450a4febc4b3c338869c02e6865ffe5b4b993fb4a611647"
+      "sha256": "d2dcc433f69844316368b0cee5e14958c35db16068d09f07a3a670f6ea95fa76"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_04.png",
@@ -2484,10 +2506,10 @@
         121
       ],
       "crop_box": [
-        73,
-        59,
-        163,
-        188
+        77,
+        63,
+        159,
+        184
       ],
       "target_visible_height": 246,
       "scale": 2.033058,
@@ -2496,16 +2518,16 @@
         512
       ],
       "runtime_bbox": [
-        173,
+        172,
         234,
-        340,
+        339,
         480
       ],
       "runtime_bbox_size": [
         167,
         246
       ],
-      "sha256": "cbe86e6a8e65b50ec2f3657f6dacdead168061db39266e14560ee129415329de"
+      "sha256": "20a5ae3fcb54fdf5a338ef2c2199eddd684f4b893786affdca152a605d9b82f2"
     },
     {
       "source": "assets/sprites/characters/pixellab/dark_mage/dark_mage_move_south-west_05.png",
@@ -2525,10 +2547,10 @@
         123
       ],
       "crop_box": [
-        74,
-        59,
-        163,
-        190
+        78,
+        63,
+        159,
+        186
       ],
       "target_visible_height": 246,
       "scale": 2.0,

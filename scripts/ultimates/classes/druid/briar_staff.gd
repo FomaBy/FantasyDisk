@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.druid.briar_staff"
 const EXECUTOR_ID := "weapon_ultimate.executor.druid.briar_staff"
@@ -13,6 +15,8 @@ var impale_count_for_tests := 0
 var _activation = null
 var _targets: Array = []
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -23,8 +27,6 @@ static func parameter_contract() -> Dictionary:
 		"impale_pulses": {"type": "integer", "minimum": 1},
 		"seed_count": {"type": "integer", "minimum": 5, "maximum": 5},
 		"root_radius": {"type": "number", "minimum": 1.0},
-		"target_cap": {"type": "integer", "minimum": 1},
-		"impale_target_cap": {"type": "integer", "minimum": 1},
 		"root_duration": {"type": "number", "minimum": 0.1},
 		"slow_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"impale_damage": {"type": "number", "minimum": 0.0},
@@ -85,8 +87,8 @@ func grow_lattice() -> void:
 		return
 	_targets = _activation.select_targets(
 		global_position,
-		_activation.param_float("root_radius", 430.0),
-		_activation.param_int("target_cap", 20),
+		INF,
+		0,
 		"nearest"
 	)
 	for raw_target in _targets:
@@ -109,15 +111,11 @@ func impale(pulse: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	impale_count_for_tests += 1
-	var target_cap: int = _activation.param_int("impale_target_cap", 3)
-	var hit_count := 0
+	var victims: Array = []
 	for raw_target in _targets:
-		if hit_count >= target_cap:
-			break
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
-		hit_count += 1
 		var damage_key := "thorn_crown_damage" if pulse == _activation.param_int("impale_pulses", 3) - 1 else "impale_damage"
 		_deal(
 			target,
@@ -125,10 +123,26 @@ func impale(pulse: int) -> void:
 			"forest_breath:impale:%d" % pulse,
 			{"ultimate_mechanic": "briar_lattice_impale", "pulse": pulse}
 		)
+		victims.append(target)
+	_play_impacts(victims)
 	_activation.present(EXECUTOR_ID + ".impale", {
 		"position": global_position, "radius": _activation.param_float("root_radius", 430.0),
 		"shape": "ring_pulse",
 	})
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary) -> void:
@@ -152,4 +166,6 @@ func _exit_tree() -> void:
 			target.set_meta(StatusEffects.META_KEY, owned)
 	_leased_statuses.clear()
 	_targets.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null

@@ -1,0 +1,13 @@
+{
+	"frames": "res://assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres",
+	"scale": {
+		"x": 0.42,
+		"y": 0.42
+	},
+	"position": {
+		"x": 0.0,
+		"y": -44.0
+	},
+	"source_faces_left": true,
+	"explicit_horizontal_directions": true
+}

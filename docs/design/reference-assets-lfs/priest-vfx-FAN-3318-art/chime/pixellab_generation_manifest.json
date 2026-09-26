@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T15:06:48Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "1aa84b6a-5666-437f-9ba0-43e1aa8e72f2",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single ornate Priest set of three dawn prayer bells called the Three Bells of Dawn, linked by a leather prayer cord with ivory ribbons and small blue gemstones, gold and ivory metal, dark fantasy D&D pixel art, top-down isolated centered object, unmistakable chime silhouette, transparent background, no text, no border, generous margin",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "animate the same Three Bells of Dawn in place without changing their silhouette or camera: the three bells swing in staggered arcs on the cord, ribbons flutter softly, blue gemstones pulse one after another, and three small ivory-gold concentric prayer-wave rings shimmer outward; keep all bells connected and centered, transparent background, clean readable edges, no clipping, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "priest_chime_f00.png",
+      "bytes": 36871,
+      "url_kind": "template",
+      "encoded_sha256": "6349775b5c1a5a124ec45ca3415e809646b0c2c48f9e4a700689358ded3d5a78",
+      "pixel_sha256": "a07f0b068207c6f23165648886de1b9d4906efef73cdcf6b5d996b87b9e2e006"
+    },
+    {
+      "file": "priest_chime_f01.png",
+      "bytes": 49032,
+      "url_kind": "template",
+      "encoded_sha256": "6296d820bccde7e452421c1a0197718c6eb4041a010679d709db9e23fa601c62",
+      "pixel_sha256": "f4987a92e20e56554eef199e2efe0449db5e82903265c581284510c7af45c1e7"
+    },
+    {
+      "file": "priest_chime_f02.png",
+      "bytes": 48213,
+      "url_kind": "template",
+      "encoded_sha256": "e0991b82c2e3c3a06eeed68aaad949bc8db011d77df0ac07282c7a3fd173fe91",
+      "pixel_sha256": "1ed20efbe5f724a666f14c243708d2e7b794b7840b007725257bae8ea6991284"
+    },
+    {
+      "file": "priest_chime_f03.png",
+      "bytes": 48195,
+      "url_kind": "template",
+      "encoded_sha256": "639964db6b8f946cc0947d5145a422fb4e9e508dd7b090c2509d151fe66affec",
+      "pixel_sha256": "05021047e3dfa2562409644b3345901e66c0b174e6f653fb26d16082c2d93ee8"
+    },
+    {
+      "file": "priest_chime_f04.png",
+      "bytes": 48296,
+      "url_kind": "template",
+      "encoded_sha256": "bc2c2c155168e35c4f6a90ec5b92ba59e0c658533dbc43756d482ad58a7d05ff",
+      "pixel_sha256": "f30e2dcaac5577f28d4f8e2e60e7ae46e6b55af4c17a186d5712d9c6dfb673df"
+    },
+    {
+      "file": "priest_chime_f05.png",
+      "bytes": 50037,
+      "url_kind": "template",
+      "encoded_sha256": "22b25b98df8e1940d7e979cc90a315dbb0d2d88f5f46a670fc781f2d548f6beb",
+      "pixel_sha256": "83d45cd91ff82373e54b7acc767c9293f10a3865e8977ffaa6bd82abd5b6cc0f"
+    },
+    {
+      "file": "priest_chime_f06.png",
+      "bytes": 48518,
+      "url_kind": "template",
+      "encoded_sha256": "48e18a2fd9a0a43ab72a0cddad5cc5d2851e23f906822460a37b242a58ca3d13",
+      "pixel_sha256": "92c54737ba50a043f3072ec14f75b28431f9642cc9629ddb46bc24b23e6f225b"
+    },
+    {
+      "file": "priest_chime_f07.png",
+      "bytes": 49105,
+      "url_kind": "template",
+      "encoded_sha256": "ca9aa8a95266c6535f07bd7ef33e8453d1df6128c0164ec8c72e96e7ae6f99bd",
+      "pixel_sha256": "f2e4d70f40b275da0766247de8d9e7307004777f3686c1074e56b3ba7140653d"
+    },
+    {
+      "file": "priest_chime_f08.png",
+      "bytes": 46815,
+      "url_kind": "template",
+      "encoded_sha256": "8ae5e3f092d7dab5d404f4cd80d34bae2099b4114e48a6793c2a4f1ec29a3948",
+      "pixel_sha256": "4af7a7229ad06479bf278801f46d94d183f1abe3ac8181da902445930d7091ba"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

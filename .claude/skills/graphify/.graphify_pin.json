@@ -1,0 +1,7 @@
+{
+  "package": "graphifyy",
+  "repository": "https://github.com/FomaBy/graphify.git",
+  "revision": "48682c0ee7c65028d756bcf694f700794075a673",
+  "extras": ["gdscript"],
+  "venv": ".claude/skills/graphify/.venv"
+}

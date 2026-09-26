@@ -31,6 +31,29 @@ const WEAPON_IDS: Array[String] = [SENTRY_WRENCH, REPAIR_DRONE, PRESSURE_MINES]
 ## a single cast into an unbounded sprite burst.
 const MAX_ELEMENTS_PER_ULTIMATE := 16
 
+## Weapons whose formation element is an animated frame pack instead of a single
+## forged frame. Every frame shares one canvas and one pivot, so switching the
+## texture animates the element without moving it.
+##
+## `engineer_sentry_wrench` plays the FAN-2565 PixelLab deploy cycle: the pylon
+## stands up, fires, and vents. A weapon absent from this map keeps its single
+## forged frame, which is why `element_runtime_path()` still answers for all
+## three and the driver needs no per-weapon branch.
+const ANIMATION_FRAMES := {
+	SENTRY_WRENCH: {
+		"runtime_directory": "res://assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/",
+		"source_directory": "res://docs/design/references/weapon_ultimates/engineer/source/pixellab_sentry_wrench/",
+		"runtime_prefix": "sentry_pylon_%02d.png",
+		"source_prefix": "sentry_pylon_f%02d.png",
+		"count": 9,
+	},
+}
+
+## Firing beats the sentry crossfire shows during `active`. It mirrors the
+## `volley_count` of the frozen executor params so a muzzle flash lands on each
+## volley; it drives presentation frames only and changes no mechanic.
+const SENTRY_VOLLEY_BEATS := 8
+
 ## Per-weapon class-local presentation data.
 ##
 ## `timing` holds phase start timestamps in seconds. The shared schema requires
@@ -41,25 +64,54 @@ const MAX_ELEMENTS_PER_ULTIMATE := 16
 ## and detonates in a short burst.
 const WEAPONS := {
 	SENTRY_WRENCH: {
-		"title": "Крепость за Секунду",
+		"title": "Гнездо Часовых",
 		"element": "engineer_sentry_pylon",
 		"sfx_file": "sfx_hit.ogg",
 		"pivot": {"x": 0.5, "y": 0.85},
+		# Ultimate Direction v2 (FAN-2944 §1, reworked by FAN-2960): 0.8s cast
+		# ceremony, 2.3s release+crossfire window, 0.7s visible fold-out.
 		"timing": {
 			"windup": 0.0,
-			"release": 0.35,
-			"active": 0.70,
-			"recovery": 4.60,
-			"cancel": 5.10,
+			"release": 0.8,
+			"active": 1.15,
+			"recovery": 3.1,
+			"cancel": 3.8,
 		},
 		"formation": {
+			# Arena-wide hexagon: the deployed nest frames the whole viewport
+			# instead of the v1 close ring around the hero.
 			"kind": "hex_crossfire",
 			"count": 6,
-			"radius": 108.0,
+			"radius": 520.0,
 		},
-		"silhouette": "tall narrow pylon, hexagonal turret head",
-		"motion": "ground tap, six pylons rise in place on a fixed hexagon, crossfire holds",
-		"impact": "synchronized turret volleys along hex chords",
+		## FAN-2944 §3.1 presence and identity declarations for the migrated
+		## pair; the schema fails closed on them once the pair leaves
+		## PRESENTATION_V2_MIGRATION_ALLOWLIST. The scene driver applies the
+		## declared weight effects at the release beat.
+		"presence": {
+			"fullscreen_footprint": true,
+			"backdrop": "darken",
+			"camera_shake": true,
+			"hitstop_ms": 110,
+			"sfx_ducking": true,
+		},
+		"identity": {
+			"cast_pose_id": "cast_pose.engineer.wrench_overhead_brace",
+			"weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+			"class_palette_id": "class_palette.engineer.workshop_teal",
+		},
+		## Class-local geometry of the v2 full-screen layers. The identity
+		## silhouette asset above is the sigil texture, so the declared visual
+		## core and the rendered one cannot drift apart.
+		"v2_overlay": {
+			"backdrop_half_size": {"x": 1400.0, "y": 800.0},
+			"backdrop_color": {"r": 0.016, "g": 0.043, "b": 0.055},
+			"backdrop_peak_alpha": 0.42,
+			"chord_color": {"r": 0.62, "g": 0.94, "b": 0.86},
+		},
+		"silhouette": "colossal translucent sentry-wrench sigil over the hero, hub of six tall pylons on an arena-wide hexagon",
+		"motion": "wrench sigil rises over the hero while pylon ghosts sweep out to arena seats, slams at release, crossfire holds the frame",
+		"impact": "hitstop slam of the wrench sigil, then synchronized turret volleys along arena-wide hex chords",
 	},
 	REPAIR_DRONE: {
 		"title": "Рой Аварийного Ремонта",
@@ -68,10 +120,10 @@ const WEAPONS := {
 		"pivot": {"x": 0.5, "y": 0.5},
 		"timing": {
 			"windup": 0.0,
-			"release": 0.55,
-			"active": 1.05,
-			"recovery": 5.40,
-			"cancel": 6.10,
+			"release": 0.70,
+			"active": 1.20,
+			"recovery": 3.35,
+			"cancel": 4.00,
 		},
 		"formation": {
 			"kind": "double_helix",
@@ -124,11 +176,57 @@ static func weapon_config(weapon_id: String) -> Dictionary:
 
 
 static func element_source_path(weapon_id: String) -> String:
+	var frames: Dictionary = ANIMATION_FRAMES.get(weapon_id, {})
+	if not frames.is_empty():
+		return _frame_path(frames, "source_directory", "source_prefix", 0)
 	return "%s%s_source.png" % [ASSET_DIRECTORY, str(weapon_config(weapon_id).get("element", ""))]
 
 
+## The element frame the pack identifies the weapon by. For an animated weapon
+## that is frame 0 of its pack, so silhouette, pivot and readability checks keep
+## reading one canonical frame.
 static func element_runtime_path(weapon_id: String) -> String:
+	var frames: Dictionary = ANIMATION_FRAMES.get(weapon_id, {})
+	if not frames.is_empty():
+		return _frame_path(frames, "runtime_directory", "runtime_prefix", 0)
 	return "%s%s.png" % [ASSET_DIRECTORY, str(weapon_config(weapon_id).get("element", ""))]
+
+
+## Every runtime frame of the weapon, in play order. A weapon without an
+## animation pack answers with its single element frame.
+static func element_frame_paths(weapon_id: String) -> Array[String]:
+	var frames: Dictionary = ANIMATION_FRAMES.get(weapon_id, {})
+	if frames.is_empty():
+		return [element_runtime_path(weapon_id)] as Array[String]
+	var paths: Array[String] = []
+	for index in int(frames.get("count", 0)):
+		paths.append(_frame_path(frames, "runtime_directory", "runtime_prefix", index))
+	return paths
+
+
+## The frame index the element shows at `phase_name`/`progress`.
+##
+## The pylon stands up through windup and release, cycles its firing frames once
+## per executor volley while the crossfire holds, then plays shutdown and vent
+## on the way out — so the frame a player sees always names the phase.
+static func frame_index(weapon_id: String, phase_name: String, progress: float) -> int:
+	if not ANIMATION_FRAMES.has(weapon_id):
+		return 0
+	var t := clampf(progress, 0.0, 1.0)
+	match phase_name:
+		"release":
+			return 1
+		"active":
+			return 2 + int(t * float(SENTRY_VOLLEY_BEATS) * 4.0) % 4
+		"recovery":
+			return 6
+		"cancel":
+			return 7 + int(round(t))
+	return 0
+
+
+static func _frame_path(frames: Dictionary, directory_key: String, prefix_key: String, index: int) -> String:
+	return "%s%s" % [str(frames.get(directory_key, "")), str(frames.get(prefix_key, "")) % index]
 
 
 static func accepted_vfx_path(weapon_id: String) -> String:
@@ -158,7 +256,7 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 			"phase_id": str(cast_phases.get(str(binding[1]), "")),
 		})
 
-	return {
+	var manifest := {
 		"schema_version": Schema.EXPECTED_SCHEMA_VERSION,
 		"class_id": CLASS_ID,
 		"key": {
@@ -189,6 +287,12 @@ static func manifest_for(registry, weapon_id: String) -> Dictionary:
 		"timing": (config.get("timing", {}) as Dictionary).duplicate(),
 		"headless_fallback": "no_op",
 	}
+	# v2 presence/identity pass through only for migrated weapons, mirroring
+	# the shared bridge, so v1 siblings keep their exact manifest shape.
+	for block in ["presence", "identity"]:
+		if config.get(block) is Dictionary:
+			manifest[block] = (config[block] as Dictionary).duplicate(true)
+	return manifest
 
 
 static func manifests(registry) -> Dictionary:
@@ -287,14 +391,15 @@ static func _hex_crossfire(count: int, radius: float, phase_name: String, t: flo
 		var rotation := 0.0
 		match phase_name:
 			"windup":
-				# Blueprint ghosts only; the wrench tap still owns the origin.
-				position = seat * lerpf(0.10, 0.35, t)
-				scale = lerpf(0.26, 0.42, t)
-				alpha = lerpf(0.10, 0.30, t)
+				# Cast ceremony: blueprint ghosts sweep from the hero out to
+				# their arena seats, acknowledging the ground they will hold.
+				position = seat * lerpf(0.12, 1.0, ease(t, 0.55))
+				scale = lerpf(0.30, 0.55, t)
+				alpha = lerpf(0.10, 0.38, t)
 			"release":
-				position = seat + Vector2(0.0, lerpf(26.0, 0.0, t))
-				scale = lerpf(0.42, 1.0, ease(t, 0.35))
-				alpha = lerpf(0.30, 1.0, t)
+				position = seat + Vector2(0.0, lerpf(34.0, 0.0, ease(t, 0.35)))
+				scale = lerpf(0.55, 1.0, ease(t, 0.35))
+				alpha = lerpf(0.38, 1.0, t)
 			"active":
 				# Turret heads track priority targets; bodies stay planted.
 				position = seat

@@ -7,8 +7,15 @@ extends Node2D
 ## target under the execute threshold takes the finishing blow; resistant tiers
 ## are denied the execute by the control policy and a boss can never be touched
 ## by more than the two declared passes.
+##
+## Ultimate Direction v2 (FAN-2953): the outbound pass is map-wide — every live
+## enemy is marked and struck, on screen and off; the corridor the axe visibly
+## walks is attribution. The return leg stays geometric: it is the aimed bonus
+## on top of the guaranteed outbound floor, and the execute rides only that leg.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/berserk/axe/victim_impact/victim_impact_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.berserk.axe"
 const EXECUTOR_ID := "weapon_ultimate.executor.berserk.axe"
@@ -24,6 +31,8 @@ var edge_for_tests := Vector2.ZERO
 var beat_trace_for_tests: Array[String] = []
 
 var _activation = null
+var _impacts: Node2D = null
+var _impacts_started := false
 var _resolved_beats := {}
 var _leased_statuses: Array[Dictionary] = []
 
@@ -36,7 +45,6 @@ static func parameter_contract() -> Dictionary:
 		"return_seconds": {"type": "number", "minimum": 0.01},
 		"arena_radius": {"type": "number", "minimum": 1.0},
 		"corridor_half_width": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"outbound_damage": {"type": "number", "minimum": 0.0},
 		"return_damage": {"type": "number", "minimum": 0.0},
 		"execute_damage": {"type": "number", "minimum": 0.0},
@@ -133,7 +141,7 @@ func launch() -> void:
 		"radius": _activation.param_float("corridor_half_width", 130.0),
 		"shape": "axe_pass",
 	})
-	for raw_target in _corridor(source, edge_for_tests - source):
+	for raw_target in _activation.select_targets(source, INF, 0, "nearest"):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target) or not _claim_pass(target, "outbound"):
 			continue
@@ -144,6 +152,7 @@ func launch() -> void:
 			"loop:outbound",
 			"execution_loop_outbound"
 		)
+		_play_impacts([target])
 
 
 func turn() -> void:
@@ -168,6 +177,7 @@ func catch() -> void:
 		"shape": "axe_detonation",
 	})
 	var threshold: float = _activation.param_float("execute_threshold", 0.3)
+	var caught: Array[Node] = []
 	for raw_target in _corridor(edge_for_tests, source - edge_for_tests):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target) or not _claim_pass(target, "return"):
@@ -178,6 +188,7 @@ func catch() -> void:
 			"loop:return",
 			"execution_loop_return"
 		)
+		caught.append(target)
 		# The outbound mark already recorded whether this tier may be executed.
 		var marked = _activation.consume_target_value(target, MARK_KEY, "loop:execute", false)
 		if not bool(marked):
@@ -195,6 +206,7 @@ func catch() -> void:
 			"loop:execute",
 			"execution_loop_execute"
 		)
+	_play_impacts(caught)
 
 
 func _corridor(start: Vector2, offset: Vector2) -> Array:
@@ -203,7 +215,7 @@ func _corridor(start: Vector2, offset: Vector2) -> Array:
 		offset,
 		offset.length(),
 		_activation.param_float("corridor_half_width", 130.0),
-		_activation.param_int("crowd_cap", 18)
+		0
 	)
 
 
@@ -247,6 +259,23 @@ func _deal(target: Node, amount: float, event_id: String, mechanic: String) -> v
 		ultimate_damage_sink.call(
 			target, amount, {"ultimate_mechanic": mechanic}, event_id, false
 		)
+
+
+## Per-victim read (FAN-3008): every struck enemy pops its own cleaving burst
+## on top of its white hit flash, staggered outward from the hero. The return
+## leg joins the ripple the outbound pass started instead of replacing it.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _live() -> bool:

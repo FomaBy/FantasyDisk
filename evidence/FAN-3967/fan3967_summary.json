@@ -1,0 +1,75 @@
+{
+  "issue": "FAN-3967",
+  "base": {
+    "sha": "e33bded444e301919dc93c8c9b9f0257e640a1ea",
+    "tree": "9a8401ca1a6dda8a4b446fe45de3fa4f97074426"
+  },
+  "code_commit": {
+    "sha": "ee434eebaf57610db3a25038ddad930548380efa",
+    "tree": "0ea4746a59efb066149d7634eb410225c731ea35",
+    "ref": "agent/claude-dev-fable/9426dc35badb"
+  },
+  "ratchet": {
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/combat_primitive_ratchet_test.gd",
+    "base_exit": 1,
+    "candidate_exit": 1,
+    "base_count": 18,
+    "candidate_count": 11,
+    "removed": [
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/druid/druid_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows."
+    ],
+    "added": [],
+    "candidate_remaining_findings_belong_to_other_slices": true
+  },
+  "focused_suites_exit_0": [
+    "tests/ultimates/presentation/druid_ultimate_timelines.gd",
+    "tests/ultimates/presentation/druid_certification_capture_test.gd",
+    "tests/ultimates/presentation/guitarist_ultimate_timelines.gd",
+    "tests/ultimates/presentation/guitarist_certification_capture_test.gd",
+    "tests/ultimates/presentation/ultimate_v2_presence_driver_test.gd",
+    "tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd",
+    "tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd",
+    "tests/ultimates/presentation/presentation_v2_migration_shards_test.gd",
+    "tests/ultimates/mechanics/druid_live_test.gd",
+    "tests/ultimates/mechanics/druid_package_test.gd",
+    "tests/ultimates/mechanics/guitarist_ultimate_live_test.gd",
+    "tests/ultimates/mechanics/guitarist_ultimate_mechanics_test.gd",
+    "tests/ultimates/presentation/druid_certification_live_capture.gd (windowed, 144 samples)",
+    "tests/ultimates/presentation/guitarist_certification_live_capture.gd (windowed, 144 samples)",
+    "tests/ultimates/presentation/druid_ultimate_contact_capture.gd (windowed, 4 sheets)",
+    "tests/ultimates/presentation/guitarist_ultimate_contact_capture.gd (windowed, 4 sheets)"
+  ],
+  "static_checks": {
+    "tools/quality_static_guard.py": "passed",
+    "git diff --check": "clean",
+    "secret grep on diff": "none"
+  },
+  "log_sha256": {
+    "candidate_druid_certification_capture_test.log": "603356d42817a968a1e73c7c686e72496ebd54c55573da6d84d7bdfe51f41538",
+    "candidate_druid_certification_live_capture.log": "79487a1ecb3f3783a5981304f768d88d3add4935dca9b79138bd7fd408aad372",
+    "candidate_druid_contact_capture.log": "082cda311715726943a67f33481e88667c4ec18d4e785d34d7dc866d3f9af907",
+    "candidate_druid_live_test.log": "c853d536a9bd42a4cec76e005aa944ed0d2391f6bebd8f9ed7454e07f891d3f1",
+    "candidate_druid_package_test.log": "ffaefe7d422216d532d7a1389bc7011ff0ed8e3cb27cc5b51ff53f6756646165",
+    "candidate_druid_ultimate_timelines.log": "2a99e40e3b977b8e6de0288030c88085955cd09aeee0652be31d706a46d9eafc",
+    "candidate_guitarist_certification_capture_test.log": "d499011ce0d406ef2d5a0b28a12051a865ba9d9e2cb77e0fc71c86a89ae4f68c",
+    "candidate_guitarist_certification_live_capture.log": "6372710d9b128741612700233b45fd532d5abfb341cc807711f59e4229afdd29",
+    "candidate_guitarist_contact_capture.log": "7c785efc9f566651ac2538294799fd0423494c4d80e68e4a42357df2b3dc04d7",
+    "candidate_guitarist_ultimate_live_test.log": "06b2c367115ac77be996a68392e0727efd0f7ea42ea82279d9ea135950c36287",
+    "candidate_guitarist_ultimate_mechanics_test.log": "82bcb7d3d5a13537a1b424e917b972763bb8a9e20ec93a617a4001e256c152af",
+    "candidate_guitarist_ultimate_timelines.log": "81c3729ba71a14dfb2fa7d005bed9da05b7a6e11b3d75cb0be09931fccab8606",
+    "candidate_presentation_v2_migration_shards_test.log": "0342c6044d3f17d89bade35b43a5171dc54d7a4adee616610ce7f0f6e4833e13",
+    "candidate_ratchet.log": "fc67f8e7ecd5af059c5752023897cd84caddc3ff7d02025d776f86263b178121",
+    "candidate_ultimate_v2_presence_driver_test.log": "2664df7cb2e6daafc99e516b5145242158325f6f825ab1ce8baa6991aeba00b9",
+    "candidate_weapon_ultimate_contact_sheet_beats_test.log": "0f28e310751020e8e7a462ac4cd97123d65931d9358fd665dbf71eaa509625bd",
+    "candidate_weapon_ultimate_presentation_budget_test.log": "38e3a11a46bb4fbf1ac08249b5e1a4436c8e5c89a98d901f083c3b0eadc083d3",
+    "base_druid_contact_capture.log": "2547c52e12ca270579479bb4b47c34609358a4531f3f05e53792c3ba04603eb2",
+    "base_guitarist_contact_capture.log": "0effaabd73114f87582223b8c938d39f277d1a63f0b73087bf871494bcfc187e",
+    "base_ratchet.log": "d02c8601706421ef11b9a045349dd3c056c97fdb17b49b65aac42f35b74e478e"
+  }
+}

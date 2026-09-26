@@ -9,6 +9,7 @@ const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_reso
 
 const CLASS_ID := "guitarist"
 const WEAPONS := ["electric_guitar", "bass_guitar", "sound_amp"]
+const EXECUTOR_DIR := "res://scripts/ultimates/classes/guitarist"
 const TRIO_MIN := 0.90
 const TRIO_MAX := 1.10
 const DEFENSE_REFERENCE_SECONDS := 1.8
@@ -24,6 +25,10 @@ func _initialize() -> void:
 	var registry := Registry.new(PD.WEAPONS_BY_CLASS)
 	_check(registry.package_validation_errors().is_empty(),
 		"Guitarist package discovery must remain clean: %s" % [registry.package_validation_errors()])
+	_check(Harness.COVERAGE_V2_CLASSES.has(CLASS_ID),
+		"Guitarist must be recorded in the coverage v2 ledger")
+	_check(not Harness.COVERAGE_MIGRATION_ALLOWLIST.has(CLASS_ID),
+		"Guitarist must leave the coverage migration allowlist")
 	var metrics := {}
 	for weapon_id in WEAPONS:
 		var row := Budget.row_for(rows, CLASS_ID, weapon_id)
@@ -43,7 +48,6 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 	var params := (profile["executor"] as Dictionary)["params"] as Dictionary
 	var solo_coefficient := 0.0
 	var aoe_coefficient := 0.0
-	var crowd_cap := int(params["crowd_cap"])
 	var defense_seconds := 0.0
 	match weapon_id:
 		"electric_guitar":
@@ -75,9 +79,15 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"solo_ratio": solo_output / power_midpoint,
 		"aoe_output": aoe_output,
 		"aoe_ratio": aoe_output / aoe_midpoint,
-		"crowd_cap": crowd_cap,
+		"count_caps": Harness.count_cap_params(_executor_source(weapon_id)),
 		"defense_seconds": defense_seconds,
 	}
+
+
+## The frozen executor source of one weapon, read the same way the shared
+## FAN-2949 ratchet reads a class package.
+func _executor_source(weapon_id: String) -> String:
+	return FileAccess.get_file_as_string("%s/%s.gd" % [EXECUTOR_DIR, weapon_id])
 
 
 func _check_profile(
@@ -102,18 +112,17 @@ func _check_profile(
 		"%s solo output %.2f must remain inside %.2f..%.2f" % [
 			weapon_id, metrics["solo_output"], row["power_budget_min"], row["power_budget_max"],
 		])
+	_check((metrics["count_caps"] as Array).is_empty(),
+		"%s must declare no count-shaped reach parameter, got %s" % [weapon_id, metrics["count_caps"]])
 	match weapon_id:
 		"electric_guitar":
-			_check(float(metrics["aoe_ratio"]) >= 0.75 and float(metrics["aoe_ratio"]) <= 0.95
-				and int(metrics["crowd_cap"]) == 14,
+			_check(float(metrics["aoe_ratio"]) >= 0.75 and float(metrics["aoe_ratio"]) <= 0.95,
 				"Last Chord must retain the precision/intersection lane")
 		"bass_guitar":
-			_check(float(metrics["aoe_ratio"]) >= 0.75 and float(metrics["aoe_ratio"]) <= 0.95
-				and int(metrics["crowd_cap"]) == 12,
+			_check(float(metrics["aoe_ratio"]) >= 0.75 and float(metrics["aoe_ratio"]) <= 0.95,
 				"Hell Subwoofer must retain the expanding crowd-control lane")
 		"sound_amp":
-			_check(float(metrics["aoe_ratio"]) >= 1.15 and float(metrics["aoe_ratio"]) <= 1.40
-				and int(metrics["crowd_cap"]) == 14,
+			_check(float(metrics["aoe_ratio"]) >= 1.15 and float(metrics["aoe_ratio"]) <= 1.40,
 				"Wall of Sound must retain the stationary field-clear lane")
 
 
@@ -147,7 +156,9 @@ func _check_trio(metrics: Dictionary) -> void:
 		var metric := metrics[weapon_id] as Dictionary
 		solo_score += float(metric["solo_ratio"])
 		aoe_score += float(metric["aoe_ratio"])
-		crowd_score += float(metric["crowd_cap"]) / (12.0 if weapon_id == "bass_guitar" else 14.0)
+		# Reach is no longer a headcount, so the crowd rail scores the v2
+		# contract itself: a weapon counts only while it caps no reach.
+		crowd_score += 1.0 if (metric["count_caps"] as Array).is_empty() else 0.0
 		defense_score += float(metric["defense_seconds"]) / DEFENSE_REFERENCE_SECONDS
 	solo_score /= float(WEAPONS.size())
 	aoe_score /= float(WEAPONS.size())
@@ -158,7 +169,7 @@ func _check_trio(metrics: Dictionary) -> void:
 		"Guitarist trio solo score %.3f must remain in %.2f..%.2f" % [solo_score, TRIO_MIN, TRIO_MAX])
 	_check(aoe_score >= TRIO_MIN and aoe_score <= TRIO_MAX,
 		"Guitarist trio AoE score %.3f must remain in %.2f..%.2f" % [aoe_score, TRIO_MIN, TRIO_MAX])
-	_check(is_equal_approx(crowd_score, 1.0), "each Guitarist crowd rail must remain capped")
+	_check(is_equal_approx(crowd_score, 1.0), "the Guitarist trio must retain uncapped v2 reach")
 	_check(defense_score >= TRIO_MIN and defense_score <= TRIO_MAX,
 		"Guitarist trio defense score %.3f must remain in %.2f..%.2f" % [defense_score, TRIO_MIN, TRIO_MAX])
 	_check(total >= TRIO_MIN and total <= TRIO_MAX,
@@ -190,10 +201,10 @@ func _report(metrics: Dictionary) -> void:
 	print("guitarist ultimate balance:")
 	for weapon_id in WEAPONS:
 		var metric := metrics[weapon_id] as Dictionary
-		print("  %-16s solo=%7.2f (%0.3f) aoe=%7.2f (%0.3f) crowd=%2d defense=%.2fs" % [
+		print("  %-16s solo=%7.2f (%0.3f) aoe=%7.2f (%0.3f) count_caps=%s defense=%.2fs" % [
 			weapon_id, metric["solo_output"], metric["solo_ratio"],
 			metric["aoe_output"], metric["aoe_ratio"],
-			metric["crowd_cap"], metric["defense_seconds"],
+			metric["count_caps"], metric["defense_seconds"],
 		])
 	if _errors.is_empty():
 		print("guitarist_ultimate_balance_test: PASS")

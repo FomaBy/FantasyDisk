@@ -362,10 +362,11 @@ def validate(document_data: dict) -> list[str]:
             next_issue = item.get("next_issue")
             if next_issue not in {"SCRUM-1068", "SCRUM-1073"}:
                 errors.append(f"allowlist {fingerprint} has invalid next_issue")
-            is_atlas_canvas = (
-                item.get("path") == "scripts/ui_screens.gd"
-                and item.get("function") in {"_show_atlas_screen", "_atlas_build_canvas"}
-            )
+            # FAN-3824: топология Атласа живёт в экранных модулях разреза.
+            is_atlas_canvas = (item.get("path"), item.get("function")) in {
+                ("scripts/ui/screens/atlas_screen.gd", "_show_atlas_screen"),
+                ("scripts/ui/screens/atlas_canvas.gd", "_atlas_build_canvas"),
+            }
             if next_issue == "SCRUM-1068" and not is_atlas_canvas:
                 errors.append(f"allowlist {fingerprint} overloads Atlas-only SCRUM-1068")
             if next_issue == "SCRUM-1073" and is_atlas_canvas:
@@ -415,7 +416,15 @@ def validate(document_data: dict) -> list[str]:
             errors.append("SCRUM-1073 migration manifest has an invalid final disposition")
         if any(item.get("next_issue") == "SCRUM-1073" for item in document_data["entries"]):
             errors.append("SCRUM-1073 routing remains in the live inventory")
-    ui_source = (ROOT / "scripts/ui_screens.gd").read_text(encoding="utf-8")
+    # FAN-3824: UI-класс распределён по extends-цепочке — исходный корпус для
+    # source-контрактов = фасад + все экранные модули.
+    ui_source = "\n".join(
+        [(ROOT / "scripts/ui_screens.gd").read_text(encoding="utf-8")]
+        + [
+            path.read_text(encoding="utf-8")
+            for path in sorted((ROOT / "scripts/ui/screens").glob("*.gd"))
+        ]
+    )
     if 'control.set_meta("codex_semantic_role", role)' not in ui_source or 'control.get_meta("codex_semantic_role"' not in ui_source:
         errors.append("Codex stage font role metadata is not preserved across refresh")
     semantic_sources = ui_source + "\n" + (ROOT / "scripts/pause_stats_menu.gd").read_text(encoding="utf-8")

@@ -224,10 +224,38 @@ dev  — основная ветка разработки. Все чаты (Back
     `--draft=false` publisher доказывает, что переписать draft assets не может
     никакой другой аккаунт — репозиторий принадлежит аутентифицированному
     публикатору, других collaborators и pending invitations нет, deploy keys
-    только read-only, и ни одна GitHub App installation с contents или
-    administration write не покрывает репозиторий, — а затем повторно
+    только read-only, и owner-attested полный inventory GitHub Apps не содержит
+    installation с contents или administration write для репозитория, — а затем повторно
     byte-exact сверяет все draft assets последним чтением перед публичным
-    edit. Конкурентная подмена asset после последней чистой проверки блокирует
+    edit. `GET /user/installations` не используется как такой inventory: для
+    `ghu_` он описывает только установки текущего App и не доказывает отсутствие
+    остальных. Перед запуском владелец вручную экспортирует видимый полный список
+    `Settings → Applications` в два небольших JSON-файла schema 1 с полями
+    `source=github-account-applications-settings`, `account`, `repository`,
+    `observed_at`, `complete=true` и `installations`; selected App обязан включать
+    полный `repositories {total_count,repositories}`. Файлы передаются в порядке
+    pre-draft, pre-public двумя `--writer-inventory-proof`; publisher сверяет
+    account с `GET /user`, repository, типы/ID/permissions/selection и свежесть
+    (не старше двух минут). После проверки draft assets publisher ждёт отдельного
+    нового экспорта второго файла; он обязан быть новее первого и draft-check,
+    а selected inventory требует непустые уникальные canonical `full_name` и
+    согласованный полный `total_count`. stale/replay/malformed/hidden/partial данные блокируют до side effect или до
+    `--draft=false`. Это намеренно owner-attested trust boundary, а не заявление,
+    что GitHub предоставил account-wide API. Не помещайте эти файлы, cookies или
+    токены в git, Multica и логи; после ошибки создайте две новые аттестации и
+    начните с нового номера версии, ничего не удаляя и не переиспользуя.
+
+```bash
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
+```
+
+    Второй proof publisher перечитывает после draft asset verification, прямо
+    перед `--draft=false`; template, `mktemp -d` и безопасное удаление указаны в
+    `fantasydisk-release-director`.
+    Конкурентная подмена asset после последней чистой проверки блокирует
     публикацию, пока release ещё draft; непроверяемое состояние тоже блокирует
     (fail-closed), и publisher сам никогда не меняет эти настройки GitHub.
     Стабильный клиентский URL:

@@ -121,11 +121,25 @@ static func tick(target: Node, delta: float) -> void:
 
 # SCRUM-523: принимает ли take_damage второй аргумент (feedback-словарь).
 # Та же проверка арности, что в class_weapon._take_damage_accepts_feedback.
+# FAN-3061: get_method_list() стоит ~2.7мс на enemy.gd, а DoT-тики карт-широких
+# ультимейтов (FAN-2952/FAN-2953) синхронно созревают у сотен врагов в одном
+# кадре — арность метода принадлежит скрипту, поэтому ответ кэшируется по нему.
+static var _accepts_feedback_by_script := {}
+
+
 static func _take_damage_accepts_feedback(target: Node) -> bool:
+	var script = target.get_script()
+	var key: int = script.get_instance_id() if script is Object else 0
+	if key != 0 and _accepts_feedback_by_script.has(key):
+		return _accepts_feedback_by_script[key]
+	var result := false
 	for method in target.get_method_list():
 		if str(method.get("name", "")) == "take_damage":
-			return int((method.get("args", []) as Array).size()) >= 2
-	return false
+			result = int((method.get("args", []) as Array).size()) >= 2
+			break
+	if key != 0:
+		_accepts_feedback_by_script[key] = result
+	return result
 
 
 static func has_status(target: Node, status_id: String) -> bool:

@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3771",
+  "source_brief": "FAN-3318",
+  "class_id": "priest",
+  "weapon_id": "priest_chime",
+  "title": "Три Колокола Рассвета",
+  "ultimate_role": "prayer_chain",
+  "visual_identity": "three linked ivory-and-gold prayer bells, blue gems, ribbons and staggered concentric sound waves",
+  "generator": {
+    "route": "PixelLab MCP",
+    "tool": "tools/pixellab_generate_pack.py",
+    "mode": "v3",
+    "pixel_lab_object_id": "1aa84b6a-5666-437f-9ba0-43e1aa8e72f2",
+    "pixel_lab_animation_group_id": "44dda2f3-c433-494e-a89e-e08e004904e9",
+    "raw_manifest": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/pixellab_generation_manifest.json",
+    "raw_manifest_sha256": "cd17b84d27cc3a1b08d9acdc3519dad7993b68e734cba4518024867a5c206bd4",
+    "generation_cost": {
+      "per_pack": "not exposed by the blocking CLI or get_object response",
+      "paid_operation": false
+    },
+    "no_secrets_recorded": true
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16
+  },
+  "postprocess": {
+    "raw_preserved": true,
+    "accepted_source_cleaned": true,
+    "weapon_reference": "assets/sprites/weapons/priest_chime.png",
+    "ghost_silhouette": "canonical weapon alpha rendered in the pack accent at 20% opacity behind the PixelLab animation",
+    "effect_alpha_factor": 0.68,
+    "source_runtime_parity": true
+  },
+  "animation": {
+    "name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0,
+    "frame_order": [
+      "priest_chime_f00.png",
+      "priest_chime_f01.png",
+      "priest_chime_f02.png",
+      "priest_chime_f03.png",
+      "priest_chime_f04.png",
+      "priest_chime_f05.png",
+      "priest_chime_f06.png",
+      "priest_chime_f07.png",
+      "priest_chime_f08.png"
+    ]
+  },
+  "spriteframes": "assets/sprites/effects/priest/priest_chime/priest_chime_spriteframes.tres",
+  "contact_sheet": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_contact_sheet.png",
+  "static_alpha_readability_report": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/static_alpha_readability_report.json",
+  "import": {
+    "expected_texture_type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filter": "nearest",
+    "sidecars": {
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f00.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f00.png.import",
+        "sha256": "56275fd60f812cf5b4de6f76ef732bf8cc9b65ffd8fa07c1490a53fe46fa8843",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f01.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f01.png.import",
+        "sha256": "b3a0a48469f9c2ce8e91454f9680075a4a59964ada6abbfe729dfa1ae28286f2",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f02.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f02.png.import",
+        "sha256": "553787881db608f2ae9c2b9c0a45a3eec9a1fbd4549293dd955c6daaeb96dc79",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f03.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f03.png.import",
+        "sha256": "5c3cb5c92fb4636d45eb94d9d0808f45a9ae8f460e0ebae9063e54ed73978aa4",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f04.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f04.png.import",
+        "sha256": "225515efd55f23dc18b8f0709a217ee0b7333e8ec78c41f2170de628c7affc23",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f05.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f05.png.import",
+        "sha256": "fa31967d3fbee06a140c3029d44b2cdf3be639cc5d3e5b74df1c167bb9481ead",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f06.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f06.png.import",
+        "sha256": "cf7865ed59d84a5cf29b0dfea6b41609bb368d7bee911bcbd879d532dfb105e0",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f07.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f07.png.import",
+        "sha256": "36f58a6c2bc4ca271ab586f909afb86cb81872ca84f42aa077dfb68b4e0619db",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_chime/priest_chime_f08.png": {
+        "path": "assets/sprites/effects/priest/priest_chime/priest_chime_f08.png.import",
+        "sha256": "b5daccdd47dc174b816bd213d7f37600749d6ea31ecd9b78c6cb6b0840a636d9",
+        "exists": true
+      }
+    },
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "verified": true
+  },
+  "motion": {
+    "distinct_frame_pixel_hashes": 9,
+    "adjacent_pairs_with_motion": 8,
+    "adjacent_changed_pixel_ratios": [
+      0.298248,
+      0.31105,
+      0.320999,
+      0.346375,
+      0.276474,
+      0.313599,
+      0.313126,
+      0.317398
+    ],
+    "mean_absolute_rgba_diffs": [
+      16.0475,
+      17.1293,
+      18.6903,
+      22.9312,
+      14.2404,
+      18.0301,
+      18.0392,
+      19.3678
+    ],
+    "motion_score_mean_changed_pixel_ratio": 0.312159,
+    "loop": false,
+    "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f00.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f00.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f00.png",
+      "raw_source_sha256": "6349775b5c1a5a124ec45ca3415e809646b0c2c48f9e4a700689358ded3d5a78",
+      "raw_source_pixel_sha256": "a07f0b068207c6f23165648886de1b9d4906efef73cdcf6b5d996b87b9e2e006",
+      "source_sha256": "4346c0d5ffaf453aae69c151bc3275c83189a3510bcc55a7bb03062255ad857b",
+      "runtime_sha256": "4346c0d5ffaf453aae69c151bc3275c83189a3510bcc55a7bb03062255ad857b",
+      "source_pixel_sha256": "0e2b009b0622f61a59fa021873a0d7dbf0c38d3b597acc25fb2a454f5831109d",
+      "runtime_pixel_sha256": "0e2b009b0622f61a59fa021873a0d7dbf0c38d3b597acc25fb2a454f5831109d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        25,
+        28,
+        230,
+        227
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 58.9335,
+      "mean_alpha_visible_pixels": 168.4623,
+      "visible_ratio_alpha_gt_8": 0.349792,
+      "center_64_mean_alpha": 174.8416,
+      "outer_32_border_mean_alpha": 1.1113
+    },
+    {
+      "frame": 1,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f01.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f01.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f01.png",
+      "raw_source_sha256": "6296d820bccde7e452421c1a0197718c6eb4041a010679d709db9e23fa601c62",
+      "raw_source_pixel_sha256": "f4987a92e20e56554eef199e2efe0449db5e82903265c581284510c7af45c1e7",
+      "source_sha256": "71ef4ce551a71a906fd7fd62c0ebd9d9769bba483d665a47fc877e81e4dfb5cc",
+      "runtime_sha256": "71ef4ce551a71a906fd7fd62c0ebd9d9769bba483d665a47fc877e81e4dfb5cc",
+      "source_pixel_sha256": "f026165457b476c2bf38de5c8e7532cfe13dcdcb14ad5ed19537e9bfc2dc4749",
+      "runtime_pixel_sha256": "f026165457b476c2bf38de5c8e7532cfe13dcdcb14ad5ed19537e9bfc2dc4749",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        25,
+        29,
+        230,
+        226
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 59.0863,
+      "mean_alpha_visible_pixels": 168.3858,
+      "visible_ratio_alpha_gt_8": 0.350861,
+      "center_64_mean_alpha": 175.0667,
+      "outer_32_border_mean_alpha": 1.0823
+    },
+    {
+      "frame": 2,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f02.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f02.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f02.png",
+      "raw_source_sha256": "e0991b82c2e3c3a06eeed68aaad949bc8db011d77df0ac07282c7a3fd173fe91",
+      "raw_source_pixel_sha256": "1ed20efbe5f724a666f14c243708d2e7b794b7840b007725257bae8ea6991284",
+      "source_sha256": "119dab38fc0ed8faf9a147a656293b2e9631883628bca231f5fb27406c4b5984",
+      "runtime_sha256": "119dab38fc0ed8faf9a147a656293b2e9631883628bca231f5fb27406c4b5984",
+      "source_pixel_sha256": "3acb394f3799da4197b000276744dfe2edd5544a9e09041f99d820bd552fa1b6",
+      "runtime_pixel_sha256": "3acb394f3799da4197b000276744dfe2edd5544a9e09041f99d820bd552fa1b6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        24,
+        30,
+        232,
+        225
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 58.0105,
+      "mean_alpha_visible_pixels": 167.5476,
+      "visible_ratio_alpha_gt_8": 0.346191,
+      "center_64_mean_alpha": 169.0652,
+      "outer_32_border_mean_alpha": 1.341
+    },
+    {
+      "frame": 3,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f03.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f03.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f03.png",
+      "raw_source_sha256": "639964db6b8f946cc0947d5145a422fb4e9e508dd7b090c2509d151fe66affec",
+      "raw_source_pixel_sha256": "05021047e3dfa2562409644b3345901e66c0b174e6f653fb26d16082c2d93ee8",
+      "source_sha256": "3866b93a7e43fd1fb6d244d665ce59549671a90f16e563cfe6b3b064d1b07932",
+      "runtime_sha256": "3866b93a7e43fd1fb6d244d665ce59549671a90f16e563cfe6b3b064d1b07932",
+      "source_pixel_sha256": "9ff019e7522ae53886fb00ba15419f7008dce9db6015a4569fdd33ab52ce9de2",
+      "runtime_pixel_sha256": "9ff019e7522ae53886fb00ba15419f7008dce9db6015a4569fdd33ab52ce9de2",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        23,
+        30,
+        232,
+        226
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 57.0537,
+      "mean_alpha_visible_pixels": 167.2161,
+      "visible_ratio_alpha_gt_8": 0.341156,
+      "center_64_mean_alpha": 161.103,
+      "outer_32_border_mean_alpha": 1.6604
+    },
+    {
+      "frame": 4,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f04.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f04.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f04.png",
+      "raw_source_sha256": "bc2c2c155168e35c4f6a90ec5b92ba59e0c658533dbc43756d482ad58a7d05ff",
+      "raw_source_pixel_sha256": "f30e2dcaac5577f28d4f8e2e60e7ae46e6b55af4c17a186d5712d9c6dfb673df",
+      "source_sha256": "78d8745c716fa83806d20af849446a7aa6ccf37205aae91b9fef6550ebd9281b",
+      "runtime_sha256": "78d8745c716fa83806d20af849446a7aa6ccf37205aae91b9fef6550ebd9281b",
+      "source_pixel_sha256": "1abc6bcbd27de8931b075122d426c6c71e3c204e4d319e458a1cb4b5b808957a",
+      "runtime_pixel_sha256": "1abc6bcbd27de8931b075122d426c6c71e3c204e4d319e458a1cb4b5b808957a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        21,
+        28,
+        234,
+        228
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 57.3594,
+      "mean_alpha_visible_pixels": 166.9274,
+      "visible_ratio_alpha_gt_8": 0.343582,
+      "center_64_mean_alpha": 154.8027,
+      "outer_32_border_mean_alpha": 1.8954
+    },
+    {
+      "frame": 5,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f05.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f05.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f05.png",
+      "raw_source_sha256": "22b25b98df8e1940d7e979cc90a315dbb0d2d88f5f46a670fc781f2d548f6beb",
+      "raw_source_pixel_sha256": "83d45cd91ff82373e54b7acc767c9293f10a3865e8977ffaa6bd82abd5b6cc0f",
+      "source_sha256": "e91a14399a18dfb7f298bf03d304f0d26e1412bcab9a2ce90652f3884a16975c",
+      "runtime_sha256": "e91a14399a18dfb7f298bf03d304f0d26e1412bcab9a2ce90652f3884a16975c",
+      "source_pixel_sha256": "a5848bca69b47b23955b367953e0c1b407eddf74725b555c00d183cf2becd97b",
+      "runtime_pixel_sha256": "a5848bca69b47b23955b367953e0c1b407eddf74725b555c00d183cf2becd97b",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        22,
+        28,
+        233,
+        228
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 58.402,
+      "mean_alpha_visible_pixels": 167.2811,
+      "visible_ratio_alpha_gt_8": 0.349091,
+      "center_64_mean_alpha": 156.262,
+      "outer_32_border_mean_alpha": 1.8162
+    },
+    {
+      "frame": 6,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f06.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f06.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f06.png",
+      "raw_source_sha256": "48e18a2fd9a0a43ab72a0cddad5cc5d2851e23f906822460a37b242a58ca3d13",
+      "raw_source_pixel_sha256": "92c54737ba50a043f3072ec14f75b28431f9642cc9629ddb46bc24b23e6f225b",
+      "source_sha256": "e3826bdd3fee270e1a694efb4b1b5d74419650f99b1a2cc565dec5220caf8e8b",
+      "runtime_sha256": "e3826bdd3fee270e1a694efb4b1b5d74419650f99b1a2cc565dec5220caf8e8b",
+      "source_pixel_sha256": "68a4bd2230e397e7c598788900389168d76dc57099d706f252cea48bc23fd31e",
+      "runtime_pixel_sha256": "68a4bd2230e397e7c598788900389168d76dc57099d706f252cea48bc23fd31e",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        24,
+        28,
+        231,
+        227
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 57.6401,
+      "mean_alpha_visible_pixels": 167.2853,
+      "visible_ratio_alpha_gt_8": 0.344528,
+      "center_64_mean_alpha": 161.4531,
+      "outer_32_border_mean_alpha": 1.5047
+    },
+    {
+      "frame": 7,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f07.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f07.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f07.png",
+      "raw_source_sha256": "ca9aa8a95266c6535f07bd7ef33e8453d1df6128c0164ec8c72e96e7ae6f99bd",
+      "raw_source_pixel_sha256": "f2e4d70f40b275da0766247de8d9e7307004777f3686c1074e56b3ba7140653d",
+      "source_sha256": "851ce807f7a9fd53e211d47cca1f270b426a68899bf91bef091c1367e7529df6",
+      "runtime_sha256": "851ce807f7a9fd53e211d47cca1f270b426a68899bf91bef091c1367e7529df6",
+      "source_pixel_sha256": "a81da75d75df365fe77c462991bee6fc4788077cbf4e16f08c9664ae0196a44c",
+      "runtime_pixel_sha256": "a81da75d75df365fe77c462991bee6fc4788077cbf4e16f08c9664ae0196a44c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        25,
+        28,
+        231,
+        227
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 57.0201,
+      "mean_alpha_visible_pixels": 167.4209,
+      "visible_ratio_alpha_gt_8": 0.340546,
+      "center_64_mean_alpha": 169.5198,
+      "outer_32_border_mean_alpha": 1.18
+    },
+    {
+      "frame": 8,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw/priest_chime_f08.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_f08.png",
+      "runtime": "assets/sprites/effects/priest/priest_chime/priest_chime_f08.png",
+      "raw_source_sha256": "8ae5e3f092d7dab5d404f4cd80d34bae2099b4114e48a6793c2a4f1ec29a3948",
+      "raw_source_pixel_sha256": "4af7a7229ad06479bf278801f46d94d183f1abe3ac8181da902445930d7091ba",
+      "source_sha256": "372cc6244aa5b2f3508ec5d2146e4861182f8bb46e4b87a1654a9c6275699268",
+      "runtime_sha256": "372cc6244aa5b2f3508ec5d2146e4861182f8bb46e4b87a1654a9c6275699268",
+      "source_pixel_sha256": "ea695eb95932b6f5f9849afb77b317266a8a450d4aebea2c26f2f1fdd5a415c9",
+      "runtime_pixel_sha256": "ea695eb95932b6f5f9849afb77b317266a8a450d4aebea2c26f2f1fdd5a415c9",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        25,
+        28,
+        230,
+        228
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 56.6328,
+      "mean_alpha_visible_pixels": 167.8404,
+      "visible_ratio_alpha_gt_8": 0.337387,
+      "center_64_mean_alpha": 175.4014,
+      "outer_32_border_mean_alpha": 1.0744
+    }
+  ]
+}

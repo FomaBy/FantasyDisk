@@ -1,0 +1,540 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3863",
+  "source_brief": "FAN-3320",
+  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "class_id": "robot",
+  "weapon_id": "robot_hydraulic_press",
+  "title": "Гидравлический пресс",
+  "effect_id": "corridor_crush",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "no_secrets_recorded": true,
+    "generated_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixellab_generation_manifest.json",
+    "offline_builder": "tools/build_fan3863_robot_vfx_pack.py"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "raw 256x256 PixelLab frame -> nearest-neighbor 224x224 inset at (16,16) on transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true
+  },
+  "pixel_lab": {
+    "object_id": "ba690552-379e-4103-8733-d10c8168f242",
+    "animation_group_id": "58e91749-6dbe-4452-ab5d-8b9c40e8298c",
+    "canonical_asset_key": "robot/hydraulic_press",
+    "canonical_tag": null,
+    "tag_or_name_note": "The blocking CLI does not expose PixelLab tag/name assignment; object and animation IDs are recorded exactly.",
+    "export_ids": [],
+    "generator_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixellab_generation_manifest.json"
+  },
+  "visual_identity": "massive dark-iron press with bronze plates, teal hydraulic hoses, and hot amber pressure core",
+  "motion_contract": "plates open, side pistons extend, pressure charges, piston slam with impact ring, rebound and vent",
+  "palette_contract": "charcoal iron, bronze plates, teal hoses, amber pressure glow",
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press",
+    "raw_source_dir": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw",
+    "generated_manifest": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixellab_generation_manifest.json",
+    "runtime_dir": "assets/sprites/effects/robot/hydraulic_press",
+    "spriteframes": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/robot/hydraulic_press/runtime_manifest.json",
+    "quality_evidence": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_contact_sheet.png"
+  },
+  "animation": {
+    "name": "robot_hydraulic_press_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f00.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f01.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f02.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f03.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f04.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f05.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f06.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f07.png",
+      "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "plates open, side pistons extend, pressure charges, piston slam with impact ring, rebound and vent"
+  },
+  "source_runtime_parity": true,
+  "pixel_quality_evidence": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/pixel_quality_evidence.json",
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f00.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f00.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f00.png.import",
+      "raw_encoded_sha256": "40ccb1496caf3a413f1f13023abbe68ca81690ef7999bdc3297aa92f5dcfbbd9",
+      "raw_pixel_sha256": "a582e421d7cd5e5911a31f8bc763c68cc65baaefe16962267d6f998dcea05eb2",
+      "source_encoded_sha256": "f0bbfc7bddf3b4522ebbe3cac6301c714edb5ca6d9ef09d67220ece6b2a8dbe9",
+      "runtime_encoded_sha256": "f0bbfc7bddf3b4522ebbe3cac6301c714edb5ca6d9ef09d67220ece6b2a8dbe9",
+      "source_pixel_sha256": "001e6f3fdb961570e736855b2d999a909ee018a5ceebfdfce207c227c6979cd4",
+      "runtime_pixel_sha256": "001e6f3fdb961570e736855b2d999a909ee018a5ceebfdfce207c227c6979cd4",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        27,
+        21,
+        229,
+        212
+      ],
+      "gutters_px": [
+        27,
+        21,
+        27,
+        44
+      ],
+      "minimum_gutter_px": 21,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 26210,
+      "visible_ratio_alpha_gt_8": 0.399933,
+      "opaque_pixels": 26210,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://djheq82qjab5r",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f00.png-6c4fba1ab8effca7b755e81b92d3fb1c.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f00.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f01.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f01.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f01.png.import",
+      "raw_encoded_sha256": "9264e596502dc288cb5cd9a5724110049c22a93bbd1049b192ad6e7d0ebe51f6",
+      "raw_pixel_sha256": "a2f5b023ebcf4db8cc533d442c9cef073cf7815a753807a038c638284c4360c3",
+      "source_encoded_sha256": "0dbd578dd4c399ee0fdbbaa166553ebcbcebf437aa23d501c0a804a85a783639",
+      "runtime_encoded_sha256": "0dbd578dd4c399ee0fdbbaa166553ebcbcebf437aa23d501c0a804a85a783639",
+      "source_pixel_sha256": "87385aebe9ef250e9b31ca52906ed724cca872f80e4924f3defcc6a4576b2928",
+      "runtime_pixel_sha256": "87385aebe9ef250e9b31ca52906ed724cca872f80e4924f3defcc6a4576b2928",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        26,
+        22,
+        230,
+        212
+      ],
+      "gutters_px": [
+        26,
+        22,
+        26,
+        44
+      ],
+      "minimum_gutter_px": 22,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 26188,
+      "visible_ratio_alpha_gt_8": 0.399597,
+      "opaque_pixels": 26188,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bw364bti4kvnu",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f01.png-d61318d6a5487edab7410f2efa4ea2fd.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f01.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f02.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f02.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f02.png.import",
+      "raw_encoded_sha256": "c1eec83e6a59467ad5e763be044bf0870e3b105524e32b6cdbcf827072c42766",
+      "raw_pixel_sha256": "580df27062246186dbccba7a3997df3fa3329bee996705b20306a13867cbb776",
+      "source_encoded_sha256": "eaf033716eafeb71f8940d551de290eda0222da39106f404c30aee6ce637311b",
+      "runtime_encoded_sha256": "eaf033716eafeb71f8940d551de290eda0222da39106f404c30aee6ce637311b",
+      "source_pixel_sha256": "6961cfd59aff6a86dd458bcd33e868f76ff2f1aa131aaf82354242290ffc5f55",
+      "runtime_pixel_sha256": "6961cfd59aff6a86dd458bcd33e868f76ff2f1aa131aaf82354242290ffc5f55",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        26,
+        26,
+        230,
+        212
+      ],
+      "gutters_px": [
+        26,
+        26,
+        26,
+        44
+      ],
+      "minimum_gutter_px": 26,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 25708,
+      "visible_ratio_alpha_gt_8": 0.392273,
+      "opaque_pixels": 25708,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://56pf26yxa6hd",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f02.png-8c0cbeee3c1080dabc4376ed54b93d27.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f02.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f03.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f03.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f03.png.import",
+      "raw_encoded_sha256": "500ec332ceaab0f7ae0f7d9ff52c982f708f9d5a1d35eb1d6da7af127e65d7a2",
+      "raw_pixel_sha256": "e44418d58d0ab03a15fe1d63bf62659fe22697a3af22ff991d9bc1c401715151",
+      "source_encoded_sha256": "9124360458be82e32523172928c80038d619ef2eea961ec4550e4e3c6367d046",
+      "runtime_encoded_sha256": "9124360458be82e32523172928c80038d619ef2eea961ec4550e4e3c6367d046",
+      "source_pixel_sha256": "67dc4439d54e1359ab7cd96b588360df2a7a7d82edd2532b750d8ad8e73a6bc6",
+      "runtime_pixel_sha256": "67dc4439d54e1359ab7cd96b588360df2a7a7d82edd2532b750d8ad8e73a6bc6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        39,
+        29,
+        219,
+        212
+      ],
+      "gutters_px": [
+        39,
+        29,
+        37,
+        44
+      ],
+      "minimum_gutter_px": 29,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 24020,
+      "visible_ratio_alpha_gt_8": 0.366516,
+      "opaque_pixels": 24020,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://c7km4khpuofk0",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f03.png-4398e2d5f884a2eb021abc3f6accf894.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f03.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f04.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f04.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f04.png.import",
+      "raw_encoded_sha256": "858b1209cb5e4b539b4e6ab9bd071796b5ab5e73cbc268ea14393331241688cd",
+      "raw_pixel_sha256": "5a5bb1b771900b9ec0c39ffd19cabca9d080f9e0f5f8ffc22f3006bd3a28c2dd",
+      "source_encoded_sha256": "97c9737b2ec450c9defe7f52f217f14e10f38a4d5b8f4f468919448906f7e3bf",
+      "runtime_encoded_sha256": "97c9737b2ec450c9defe7f52f217f14e10f38a4d5b8f4f468919448906f7e3bf",
+      "source_pixel_sha256": "1c0f9cecb2bf092a3b64455eaf94f7037cbc3a1afff2eaa678744f8189417c92",
+      "runtime_pixel_sha256": "1c0f9cecb2bf092a3b64455eaf94f7037cbc3a1afff2eaa678744f8189417c92",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        47,
+        29,
+        210,
+        212
+      ],
+      "gutters_px": [
+        47,
+        29,
+        46,
+        44
+      ],
+      "minimum_gutter_px": 29,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 23163,
+      "visible_ratio_alpha_gt_8": 0.353439,
+      "opaque_pixels": 23163,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://cqjdqr6j3us8r",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f04.png-f652d9f8bfe1346f2c81026b984f341b.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f04.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f05.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f05.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f05.png.import",
+      "raw_encoded_sha256": "3b2258cb1384cbd3e6d8d3f64081423f715a91293953aac819a02b1322228bde",
+      "raw_pixel_sha256": "449d2ad9f1ae1d4cf66d7c380c98ca98050c1719e401edbdcf095e15f631697a",
+      "source_encoded_sha256": "2286b0f97dda0b7358d43caac166b09d17d669f2c57b2acee7dcf6991ab923e2",
+      "runtime_encoded_sha256": "2286b0f97dda0b7358d43caac166b09d17d669f2c57b2acee7dcf6991ab923e2",
+      "source_pixel_sha256": "a4f95d236e5438bebae69d74ef5d2bb0505fe556e1d9871b013ab70b44fc7c8c",
+      "runtime_pixel_sha256": "a4f95d236e5438bebae69d74ef5d2bb0505fe556e1d9871b013ab70b44fc7c8c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        37,
+        20,
+        220,
+        212
+      ],
+      "gutters_px": [
+        37,
+        20,
+        36,
+        44
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 24544,
+      "visible_ratio_alpha_gt_8": 0.374512,
+      "opaque_pixels": 24544,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bcb6cw5ovnxh",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f05.png-efa6dbb3461dd751658166aaa7448a18.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f05.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f06.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f06.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f06.png.import",
+      "raw_encoded_sha256": "42b6c3ac98fc601235e098d3d0126dec527cab967f6e97bb13c4be1d72c9ea71",
+      "raw_pixel_sha256": "20cf4e04d40420da9fbdad48bc24d8970432d1a3e9706d236835cc633e16f8d3",
+      "source_encoded_sha256": "88a8de53d99673c6c76e9d754e41b760e5433efc61b5f928ec9eef5699583545",
+      "runtime_encoded_sha256": "88a8de53d99673c6c76e9d754e41b760e5433efc61b5f928ec9eef5699583545",
+      "source_pixel_sha256": "04408b2a7f8417740b8f85babfb70e4934b21007d68e5ba17daf832e3bff3ad1",
+      "runtime_pixel_sha256": "04408b2a7f8417740b8f85babfb70e4934b21007d68e5ba17daf832e3bff3ad1",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        27,
+        27,
+        228,
+        212
+      ],
+      "gutters_px": [
+        27,
+        27,
+        28,
+        44
+      ],
+      "minimum_gutter_px": 27,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 25395,
+      "visible_ratio_alpha_gt_8": 0.387497,
+      "opaque_pixels": 25395,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://dgt51o5xg8erk",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f06.png-32b0ca82bddbac315f0336eaf0b3c7fd.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f06.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f07.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f07.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f07.png.import",
+      "raw_encoded_sha256": "aa23406eeb275f8528a4d556ab5ddd6adeaabf54613ccb051bd05d5ed869075c",
+      "raw_pixel_sha256": "8aa3260065472b4adc2dbc194279744cc288ee37e462c0ed6b52bc8d78be9987",
+      "source_encoded_sha256": "b8c820ce5c32deb0bc52843f225fa17a5fe9e2c080bef9fa3170225ba14b6f5f",
+      "runtime_encoded_sha256": "b8c820ce5c32deb0bc52843f225fa17a5fe9e2c080bef9fa3170225ba14b6f5f",
+      "source_pixel_sha256": "fe5b5daf45b5a694897f8b252182e3b5a41d95596e27d2025f2f04f42ed7fce6",
+      "runtime_pixel_sha256": "fe5b5daf45b5a694897f8b252182e3b5a41d95596e27d2025f2f04f42ed7fce6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        25,
+        26,
+        230,
+        212
+      ],
+      "gutters_px": [
+        25,
+        26,
+        26,
+        44
+      ],
+      "minimum_gutter_px": 25,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 25825,
+      "visible_ratio_alpha_gt_8": 0.394058,
+      "opaque_pixels": 25825,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://78hi0hlxl5jd",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f07.png-b7cbaddd1bb1df8e0812898ff7a661e1.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f07.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/hydraulic_press_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/hydraulic_press/raw/hydraulic_press_f08.png",
+      "runtime_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f08.png",
+      "import_file": "assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f08.png.import",
+      "raw_encoded_sha256": "0caa7b2ad6b3e65d7ed59dda28df7fec4dc3d779ce030640ae112adc9e934ce2",
+      "raw_pixel_sha256": "f709ae94e276996c45bf01f21b5d6c99f130cf065eb1e18d41983fe1780d099c",
+      "source_encoded_sha256": "56286dc972fc7a671eab54a5731598c60ccc427de09c283836ed25c974237f1d",
+      "runtime_encoded_sha256": "56286dc972fc7a671eab54a5731598c60ccc427de09c283836ed25c974237f1d",
+      "source_pixel_sha256": "95eaae0f68bf24546d2153346941ec855b773a8a45b298e6a4ed105e492c3f54",
+      "runtime_pixel_sha256": "95eaae0f68bf24546d2153346941ec855b773a8a45b298e6a4ed105e492c3f54",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        27,
+        23,
+        229,
+        212
+      ],
+      "gutters_px": [
+        27,
+        23,
+        27,
+        44
+      ],
+      "minimum_gutter_px": 23,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 25949,
+      "visible_ratio_alpha_gt_8": 0.39595,
+      "opaque_pixels": 25949,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bep7ofinrdeno",
+      "import_dest_files": [
+        "res://.godot/imported/hydraulic_press_f08.png-c288150e78c6e4201f0e8c5f5e23dfb5.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/robot/hydraulic_press/hydraulic_press_f08.png",
+      "import_matches_runtime": true
+    }
+  ]
+}

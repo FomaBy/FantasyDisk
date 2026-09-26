@@ -1,32 +1,31 @@
 extends Node2D
 
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const ACCESSIBILITY := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+## Photosensitivity-safe victim burst luminance cap (see _apply_victim_presentation_modes).
+const PHOTOSAFE_IMPACT_ALPHA := 0.6
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres")
+
 const PROFILE_ID := "weapon_ultimate.profile.dark_mage.dark_book"
 const EXECUTOR_ID := "weapon_ultimate.executor.dark_mage.dark_book"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/dark_mage/dark_book.tscn"
 
 var ultimate_damage_sink: Callable = Callable()
 var pair_count_for_tests := 0
-var kill_reflection_count_for_tests := 0
 
 var _activation = null
 var _targets: Array = []
 var _origin := Vector2.ZERO
-var _kill_reflections := {}
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
 	return {
 		"radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
-		"pair_interval": {"type": "number", "minimum": 0.01},
 		"original_damage": {"type": "number", "minimum": 0.0},
-		"reflection_damage": {"type": "number", "minimum": 0.0},
 		"reflection_radius": {"type": "number", "minimum": 0.0},
-		"reflection_cap": {"type": "integer", "minimum": 1},
-		"kill_burst_damage": {"type": "number", "minimum": 0.0},
-		"kill_burst_radius": {"type": "number", "minimum": 0.0},
-		"kill_burst_cap": {"type": "integer", "minimum": 1},
 		"lifetime": {"type": "number", "minimum": 0.1},
 	}
 
@@ -34,8 +33,8 @@ static func parameter_contract() -> Dictionary:
 static func execute(activation) -> float:
 	var targets: Array = activation.select_targets(
 		activation.origin(),
-		activation.param_float("radius", 620.0),
-		activation.param_int("crowd_cap", 12),
+		INF,
+		0,
 		"nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
@@ -53,11 +52,8 @@ static func execute(activation) -> float:
 	var release_delay: float = activation.param_float("release_delay", 0.6)
 	tween.tween_interval(release_delay)
 	for index in targets.size():
-		if index > 0:
-			tween.tween_interval(activation.param_float("pair_interval", 0.24))
 		tween.tween_callback(Callable(effect, "detonate_pair").bind(index))
-	var elapsed: float = release_delay + activation.param_float("pair_interval", 0.24) \
-		* float(maxi(targets.size() - 1, 0))
+	var elapsed: float = release_delay
 	var lifetime: float = activation.param_float("lifetime", 5.2)
 	if lifetime > elapsed:
 		tween.tween_interval(lifetime - elapsed)
@@ -71,8 +67,8 @@ func configure(activation, targets: Array) -> void:
 	global_position = _origin
 
 
-## One original and one mirrored point are resolved as one pair. A lethal
-## original may burst at its reflection once; the burst never enters this path.
+## Every live enemy receives one floor hit. Its reflected point remains the
+## signature visual read, never a reach gate or a recursive damage fanout.
 func detonate_pair(index: int) -> void:
 	if _activation == null or _activation.is_finished() or index < 0 or index >= _targets.size():
 		return
@@ -81,69 +77,57 @@ func detonate_pair(index: int) -> void:
 		return
 	var mirror_point := _origin * 2.0 - original.global_position
 	pair_count_for_tests += 1
-	var original_result = _deal(
+	_deal(
 		original,
 		_activation.scaled_damage("original_damage", 0.0),
 		"abyss_original:%d" % index,
 		false,
 		{"ultimate_mechanic": "abyss_original", "pair": index}
 	)
-	for raw_target in _activation.select_targets(
-		mirror_point,
-		_activation.param_float("reflection_radius", 150.0),
-		_activation.param_int("reflection_cap", 2),
-		"nearest"
-	):
-		var reflected := raw_target as Node2D
-		if reflected == null or not is_instance_valid(reflected):
-			continue
-		var reflected_result = _deal(
-			reflected,
-			_activation.scaled_damage("reflection_damage", 0.0),
-			"abyss_reflection:%d" % index,
-			true,
-			{"ultimate_mechanic": "abyss_reflection", "pair": index}
-		)
-		if reflected_result != null and float(reflected_result.applied) > 0.0 \
-			and bool(reflected_result.killed):
-			_trigger_kill_reflection(reflected, index)
+	_play_impacts([original])
 	_activation.present("weapon_ultimate.phase.dark_mage.dark_book.active", {
 		"position": mirror_point,
 		"radius": _activation.param_float("reflection_radius", 150.0),
 		"shape": "orb_burst",
 	})
-	if original_result != null and bool(original_result.killed):
-		_trigger_kill_reflection(original, index)
 
 
-func _trigger_kill_reflection(killed: Node2D, pair_index: int) -> void:
-	if killed == null or not is_instance_valid(killed):
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
 		return
-	var killed_id := killed.get_instance_id()
-	if _kill_reflections.has(killed_id):
+	if _impacts == null:
+		_impacts = ImpactPlayer.new()
+		_apply_victim_presentation_modes(_impacts)
+		add_child(_impacts)
+	if _impacts_started:
+		_impacts.enqueue(victims, _origin)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _origin)
+		_impacts_started = true
+
+
+## Production accessibility snapshot, published on the scene-tree root by Main
+## (`scripts/settings/ultimate_accessibility_settings.gd`). Photosensitivity-
+## safe bounds the victim read: this executor's own damage path already draws
+## each victim's ordinary hit flash, so the burst must not repeat it, and the
+## flipbook plays dimmed. Reduced motion changes nothing here — the burst is a
+## victim-local cue, not travel.
+func _apply_victim_presentation_modes(impacts: Node2D) -> void:
+	var snapshot := ACCESSIBILITY.read_snapshot(get_tree().root if is_inside_tree() else null)
+	if not bool(snapshot[ACCESSIBILITY.PHOTOSENSITIVITY_SAFE_KEY]):
 		return
-	_kill_reflections[killed_id] = true
-	_kill_reflection(_origin * 2.0 - killed.global_position, pair_index)
+	impacts.set("extra_hit_flash", false)
+	impacts.modulate = Color(1.0, 1.0, 1.0, PHOTOSAFE_IMPACT_ALPHA)
 
 
-func _kill_reflection(center: Vector2, pair_index: int) -> void:
-	kill_reflection_count_for_tests += 1
-	for raw_target in _activation.select_targets(
-		center,
-		_activation.param_float("kill_burst_radius", 135.0),
-		_activation.param_int("kill_burst_cap", 3),
-		"nearest"
-	):
-		var target := raw_target as Node
-		if target == null or not is_instance_valid(target):
-			continue
-		_deal(
-			target,
-			_activation.scaled_damage("kill_burst_damage", 0.0),
-			"abyss_kill_reflection:%d" % pair_index,
-			true,
-			{"ultimate_mechanic": "abyss_kill_reflection", "pair": pair_index}
-		)
+func victim_presentation_state_for_tests() -> Dictionary:
+	if _impacts == null or not is_instance_valid(_impacts):
+		return {}
+	return {
+		"extra_hit_flash": bool(_impacts.get("extra_hit_flash")),
+		"impact_alpha": _impacts.modulate.a,
+		"snapshot": _impacts.call("snapshot"),
+	}
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
@@ -159,5 +143,4 @@ func _alive(target: Node2D) -> bool:
 
 func _exit_tree() -> void:
 	_targets.clear()
-	_kill_reflections.clear()
 	_activation = null

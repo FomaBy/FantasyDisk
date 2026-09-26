@@ -1,0 +1,95 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T18:20:30Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "1bd5249a-902b-4b31-a538-424a2a9b8d05",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered royal knight long spear ultimate VFX prop, full-length steel spear with a crimson pennant, cobalt runes and a bright silver spearhead, three layered thrust afterimages, dark fantasy D&D pixel art, top-down isolated weapon effect, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same centered royal knight long spear, crimson pennant, cobalt runes and silver spearhead with stable proportions and palette; animate a decisive three-thrust phalanx cadence with left-center-right spear echoes, pennant snap, bright spearhead streaks and small blue-gold impact sparks, build to a radiant forward thrust, then recoil to the same clean centered weapon silhouette; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "6ce36ead-d214-4bed-8387-0e88a674cbcb",
+    "canonical_tag": "knight_long_spear_phalanx_thrust"
+  },
+  "frames": [
+    {
+      "file": "long_spear_f00.png",
+      "bytes": 16551,
+      "url_kind": "template",
+      "encoded_sha256": "c1b1f44081c00e006a5fc73655e9f85ceafa7ee7814a349ad70f6d797c762843",
+      "pixel_sha256": "fdeb998d2dfdfa6687ec33d9d9f12cfb48a36d719231424cba4483ffd611befe"
+    },
+    {
+      "file": "long_spear_f01.png",
+      "bytes": 20123,
+      "url_kind": "template",
+      "encoded_sha256": "a2b5d2d81fa31d74fe8f832cc1be50a3a0aac20ba148fcb081f862dc042807ba",
+      "pixel_sha256": "0dad755b5fb84b631ac28ea35cde70637ad7b19019f01e0b18d4d3c29e1a0bad"
+    },
+    {
+      "file": "long_spear_f02.png",
+      "bytes": 20430,
+      "url_kind": "template",
+      "encoded_sha256": "002d4811a2fc63eb436ae79f1f4b968446ffc32e2ab1d0ee8beced6033c677db",
+      "pixel_sha256": "3a4af9d51dc3ab34cf6550ecb5d9a527d4d32530e320b9b846fa342792564084"
+    },
+    {
+      "file": "long_spear_f03.png",
+      "bytes": 20526,
+      "url_kind": "template",
+      "encoded_sha256": "7584a2b60d304abb92ce273f92ce7ba8fb0914303eaab6283fbe7f536bbecfdd",
+      "pixel_sha256": "4516e46b49789323dca026fdba19f1539639a2a6fa55e55dbe610a30d785f524"
+    },
+    {
+      "file": "long_spear_f04.png",
+      "bytes": 20757,
+      "url_kind": "template",
+      "encoded_sha256": "28e10b6f191ab59d85ab84a4dffa7b9e8f8492eed83c4f483c6f6862de5bba8b",
+      "pixel_sha256": "10c84b8c512fc83abf0e46ba8ba1d371c1b7364b25fb5f84c66cefcb2b1d3ca0"
+    },
+    {
+      "file": "long_spear_f05.png",
+      "bytes": 18212,
+      "url_kind": "template",
+      "encoded_sha256": "39f580864b841f8781f85fe4a44bcd72b1f625d2b51449415a746abfad88ccae",
+      "pixel_sha256": "cbc633f687a3cb7ac278226ea62c505415782ead39a4e8316c84f249c3fd9c97"
+    },
+    {
+      "file": "long_spear_f06.png",
+      "bytes": 16584,
+      "url_kind": "template",
+      "encoded_sha256": "13c9f5d380b0d1f449dd113113cd6d1644620f2ecf5983daa0d6b2a7bcc0bf91",
+      "pixel_sha256": "ee5fd728d4c9c36a1eafdfd0e3ac5faadecb833a5306d1d229edd3f0a3ca9ac7"
+    },
+    {
+      "file": "long_spear_f07.png",
+      "bytes": 16306,
+      "url_kind": "template",
+      "encoded_sha256": "0c349884fc63c43784971ac445ba0205b10a4584133acafb38444e84d38b65f8",
+      "pixel_sha256": "976cc28438184ea6093a71a1f99a15691bd809fd38dd1d7deac8e44209e87501"
+    },
+    {
+      "file": "long_spear_f08.png",
+      "bytes": 15502,
+      "url_kind": "template",
+      "encoded_sha256": "91eb2210f49de6c42c648bc0a7015615d1811cbc8d9267e1d1685ed7a062eaa5",
+      "pixel_sha256": "d0741dc51c3568d8a3121ed3f962f75ec2e07d210af1622f00325afd9c5b67ca"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "canonical_ultimate_key": "knight/long_spear"
+}

@@ -13,7 +13,16 @@ const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/soldier.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/soldier/manifest.json"
 const SCHEMA_PATH := "res://data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json"
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const V2_SCHEMA := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const Accessibility := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+const PRESENCE_NODES := ["BackdropVeil", "HeroPose"]
 const WEAPON_IDS := ["soldier_rifle", "soldier_grenade", "soldier_bayonet"]
+const VICTIM_FRAME_PATHS := {
+	"soldier_rifle": "res://assets/sprites/effects/soldier/rifle/rifle_spriteframes.tres",
+	"soldier_grenade": "res://assets/sprites/effects/soldier/grenade/grenade_spriteframes.tres",
+	"soldier_bayonet": "res://assets/sprites/effects/soldier/bayonet/bayonet_spriteframes.tres",
+}
 const PACKS := [
 	{
 		"weapon_id": "soldier_rifle",
@@ -27,11 +36,11 @@ const PACKS := [
 	{
 		"weapon_id": "soldier_grenade",
 		"scene": preload("res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn"),
-		"time": 6.2,
+		"time": 3.2,
 		"title": "GRENADE — SEVEN SECONDS / outer chain link",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(1.0, 0.62, 0.24),
-		"required_nodes": ["GrenadeThree", "GrenadeFive", "GrenadeSeven", "FuseRing", "ChainBlast"],
+		"required_nodes": ["GrenadeThree", "GrenadeFive", "GrenadeSeven", "FuseRing"],
 	},
 	{
 		"weapon_id": "soldier_bayonet",
@@ -63,6 +72,16 @@ class HandleProbe extends RefCounted:
 		released += 1
 
 
+class VictimProbe extends Node2D:
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
 func _initialize() -> void:
 	var errors: Array[String] = []
 	var profile_root := _load_json(PROFILE_PATH, errors)
@@ -82,12 +101,17 @@ func _initialize() -> void:
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, schema, errors)
 	_check_distinction(packages, errors)
+	_check_v2_contract(packages, errors)
+	for weapon_id in WEAPON_IDS:
+		_check_presence_devices(weapon_id, packages.get(weapon_id, {}) as Dictionary, errors)
+		await _check_scheduled_hitstop(weapon_id, packages.get(weapon_id, {}) as Dictionary, errors)
+	_check_weapon_local_impacts(errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
 		_finish(errors)
 		return
-	print("Soldier ultimate timelines passed (three distinct scenes, frozen phase bindings, lifecycle, evidence, and crowd budgets).")
+	print("Soldier ultimate timelines passed (three distinct scenes, frozen phase bindings, lifecycle, v2 presence devices, accessibility policy, scheduled hitstop within 80-150 ms under the live time-scale dip, evidence, and crowd budgets).")
 	quit(0)
 
 
@@ -221,6 +245,217 @@ func _check_distinction(packages: Dictionary, errors: Array[String]) -> void:
 		active_windows[snappedf(float(timing.get("recovery", -1.0)) - float(timing.get("active", -1.0)), 0.01)] = true
 	_expect(totals.size() == WEAPON_IDS.size(), "all three weapons must have different timeline lengths", errors)
 	_expect(active_windows.size() == WEAPON_IDS.size(), "all three weapons must have different active windows", errors)
+
+
+func _check_v2_contract(packages: Dictionary, errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var key := "soldier/%s" % weapon_id
+		var package := packages.get(weapon_id, {}) as Dictionary
+		var timing := package.get("timing_seconds", {}) as Dictionary
+		var presence := package.get("presence", {}) as Dictionary
+		var identity := package.get("identity", {}) as Dictionary
+		_expect(not V2_SCHEMA.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key), "%s must leave the v2 migration allowlist" % key, errors)
+		_expect(float(timing.get("cancel", 0.0)) >= 2.5 and float(timing.get("cancel", 0.0)) <= 4.0, "%s total presentation must fit v2 envelope" % key, errors)
+		_expect(float(timing.get("release", 0.0)) >= 0.6 and float(timing.get("release", 0.0)) <= 1.0, "%s windup must fit v2 envelope" % key, errors)
+		_expect(float(timing.get("recovery", 0.0)) - float(timing.get("release", 0.0)) >= 1.2, "%s active presentation must meet the v2 floor" % key, errors)
+		_expect(bool(presence.get("fullscreen_footprint", false)) and bool(presence.get("camera_shake", false)) and int(presence.get("hitstop_ms", 0)) >= 80 and int(presence.get("hitstop_ms", 0)) <= 150, "%s must declare arena-wide first-impact weight" % key, errors)
+		_expect(not str(identity.get("cast_pose_id", "")).is_empty() and not str(identity.get("weapon_silhouette_asset", "")).is_empty() and not str(identity.get("class_palette_id", "")).is_empty(), "%s must declare a Soldier identity" % key, errors)
+
+
+## FAN-3941: the v2 weight devices the scene driver realises from the class
+## manifest's presence record — the authored arena-wide veil (darken or one
+## shot flash), the hero cast pose, the first-impact hitstop that pauses the
+## authored timeline — and the production accessibility policy it honours.
+func _check_presence_devices(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var packed := _pack_for(weapon_id).get("scene") as PackedScene
+	if packed == null:
+		return
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var presence := package.get("presence", {}) as Dictionary
+	var release := float(timing.get("release", 0.0))
+	var active := float(timing.get("active", 0.0))
+	var recovery := float(timing.get("recovery", 0.0))
+	var cancel := float(timing.get("cancel", 0.0))
+	var instance := packed.instantiate() as Node2D
+	root.add_child(instance)
+	for node_name in PRESENCE_NODES:
+		_expect(instance.get_node_or_null(node_name) is Sprite2D, "%s must author %s" % [weapon_id, node_name], errors)
+	var veil := instance.get_node_or_null("BackdropVeil") as Sprite2D
+	var pose := instance.get_node_or_null("HeroPose") as Sprite2D
+	if veil == null or pose == null:
+		instance.free()
+		return
+	_expect(veil.get_meta("fullscreen_layer", false) == true, "%s veil must be flagged as the arena-wide layer" % weapon_id, errors)
+	# Readability layering (FAN-3941): the backdrop sits above the arena floor
+	# and the actors but below every enemy hazard telegraph (z 6-9) and
+	# projectile (z 12), and the scene's own art draws above the backdrop.
+	_expect(not veil.z_as_relative and veil.z_index >= 1 and veil.z_index < 6, "%s veil must be layered below enemy hazards and projectiles (absolute z 1-5), got %d" % [weapon_id, veil.z_index], errors)
+	_expect(instance.z_index > veil.z_index and instance.z_index < 6, "%s scene art must draw above its veil and below enemy hazards, got z %d" % [weapon_id, instance.z_index], errors)
+	var drawn := 0
+	for child in instance.get_children():
+		if child is Sprite2D or child is AnimatedSprite2D or child is Polygon2D or child is Line2D:
+			drawn += 1
+	_expect(drawn <= int(instance.get_meta("max_visual_nodes", 0)), "%s draws %d nodes over its declared budget %d" % [weapon_id, drawn, int(instance.get_meta("max_visual_nodes", 0))], errors)
+	# Envelope from the manifest record the driver read on enter_tree.
+	_expect(is_zero_approx(instance.backdrop_alpha(0.0)) and is_zero_approx(instance.backdrop_alpha(cancel)), "%s veil must start and end dark" % weapon_id, errors)
+	_expect(instance.backdrop_alpha(active + 0.05) > 0.0, "%s veil must be lit just after the active edge" % weapon_id, errors)
+	var treatment := str(presence.get("backdrop", ""))
+	if treatment == "flash":
+		_expect(instance.backdrop_alpha(release + 0.06) > instance.backdrop_alpha(active), "%s flash veil must peak once at release and decay" % weapon_id, errors)
+		_expect(instance.backdrop_alpha(recovery) < instance.backdrop_alpha(release + 0.06) * 0.5, "%s flash veil must not hold" % weapon_id, errors)
+	else:
+		_expect(is_equal_approx(instance.backdrop_alpha(active), instance.backdrop_alpha(recovery - 0.01)), "%s darken veil must hold from active to recovery" % weapon_id, errors)
+	_expect(instance.hero_pose_alpha(release * 0.5) > 0.0 and is_zero_approx(instance.hero_pose_alpha(active + 0.01)), "%s hero pose must show during the ceremony and clear after the impact" % weapon_id, errors)
+	# First impact: the authored timeline pauses for the declared hitstop and resumes.
+	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+	timeline.play(&"ultimate")
+	timeline.seek(active - 0.02, true)
+	instance._process(1.0 / 60.0)
+	_expect(timeline.is_playing(), "%s timeline must run up to the active edge" % weapon_id, errors)
+	timeline.seek(active + 0.01, true)
+	instance._process(1.0 / 60.0)
+	var hitstop := float(presence.get("hitstop_ms", 0.0)) / 1000.0
+	_expect(not timeline.is_playing(), "%s first impact must pause the authored timeline for its hitstop" % weapon_id, errors)
+	_expect(veil.visible and veil.self_modulate.a > 0.0, "%s veil must be lit at the first impact" % weapon_id, errors)
+	# Direct steps mimic the engine: the delta a scheduled scene receives is
+	# already multiplied by the live time scale (the impact just dipped it).
+	instance._process(hitstop * 0.5 * Engine.time_scale)
+	_expect(not timeline.is_playing(), "%s hitstop must hold for at least half its window" % weapon_id, errors)
+	instance._process(hitstop * Engine.time_scale)
+	_expect(timeline.is_playing(), "%s timeline must resume after the hitstop" % weapon_id, errors)
+	instance.finish("cancel")
+	_expect(not veil.visible and is_zero_approx(veil.self_modulate.a), "%s cleanup must clear the veil" % weapon_id, errors)
+	_expect(not pose.visible, "%s cleanup must clear the hero pose" % weapon_id, errors)
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s cleanup must restore Engine.time_scale" % weapon_id, errors)
+	instance.free()
+	# Production accessibility policy: photosensitivity-safe keeps the veil dark.
+	Accessibility.apply_snapshot(root, {Accessibility.REDUCED_MOTION_KEY: false, Accessibility.PHOTOSENSITIVITY_SAFE_KEY: true})
+	var safe := packed.instantiate() as Node2D
+	root.add_child(safe)
+	var safe_timeline := safe.get_node_or_null("Timeline") as AnimationPlayer
+	safe_timeline.play(&"ultimate")
+	safe_timeline.seek(active + 0.01, true)
+	safe._process(1.0 / 60.0)
+	var safe_veil := safe.get_node_or_null("BackdropVeil") as Sprite2D
+	_expect(not safe_veil.visible and is_zero_approx(safe_veil.self_modulate.a), "%s must keep its veil dark under ultimate_photosensitivity_safe" % weapon_id, errors)
+	_expect(not safe_timeline.is_playing(), "%s photosensitivity-safe must keep the first-impact hitstop" % weapon_id, errors)
+	safe.finish("cancel")
+	safe.free()
+	Accessibility.apply_snapshot(root, {Accessibility.REDUCED_MOTION_KEY: false, Accessibility.PHOTOSENSITIVITY_SAFE_KEY: false})
+
+
+## FAN-3941 (second review): the first-impact hitstop measured through the
+## engine's own scheduling with the declared time-scale dip live. The driver
+## pauses the authored AnimationPlayer for the hold; the hold is the run of
+## scheduled frames the timeline stays paused after the active edge, summed
+## in wall-clock seconds (the engine's delta is divided back by
+## Engine.time_scale), and must sit inside 80-150 ms within half a frame.
+## Direct `_process(delta)` calls with unscaled deltas cannot see the
+## mismatch between a scaled countdown and the wall-clock dip timer.
+func _check_scheduled_hitstop(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
+	var packed := _pack_for(weapon_id).get("scene") as PackedScene
+	if packed == null:
+		return
+	var timing := package.get("timing_seconds", {}) as Dictionary
+	var presence := package.get("presence", {}) as Dictionary
+	var declared_seconds := float(presence.get("hitstop_ms", 0.0)) / 1000.0
+	var declared_dip := float(presence.get("time_scale_dip", 1.0))
+	var active := float(timing.get("active", 0.0))
+	var instance := packed.instantiate() as Node2D
+	root.add_child(instance)
+	await process_frame
+	var timeline := instance.get_node_or_null("Timeline") as AnimationPlayer
+	if timeline == null:
+		instance.free()
+		return
+	timeline.play(&"ultimate")
+	var wall := 0.0
+	var frame_seconds := 1.0 / 60.0
+	var hold_seconds := 0.0
+	var hold_frames := 0
+	var hold_open := false
+	var hold_closed := false
+	var dip_seconds := 0.0
+	var lowest_scale := Engine.time_scale
+	while wall < active + 1.0 and not hold_closed:
+		await process_frame
+		var delta := _wall_delta()
+		frame_seconds = delta
+		wall += delta
+		lowest_scale = minf(lowest_scale, Engine.time_scale)
+		if Engine.time_scale < 0.99:
+			dip_seconds += delta
+		var paused := not timeline.is_playing()
+		if not hold_open:
+			if paused:
+				hold_open = true
+				hold_frames = 1
+				hold_seconds = delta
+		elif paused:
+			hold_frames += 1
+			hold_seconds += delta
+		else:
+			hold_closed = true
+	var half_frame := frame_seconds * 0.5
+	_expect(hold_closed, "%s scheduled: the authored timeline must pause on the first impact and resume (hold never closed by %.2f s)" % [weapon_id, wall], errors)
+	_expect(hold_seconds >= 0.08 - half_frame and hold_seconds <= 0.15 + half_frame, "%s scheduled: the actual pose hold must stay inside 80-150 ms, held %.1f ms (%d frames) for a declared %.0f ms at dip %.2f" % [weapon_id, hold_seconds * 1000.0, hold_frames, declared_seconds * 1000.0, declared_dip], errors)
+	_expect(absf(hold_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the actual hold must match the declared %.0f ms within a frame, held %.1f ms" % [weapon_id, declared_seconds * 1000.0, hold_seconds * 1000.0], errors)
+	if declared_dip < 1.0:
+		_expect(is_equal_approx(lowest_scale, declared_dip), "%s scheduled: the declared time-scale dip %.2f must be live during the hold (lowest %.2f)" % [weapon_id, declared_dip, lowest_scale], errors)
+		_expect(absf(dip_seconds - declared_seconds) <= frame_seconds, "%s scheduled: the dip must last the declared %.0f ms within a frame, lasted %.1f ms" % [weapon_id, declared_seconds * 1000.0, dip_seconds * 1000.0], errors)
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: Engine.time_scale must be restored when the hold ends" % weapon_id, errors)
+	instance.finish("cancel")
+	instance.free()
+	_expect(is_equal_approx(Engine.time_scale, 1.0), "%s scheduled: cleanup must leave Engine.time_scale at 1" % weapon_id, errors)
+
+
+## Wall-clock seconds of one scheduled frame: the engine hands nodes a delta
+## already multiplied by Engine.time_scale, so dividing it back out gives the
+## real time the frame took whatever dip is live.
+func _wall_delta() -> float:
+	return root.get_process_delta_time() / maxf(Engine.time_scale, 0.0001)
+
+
+func _check_weapon_local_impacts(errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var scene := (_pack_for(weapon_id).get("scene") as PackedScene).instantiate() as Node2D
+		root.add_child(scene)
+		_expect(scene.has_method("present"), "%s must accept live presentation beats" % weapon_id, errors)
+		if scene.has_method("present"):
+			scene.call("present", "%s.probe" % weapon_id, {})
+		_expect(_impact_player(scene) == null, "%s must not draw an impact without victims" % weapon_id, errors)
+		var victims: Array = []
+		for index in 3:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(float(index + 1) * 48.0, 0.0)
+			root.add_child(victim)
+			victims.append(victim)
+		if scene.has_method("present"):
+			scene.call("present", "%s.probe" % weapon_id, {"victims": victims})
+		var impacts := _impact_player(scene)
+		_expect(impacts != null, "%s must route live victims through UltimateVictimImpactPlayer" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size(), "%s must enqueue every supplied victim" % weapon_id, errors)
+			impacts.call("advance", 10.0)
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == VICTIM_FRAME_PATHS[weapon_id], "%s must use its mapped victim-impact frames" % weapon_id, errors)
+			for victim in victims:
+				_expect((victim as VictimProbe).flashes == 1, "%s must preserve each victim hit flash" % weapon_id, errors)
+			if scene.has_method("finish"):
+				scene.call("finish", "cancel")
+			var cleaned := impacts.call("snapshot") as Dictionary
+			_expect(int(cleaned.get("active", 0)) == 0 and int(cleaned.get("pending", 0)) == 0 and int(cleaned.get("pooled", 0)) == 0, "%s cancellation must release every impact node" % weapon_id, errors)
+		for victim in victims:
+			(victim as Node).queue_free()
+		scene.queue_free()
+
+
+func _impact_player(scene: Node) -> Node:
+	for child in scene.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
 
 
 func _check_capture_composition(errors: Array[String]) -> void:

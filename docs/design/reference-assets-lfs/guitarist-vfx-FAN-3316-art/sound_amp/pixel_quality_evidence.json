@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3708",
+  "weapon_id": "sound_amp",
+  "visual_identity": "cardinal wall of dark iron guitar amplifiers with cyan, violet and ember speaker cones linked by a square cable wall",
+  "motion_contract": "north, east, south and west speakers fire in sequence, rectangular wave bands expand, cable corners lock, then a symmetric overload recoils",
+  "palette_contract": "cyan, violet, ember orange, white-blue feedback, charcoal iron outlines",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 9,
+  "unique_pixel_hashes": 9,
+  "duplicate_frame_pairs": [],
+  "adjacent_changed_pixel_ratio": {
+    "min": 0.159103,
+    "max": 0.246002,
+    "mean": 0.217014
+  },
+  "all_pair_changed_pixel_ratio_min": 0.159103,
+  "alpha_bbox_gt_8": [
+    [
+      25,
+      27,
+      231,
+      235
+    ],
+    [
+      24,
+      25,
+      231,
+      233
+    ],
+    [
+      30,
+      23,
+      230,
+      227
+    ],
+    [
+      31,
+      22,
+      222,
+      228
+    ],
+    [
+      32,
+      24,
+      225,
+      227
+    ],
+    [
+      33,
+      21,
+      227,
+      226
+    ],
+    [
+      35,
+      22,
+      229,
+      232
+    ],
+    [
+      31,
+      22,
+      229,
+      233
+    ],
+    [
+      29,
+      26,
+      226,
+      232
+    ]
+  ],
+  "minimum_gutter_px": 20,
+  "edge_visible_pixels_gt_8": 0,
+  "opaque_corner_frames": [],
+  "transparent_pixel_ratio": {
+    "min": 0.586929,
+    "max": 0.618546
+  },
+  "main_component_count": [
+    27,
+    21,
+    19,
+    27,
+    19,
+    35,
+    28,
+    9,
+    25
+  ],
+  "tiny_component_px_after_threshold": [
+    111,
+    91,
+    77,
+    84,
+    123,
+    201,
+    106,
+    19,
+    67
+  ],
+  "pixel_quality_verdict": "PASS",
+  "pixel_hashes": [
+    "4b60115195bc4115811b82814b2cd8874ad2b17ac2024f084d09f01ceadaf112",
+    "4ec8b6dfba3197630cf1d93ba979b6a21854a6e6525ee59f92c57cd2cdd43ab7",
+    "d507e919eb14035ca78603f4a992f7fe895e0e49462baa9e5b25b524bec8db88",
+    "fbc230fc14ddeaa3e0f72492c955cce9e879f0f33762b86a391bfc351a7c2769",
+    "fdd64130b16984f4a2ca64b8cf71eddabf332a6e992365bcd43bc9d2e9a86661",
+    "1fb94273a665c48d31e9b0a3c1d5f999352ac63fa568a8361c321b3ff25ced67",
+    "b9692b8855e3b442549d1503361dec21a4b16669c8d69ec464c24b3183075e05",
+    "78f845c4004b3ac18918d098229d015e6ddedc0887f0ae713a060cf7d7007042",
+    "36cd5179c05c6841d8ee227ba79d1d16f9804aab71ef71b9ac4a79e888c50520"
+  ]
+}

@@ -1,0 +1,537 @@
+{
+  "schema_version": 1,
+  "source_dir": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle",
+  "runtime_dir": "assets/sprites/effects/soldier/rifle",
+  "spriteframes": "assets/sprites/effects/soldier/rifle/rifle_spriteframes.tres",
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "duration_seconds": 3.0,
+  "animation": {
+    "name": "soldier_rifle_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/soldier/rifle/rifle_f00.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f01.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f02.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f03.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f04.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f05.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f06.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f07.png",
+      "assets/sprites/effects/soldier/rifle/rifle_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "three charge beats produce muzzle flashes and straight tracer runes with visible recoil, followed by a brief cyan smoke recall"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f00.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f00.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f00.png.import",
+      "raw_encoded_sha256": "d5efd456d447d2e0d4ab655cc79e9792acc5cf69e08fb53461dd9559f0dd4b03",
+      "raw_pixel_sha256": "b582b2439c8a089f75421856df789518c0535f0bd44756b8ffc09a2f3e19fecb",
+      "generated_manifest_encoded_sha256": "d5efd456d447d2e0d4ab655cc79e9792acc5cf69e08fb53461dd9559f0dd4b03",
+      "generated_manifest_pixel_sha256": "b582b2439c8a089f75421856df789518c0535f0bd44756b8ffc09a2f3e19fecb",
+      "source_encoded_sha256": "27c57a3a8b02c452343c909b06a4df1a0249f72c29cea23bf78b63a17c00cea8",
+      "runtime_encoded_sha256": "27c57a3a8b02c452343c909b06a4df1a0249f72c29cea23bf78b63a17c00cea8",
+      "source_pixel_sha256": "0f45453b8b8c08768aee8e76c73825a3bf9b3f6358a21ea8a72a5e9af29c2f0a",
+      "runtime_pixel_sha256": "0f45453b8b8c08768aee8e76c73825a3bf9b3f6358a21ea8a72a5e9af29c2f0a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        109,
+        221,
+        170
+      ],
+      "gutters_px": [
+        34,
+        109,
+        35,
+        86
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3528,
+      "visible_ratio_alpha_gt_8": 0.053833,
+      "opaque_pixels": 3528,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://cdfunhttrscwg",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f00.png-f017d5488a9f66a723aea8d1548f7e41.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f00.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f00.png",
+      "encoded_sha256": "27c57a3a8b02c452343c909b06a4df1a0249f72c29cea23bf78b63a17c00cea8",
+      "pixel_sha256": "0f45453b8b8c08768aee8e76c73825a3bf9b3f6358a21ea8a72a5e9af29c2f0a"
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f01.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f01.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f01.png.import",
+      "raw_encoded_sha256": "1848e129ec958b8e56940f5305d768874172d00de6df61474e28380859abfbe0",
+      "raw_pixel_sha256": "cc4e11855497bfab2eeaf58b5b3b259ad7809b7f379a3b45a47e6bf5e5e5af9a",
+      "generated_manifest_encoded_sha256": "1848e129ec958b8e56940f5305d768874172d00de6df61474e28380859abfbe0",
+      "generated_manifest_pixel_sha256": "cc4e11855497bfab2eeaf58b5b3b259ad7809b7f379a3b45a47e6bf5e5e5af9a",
+      "source_encoded_sha256": "076890c8eeb65bf4b3d54651e07e65deb9b424e6365234aaf08d07b65ce3d015",
+      "runtime_encoded_sha256": "076890c8eeb65bf4b3d54651e07e65deb9b424e6365234aaf08d07b65ce3d015",
+      "source_pixel_sha256": "6a7ef6e480e7bb1a122e980afa3fec68ecfa911b91b07b30a152a6518b08506f",
+      "runtime_pixel_sha256": "6a7ef6e480e7bb1a122e980afa3fec68ecfa911b91b07b30a152a6518b08506f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        96,
+        221,
+        170
+      ],
+      "gutters_px": [
+        34,
+        96,
+        35,
+        86
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4045,
+      "visible_ratio_alpha_gt_8": 0.061722,
+      "opaque_pixels": 4045,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://bpre5dkbyhilk",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f01.png-d3f67e14ebb7c394b367e0ce9efe9285.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f01.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f01.png",
+      "encoded_sha256": "076890c8eeb65bf4b3d54651e07e65deb9b424e6365234aaf08d07b65ce3d015",
+      "pixel_sha256": "6a7ef6e480e7bb1a122e980afa3fec68ecfa911b91b07b30a152a6518b08506f"
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f02.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f02.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f02.png.import",
+      "raw_encoded_sha256": "be9610766c2b4c385c9bb232260b31a5140203c144a29f22995e646be306e09e",
+      "raw_pixel_sha256": "2fe5bd4b42a9a8a707a2a428a6ab3a2bc3d5899f748507e910e3c8c2a1d93cbf",
+      "generated_manifest_encoded_sha256": "be9610766c2b4c385c9bb232260b31a5140203c144a29f22995e646be306e09e",
+      "generated_manifest_pixel_sha256": "2fe5bd4b42a9a8a707a2a428a6ab3a2bc3d5899f748507e910e3c8c2a1d93cbf",
+      "source_encoded_sha256": "1cc390e4e5a09e5a90c38acad7dcd3c31972eec8ff3cc7ab7804b861e3c283f9",
+      "runtime_encoded_sha256": "1cc390e4e5a09e5a90c38acad7dcd3c31972eec8ff3cc7ab7804b861e3c283f9",
+      "source_pixel_sha256": "8c7a1611d965867b0fc8170e91ca19d618c316f82941591774d6cf6f86610724",
+      "runtime_pixel_sha256": "8c7a1611d965867b0fc8170e91ca19d618c316f82941591774d6cf6f86610724",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        59,
+        221,
+        188
+      ],
+      "gutters_px": [
+        34,
+        59,
+        35,
+        68
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4956,
+      "visible_ratio_alpha_gt_8": 0.075623,
+      "opaque_pixels": 4956,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://7y6a10l6xtqq",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f02.png-b8147ecae4e25383bf9fbb1e65138c60.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f02.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f02.png",
+      "encoded_sha256": "1cc390e4e5a09e5a90c38acad7dcd3c31972eec8ff3cc7ab7804b861e3c283f9",
+      "pixel_sha256": "8c7a1611d965867b0fc8170e91ca19d618c316f82941591774d6cf6f86610724"
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f03.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f03.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f03.png.import",
+      "raw_encoded_sha256": "cc9dee082501f5f82a8feb517a0b2a265e04f3478b9ff9902a81ed52334ad75c",
+      "raw_pixel_sha256": "e008651d3bf377d57f5fa2ba2f7c87f4ac10656799bb55cf13d779fedace9068",
+      "generated_manifest_encoded_sha256": "cc9dee082501f5f82a8feb517a0b2a265e04f3478b9ff9902a81ed52334ad75c",
+      "generated_manifest_pixel_sha256": "e008651d3bf377d57f5fa2ba2f7c87f4ac10656799bb55cf13d779fedace9068",
+      "source_encoded_sha256": "08f32f3791de1fafde060865f56818e29ca3e9281ab0c9c07055035dad41da2d",
+      "runtime_encoded_sha256": "08f32f3791de1fafde060865f56818e29ca3e9281ab0c9c07055035dad41da2d",
+      "source_pixel_sha256": "449cedac12443032fb328ed96bb266fbf30a37a0ce5995f50afc06a53445e461",
+      "runtime_pixel_sha256": "449cedac12443032fb328ed96bb266fbf30a37a0ce5995f50afc06a53445e461",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        60,
+        221,
+        168
+      ],
+      "gutters_px": [
+        34,
+        60,
+        35,
+        88
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3950,
+      "visible_ratio_alpha_gt_8": 0.060272,
+      "opaque_pixels": 3950,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://2sio3qp46c8f",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f03.png-5926d132422254474beace45da3b8145.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f03.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f03.png",
+      "encoded_sha256": "08f32f3791de1fafde060865f56818e29ca3e9281ab0c9c07055035dad41da2d",
+      "pixel_sha256": "449cedac12443032fb328ed96bb266fbf30a37a0ce5995f50afc06a53445e461"
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f04.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f04.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f04.png.import",
+      "raw_encoded_sha256": "f5e8042fecd695623140b0b39081c5e2ef07b699a5df2ca346b85c8e56fe912c",
+      "raw_pixel_sha256": "f0a7cdf46fc4792dd31beab281fe8f2151d0e25dd9ba2f5f5173a09d9134d704",
+      "generated_manifest_encoded_sha256": "f5e8042fecd695623140b0b39081c5e2ef07b699a5df2ca346b85c8e56fe912c",
+      "generated_manifest_pixel_sha256": "f0a7cdf46fc4792dd31beab281fe8f2151d0e25dd9ba2f5f5173a09d9134d704",
+      "source_encoded_sha256": "b302918d706471cda63864df1dc0263c78f0cd61e742c294f18a13b182a3d82e",
+      "runtime_encoded_sha256": "b302918d706471cda63864df1dc0263c78f0cd61e742c294f18a13b182a3d82e",
+      "source_pixel_sha256": "82defc6447f6956478789a6c82f5443193e98d86abecf19dd72a11037e586a78",
+      "runtime_pixel_sha256": "82defc6447f6956478789a6c82f5443193e98d86abecf19dd72a11037e586a78",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        57,
+        221,
+        170
+      ],
+      "gutters_px": [
+        34,
+        57,
+        35,
+        86
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3797,
+      "visible_ratio_alpha_gt_8": 0.057938,
+      "opaque_pixels": 3797,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://hs03bdluthy0",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f04.png-a340f8efc40e624ce4aa5bae761385a8.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f04.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f04.png",
+      "encoded_sha256": "b302918d706471cda63864df1dc0263c78f0cd61e742c294f18a13b182a3d82e",
+      "pixel_sha256": "82defc6447f6956478789a6c82f5443193e98d86abecf19dd72a11037e586a78"
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f05.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f05.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f05.png.import",
+      "raw_encoded_sha256": "d20f25d21a185489db3d4b5576c7a85c28c4277c4e97e9fd0658bc7fafde4ddc",
+      "raw_pixel_sha256": "eb2912eb67dadc3d18cd95d4f7fdec003ff21ea05c22a29628c0d197bbe715e3",
+      "generated_manifest_encoded_sha256": "d20f25d21a185489db3d4b5576c7a85c28c4277c4e97e9fd0658bc7fafde4ddc",
+      "generated_manifest_pixel_sha256": "eb2912eb67dadc3d18cd95d4f7fdec003ff21ea05c22a29628c0d197bbe715e3",
+      "source_encoded_sha256": "2c977684ed71a8e8927bf0b12c3b4d446987cc3b0ef0df179d348000ac32a16b",
+      "runtime_encoded_sha256": "2c977684ed71a8e8927bf0b12c3b4d446987cc3b0ef0df179d348000ac32a16b",
+      "source_pixel_sha256": "de2474635881d548264c2c8cb995411566d06770ba8ec2b8d48e7c8fc52bbb74",
+      "runtime_pixel_sha256": "de2474635881d548264c2c8cb995411566d06770ba8ec2b8d48e7c8fc52bbb74",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        107,
+        221,
+        170
+      ],
+      "gutters_px": [
+        34,
+        107,
+        35,
+        86
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3683,
+      "visible_ratio_alpha_gt_8": 0.056198,
+      "opaque_pixels": 3683,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://d263g5xaki61s",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f05.png-b1490ed8b09784189e179013c2600af6.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f05.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f05.png",
+      "encoded_sha256": "2c977684ed71a8e8927bf0b12c3b4d446987cc3b0ef0df179d348000ac32a16b",
+      "pixel_sha256": "de2474635881d548264c2c8cb995411566d06770ba8ec2b8d48e7c8fc52bbb74"
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f06.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f06.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f06.png.import",
+      "raw_encoded_sha256": "cab3c764e86296c406c961205e9591934779951f02d9b692fe35a1494752e137",
+      "raw_pixel_sha256": "b060845b82481dd5810d85748549d92d014283bbeaca734005130cced0634ff0",
+      "generated_manifest_encoded_sha256": "cab3c764e86296c406c961205e9591934779951f02d9b692fe35a1494752e137",
+      "generated_manifest_pixel_sha256": "b060845b82481dd5810d85748549d92d014283bbeaca734005130cced0634ff0",
+      "source_encoded_sha256": "ed07f02e34e27e1141584e2867426c961d2fcc5e07c2ea8d972b69def7b1c6f7",
+      "runtime_encoded_sha256": "ed07f02e34e27e1141584e2867426c961d2fcc5e07c2ea8d972b69def7b1c6f7",
+      "source_pixel_sha256": "bead6d7ede3b955e9fcb01ee2b2e8daac7b597bdea328f8fcb3c6fb4d7cc67aa",
+      "runtime_pixel_sha256": "bead6d7ede3b955e9fcb01ee2b2e8daac7b597bdea328f8fcb3c6fb4d7cc67aa",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        93,
+        221,
+        168
+      ],
+      "gutters_px": [
+        34,
+        93,
+        35,
+        88
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4245,
+      "visible_ratio_alpha_gt_8": 0.064774,
+      "opaque_pixels": 4245,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://mm261et0df0e",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f06.png-703ce35a31ffc66f70370c02398a4a2e.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f06.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f06.png",
+      "encoded_sha256": "ed07f02e34e27e1141584e2867426c961d2fcc5e07c2ea8d972b69def7b1c6f7",
+      "pixel_sha256": "bead6d7ede3b955e9fcb01ee2b2e8daac7b597bdea328f8fcb3c6fb4d7cc67aa"
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f07.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f07.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f07.png.import",
+      "raw_encoded_sha256": "976db443df9a7fb5c29a9238e64a45ac1a9290bc5172a5a503a005495087f512",
+      "raw_pixel_sha256": "78db8a52b18f512a2ff7d76a0744342aa527446591a845e49221eab368d93b9d",
+      "generated_manifest_encoded_sha256": "976db443df9a7fb5c29a9238e64a45ac1a9290bc5172a5a503a005495087f512",
+      "generated_manifest_pixel_sha256": "78db8a52b18f512a2ff7d76a0744342aa527446591a845e49221eab368d93b9d",
+      "source_encoded_sha256": "2fc6d07a14b4c1e5bb2cba323ceb528502964cda41dfd19027259720bd37c27c",
+      "runtime_encoded_sha256": "2fc6d07a14b4c1e5bb2cba323ceb528502964cda41dfd19027259720bd37c27c",
+      "source_pixel_sha256": "f7c3f1b579a617e92630408f79a474a2bcac67ab1408e8ae2bf23ccf59a47b6a",
+      "runtime_pixel_sha256": "f7c3f1b579a617e92630408f79a474a2bcac67ab1408e8ae2bf23ccf59a47b6a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        59,
+        221,
+        169
+      ],
+      "gutters_px": [
+        34,
+        59,
+        35,
+        87
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3898,
+      "visible_ratio_alpha_gt_8": 0.059479,
+      "opaque_pixels": 3898,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://cvk5i84i5goue",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f07.png-605e836eb46ce1f557daa9f822161d8d.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f07.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f07.png",
+      "encoded_sha256": "2fc6d07a14b4c1e5bb2cba323ceb528502964cda41dfd19027259720bd37c27c",
+      "pixel_sha256": "f7c3f1b579a617e92630408f79a474a2bcac67ab1408e8ae2bf23ccf59a47b6a"
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/rifle_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/rifle/raw/rifle_f08.png",
+      "runtime_file": "assets/sprites/effects/soldier/rifle/rifle_f08.png",
+      "import_file": "assets/sprites/effects/soldier/rifle/rifle_f08.png.import",
+      "raw_encoded_sha256": "6222baa7478e2b966482d5932e3323c89dc54962e3d818d72778361922061048",
+      "raw_pixel_sha256": "3e271fb295d0c388db8d1be0705b4d87bc6972b79dfd66d1775bb5a6fd993824",
+      "generated_manifest_encoded_sha256": "6222baa7478e2b966482d5932e3323c89dc54962e3d818d72778361922061048",
+      "generated_manifest_pixel_sha256": "3e271fb295d0c388db8d1be0705b4d87bc6972b79dfd66d1775bb5a6fd993824",
+      "source_encoded_sha256": "03de0da99c97e212639f069a6fb2dfd0abb4d36f2c1adffb225784bb726153b1",
+      "runtime_encoded_sha256": "03de0da99c97e212639f069a6fb2dfd0abb4d36f2c1adffb225784bb726153b1",
+      "source_pixel_sha256": "39c233778c9003bff5d383fa2ad13d1a827af3071485506bc1744f2d4fcd355f",
+      "runtime_pixel_sha256": "39c233778c9003bff5d383fa2ad13d1a827af3071485506bc1744f2d4fcd355f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        34,
+        110,
+        221,
+        170
+      ],
+      "gutters_px": [
+        34,
+        110,
+        35,
+        86
+      ],
+      "minimum_gutter_px": 34,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 3607,
+      "visible_ratio_alpha_gt_8": 0.055038,
+      "opaque_pixels": 3607,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "uid": "uid://d045lprlgyqww",
+      "import_dest_files": [
+        "res://.godot/imported/rifle_f08.png-fc0d7f7cae1c32bb7ed05f62368398de.ctex"
+      ],
+      "import_source_file": "res://assets/sprites/effects/soldier/rifle/rifle_f08.png",
+      "importer": "texture",
+      "import_matches_runtime": true,
+      "file": "rifle_f08.png",
+      "encoded_sha256": "03de0da99c97e212639f069a6fb2dfd0abb4d36f2c1adffb225784bb726153b1",
+      "pixel_sha256": "39c233778c9003bff5d383fa2ad13d1a827af3071485506bc1744f2d4fcd355f"
+    }
+  ],
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  }
+}

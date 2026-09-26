@@ -1,0 +1,1417 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3699",
+  "source_brief": "FAN-3310",
+  "class_id": "biologist",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "no_secrets_recorded": true
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "flipbook_duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "per_victim_impact_frames": "distinct motion beats are retained for later FAN-3002/FAN-3008 integration"
+  },
+  "postprocess": {
+    "accepted_source_cleaned": true,
+    "raw_preserved": true,
+    "method": "All accepted source frames use the same transparent-canvas normalization: 224x224 content centered in a 256x256 canvas with a 16px pad; runtime copies are byte-identical to accepted source frames.",
+    "source_runtime_parity": true
+  },
+  "packs": [
+    {
+      "weapon_id": "biologist_spore_lens",
+      "class_id": "biologist",
+      "ultimate_role": "world_mycelium",
+      "title": "World Mycelium",
+      "visual_identity": "opened fungal lens with branching emerald mycelium and three mushroom blooms",
+      "impact_language": "three staggered bloom pulses mark distinct infected-victim impacts before the network dries inward",
+      "pixel_lab": {
+        "object_id": "828812ff-da4e-4fa5-b786-85be529019e6",
+        "animation_group_id": "825d169a-f1b8-488d-8da3-6e081458636a",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered opened fungal spore lens projecting three branching luminous mycelium roots with capped mushroom blooms, emerald and chartreuse spores, dark fantasy D&D pixel art seen from above, isolated ultimate impact VFX prop, clean readable silhouette, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the spore lens and three branches centered with stable proportions; a translucent spore ring blooms, mycelial roots crawl along three paths one after another, mushroom caps open and pulse on distinct per-victim impact beats, spores flare, then the network retracts inward; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens",
+        "generated_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/biologist/spore_lens",
+        "spriteframes": "assets/sprites/effects/biologist/spore_lens/spore_lens_spriteframes.tres",
+        "import_sidecars": "assets/sprites/effects/biologist/spore_lens/*.png.import"
+      },
+      "animation": {
+        "name": "biologist_spore_lens_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9,
+        "spriteframes_frame_order": [
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f00.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f01.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f02.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f03.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f04.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f05.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f06.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f07.png",
+          "assets/sprites/effects/biologist/spore_lens/spore_lens_f08.png"
+        ],
+        "spriteframes_imports_match": true
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f00.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f00.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f00.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f00.png.import",
+          "raw_encoded_sha256": "3ff91f0e0e19530d79e9151c18a25ba9b840567ba6814c626a7dc43437aaf8da",
+          "raw_pixel_sha256": "3acaadc82c0213a1f7e1196ba7754e61eadc1a33d88287ecf0885cc914e45963",
+          "accepted_encoded_sha256": "17c308b336269a2bdd24c93feb8c06ecb189d82bd4fdc4ee75930b84bc0f3e90",
+          "accepted_pixel_sha256": "f5d49e86bbe929809d2290af8b9f7a061709be2d338699877e68b0f86c4aecb8",
+          "runtime_encoded_sha256": "17c308b336269a2bdd24c93feb8c06ecb189d82bd4fdc4ee75930b84bc0f3e90",
+          "runtime_pixel_sha256": "f5d49e86bbe929809d2290af8b9f7a061709be2d338699877e68b0f86c4aecb8",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            46,
+            226,
+            202
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://drb8hekfuchyn",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f00.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f00.png-a474a368e6a37c112d88e44097502fbb.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f01.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f01.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f01.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f01.png.import",
+          "raw_encoded_sha256": "7fbf17d9e0ebae1885686a0c9f90fdd3b77e617712604fe2b21cff4db4b521f3",
+          "raw_pixel_sha256": "0184430ce72140a75e8871813d46e97dca543ef836f2b8a6b9f032244e7fd85f",
+          "accepted_encoded_sha256": "10240f68f4e197d4b22e5c47d6c3f6b523555cdddac8abe40b0e66310817e625",
+          "accepted_pixel_sha256": "03a1ff1e782407f626ad6c8c26641592ab8e77778932d081b084353cf2b7141e",
+          "runtime_encoded_sha256": "10240f68f4e197d4b22e5c47d6c3f6b523555cdddac8abe40b0e66310817e625",
+          "runtime_pixel_sha256": "03a1ff1e782407f626ad6c8c26641592ab8e77778932d081b084353cf2b7141e",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            46,
+            226,
+            202
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://bp1cd5wfwvfnw",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f01.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f01.png-ad0090f13fc453c54d3a4d81d01c602c.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f02.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f02.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f02.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f02.png.import",
+          "raw_encoded_sha256": "8cd933e3a7554280abf0c1cb534f28ce823db295c15399070eddc3b08afdc97c",
+          "raw_pixel_sha256": "3622e5ef0b240b1513cb017a4d0a0625b9116cc246010ee00da905c3b561ce75",
+          "accepted_encoded_sha256": "85f98c885262d34cb96813474f1d9b58b1c75712f11f525e3dc00cd95af4a143",
+          "accepted_pixel_sha256": "fc2178787e8b8e5092cbf7e4cbe7af9a4834c6e9ca90cdb8e8d201020cf75ba1",
+          "runtime_encoded_sha256": "85f98c885262d34cb96813474f1d9b58b1c75712f11f525e3dc00cd95af4a143",
+          "runtime_pixel_sha256": "fc2178787e8b8e5092cbf7e4cbe7af9a4834c6e9ca90cdb8e8d201020cf75ba1",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            45,
+            227,
+            202
+          ],
+          "minimum_gutter_px": 29,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://d2nlctu5vdrjp",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f02.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f02.png-e04149a703530d65084a40865704dece.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f03.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f03.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f03.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f03.png.import",
+          "raw_encoded_sha256": "0d14f55c0acef62b485bcc46d10dfb78aafe59da2f58fc2141ceb27272646ae1",
+          "raw_pixel_sha256": "86728f898b9c7318febd618881a93865fccf1b84fc96f3447466b99f0caf2401",
+          "accepted_encoded_sha256": "8090854d14037708a88171cf80c37680a32aa07d199a35288a80f804b8398e7d",
+          "accepted_pixel_sha256": "0e6e40a5283a06ed2656da386d25d0e40d76d51ea0c960e9cc37617e86bf955e",
+          "runtime_encoded_sha256": "8090854d14037708a88171cf80c37680a32aa07d199a35288a80f804b8398e7d",
+          "runtime_pixel_sha256": "0e6e40a5283a06ed2656da386d25d0e40d76d51ea0c960e9cc37617e86bf955e",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            42,
+            230,
+            201
+          ],
+          "minimum_gutter_px": 26,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://s2ml8xtyo3gi",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f03.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f03.png-c52e813bab67c1d0ecc6066d854c948a.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f04.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f04.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f04.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f04.png.import",
+          "raw_encoded_sha256": "1e820df86e395bf634f11443d9b649328a43be771744b5ffa6045e6df2051e1b",
+          "raw_pixel_sha256": "b78521ad93c0245ca0e65f19660700e71755b411f8478090c003e21131b4b2a1",
+          "accepted_encoded_sha256": "4b38537c2dc6609ebc7b6eb3e2c1db806b491c92f90fb26bbcc4bd64c3969420",
+          "accepted_pixel_sha256": "1776d2db3be0b1f85c242e834aae69cd3ff453fee6c6daea4bc3f8a06470dc8b",
+          "runtime_encoded_sha256": "4b38537c2dc6609ebc7b6eb3e2c1db806b491c92f90fb26bbcc4bd64c3969420",
+          "runtime_pixel_sha256": "1776d2db3be0b1f85c242e834aae69cd3ff453fee6c6daea4bc3f8a06470dc8b",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            35,
+            234,
+            201
+          ],
+          "minimum_gutter_px": 22,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://0likuaqmlava",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f04.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f04.png-9d5b9740a8b433fa079bfa95ede0825d.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f05.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f05.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f05.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f05.png.import",
+          "raw_encoded_sha256": "cb07657d4dcf898e56dcd8367a4386bc23c8822964c3bd7eae49d69081bc222e",
+          "raw_pixel_sha256": "486906b3043240041cc1842351dd022c51a8867fb795bcd7858d37c89b652f0b",
+          "accepted_encoded_sha256": "d85930518b2ea22fd48b7e3354d7223127d9fefea87a18ecfaee6ff241f5ef1e",
+          "accepted_pixel_sha256": "d906e82e1ebf31df390bb9ed64fb7be92fbb18ffbf968ea204d19607b1487b00",
+          "runtime_encoded_sha256": "d85930518b2ea22fd48b7e3354d7223127d9fefea87a18ecfaee6ff241f5ef1e",
+          "runtime_pixel_sha256": "d906e82e1ebf31df390bb9ed64fb7be92fbb18ffbf968ea204d19607b1487b00",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            33,
+            230,
+            201
+          ],
+          "minimum_gutter_px": 26,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://brcnjqe55ikhx",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f05.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f05.png-5ab999937a9f13ed9f7f953540fed4f4.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f06.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f06.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f06.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f06.png.import",
+          "raw_encoded_sha256": "5615a5b9c157b5e152aab81383fb62d9c692115353303d2b80ca83998eda55fe",
+          "raw_pixel_sha256": "e0f743daa2d95f64c3accc9730d65f441585a4a8eddad07226858c2394d3ce8f",
+          "accepted_encoded_sha256": "eed464a5067cacceada8557e70c080223a410c3a0de1fcebcf5e9989eab0ac76",
+          "accepted_pixel_sha256": "926983a62d6aa53ec8d75f8172c9f8cac6f79171798240adbe79b36948e3f97f",
+          "runtime_encoded_sha256": "eed464a5067cacceada8557e70c080223a410c3a0de1fcebcf5e9989eab0ac76",
+          "runtime_pixel_sha256": "926983a62d6aa53ec8d75f8172c9f8cac6f79171798240adbe79b36948e3f97f",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            44,
+            228,
+            202
+          ],
+          "minimum_gutter_px": 28,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://4sioo6x4idit",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f06.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f06.png-c946ade868fa87556a4e9a90f457e7ba.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f07.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f07.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f07.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f07.png.import",
+          "raw_encoded_sha256": "11758656b4aa86ca023290d2c51774be9c30061f10d4791a97257507830d2122",
+          "raw_pixel_sha256": "4ccc22cf385570c365ebd49c4d7ac850305caf52a2a87df5af1a8886a5c0b5a7",
+          "accepted_encoded_sha256": "79b4459cc25b4c84b8ca0e48561d5125522ae16e2fe9a73607d85e7e15b96dde",
+          "accepted_pixel_sha256": "1ada77af2945379f520bd66fcce97614f5dddda8057cbfbd7c09271db0693cb0",
+          "runtime_encoded_sha256": "79b4459cc25b4c84b8ca0e48561d5125522ae16e2fe9a73607d85e7e15b96dde",
+          "runtime_pixel_sha256": "1ada77af2945379f520bd66fcce97614f5dddda8057cbfbd7c09271db0693cb0",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            46,
+            229,
+            202
+          ],
+          "minimum_gutter_px": 27,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://g0seluck84hm",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f07.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f07.png-2e7e864765514e6ef11a06f2570042ba.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/spore_lens_f08.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/spore_lens/raw/spore_lens_f08.png",
+          "runtime_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f08.png",
+          "import_file": "assets/sprites/effects/biologist/spore_lens/spore_lens_f08.png.import",
+          "raw_encoded_sha256": "869735f7799f03ae4cd6c98a26fa1fbb162a0de37ac74e5b44436680fe4b4f51",
+          "raw_pixel_sha256": "fce09d722735033f9e16cb3ee0e808e6e5dca14943bd723df48c522749d38be3",
+          "accepted_encoded_sha256": "336d7980d01d8f9d39f27295ff1382f577f548d7e1a387ed0d3e35e5f38b35ce",
+          "accepted_pixel_sha256": "10ffc9d79914c446749a92456493503413348317e9c56cb2b2c9cf36d138d963",
+          "runtime_encoded_sha256": "336d7980d01d8f9d39f27295ff1382f577f548d7e1a387ed0d3e35e5f38b35ce",
+          "runtime_pixel_sha256": "10ffc9d79914c446749a92456493503413348317e9c56cb2b2c9cf36d138d963",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            46,
+            226,
+            202
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://dtdp7guuj37lx",
+          "import_source_file": "res://assets/sprites/effects/biologist/spore_lens/spore_lens_f08.png",
+          "import_dest_files": [
+            "res://.godot/imported/spore_lens_f08.png-35ae7a86ee5cd24ef2cadebef0ab6c86.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          20064,
+          20058,
+          20565,
+          21545,
+          22266,
+          21208,
+          20612,
+          20346,
+          20233
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            37,
+            46,
+            226,
+            202
+          ],
+          [
+            37,
+            46,
+            226,
+            202
+          ],
+          [
+            37,
+            45,
+            227,
+            202
+          ],
+          [
+            37,
+            42,
+            230,
+            201
+          ],
+          [
+            37,
+            35,
+            234,
+            201
+          ],
+          [
+            37,
+            33,
+            230,
+            201
+          ],
+          [
+            37,
+            44,
+            228,
+            202
+          ],
+          [
+            37,
+            46,
+            229,
+            202
+          ],
+          [
+            37,
+            46,
+            226,
+            202
+          ]
+        ],
+        "visible_area_spread_percent": 9.92,
+        "adjacent_changed_pixels": [
+          19311,
+          18831,
+          19328,
+          17708,
+          17430,
+          14810,
+          15861,
+          16087
+        ],
+        "adjacent_mean_abs_rgba_delta_per_changed_pixel": [
+          64.141,
+          83.002,
+          108.263,
+          72.184,
+          70.411,
+          63.713,
+          46.714,
+          57.767
+        ],
+        "minimum_gutter_px_all_frames": 22,
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "raw_preserved": true,
+        "method": "Each raw 256x256 PixelLab frame was resized to 224x224 with Pillow LANCZOS and padded on a transparent 256x256 canvas with a uniform 16px outer pad; runtime PNGs are byte-for-byte copies of accepted source frames.",
+        "source_runtime_parity": true
+      },
+      "generated_manifest_generated_at": "2026-08-28T18:59:03Z",
+      "generated_manifest_hashes_match": true
+    },
+    {
+      "weapon_id": "biologist_sample_injector",
+      "class_id": "biologist",
+      "ultimate_role": "perfect_sample",
+      "title": "Perfect Sample",
+      "visual_identity": "oversized cyan injector, extraction beam, DNA helix target and analysis rings",
+      "impact_language": "needle extraction followed by three distinct cyan analysis pulses at the sampled target",
+      "pixel_lab": {
+        "object_id": "025da89d-6915-4f78-a8e6-93b085fd229a",
+        "animation_group_id": "9607491a-3841-43b3-9584-f3aad6902eeb",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered oversized biological sample injector needle with a cyan glass reservoir, a luminous green-white extraction beam and a compact double DNA helix target sigil, dark fantasy D&D pixel art seen from above, isolated ultimate impact VFX prop, clean readable silhouette, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the injector rail and helix target centered with stable proportions; the needle charges along a straight line, a cyan sample beam fires into the target, the double DNA helix rotates, three analysis rings pulse one after another on distinct per-victim impact beats, then the beam contracts to a clean spark; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector",
+        "generated_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/biologist/sample_injector",
+        "spriteframes": "assets/sprites/effects/biologist/sample_injector/sample_injector_spriteframes.tres",
+        "import_sidecars": "assets/sprites/effects/biologist/sample_injector/*.png.import"
+      },
+      "animation": {
+        "name": "biologist_sample_injector_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9,
+        "spriteframes_frame_order": [
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f00.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f01.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f02.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f03.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f04.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f05.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f06.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f07.png",
+          "assets/sprites/effects/biologist/sample_injector/sample_injector_f08.png"
+        ],
+        "spriteframes_imports_match": true
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f00.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f00.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f00.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f00.png.import",
+          "raw_encoded_sha256": "54ba4feef51977036598b760a0b439352c2573175b7478063737acffc7b2ec9b",
+          "raw_pixel_sha256": "26947f88a141d73aba7ef4208e871e746b118a637d7c2eb926554c45385d174e",
+          "accepted_encoded_sha256": "33e64d1f03e18e0fcdeba400f8f0d27ba559988d9a500716fb39e13373a34d33",
+          "accepted_pixel_sha256": "a3077e9fdde76eea25a2ace3fd3a9005c1b5af0231dc81d35d2851a0c17716e2",
+          "runtime_encoded_sha256": "33e64d1f03e18e0fcdeba400f8f0d27ba559988d9a500716fb39e13373a34d33",
+          "runtime_pixel_sha256": "a3077e9fdde76eea25a2ace3fd3a9005c1b5af0231dc81d35d2851a0c17716e2",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            64,
+            27,
+            193,
+            234
+          ],
+          "minimum_gutter_px": 22,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://c6bmelak57opy",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f00.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f00.png-694bdffa0b4edb051e622537b8889039.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f01.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f01.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f01.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f01.png.import",
+          "raw_encoded_sha256": "529e897bc2d765397d2cdac542b0d785cf86695983a63b0ee19d63d51715a69e",
+          "raw_pixel_sha256": "0081385df7390bc83a036bf9ae904acdb6b8e909ec181448a5ad3f3d6d8e5cac",
+          "accepted_encoded_sha256": "39df4c458505c6b6ea25ffd20b7fdb5b2803f8573738c273ae2834fa0936ee35",
+          "accepted_pixel_sha256": "b7bedce6e7a86d177834c6fe8f3fc0d16fbb939b017b12fb45a1288ba336f37d",
+          "runtime_encoded_sha256": "39df4c458505c6b6ea25ffd20b7fdb5b2803f8573738c273ae2834fa0936ee35",
+          "runtime_pixel_sha256": "b7bedce6e7a86d177834c6fe8f3fc0d16fbb939b017b12fb45a1288ba336f37d",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            62,
+            27,
+            192,
+            236
+          ],
+          "minimum_gutter_px": 20,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://ba5mvo0oyqy4d",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f01.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f01.png-ae4f43dc612defecfd946b735822e01d.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f02.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f02.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f02.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f02.png.import",
+          "raw_encoded_sha256": "d331708d09233638cfc2a31fc0f7fddd910cb9df6b7b0172bf912929e250029f",
+          "raw_pixel_sha256": "61f268e8c2b41c084ef73653e08a91b84964681ffbe5e7783c332e2999185b6a",
+          "accepted_encoded_sha256": "2b695781703bb5f8229c785d6bb446461e67deb27c0ee50da821bd0ce7abb65c",
+          "accepted_pixel_sha256": "f50ea476eef01f18de2f2ae3ac816952f324b9ffd51b4ea0e7dd058133383e1c",
+          "runtime_encoded_sha256": "2b695781703bb5f8229c785d6bb446461e67deb27c0ee50da821bd0ce7abb65c",
+          "runtime_pixel_sha256": "f50ea476eef01f18de2f2ae3ac816952f324b9ffd51b4ea0e7dd058133383e1c",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            64,
+            23,
+            191,
+            236
+          ],
+          "minimum_gutter_px": 20,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://c4m8cohkb7r6k",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f02.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f02.png-e99471c07334b6701a5e3f1091aca841.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f03.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f03.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f03.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f03.png.import",
+          "raw_encoded_sha256": "9cadb9cdd0041f57435300734fe063bb654229c77727436c648e148323952a3d",
+          "raw_pixel_sha256": "eb0dff25dec7340f1d5ea12912bcf581444be2f38b04a55e338ab75776205e10",
+          "accepted_encoded_sha256": "6217be97f271e0c730eadd8599ba66044995afc5178044fc41a5de3e10d848bf",
+          "accepted_pixel_sha256": "af38b256e845655bce6518bdb0f73c5d8d4d00f9bd7280d38408f85133c9a736",
+          "runtime_encoded_sha256": "6217be97f271e0c730eadd8599ba66044995afc5178044fc41a5de3e10d848bf",
+          "runtime_pixel_sha256": "af38b256e845655bce6518bdb0f73c5d8d4d00f9bd7280d38408f85133c9a736",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            92,
+            22,
+            164,
+            216
+          ],
+          "minimum_gutter_px": 22,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://bci0anhcdhixu",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f03.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f03.png-fa0b06ea1531e8de917d35f6ba857d2b.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f04.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f04.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f04.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f04.png.import",
+          "raw_encoded_sha256": "1a3972fb5fc11c959693b4aa16f81ff1c8034e566aa1e91b595e4ed4854d77c0",
+          "raw_pixel_sha256": "b9a82917f426428f4fbcc688f1e87774241917f6113131b5dc59b17892c0cc54",
+          "accepted_encoded_sha256": "d5fd937e89ea323726db093c8c834f6f00916905b651474690fb006666bca02b",
+          "accepted_pixel_sha256": "29ebf9f169360b3e073c4227bbf544b115dd3930b0d01bf4254ba0345360ae57",
+          "runtime_encoded_sha256": "d5fd937e89ea323726db093c8c834f6f00916905b651474690fb006666bca02b",
+          "runtime_pixel_sha256": "29ebf9f169360b3e073c4227bbf544b115dd3930b0d01bf4254ba0345360ae57",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            75,
+            17,
+            180,
+            228
+          ],
+          "minimum_gutter_px": 17,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://dxovqx4x5rdoc",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f04.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f04.png-b5d08486641bf449a814b133f92f864a.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f05.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f05.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f05.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f05.png.import",
+          "raw_encoded_sha256": "5be32f7382ed47f5dc15371afd74b841833757a88638016d7c9a7e8175fb1a6f",
+          "raw_pixel_sha256": "bd7d32e8368a4d6eb57022d03868a1541e6921a037b83014b4d7e3e6c343179a",
+          "accepted_encoded_sha256": "2672600112c0d982cbd4408a9d2ed0937b490999755372720dfaf90c2818f7b9",
+          "accepted_pixel_sha256": "209a5afa6dfa9eda03f259baab102e0b50f81b2d5d27ef95bf7cfed380902481",
+          "runtime_encoded_sha256": "2672600112c0d982cbd4408a9d2ed0937b490999755372720dfaf90c2818f7b9",
+          "runtime_pixel_sha256": "209a5afa6dfa9eda03f259baab102e0b50f81b2d5d27ef95bf7cfed380902481",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            93,
+            16,
+            163,
+            216
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://dugoqvhwo7saq",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f05.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f05.png-5595d454cf092a0b6ff8f7ec486b2731.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f06.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f06.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f06.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f06.png.import",
+          "raw_encoded_sha256": "576e40cfb6ba4518be36b2f8f55582d152dc81c7c992ec625eff7460637578ca",
+          "raw_pixel_sha256": "6380bb66e18cdd7a0415e191f28598ad8be6a6d1ec43897604cde84b9e8f0a87",
+          "accepted_encoded_sha256": "9f6946fb1fcbaf19550025e710b253c7ba6656aa24a1aa1571bdf775fc6614a0",
+          "accepted_pixel_sha256": "692965e4232e1d00f73f0cb52637a7c58465d710e0acab2cd380d64ea41f4742",
+          "runtime_encoded_sha256": "9f6946fb1fcbaf19550025e710b253c7ba6656aa24a1aa1571bdf775fc6614a0",
+          "runtime_pixel_sha256": "692965e4232e1d00f73f0cb52637a7c58465d710e0acab2cd380d64ea41f4742",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            93,
+            16,
+            163,
+            216
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://dg64tv25q7amn",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f06.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f06.png-f12a53cf9b5da828c88806e654cb8f8f.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f07.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f07.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f07.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f07.png.import",
+          "raw_encoded_sha256": "d08dc9bfae3b6c7c90b0eb4170369273b0b6971b0d19ac2d1b84a86e215f4bc1",
+          "raw_pixel_sha256": "0e38ac62094413efb63752d4b164aec5b5799832add0ea9fcf9572ba7a2b1c0c",
+          "accepted_encoded_sha256": "e8d79344456fbf3e859bcb919d559eb3d3e5b08fb6c3c267dc6e94edd8e2dbb2",
+          "accepted_pixel_sha256": "d6f19d4821ea7a06da858791602114452372395f99386793ce9cbc51b1976e8c",
+          "runtime_encoded_sha256": "e8d79344456fbf3e859bcb919d559eb3d3e5b08fb6c3c267dc6e94edd8e2dbb2",
+          "runtime_pixel_sha256": "d6f19d4821ea7a06da858791602114452372395f99386793ce9cbc51b1976e8c",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            99,
+            16,
+            157,
+            216
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://b3ddyn31v64a4",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f07.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f07.png-e3b62732ce0e309fe05949a031da9c1b.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/sample_injector_f08.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/sample_injector/raw/sample_injector_f08.png",
+          "runtime_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f08.png",
+          "import_file": "assets/sprites/effects/biologist/sample_injector/sample_injector_f08.png.import",
+          "raw_encoded_sha256": "739620d89079a72b0c95311a619b6997317e32e0b52397ec7103c86c32619b67",
+          "raw_pixel_sha256": "a08ada2b29f2f0229f58c451d9525e7981ce9532d6884e270e856c4c948afa1e",
+          "accepted_encoded_sha256": "f3521b867aae328a56a36a4eb9220582a7eee60651ab9cc3d391f71899d40178",
+          "accepted_pixel_sha256": "2f047b107b3ed41576bb55781992ffcd54a6bfb91fab7976b9c30ccbe634ed55",
+          "runtime_encoded_sha256": "f3521b867aae328a56a36a4eb9220582a7eee60651ab9cc3d391f71899d40178",
+          "runtime_pixel_sha256": "2f047b107b3ed41576bb55781992ffcd54a6bfb91fab7976b9c30ccbe634ed55",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            76,
+            16,
+            181,
+            226
+          ],
+          "minimum_gutter_px": 16,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://c4gh4xphb3fti",
+          "import_source_file": "res://assets/sprites/effects/biologist/sample_injector/sample_injector_f08.png",
+          "import_dest_files": [
+            "res://.godot/imported/sample_injector_f08.png-df9948ea1259f30cde33ea998e8dec18.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          10811,
+          8323,
+          7730,
+          6521,
+          7953,
+          6403,
+          5804,
+          4846,
+          3409
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            64,
+            27,
+            193,
+            234
+          ],
+          [
+            62,
+            27,
+            192,
+            236
+          ],
+          [
+            64,
+            23,
+            191,
+            236
+          ],
+          [
+            92,
+            22,
+            164,
+            216
+          ],
+          [
+            75,
+            17,
+            180,
+            228
+          ],
+          [
+            93,
+            16,
+            163,
+            216
+          ],
+          [
+            93,
+            16,
+            163,
+            216
+          ],
+          [
+            99,
+            16,
+            157,
+            216
+          ],
+          [
+            76,
+            16,
+            181,
+            226
+          ]
+        ],
+        "visible_area_spread_percent": 68.47,
+        "adjacent_changed_pixels": [
+          11968,
+          10850,
+          9308,
+          9466,
+          9484,
+          7945,
+          7853,
+          7175
+        ],
+        "adjacent_mean_abs_rgba_delta_per_changed_pixel": [
+          297.147,
+          259.009,
+          255.603,
+          285.068,
+          267.336,
+          206.788,
+          347.532,
+          494.043
+        ],
+        "minimum_gutter_px_all_frames": 16,
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "raw_preserved": true,
+        "method": "Each raw 256x256 PixelLab frame was resized to 224x224 with Pillow LANCZOS and padded on a transparent 256x256 canvas with a uniform 16px outer pad; runtime PNGs are byte-for-byte copies of accepted source frames.",
+        "source_runtime_parity": true
+      },
+      "generated_manifest_generated_at": "2026-08-28T19:03:31Z",
+      "generated_manifest_hashes_match": true
+    },
+    {
+      "weapon_id": "biologist_symbiote_seed",
+      "class_id": "biologist",
+      "ultimate_role": "symbiote_matriarch",
+      "title": "Symbiote Matriarch",
+      "visual_identity": "magenta symbiotic seed pod with emerald veins, six tendrils and larval motes",
+      "impact_language": "tendril lashes and larval launches lead into one terminal magenta-green hatch burst",
+      "pixel_lab": {
+        "object_id": "893d14fb-0f98-4eb9-858c-fbbba65af299",
+        "animation_group_id": "c1e32495-ae67-4ce7-a70a-89d42370a9ec",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "create_params": {
+          "description": "one centered symbiotic seed pod with a jewel-like magenta shell, emerald veins, six radial tendrils and six tiny orbiting larval motes, dark fantasy D&D pixel art seen from above, isolated ultimate impact VFX prop, clean readable silhouette, empty transparent background, no text",
+          "size": 256,
+          "view": "top-down"
+        },
+        "animate_params": {
+          "mode": "v3",
+          "animation_description": "keep the symbiotic pod centered with six tendrils and stable proportions; the seed drops and cracks, the pod swells, six tendrils snap outward one by one, six larval motes orbit and launch on distinct per-victim impact beats, then the membrane ruptures into a magenta-green hatch burst and retracts; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+          "frame_count": 8
+        }
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed",
+        "generated_manifest": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/pixellab_generation_manifest.json",
+        "runtime_dir": "assets/sprites/effects/biologist/symbiote_seed",
+        "spriteframes": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_spriteframes.tres",
+        "import_sidecars": "assets/sprites/effects/biologist/symbiote_seed/*.png.import"
+      },
+      "animation": {
+        "name": "biologist_symbiote_seed_ultimate",
+        "fps": 3.0,
+        "loop": false,
+        "duration_seconds": 3.0,
+        "frame_count": 9,
+        "spriteframes_frame_order": [
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f00.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f01.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f02.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f03.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f04.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f05.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f06.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f07.png",
+          "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f08.png"
+        ],
+        "spriteframes_imports_match": true
+      },
+      "frames": [
+        {
+          "index": 0,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f00.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f00.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f00.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f00.png.import",
+          "raw_encoded_sha256": "4f4efdfc1e08c0fafe96cbc4e35a1c2c8e33ccaafbfa9bcfd2b51df3828da986",
+          "raw_pixel_sha256": "2817138e7f8a31416185e5acc829f518085387ccd41388beb77c734c713cd989",
+          "accepted_encoded_sha256": "0362b341c67add5824423e2860177462ace8289c872bcfb083c2baaa93cacaf3",
+          "accepted_pixel_sha256": "47643bb7729194a25b6db61f4ef0f3df4edb9bd67f33a6cf37a59a3d11452455",
+          "runtime_encoded_sha256": "0362b341c67add5824423e2860177462ace8289c872bcfb083c2baaa93cacaf3",
+          "runtime_pixel_sha256": "47643bb7729194a25b6db61f4ef0f3df4edb9bd67f33a6cf37a59a3d11452455",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            32,
+            31,
+            224,
+            226
+          ],
+          "minimum_gutter_px": 30,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://bhoag1c0mhq5h",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f00.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f00.png-130dd912984edd83d2e7d700a447b926.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 1,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f01.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f01.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f01.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f01.png.import",
+          "raw_encoded_sha256": "a7ceef3efc31ba218bc1f7609d6eb57a6dbeb1154a340ecb647573e888419dcc",
+          "raw_pixel_sha256": "16db7b7aacfd46df3772086ceabe8c751f6bae593d396adb11c67d7eeaba47a7",
+          "accepted_encoded_sha256": "68f431d63bd7a506f80df5c2260e420d17ac70faa496bca892fe4a2d6c11002e",
+          "accepted_pixel_sha256": "05131ed99bdf8407d459fed544c133e0dea923f12e4c6ffb6cbf899ecd82e241",
+          "runtime_encoded_sha256": "68f431d63bd7a506f80df5c2260e420d17ac70faa496bca892fe4a2d6c11002e",
+          "runtime_pixel_sha256": "05131ed99bdf8407d459fed544c133e0dea923f12e4c6ffb6cbf899ecd82e241",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            33,
+            33,
+            222,
+            225
+          ],
+          "minimum_gutter_px": 31,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://d0lxk5amhv3lw",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f01.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f01.png-b2a8114b6ab2de2ca1cae0b19ef50e25.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 2,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f02.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f02.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f02.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f02.png.import",
+          "raw_encoded_sha256": "6567e8090fc4f0782d3326e71dfe3bc4394fbb4ff1e5cb0c880eed723a5acb3c",
+          "raw_pixel_sha256": "0476bce766a2969bcd2983b127965086ec9241408d909638e9b0066efb11037d",
+          "accepted_encoded_sha256": "bf51cc37bf5abc049a2f68703182203e1b3760c2f0ebbd48ad0c3e0f8e4650dd",
+          "accepted_pixel_sha256": "3bc9e21597ac52b5bd12e8b37137882d14da9c70ac347dc9854d5d148d28e117",
+          "runtime_encoded_sha256": "bf51cc37bf5abc049a2f68703182203e1b3760c2f0ebbd48ad0c3e0f8e4650dd",
+          "runtime_pixel_sha256": "3bc9e21597ac52b5bd12e8b37137882d14da9c70ac347dc9854d5d148d28e117",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            36,
+            38,
+            216,
+            223
+          ],
+          "minimum_gutter_px": 33,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://jnva3uw6imdt",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f02.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f02.png-237cdcf9b1266db6e6051cb4508e5c5d.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 3,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f03.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f03.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f03.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f03.png.import",
+          "raw_encoded_sha256": "212d80cd0e4c04735902cb861e86e0a86f60c58371dcb1a7bde42633c7ce0eca",
+          "raw_pixel_sha256": "020d342f2bbb5939c27c7144e491809fabfc922a24703ffda9814e9163e71671",
+          "accepted_encoded_sha256": "24de80fe0615e0598a5b799c83b013c34f4a52f0e0159cd9dba9d57a22f1d4de",
+          "accepted_pixel_sha256": "140a3d09851b094656625ae8564b7857d0d5a99b89958652beeaf39fde6a937b",
+          "runtime_encoded_sha256": "24de80fe0615e0598a5b799c83b013c34f4a52f0e0159cd9dba9d57a22f1d4de",
+          "runtime_pixel_sha256": "140a3d09851b094656625ae8564b7857d0d5a99b89958652beeaf39fde6a937b",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            38,
+            212,
+            216
+          ],
+          "minimum_gutter_px": 37,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://ce583dq0svfy3",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f03.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f03.png-66c6e5f3776376d93a51dc8f35e523a0.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 4,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f04.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f04.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f04.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f04.png.import",
+          "raw_encoded_sha256": "96db04275481c875ae7849144e83a8b3a968fdfd57ae0d03ac9b3c345d25db8c",
+          "raw_pixel_sha256": "6f51223fcdd5e6a9808f42bc3dec9f5880411808496868b5221855eac4be1cdf",
+          "accepted_encoded_sha256": "9c7bebd953699858b277709cc8cfb9e4d5e85adefca77a993b5bbf257f659445",
+          "accepted_pixel_sha256": "1dcc43370c98f681678be638963db97552a20e71f679e121a3ee9ebd5291538c",
+          "runtime_encoded_sha256": "9c7bebd953699858b277709cc8cfb9e4d5e85adefca77a993b5bbf257f659445",
+          "runtime_pixel_sha256": "1dcc43370c98f681678be638963db97552a20e71f679e121a3ee9ebd5291538c",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            40,
+            41,
+            213,
+            209
+          ],
+          "minimum_gutter_px": 40,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://bphoea1wp8hm1",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f04.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f04.png-22d80fd6ee1743b7f1b477a901c6bed9.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 5,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f05.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f05.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f05.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f05.png.import",
+          "raw_encoded_sha256": "c6acc2d5daf70b84999d82e32bdfb01cd9200e1966f8402169e8a7816f5e778c",
+          "raw_pixel_sha256": "ac70fd140a13cba40e8e44cd18c6a89bdba99db7e1f6abafefe9941d74d2ea31",
+          "accepted_encoded_sha256": "758784a07ac3a291517ae7e5c4429ef9ece54cfb4548cce6bc854eaff2500ae7",
+          "accepted_pixel_sha256": "5a2a8cbc5af9bbe30582575b349474fe1852f38d0c7e59b774b56086478dbbcd",
+          "runtime_encoded_sha256": "758784a07ac3a291517ae7e5c4429ef9ece54cfb4548cce6bc854eaff2500ae7",
+          "runtime_pixel_sha256": "5a2a8cbc5af9bbe30582575b349474fe1852f38d0c7e59b774b56086478dbbcd",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            39,
+            40,
+            218,
+            212
+          ],
+          "minimum_gutter_px": 38,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://dabxw348dnyvx",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f05.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f05.png-141bb6bf2802064cfddcc3d9afabbdc3.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 6,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f06.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f06.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f06.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f06.png.import",
+          "raw_encoded_sha256": "bf9e0532fbecc66fa4eb35602e9007ff72c12af0340cbb7ff58ec556dc163a3d",
+          "raw_pixel_sha256": "48a6cd02882ea1a06873b6247f75b6161bbad315b49cd35baa71c7935bfe4b7b",
+          "accepted_encoded_sha256": "3b915c3cf2a49e5dae19089f4439778e24dd71a3418b221d5e783db28a06877c",
+          "accepted_pixel_sha256": "be4d96093a0c449500ee517173dfe1d1eded8237e732bb9853aa7f37235bc923",
+          "runtime_encoded_sha256": "3b915c3cf2a49e5dae19089f4439778e24dd71a3418b221d5e783db28a06877c",
+          "runtime_pixel_sha256": "be4d96093a0c449500ee517173dfe1d1eded8237e732bb9853aa7f37235bc923",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            40,
+            37,
+            221,
+            213
+          ],
+          "minimum_gutter_px": 35,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://d0xt6nxel1ow5",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f06.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f06.png-a2a1a27781ca651604b1c647b2ad29a6.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 7,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f07.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f07.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f07.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f07.png.import",
+          "raw_encoded_sha256": "8e2f90707060294bbbfa23457f23ebad9c823ef86e68fc23be3eee7ec5e34c39",
+          "raw_pixel_sha256": "a69c1c2edcdbe28d9e0066e0d2922c98d947caeb7399f60b83dcd6bee2c80351",
+          "accepted_encoded_sha256": "1ebeae570987bc13d8f7b152493ff7ab2de6d465cfe1334c3611b42b2a85ebb2",
+          "accepted_pixel_sha256": "89a9b565082eba8367d16b8076a948335651b4fd44d64bb7457eced12b6bb394",
+          "runtime_encoded_sha256": "1ebeae570987bc13d8f7b152493ff7ab2de6d465cfe1334c3611b42b2a85ebb2",
+          "runtime_pixel_sha256": "89a9b565082eba8367d16b8076a948335651b4fd44d64bb7457eced12b6bb394",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            37,
+            34,
+            221,
+            219
+          ],
+          "minimum_gutter_px": 34,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://cdkkimhajr6hf",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f07.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f07.png-2da93e07cda6d379b3bc3da04c40c99d.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        },
+        {
+          "index": 8,
+          "source_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/symbiote_seed_f08.png",
+          "raw_file": "docs/design/reference-assets-lfs/biologist-vfx-FAN-3310-art/symbiote_seed/raw/symbiote_seed_f08.png",
+          "runtime_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f08.png",
+          "import_file": "assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f08.png.import",
+          "raw_encoded_sha256": "6c7876b15849fc8f2c8f793e6562bd7cccb2d2220825764f02b4acd94fe32c59",
+          "raw_pixel_sha256": "5165accf7afdc569f47f410716738a5915d06f0d9550dc01113ed03c055f7689",
+          "accepted_encoded_sha256": "334261bab72d6a25ad10988a4b9cecaf12d669624785fc9b2be512338c6d2b63",
+          "accepted_pixel_sha256": "6f55d263f89513ffbe4dda7691a3b0020180bc3c0708349a6ef9c8390176b4e1",
+          "runtime_encoded_sha256": "334261bab72d6a25ad10988a4b9cecaf12d669624785fc9b2be512338c6d2b63",
+          "runtime_pixel_sha256": "6f55d263f89513ffbe4dda7691a3b0020180bc3c0708349a6ef9c8390176b4e1",
+          "source_runtime_byte_parity": true,
+          "source_runtime_pixel_parity": true,
+          "size_px": [
+            256,
+            256
+          ],
+          "alpha_bbox_gt_8": [
+            32,
+            32,
+            218,
+            222
+          ],
+          "minimum_gutter_px": 32,
+          "edge_visible_pixels": 0,
+          "import_uid": "uid://rwmnkthjc4y",
+          "import_source_file": "res://assets/sprites/effects/biologist/symbiote_seed/symbiote_seed_f08.png",
+          "import_dest_files": [
+            "res://.godot/imported/symbiote_seed_f08.png-ddb9f73780d0a02918d503ac201a7c57.ctex"
+          ],
+          "import_matches_runtime": true,
+          "generated_manifest_hash_match": true
+        }
+      ],
+      "motion_evidence": {
+        "unique_pixel_frames": 9,
+        "visible_pixels_alpha_gt_8": [
+          10309,
+          10590,
+          10756,
+          10793,
+          10652,
+          9811,
+          9353,
+          9548,
+          10785
+        ],
+        "alpha_bbox_gt_8": [
+          [
+            32,
+            31,
+            224,
+            226
+          ],
+          [
+            33,
+            33,
+            222,
+            225
+          ],
+          [
+            36,
+            38,
+            216,
+            223
+          ],
+          [
+            37,
+            38,
+            212,
+            216
+          ],
+          [
+            40,
+            41,
+            213,
+            209
+          ],
+          [
+            39,
+            40,
+            218,
+            212
+          ],
+          [
+            40,
+            37,
+            221,
+            213
+          ],
+          [
+            37,
+            34,
+            221,
+            219
+          ],
+          [
+            32,
+            32,
+            218,
+            222
+          ]
+        ],
+        "visible_area_spread_percent": 13.34,
+        "adjacent_changed_pixels": [
+          13846,
+          15324,
+          15894,
+          15506,
+          14578,
+          13684,
+          12305,
+          13084
+        ],
+        "adjacent_mean_abs_rgba_delta_per_changed_pixel": [
+          131.331,
+          181.251,
+          187.646,
+          171.165,
+          159.049,
+          163.196,
+          107.214,
+          190.65
+        ],
+        "minimum_gutter_px_all_frames": 30,
+        "edge_visible_pixels_all_frames": 0
+      },
+      "postprocess": {
+        "accepted_source_cleaned": true,
+        "raw_preserved": true,
+        "method": "Each raw 256x256 PixelLab frame was resized to 224x224 with Pillow LANCZOS and padded on a transparent 256x256 canvas with a uniform 16px outer pad; runtime PNGs are byte-for-byte copies of accepted source frames.",
+        "source_runtime_parity": true
+      },
+      "generated_manifest_generated_at": "2026-08-28T19:07:48Z",
+      "generated_manifest_hashes_match": true
+    }
+  ]
+}

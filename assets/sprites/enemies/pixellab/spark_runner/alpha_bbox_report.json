@@ -1,0 +1,6114 @@
+{
+  "idle_east": [
+    {
+      "source": "spark_runner_idle_east.png",
+      "runtime": "spark_runner_idle_east.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        5,
+        15,
+        109,
+        105
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        210,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        160,
+        297,
+        342
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "spark_runner_idle_south_east.png",
+      "runtime": "spark_runner_idle_south_east.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        18,
+        106,
+        108
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "spark_runner_idle_south.png",
+      "runtime": "spark_runner_idle_south.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        30,
+        15,
+        110,
+        103
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        165,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        160,
+        275,
+        342
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "spark_runner_idle_south_west.png",
+      "runtime": "spark_runner_idle_south_west.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        19,
+        133,
+        108
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "spark_runner_idle_west.png",
+      "runtime": "spark_runner_idle_west.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        32,
+        17,
+        136,
+        105
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        215,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        299,
+        342
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "spark_runner_idle_north_west.png",
+      "runtime": "spark_runner_idle_north_west.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        136,
+        109
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        197,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        291,
+        342
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "spark_runner_idle_north.png",
+      "runtime": "spark_runner_idle_north.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        20,
+        20,
+        121,
+        110
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        204,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        294,
+        342
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "spark_runner_idle_north_east.png",
+      "runtime": "spark_runner_idle_north_east.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        4,
+        16,
+        106,
+        111
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        195,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        289,
+        342
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "spark_runner_move_east_00.png",
+      "runtime": "spark_runner_move_east_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        24,
+        109,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        76
+      ],
+      "scale": 2.3947368421052633,
+      "resized_visible_size": [
+        247,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        160,
+        315,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_east_01.png",
+      "runtime": "spark_runner_move_east_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        24,
+        109,
+        99
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        75
+      ],
+      "scale": 2.4266666666666667,
+      "resized_visible_size": [
+        250,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        67,
+        160,
+        317,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_east_02.png",
+      "runtime": "spark_runner_move_east_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        22,
+        108,
+        99
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        77
+      ],
+      "scale": 2.3636363636363638,
+      "resized_visible_size": [
+        241,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        160,
+        313,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_east_03.png",
+      "runtime": "spark_runner_move_east_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        22,
+        109,
+        98
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        76
+      ],
+      "scale": 2.3947368421052633,
+      "resized_visible_size": [
+        247,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        160,
+        315,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_east_04.png",
+      "runtime": "spark_runner_move_east_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        22,
+        109,
+        99
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        77
+      ],
+      "scale": 2.3636363636363638,
+      "resized_visible_size": [
+        243,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        313,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_east_05.png",
+      "runtime": "spark_runner_move_east_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        6,
+        22,
+        108,
+        98
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        76
+      ],
+      "scale": 2.3947368421052633,
+      "resized_visible_size": [
+        244,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        314,
+        342
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "spark_runner_move_south_east_00.png",
+      "runtime": "spark_runner_move_south_east_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        12,
+        34,
+        100,
+        102
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        68
+      ],
+      "scale": 2.676470588235294,
+      "resized_visible_size": [
+        236,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        160,
+        310,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_east_01.png",
+      "runtime": "spark_runner_move_south_east_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        13,
+        35,
+        100,
+        101
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        240,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        160,
+        312,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_east_02.png",
+      "runtime": "spark_runner_move_south_east_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        12,
+        36,
+        100,
+        97
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        61
+      ],
+      "scale": 2.9836065573770494,
+      "resized_visible_size": [
+        263,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        160,
+        323,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_east_03.png",
+      "runtime": "spark_runner_move_south_east_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        13,
+        34,
+        100,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        240,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        160,
+        312,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_east_04.png",
+      "runtime": "spark_runner_move_south_east_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        14,
+        34,
+        100,
+        98
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        64
+      ],
+      "scale": 2.84375,
+      "resized_visible_size": [
+        245,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        315,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_east_05.png",
+      "runtime": "spark_runner_move_south_east_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        12,
+        34,
+        100,
+        96
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        62
+      ],
+      "scale": 2.935483870967742,
+      "resized_visible_size": [
+        258,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        63,
+        160,
+        321,
+        342
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "spark_runner_move_south_00.png",
+      "runtime": "spark_runner_move_south_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        107,
+        102
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        154,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        115,
+        160,
+        269,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_01.png",
+      "runtime": "spark_runner_move_south_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        36,
+        16,
+        107,
+        101
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        152,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        160,
+        268,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_02.png",
+      "runtime": "spark_runner_move_south_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        16,
+        106,
+        95
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        166,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        109,
+        160,
+        275,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_03.png",
+      "runtime": "spark_runner_move_south_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        106,
+        102
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        86
+      ],
+      "scale": 2.116279069767442,
+      "resized_visible_size": [
+        150,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        117,
+        160,
+        267,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_04.png",
+      "runtime": "spark_runner_move_south_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        36,
+        16,
+        107,
+        101
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        152,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        160,
+        268,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_05.png",
+      "runtime": "spark_runner_move_south_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        16,
+        106,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        77
+      ],
+      "scale": 2.3636363636363638,
+      "resized_visible_size": [
+        170,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        107,
+        160,
+        277,
+        342
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "spark_runner_move_south_west_00.png",
+      "runtime": "spark_runner_move_south_west_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        35,
+        26,
+        131,
+        102
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        76
+      ],
+      "scale": 2.3947368421052633,
+      "resized_visible_size": [
+        230,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        77,
+        160,
+        307,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_west_01.png",
+      "runtime": "spark_runner_move_south_west_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        24,
+        129,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        76
+      ],
+      "scale": 2.3947368421052633,
+      "resized_visible_size": [
+        228,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        78,
+        160,
+        306,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_west_02.png",
+      "runtime": "spark_runner_move_south_west_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        25,
+        128,
+        97
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        72
+      ],
+      "scale": 2.5277777777777777,
+      "resized_visible_size": [
+        238,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        73,
+        160,
+        311,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_west_03.png",
+      "runtime": "spark_runner_move_south_west_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        25,
+        128,
+        105
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        214,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        85,
+        160,
+        299,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_west_04.png",
+      "runtime": "spark_runner_move_south_west_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        35,
+        25,
+        129,
+        104
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        217,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        301,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_south_west_05.png",
+      "runtime": "spark_runner_move_south_west_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        25,
+        129,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        75
+      ],
+      "scale": 2.4266666666666667,
+      "resized_visible_size": [
+        231,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        160,
+        307,
+        342
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "spark_runner_move_west_00.png",
+      "runtime": "spark_runner_move_west_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        30,
+        34,
+        134,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        287,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        160,
+        335,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_west_01.png",
+      "runtime": "spark_runner_move_west_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        30,
+        34,
+        133,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        284,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        50,
+        160,
+        334,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_west_02.png",
+      "runtime": "spark_runner_move_west_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        30,
+        33,
+        132,
+        99
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        281,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        160,
+        333,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_west_03.png",
+      "runtime": "spark_runner_move_west_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        29,
+        34,
+        133,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        287,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        160,
+        335,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_west_04.png",
+      "runtime": "spark_runner_move_west_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        29,
+        34,
+        133,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        287,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        160,
+        335,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_west_05.png",
+      "runtime": "spark_runner_move_west_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        30,
+        34,
+        133,
+        100
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        284,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        50,
+        160,
+        334,
+        342
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "spark_runner_move_north_west_00.png",
+      "runtime": "spark_runner_move_north_west_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        31,
+        19,
+        131,
+        105
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        86
+      ],
+      "scale": 2.116279069767442,
+      "resized_visible_size": [
+        212,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        160,
+        298,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_west_01.png",
+      "runtime": "spark_runner_move_north_west_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        33,
+        18,
+        128,
+        106
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        196,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        290,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_west_02.png",
+      "runtime": "spark_runner_move_north_west_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        34,
+        21,
+        135,
+        109
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        209,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        160,
+        297,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_west_03.png",
+      "runtime": "spark_runner_move_north_west_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        33,
+        17,
+        133,
+        108
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        91
+      ],
+      "scale": 2.0,
+      "resized_visible_size": [
+        200,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        160,
+        292,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_west_04.png",
+      "runtime": "spark_runner_move_north_west_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        33,
+        16,
+        132,
+        108
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        196,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        290,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_west_05.png",
+      "runtime": "spark_runner_move_north_west_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        33,
+        17,
+        130,
+        109
+      ],
+      "source_alpha_bbox_size": [
+        97,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        192,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        96,
+        160,
+        288,
+        342
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "spark_runner_move_north_00.png",
+      "runtime": "spark_runner_move_north_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        24,
+        13,
+        118,
+        104
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        91
+      ],
+      "scale": 2.0,
+      "resized_visible_size": [
+        188,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        286,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_01.png",
+      "runtime": "spark_runner_move_north_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        26,
+        17,
+        119,
+        107
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        188,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        286,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_02.png",
+      "runtime": "spark_runner_move_north_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        23,
+        17,
+        117,
+        107
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        190,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        97,
+        160,
+        287,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_03.png",
+      "runtime": "spark_runner_move_north_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        26,
+        16,
+        119,
+        106
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        188,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        286,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_04.png",
+      "runtime": "spark_runner_move_north_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        25,
+        17,
+        118,
+        107
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        188,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        286,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_05.png",
+      "runtime": "spark_runner_move_north_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        22,
+        17,
+        116,
+        107
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        190,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        97,
+        160,
+        287,
+        342
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "spark_runner_move_north_east_00.png",
+      "runtime": "spark_runner_move_north_east_00.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        7,
+        18,
+        106,
+        113
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        190,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        97,
+        160,
+        287,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_east_01.png",
+      "runtime": "spark_runner_move_north_east_01.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        7,
+        18,
+        103,
+        113
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        184,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        160,
+        284,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_east_02.png",
+      "runtime": "spark_runner_move_north_east_02.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        7,
+        18,
+        106,
+        114
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        96
+      ],
+      "scale": 1.8958333333333333,
+      "resized_visible_size": [
+        188,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        286,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_east_03.png",
+      "runtime": "spark_runner_move_north_east_03.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        8,
+        21,
+        103,
+        106
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        203,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_east_04.png",
+      "runtime": "spark_runner_move_north_east_04.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        7,
+        24,
+        99,
+        107
+      ],
+      "source_alpha_bbox_size": [
+        92,
+        83
+      ],
+      "scale": 2.1927710843373496,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_move_north_east_05.png",
+      "runtime": "spark_runner_move_north_east_05.png",
+      "source_size": [
+        140,
+        140
+      ],
+      "source_alpha_bbox": [
+        7,
+        21,
+        101,
+        106
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        201,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        160,
+        293,
+        342
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "spark_runner_attack_east_00.png",
+      "runtime": "spark_runner_attack_east_00.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        27,
+        37,
+        131,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        210,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        160,
+        297,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_east_01.png",
+      "runtime": "spark_runner_attack_east_01.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        25,
+        39,
+        136,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        111,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        230,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        77,
+        160,
+        307,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_east_02.png",
+      "runtime": "spark_runner_attack_east_02.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        24,
+        44,
+        142,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        118,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        253,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        66,
+        160,
+        319,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_east_03.png",
+      "runtime": "spark_runner_attack_east_03.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        21,
+        52,
+        160,
+        140
+      ],
+      "source_alpha_bbox_size": [
+        139,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        287,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        160,
+        335,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_east_04.png",
+      "runtime": "spark_runner_attack_east_04.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        22,
+        56,
+        161,
+        143
+      ],
+      "source_alpha_bbox_size": [
+        139,
+        87
+      ],
+      "scale": 2.0919540229885056,
+      "resized_visible_size": [
+        291,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        46,
+        160,
+        337,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_east_05.png",
+      "runtime": "spark_runner_attack_east_05.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        22,
+        54,
+        158,
+        143
+      ],
+      "source_alpha_bbox_size": [
+        136,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        278,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        53,
+        160,
+        331,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_east_06.png",
+      "runtime": "spark_runner_attack_east_06.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        22,
+        49,
+        150,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        128,
+        87
+      ],
+      "scale": 2.0919540229885056,
+      "resized_visible_size": [
+        268,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        160,
+        326,
+        342
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "spark_runner_attack_south_east_00.png",
+      "runtime": "spark_runner_attack_south_east_00.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        26,
+        38,
+        126,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_east_01.png",
+      "runtime": "spark_runner_attack_south_east_01.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        23,
+        43,
+        130,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        107,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        229,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        78,
+        160,
+        307,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_east_02.png",
+      "runtime": "spark_runner_attack_south_east_02.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        21,
+        47,
+        132,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        111,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        249,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        160,
+        317,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_east_03.png",
+      "runtime": "spark_runner_attack_south_east_03.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        23,
+        56,
+        141,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        118,
+        71
+      ],
+      "scale": 2.563380281690141,
+      "resized_visible_size": [
+        302,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        41,
+        160,
+        343,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_east_04.png",
+      "runtime": "spark_runner_attack_south_east_04.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        22,
+        61,
+        145,
+        126
+      ],
+      "source_alpha_bbox_size": [
+        123,
+        65
+      ],
+      "scale": 2.8,
+      "resized_visible_size": [
+        344,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        20,
+        160,
+        364,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_east_05.png",
+      "runtime": "spark_runner_attack_south_east_05.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        26,
+        57,
+        152,
+        125
+      ],
+      "source_alpha_bbox_size": [
+        126,
+        68
+      ],
+      "scale": 2.676470588235294,
+      "resized_visible_size": [
+        337,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        24,
+        160,
+        361,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_east_06.png",
+      "runtime": "spark_runner_attack_south_east_06.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        31,
+        55,
+        158,
+        126
+      ],
+      "source_alpha_bbox_size": [
+        127,
+        71
+      ],
+      "scale": 2.563380281690141,
+      "resized_visible_size": [
+        326,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        29,
+        160,
+        355,
+        342
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "spark_runner_attack_south_00.png",
+      "runtime": "spark_runner_attack_south_00.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        38,
+        23,
+        118,
+        111
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        165,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        160,
+        275,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_01.png",
+      "runtime": "spark_runner_attack_south_01.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        37,
+        26,
+        119,
+        106
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        187,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        285,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_02.png",
+      "runtime": "spark_runner_attack_south_02.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        37,
+        29,
+        120,
+        111
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        82
+      ],
+      "scale": 2.2195121951219514,
+      "resized_visible_size": [
+        184,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        160,
+        284,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_03.png",
+      "runtime": "spark_runner_attack_south_03.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        42,
+        32,
+        115,
+        123
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        91
+      ],
+      "scale": 2.0,
+      "resized_visible_size": [
+        146,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        119,
+        160,
+        265,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_04.png",
+      "runtime": "spark_runner_attack_south_04.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        42,
+        25,
+        110,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        108
+      ],
+      "scale": 1.6851851851851851,
+      "resized_visible_size": [
+        115,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        160,
+        249,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_05.png",
+      "runtime": "spark_runner_attack_south_05.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        42,
+        22,
+        110,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        111
+      ],
+      "scale": 1.6396396396396395,
+      "resized_visible_size": [
+        111,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        160,
+        247,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_06.png",
+      "runtime": "spark_runner_attack_south_06.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        42,
+        28,
+        110,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        105
+      ],
+      "scale": 1.7333333333333334,
+      "resized_visible_size": [
+        118,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        133,
+        160,
+        251,
+        342
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "spark_runner_attack_south_west_00.png",
+      "runtime": "spark_runner_attack_south_west_00.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        54,
+        39,
+        153,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_west_01.png",
+      "runtime": "spark_runner_attack_south_west_01.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        53,
+        38,
+        156,
+        130
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        204,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        294,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_west_02.png",
+      "runtime": "spark_runner_attack_south_west_02.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        47,
+        37,
+        155,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        108,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        214,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        85,
+        160,
+        299,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_west_03.png",
+      "runtime": "spark_runner_attack_south_west_03.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        39,
+        40,
+        156,
+        126
+      ],
+      "source_alpha_bbox_size": [
+        117,
+        86
+      ],
+      "scale": 2.116279069767442,
+      "resized_visible_size": [
+        248,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        160,
+        316,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_west_04.png",
+      "runtime": "spark_runner_attack_south_west_04.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        26,
+        49,
+        156,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        130,
+        75
+      ],
+      "scale": 2.4266666666666667,
+      "resized_visible_size": [
+        315,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        34,
+        160,
+        349,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_west_05.png",
+      "runtime": "spark_runner_attack_south_west_05.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        25,
+        55,
+        152,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        127,
+        69
+      ],
+      "scale": 2.63768115942029,
+      "resized_visible_size": [
+        335,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        24,
+        160,
+        359,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_south_west_06.png",
+      "runtime": "spark_runner_attack_south_west_06.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        27,
+        48,
+        147,
+        122
+      ],
+      "source_alpha_bbox_size": [
+        120,
+        74
+      ],
+      "scale": 2.4594594594594597,
+      "resized_visible_size": [
+        295,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        44,
+        160,
+        339,
+        342
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "spark_runner_attack_west_00.png",
+      "runtime": "spark_runner_attack_west_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        56,
+        41,
+        160,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        215,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        299,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_west_01.png",
+      "runtime": "spark_runner_attack_west_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        57,
+        42,
+        161,
+        134
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        206,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        89,
+        160,
+        295,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_west_02.png",
+      "runtime": "spark_runner_attack_west_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        54,
+        44,
+        161,
+        134
+      ],
+      "source_alpha_bbox_size": [
+        107,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        216,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        300,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_west_03.png",
+      "runtime": "spark_runner_attack_west_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        47,
+        56,
+        163,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        116,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        264,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        160,
+        324,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_west_04.png",
+      "runtime": "spark_runner_attack_west_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        30,
+        58,
+        156,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        126,
+        78
+      ],
+      "scale": 2.3333333333333335,
+      "resized_visible_size": [
+        294,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        45,
+        160,
+        339,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_west_05.png",
+      "runtime": "spark_runner_attack_west_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        27,
+        56,
+        164,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        137,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        316,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        34,
+        160,
+        350,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_west_06.png",
+      "runtime": "spark_runner_attack_west_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        30,
+        55,
+        154,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        124,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        282,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        51,
+        160,
+        333,
+        342
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "spark_runner_attack_north_west_00.png",
+      "runtime": "spark_runner_attack_north_west_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        57,
+        38,
+        160,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        197,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        291,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_01.png",
+      "runtime": "spark_runner_attack_north_west_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        55,
+        42,
+        164,
+        131
+      ],
+      "source_alpha_bbox_size": [
+        109,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        223,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        160,
+        303,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_02.png",
+      "runtime": "spark_runner_attack_north_west_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        46,
+        48,
+        168,
+        130
+      ],
+      "source_alpha_bbox_size": [
+        122,
+        82
+      ],
+      "scale": 2.2195121951219514,
+      "resized_visible_size": [
+        271,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        56,
+        160,
+        327,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_03.png",
+      "runtime": "spark_runner_attack_north_west_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        29,
+        54,
+        166,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        137,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        308,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        38,
+        160,
+        346,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_04.png",
+      "runtime": "spark_runner_attack_north_west_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        24,
+        58,
+        162,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        138,
+        77
+      ],
+      "scale": 2.3636363636363638,
+      "resized_visible_size": [
+        326,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        29,
+        160,
+        355,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_05.png",
+      "runtime": "spark_runner_attack_north_west_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        43,
+        55,
+        164,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        121,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        272,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        56,
+        160,
+        328,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_west_06.png",
+      "runtime": "spark_runner_attack_north_west_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        49,
+        49,
+        165,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        116,
+        87
+      ],
+      "scale": 2.0919540229885056,
+      "resized_visible_size": [
+        243,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        313,
+        342
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "spark_runner_attack_north_00.png",
+      "runtime": "spark_runner_attack_north_00.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        22,
+        22,
+        123,
+        112
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        204,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        294,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_01.png",
+      "runtime": "spark_runner_attack_north_01.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        21,
+        23,
+        124,
+        116
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        93
+      ],
+      "scale": 1.956989247311828,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_02.png",
+      "runtime": "spark_runner_attack_north_02.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        20,
+        25,
+        124,
+        116
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        91
+      ],
+      "scale": 2.0,
+      "resized_visible_size": [
+        208,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        160,
+        296,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_03.png",
+      "runtime": "spark_runner_attack_north_03.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        21,
+        23,
+        123,
+        119
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        96
+      ],
+      "scale": 1.8958333333333333,
+      "resized_visible_size": [
+        193,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        96,
+        160,
+        289,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_04.png",
+      "runtime": "spark_runner_attack_north_04.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        30,
+        28,
+        115,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        96
+      ],
+      "scale": 1.8958333333333333,
+      "resized_visible_size": [
+        161,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        160,
+        273,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_05.png",
+      "runtime": "spark_runner_attack_north_05.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        30,
+        30,
+        115,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        94
+      ],
+      "scale": 1.9361702127659575,
+      "resized_visible_size": [
+        165,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        160,
+        275,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_06.png",
+      "runtime": "spark_runner_attack_north_06.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        30,
+        28,
+        115,
+        121
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        93
+      ],
+      "scale": 1.956989247311828,
+      "resized_visible_size": [
+        166,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        109,
+        160,
+        275,
+        342
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "spark_runner_attack_north_east_00.png",
+      "runtime": "spark_runner_attack_north_east_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        40,
+        130,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        195,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        289,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_01.png",
+      "runtime": "spark_runner_attack_north_east_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        26,
+        44,
+        136,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        110,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        225,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        160,
+        305,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_02.png",
+      "runtime": "spark_runner_attack_north_east_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        25,
+        48,
+        140,
+        137
+      ],
+      "source_alpha_bbox_size": [
+        115,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        235,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        160,
+        309,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_03.png",
+      "runtime": "spark_runner_attack_north_east_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        27,
+        54,
+        147,
+        138
+      ],
+      "source_alpha_bbox_size": [
+        120,
+        84
+      ],
+      "scale": 2.1666666666666665,
+      "resized_visible_size": [
+        260,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        62,
+        160,
+        322,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_04.png",
+      "runtime": "spark_runner_attack_north_east_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        57,
+        155,
+        137
+      ],
+      "source_alpha_bbox_size": [
+        127,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        289,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        160,
+        337,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_05.png",
+      "runtime": "spark_runner_attack_north_east_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        25,
+        60,
+        162,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        137,
+        75
+      ],
+      "scale": 2.4266666666666667,
+      "resized_visible_size": [
+        332,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        26,
+        160,
+        358,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_attack_north_east_06.png",
+      "runtime": "spark_runner_attack_north_east_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        58,
+        163,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        135,
+        77
+      ],
+      "scale": 2.3636363636363638,
+      "resized_visible_size": [
+        319,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        32,
+        160,
+        351,
+        342
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "spark_runner_hit_east_00.png",
+      "runtime": "spark_runner_hit_east_00.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        27,
+        37,
+        131,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        210,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        160,
+        297,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_east_01.png",
+      "runtime": "spark_runner_hit_east_01.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        27,
+        34,
+        132,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        105,
+        98
+      ],
+      "scale": 1.8571428571428572,
+      "resized_visible_size": [
+        195,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        289,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_east_02.png",
+      "runtime": "spark_runner_hit_east_02.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        31,
+        50,
+        135,
+        138
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        215,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        299,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_east_03.png",
+      "runtime": "spark_runner_hit_east_03.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        34,
+        51,
+        154,
+        138
+      ],
+      "source_alpha_bbox_size": [
+        120,
+        87
+      ],
+      "scale": 2.0919540229885056,
+      "resized_visible_size": [
+        251,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        66,
+        160,
+        317,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_east_04.png",
+      "runtime": "spark_runner_hit_east_04.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        35,
+        53,
+        154,
+        137
+      ],
+      "source_alpha_bbox_size": [
+        119,
+        84
+      ],
+      "scale": 2.1666666666666665,
+      "resized_visible_size": [
+        258,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        63,
+        160,
+        321,
+        342
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "spark_runner_hit_south_east_00.png",
+      "runtime": "spark_runner_hit_south_east_00.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        26,
+        38,
+        126,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_east_01.png",
+      "runtime": "spark_runner_hit_south_east_01.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        25,
+        42,
+        127,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        218,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        83,
+        160,
+        301,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_east_02.png",
+      "runtime": "spark_runner_hit_south_east_02.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        24,
+        47,
+        133,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        109,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        245,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        315,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_east_03.png",
+      "runtime": "spark_runner_hit_south_east_03.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        28,
+        49,
+        153,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        125,
+        84
+      ],
+      "scale": 2.1666666666666665,
+      "resized_visible_size": [
+        271,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        56,
+        160,
+        327,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_east_04.png",
+      "runtime": "spark_runner_hit_south_east_04.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        34,
+        47,
+        153,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        119,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        246,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        69,
+        160,
+        315,
+        342
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "spark_runner_hit_south_00.png",
+      "runtime": "spark_runner_hit_south_00.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        38,
+        23,
+        118,
+        111
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        165,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        160,
+        275,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_01.png",
+      "runtime": "spark_runner_hit_south_01.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        38,
+        29,
+        118,
+        107
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        78
+      ],
+      "scale": 2.3333333333333335,
+      "resized_visible_size": [
+        187,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        285,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_02.png",
+      "runtime": "spark_runner_hit_south_02.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        30,
+        35,
+        126,
+        109
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        74
+      ],
+      "scale": 2.4594594594594597,
+      "resized_visible_size": [
+        236,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        160,
+        310,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_03.png",
+      "runtime": "spark_runner_hit_south_03.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        26,
+        31,
+        131,
+        110
+      ],
+      "source_alpha_bbox_size": [
+        105,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        242,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        71,
+        160,
+        313,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_04.png",
+      "runtime": "spark_runner_hit_south_04.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        28,
+        23,
+        128,
+        113
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "spark_runner_hit_south_west_00.png",
+      "runtime": "spark_runner_hit_south_west_00.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        54,
+        39,
+        153,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_west_01.png",
+      "runtime": "spark_runner_hit_south_west_01.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        50,
+        48,
+        156,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        106,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        238,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        73,
+        160,
+        311,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_west_02.png",
+      "runtime": "spark_runner_hit_south_west_02.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        35,
+        55,
+        157,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        122,
+        69
+      ],
+      "scale": 2.63768115942029,
+      "resized_visible_size": [
+        322,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        31,
+        160,
+        353,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_west_03.png",
+      "runtime": "spark_runner_hit_south_west_03.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        31,
+        52,
+        156,
+        125
+      ],
+      "source_alpha_bbox_size": [
+        125,
+        73
+      ],
+      "scale": 2.493150684931507,
+      "resized_visible_size": [
+        312,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        36,
+        160,
+        348,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_south_west_04.png",
+      "runtime": "spark_runner_hit_south_west_04.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        29,
+        52,
+        153,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        124,
+        72
+      ],
+      "scale": 2.5277777777777777,
+      "resized_visible_size": [
+        313,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        36,
+        160,
+        349,
+        342
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "spark_runner_hit_west_00.png",
+      "runtime": "spark_runner_hit_west_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        56,
+        41,
+        160,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        215,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        299,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_west_01.png",
+      "runtime": "spark_runner_hit_west_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        50,
+        51,
+        164,
+        130
+      ],
+      "source_alpha_bbox_size": [
+        114,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        263,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        160,
+        323,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_west_02.png",
+      "runtime": "spark_runner_hit_west_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        39,
+        57,
+        164,
+        130
+      ],
+      "source_alpha_bbox_size": [
+        125,
+        73
+      ],
+      "scale": 2.493150684931507,
+      "resized_visible_size": [
+        312,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        36,
+        160,
+        348,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_west_03.png",
+      "runtime": "spark_runner_hit_west_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        62,
+        168,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        140,
+        65
+      ],
+      "scale": 2.742857142857143,
+      "resized_visible_size": [
+        384,
+        178
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        164,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_west_04.png",
+      "runtime": "spark_runner_hit_west_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        26,
+        61,
+        163,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        137,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        378,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        3,
+        160,
+        381,
+        342
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "spark_runner_hit_north_west_00.png",
+      "runtime": "spark_runner_hit_north_west_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        57,
+        38,
+        160,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        197,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        291,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_west_01.png",
+      "runtime": "spark_runner_hit_north_west_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        53,
+        41,
+        160,
+        137
+      ],
+      "source_alpha_bbox_size": [
+        107,
+        96
+      ],
+      "scale": 1.8958333333333333,
+      "resized_visible_size": [
+        203,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_west_02.png",
+      "runtime": "spark_runner_hit_north_west_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        35,
+        49,
+        160,
+        144
+      ],
+      "source_alpha_bbox_size": [
+        125,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        239,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        160,
+        311,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_west_03.png",
+      "runtime": "spark_runner_hit_north_west_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        25,
+        51,
+        152,
+        144
+      ],
+      "source_alpha_bbox_size": [
+        127,
+        93
+      ],
+      "scale": 1.956989247311828,
+      "resized_visible_size": [
+        249,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        160,
+        317,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_west_04.png",
+      "runtime": "spark_runner_hit_north_west_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        34,
+        48,
+        163,
+        144
+      ],
+      "source_alpha_bbox_size": [
+        129,
+        96
+      ],
+      "scale": 1.8958333333333333,
+      "resized_visible_size": [
+        245,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        315,
+        342
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "spark_runner_hit_north_00.png",
+      "runtime": "spark_runner_hit_north_00.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        22,
+        22,
+        123,
+        112
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        204,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        294,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_01.png",
+      "runtime": "spark_runner_hit_north_01.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        25,
+        26,
+        120,
+        114
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        196,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        290,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_02.png",
+      "runtime": "spark_runner_hit_north_02.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        22,
+        30,
+        122,
+        119
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        204,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        294,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_03.png",
+      "runtime": "spark_runner_hit_north_03.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        30,
+        21,
+        115,
+        122
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        101
+      ],
+      "scale": 1.801980198019802,
+      "resized_visible_size": [
+        153,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        160,
+        269,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_04.png",
+      "runtime": "spark_runner_hit_north_04.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        27,
+        27,
+        118,
+        122
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        174,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        105,
+        160,
+        279,
+        342
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "spark_runner_hit_north_east_00.png",
+      "runtime": "spark_runner_hit_north_east_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        40,
+        130,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        195,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        289,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_east_01.png",
+      "runtime": "spark_runner_hit_north_east_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        25,
+        43,
+        135,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        110,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        218,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        83,
+        160,
+        301,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_east_02.png",
+      "runtime": "spark_runner_hit_north_east_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        21,
+        44,
+        139,
+        138
+      ],
+      "source_alpha_bbox_size": [
+        118,
+        94
+      ],
+      "scale": 1.9361702127659575,
+      "resized_visible_size": [
+        228,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        78,
+        160,
+        306,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_east_03.png",
+      "runtime": "spark_runner_hit_north_east_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        55,
+        160,
+        143
+      ],
+      "source_alpha_bbox_size": [
+        132,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        273,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        56,
+        160,
+        329,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_hit_north_east_04.png",
+      "runtime": "spark_runner_hit_north_east_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        24,
+        62,
+        170,
+        145
+      ],
+      "source_alpha_bbox_size": [
+        146,
+        83
+      ],
+      "scale": 2.1927710843373496,
+      "resized_visible_size": [
+        320,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        32,
+        160,
+        352,
+        342
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "spark_runner_death_east_00.png",
+      "runtime": "spark_runner_death_east_00.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        27,
+        37,
+        131,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        210,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        160,
+        297,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_east_01.png",
+      "runtime": "spark_runner_death_east_01.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        31,
+        44,
+        140,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        109,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        225,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        160,
+        305,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_east_02.png",
+      "runtime": "spark_runner_death_east_02.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        28,
+        48,
+        142,
+        140
+      ],
+      "source_alpha_bbox_size": [
+        114,
+        92
+      ],
+      "scale": 1.9782608695652173,
+      "resized_visible_size": [
+        226,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        79,
+        160,
+        305,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_east_03.png",
+      "runtime": "spark_runner_death_east_03.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        30,
+        66,
+        152,
+        131
+      ],
+      "source_alpha_bbox_size": [
+        122,
+        65
+      ],
+      "scale": 2.8,
+      "resized_visible_size": [
+        342,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        21,
+        160,
+        363,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_east_04.png",
+      "runtime": "spark_runner_death_east_04.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        30,
+        79,
+        161,
+        145
+      ],
+      "source_alpha_bbox_size": [
+        131,
+        66
+      ],
+      "scale": 2.757575757575758,
+      "resized_visible_size": [
+        361,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        12,
+        160,
+        373,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_east_05.png",
+      "runtime": "spark_runner_death_east_05.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        36,
+        87,
+        162,
+        146
+      ],
+      "source_alpha_bbox_size": [
+        126,
+        59
+      ],
+      "scale": 3.0476190476190474,
+      "resized_visible_size": [
+        384,
+        180
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        162,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_east_06.png",
+      "runtime": "spark_runner_death_east_06.png",
+      "source_size": [
+        184,
+        184
+      ],
+      "source_alpha_bbox": [
+        36,
+        86,
+        162,
+        145
+      ],
+      "source_alpha_bbox_size": [
+        126,
+        59
+      ],
+      "scale": 3.0476190476190474,
+      "resized_visible_size": [
+        384,
+        180
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        162,
+        384,
+        342
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "spark_runner_death_south_east_00.png",
+      "runtime": "spark_runner_death_south_east_00.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        26,
+        38,
+        126,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        100,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_east_01.png",
+      "runtime": "spark_runner_death_south_east_01.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        26,
+        45,
+        132,
+        130
+      ],
+      "source_alpha_bbox_size": [
+        106,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        227,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        78,
+        160,
+        305,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_east_02.png",
+      "runtime": "spark_runner_death_south_east_02.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        30,
+        48,
+        136,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        106,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        238,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        73,
+        160,
+        311,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_east_03.png",
+      "runtime": "spark_runner_death_south_east_03.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        33,
+        57,
+        143,
+        127
+      ],
+      "source_alpha_bbox_size": [
+        110,
+        70
+      ],
+      "scale": 2.6,
+      "resized_visible_size": [
+        286,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        49,
+        160,
+        335,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_east_04.png",
+      "runtime": "spark_runner_death_south_east_04.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        24,
+        72,
+        159,
+        137
+      ],
+      "source_alpha_bbox_size": [
+        135,
+        65
+      ],
+      "scale": 2.8,
+      "resized_visible_size": [
+        378,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        3,
+        160,
+        381,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_east_05.png",
+      "runtime": "spark_runner_death_south_east_05.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        24,
+        75,
+        158,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        134,
+        61
+      ],
+      "scale": 2.8656716417910446,
+      "resized_visible_size": [
+        384,
+        175
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        167,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_east_06.png",
+      "runtime": "spark_runner_death_south_east_06.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        24,
+        73,
+        158,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        134,
+        63
+      ],
+      "scale": 2.8656716417910446,
+      "resized_visible_size": [
+        384,
+        181
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        161,
+        384,
+        342
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "spark_runner_death_south_00.png",
+      "runtime": "spark_runner_death_south_00.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        38,
+        23,
+        118,
+        111
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        165,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        160,
+        275,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_01.png",
+      "runtime": "spark_runner_death_south_01.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        39,
+        27,
+        118,
+        109
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        82
+      ],
+      "scale": 2.2195121951219514,
+      "resized_visible_size": [
+        175,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        160,
+        279,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_02.png",
+      "runtime": "spark_runner_death_south_02.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        40,
+        29,
+        117,
+        108
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        177,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        160,
+        281,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_03.png",
+      "runtime": "spark_runner_death_south_03.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        43,
+        38,
+        114,
+        118
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        162,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        111,
+        160,
+        273,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_04.png",
+      "runtime": "spark_runner_death_south_04.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        37,
+        51,
+        119,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        184,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        160,
+        284,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_05.png",
+      "runtime": "spark_runner_death_south_05.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        37,
+        52,
+        119,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        80
+      ],
+      "scale": 2.275,
+      "resized_visible_size": [
+        187,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        160,
+        285,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_06.png",
+      "runtime": "spark_runner_death_south_06.png",
+      "source_size": [
+        156,
+        156
+      ],
+      "source_alpha_bbox": [
+        37,
+        50,
+        119,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        82
+      ],
+      "scale": 2.2195121951219514,
+      "resized_visible_size": [
+        182,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        101,
+        160,
+        283,
+        342
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "spark_runner_death_south_west_00.png",
+      "runtime": "spark_runner_death_south_west_00.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        54,
+        39,
+        153,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        99,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        202,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        160,
+        293,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_west_01.png",
+      "runtime": "spark_runner_death_south_west_01.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        52,
+        43,
+        154,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        85
+      ],
+      "scale": 2.1411764705882352,
+      "resized_visible_size": [
+        218,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        83,
+        160,
+        301,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_west_02.png",
+      "runtime": "spark_runner_death_south_west_02.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        50,
+        50,
+        156,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        106,
+        79
+      ],
+      "scale": 2.3037974683544302,
+      "resized_visible_size": [
+        244,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        160,
+        314,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_west_03.png",
+      "runtime": "spark_runner_death_south_west_03.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        36,
+        63,
+        151,
+        128
+      ],
+      "source_alpha_bbox_size": [
+        115,
+        65
+      ],
+      "scale": 2.8,
+      "resized_visible_size": [
+        322,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        31,
+        160,
+        353,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_west_04.png",
+      "runtime": "spark_runner_death_south_west_04.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        25,
+        71,
+        157,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        132,
+        61
+      ],
+      "scale": 2.909090909090909,
+      "resized_visible_size": [
+        384,
+        177
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        165,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_west_05.png",
+      "runtime": "spark_runner_death_south_west_05.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        25,
+        75,
+        157,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        132,
+        57
+      ],
+      "scale": 2.909090909090909,
+      "resized_visible_size": [
+        384,
+        166
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        176,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_south_west_06.png",
+      "runtime": "spark_runner_death_south_west_06.png",
+      "source_size": [
+        180,
+        180
+      ],
+      "source_alpha_bbox": [
+        25,
+        75,
+        157,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        132,
+        57
+      ],
+      "scale": 2.909090909090909,
+      "resized_visible_size": [
+        384,
+        166
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        176,
+        384,
+        342
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "spark_runner_death_west_00.png",
+      "runtime": "spark_runner_death_west_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        56,
+        41,
+        160,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        104,
+        88
+      ],
+      "scale": 2.0681818181818183,
+      "resized_visible_size": [
+        215,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        299,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_west_01.png",
+      "runtime": "spark_runner_death_west_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        55,
+        46,
+        165,
+        129
+      ],
+      "source_alpha_bbox_size": [
+        110,
+        83
+      ],
+      "scale": 2.1927710843373496,
+      "resized_visible_size": [
+        241,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        160,
+        313,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_west_02.png",
+      "runtime": "spark_runner_death_west_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        52,
+        54,
+        169,
+        132
+      ],
+      "source_alpha_bbox_size": [
+        117,
+        78
+      ],
+      "scale": 2.3333333333333335,
+      "resized_visible_size": [
+        273,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        56,
+        160,
+        329,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_west_03.png",
+      "runtime": "spark_runner_death_west_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        39,
+        68,
+        165,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        126,
+        65
+      ],
+      "scale": 2.8,
+      "resized_visible_size": [
+        353,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        16,
+        160,
+        369,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_west_04.png",
+      "runtime": "spark_runner_death_west_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        25,
+        77,
+        160,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        135,
+        59
+      ],
+      "scale": 2.8444444444444446,
+      "resized_visible_size": [
+        384,
+        168
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        174,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_west_05.png",
+      "runtime": "spark_runner_death_west_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        26,
+        80,
+        160,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        134,
+        56
+      ],
+      "scale": 2.8656716417910446,
+      "resized_visible_size": [
+        384,
+        160
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        182,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_west_06.png",
+      "runtime": "spark_runner_death_west_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        25,
+        79,
+        168,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        143,
+        57
+      ],
+      "scale": 2.6853146853146854,
+      "resized_visible_size": [
+        384,
+        153
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        189,
+        384,
+        342
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "spark_runner_death_north_west_00.png",
+      "runtime": "spark_runner_death_north_west_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        57,
+        38,
+        160,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        103,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        197,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        291,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_01.png",
+      "runtime": "spark_runner_death_north_west_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        49,
+        44,
+        164,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        115,
+        89
+      ],
+      "scale": 2.044943820224719,
+      "resized_visible_size": [
+        235,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        160,
+        309,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_02.png",
+      "runtime": "spark_runner_death_north_west_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        42,
+        50,
+        162,
+        133
+      ],
+      "source_alpha_bbox_size": [
+        120,
+        83
+      ],
+      "scale": 2.1927710843373496,
+      "resized_visible_size": [
+        263,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        160,
+        323,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_03.png",
+      "runtime": "spark_runner_death_north_west_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        36,
+        63,
+        164,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        128,
+        72
+      ],
+      "scale": 2.5277777777777777,
+      "resized_visible_size": [
+        324,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        30,
+        160,
+        354,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_04.png",
+      "runtime": "spark_runner_death_north_west_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        23,
+        84,
+        160,
+        142
+      ],
+      "source_alpha_bbox_size": [
+        137,
+        58
+      ],
+      "scale": 2.802919708029197,
+      "resized_visible_size": [
+        384,
+        163
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        179,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_05.png",
+      "runtime": "spark_runner_death_north_west_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        23,
+        86,
+        164,
+        142
+      ],
+      "source_alpha_bbox_size": [
+        141,
+        56
+      ],
+      "scale": 2.723404255319149,
+      "resized_visible_size": [
+        384,
+        153
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        189,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_west_06.png",
+      "runtime": "spark_runner_death_north_west_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        23,
+        86,
+        164,
+        142
+      ],
+      "source_alpha_bbox_size": [
+        141,
+        56
+      ],
+      "scale": 2.723404255319149,
+      "resized_visible_size": [
+        384,
+        153
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        189,
+        384,
+        342
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "spark_runner_death_north_00.png",
+      "runtime": "spark_runner_death_north_00.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        22,
+        22,
+        123,
+        112
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        90
+      ],
+      "scale": 2.022222222222222,
+      "resized_visible_size": [
+        204,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        160,
+        294,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_01.png",
+      "runtime": "spark_runner_death_north_01.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        22,
+        26,
+        124,
+        112
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        86
+      ],
+      "scale": 2.116279069767442,
+      "resized_visible_size": [
+        216,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        300,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_02.png",
+      "runtime": "spark_runner_death_north_02.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        26,
+        31,
+        119,
+        112
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        81
+      ],
+      "scale": 2.246913580246914,
+      "resized_visible_size": [
+        209,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        160,
+        297,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_03.png",
+      "runtime": "spark_runner_death_north_03.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        29,
+        36,
+        116,
+        109
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        73
+      ],
+      "scale": 2.493150684931507,
+      "resized_visible_size": [
+        217,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        160,
+        301,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_04.png",
+      "runtime": "spark_runner_death_north_04.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        22,
+        62,
+        123,
+        120
+      ],
+      "source_alpha_bbox_size": [
+        101,
+        58
+      ],
+      "scale": 3.1379310344827585,
+      "resized_visible_size": [
+        317,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        34,
+        160,
+        351,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_05.png",
+      "runtime": "spark_runner_death_north_05.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        19,
+        77,
+        125,
+        124
+      ],
+      "source_alpha_bbox_size": [
+        106,
+        47
+      ],
+      "scale": 3.6226415094339623,
+      "resized_visible_size": [
+        384,
+        170
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        172,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_06.png",
+      "runtime": "spark_runner_death_north_06.png",
+      "source_size": [
+        144,
+        144
+      ],
+      "source_alpha_bbox": [
+        15,
+        77,
+        129,
+        123
+      ],
+      "source_alpha_bbox_size": [
+        114,
+        46
+      ],
+      "scale": 3.3684210526315788,
+      "resized_visible_size": [
+        384,
+        155
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        187,
+        384,
+        342
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "spark_runner_death_north_east_00.png",
+      "runtime": "spark_runner_death_north_east_00.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        28,
+        40,
+        130,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        102,
+        95
+      ],
+      "scale": 1.9157894736842105,
+      "resized_visible_size": [
+        195,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        160,
+        289,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_east_01.png",
+      "runtime": "spark_runner_death_north_east_01.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        30,
+        49,
+        138,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        108,
+        86
+      ],
+      "scale": 2.116279069767442,
+      "resized_visible_size": [
+        229,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        78,
+        160,
+        307,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_east_02.png",
+      "runtime": "spark_runner_death_north_east_02.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        27,
+        51,
+        145,
+        135
+      ],
+      "source_alpha_bbox_size": [
+        118,
+        84
+      ],
+      "scale": 2.1666666666666665,
+      "resized_visible_size": [
+        256,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        64,
+        160,
+        320,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_east_03.png",
+      "runtime": "spark_runner_death_north_east_03.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        27,
+        62,
+        153,
+        136
+      ],
+      "source_alpha_bbox_size": [
+        126,
+        74
+      ],
+      "scale": 2.4594594594594597,
+      "resized_visible_size": [
+        310,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        37,
+        160,
+        347,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_east_04.png",
+      "runtime": "spark_runner_death_north_east_04.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        31,
+        86,
+        163,
+        139
+      ],
+      "source_alpha_bbox_size": [
+        132,
+        53
+      ],
+      "scale": 2.909090909090909,
+      "resized_visible_size": [
+        384,
+        154
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        188,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_east_05.png",
+      "runtime": "spark_runner_death_north_east_05.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        31,
+        88,
+        162,
+        139
+      ],
+      "source_alpha_bbox_size": [
+        131,
+        51
+      ],
+      "scale": 2.931297709923664,
+      "resized_visible_size": [
+        384,
+        149
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        193,
+        384,
+        342
+      ]
+    },
+    {
+      "source": "spark_runner_death_north_east_06.png",
+      "runtime": "spark_runner_death_north_east_06.png",
+      "source_size": [
+        188,
+        188
+      ],
+      "source_alpha_bbox": [
+        31,
+        87,
+        161,
+        139
+      ],
+      "source_alpha_bbox_size": [
+        130,
+        52
+      ],
+      "scale": 2.953846153846154,
+      "resized_visible_size": [
+        384,
+        154
+      ],
+      "runtime_alpha_bbox": [
+        0,
+        188,
+        384,
+        342
+      ]
+    }
+  ]
+}

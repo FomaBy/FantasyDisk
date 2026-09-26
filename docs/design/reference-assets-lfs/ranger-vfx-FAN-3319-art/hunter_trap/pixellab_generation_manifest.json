@@ -1,0 +1,97 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T22:34:15Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "7c8c823e-0d47-40c4-b514-8981731bff53",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered oversized closed-to-open steel hunting trap with serrated silver jaws, bronze hinges, a blue moon-rune plate and emerald binding-vine sparks, ranger hunter trap ultimate VFX prop, dark fantasy D&D pixel art seen from above, isolated clean readable silhouette, transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the serrated trap, bronze hinges and blue moon-rune plate centered with stable proportions; jaws flex open through a clear snap, an emerald binding circle expands under the trap, thorny green roots lash outward, metal teeth flash and a short dust burst kicks up, then the jaws clamp and the snare energy recoils; make every frame a distinct measurable motion beat with changing jaw angle, root reach or glow intensity, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "hunter_trap_f00.png",
+      "bytes": 29924,
+      "url_kind": "template",
+      "encoded_sha256": "88a9b2bed122528108bfa1ae5a3d20fdaa5017910f38c1fe7897b1e84065cb9c",
+      "pixel_sha256": "83cb79b4e5d390c854572b7d9a6448afa2b0b4f07a20e5c3b2c211fbff12029b"
+    },
+    {
+      "file": "hunter_trap_f01.png",
+      "bytes": 46064,
+      "url_kind": "template",
+      "encoded_sha256": "bbee67f7c0e7bac662326b93fde0c13adb775b0850133806e27cde788698576a",
+      "pixel_sha256": "decf5557f6207ef09d707610e32fd8725a0bcbcafbb303a9b8984059188ca17d"
+    },
+    {
+      "file": "hunter_trap_f02.png",
+      "bytes": 43285,
+      "url_kind": "template",
+      "encoded_sha256": "8bab5060122d4135189228c363be28e18df3e17512df96e3be8a0a1556000606",
+      "pixel_sha256": "d86556746edd82413bfd3fd0285988df00643a2d634d89488dc958e8979c1197"
+    },
+    {
+      "file": "hunter_trap_f03.png",
+      "bytes": 40113,
+      "url_kind": "template",
+      "encoded_sha256": "6d48ffffebfab82b5bc3b015b49a2c5e1bfdd3b22e13df5108017f4e75c79558",
+      "pixel_sha256": "242cfd1a23229c697926efbb3de2a9ba01930d05fbb41fed07c93db07846c4e7"
+    },
+    {
+      "file": "hunter_trap_f04.png",
+      "bytes": 36597,
+      "url_kind": "template",
+      "encoded_sha256": "43cc5c4337441c794d4d421d3715a832f17c9d0f0b1196d727d833b2535d19a8",
+      "pixel_sha256": "25136cf33d3c4f8994d033579a950d33630dfc1c2d86e4eda2220ee93bc26d8d"
+    },
+    {
+      "file": "hunter_trap_f05.png",
+      "bytes": 32414,
+      "url_kind": "template",
+      "encoded_sha256": "8953de2cdf0b9d788035543404939b6b37d9d5267f7893c42c196ca0a201aaa5",
+      "pixel_sha256": "0ec9348a52ed74b2c55601f45df33c59bb8f2e4149178878819fb5556927a688"
+    },
+    {
+      "file": "hunter_trap_f06.png",
+      "bytes": 32400,
+      "url_kind": "template",
+      "encoded_sha256": "c3503cdd6ef9d5dc149ad33a7368489f372bb4e3e5fc774cb024c4cfdb3ec218",
+      "pixel_sha256": "ab3a53e45fc28330904e1fc0b78e84856da070d8c7293575f951771888cbc4a4"
+    },
+    {
+      "file": "hunter_trap_f07.png",
+      "bytes": 34224,
+      "url_kind": "template",
+      "encoded_sha256": "f52af37cd4cbdcd2b4793b9008dc13676d910611472ed147c8dc165f5a922082",
+      "pixel_sha256": "088e72ab813899def0eee3134bcaa812d17da466b1d4b01c7ad218c4e310195e"
+    },
+    {
+      "file": "hunter_trap_f08.png",
+      "bytes": 35270,
+      "url_kind": "template",
+      "encoded_sha256": "3887fce0d4486635df1c3f4c9e616b0afda8af6163bfe4a64300c539c3f40165",
+      "pixel_sha256": "6b465dcc1aa4d7cde4211ba1d729b7bdc05abeeef90cdbcd5cb2629ba0b6409b"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "pixel_lab": {
+    "object_id": "7c8c823e-0d47-40c4-b514-8981731bff53",
+    "animation_group_id": "c3d48168-a6c7-4fbc-b07b-ad5b6e226a89",
+    "canonical_tag": "ranger_hunter_trap_ultimate"
+  }
+}

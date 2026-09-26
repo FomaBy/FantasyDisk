@@ -22,7 +22,10 @@ For the compact lifecycle, read `docs/process/ai_agent_memorandum.md`. Load the
 full process reference only when the task needs it:
 
 - delivery/ownership: `docs/process/multica_workflow.md`
-- PM readiness and PM→Qwen handoff: `docs/process/pm_workflow.md`
+- parallel write-set domains: `docs/process/ownership_map.md`
+  (decision record: `docs/process/adr/ADR-parallel-agent-ownership.md`)
+- PM readiness and canonical dispatcher handoff: `docs/process/pm_workflow.md`
+- Canonical dispatcher authority: `docs/process/dispatcher-authority.md`
 - role boundaries: `docs/process/agent_role_boundaries_and_handoffs.md`
 - independent review: `docs/process/qa_protocol.md`
 - CUE/Fibonacci: `docs/process/story_points.md`
@@ -55,6 +58,14 @@ Read detailed design references only when the assigned scope needs them:
 
 ## Project gotchas
 
+- Never commit a `.gd` script without its paired `.gd.uid` sidecar in the same
+  commit — a missing sidecar fails `tools/quality_static_guard.py` and turns
+  `dev` red for everyone (FAN-2623, FAN-3535, FAN-3593). Run
+  `bash tools/install_hooks.sh` once per checkout/worktree to install a
+  pre-push hook that runs the guard locally and blocks the push before it
+  reaches CI. The installer never overwrites an existing pre-push hook it
+  didn't create — it refuses with an error telling you to back it up or
+  remove it first, then re-run the installer.
 - Automated Godot runs go through `tools/godot_gate.py`. A normal small gameplay
   change runs only the directly affected suite; use broad quality profiles only
   for release, saves/migrations, networking, payments/secrets/security, or an

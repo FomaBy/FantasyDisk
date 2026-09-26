@@ -1,0 +1,8 @@
+4,6d3
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+15,17d11
+< Combat primitive ratchet: scene res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn grew from 6 to 7 allowlisted primitives; new combat primitives are banned.
+< Combat primitive ratchet: scene res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn grew from 4 to 5 allowlisted primitives; new combat primitives are banned.
+< Combat primitive ratchet: scene res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn grew from 4 to 5 allowlisted primitives; new combat primitives are banned.

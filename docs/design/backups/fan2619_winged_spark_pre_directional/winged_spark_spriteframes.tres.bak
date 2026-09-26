@@ -1,0 +1,209 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_00.png" id="1_wi1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_01.png" id="2_wi2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_02.png" id="3_wi3"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_03.png" id="4_wi4"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_04.png" id="5_wi5"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_primary_05.png" id="6_wi6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_00.png" id="7_wi7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_01.png" id="8_wi8"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_02.png" id="9_wi9"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_03.png" id="10_wi10"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_04.png" id="11_wi11"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_05.png" id="12_wi12"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_00.png" id="13_wi13"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_01.png" id="14_wi14"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_02.png" id="15_wi15"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_03.png" id="16_wi16"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_04.png" id="17_wi17"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hover_flap_05.png" id="18_wi18"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_00.png" id="19_wi19"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_01.png" id="20_wi20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_02.png" id="21_wi21"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_03.png" id="22_wi22"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_04.png" id="23_wi23"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_05.png" id="24_wi24"]
+
+[resource]
+animations = [{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_wi1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_wi2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_wi3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_wi4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_wi5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_wi6")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("1_wi1")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("2_wi2")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("3_wi3")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("4_wi4")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("5_wi5")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("6_wi6")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 14.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("19_wi19")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_wi20")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("21_wi21")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_wi22")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_wi23")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_wi24")
+}
+],
+"loop": false,
+"name": &"death",
+"speed": 10.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_wi13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_wi14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_wi15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_wi16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_wi17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_wi18")
+}
+],
+"loop": false,
+"name": &"hit",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("13_wi13")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_wi14")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_wi15")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_wi16")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_wi17")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_wi18")
+}
+],
+"loop": true,
+"name": &"hover_flap",
+"speed": 12.0
+}, {
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("7_wi7")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("8_wi8")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("9_wi9")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_wi10")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_wi11")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_wi12")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+}]

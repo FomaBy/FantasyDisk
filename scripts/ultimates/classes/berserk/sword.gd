@@ -6,8 +6,15 @@ extends Node2D
 ## to exactly one blade, and a blade may not touch the same target again before
 ## its own cooldown elapsed. The cast ends with the blades collapsing inward
 ## into an aim-oriented cross slash.
+##
+## Ultimate Direction v2 (FAN-2953): every sweep bites every live enemy on the
+## map, on screen and off — the expanding orbit is presentation, never reach.
+## The cross stays geometric: the sweeps are the guaranteed floor, the collapse
+## is the aimed bonus layered on top of it.
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/berserk/sword/victim_explosion/victim_explosion_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.berserk.sword"
 const EXECUTOR_ID := "weapon_ultimate.executor.berserk.sword"
@@ -19,6 +26,8 @@ var blade_hits_for_tests: Array[int] = []
 var cross_count_for_tests := 0
 
 var _activation = null
+var _impacts: Node2D = null
+var _impacts_started := false
 var _resolved_sweeps := {}
 var _cross_done := false
 var _leased_statuses: Array[Dictionary] = []
@@ -34,7 +43,6 @@ static func parameter_contract() -> Dictionary:
 		"blade_hit_cooldown": {"type": "number", "minimum": 0.0},
 		"orbit_start_radius": {"type": "number", "minimum": 1.0},
 		"orbit_end_radius": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"blade_damage": {"type": "number", "minimum": 0.0},
 		"cross_at": {"type": "number", "minimum": 0.0},
 		"cross_length": {"type": "number", "minimum": 1.0},
@@ -138,9 +146,8 @@ func sweep_blade(index: int) -> void:
 	})
 	var cooldown: float = _activation.param_float("blade_hit_cooldown", 1.65)
 	var ledger_key := "whirlwind_blade_%d" % blade
-	for raw_target in _activation.select_targets(
-		center, radius, _activation.param_int("crowd_cap", 24), "nearest"
-	):
+	var bitten: Array[Node2D] = []
+	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -160,6 +167,8 @@ func sweep_blade(index: int) -> void:
 			"whirlwind:blade:%d:%d" % [blade, index],
 			"scarlet_whirlwind_blade"
 		)
+		bitten.append(target)
+	_play_impacts(bitten)
 
 
 func cross_slash() -> void:
@@ -171,7 +180,6 @@ func cross_slash() -> void:
 	global_position = center
 	var length: float = _activation.param_float("cross_length", 300.0)
 	var half_width: float = _activation.param_float("cross_half_width", 92.0)
-	var crowd_cap: int = _activation.param_int("crowd_cap", 24)
 	_activation.present(EXECUTOR_ID + ".cross", {
 		"position": center, "radius": length, "shape": "cross_slash",
 	})
@@ -187,11 +195,9 @@ func cross_slash() -> void:
 				continue
 			seen[target.get_instance_id()] = true
 			targets.append(target)
-			if targets.size() >= crowd_cap:
-				break
-		if targets.size() >= crowd_cap:
-			break
-	# One cap and event id for the synchronized cross, including arm overlap.
+	# One event id for the synchronized cross, including arm overlap. The cross
+	# is the aimed bonus on top of the sweeps' map-wide floor, so it stays
+	# geometric and unbounded in count.
 	for target in targets:
 		_deal(
 			target,
@@ -199,6 +205,7 @@ func cross_slash() -> void:
 			"whirlwind:cross",
 			"scarlet_whirlwind_cross"
 		)
+	_play_impacts(targets)
 
 
 ## The cross is oriented by the hero's aim, so the collapse reads as the blades
@@ -233,6 +240,24 @@ func _deal(target: Node, amount: float, event_id: String, mechanic: String) -> v
 		ultimate_damage_sink.call(
 			target, amount, {"ultimate_mechanic": mechanic}, event_id, false
 		)
+
+
+## Per-victim read (FAN-3008): every bitten enemy pops its own scarlet
+## explosion on top of its white hit flash, staggered outward from the hero.
+## Sweeps land closer together than one ripple spans, so every beat after the
+## first joins the running ripple instead of replacing it.
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _live() -> bool:

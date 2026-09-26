@@ -1,6 +1,15 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/vfx_weapon_priest_reliquary.png" id="1_shrine"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd" id="2_v2_driver"]
+
+[sub_resource type="Gradient" id="Gradient_backdrop"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_backdrop"]
+gradient = SubResource("Gradient_backdrop")
+width = 2
+height = 2
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
@@ -182,12 +191,32 @@ tracks/13/keys = {
 _data = {"ultimate": SubResource("Animation_sanctum_judgment")}
 
 [node name="PriestReliquarySanctumJudgment" type="Node2D"]
+script = ExtResource("2_v2_driver")
+release_at = 0.9
+impact_at = 1.2
+recovery_at = 3.3
+cancel_at = 3.9
+hitstop_ms = 110.0
+shake_seconds = 0.55
+shake_amplitude = 8.0
 metadata/ultimate_id = "priest/priest_reliquary"
 metadata/silhouette = "opened_reliquary_shrine_with_three_growing_rings"
 metadata/motion_path = "stationary_shrine_rings_grow_then_vertical_pillar"
 metadata/impact_language = "three_sanctify_beats_pillar_then_heal_shield_halo"
 metadata/max_visual_nodes = 12
 metadata/crowd_cap = 22
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
+metadata/presence = {"backdrop": "darken", "camera_shake": true, "fullscreen_footprint": true, "hitstop_ms": 110.0, "sfx_ducking": true, "time_scale_dip": 0.4}
+metadata/identity = {"cast_pose_id": "cast_pose.priest.reliquary_benediction", "class_palette_id": "palette.priest.ivory_gold", "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_reliquary.png"}
+
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = -100
+texture = SubResource("GradientTexture2D_backdrop")
+centered = false
+modulate = Color(0.10, 0.055, 0.015, 1)
+self_modulate = Color(1, 1, 1, 0.62)
+metadata/fullscreen_layer = true
 
 [node name="Shrine" type="Sprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
@@ -279,3 +308,4 @@ modulate = Color(1, 1, 1, 0)
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_sanctum_judgment")}
 autoplay = "ultimate"
+speed_scale = 2.2051282

@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "frame_contract": {
+    "canvas_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_order": "f00 stored PixelLab reference + f01..f08 generated frames",
+    "alpha": "RGBA, binary alpha, fully transparent canvas edges"
+  },
+  "packs": [
+    {
+      "weapon_id": "bone_saw",
+      "effect_id": "cast_flash",
+      "effect_role": "cast",
+      "generated_at": "2026-08-28T03:41:45Z",
+      "pixellab": {
+        "object_id": "1b7d235a-e0d9-41fe-a9f8-b420c9afc135",
+        "animation_group_id": "0f6a24bd-d0e9-49ad-a30e-bbe6f7d9de8f",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash",
+      "runtime_dir": "assets/sprites/effects/doctor/bone_saw/cast_flash",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": false,
+      "fps": 14,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_cast_flash.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "bone_saw",
+      "effect_id": "orbit_slash",
+      "effect_role": "signature",
+      "generated_at": "2026-08-28T03:45:00Z",
+      "pixellab": {
+        "object_id": "48fe51bd-6724-4c65-a5d6-dd6fda15c283",
+        "animation_group_id": "f2c9c015-1f54-4cb9-9778-71c274c154b3",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_orbit_slash",
+      "runtime_dir": "assets/sprites/effects/doctor/bone_saw/orbit_slash",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/bone_saw/orbit_slash/orbit_slash_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": true,
+      "fps": 12,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_orbit_slash.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "bone_saw",
+      "effect_id": "victim_impact",
+      "effect_role": "victim_impact",
+      "generated_at": "2026-08-28T03:52:18Z",
+      "pixellab": {
+        "object_id": "9d002c3c-aa60-4c3b-bedc-0824bd47912b",
+        "animation_group_id": "61f293ad-7bc0-4018-af6c-9a82fc3c8be7",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact",
+      "runtime_dir": "assets/sprites/effects/doctor/bone_saw/victim_impact",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": false,
+      "fps": 16,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_victim_impact.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "plague_syringe",
+      "effect_id": "cast_flash",
+      "effect_role": "cast",
+      "generated_at": "2026-08-28T03:27:52Z",
+      "pixellab": {
+        "object_id": "493d5f63-e522-44f6-8ae0-e9883bf888ad",
+        "animation_group_id": "e5978f6d-7f6e-4027-a3c4-959ec6ae9352",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash",
+      "runtime_dir": "assets/sprites/effects/doctor/plague_syringe/cast_flash",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": false,
+      "fps": 14,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_cast_flash.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "plague_syringe",
+      "effect_id": "infection_wave",
+      "effect_role": "signature",
+      "generated_at": "2026-08-28T03:32:43Z",
+      "pixellab": {
+        "object_id": "323d851c-6a27-4a0c-9d5c-82eb04952975",
+        "animation_group_id": "551cc5e0-1ee1-4bc6-bdde-66c05f231c0a",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave",
+      "runtime_dir": "assets/sprites/effects/doctor/plague_syringe/infection_wave",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": true,
+      "fps": 12,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_infection_wave.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "plague_syringe",
+      "effect_id": "victim_impact",
+      "effect_role": "victim_impact",
+      "generated_at": "2026-08-28T03:36:57Z",
+      "pixellab": {
+        "object_id": "eefb1197-7e4d-470e-a43d-f656493b4969",
+        "animation_group_id": "8f4d178a-04d8-4302-8103-62acbd103c0c",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_victim_impact",
+      "runtime_dir": "assets/sprites/effects/doctor/plague_syringe/victim_impact",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/plague_syringe/victim_impact/victim_impact_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": false,
+      "fps": 16,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_victim_impact.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "restore_potion",
+      "effect_id": "cast_flash",
+      "effect_role": "cast",
+      "generated_at": "2026-08-28T03:14:35Z",
+      "pixellab": {
+        "object_id": "612282bd-d2f9-4efa-a60c-e6e0ed2e7ea8",
+        "animation_group_id": "7382e3f5-ed00-490d-b7c2-47d18adf2f24",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash",
+      "runtime_dir": "assets/sprites/effects/doctor/restore_potion/cast_flash",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": false,
+      "fps": 14,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_cast_flash.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "restore_potion",
+      "effect_id": "poison_pool",
+      "effect_role": "signature",
+      "generated_at": "2026-08-28T03:18:15Z",
+      "pixellab": {
+        "object_id": "ad97b62e-fa4e-4938-8199-75fe4b4da0ba",
+        "animation_group_id": "ae4ccc64-24ff-4317-a74e-9ed7e65483bd",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool",
+      "runtime_dir": "assets/sprites/effects/doctor/restore_potion/poison_pool",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": true,
+      "fps": 12,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_poison_pool.json",
+      "frame_verification": "PASS"
+    },
+    {
+      "weapon_id": "restore_potion",
+      "effect_id": "victim_impact",
+      "effect_role": "victim_impact",
+      "generated_at": "2026-08-28T03:22:06Z",
+      "pixellab": {
+        "object_id": "3f7d7db4-c668-483e-ad83-392cb5936a8c",
+        "animation_group_id": "837ebe05-3342-4e55-af62-9dd5f1a6ed5f",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "animate_mode": "v3"
+      },
+      "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact",
+      "runtime_dir": "assets/sprites/effects/doctor/restore_potion/victim_impact",
+      "runtime_spriteframes": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_spriteframes.tres",
+      "frame_count": 9,
+      "requested_generated_frame_count": 8,
+      "frame_size_px": [
+        256,
+        256
+      ],
+      "loop": false,
+      "fps": 16,
+      "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_victim_impact.json",
+      "frame_verification": "PASS"
+    }
+  ],
+  "integration_boundary": {
+    "included": [
+      "Doctor-local source PNGs under docs/design/reference-assets-lfs/doctor-vfx-FAN-3613",
+      "Doctor-local runtime PNGs, .png.import sidecars, and SpriteFrames resources under assets/sprites/effects/doctor"
+    ],
+    "unchanged": [
+      "Doctor ultimate scenes",
+      "gameplay scripts",
+      "weapon registries",
+      "global art assets",
+      "third-party assets"
+    ]
+  }
+}

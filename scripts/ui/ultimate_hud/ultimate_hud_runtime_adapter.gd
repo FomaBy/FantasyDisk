@@ -141,7 +141,9 @@ func _cache_selection(class_id: String, weapon_id: String) -> void:
 	_cached_profile = registry.catalog_profile_for(class_id, weapon_id)
 	_cached_resolution_source = registry.resolution_source(class_id, weapon_id, false)
 	_cached_weapon_config = ProgressionData.weapon(class_id, weapon_id)
-	_cached_ultimate_text = ProgressionData.ultimate_config(class_id)
+	# FAN-2515: текст ульты — канонический weapon-ultimate выбранного оружия,
+	# а не legacy-ульта класса.
+	_cached_ultimate_text = registry.ultimate_text(class_id, weapon_id)
 	_has_observation = false
 
 

@@ -180,8 +180,8 @@ func _test_wall_of_sound() -> void:
 	var points := state.get("points", PackedVector2Array()) as PackedVector2Array
 	_check(points.size() == 4 and bool(state.get("linked", false)),
 		"Wall of Sound must form four cardinal amps and one linked square")
-	_check(inner.health < inner.max_health and is_equal_approx(outside.health, outside.max_health),
-		"feedback may damage only targets inside the linked square")
+	_check(inner.health < inner.max_health and outside.health < outside.max_health,
+		"feedback must reach every live enemy on the map, not only those inside the linked square")
 	_advance(activation, 1.40)
 	_check(int(state.get("pulses", 0)) == 4, "Wall of Sound must emit exactly four feedback pulses")
 	_check(boss.max_health - boss.health <= boss.max_health * 0.09 + 0.001,

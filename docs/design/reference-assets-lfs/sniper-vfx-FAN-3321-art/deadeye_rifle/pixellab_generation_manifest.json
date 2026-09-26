@@ -1,0 +1,100 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T08:16:03Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "415abc19-95e7-40a8-97f5-e4c0167beb05",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Sniper ultimate deadeye rifle: an obsidian long rifle viewed from above with a brass scope, icy crimson rune etched into the stock and a focused ruby rail-shot muzzle crystal, dark fantasy D&D pixel art, isolated VFX prop on a transparent background, crisp readable weapon-specific silhouette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single sniper deadeye rifle centered with stable outline, proportions, palette and position in every frame; animate measurable ultimate motion: the rifle scope iris tightens for a held-breath steady aim, crimson runes crawl along the barrel, a razor-thin ruby rail tracer charges from stock to muzzle, then a brilliant straight rail shot fires with recoil and a focused impact star before the tracer dissipates; preserve the deadeye rifle identity and all details, every frame distinct and readable, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    },
+    "animation_group_id": "838e229a-b1ed-460e-8a02-4a7a89754229",
+    "canonical_asset_key": "sniper/deadeye_rifle"
+  },
+  "frames": [
+    {
+      "file": "deadeye_rifle_f00.png",
+      "bytes": 6654,
+      "url_kind": "template",
+      "encoded_sha256": "b751b186938008f37e2a5033c06af9641345fae678958945ffa74b50a3519cb7",
+      "pixel_sha256": "c9244c2095b4cf1b92ef8fd3c4144fdd7e2a876d5f7c119766f90713134ecaa2"
+    },
+    {
+      "file": "deadeye_rifle_f01.png",
+      "bytes": 9957,
+      "url_kind": "template",
+      "encoded_sha256": "788ebb53b7f0ced217653971cecc7c6c58dbc3bb1389b40e2405345b3d090cd2",
+      "pixel_sha256": "46a38f924c4653e5dc82ee6b801a7e5614d3fb2688ed297b67cfdd307a6305e2"
+    },
+    {
+      "file": "deadeye_rifle_f02.png",
+      "bytes": 8384,
+      "url_kind": "template",
+      "encoded_sha256": "8236a1d00d36f410de4eb8173f29ffc33a0bf203765e6dd30854ba117a14a4b6",
+      "pixel_sha256": "ab2a16a826e7d49a5874ed4e5640b3ab7c6b1582280bec4a849af17f05088019"
+    },
+    {
+      "file": "deadeye_rifle_f03.png",
+      "bytes": 9419,
+      "url_kind": "template",
+      "encoded_sha256": "5d8929fbf69222c8b6ff35bb30615702f785dd037a58649a8b2e2192f6eb8362",
+      "pixel_sha256": "48bd92f99ea0275566fb68ddae3c5d1dca907a3d8a875c3120136131aa85f8b9"
+    },
+    {
+      "file": "deadeye_rifle_f04.png",
+      "bytes": 8720,
+      "url_kind": "template",
+      "encoded_sha256": "8e52b3f6b09e4dd3e8dc2257197b7a65113b5dee74bd033e197354717ae0885f",
+      "pixel_sha256": "01a68deb913eac520d0fbc9bcd5b1c65b70f2e67412d921a943977e53d52f08e"
+    },
+    {
+      "file": "deadeye_rifle_f05.png",
+      "bytes": 9159,
+      "url_kind": "template",
+      "encoded_sha256": "d79019b94cae447987ce94c6bc5f791d5ed73d68a2a5ad8dd8810e439eb4fe7b",
+      "pixel_sha256": "7cdfba8201764290f0edd1db7905b0d58f0fdb18ac447932e1e97edadd3035e0"
+    },
+    {
+      "file": "deadeye_rifle_f06.png",
+      "bytes": 8524,
+      "url_kind": "template",
+      "encoded_sha256": "c37c9b63ef6353a38d4f205eda956210c5d17809c935447589cffbbcb3229423",
+      "pixel_sha256": "a215b76a5310f5dfbc3b7be8fd35652f361b39a13bc6059e107376082c28d16b"
+    },
+    {
+      "file": "deadeye_rifle_f07.png",
+      "bytes": 9136,
+      "url_kind": "template",
+      "encoded_sha256": "47a4a351d1258f52b115b3a251d5ef5384d133593f9a5b1b7205247fa093f999",
+      "pixel_sha256": "59ba3a5395876c21f2eb65f0b0c25f9dfe52480e84a58abddb071a272257c800"
+    },
+    {
+      "file": "deadeye_rifle_f08.png",
+      "bytes": 8688,
+      "url_kind": "template",
+      "encoded_sha256": "6fc9c470723390a0ade16938ea44ed40f81d3d8f61f574d2246d59ae5a494f04",
+      "pixel_sha256": "a396dc9050929ba0cc40940b7e8416a67a9cf4376fb0fed8bcabf2aef9b71475"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle",
+  "postprocess": {
+    "method": "raw PixelLab frame preserved under raw/; accepted frame is 224x224 nearest-neighbor inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true
+  }
+}

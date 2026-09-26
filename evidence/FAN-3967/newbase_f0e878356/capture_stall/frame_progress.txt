@@ -1,0 +1,3 @@
+attempt2 (merged d7d547eac, warm cache): 117 frames; last 2k: guitarist_electric_guitar_reduced_motion_2k_release.png
+diag (old candidate a38a3bbcd, same host): 114 frames; last 2k: guitarist_electric_guitar_normal_2k_release.png
+attempt3 (merged d7d547eac, fresh .godot cache): 114 frames; last 2k: guitarist_electric_guitar_normal_2k_release.png

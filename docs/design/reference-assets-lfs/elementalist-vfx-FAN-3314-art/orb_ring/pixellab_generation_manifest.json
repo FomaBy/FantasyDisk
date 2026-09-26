@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T12:43:25Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "d255550a-e3c8-4833-870d-6d1a70ca79ee",
+    "pixel_lab_animation_group_id": "68777900-d04c-4d2a-9279-bf7dee0dcb88",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "four distinct elemental orbs linked by a luminous square arcane ring, fire ember, ice crystal, leaf gale and violet lightning, centered isolated VFX prop, dark fantasy D&D pixel art seen from above, crisp readable silhouettes, bright inner cores, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the four elemental orbs and square ring centered with stable proportions; the ring traces clockwise, each elemental orb pulses and moves around its corner in sequence, the four energies converge into a clean white-gold impact flare for a per-victim hit, then the ring contracts and settles; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "orb_ring_f00.png",
+      "bytes": 29397,
+      "url_kind": "template",
+      "encoded_sha256": "a0ea3f24de826ef2e6b2c4cf908d7978e355622d8136db37b0d21dee1af3dbdf",
+      "pixel_sha256": "9a6072595e8e14ef70ace00d30a436e0fcc81b0e1b30d8ad854d8b68a6e47fdc"
+    },
+    {
+      "file": "orb_ring_f01.png",
+      "bytes": 35258,
+      "url_kind": "template",
+      "encoded_sha256": "7d8e91f9360211484d3a6cecf042bfc60827570018f05bd2dc2f716ade111292",
+      "pixel_sha256": "51596f5a487da9a7b3392bf5275f8454b242a8307bb93ab6f021375580c07c0c"
+    },
+    {
+      "file": "orb_ring_f02.png",
+      "bytes": 35791,
+      "url_kind": "template",
+      "encoded_sha256": "03d2ed26ae16e7ec3c31932c1be21e46c020db3a1ddc96701d68f81716c62985",
+      "pixel_sha256": "83ae829281f3a5b268ef2d4da9b225801a3784fad6db3c333d6c68a34724de82"
+    },
+    {
+      "file": "orb_ring_f03.png",
+      "bytes": 33136,
+      "url_kind": "template",
+      "encoded_sha256": "3f1428f9306b4e043776530e2ccc3a8a32772080a0dd0c58893a1624e4f28317",
+      "pixel_sha256": "4c7af60491b766f7e69cfd4d1a22da74feae8ae4b4b3354b6884e24bf7c21187"
+    },
+    {
+      "file": "orb_ring_f04.png",
+      "bytes": 36960,
+      "url_kind": "template",
+      "encoded_sha256": "0d780e34779b21cb3cdbc60cc9c7cd35679017372dc6f2c691ff4e0f3d84c6ad",
+      "pixel_sha256": "bad81fc7900c0728db248d38df94848957e7ebee51bc536faecf61e18b9902be"
+    },
+    {
+      "file": "orb_ring_f05.png",
+      "bytes": 36192,
+      "url_kind": "template",
+      "encoded_sha256": "49b24788e5480a760c7ba5d4b67bb75562e3962154a1ad109c161f5b260273ed",
+      "pixel_sha256": "226a056f3508c6f8db90316a04fea71529e5d682d7bbd369025ab4c4a5bd5265"
+    },
+    {
+      "file": "orb_ring_f06.png",
+      "bytes": 31173,
+      "url_kind": "template",
+      "encoded_sha256": "1cc91ed803b28b00aebcc0ef9aae19f6d1082ed4f8dba2ac44e3c411af7769ab",
+      "pixel_sha256": "c5acf679fbecf37e9453f6ea716a88b4d0e4caf4f112d805dbe8e08c8c484da0"
+    },
+    {
+      "file": "orb_ring_f07.png",
+      "bytes": 28531,
+      "url_kind": "template",
+      "encoded_sha256": "67545993f1c32f8d10f61a74c5fb1e109cb1a0ce4c8e78b12b4e431e792e2a09",
+      "pixel_sha256": "e140781a5c98aec2a240a32d7a026455a1a7b5fb7c1dffafaf2533b9f1e1aff9"
+    },
+    {
+      "file": "orb_ring_f08.png",
+      "bytes": 31311,
+      "url_kind": "template",
+      "encoded_sha256": "a46724f6e4e0f58fc0993670481f8e3f7239c5e7d96c1341bbf92e55f32d269f",
+      "pixel_sha256": "a98cff478f85b819f4ee4ba658c78bddd524f958b11cc406c03024c99e728601"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

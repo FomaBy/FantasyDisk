@@ -1,112 +1,216 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=10 format=3]
 
-[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/scrum895_berserk/axe_cleave_spriteframes.tres" id="1_axe"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/axe/cast_flash/cast_flash_spriteframes.tres" id="1_cast_flash"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/berserk/axe/execution_slash/execution_slash_spriteframes.tres" id="2_execution_slash"]
+[ext_resource type="Script" path="res://scenes/vfx/ultimates/berserk/berserk_ultimate_v2_driver.gd" id="3_v2_driver"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
 blend_mode = 1
 light_mode = 1
 
+[sub_resource type="Gradient" id="Gradient_veil"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(1, 0.9, 0.9, 0.9, 1, 0.82, 0.82, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_veil"]
+gradient = SubResource("Gradient_veil")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
 [sub_resource type="Animation" id="Animation_execution_loop"]
 resource_name = "ultimate"
-length = 6.45
+length = 3.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AxeGhost:position")
+tracks/0/path = NodePath("BackdropVeil:modulate:a")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.45, 0.75, 3.05, 3.35, 5.85, 6.45),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.6, 0.9, 1.6, 2.6, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(-22, -26), Vector2(0, -56), Vector2(62, -34), Vector2(410, -82), Vector2(430, 0), Vector2(24, 18), Vector2(0, 0)]
+"values": [0.0, 0.28, 0.45, 0.22, 0.18, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("AxeGhost:rotation")
+tracks/1/path = NodePath("CastFlash:frame")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.45, 0.75, 3.05, 3.35, 5.85, 6.45),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.4, -0.8, 1.8, 14.2, 16.0, 31.0, 31.4]
+"times": PackedFloat32Array(0.02, 0.1, 0.18, 0.26, 0.34, 0.42, 0.5, 0.58, 0.66),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("AxeGhost:scale")
+tracks/2/path = NodePath("CastFlash:modulate:a")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.45, 0.75, 3.05, 3.35, 5.85, 6.45),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.4, 0.65, 0.8, 0.95),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0.42, 0.42), Vector2(0.55, 0.55), Vector2(0.72, 0.72), Vector2(1.1, 1.1), Vector2(1.14, 1.14), Vector2(0.64, 0.64), Vector2(0.3, 0.3)]
+"values": [0.0, 0.9, 1.0, 0.3, 0.0]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("ExecutionMark:modulate:a")
+tracks/3/path = NodePath("AxeGhost:modulate:a")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.75, 3.1, 3.35, 5.85, 6.45),
+"times": PackedFloat32Array(0, 0.5, 0.7, 1.6, 2.5, 3.2),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.0, 0.0, 0.9, 0.45, 1.0, 0.0]
+"values": [0.0, 0.0, 0.96, 0.92, 0.7, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("AxeGhost:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.6, 1.85, 2.6, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-22, -18), Vector2(-22, -18), Vector2(330, -60), Vector2(330, -60), Vector2(10, 10), Vector2(0, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("AxeGhost:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.6, 2.6, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.4, 0.4, 12.0, 25.0, 31.4]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("AxeGhost:scale")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.6, 2.6, 3.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(1.0, 1.0), Vector2(0.6, 0.6), Vector2(0.35, 0.35)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("AxeGhost:frame")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.6, 0.85, 1.1, 1.35, 1.6, 1.9, 2.2, 2.4, 2.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("TurnBurst:frame")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(1.65, 1.73, 1.81, 1.89, 1.97, 2.05, 2.13, 2.21, 2.29),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("TurnBurst:modulate:a")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1.65, 1.78, 2.1, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.95, 0.4, 0.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("TurnBurst:scale")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 1.65, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.8, 0.8), Vector2(0.8, 0.8), Vector2(1.2, 1.2)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_execution_loop"]
 _data = {"ultimate": SubResource("Animation_execution_loop")}
 
 [node name="BerserkAxeExecutionLoop" type="Node2D"]
+script = ExtResource("3_v2_driver")
+release_at = 0.65
+impact_at = 0.9
+recovery_at = 2.7
+cancel_at = 3.4
+hitstop_ms = 110.0
+shake_seconds = 0.5
+shake_amplitude = 10.0
 metadata/ultimate_id = "berserk/axe"
-metadata/silhouette = "single_giant_spinning_execution_axe"
-metadata/motion_path = "aimed_outward_arc_to_arena_edge_then_heavy_return"
-metadata/impact_language = "rune_mark_then_return_detonation"
+metadata/silhouette = "one_giant_spinning_execution_axe_whole_arc_is_one_slash"
+metadata/motion_path = "cast_flash_then_one_aimed_execution_arc_to_the_arena_edge_a_turn_burst_and_a_heavy_return_catch"
+metadata/impact_language = "per_victim_cleaving_burst_on_every_beaten_enemy"
 metadata/max_visual_nodes = 5
 metadata/crowd_cap = 18
+metadata/max_unique_materials = 1
+metadata/max_fullscreen_materials = 1
 
-[node name="AimArc" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(0, 0, 64, -40, 144, -62, 240, -78, 332, -72, 430, 0)
-width = 7.0
-default_color = Color(0.86, 0.16, 0.06, 0.58)
-antialiased = true
+[node name="BackdropVeil" type="Sprite2D" parent="."]
+z_index = 30
+texture = SubResource("GradientTexture2D_veil")
+centered = false
+scale = Vector2(18, 10.125)
+modulate = Color(0.12, 0.03, 0.02, 0)
+metadata/fullscreen_layer = true
 
-[node name="RuneChain" type="Line2D" parent="."]
+[node name="CastFlash" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(0, 0, 44, -12, 94, -26, 154, -36, 222, -42, 298, -36, 370, -18, 430, 0)
-width = 3.0
-default_color = Color(1, 0.5, 0.12, 0.86)
-antialiased = true
+z_index = 40
+sprite_frames = ExtResource("1_cast_flash")
+animation = &"cast_flash"
+frame = 0
+modulate = Color(1, 1, 1, 0)
 
 [node name="AxeGhost" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-sprite_frames = ExtResource("1_axe")
-animation = &"cleave"
-frame = 3
-position = Vector2(-22, -26)
+z_index = 40
+sprite_frames = ExtResource("2_execution_slash")
+animation = &"execution_slash"
+frame = 0
+position = Vector2(-22, -18)
 rotation = 0.4
-scale = Vector2(0.42, 0.42)
-modulate = Color(1, 0.67, 0.32, 0.96)
+scale = Vector2(0.5, 0.5)
+modulate = Color(1, 0.67, 0.32, 0)
 
-[node name="ExecutionMark" type="Line2D" parent="."]
+[node name="TurnBurst" type="AnimatedSprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(404, -44, 430, -76, 456, -44, 430, -12, 404, -44, 456, -44)
-width = 8.0
-default_color = Color(1, 0.1, 0.04, 0.94)
-antialiased = true
-modulate = Color(1, 1, 1, 0)
-
-[node name="ReturnTrail" type="Line2D" parent="."]
-material = SubResource("CanvasItemMaterial_add")
-points = PackedVector2Array(430, 0, 342, 22, 250, 28, 162, 26, 74, 18, 0, 0)
-width = 11.0
-default_color = Color(0.55, 0.03, 0.02, 0.42)
-antialiased = true
+z_index = 45
+sprite_frames = ExtResource("1_cast_flash")
+animation = &"cast_flash"
+frame = 0
+position = Vector2(330, -60)
+scale = Vector2(0.8, 0.8)
+modulate = Color(1, 0.55, 0.3, 0)
 
 [node name="Timeline" type="AnimationPlayer" parent="."]
 libraries = {"": SubResource("AnimationLibrary_execution_loop")}

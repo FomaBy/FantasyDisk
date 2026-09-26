@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3865",
+  "class_id": "thief",
+  "weapon_id": "thief_shadow_cloak",
+  "object_id": "a82a1b09-05be-4fb8-a1fe-03295523279b",
+  "animation_group_id": "9174ed5a-7fab-4644-a544-0e304a5015f0",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_contact_sheet.png",
+    "silhouette": "clear, centered and weapon-specific in every frame",
+    "movement": "cloak unfurls in a tight spiral, violet lining sweeps forward like a phantom lunge, a dark-violet backstab slash flares, then the cloak snaps closed",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "no unintentional stray pixels observed in contact-sheet inspection; clasp glints, shadow wisps and slash fragments are intentional release accents",
+    "opaque_background": "none; all four corners are transparent and edge rows are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true,
+    "runtime_import_sidecars_present": true,
+    "runtime_import_outputs_present": true
+  },
+  "frames": [
+    {
+      "index": 0,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f00.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f00.png",
+      "alpha_bbox_gt_8": [
+        68,
+        64,
+        188,
+        205
+      ],
+      "minimum_gutter_px": 51,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9212,
+      "raw_pixel_sha256": "efc7f174a08ee0eb6d614396b5ddfec02c391aa419a0ce893b5ad15f6b4027d0",
+      "source_pixel_sha256": "ca9deaa5ab8dc00d481edc2f67630007640693c3f20e9324bff3d534fd375359",
+      "runtime_pixel_sha256": "ca9deaa5ab8dc00d481edc2f67630007640693c3f20e9324bff3d534fd375359"
+    },
+    {
+      "index": 1,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f01.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f01.png",
+      "alpha_bbox_gt_8": [
+        74,
+        62,
+        188,
+        201
+      ],
+      "minimum_gutter_px": 55,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9275,
+      "raw_pixel_sha256": "6bd2aca182d7a5f22db51fac81c198a21ce97fad149973755a95cfa234d0fb15",
+      "source_pixel_sha256": "cc4f6be5adeb272cbebfc34b979b536d2cfdc16851ca549b4c856dcc9bed6353",
+      "runtime_pixel_sha256": "cc4f6be5adeb272cbebfc34b979b536d2cfdc16851ca549b4c856dcc9bed6353"
+    },
+    {
+      "index": 2,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f02.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f02.png",
+      "alpha_bbox_gt_8": [
+        70,
+        64,
+        187,
+        198
+      ],
+      "minimum_gutter_px": 58,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9366,
+      "raw_pixel_sha256": "b054ce30b72db6ce0d0366eafeb079c83a901c42e48c6075b6c5bbeafc84d67f",
+      "source_pixel_sha256": "c20c3cffb98924a42149f995445f26ac8dd9ad996a129a16f41c175ecc648ce5",
+      "runtime_pixel_sha256": "c20c3cffb98924a42149f995445f26ac8dd9ad996a129a16f41c175ecc648ce5"
+    },
+    {
+      "index": 3,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f03.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f03.png",
+      "alpha_bbox_gt_8": [
+        67,
+        58,
+        190,
+        201
+      ],
+      "minimum_gutter_px": 55,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9314,
+      "raw_pixel_sha256": "6426031839cbbaaf7d587cf6f00fa13c110528c2fa92139169533d25b3618f2c",
+      "source_pixel_sha256": "0dbe259ee6c0c6000fa01732d5cb218c3ab1528a1e1ad70e165d57e3a11d5b32",
+      "runtime_pixel_sha256": "0dbe259ee6c0c6000fa01732d5cb218c3ab1528a1e1ad70e165d57e3a11d5b32"
+    },
+    {
+      "index": 4,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f04.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f04.png",
+      "alpha_bbox_gt_8": [
+        60,
+        57,
+        198,
+        201
+      ],
+      "minimum_gutter_px": 55,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9972,
+      "raw_pixel_sha256": "afd22ba9dfce3acedfc85a9c4eb0b89566fc8da4c7964a4735eaf104716ae1e0",
+      "source_pixel_sha256": "4187e02df76e5e54698f7f43e03270ce2eabf45de0e6343650d1021a607916fe",
+      "runtime_pixel_sha256": "4187e02df76e5e54698f7f43e03270ce2eabf45de0e6343650d1021a607916fe"
+    },
+    {
+      "index": 5,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f05.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f05.png",
+      "alpha_bbox_gt_8": [
+        56,
+        61,
+        202,
+        199
+      ],
+      "minimum_gutter_px": 54,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9628,
+      "raw_pixel_sha256": "ed1352e7380147216435cc41e6bb6f157314fa0f42d0b76b59e1a539381c9d14",
+      "source_pixel_sha256": "1212776184393743566ae8be265578989b7775b9153eb049bf5721064687471a",
+      "runtime_pixel_sha256": "1212776184393743566ae8be265578989b7775b9153eb049bf5721064687471a"
+    },
+    {
+      "index": 6,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f06.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f06.png",
+      "alpha_bbox_gt_8": [
+        58,
+        69,
+        199,
+        181
+      ],
+      "minimum_gutter_px": 57,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8749,
+      "raw_pixel_sha256": "d152da341ba677095b359b5092616330e57f6d7cf94fca418252734e11a73224",
+      "source_pixel_sha256": "8b79b18ec6e542785a00475edc55c4e0397d7c7795f0b289799a879d79e15002",
+      "runtime_pixel_sha256": "8b79b18ec6e542785a00475edc55c4e0397d7c7795f0b289799a879d79e15002"
+    },
+    {
+      "index": 7,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f07.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f07.png",
+      "alpha_bbox_gt_8": [
+        64,
+        68,
+        193,
+        177
+      ],
+      "minimum_gutter_px": 63,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8129,
+      "raw_pixel_sha256": "a0b8bf0bf3eb40067d08ed798327238931bca73d1964d4e6d82bfb7506e58d0a",
+      "source_pixel_sha256": "9c5e3fbc833c324bc08d4c47e16db8988092245b56628ae684fc083d9cd5bae0",
+      "runtime_pixel_sha256": "9c5e3fbc833c324bc08d4c47e16db8988092245b56628ae684fc083d9cd5bae0"
+    },
+    {
+      "index": 8,
+      "file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/shadow_cloak_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/shadow_cloak/raw/shadow_cloak_f08.png",
+      "runtime_file": "assets/sprites/effects/thief/shadow_cloak/shadow_cloak_f08.png",
+      "alpha_bbox_gt_8": [
+        73,
+        64,
+        183,
+        182
+      ],
+      "minimum_gutter_px": 64,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8484,
+      "raw_pixel_sha256": "68473707ee1c33398e4a26fd0f5ef65c234290578e39e13ce1c36d9b5d056641",
+      "source_pixel_sha256": "085d57cda1aca5e8c18a4195db593647e0a914dc29d6bfadf8202727fe19df61",
+      "runtime_pixel_sha256": "085d57cda1aca5e8c18a4195db593647e0a914dc29d6bfadf8202727fe19df61"
+    }
+  ],
+  "decision": "pass"
+}

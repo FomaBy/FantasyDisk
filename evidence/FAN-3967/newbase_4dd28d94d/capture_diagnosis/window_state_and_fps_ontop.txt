@@ -1,0 +1,29 @@
+Always-on-top attempt (--always-on-top --position 0,0 --print-fps), source c8e985a2a: frames written 97; last frames:
+guitarist_sound_amp_reduced_motion_720p_recovery.png
+guitarist_sound_amp_reduced_motion_720p_release.png
+
+FPS just before and at the stall:
+Project FPS: 5 (200.00 mspf)
+Project FPS: 57 (17.54 mspf)
+Project FPS: 25 (40.00 mspf)
+Project FPS: 47 (21.27 mspf)
+Project FPS: 72 (13.88 mspf)
+Project FPS: 9 (111.11 mspf)
+Project FPS: 58 (17.24 mspf)
+Project FPS: 18 (55.55 mspf)
+Project FPS: 113 (8.84 mspf)
+Project FPS: 9 (111.11 mspf)
+Project FPS: 64 (15.62 mspf)
+Project FPS: 18 (55.55 mspf)
+Project FPS: 85 (11.76 mspf)
+Project FPS: 35 (28.57 mspf)
+Project FPS: 41 (24.39 mspf)
+Project FPS: 29 (34.48 mspf)
+Project FPS: 493 (2.02 mspf)
+Project FPS: 1344 (0.74 mspf)
+
+Window state while stalled (CGWindowList / lsappinfo, 2026-09-24T06:59:50Z):
+- Godot pid alive, type Foreground, Hidden=false; its 960x572pt main window sits at layer 3 (always-on-top) but kCGWindowIsOnscreen is unset: the window is NOT in the visible Space.
+- Frontmost app: ChatGPT (pid 50069); ChatGPT's computer-use helper (cua_node) and Codex app-server are active, load1m ~5.7.
+- On-screen windows on the main 1512x982pt display: ChatGPT, Outlook, Telegram, Slack, Teams, Claude, Excel (all 1456x949 at 56,33), Terminal, System Settings; a second 2560x1440 display above (y=-1440) is filled by Google Chrome 2560x1410.
+- Interpretation: Godot skips rendering while its window is not visible (occluded / other Space); the capture's 'await RenderingServer.frame_post_draw' then never resolves and the main loop spins at ~230k iterations/s (0.00 mspf, 99% CPU). Draws stop at random moments (648p, 720p, 1080p, 2K across six runs), matching desktop/Space changes by the other GUI agents rather than any viewport size.

@@ -24,14 +24,20 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
-    "pixel_lab": "not used; no new isolated raster source or frame was created, so there are no PixelLab IDs to record",
+    "route": "reused_approved_assets_plus_new_pixellab_animation_frames",
+    "new_pixellab_assets": ["dark_book", "cursed_skull", "dark_wand"],
+    "pixel_lab": "three class-local isolated v3 animation packs; object and animation IDs are recorded in the weapon-local provenance manifests",
+    "asset_update_issue": "FAN-3602",
+    "new_pack_manifests": {
+      "dark_book": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json",
+      "cursed_skull": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json",
+      "dark_wand": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json"
+    },
     "historical_source_note": "The accepted attack-VFX PNGs were generated under an explicit 2026-06-30 user override with OpenAI gpt-image-2. Their source prompts and alpha-cleanup records remain in docs/design/references/weapon_attack_animations/<weapon_id>/prompt_notes.md.",
     "reused_sources": {
       "dark_book": {
-        "source_reference": "docs/design/references/weapon_attack_animations/dark_book/vfx_weapon_dark_book_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/dark_book/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_book/dark_book_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json",
         "weapon_runtime_path": "assets/sprites/weapons/dark_book.png",
         "weapon_sha256": "39f10fff41f2f1540628d771aeb704d4fa230321075552eda0b697ee49b681c2",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_book.png",
@@ -40,8 +46,8 @@
         "modified": false
       },
       "cursed_skull": {
-        "source_reference": "docs/design/references/weapon_attack_animations/cursed_skull/vfx_weapon_cursed_skull_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/cursed_skull/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/cursed_skull/cursed_skull_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json",
         "weapon_runtime_path": "assets/sprites/weapons/cursed_skull.png",
         "weapon_sha256": "c6a76bcf7d07f80e362028ba3712a652e850281ddc90fce8944a13ec9c0c6684",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
@@ -50,8 +56,8 @@
         "modified": false
       },
       "dark_wand": {
-        "source_reference": "docs/design/references/weapon_attack_animations/dark_wand/vfx_weapon_dark_wand_source.png",
-        "source_notes": "docs/design/references/weapon_attack_animations/dark_wand/prompt_notes.md",
+        "source_reference": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/dark_wand/dark_wand_f00.png",
+        "source_notes": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json",
         "weapon_runtime_path": "assets/sprites/weapons/dark_wand.png",
         "weapon_sha256": "703b9dfc3f1b56fbc5dcadf0c94c550d645f7e2fd3055ffe326f33338481e168",
         "vfx_runtime_path": "assets/sprites/effects/vfx_weapon_dark_wand.png",
@@ -72,10 +78,10 @@
       "impact_language": "simultaneous original/reflection violet lens detonation",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.6,
-        "active": 1.05,
-        "recovery": 4.55,
-        "cancel": 5.2
+        "release": 0.7,
+        "active": 1.2,
+        "recovery": 2.5,
+        "cancel": 3.1
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.dark_mage.dark_book.windup",
@@ -87,14 +93,45 @@
       "channels": {
         "animation": "scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
         "vfx": "assets/sprites/effects/vfx_weapon_dark_book.png",
-        "sfx": "assets/audio/sfx/sfx_artifact_reveal.ogg"
+        "sfx": "assets/audio/sfx/sfx_artifact_reveal.ogg",
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/dark_mage/dark_book/dark_book_spriteframes.tres",
+          "animation": "abyss_mirror",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_book.json"
+        }
       },
       "pivot": [0.5, 0.56],
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "dark_mage.abyss_mirror_cast",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_00.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/dark_book.png",
+        "class_palette_id": "dark_mage.abyssal_violet"
+      },
       "performance": {
-        "max_visual_nodes": 7,
+        "max_visual_nodes": 10,
         "crowd_cap": 12,
-        "mechanics_note": "target count, reflection kills, and recursion guards remain owned by FAN-1479",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "mechanics_note": "every live enemy receives one original hit; the reflected point is a presentation signature only",
         "runtime_enforcement_owner": "FAN-1541"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "keep the mirror and paired silhouettes while replacing the lens detonation with one low-contrast pulse",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.15
       }
     },
     {
@@ -108,9 +145,9 @@
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.85,
-        "active": 1.35,
-        "recovery": 5.55,
-        "cancel": 6.35
+        "active": 1.3,
+        "recovery": 2.9,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.dark_mage.cursed_skull.windup",
@@ -122,14 +159,45 @@
       "channels": {
         "animation": "scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
         "vfx": "assets/sprites/effects/vfx_weapon_cursed_skull.png",
-        "sfx": "assets/audio/sfx/sfx_boss_phase.ogg"
+        "sfx": "assets/audio/sfx/sfx_boss_phase.ogg",
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres",
+          "animation": "cursed_crown",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_cursed_skull.json"
+        }
       },
       "pivot": [0.5, 0.72],
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "dark_mage.cursed_crown_cast",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_02.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/cursed_skull.png",
+        "class_palette_id": "dark_mage.abyssal_violet"
+      },
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 11,
         "crowd_cap": 14,
-        "mechanics_note": "curse strength, output reduction, transfer, and harvest values remain owned by FAN-1479",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "mechanics_note": "all live enemies receive the crown curse and three pulses before one harvest",
         "runtime_enforcement_owner": "FAN-1541"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "hold the crown and three chains while using a single non-flashing harvest contraction",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.15
       }
     },
     {
@@ -142,10 +210,10 @@
       "impact_language": "all chain nodes contract into thin black afterimages at once",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.28,
-        "active": 0.62,
-        "recovery": 3.25,
-        "cancel": 3.85
+        "release": 0.95,
+        "active": 1.45,
+        "recovery": 2.9,
+        "cancel": 3.9
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.dark_mage.dark_wand.windup",
@@ -157,25 +225,65 @@
       "channels": {
         "animation": "scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
         "vfx": "assets/sprites/effects/vfx_weapon_dark_wand.png",
-        "sfx": "assets/audio/sfx/sfx_hit_magic.ogg"
+        "sfx": "assets/audio/sfx/sfx_hit_magic.ogg",
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/dark_mage/dark_wand/dark_wand_spriteframes.tres",
+          "animation": "vanishing_thread",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/references/weapon_ultimates/dark_mage/provenance_manifest_dark_wand.json"
+        }
       },
       "pivot": [0.18, 0.55],
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "dark_mage.vanishing_thread_cast",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_04.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/dark_wand.png",
+        "class_palette_id": "dark_mage.abyssal_violet"
+      },
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 10,
         "crowd_cap": 10,
-        "mechanics_note": "target marking, per-target ramp, and collapse damage remain owned by FAN-1479",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "mechanics_note": "every live enemy receives the collapse floor; one aim-selected target gains the bounded focus bonus",
         "runtime_enforcement_owner": "FAN-1541"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "keep the wand silhouette and one persistent thread while collapsing all marks with reduced particle motion",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.15
       }
     }
   ],
   "evidence": {
+    "pixellab_source_contact_sheet": "docs/design/references/weapon_ultimates/dark_mage/dark_mage_pixellab_frames_contact.png",
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_2k.png"
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/dark_mage_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/dark_mage_ultimate_timelines.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/dark_mage/certification_capture_manifest.json",
+      "capture_script": "tests/ultimates/presentation/dark_mage_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/dark_mage_certification_capture_test.gd",
+      "readability_report": "docs/design/references/weapon_ultimates/dark_mage/certification_readability_report.md",
+      "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/dark_mage",
+      "note": "FAN-3938 captures the real persisted production accessibility modes and crowded hazard load at native release, active, and recovery frames. The older contact sheets above remain legacy timeline evidence, not four-mode certification."
+    }
   }
 }

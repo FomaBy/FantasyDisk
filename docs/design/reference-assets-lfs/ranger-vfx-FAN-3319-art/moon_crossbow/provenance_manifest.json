@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3859",
+  "source_brief": "FAN-3319",
+  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "reachable_remote_ref": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "class_id": "ranger",
+  "weapon_id": "moon_crossbow",
+  "ultimate_key": "ranger/moon_crossbow",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "no_secrets_recorded": true
+  },
+  "pixel_lab": {
+    "object_id": "0d7cf2cb-f6d8-421a-bac5-b1a604d528d4",
+    "animation_group_id": "1f0e7ad0-8dfb-4a20-837b-e90723ee0d38",
+    "canonical_tag": "ranger_moon_crossbow_ultimate",
+    "generated_manifest": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/pixellab_generation_manifest.json"
+  },
+  "identity": {
+    "ultimate_role": "moon_hunt",
+    "visual_identity": "teal-and-bronze crossbow with silver crescent limbs, cobalt moon core, and four split moon bolts",
+    "motion_contract": "the moon core rotates and brightens, the string releases four split bolts into orbit, a halo expands, then shards curve back",
+    "palette_contract": "teal wood, bronze hardware, silver crescents, cobalt moonlight, pale-blue bolts, charcoal outlines"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true
+  },
+  "postprocess": {
+    "accepted_source_cleaned": true,
+    "raw_preserved": true,
+    "method": "All accepted frames use a shared crop derived from the union of raw alpha bounds, nearest-neighbor resize to 224x224 content, and a centered transparent 256x256 canvas with a 16px safety gutter."
+  },
+  "paths": {
+    "raw_source_dir": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw",
+    "accepted_source_dir": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow",
+    "generated_manifest": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/pixellab_generation_manifest.json",
+    "runtime_dir": "assets/sprites/effects/ranger/moon_crossbow",
+    "spriteframes": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/ranger/moon_crossbow/runtime_manifest.json",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/contact_sheet.png"
+  },
+  "animation": {
+    "name": "ranger_moon_crossbow_ultimate",
+    "fps": 3.0,
+    "loop": false,
+    "duration_seconds": 3.0,
+    "frame_order": [
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f00.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f01.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f02.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f03.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f04.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f05.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f06.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f07.png",
+      "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f08.png"
+    ]
+  },
+  "quality": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "transparent_background": true,
+    "no_clipping": true,
+    "min_gutter_px": 20,
+    "max_gutter_px": 22,
+    "edge_visible_pixels_max": 0,
+    "distinct_frames": 9,
+    "duplicate_frame_count": 0,
+    "transition_changed_pixels": [
+      6626,
+      16239,
+      15445,
+      12054,
+      8818,
+      14679,
+      15362,
+      12438
+    ],
+    "motion_nontrivial": true,
+    "generated_manifest_hash_match": true,
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true,
+    "static_duplicate_pairs": [],
+    "semi_transparent_pixels_total": 0,
+    "small_component_count_le_2px_total": 0,
+    "seams_detected": false,
+    "manual_visual_review": "contact sheet shows a readable isolated silhouette on every frame; no opaque backdrop"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f00.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png.import",
+      "raw_encoded_sha256": "d8c55c41f351e7c4765bcc60f538f40e75c19fee5219256fa46ac88954df70f0",
+      "raw_pixel_sha256": "49de4634adcf0cb5261b7cd087ec208bc9fd87f68e584fc8f3c68b6c1c7449e4",
+      "generated_manifest_encoded_sha256": "d8c55c41f351e7c4765bcc60f538f40e75c19fee5219256fa46ac88954df70f0",
+      "generated_manifest_pixel_sha256": "49de4634adcf0cb5261b7cd087ec208bc9fd87f68e584fc8f3c68b6c1c7449e4",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "b565a49e7024e588f96dab1cb37674920d7aee9d6254ea4f1a9a82f84dcae47c",
+      "accepted_pixel_sha256": "545cec0b3daadcea0f891a7fe01ec88a5885a5301e63cdb7619944c57a0679dd",
+      "runtime_encoded_sha256": "b565a49e7024e588f96dab1cb37674920d7aee9d6254ea4f1a9a82f84dcae47c",
+      "runtime_pixel_sha256": "545cec0b3daadcea0f891a7fe01ec88a5885a5301e63cdb7619944c57a0679dd",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        24,
+        236,
+        234
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 2,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        124.15,
+        121.24
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png.import",
+        "uid": "uid://b22avge3ht3a7",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f00.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f00.png-1486bdb52f053e3f43fe39dec42f8b09.ctex"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f01.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png.import",
+      "raw_encoded_sha256": "e7939659555cd3b59446809b6f24d00ebd3bd107ade74ebd6206f6aec854a3ee",
+      "raw_pixel_sha256": "0981c1d12a6257c5053ccfc69fe49c8c2c22c29b21a18a1e13a865c983876d27",
+      "generated_manifest_encoded_sha256": "e7939659555cd3b59446809b6f24d00ebd3bd107ade74ebd6206f6aec854a3ee",
+      "generated_manifest_pixel_sha256": "0981c1d12a6257c5053ccfc69fe49c8c2c22c29b21a18a1e13a865c983876d27",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "1157b369562f29c8c9eff6c5e60468e290e53a759c9d04d2a0de12d4265d809f",
+      "accepted_pixel_sha256": "3a91cfa9cc3aeb68c663e135f33f05a0ef62006513501255fc128b7d42b511d4",
+      "runtime_encoded_sha256": "1157b369562f29c8c9eff6c5e60468e290e53a759c9d04d2a0de12d4265d809f",
+      "runtime_pixel_sha256": "3a91cfa9cc3aeb68c663e135f33f05a0ef62006513501255fc128b7d42b511d4",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        24,
+        236,
+        234
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 1,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        123.83,
+        121.13
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png.import",
+        "uid": "uid://dcpyrde1vqngc",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f01.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f01.png-55884efd77206f32e7e83f15ae58462e.ctex"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f02.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png.import",
+      "raw_encoded_sha256": "636e47818be5e01e48d484996fd4e175e65ca546402d6d1a56c7be1fc8fa5e17",
+      "raw_pixel_sha256": "431dd3998e9e7f7c73bc0d1f9305a61ee7cda8b897d57ce6d9d87b0d57cdd89c",
+      "generated_manifest_encoded_sha256": "636e47818be5e01e48d484996fd4e175e65ca546402d6d1a56c7be1fc8fa5e17",
+      "generated_manifest_pixel_sha256": "431dd3998e9e7f7c73bc0d1f9305a61ee7cda8b897d57ce6d9d87b0d57cdd89c",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "4399db6e0d79efbec864b90756bf18da0399dbbb7b1e36d673faba48ed0509bc",
+      "accepted_pixel_sha256": "dccad7c732bba090135f957d25c87d19eefa0291a9749e2f940d561a2baa6184",
+      "runtime_encoded_sha256": "4399db6e0d79efbec864b90756bf18da0399dbbb7b1e36d673faba48ed0509bc",
+      "runtime_pixel_sha256": "dccad7c732bba090135f957d25c87d19eefa0291a9749e2f940d561a2baa6184",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        22,
+        235,
+        233
+      ],
+      "minimum_gutter_px": 21,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 4,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        123.0,
+        119.5
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png.import",
+        "uid": "uid://dvnrlqjixgy00",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f02.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f02.png-d3aeb7e9a31a28cb85e5afb2d3b15742.ctex"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f03.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png.import",
+      "raw_encoded_sha256": "5528951059aaccfe2abfd268917da803089545a137580bd6da7ba7944048535a",
+      "raw_pixel_sha256": "8441e4f8ed30173046a93cd7f2eae9b50d682ffa156b8f8cddce2ae16763bf62",
+      "generated_manifest_encoded_sha256": "5528951059aaccfe2abfd268917da803089545a137580bd6da7ba7944048535a",
+      "generated_manifest_pixel_sha256": "8441e4f8ed30173046a93cd7f2eae9b50d682ffa156b8f8cddce2ae16763bf62",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "f8a61637601f4f36bab52fb39962e5d80bd8dfc6671c724f7b195f3715981f17",
+      "accepted_pixel_sha256": "fcefdfabe2f08c1bb9946ea82af9c1b5abf153316676d1db11e2acc63ec2834d",
+      "runtime_encoded_sha256": "f8a61637601f4f36bab52fb39962e5d80bd8dfc6671c724f7b195f3715981f17",
+      "runtime_pixel_sha256": "fcefdfabe2f08c1bb9946ea82af9c1b5abf153316676d1db11e2acc63ec2834d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        22,
+        234,
+        232
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 3,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        122.75,
+        118.72
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png.import",
+        "uid": "uid://uiobtrskolga",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f03.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f03.png-3bb9229b0347721ded30654d59817903.ctex"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f04.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png.import",
+      "raw_encoded_sha256": "0ff3daf70504fa305d8ec6b0e0fafd71e1c594be627234df8c3dcc92a9380ebb",
+      "raw_pixel_sha256": "7deedca7b229281fec305ac018a4aec9eacb39c2857a0752e3269c9e0e5483d8",
+      "generated_manifest_encoded_sha256": "0ff3daf70504fa305d8ec6b0e0fafd71e1c594be627234df8c3dcc92a9380ebb",
+      "generated_manifest_pixel_sha256": "7deedca7b229281fec305ac018a4aec9eacb39c2857a0752e3269c9e0e5483d8",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "0a07031dc4b46332137c1983ed131e2828bb6b1dd080ff54eea3618e250faaa3",
+      "accepted_pixel_sha256": "aef0ecb726e1847e5691d32ecede0d28d5a8906c7f57248f351d369fdc5c7c13",
+      "runtime_encoded_sha256": "0a07031dc4b46332137c1983ed131e2828bb6b1dd080ff54eea3618e250faaa3",
+      "runtime_pixel_sha256": "aef0ecb726e1847e5691d32ecede0d28d5a8906c7f57248f351d369fdc5c7c13",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        21,
+        234,
+        231
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 5,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        122.78,
+        118.04
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png.import",
+        "uid": "uid://os2e43ph0whf",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f04.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f04.png-d1e8a8abfae046efdc269a02bff2e244.ctex"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f05.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png.import",
+      "raw_encoded_sha256": "ce75c9610e8e1564cfc6de808859457ee5ac860041321742ba827e3989f47a7f",
+      "raw_pixel_sha256": "800f1883510b41a17650aade81143fd55baab34644df26d15f023a5d031a0b3e",
+      "generated_manifest_encoded_sha256": "ce75c9610e8e1564cfc6de808859457ee5ac860041321742ba827e3989f47a7f",
+      "generated_manifest_pixel_sha256": "800f1883510b41a17650aade81143fd55baab34644df26d15f023a5d031a0b3e",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "4e87281ce9f9aa30596c4065b5b7e55ce43bf05dfc070e3228be4ee4c76433f4",
+      "accepted_pixel_sha256": "4092566c8400452bd3b7ae7eb1d70517c77617fdd0f51a06c2c8d974c9d8cfb8",
+      "runtime_encoded_sha256": "4e87281ce9f9aa30596c4065b5b7e55ce43bf05dfc070e3228be4ee4c76433f4",
+      "runtime_pixel_sha256": "4092566c8400452bd3b7ae7eb1d70517c77617fdd0f51a06c2c8d974c9d8cfb8",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        21,
+        234,
+        231
+      ],
+      "minimum_gutter_px": 21,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 5,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        122.36,
+        118.16
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png.import",
+        "uid": "uid://dnr2e1e5hxceo",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f05.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f05.png-e80fe106658d15c916e8a81da585759b.ctex"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f06.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png.import",
+      "raw_encoded_sha256": "243df0b9eabcfb2e452913897a316a75cdd26f283bc18329af2f283d205680c7",
+      "raw_pixel_sha256": "ad72b051c5df02bd1a4bdfd2693522424d0d0c775631c9a1ff2bc1117f0960c5",
+      "generated_manifest_encoded_sha256": "243df0b9eabcfb2e452913897a316a75cdd26f283bc18329af2f283d205680c7",
+      "generated_manifest_pixel_sha256": "ad72b051c5df02bd1a4bdfd2693522424d0d0c775631c9a1ff2bc1117f0960c5",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "87ca0031a8ca1a6f94006c1ed6cdc32048a5be6ee4d6a873172cf8b6a6e197d1",
+      "accepted_pixel_sha256": "ffdaaf13b0af1d89245685af029ebdfe865b2d0a0a5ebddc0f3318f58a3bc54c",
+      "runtime_encoded_sha256": "87ca0031a8ca1a6f94006c1ed6cdc32048a5be6ee4d6a873172cf8b6a6e197d1",
+      "runtime_pixel_sha256": "ffdaaf13b0af1d89245685af029ebdfe865b2d0a0a5ebddc0f3318f58a3bc54c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        22,
+        234,
+        233
+      ],
+      "minimum_gutter_px": 22,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 9,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        122.48,
+        120.02
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png.import",
+        "uid": "uid://sfo6hggjk2t0",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f06.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f06.png-6e4ddf97f0150eaa8ee0efb4a69a8cbf.ctex"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f07.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png.import",
+      "raw_encoded_sha256": "13bf468986cb77268656fb5b5f18a01ecbd3a7bc8ef4f36d640bcb07fc03d6fe",
+      "raw_pixel_sha256": "7845aa42ce914f51e120698d12b40a9fc0388047238b8ac1521d85c83a10bea8",
+      "generated_manifest_encoded_sha256": "13bf468986cb77268656fb5b5f18a01ecbd3a7bc8ef4f36d640bcb07fc03d6fe",
+      "generated_manifest_pixel_sha256": "7845aa42ce914f51e120698d12b40a9fc0388047238b8ac1521d85c83a10bea8",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "f026f825b6e56cd85cb00d4ef026e900d4702d5ac07c569eff182964c860bb79",
+      "accepted_pixel_sha256": "08feaf049d280a78fa547e7ee2ded26aa6d453e8b0491598ff996247776d8da2",
+      "runtime_encoded_sha256": "f026f825b6e56cd85cb00d4ef026e900d4702d5ac07c569eff182964c860bb79",
+      "runtime_pixel_sha256": "08feaf049d280a78fa547e7ee2ded26aa6d453e8b0491598ff996247776d8da2",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        23,
+        235,
+        234
+      ],
+      "minimum_gutter_px": 21,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 6,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        123.81,
+        121.64
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png.import",
+        "uid": "uid://cgyaemm2edwmd",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f07.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f07.png-d0661bffd41a209d21319653595ccac5.ctex"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/moon_crossbow_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/moon_crossbow/raw/moon_crossbow_f08.png",
+      "runtime_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png",
+      "import_file": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png.import",
+      "raw_encoded_sha256": "2ef5ad2985e9d3c0d46bf1378043760e9af76267f92aaf4a9376a9ce30a0d525",
+      "raw_pixel_sha256": "3ae9ba9026d5b86b00b31f76cf3ab2b6007fd997e7d36f375007de517217237e",
+      "generated_manifest_encoded_sha256": "2ef5ad2985e9d3c0d46bf1378043760e9af76267f92aaf4a9376a9ce30a0d525",
+      "generated_manifest_pixel_sha256": "3ae9ba9026d5b86b00b31f76cf3ab2b6007fd997e7d36f375007de517217237e",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "20cb88bb66e44e19eaada3fec0b0656b344521c73c6047e9cdda7e7cbdbc15e3",
+      "accepted_pixel_sha256": "50d059611e7ade1c21707c6d899537f62adf4e60623dfd366980cfac398fa9d2",
+      "runtime_encoded_sha256": "20cb88bb66e44e19eaada3fec0b0656b344521c73c6047e9cdda7e7cbdbc15e3",
+      "runtime_pixel_sha256": "50d059611e7ade1c21707c6d899537f62adf4e60623dfd366980cfac398fa9d2",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        22,
+        24,
+        236,
+        235
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 1,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        124.03,
+        122.28
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png.import",
+        "uid": "uid://cqglilsgxx62b",
+        "source_file": "res://assets/sprites/effects/ranger/moon_crossbow/moon_crossbow_f08.png",
+        "dest_files": [
+          "res://.godot/imported/moon_crossbow_f08.png-855eef839bd557b39561b1c6ad721edf.ctex"
+        ]
+      }
+    }
+  ]
+}

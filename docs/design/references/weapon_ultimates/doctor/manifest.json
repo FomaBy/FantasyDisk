@@ -4,33 +4,84 @@
   "class_id": "doctor",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
-    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
     "max_timeline_seconds": 10.0,
     "headless_fallback": "no_op",
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541",
     "mechanics_owner": "FAN-1487"
   },
   "generator_provenance": {
-    "route": "reused_accepted_doctor_assets_no_new_raster_generation",
+    "route": "reused_accepted_fan3613_animation_packs",
     "new_pixellab_assets": [],
+    "asset_source_issue": "FAN-3613",
+    "pack_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_fan3613.json",
+    "pixel_lab": "nine weapon-local animation packs accepted under FAN-3613; PixelLab object and animation IDs live in the per-pack provenance manifests",
     "reused_sources": {
       "restore_potion": {
-        "source_path": "docs/design/references/weapon_attack_animations/restore_potion/vfx_source_1024.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_restore_potion.png",
-        "weapon_path": "assets/sprites/weapons/restore_potion.png",
-        "source_generator": "gpt-image-2 accepted by the existing attack-VFX package"
+        "cast_frames": {
+          "effect_id": "cast_flash",
+          "spriteframes": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_cast_flash.json"
+        },
+        "signature_frames": {
+          "effect_id": "poison_pool",
+          "spriteframes": "assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_poison_pool",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_poison_pool.json"
+        },
+        "impact_frames": {
+          "effect_id": "victim_impact",
+          "spriteframes": "assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_victim_impact",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_restore_potion_victim_impact.json"
+        }
       },
       "plague_syringe": {
-        "source_path": "docs/design/references/weapon_attack_animations/plague_syringe/vfx_source_1024.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_plague_syringe.png",
-        "weapon_path": "assets/sprites/weapons/plague_syringe.png",
-        "source_generator": "gpt-image-2 accepted by the existing attack-VFX package"
+        "cast_frames": {
+          "effect_id": "cast_flash",
+          "spriteframes": "assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_cast_flash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_cast_flash.json"
+        },
+        "signature_frames": {
+          "effect_id": "infection_wave",
+          "spriteframes": "assets/sprites/effects/doctor/plague_syringe/infection_wave/infection_wave_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_infection_wave",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_infection_wave.json"
+        },
+        "impact_frames": {
+          "effect_id": "victim_impact",
+          "spriteframes": "assets/sprites/effects/doctor/plague_syringe/victim_impact/victim_impact_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/plague_syringe_victim_impact",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_plague_syringe_victim_impact.json"
+        }
       },
       "bone_saw": {
-        "source_path": "docs/design/references/weapon_attack_animations/bone_saw/vfx_weapon_bone_saw_source.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_bone_saw.png",
-        "weapon_path": "assets/sprites/weapons/bone_saw.png",
-        "source_generator": "gpt-image-2 accepted by the existing attack-VFX package"
+        "cast_frames": {
+          "effect_id": "cast_flash",
+          "spriteframes": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_cast_flash.json"
+        },
+        "signature_frames": {
+          "effect_id": "orbit_slash",
+          "spriteframes": "assets/sprites/effects/doctor/bone_saw/orbit_slash/orbit_slash_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_orbit_slash",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_orbit_slash.json"
+        },
+        "impact_frames": {
+          "effect_id": "victim_impact",
+          "spriteframes": "assets/sprites/effects/doctor/bone_saw/victim_impact/victim_impact_spriteframes.tres",
+          "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_victim_impact",
+          "provenance_manifest": "docs/design/references/weapon_ultimates/doctor/provenance_manifest_bone_saw_victim_impact.json"
+        }
       }
     }
   },
@@ -42,7 +93,13 @@
       "silhouette": "giant overhead flask, wide poison pool, tight white healing spiral, and offset shield crystal",
       "motion_path": "the flask follows a high aimed arc, shatters at range, then the outer and inner zones counter-rotate",
       "impact_language": "green glass blast and poison ring resolve inward as a white healing spiral and crystallized absorb shield",
-      "timing_seconds": {"windup": 0.0, "release": 0.85, "active": 1.5, "recovery": 5.2, "cancel": 6.2},
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.85,
+        "active": 1.35,
+        "recovery": 2.85,
+        "cancel": 3.4
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.doctor.restore_potion.windup",
         "release": "weapon_ultimate.phase.doctor.restore_potion.execute",
@@ -50,7 +107,37 @@
         "recovery": "weapon_ultimate.phase.doctor.restore_potion.recover",
         "cancel": "weapon_ultimate.phase.doctor.restore_potion.cleanup"
       },
-      "performance": {"max_visual_nodes": 5, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 5,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.12,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the flask, pool and shield hold one representative pose in each phase while the exact phase envelope continues",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.doctor.clinical_focus",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_04.png",
+        "class_palette_id": "palette.doctor.viridian_ivory"
+      }
     },
     {
       "weapon_id": "plague_syringe",
@@ -59,7 +146,13 @@
       "silhouette": "oversized diagonal syringe, pinned patient-zero mark, branching veins, three arena waves, and mask vapor",
       "motion_path": "the syringe pierces one target before staggered infection waves expand through the arena",
       "impact_language": "black-green vascular bloom ticks outward and ends in a sharp plague-mask vapor burst",
-      "timing_seconds": {"windup": 0.0, "release": 0.42, "active": 0.82, "recovery": 6.1, "cancel": 6.85},
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.75,
+        "active": 1.2,
+        "recovery": 3.3,
+        "cancel": 3.9
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.doctor.plague_syringe.windup",
         "release": "weapon_ultimate.phase.doctor.plague_syringe.execute",
@@ -67,7 +160,37 @@
         "recovery": "weapon_ultimate.phase.doctor.plague_syringe.recover",
         "cancel": "weapon_ultimate.phase.doctor.plague_syringe.cleanup"
       },
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the syringe and infection waves hold one representative pose in each phase instead of rapidly expanding across the arena",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.doctor.clinical_focus",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_04.png",
+        "class_palette_id": "palette.doctor.viridian_ivory"
+      }
     },
     {
       "weapon_id": "bone_saw",
@@ -76,7 +199,13 @@
       "silhouette": "three close-orbit saws, bright surgical arc, metal sparks, paired drain ribbons, and stitched shield seam",
       "motion_path": "the saws snap from a surgical stance into a fast close orbit while vitality ribbons pull inward",
       "impact_language": "bone-white serration and sparks cut repeatedly before red drain ribbons turn green and stitch shut",
-      "timing_seconds": {"windup": 0.0, "release": 0.24, "active": 0.5, "recovery": 3.15, "cancel": 3.85},
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.65,
+        "active": 1.05,
+        "recovery": 2.35,
+        "cancel": 2.8
+      },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.doctor.bone_saw.windup",
         "release": "weapon_ultimate.phase.doctor.bone_saw.execute",
@@ -84,17 +213,250 @@
         "recovery": "weapon_ultimate.phase.doctor.bone_saw.recover",
         "cancel": "weapon_ultimate.phase.doctor.bone_saw.cleanup"
       },
-      "performance": {"max_visual_nodes": 8, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541"}
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.1,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the surgical orbit holds one representative phase pose instead of spinning while the phase envelope continues unchanged",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.doctor.clinical_focus",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_04.png",
+        "class_palette_id": "palette.doctor.viridian_ivory"
+      }
     }
   ],
+  "effectiveness_evidence": {
+    "runner": "res://tools/ultimate_effectiveness_report.gd",
+    "baseline_source_sha": "b7d3c3776684bc46c676f849ab3b9560a37d25cf",
+    "scenario_order": [
+      "solo",
+      "crowd_5",
+      "crowd_10",
+      "crowd_20",
+      "elite",
+      "boss"
+    ],
+    "rows": [
+      {
+        "weapon_id": "restore_potion",
+        "baseline": {
+          "targets_struck": [
+            1,
+            5,
+            10,
+            20,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1748.921061888,
+            8744.60530944,
+            17489.21061888,
+            34978.42123776,
+            1748.921061888,
+            1748.921061888
+          ]
+        },
+        "final": {
+          "targets_struck": [
+            1,
+            5,
+            10,
+            20,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1748.921061888,
+            8744.60530944,
+            17489.21061888,
+            34978.42123776,
+            1748.921061888,
+            1748.921061888
+          ]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 33.5,
+        "elite_charge": 42.3,
+        "encounters_to_ready": 3
+      },
+      {
+        "weapon_id": "plague_syringe",
+        "baseline": {
+          "targets_struck": [
+            1,
+            5,
+            10,
+            20,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1815.75,
+            7195.978998144,
+            13921.265245824,
+            27371.837741184,
+            1815.75,
+            1815.75
+          ]
+        },
+        "final": {
+          "targets_struck": [
+            1,
+            5,
+            10,
+            20,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1815.75,
+            7195.978998144,
+            13921.265245824,
+            27371.837741184,
+            1815.75,
+            1815.75
+          ]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 33.5,
+        "elite_charge": 42.3,
+        "encounters_to_ready": 3
+      },
+      {
+        "weapon_id": "bone_saw",
+        "baseline": {
+          "targets_struck": [
+            1,
+            4,
+            7,
+            10,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1798.2,
+            7192.8,
+            12587.4,
+            17982.0,
+            1798.2,
+            1798.2
+          ]
+        },
+        "final": {
+          "targets_struck": [
+            1,
+            4,
+            7,
+            10,
+            1,
+            1
+          ],
+          "damage_applied": [
+            1798.2,
+            7192.8,
+            12587.4,
+            17982.0,
+            1798.2,
+            1798.2
+          ]
+        },
+        "total_boss_cap": 0.08,
+        "normal_charge": 33.5,
+        "elite_charge": 42.3,
+        "encounters_to_ready": 3
+      }
+    ]
+  },
   "evidence": {
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/doctor/doctor_ultimate_timelines_2k.png"
+      "docs/design/reference-assets-lfs/ultimate-certification/doctor/doctor_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/doctor/doctor_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/doctor/doctor_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/doctor/doctor_certification_2k.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/doctor_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/doctor_ultimate_timelines.gd"
+    "capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/doctor_certification_capture_test.gd",
+    "authored_timeline_sheets": [
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/doctor-ultimate-timelines-fan3691/doctor_ultimate_timelines_2k.png"
+    ],
+    "authored_capture_script": "tests/ultimates/presentation/doctor_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/doctor_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3942",
+      "source_ref": "agent/codex-dev-sol-5-6/1062ac31f630",
+      "source_commit_sha": "726f74443350bb962e179a269c44cdb94d49b8f1",
+      "source_tree_sha": "488fbb8fe1c03c61beb29165b19292f6c6842227",
+      "capture_manifest": "docs/design/references/weapon_ultimates/doctor/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/doctor/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/doctor_certification_capture_test.gd",
+      "weapon_ids": [
+        "restore_potion",
+        "plague_syringe",
+        "bone_saw"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "sheet_sha256": {
+        "648p_release": "1871cd32f8d82768f498c5d0e8fab4bad0152b8968b59b131e606868f849086e",
+        "648p_active": "c9e8c66561b958eb80a29ab98e2a507c6432d635b9f242c56ec370687319b5e4",
+        "648p_recovery": "f005d5cc05fb5e8089b6eef283b89ec05767ba9bf2bb9d9b3439ddd5008f78f6",
+        "720p_release": "ded49fd15fe2fd5be1c71ee3835b599da47de1c77f69f416e6f646722d98fe70",
+        "720p_active": "23c41af245619b5cffd302ae1c2e8c8c3655c407f7cd688248ae435c96f670b3",
+        "720p_recovery": "1434d9ff00fc9c8bc2874752b16e194ee93dbad616a8e3618868a9e36c79a383",
+        "1080p_release": "e6c11c980d5574d08252b4015deb1118d7fc28ab3dd4d67e32ea7e348d095aa6",
+        "1080p_active": "8a01b083e8e2150c6d0178aff17f0b00bed0df178aa762191d7d99876142f387",
+        "1080p_recovery": "f7b0c702798d4f035dc934a60bd9519909a81fc6ef71023d8eec68c1add3d7e3",
+        "2k_release": "1bece92397e5a97e9f4cbf46397bf5431679847aef19f098362e3fa5812e0d99",
+        "2k_active": "4f341c2f3444dfd09f56e4dd30cd8753469b02814b4822179a8cb057e7205de8",
+        "2k_recovery": "a5a310251bd1ee0aed130fbc3884c5535d957b956907677f68f06919dd575326"
+      },
+      "live_samples": 144,
+      "note": "Twelve native-size beat/mode matrices index 144 fresh measurements from real Main.tscn combat runs with Player.activate_ultimate(), the shared presentation runtime, shipped executors, cast-pose replacement, HUD, Enemy hazards, victim impacts, and independent reduced-motion/photosensitivity-safe variants."
+    }
   }
 }

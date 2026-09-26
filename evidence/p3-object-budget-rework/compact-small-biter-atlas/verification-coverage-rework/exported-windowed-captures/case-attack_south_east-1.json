@@ -1,0 +1,12 @@
+{
+  "animation": "attack_south_east",
+  "case": 1,
+  "flip": true,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "953df577b24bb3bbd8431abbd38d3fcf680180f87840846caa9d1aafcd74c81f",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_62"
+}

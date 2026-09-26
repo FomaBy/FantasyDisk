@@ -1,0 +1,14 @@
+{
+	"provenance": "FAN-2611: dedicated 8-direction pack replacing the single authored horizontal view + flip.",
+	"frames": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres",
+	"scale": {
+		"x": 0.34,
+		"y": 0.34
+	},
+	"position": {
+		"x": 0.0,
+		"y": -38.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

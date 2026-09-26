@@ -4,6 +4,12 @@ const PROFILE_ID := "weapon_ultimate.profile.priest.priest_reliquary"
 const EXECUTOR_ID := "weapon_ultimate.executor.priest.priest_reliquary"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/priest/priest_reliquary.tscn"
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/priest/priest_reliquary/priest_reliquary_spriteframes.tres")
+
+## Ultimate Direction v2 (FAN-2535): the three visible sanctuary rings reach
+## every live enemy. Rank falloff remains identity shaping, clamped by the
+## corridor-derived per-target floor instead of ending at a radius/count rail.
 
 var ultimate_damage_sink: Callable = Callable()
 var actual_removed_for_tests := 0.0
@@ -11,14 +17,15 @@ var actual_removed_for_tests := 0.0
 var _activation = null
 var _targets: Array = []
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
 	return {
 		"lifetime": {"type": "number", "minimum": 0.1},
-		"radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"crowd_falloff": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"crowd_floor": {"type": "number", "minimum": 0.0, "maximum": 1.0},
 		"first_ring_at": {"type": "number", "minimum": 0.0},
 		"sanctify_ring_at": {"type": "number", "minimum": 0.0},
 		"pillar_at": {"type": "number", "minimum": 0.0},
@@ -38,8 +45,8 @@ static func execute(activation) -> float:
 		return 0.0
 	var targets: Array = activation.select_targets(
 		activation.origin(),
-		activation.param_float("radius", 470.0),
-		activation.param_int("crowd_cap", 22),
+		INF,
+		0,
 		"nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
@@ -129,7 +136,10 @@ func _hit_all(event_prefix: String, amount: float, secondary: bool) -> void:
 
 
 func _crowd_multiplier(index: int) -> float:
-	return pow(_activation.param_float("crowd_falloff", 1.0), float(index))
+	return maxf(
+		pow(_activation.param_float("crowd_falloff", 1.0), float(index)),
+		_activation.param_float("crowd_floor", 0.0)
+	)
 
 
 func _lease_sanctify(target: Node2D) -> void:
@@ -152,8 +162,21 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 	if not ultimate_damage_sink.is_valid():
 		return
 	var result = ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
+	_play_impacts([target])
 	if result != null:
 		actual_removed_for_tests += maxf(float(result.applied), 0.0)
+
+
+func _play_impacts(victims: Array) -> void:
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _player() -> Node:
@@ -164,6 +187,10 @@ func _player() -> Node:
 
 
 func _exit_tree() -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+	_impacts = null
+	_impacts_started = false
 	for lease in _leased_statuses:
 		var target = lease.get("target") as Node
 		if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):

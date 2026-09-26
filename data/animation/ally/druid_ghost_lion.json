@@ -1,0 +1,13 @@
+{
+	"frames": "res://assets/sprites/allies/ally_druid_ghost_lion_spriteframes.tres",
+	"scale": {
+		"x": 0.41,
+		"y": 0.41
+	},
+	"position": {
+		"x": 0.0,
+		"y": -43.0
+	},
+	"source_faces_left": true,
+	"explicit_horizontal_directions": true
+}

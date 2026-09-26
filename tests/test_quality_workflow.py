@@ -13,16 +13,166 @@ class QualityWorkflowContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.source = WORKFLOW.read_text(encoding="utf-8")
+        start = cls.source.index("\n  static-quality:\n")
+        end = cls.source.index("\n  dev-runtime-health-static:\n", start)
+        cls.candidate_job = cls.source[start:end]
 
     def test_all_candidate_event_types_are_covered(self) -> None:
         self.assertIn("push:", self.source)
         self.assertIn("pull_request:", self.source)
         self.assertIn("merge_group:", self.source)
-        self.assertIn("github.event.merge_group.base_sha", self.source)
 
     def test_checkout_is_asserted_to_be_exact_github_sha(self) -> None:
         self.assertIn('test "$(git rev-parse HEAD)" = "$GITHUB_SHA"', self.source)
         self.assertIn("quality_gate_candidate_sha.txt", self.source)
+
+    def test_candidate_checkout_is_sparse_and_event_specific(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+
+        self.assertEqual(checkout.count("uses: actions/checkout@v6"), 1)
+        self.assertIn(
+            "fetch-depth: ${{ github.event_name != 'push' && 2 || 0 }}",
+            checkout,
+        )
+        self.assertIn("lfs: false", checkout)
+        self.assertIn("sparse-checkout: |", checkout)
+        for required_path in (
+            ".claude",
+            ".github",
+            "assets",
+            "data",
+            "references",
+            "scenes",
+            "scripts",
+            "services",
+            "skills",
+            "source_docs",
+            "tests",
+            "tools",
+            "build/qa/scrum434_soldier_pixellab",
+            "docs/process",
+            "docs/tasks",
+            "docs/design/data",
+            "docs/design/templates/release_notes",
+            "docs/design/mockups/release_0_2_4",
+            "docs/design/mockups/scrum1061_semantic_typography",
+            "docs/design/references/weapon_ultimates",
+        ):
+            self.assertIn(f"          {required_path}\n", checkout)
+
+    def test_candidate_checkout_materializes_selected_static_report_inputs(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        required_paths = (
+            "docs/design/reports/fan1455_seeded_combat_variety_slice_metrics.json",
+            # FAN-3934 CI repair: the whole fragments subtree materializes
+            # the convergence fixtures together with the atlas/offensive
+            # fragment inputs the A5 suites read.
+            "docs/design/reports/fan1438_a5_balance/fragments",
+            "docs/design/references/unified_master_frame/unified_master_frame_metadata.json",
+            "docs/design/references/ui_minimal_metal/scrum452_minimal_metal_frame_metadata.json",
+            "docs/design/references/ui_minimal_metal_buttons/scrum450_minimal_metal_button_metadata.json",
+            "docs/design/reports/fan1438_a5_balance/raw.json.gz",
+            "docs/design/mockups/scrum1088_priest_prayer_attribute_picker/layout.json",
+            "docs/design/references/SCRUM-1065_player_projectiles/manifest.json",
+        )
+
+        for required_path in required_paths:
+            with self.subTest(required_path=required_path):
+                # Cone entries may be directories (the fragments subtree) or
+                # files; every entry must resolve to tracked content.
+                self.assertTrue((ROOT / required_path).exists())
+                self.assertIn(f"          {required_path}\n", checkout)
+
+    def test_candidate_materializes_only_manifest_declared_lfs_evidence(self) -> None:
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        self.assertIn("          docs/design/reference-assets-lfs\n", checkout)
+
+        start = self.candidate_job.index(
+            "- name: Materialize manifest-declared LFS evidence"
+        )
+        end = self.candidate_job.index("- name:", start + 1)
+        materialization = self.candidate_job[start:end]
+
+        self.assertIn("if: github.event_name != 'push'", materialization)
+        self.assertIn('lfs_prefix = "docs/design/reference-assets-lfs/"', materialization)
+        self.assertIn("path.startswith(lfs_prefix)", materialization)
+        self.assertIn("git lfs install --local --skip-smudge", materialization)
+        self.assertIn(
+            'for path in "${evidence_paths[@]}"; do',
+            materialization,
+        )
+        self.assertIn(
+            'git show "HEAD:$path"',
+            materialization,
+        )
+        self.assertIn(
+            'GIT_LFS_SKIP_SMUDGE=0 git lfs smudge -- "$path" > "$path"',
+            materialization,
+        )
+        self.assertIn("with Image.open(path) as image:", materialization)
+        self.assertIn("image.verify()", materialization)
+        self.assertNotIn("git lfs fetch", materialization)
+        self.assertNotIn("git lfs checkout", materialization)
+        self.assertNotIn("git lfs fetch --all", materialization)
+        self.assertNotIn("git lfs pull", materialization)
+
+    def test_shallow_candidate_events_fetch_integration_branch_and_legacy_commits(self) -> None:
+        start = self.candidate_job.index(
+            "- name: Fetch pinned legacy commits for shallow candidates"
+        )
+        end = self.candidate_job.index("- uses: actions/setup-python@v6", start)
+        history_step = self.candidate_job[start:end]
+
+        self.assertIn("if: github.event_name != 'push'", history_step)
+        self.assertIn("git fetch --no-tags --depth=2 origin", history_step)
+        self.assertIn(
+            '"+refs/heads/dev:refs/remotes/origin/dev"',
+            history_step,
+        )
+        self.assertIn("git fetch --no-tags --depth=1 origin", history_step)
+        self.assertIn(
+            "2cba1b7050cb168bca70b6354cc7b654334dd53e",
+            history_step,
+        )
+        self.assertIn(
+            "5d23555117c11620ee0f0834e6c30877fd1dafb8",
+            history_step,
+        )
+
+    def test_shallow_candidate_events_deepen_history_for_capture_sources(self) -> None:
+        # FAN-3941: the certification gates prove each capture manifest's
+        # recorded source commit is an ancestor of the candidate; the depth-2
+        # checkout cannot, so CI deepens from the candidate tip in bounded
+        # steps for exactly the manifest-declared sources, and fails closed.
+        start = self.candidate_job.index(
+            "- name: Fetch manifest-declared capture sources for shallow candidates"
+        )
+        end = self.candidate_job.index(
+            "- name: Materialize manifest-declared LFS evidence", start
+        )
+        history_step = self.candidate_job[start:end]
+        self.assertIn("if: github.event_name != 'push'", history_step)
+        self.assertIn(
+            "python3 tools/quality_gate.py --list-manifest-capture-sources", history_step
+        )
+        self.assertIn('test -s "$sources_file"', history_step)
+        self.assertIn('git rev-parse --verify --quiet "${commit}^{commit}"', history_step)
+        self.assertIn('until git merge-base --is-ancestor "$commit" "$head_sha"; do', history_step)
+        self.assertIn('if [ "$depth" -ge 512 ]; then', history_step)
+        self.assertIn("exit 1", history_step)
+        self.assertIn(
+            'git fetch --no-tags --filter=blob:none --depth="$depth" origin "$head_sha"',
+            history_step,
+        )
+        self.assertNotIn("--unshallow", history_step)
+        self.assertNotIn("git lfs", history_step)
+        pinned = self.candidate_job.index(
+            "- name: Fetch pinned legacy commits for shallow candidates"
+        )
+        self.assertLess(pinned, start)
 
     def test_machine_readable_evidence_is_hashed_and_uploaded(self) -> None:
         self.assertIn("build/quality_gate_report.json", self.source)
@@ -39,8 +189,116 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertIn("quality-${{ github.event_name }}-${{ github.sha }}", self.source)
         self.assertIn("if-no-files-found: error", self.source)
 
+    def test_coverage_ratchet_reports_are_uploaded_with_quality_evidence(self) -> None:
+        self.assertIn("tools/test_coverage_gate.py", self.source)
+        self.assertIn("build/test_coverage_report.json", self.source)
+        self.assertIn("build/test_coverage_report.md", self.source)
+        self.assertIn("test_coverage_report.sha256", self.source)
+
+    def test_core_quality_evidence_hashing_does_not_depend_on_coverage_reports(self) -> None:
+        # A red main gate (or an absent/malformed baseline) skips or aborts the
+        # coverage-ratchet step before it writes its two report files. The
+        # pre-existing quality_gate_report.sha256 hash must still be produced
+        # on that path, so the coverage-report presence check has to be
+        # conditional rather than gating the whole "Hash quality evidence" step.
+        for hash_step in ("Hash quality evidence", "Hash static quality evidence"):
+            start = self.source.index(f"- name: {hash_step}")
+            end = self.source.index("- name:", start + 1)
+            step = self.source[start:end]
+            self.assertLess(
+                step.index("test -f build/quality_gate_report.json"),
+                step.index("if [ -f build/test_coverage_report.json ]"),
+                hash_step,
+            )
+            self.assertIn(
+                "if [ -f build/test_coverage_report.json ] && [ -f build/test_coverage_report.md ]; then",
+                step,
+            )
+
     def test_job_has_bounded_runtime(self) -> None:
-        self.assertIn("timeout-minutes: 30", self.source)
+        # FAN-3934: the budget explanation must separate observed from
+        # extrapolated numbers (job 102722773634, run 34429832208). OBSERVED:
+        # 14m52s import warmup (02:33:59-02:48:51), cancelled ~60-minute job,
+        # suites 02:57:17-03:32:02 completing 210 of 537. EXTRAPOLATED at the
+        # observed ~9.9 s/suite: 537 suites ~89 min, full run ~110 min
+        # estimated. The contract pins the 180-minute bound, the observed/
+        # estimated distinction, and the job id, so a silent bump or a
+        # relabelled estimate cannot pass review.
+        self.assertIn("timeout-minutes: 180", self.candidate_job)
+        self.assertIn("34429832208", self.candidate_job)
+        self.assertIn("102722773634", self.candidate_job)
+        self.assertIn("OBSERVED", self.candidate_job)
+        self.assertIn("EXTRAPOLATED", self.candidate_job)
+        self.assertIn("estimated ~110 min", self.candidate_job)
+        # A "measured total" claim for a run that was cancelled is forbidden.
+        self.assertNotIn("measured total", self.candidate_job)
+        # A budget without a bound, or a bound without evidence, must fail.
+        self.assertNotIn("timeout-minutes: 60", self.candidate_job)
+
+    def test_sparse_cone_materializes_vfx_reference_directories(self) -> None:
+        # FAN-3934 CI evidence-input recovery: the scrum895/scrum924 VFX
+        # suites read manifest.json and frame_qa_report.json from their
+        # reference directories at runtime; both directories were absent from
+        # the cone and the suites failed in CI on identical base blobs.
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        for required_path in (
+            "docs/design/references/scrum895_berserk_axe_hammer_vfx",
+            "docs/design/references/scrum924_holy_flail_spiral_vfx",
+        ):
+            self.assertIn(f"          {required_path}\n", checkout)
+            self.assertTrue((ROOT / required_path / "manifest.json").is_file())
+            self.assertTrue((ROOT / required_path / "frame_qa_report.json").is_file())
+
+    def test_sparse_cone_materializes_a5_fragment_inputs(self) -> None:
+        # FAN-3934 CI repair (run 34715975730): the atlas attribution suite
+        # reads a tracked fragment that the old cone never materialized; the
+        # offensive fragments had the same latent gap. The cone must include
+        # the whole fragments subtree so both required inputs exist on the
+        # runner without relying on a full checkout.
+        checkout_end = self.candidate_job.index("- uses: actions/setup-python@v6")
+        checkout = self.candidate_job[:checkout_end]
+        self.assertIn(
+            "docs/design/reports/fan1438_a5_balance/fragments\n",
+            checkout,
+        )
+        # Failure case: the pre-repair cone (explicit conditional/defensive
+        # files only) must be recognized as missing the required inputs.
+        repaired = checkout.replace(
+            "            # FAN-3934 CI repair: the whole fragments subtree must be\n"
+            "            # materialized — the atlas attribution suite reads\n"
+            "            # fragments/ultimate_atlas/… and the offensive fragments are the\n"
+            "            # same latent gap (run 34715975730, job 103613162708).\n"
+            "            docs/design/reports/fan1438_a5_balance/fragments\n",
+            "            docs/design/reports/fan1438_a5_balance/fragments/conditional/conditional_final_convergence.json\n"
+            "            docs/design/reports/fan1438_a5_balance/fragments/defensive/defensive_reactive_qol.json\n",
+        )
+        self.assertNotEqual(repaired, checkout, "pre-repair cone reconstruction failed")
+        self.assertNotIn(
+            "docs/design/reports/fan1438_a5_balance/fragments\n",
+            repaired,
+        )
+        # Both required fragment-backed inputs live under the included subtree.
+        fragments = ROOT / "docs/design/reports/fan1438_a5_balance/fragments"
+        self.assertTrue((fragments / "ultimate_atlas/ultimate_atlas_attribution.json").is_file())
+        self.assertTrue((fragments / "offensive/offensive_family_ab.json").is_file())
+
+    def test_shallow_candidates_fetch_a5_integrity_provenance_commits(self) -> None:
+        # The A5 balance integrity suite resolves the shipped dataset's
+        # raw/legacy and supplemental provenance commits as exact ancestors
+        # (run 34429832208 failed all four provenance checks on the depth-2
+        # checkout). Both commits must be pinned AND fed into the bounded
+        # ancestor-deepening loop.
+        for commit in (
+            "be90b38df38788fc53190c862a873f4aab80ea28",
+            "055aad7cc6fce8dfc1210ae3ea63b91de1401142",
+        ):
+            self.assertIn(commit, self.candidate_job)
+            self.assertIn(f'grep -qxF {commit} "$sources_file"', self.candidate_job)
+        # Failure case: a workflow pinning the commits but skipping the
+        # deepening feed would still fail ancestor resolution in CI.
+        without_feed = self.candidate_job.replace('grep -qxF be90b38df38788fc53190c862a873f4aab80ea28 "$sources_file"', "")
+        self.assertNotEqual(without_feed, self.candidate_job)
 
     def test_ci_dependencies_are_installed_before_quality_gate(self) -> None:
         self.assertEqual(CI_REQUIREMENTS.read_text(encoding="utf-8").splitlines(), [
@@ -54,28 +312,36 @@ class QualityWorkflowContractTests(unittest.TestCase):
     def test_candidate_events_execute_godot_suites(self) -> None:
         # `--static-only` selects zero Godot tests by contract, so a gate that
         # ran it on every trigger certified the whole game as green without
-        # executing one game test.  Candidate events run the changed profile.
-        for base in (
+        # executing one game test. Candidate events must use the fetched
+        # integration ref, which is the only certifying changed-profile base.
+        canonical_gate = (
+            'python3 tools/quality_gate.py --profile changed '
+            '--changed-ref origin/dev'
+        )
+        self.assertEqual(self.candidate_job.count(canonical_gate), 2)
+        for raw_base in (
             "${{ github.event.pull_request.base.sha }}",
             "${{ github.event.merge_group.base_sha }}",
         ):
-            self.assertIn(
-                f'python3 tools/quality_gate.py --profile changed --changed-ref "{base}"',
-                self.source,
+            self.assertNotIn(
+                f'python3 tools/quality_gate.py --profile changed --changed-ref "{raw_base}"',
+                self.candidate_job,
             )
             self.assertNotIn(
-                f'python3 tools/quality_gate.py --static-only --changed-ref "{base}"',
-                self.source,
+                f'python3 tools/quality_gate.py --static-only --changed-ref "{raw_base}"',
+                self.candidate_job,
             )
 
     def test_push_keeps_the_cheaper_static_profile(self) -> None:
         # Push to dev revalidates an already-gated candidate, so it stays on the
-        # static profile and skips the engine entirely.
+        # static profile and skips the engine entirely. The changed-ref must be
+        # the literal configured integration ref: quality_gate.py rejects any
+        # other ref (including github.event.before) as QUALITY NON-CERTIFYING.
         self.assertIn(
-            'python3 tools/quality_gate.py --static-only'
-            ' --changed-ref "${{ github.event.before }}"',
+            'python3 tools/quality_gate.py --static-only --changed-ref origin/dev',
             self.source,
         )
+        self.assertNotIn("github.event.before", self.source)
         self.assertIn("if: github.event_name != 'push'", self.source)
 
     def test_godot_toolchain_is_pinned_verified_and_cached(self) -> None:
@@ -133,6 +399,61 @@ class QualityWorkflowContractTests(unittest.TestCase):
             self.source,
         )
 
+    def test_cold_godot_cache_restores_tracked_import_sidecars(self) -> None:
+        start = self.source.index(
+            "- name: Warm Godot import cache without tracked sidecar changes"
+        )
+        end = self.source.index(
+            "- name: Repository and Python gates (push range)",
+            start,
+        )
+        warmup = self.source[start:end]
+
+        self.assertIn(
+            "if: github.event_name != 'push' && steps.godot-import-cache.outputs.cache-hit != 'true'",
+            warmup,
+        )
+        self.assertIn(
+            "python3 tools/godot_gate.py --headless --path . --ensure-import-cache",
+            warmup,
+        )
+        self.assertIn(
+            "git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import'",
+            warmup,
+        )
+        self.assertIn(
+            'changed_imports_file="$RUNNER_TEMP/changed-import-sidecars"',
+            warmup,
+        )
+        self.assertIn(
+            ' > "$changed_imports_file"',
+            warmup,
+        )
+        self.assertIn(
+            'done < "$changed_imports_file"',
+            warmup,
+        )
+        self.assertNotIn(
+            "done < <(git diff --name-only -z --diff-filter=ACMRTUXB -- '*.import')",
+            warmup,
+        )
+        materialization_start = self.source.index(
+            "- name: Materialize manifest-declared LFS evidence"
+        )
+        materialization_end = self.source.index(
+            "- name: Assert exact candidate SHA",
+            materialization_start,
+        )
+        materialization = self.source[materialization_start:materialization_end]
+        self.assertIn(
+            'git update-index --refresh -- "${evidence_paths[@]}" >/dev/null 2>&1 || true',
+            materialization,
+        )
+        self.assertIn(
+            'git restore --worktree --source=HEAD -- "$path"',
+            warmup,
+        )
+
     def test_candidate_evidence_must_show_executed_godot_suites(self) -> None:
         # The gate exits non-zero on a red suite, so the only way the old bug
         # can come back is a green run whose evidence lists no Godot test.
@@ -149,10 +470,51 @@ class QualityWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("--script", self.source)
         self.assertNotIn("$GODOT_DIR/godot --headless", self.source)
 
+    def test_full_profile_health_jobs_budget_resources_and_resolve_base(self) -> None:
+        shards_start = self.source.index("  dev-runtime-health-godot:\n")
+        summary_start = self.source.index("  dev-runtime-health:\n", shards_start)
+        shards = self.source[shards_start:summary_start]
+        summary = self.source[summary_start:]
+
+        before_cache = "Capture resource diagnostics before cache and swap"
+        before_gate = "Capture resource diagnostics before full-profile gate"
+        post_shard = "Capture post-shard resource diagnostics"
+        self.assertIn(before_cache, shards)
+        self.assertIn(before_gate, shards)
+        self.assertIn(post_shard, shards)
+        self.assertLess(shards.index(before_cache), shards.index("Restore Godot import cache"))
+        self.assertLess(shards.index(before_cache), shards.index("Configure disk-budgeted extra swap"))
+        self.assertLess(shards.index(before_gate), shards.index("Repository, Python and Godot gates (full profile shard)"))
+        self.assertLess(shards.index(post_shard), shards.index("Hash shard quality evidence"))
+        self.assertIn("df --output=avail -B1", shards)
+        self.assertIn("free -m", shards)
+        self.assertIn("min_free_bytes=$((4 * 1024 * 1024 * 1024))", shards)
+        self.assertIn("max_swap_bytes=$((8 * 1024 * 1024 * 1024))", shards)
+        self.assertIn("swap_bytes=$((available_bytes - min_free_bytes))", shards)
+        self.assertIn('sudo fallocate -l "$swap_bytes" "$swap_file"', shards)
+        self.assertNotIn("sudo fallocate -l 8G", shards)
+        self.assertIn("git fetch --no-tags --depth=300 origin", shards)
+        self.assertIn("git fetch --no-tags --depth=1 origin dev:refs/remotes/origin/dev", shards)
+        self.assertIn("Fetch integration base for canonical report", summary)
+        self.assertIn("git fetch --no-tags --depth=1 origin dev:refs/remotes/origin/dev", summary)
+        self.assertLess(summary.index("Fetch integration base for canonical report"), summary.index("Combine static and Godot shard reports"))
+
     def test_required_check_job_id_is_stable(self) -> None:
         # Branch protection binds to the job id: renaming it detaches the
         # required gate without any visible failure.
         self.assertIn("\n  static-quality:\n", self.source)
+
+    def test_visual_negative_probe_captures_its_expected_failure(self) -> None:
+        start = self.source.index("  visual-regression:\n")
+        end = self.source.index("\n  dev-runtime-health-static:\n", start)
+        job = self.source[start:end]
+        probe = job[job.index("- name: Prove a visible mutation is still rejected"):]
+
+        self.assertIn("set +e", probe)
+        self.assertIn("status=$?", probe)
+        self.assertIn('test "$status" -eq 1', probe)
+        self.assertLess(probe.index("set +e"), probe.index("--negative-probe"))
+        self.assertLess(probe.index("--negative-probe"), probe.index("status=$?"))
 
 
 if __name__ == "__main__":

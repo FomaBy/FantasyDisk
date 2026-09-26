@@ -27,12 +27,16 @@ func _initialize() -> void:
 	var half_angle: float = BossScript.SECRET_CONE_HALF_ANGLE
 	if not BossScript.directional_hit("cone", origin, dir, length, half_angle, origin + dir * 300.0):
 		_fail("cone: точка на оси внутри длины должна попадать")
+		return
 	if BossScript.directional_hit("cone", origin, dir, length, half_angle, origin - dir * 200.0):
 		_fail("cone: точка ПОЗАДИ не должна попадать (ориентация телеграфа == зоны)")
+		return
 	if BossScript.directional_hit("cone", origin, dir, length, half_angle, origin + dir.rotated(half_angle + 0.2) * 300.0):
 		_fail("cone: точка ВНЕ раствора не должна попадать")
+		return
 	if BossScript.directional_hit("cone", origin, dir, length, half_angle, origin + dir * (length + 60.0)):
 		_fail("cone: точка ДАЛЬШЕ длины не должна попадать")
+		return
 
 	# --- BEAM (lane) ---
 	var bdir := Vector2.RIGHT.rotated(-1.2)
@@ -41,14 +45,19 @@ func _initialize() -> void:
 	var perp := Vector2(-bdir.y, bdir.x)
 	if not BossScript.directional_hit("beam", origin, bdir, blen, bhw, origin + bdir * 300.0):
 		_fail("beam: точка на оси внутри длины должна попадать")
+		return
 	if not BossScript.directional_hit("beam", origin, bdir, blen, bhw, origin + bdir * 300.0 + perp * (bhw - 10.0)):
 		_fail("beam: точка внутри полуширины должна попадать")
+		return
 	if BossScript.directional_hit("beam", origin, bdir, blen, bhw, origin + bdir * 300.0 + perp * (bhw + 20.0)):
 		_fail("beam: точка ВНЕ полуширины не должна попадать")
+		return
 	if BossScript.directional_hit("beam", origin, bdir, blen, bhw, origin - bdir * 50.0):
 		_fail("beam: точка ПОЗАДИ устья не должна попадать")
+		return
 	if BossScript.directional_hit("beam", origin, bdir, blen, bhw, origin + bdir * (blen + 60.0)):
 		_fail("beam: точка ДАЛЬШЕ длины не должна попадать")
+		return
 
 	# --- telegraph rotation + textured sprite ---
 	var host := Node2D.new()
@@ -59,14 +68,17 @@ func _initialize() -> void:
 		1.0, dir.angle(), Color(0.8, 0.4, 1.0, 1.0), 0.6)
 	if tele == null or not is_instance_valid(tele):
 		_fail("directional_telegraph должен вернуть живой узел")
+		return
 	if not is_equal_approx(tele.rotation, dir.angle()):
 		_fail("directional_telegraph должен повернуть телеграф под направление атаки (fairness)")
+		return
 	var has_tex_sprite := false
 	for child in tele.get_children():
 		if child is Sprite2D and (child as Sprite2D).texture != null:
 			has_tex_sprite = true
 	if not has_tex_sprite:
 		_fail("directional_telegraph должен использовать текстурный спрайт, не голый примитив")
+		return
 
 	HazardVfxScript.directional_detonate(tele, Color(0.8, 0.4, 1.0, 1.0))
 	await process_frame

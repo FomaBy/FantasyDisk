@@ -1,0 +1,12 @@
+{
+  "animation": "idle_south_east",
+  "case": 0,
+  "flip": false,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "72ea44ba2e974174580656dc7cdf1369a79af4c1f7599a7b012efe5babfa14b7",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_1"
+}

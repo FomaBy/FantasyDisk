@@ -66,11 +66,30 @@ const NEUTRAL_ELITE_HEALTH_BARS_LOST := 1.0
 const ENERGY_CHARGE_PER_POINT := 0.025
 const BUILD_CHARGE_MULTIPLIER_CAP := 1.60
 
-# Power corridor: one activation is worth POWER_SECONDS_MIN..POWER_SECONDS_MAX
-# seconds of the weapon's own normal output, or an equally decisive control /
-# defensive save of at least CONTROL_SAVE_MIN_SECONDS.
-const POWER_SECONDS_MIN := 20.0
-const POWER_SECONDS_MAX := 35.0
+# Power corridor (FAN-2949, Ultimate Direction v2): the corridor is priced
+# against the LIVE standard-monster HP in the normalized encounter, not as a
+# flat share of the weapon's own output. One activation is worth
+# POWER_CORRIDOR_K_MIN..POWER_CORRIDOR_K_MAX times the encounter's live pool
+# (reference output x NORMAL_ENCOUNTER_SECONDS). Because that pool is exactly
+# `enemy_count x` one standard monster's HP, the per-enemy share is
+# `k x` a standard monster's HP for EVERY enemy count: the guaranteed
+# per-enemy floor of PER_ENEMY_FLOOR_FRACTION x a standard monster's max
+# HP holds at any crowd size precisely because k_min exceeds the floor. A flat
+# absolute budget cannot do this — a fixed total divided by an unbounded count
+# breaks the floor.
+const POWER_CORRIDOR_K_MIN := 1.0
+const POWER_CORRIDOR_K_MAX := 1.5
+const PER_ENEMY_FLOOR_FRACTION := 0.5
+# Kept as seconds of the weapon's own output for the consumers that price rows
+# and probe pools in those units (the effectiveness runner sizes its probes at
+# POWER_SECONDS_MAX). 30.0 / 45.0 = k x the 30 s canonical window.
+const POWER_SECONDS_MIN := POWER_CORRIDOR_K_MIN * NORMAL_ENCOUNTER_SECONDS
+const POWER_SECONDS_MAX := POWER_CORRIDOR_K_MAX * NORMAL_ENCOUNTER_SECONDS
+# FAN-2949: every damage ultimate hits ALL live enemies in the encounter
+# (on-screen and off-screen); every control/utility ultimate applies its effect
+# to ALL enemies; summon/buff ultimates produce arena-scale presence. Hard
+# target-count caps are prohibited.
+const COVERAGE_ALL_ENEMIES := "all_enemies"
 const POWER_ARCHETYPE_BURST := "burst"
 const POWER_ARCHETYPE_CONTROL_SAVE := "control_save"
 const CONTROL_SAVE_MIN_SECONDS := 4.0
@@ -104,6 +123,31 @@ static func corridor(kind: String) -> Vector2:
 	if kind == ENCOUNTER_NORMAL:
 		return Vector2(NORMAL_CORRIDOR_MIN, NORMAL_CORRIDOR_MAX)
 	return Vector2(ELITE_CORRIDOR_MIN, ELITE_CORRIDOR_MAX)
+
+
+## The live standard-monster HP a normalized encounter of `kind` contains. The
+## corridor is priced as a multiple of THIS pool (FAN-2949), so the budget
+## scales with the enemy count instead of being a flat absolute figure.
+static func live_standard_pool(reference_solo_dps: float, kind := ENCOUNTER_NORMAL) -> float:
+	return reference_solo_dps * encounter_seconds(kind)
+
+
+## What one activation is guaranteed to deliver to EVERY enemy when the whole
+## corridor budget is spread across `enemy_count` live standard monsters. The
+## result is independent of `enemy_count` by construction, which is the proof
+## that the per-enemy floor holds at any crowd size.
+static func per_enemy_guarantee(power_budget: float, live_pool: float, enemy_count: int) -> float:
+	var pool_per_enemy := live_pool / maxf(float(enemy_count), 1.0)
+	var share := power_budget / maxf(float(enemy_count), 1.0)
+	return maxf(share, PER_ENEMY_FLOOR_FRACTION * pool_per_enemy)
+
+
+## The share of the activation budget the whole-activation boss cap leaves
+## standing. Boss HP is excluded from the standard-monster pool the corridor
+## prices, and budget the boss cap refuses is NOT a corridor violation: the
+## boss scenario is judged by total_boss_cap only (FAN-2949).
+static func boss_capped_budget(power_budget: float, boss_pool: float, boss_cap: float) -> float:
+	return minf(power_budget, boss_pool * boss_cap)
 
 
 ## Energy is the amount INVESTED above the class base, so a neutral build is
@@ -189,6 +233,7 @@ static func _row(
 			float(ultimate.get("boss_cap", BOSS_CAP_FALLBACK)), BOSS_CAP_MIN, BOSS_CAP_MAX
 		),
 		"power_archetype": archetype,
+		"coverage": COVERAGE_ALL_ENEMIES,
 		"power_budget_min": reference_dps * POWER_SECONDS_MIN,
 		"power_budget_max": reference_dps * POWER_SECONDS_MAX,
 		"control_save_seconds": duration,

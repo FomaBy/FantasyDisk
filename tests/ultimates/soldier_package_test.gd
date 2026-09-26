@@ -15,9 +15,9 @@ const STAGED_SCRIPT_ROOT := "res://scripts/ultimates/staged/classes/soldier"
 const INVALID_DATA_ROOT := "res://tests/ultimates/fixtures/packages_invalid/data"
 const INVALID_SCRIPT_ROOT := "res://tests/ultimates/fixtures/packages_invalid/scripts"
 const EXPECTED := {
-	"soldier_rifle": {"volley_count": 3, "target_limit": 3},
+	"soldier_rifle": {"volley_count": 3},
 	"soldier_grenade": {"grenade_count": 7, "seed": 1469},
-	"soldier_bayonet": {"rank_count": 3, "target_limit": 18},
+	"soldier_bayonet": {"rank_count": 3},
 }
 
 var _errors: Array[String] = []

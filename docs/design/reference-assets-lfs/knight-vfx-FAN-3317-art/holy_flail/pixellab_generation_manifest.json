@@ -1,0 +1,145 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T18:29:24Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "05d4354b-d4a4-4d37-af06-25b3da2bedc4",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered holy knight flail ultimate VFX prop, radiant silver chain with a heavy morning-star flail head, ivory gold and cobalt holy gems, a circular sacred halo and three distinct chain links, dark fantasy D&D pixel art, top-down isolated weapon effect, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same centered holy knight flail with the radiant silver chain, heavy morning-star head, ivory gold cobalt gems and circular sacred halo with stable proportions and palette; animate an expanding seven-step orbital spiral: chain uncoils from the center, flail head sweeps clockwise through a wide arc, halo rings expand outward, blue-white holy sparks trace the path, the last frame closes the circle with a bright counter pulse, then settle to the clean centered flail pose; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "39b9d39e-ca0c-4df3-9e99-00c8862a9d3b",
+    "canonical_tag": "knight_holy_flail_expanding_spiral"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "file": "holy_flail_f00.png",
+      "bytes": 26333,
+      "encoded_sha256": "e3bcd4742d370404f07bd5f0927d3babdda8a7ae70d1f67ba26e698422cbb47f",
+      "pixel_sha256": "9df99615acee9a5caade3470806d075b8826d223303c5a6a7cff209444d75096",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f00.png",
+      "raw_encoded_sha256": "473161379ca9a0d712d8933459396934bbd54772659fa127a03acbe8295249ec",
+      "raw_pixel_sha256": "4756e441bba509c9e3f0359f44ce809e887e67e53802087ccbed2e78c0fdd618",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 1,
+      "file": "holy_flail_f01.png",
+      "bytes": 28130,
+      "encoded_sha256": "24b5b18487c452dcf5a9ac4e571b6851e11fffab6092f29534c7d9058bc0a5aa",
+      "pixel_sha256": "9842994292227ee3d8859f26d55f687d8318a766b16e4bf7280f5cdfad13e1e6",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f01.png",
+      "raw_encoded_sha256": "4536dfb8f7768cd19ed63ab7390c13f856a1202151ce9bf98fadfd18aa016fe8",
+      "raw_pixel_sha256": "a19627d3f44507b96eee20d1209b9b964227253961e24b1c7528fd53b76668c4",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 2,
+      "file": "holy_flail_f02.png",
+      "bytes": 29148,
+      "encoded_sha256": "3935254292862c6a6c2949f05c15818e7add2ad63de63897f80ec26cad98e805",
+      "pixel_sha256": "414d74aaa715699576295a2df96016bdce92b8f79e248e45c64625d16f5d4fb8",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f02.png",
+      "raw_encoded_sha256": "41e6879128c3b540fc54c12ee4022916e47d45204c8fffa9d67011a047070d77",
+      "raw_pixel_sha256": "d2d5ae2b570b8d025e69653ec8045df870bee40db14add063c65978c4fc5b437",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 3,
+      "file": "holy_flail_f03.png",
+      "bytes": 33724,
+      "encoded_sha256": "cd4919062eca4cf4397cd46487c1c00c98f33c3c65ab93d402a5249b333ab3a6",
+      "pixel_sha256": "0bce80088fcfe051b6cc5aa8d3fb2b3ed3f786f8d3fa683dacfa5176081eb1ec",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f03.png",
+      "raw_encoded_sha256": "e63b2dc3830e791e6db38f7c06dfa80779a7caa759f407a87882ee4d0cd354e4",
+      "raw_pixel_sha256": "ea68592249f60dd418b6e49e072997148a8ddd6732df953c5ad6e096d4a42973",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 4,
+      "file": "holy_flail_f04.png",
+      "bytes": 28805,
+      "encoded_sha256": "4ce2076124a1878a53968b7aca766f07148ab135a88a0cf4f4df25faca7f9323",
+      "pixel_sha256": "b43e65c53c8fe2e3c430cce86e1602043056609d98017ada752dafc06a51231a",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f04.png",
+      "raw_encoded_sha256": "123f16dad7add0d28c91a13e884edc5efcbbdd4374119ca451fed9204189e5bc",
+      "raw_pixel_sha256": "4a95aee80d8672b6d7c8c7db71cd747273b74a0a2b521e241720aa3b48f28dd4",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 5,
+      "file": "holy_flail_f05.png",
+      "bytes": 27696,
+      "encoded_sha256": "6195a96663ee11a4b64c760e6e3a8b51843d10a7aed21be247e9ff7d3a4ec6a2",
+      "pixel_sha256": "91fb8c1b30253016c2e8d1f05bec4ef18b0c6e5bb34bf6db590ef473d85ecb8c",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f05.png",
+      "raw_encoded_sha256": "01f7d36aca23980a3799a881ebb7f569c2a7d44245e5ed1eabebc77368a170fd",
+      "raw_pixel_sha256": "7778a3d16691c4a050cfac513ef172c2d7b33ac293160b7f083a029217b31eb4",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 6,
+      "file": "holy_flail_f06.png",
+      "bytes": 31555,
+      "encoded_sha256": "2a6512deb7e3a564615573a460757a95815a6eb5604b1e608d146ea64755bc73",
+      "pixel_sha256": "1b204136a426fc0fe85b6f877026d01c0db6b2d3e8b608ff5cc283f2ce620cb0",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f06.png",
+      "raw_encoded_sha256": "0c7d8a00448cab6c1418822bd7122362b32ddb58b41434ff916ae519e6e7fb00",
+      "raw_pixel_sha256": "b2624c4d3773b9b1f26ac6333a71a0f26278acd78ad389bd6a8cda2d3ab9045f",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 7,
+      "file": "holy_flail_f07.png",
+      "bytes": 31723,
+      "encoded_sha256": "e17570b434cff091a0ea2bb1d5bad991eca7053c9d30f26fe2c03d3c2536d8b4",
+      "pixel_sha256": "8188aa4bf7075e82e8b0bdaa3eb496b927e8e52bb54b0829cc5fdf83b17f9b47",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f07.png",
+      "raw_encoded_sha256": "70bc4f2ff29f61f5fe302f0618b5b3dd7f25972e2e3bc880ccde4c9b58fdf4ad",
+      "raw_pixel_sha256": "0170f49b9d425115bb056f980bd30b9a8fca0b32d19d684745237aa8e10d8c0e",
+      "pixel_lab_url_kind": "template"
+    },
+    {
+      "index": 8,
+      "file": "holy_flail_f08.png",
+      "bytes": 27596,
+      "encoded_sha256": "fdc5905e4cb51d02dc70bd4b13b988463628c50f6d44ffe06d5fd3e9150b2741",
+      "pixel_sha256": "60a018a29017b684687999d89ba874b654d5e5132cce7dd4d0387c5c1512cefa",
+      "raw_file": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw/holy_flail_f08.png",
+      "raw_encoded_sha256": "90026d84b399fe2ed14838785aaa655622f7a9722235e295b512ad976f6aa116",
+      "raw_pixel_sha256": "b88de506924ecdef291ff64440ed8ef97ab61ca3895688660fd7d64416302d01",
+      "pixel_lab_url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "canonical_tag": "knight_holy_flail_expanding_spiral",
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail",
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw",
+    "runtime_dir": "assets/sprites/effects/knight/holy_flail",
+    "spriteframes": "assets/sprites/effects/knight/holy_flail/holy_flail_spriteframes.tres",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/contact_sheet.png"
+  },
+  "postprocess": {
+    "raw_source_dir": "docs/design/reference-assets-lfs/knight-vfx-FAN-3317-art/holy_flail/raw",
+    "accepted_source_normalization": "uniform 224x224 nearest-neighbor scale centered in transparent 256x256 canvas with 16px nominal outer pad",
+    "runtime_copy": "accepted source frames copied byte-for-byte"
+  },
+  "canonical_ultimate_key": "knight/holy_flail"
+}

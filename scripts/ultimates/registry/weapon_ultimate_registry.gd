@@ -13,14 +13,24 @@ const Resolver := preload("res://scripts/ultimates/registry/weapon_ultimate_reso
 const PackageDiscovery := preload(
 	"res://scripts/ultimates/registry/weapon_ultimate_package_discovery.gd"
 )
+const Text := preload("res://scripts/ultimates/registry/weapon_ultimate_text.gd")
 
 var _documents: Array = []
 var _profiles_by_key: Dictionary = {}
 var _canonical_pairs: Dictionary = {}
 var _errors: Array[String] = []
+var _text_errors: Array[String] = []
 var _package_errors: Array[String] = []
 var _package_executors: Dictionary = {}
 var _package_pairs: Dictionary = {}
+# FAN-3934 lazy executor residency: the runtime registry defers executor script
+# admission to first use (the controller resolves it before charge/activation),
+# so a fight holds only the executors it actually cast instead of all 51. The
+# discovery instance is kept for on-demand admission; a failed admission evicts
+# the pair exactly as eager discovery rejection would, and is remembered so the
+# failure is stable across repeated resolutions.
+var _discovery: PackageDiscovery = null
+var _base_profiles: Dictionary = {}
 
 
 func _init(weapons_by_class: Dictionary = {}) -> void:
@@ -34,20 +44,25 @@ func load_catalog(weapons_by_class: Dictionary) -> void:
 	_package_errors.clear()
 	_package_executors.clear()
 	_package_pairs.clear()
+	_discovery = null
+	_base_profiles.clear()
 	_canonical_pairs = Schema.canonical_pairs(weapons_by_class)
 	_errors.clear()
+	_text_errors.clear()
 	_read_documents()
 	_errors.append_array(Schema.validate_documents(_documents, weapons_by_class))
 	if _errors.is_empty():
 		_profiles_by_key = Schema.index_documents(_documents)
+		_apply_canonical_text()
+		_base_profiles = _profiles_by_key.duplicate(true)
 		var discovery := PackageDiscovery.new()
-		discovery.discover(_profiles_by_key)
+		discovery.discover(_profiles_by_key, true)
+		_discovery = discovery
 		_package_errors = discovery.validation_errors()
 		_package_pairs = discovery.pair_keys()
 		for raw_key in _package_pairs.keys():
 			var key := str(raw_key)
 			_profiles_by_key[key] = discovery.profile_for(key)
-			_package_executors[key] = discovery.executor_for(key)
 
 
 func is_valid() -> bool:
@@ -60,6 +75,19 @@ func validation_errors() -> Array[String]:
 
 func package_validation_errors() -> Array[String]:
 	return _package_errors.duplicate()
+
+
+func text_validation_errors() -> Array[String]:
+	return _text_errors.duplicate()
+
+
+## Player-facing title/mechanics of the SELECTED weapon ultimate. Empty only
+## when the pair is not canonical — the legacy class ultimate is never a text
+## fallback here.
+func ultimate_text(class_id: String, weapon_id: String) -> Dictionary:
+	var profile := catalog_profile_for(class_id, weapon_id)
+	var text = profile.get("text")
+	return text if text is Dictionary else {}
 
 
 func profile_count() -> int:
@@ -103,7 +131,25 @@ func resolve_executable(
 
 
 func executor_for(class_id: String, weapon_id: String):
-	return _package_executors.get(Schema.profile_key(class_id, weapon_id))
+	var key := Schema.profile_key(class_id, weapon_id)
+	if _package_executors.has(key):
+		return _package_executors[key]
+	if _discovery == null or not _package_pairs.has(key):
+		return null
+	# FAN-3934: first-use admission through the same validate_pair seam eager
+	# discovery uses. A resolved executor stays cached for its active lifetime.
+	var executor = _discovery.admit_executor(key)
+	if executor == null:
+		# Fail-closed, matching eager rejection: the pair loses weapon-profile
+		# resolution (activation refuses it before charge) and the base profile
+		# is restored. The outcome is stable on every later call.
+		_package_pairs.erase(key)
+		_profiles_by_key[key] = _base_profiles.get(key, {}).duplicate(true)
+		_package_errors.append_array(_discovery.admission_errors_for(key))
+		return null
+	_package_executors[key] = executor
+	_profiles_by_key[key] = _discovery.profile_for(key)
+	return executor
 
 
 func has_exact_executor_pair(class_id: String, weapon_id: String) -> bool:
@@ -184,6 +230,19 @@ func documents_for_tests() -> Array:
 
 func canonical_pairs_for_tests() -> Dictionary:
 	return _canonical_pairs.duplicate(true)
+
+
+## Canonical text rides on the profile itself, so every consumer that already
+## resolves a profile — HUD, Codex, pause dossier, package overlays — reads the
+## same title/mechanics for the same pair.
+func _apply_canonical_text() -> void:
+	var text_records := Text.records()
+	_text_errors = Text.validate_records(_profiles_by_key.keys(), text_records)
+	for raw_key in _profiles_by_key.keys():
+		var key := str(raw_key)
+		var record = text_records.get(key)
+		(_profiles_by_key[key] as Dictionary)["text"] = \
+			(record as Dictionary).duplicate() if record is Dictionary else {}
 
 
 func _read_documents() -> void:

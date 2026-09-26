@@ -1,0 +1,13 @@
+{
+	"frames": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+	"scale": {
+		"x": 0.38,
+		"y": 0.38
+	},
+	"position": {
+		"x": 0.0,
+		"y": -44.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

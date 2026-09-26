@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T03:14:35Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "612282bd-d2f9-4efa-a60c-e6e0ed2e7ea8",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": null,
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same potion flask stays centered with identical silhouette, scale and palette in every frame; liquid sloshes, healing sigil pulses from dim to bright, small glass shards orbit then settle, with obvious measurable motion between each frame; all frames remain fully inside the transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "restore_potion_cast_flash_f00.png",
+      "bytes": 23149,
+      "url_kind": "template",
+      "encoded_sha256": "404b5e5e8bb6c4a557d3162f4799f6db0e1e4acaa0b5d541353e5a1ce69ac967",
+      "pixel_sha256": "bf282d06fa7b34f2fdb35018020e95fb6c7c5710615385c8ceb576dfdb9ef27b"
+    },
+    {
+      "file": "restore_potion_cast_flash_f01.png",
+      "bytes": 26864,
+      "url_kind": "template",
+      "encoded_sha256": "8027b5dd0eacc7cd6c856b988bac07bcadf53326cab7eafe6516d962fed0310e",
+      "pixel_sha256": "05523db75291136054c56b43a78fca821ab192e1ec24997d0dd278727ffe82d1"
+    },
+    {
+      "file": "restore_potion_cast_flash_f02.png",
+      "bytes": 26140,
+      "url_kind": "template",
+      "encoded_sha256": "35dc7f7061b257c04933c088d8ae5d2830165c03f348fb5646dce57300652030",
+      "pixel_sha256": "0cb0b302b1543d0b371bb8b25cfe53d56a256fb59f15c73ec6df351eafcff697"
+    },
+    {
+      "file": "restore_potion_cast_flash_f03.png",
+      "bytes": 27125,
+      "url_kind": "template",
+      "encoded_sha256": "8586238a41465ca20d81ed3c15ab834e4b8f553915b8c509de07e96846fb184c",
+      "pixel_sha256": "c8caa699cc0fb000157160fd02bd318813a75c47a6d4027ebc1f3d197e9001ff"
+    },
+    {
+      "file": "restore_potion_cast_flash_f04.png",
+      "bytes": 26879,
+      "url_kind": "template",
+      "encoded_sha256": "2af8effa0d646fc8b2dea03381b18ffb0e10c80665f150350e9363bbd329f448",
+      "pixel_sha256": "5d35e3bc4de006e212678a0611079922f32830c0357ebcb76ea05ba1288b728e"
+    },
+    {
+      "file": "restore_potion_cast_flash_f05.png",
+      "bytes": 23203,
+      "url_kind": "template",
+      "encoded_sha256": "c7ecd235715052e9de129cfd985763852eab14dc3d1abef4d1e3eb1889e709ba",
+      "pixel_sha256": "87411ec775158fb539ab9fbb85f6b3e23864300724d6e227a8ce240638676a5b"
+    },
+    {
+      "file": "restore_potion_cast_flash_f06.png",
+      "bytes": 21940,
+      "url_kind": "template",
+      "encoded_sha256": "dc914e3fdb4b48f0f33d0a93bf0113dadac8de812493448c0df9462735cb1ee3",
+      "pixel_sha256": "b650580a11ff729d9702c9c8322a0dcb3d00ab968f2f0d2e843f52827d419442"
+    },
+    {
+      "file": "restore_potion_cast_flash_f07.png",
+      "bytes": 21593,
+      "url_kind": "template",
+      "encoded_sha256": "48a1e7894a8aba23b4d8802f9487ce5442dddb7da1a722e9aea0e521b2d3cbd0",
+      "pixel_sha256": "2b9bf77110f43bc939ec0a01d883c67c80e29e87fc5e9caf09619c834588102f"
+    },
+    {
+      "file": "restore_potion_cast_flash_f08.png",
+      "bytes": 21868,
+      "url_kind": "template",
+      "encoded_sha256": "b18e71f4a90d369ed6a7b3ffab6787ca67bcde958340d5e176686130ce2bf439",
+      "pixel_sha256": "64adeecef8372eb1a779639b7f435bea8bd6e5b28b09656aa0001da7cae1f11f"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

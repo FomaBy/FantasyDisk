@@ -1,0 +1,5 @@
+2026-09-24T02:25:08Z host snapshot during the stalls
+Godot child (pid 76200) at 99% CPU, RSS ~1.1 GB, single core, no open output files; main thread sampled mostly in mutex lock/unlock (symbols stripped).
+WindowServer 22-30% CPU with no Godot running; Spotlight mds/mdworker 15-50% CPU (indexing enabled).
+Memory: 48 GB physical, free ~76%, swap used 2.4 GB of 4 GB. Disk free 302 GB. Display 3024x1964 Retina, session on console, not locked.
+Stall pattern: 648p/720p/1080p complete at normal pace (108 frames in ~90-100 s); the 2560x1440 pass completes 3-9 samples, slows, then spins forever (cancelled after 10-25 min each). Earlier the same script completed 144/144 in 110 s on this host (a38a3bbcd chain).

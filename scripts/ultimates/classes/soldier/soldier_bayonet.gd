@@ -39,7 +39,6 @@ static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
 		"corridor_half_width": {"type": "number", "minimum": 0.0},
-		"target_limit": {"type": "integer", "minimum": 1},
 		"rank_count": {"type": "integer", "minimum": 1},
 		"rank_interval": {"type": "number", "minimum": 0.01},
 		"damage": {"type": "number", "minimum": 0.0},
@@ -62,8 +61,8 @@ static func execute(activation) -> float:
 		"start": "source",
 		"direction": "aim",
 		"length": aim_range,
-		"half_width": activation.param_float("corridor_half_width", 78.0),
-		"limit": activation.param_int("target_limit", 18),
+		"half_width": activation.param_float("corridor_half_width", 99999.0),
+		"limit": 0,
 	}):
 		return 0.0
 	if not Library.execute_primitive("control_resistance_policy", activation, CONTROL_POLICY):
@@ -113,6 +112,7 @@ func charge_rank(rank: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	var rank_count: int = _activation.param_int("rank_count", 3)
+	var victims: Array = []
 	for index in _targets.size():
 		if index % rank_count != rank:
 			continue
@@ -144,10 +144,12 @@ func charge_rank(rank: int) -> void:
 			"soldier_bayonet_hit",
 			false
 		)
+		victims.append(target)
 	_activation.present(EXECUTOR_ID + ".rank", {
 		"shape": "beam",
 		"from": global_position,
 		"to": global_position + _direction * _activation.param_float("max_range", 780.0),
+		"victims": victims,
 	})
 
 

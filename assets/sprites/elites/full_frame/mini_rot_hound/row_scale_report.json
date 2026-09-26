@@ -1,0 +1,7754 @@
+{
+  "idle_east": [
+    {
+      "source": "mini_rot_hound_idle_east.png",
+      "runtime": "mini_rot_hound_idle_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        20,
+        71,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        333,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        423,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "mini_rot_hound_idle_south_east.png",
+      "runtime": "mini_rot_hound_idle_south_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        19,
+        65,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        269,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        391,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "mini_rot_hound_idle_south.png",
+      "runtime": "mini_rot_hound_idle_south.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        13,
+        59,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        312,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "mini_rot_hound_idle_south_west.png",
+      "runtime": "mini_rot_hound_idle_south_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        28,
+        19,
+        81,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        250,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        235,
+        381,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "mini_rot_hound_idle_west.png",
+      "runtime": "mini_rot_hound_idle_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        21,
+        21,
+        89,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        347,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        429,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "mini_rot_hound_idle_north_west.png",
+      "runtime": "mini_rot_hound_idle_north_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        15,
+        81,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "mini_rot_hound_idle_north.png",
+      "runtime": "mini_rot_hound_idle_north.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        59,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "mini_rot_hound_idle_north_east.png",
+      "runtime": "mini_rot_hound_idle_north_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        17,
+        69,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "mini_rot_hound_move_east_00.png",
+      "runtime": "mini_rot_hound_move_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        5,
+        24,
+        73,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        397,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        235,
+        455,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_east_01.png",
+      "runtime": "mini_rot_hound_move_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        24,
+        73,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        41
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        402,
+        239
+      ],
+      "runtime_alpha_bbox": [
+        55,
+        241,
+        457,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_east_02.png",
+      "runtime": "mini_rot_hound_move_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        24,
+        72,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        41
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        397,
+        239
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        241,
+        455,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_east_03.png",
+      "runtime": "mini_rot_hound_move_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        5,
+        26,
+        72,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        39
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        391,
+        228
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        252,
+        451,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_east_04.png",
+      "runtime": "mini_rot_hound_move_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        5,
+        24,
+        72,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        40
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        391,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        247,
+        451,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_east_05.png",
+      "runtime": "mini_rot_hound_move_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        5,
+        25,
+        72,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        39
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        391,
+        228
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        252,
+        451,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "mini_rot_hound_move_south_east_00.png",
+      "runtime": "mini_rot_hound_move_south_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        20,
+        66,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        290,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        111,
+        235,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_east_01.png",
+      "runtime": "mini_rot_hound_move_south_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        20,
+        66,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        285,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        245,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_east_02.png",
+      "runtime": "mini_rot_hound_move_south_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        20,
+        65,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        44
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        285,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        260,
+        399,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_east_03.png",
+      "runtime": "mini_rot_hound_move_south_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        20,
+        67,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        290,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        111,
+        240,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_east_04.png",
+      "runtime": "mini_rot_hound_move_south_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        20,
+        66,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        45
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        290,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        111,
+        255,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_east_05.png",
+      "runtime": "mini_rot_hound_move_south_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        20,
+        67,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        42
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        295,
+        210
+      ],
+      "runtime_alpha_bbox": [
+        108,
+        270,
+        403,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "mini_rot_hound_move_south_00.png",
+      "runtime": "mini_rot_hound_move_south_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        58,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_01.png",
+      "runtime": "mini_rot_hound_move_south_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        57,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        104,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        235,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_02.png",
+      "runtime": "mini_rot_hound_move_south_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        57,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        49
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        104,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        249,
+        308,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_03.png",
+      "runtime": "mini_rot_hound_move_south_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        17,
+        57,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_04.png",
+      "runtime": "mini_rot_hound_move_south_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        58,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        51
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        108,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        240,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_05.png",
+      "runtime": "mini_rot_hound_move_south_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        35,
+        18,
+        57,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        22,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        104,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        204,
+        254,
+        308,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "mini_rot_hound_move_south_west_00.png",
+      "runtime": "mini_rot_hound_move_south_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        21,
+        81,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        276,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        250,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_west_01.png",
+      "runtime": "mini_rot_hound_move_south_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        21,
+        81,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        44
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        276,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        255,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_west_02.png",
+      "runtime": "mini_rot_hound_move_south_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        21,
+        81,
+        62
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        41
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        276,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        271,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_west_03.png",
+      "runtime": "mini_rot_hound_move_south_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        21,
+        81,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        276,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        235,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_west_04.png",
+      "runtime": "mini_rot_hound_move_south_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        21,
+        81,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        276,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        245,
+        394,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_south_west_05.png",
+      "runtime": "mini_rot_hound_move_south_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        21,
+        82,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        281,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        261,
+        397,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "mini_rot_hound_move_west_00.png",
+      "runtime": "mini_rot_hound_move_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        25,
+        87,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        41
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        397,
+        239
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        241,
+        455,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_west_01.png",
+      "runtime": "mini_rot_hound_move_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        24,
+        86,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        40
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        391,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        247,
+        451,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_west_02.png",
+      "runtime": "mini_rot_hound_move_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        24,
+        88,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        40
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        402,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        55,
+        247,
+        457,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_west_03.png",
+      "runtime": "mini_rot_hound_move_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        24,
+        87,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        397,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        235,
+        455,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_west_04.png",
+      "runtime": "mini_rot_hound_move_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        24,
+        87,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        402,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        55,
+        235,
+        457,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_west_05.png",
+      "runtime": "mini_rot_hound_move_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        24,
+        86,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        42
+      ],
+      "scale": 5.833333333333333,
+      "resized_visible_size": [
+        391,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        235,
+        451,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "mini_rot_hound_move_north_west_00.png",
+      "runtime": "mini_rot_hound_move_north_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        22,
+        79,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        275,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        250,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_west_01.png",
+      "runtime": "mini_rot_hound_move_north_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        21,
+        80,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        47
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        280,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        245,
+        396,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_west_02.png",
+      "runtime": "mini_rot_hound_move_north_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        21,
+        79,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        275,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        240,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_west_03.png",
+      "runtime": "mini_rot_hound_move_north_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        21,
+        79,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        275,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        240,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_west_04.png",
+      "runtime": "mini_rot_hound_move_north_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        21,
+        78,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        270,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        121,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_west_05.png",
+      "runtime": "mini_rot_hound_move_north_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        22,
+        78,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        275,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        240,
+        393,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "mini_rot_hound_move_north_00.png",
+      "runtime": "mini_rot_hound_move_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        14,
+        58,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        100,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        247,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_01.png",
+      "runtime": "mini_rot_hound_move_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        13,
+        58,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_02.png",
+      "runtime": "mini_rot_hound_move_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        13,
+        58,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        100,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        235,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_03.png",
+      "runtime": "mini_rot_hound_move_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        15,
+        57,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        23,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        96,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        247,
+        304,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_04.png",
+      "runtime": "mini_rot_hound_move_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        34,
+        14,
+        58,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        100,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        239,
+        306,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_05.png",
+      "runtime": "mini_rot_hound_move_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        57,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        24,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        100,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        239,
+        306,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "mini_rot_hound_move_north_east_00.png",
+      "runtime": "mini_rot_hound_move_north_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        20,
+        67,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        50
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        259,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        244,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_east_01.png",
+      "runtime": "mini_rot_hound_move_north_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        20,
+        67,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        50
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        259,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        244,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_east_02.png",
+      "runtime": "mini_rot_hound_move_north_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        19,
+        67,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        264,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_east_03.png",
+      "runtime": "mini_rot_hound_move_north_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        20,
+        66,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        49
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        259,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        249,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_east_04.png",
+      "runtime": "mini_rot_hound_move_north_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        21,
+        65,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        254,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        254,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_move_north_east_05.png",
+      "runtime": "mini_rot_hound_move_north_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        18,
+        66,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        51
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        259,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        240,
+        385,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "mini_rot_hound_attack_east_00.png",
+      "runtime": "mini_rot_hound_attack_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        36,
+        87,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        320,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        96,
+        244,
+        416,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_east_01.png",
+      "runtime": "mini_rot_hound_attack_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        34,
+        88,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        320,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        96,
+        235,
+        416,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_east_02.png",
+      "runtime": "mini_rot_hound_attack_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        25,
+        35,
+        91,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        51
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        311,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        240,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_east_03.png",
+      "runtime": "mini_rot_hound_attack_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        27,
+        40,
+        97,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        46
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        330,
+        217
+      ],
+      "runtime_alpha_bbox": [
+        91,
+        263,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_east_04.png",
+      "runtime": "mini_rot_hound_attack_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        21,
+        45,
+        100,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        42
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        372,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        282,
+        442,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_east_05.png",
+      "runtime": "mini_rot_hound_attack_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        42,
+        98,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        45
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        358,
+        212
+      ],
+      "runtime_alpha_bbox": [
+        77,
+        268,
+        435,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_east_06.png",
+      "runtime": "mini_rot_hound_attack_east_06.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        25,
+        40,
+        93,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        320,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        96,
+        259,
+        416,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "mini_rot_hound_attack_south_east_00.png",
+      "runtime": "mini_rot_hound_attack_south_east_00.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        27,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        269,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_east_01.png",
+      "runtime": "mini_rot_hound_attack_south_east_01.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        21,
+        27,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_east_02.png",
+      "runtime": "mini_rot_hound_attack_south_east_02.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        23,
+        29,
+        75,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        50
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        245,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        244,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_east_03.png",
+      "runtime": "mini_rot_hound_attack_south_east_03.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        20,
+        31,
+        80,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        283,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        254,
+        397,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_east_04.png",
+      "runtime": "mini_rot_hound_attack_south_east_04.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        31,
+        81,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        306,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        103,
+        254,
+        409,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_east_05.png",
+      "runtime": "mini_rot_hound_attack_south_east_05.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        33,
+        80,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        46
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        302,
+        217
+      ],
+      "runtime_alpha_bbox": [
+        105,
+        263,
+        407,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_east_06.png",
+      "runtime": "mini_rot_hound_attack_south_east_06.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        20,
+        32,
+        78,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        273,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        259,
+        393,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "mini_rot_hound_attack_south_00.png",
+      "runtime": "mini_rot_hound_attack_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        15,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_01.png",
+      "runtime": "mini_rot_hound_attack_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        61,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        54
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        248,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_02.png",
+      "runtime": "mini_rot_hound_attack_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        61,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        52
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        256,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_03.png",
+      "runtime": "mini_rot_hound_attack_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        61,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        47
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        202
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        278,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_04.png",
+      "runtime": "mini_rot_hound_attack_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        18,
+        61,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        48
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        206
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        274,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_05.png",
+      "runtime": "mini_rot_hound_attack_south_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        61,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        48
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        206
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        274,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_06.png",
+      "runtime": "mini_rot_hound_attack_south_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        61,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        46
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        282,
+        312,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "mini_rot_hound_attack_south_west_00.png",
+      "runtime": "mini_rot_hound_attack_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        85,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        250,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_west_01.png",
+      "runtime": "mini_rot_hound_attack_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        83,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        51,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        240,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_west_02.png",
+      "runtime": "mini_rot_hound_attack_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        24,
+        82,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        49
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        311,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        249,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_west_03.png",
+      "runtime": "mini_rot_hound_attack_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        24,
+        83,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        316,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        254,
+        414,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_west_04.png",
+      "runtime": "mini_rot_hound_attack_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        24,
+        85,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        259,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        254,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_west_05.png",
+      "runtime": "mini_rot_hound_attack_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        8,
+        25,
+        85,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        49
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        363,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        249,
+        437,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_south_west_06.png",
+      "runtime": "mini_rot_hound_attack_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        25,
+        85,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        264,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        254,
+        388,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "mini_rot_hound_attack_west_00.png",
+      "runtime": "mini_rot_hound_attack_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        37,
+        37,
+        105,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        347,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_west_01.png",
+      "runtime": "mini_rot_hound_attack_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        35,
+        37,
+        104,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        352,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        235,
+        432,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_west_02.png",
+      "runtime": "mini_rot_hound_attack_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        32,
+        39,
+        100,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        347,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        245,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_west_03.png",
+      "runtime": "mini_rot_hound_attack_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        40,
+        103,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        424,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        44,
+        250,
+        468,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_west_04.png",
+      "runtime": "mini_rot_hound_attack_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        32,
+        42,
+        101,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        352,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        261,
+        432,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_west_05.png",
+      "runtime": "mini_rot_hound_attack_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        31,
+        42,
+        100,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        352,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        261,
+        432,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_west_06.png",
+      "runtime": "mini_rot_hound_attack_west_06.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        32,
+        40,
+        101,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        45
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        352,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        250,
+        432,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "mini_rot_hound_attack_north_west_00.png",
+      "runtime": "mini_rot_hound_attack_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        85,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_west_01.png",
+      "runtime": "mini_rot_hound_attack_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        20,
+        84,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        55
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        245,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        248,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_west_02.png",
+      "runtime": "mini_rot_hound_attack_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        23,
+        23,
+        83,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        52
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        253,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        260,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_west_03.png",
+      "runtime": "mini_rot_hound_attack_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        25,
+        85,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        53
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        275,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        256,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_west_04.png",
+      "runtime": "mini_rot_hound_attack_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        30,
+        84,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        49
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        279,
+        207
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        273,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_west_05.png",
+      "runtime": "mini_rot_hound_attack_north_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        29,
+        83,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        50
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        275,
+        211
+      ],
+      "runtime_alpha_bbox": [
+        118,
+        269,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_west_06.png",
+      "runtime": "mini_rot_hound_attack_north_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        26,
+        82,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        53
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        270,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        121,
+        256,
+        391,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "mini_rot_hound_attack_north_00.png",
+      "runtime": "mini_rot_hound_attack_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        59,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_01.png",
+      "runtime": "mini_rot_hound_attack_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        31,
+        14,
+        61,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        125,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        235,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_02.png",
+      "runtime": "mini_rot_hound_attack_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        16,
+        69,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        57
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        191,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        160,
+        243,
+        351,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_03.png",
+      "runtime": "mini_rot_hound_attack_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        19,
+        74,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        54
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        237,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        256,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_04.png",
+      "runtime": "mini_rot_hound_attack_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        23,
+        75,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        50
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        272,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_05.png",
+      "runtime": "mini_rot_hound_attack_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        21,
+        75,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        52
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        264,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_06.png",
+      "runtime": "mini_rot_hound_attack_north_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        19,
+        65,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        54
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        162,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        175,
+        256,
+        337,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "mini_rot_hound_attack_north_east_00.png",
+      "runtime": "mini_rot_hound_attack_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        71,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_east_01.png",
+      "runtime": "mini_rot_hound_attack_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        20,
+        71,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        55
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        249,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        239,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_east_02.png",
+      "runtime": "mini_rot_hound_attack_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        21,
+        72,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        54
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        254,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        244,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_east_03.png",
+      "runtime": "mini_rot_hound_attack_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        23,
+        73,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        52
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        258,
+        228
+      ],
+      "runtime_alpha_bbox": [
+        127,
+        252,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_east_04.png",
+      "runtime": "mini_rot_hound_attack_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        24,
+        74,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        258,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        127,
+        257,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_east_05.png",
+      "runtime": "mini_rot_hound_attack_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        23,
+        77,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        52
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        271,
+        228
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        252,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_attack_north_east_06.png",
+      "runtime": "mini_rot_hound_attack_north_east_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        22,
+        73,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        53
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        258,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        127,
+        248,
+        385,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "mini_rot_hound_hit_east_00.png",
+      "runtime": "mini_rot_hound_hit_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        36,
+        87,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        333,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_east_01.png",
+      "runtime": "mini_rot_hound_hit_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        21,
+        39,
+        89,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        47
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        333,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        250,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_east_02.png",
+      "runtime": "mini_rot_hound_hit_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        41,
+        92,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        45
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        333,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        259,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_east_03.png",
+      "runtime": "mini_rot_hound_hit_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        21,
+        42,
+        90,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        44
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        338,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        264,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_east_04.png",
+      "runtime": "mini_rot_hound_hit_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        41,
+        89,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        45
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        343,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        259,
+        427,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "mini_rot_hound_hit_south_east_00.png",
+      "runtime": "mini_rot_hound_hit_south_east_00.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        27,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        259,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        244,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_east_01.png",
+      "runtime": "mini_rot_hound_hit_south_east_01.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        17,
+        25,
+        90,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        331,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_east_02.png",
+      "runtime": "mini_rot_hound_hit_south_east_02.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        28,
+        90,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        51
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        336,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        249,
+        424,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_east_03.png",
+      "runtime": "mini_rot_hound_hit_south_east_03.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        18,
+        29,
+        76,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        263,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        253,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_east_04.png",
+      "runtime": "mini_rot_hound_hit_south_east_04.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        22,
+        29,
+        77,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        250,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        253,
+        381,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "mini_rot_hound_hit_south_00.png",
+      "runtime": "mini_rot_hound_hit_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        15,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        110,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        239,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_01.png",
+      "runtime": "mini_rot_hound_hit_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        17,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        55
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        110,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        201,
+        248,
+        311,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_02.png",
+      "runtime": "mini_rot_hound_hit_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        34,
+        15,
+        62,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        118,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        239,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_03.png",
+      "runtime": "mini_rot_hound_hit_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        34,
+        15,
+        62,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        118,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        239,
+        315,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_04.png",
+      "runtime": "mini_rot_hound_hit_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        34,
+        14,
+        62,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        118,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        197,
+        235,
+        315,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "mini_rot_hound_hit_south_west_00.png",
+      "runtime": "mini_rot_hound_hit_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        85,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        240,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        244,
+        376,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_west_01.png",
+      "runtime": "mini_rot_hound_hit_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        23,
+        84,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        309,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        253,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_west_02.png",
+      "runtime": "mini_rot_hound_hit_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        25,
+        83,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        304,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        253,
+        408,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_west_03.png",
+      "runtime": "mini_rot_hound_hit_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        21,
+        83,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        309,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        235,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_south_west_04.png",
+      "runtime": "mini_rot_hound_hit_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        25,
+        83,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        240,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        253,
+        376,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "mini_rot_hound_hit_west_00.png",
+      "runtime": "mini_rot_hound_hit_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        37,
+        37,
+        105,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        340,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        240,
+        426,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_west_01.png",
+      "runtime": "mini_rot_hound_hit_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        34,
+        39,
+        102,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        46
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        340,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        250,
+        426,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_west_02.png",
+      "runtime": "mini_rot_hound_hit_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        40,
+        102,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        45
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        415,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        255,
+        463,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_west_03.png",
+      "runtime": "mini_rot_hound_hit_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        15,
+        36,
+        103,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        49
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        440,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        36,
+        235,
+        476,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_west_04.png",
+      "runtime": "mini_rot_hound_hit_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        14,
+        40,
+        105,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        45
+      ],
+      "scale": 5.0,
+      "resized_visible_size": [
+        455,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        28,
+        255,
+        483,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "mini_rot_hound_hit_north_west_00.png",
+      "runtime": "mini_rot_hound_hit_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        85,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        58
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        233,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        247,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_west_01.png",
+      "runtime": "mini_rot_hound_hit_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        83,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_west_02.png",
+      "runtime": "mini_rot_hound_hit_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        21,
+        83,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        58
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        237,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        247,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_west_03.png",
+      "runtime": "mini_rot_hound_hit_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        20,
+        27,
+        85,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        52
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        261,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        126,
+        271,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_west_04.png",
+      "runtime": "mini_rot_hound_hit_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        19,
+        30,
+        85,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        49
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        265,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        283,
+        389,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "mini_rot_hound_hit_north_00.png",
+      "runtime": "mini_rot_hound_hit_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        59,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_01.png",
+      "runtime": "mini_rot_hound_hit_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        30,
+        17,
+        62,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        32,
+        52
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        133,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        264,
+        323,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_02.png",
+      "runtime": "mini_rot_hound_hit_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        20,
+        68,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        44,
+        50
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        183,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        272,
+        347,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_03.png",
+      "runtime": "mini_rot_hound_hit_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        23,
+        73,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        52
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        228,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        264,
+        370,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_04.png",
+      "runtime": "mini_rot_hound_hit_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        22,
+        77,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        53
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        262,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        260,
+        387,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "mini_rot_hound_hit_north_east_00.png",
+      "runtime": "mini_rot_hound_hit_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        71,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_east_01.png",
+      "runtime": "mini_rot_hound_hit_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        21,
+        73,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        54
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        258,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        127,
+        244,
+        385,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_east_02.png",
+      "runtime": "mini_rot_hound_hit_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        24,
+        74,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        262,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        257,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_east_03.png",
+      "runtime": "mini_rot_hound_hit_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        26,
+        76,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        49
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        267,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        266,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_hit_north_east_04.png",
+      "runtime": "mini_rot_hound_hit_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        26,
+        75,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        49
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        262,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        266,
+        387,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "mini_rot_hound_death_east_00.png",
+      "runtime": "mini_rot_hound_death_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        36,
+        87,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        333,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_east_01.png",
+      "runtime": "mini_rot_hound_death_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        38,
+        90,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        343,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        245,
+        427,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_east_02.png",
+      "runtime": "mini_rot_hound_death_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        21,
+        39,
+        92,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        47
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        348,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        250,
+        430,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_east_03.png",
+      "runtime": "mini_rot_hound_death_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        49,
+        97,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        35
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        368,
+        172
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        308,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_east_04.png",
+      "runtime": "mini_rot_hound_death_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        54,
+        105,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        34
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        421,
+        167
+      ],
+      "runtime_alpha_bbox": [
+        46,
+        313,
+        467,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_east_05.png",
+      "runtime": "mini_rot_hound_death_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        60,
+        105,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        28
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        426,
+        137
+      ],
+      "runtime_alpha_bbox": [
+        43,
+        343,
+        469,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_east_06.png",
+      "runtime": "mini_rot_hound_death_east_06.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        62,
+        105,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        26
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        426,
+        127
+      ],
+      "runtime_alpha_bbox": [
+        43,
+        353,
+        469,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "mini_rot_hound_death_south_east_00.png",
+      "runtime": "mini_rot_hound_death_south_east_00.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        27,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        269,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_east_01.png",
+      "runtime": "mini_rot_hound_death_south_east_01.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        20,
+        32,
+        77,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        269,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        259,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_east_02.png",
+      "runtime": "mini_rot_hound_death_south_east_02.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        26,
+        31,
+        80,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        254,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        254,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_east_03.png",
+      "runtime": "mini_rot_hound_death_south_east_03.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        19,
+        37,
+        86,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        40
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        316,
+        188
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        292,
+        414,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_east_04.png",
+      "runtime": "mini_rot_hound_death_south_east_04.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        13,
+        51,
+        94,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        28
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        382,
+        132
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        348,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_east_05.png",
+      "runtime": "mini_rot_hound_death_south_east_05.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        13,
+        52,
+        94,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        27
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        382,
+        127
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        353,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_east_06.png",
+      "runtime": "mini_rot_hound_death_south_east_06.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        14,
+        52,
+        94,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        27
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        377,
+        127
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        353,
+        445,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "mini_rot_hound_death_south_00.png",
+      "runtime": "mini_rot_hound_death_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        15,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        235,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_01.png",
+      "runtime": "mini_rot_hound_death_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        18,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        54
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        112,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        200,
+        248,
+        312,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_02.png",
+      "runtime": "mini_rot_hound_death_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        32,
+        21,
+        62,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        51
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        129,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        261,
+        321,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_03.png",
+      "runtime": "mini_rot_hound_death_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        28,
+        33,
+        67,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        39,
+        40
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        168,
+        172
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        308,
+        340,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_04.png",
+      "runtime": "mini_rot_hound_death_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        22,
+        40,
+        74,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        34
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        224,
+        146
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        334,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_05.png",
+      "runtime": "mini_rot_hound_death_south_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        51,
+        84,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        26
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        305,
+        112
+      ],
+      "runtime_alpha_bbox": [
+        104,
+        368,
+        409,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_06.png",
+      "runtime": "mini_rot_hound_death_south_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        50,
+        83,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        28
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        301,
+        120
+      ],
+      "runtime_alpha_bbox": [
+        106,
+        360,
+        407,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "mini_rot_hound_death_south_west_00.png",
+      "runtime": "mini_rot_hound_death_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        85,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        250,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_west_01.png",
+      "runtime": "mini_rot_hound_death_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        30,
+        27,
+        83,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        48
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        250,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        131,
+        254,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_west_02.png",
+      "runtime": "mini_rot_hound_death_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        28,
+        26,
+        82,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        47
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        254,
+        221
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        259,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_west_03.png",
+      "runtime": "mini_rot_hound_death_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        22,
+        37,
+        88,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        37
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        311,
+        174
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        306,
+        411,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_west_04.png",
+      "runtime": "mini_rot_hound_death_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        48,
+        89,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        30
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        344,
+        141
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        339,
+        428,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_west_05.png",
+      "runtime": "mini_rot_hound_death_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        50,
+        88,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        29
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        339,
+        137
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        343,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_south_west_06.png",
+      "runtime": "mini_rot_hound_death_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        52,
+        89,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        27
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        349,
+        127
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        353,
+        431,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "mini_rot_hound_death_west_00.png",
+      "runtime": "mini_rot_hound_death_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        37,
+        37,
+        105,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        347,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_west_01.png",
+      "runtime": "mini_rot_hound_death_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        33,
+        39,
+        104,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        46
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        362,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        75,
+        245,
+        437,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_west_02.png",
+      "runtime": "mini_rot_hound_death_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        30,
+        42,
+        102,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        368,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        261,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_west_03.png",
+      "runtime": "mini_rot_hound_death_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        26,
+        45,
+        101,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        40
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        383,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        64,
+        276,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_west_04.png",
+      "runtime": "mini_rot_hound_death_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        45,
+        105,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        43
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        434,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        39,
+        261,
+        473,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_west_05.png",
+      "runtime": "mini_rot_hound_death_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        56,
+        105,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        32
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        434,
+        163
+      ],
+      "runtime_alpha_bbox": [
+        39,
+        317,
+        473,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_west_06.png",
+      "runtime": "mini_rot_hound_death_west_06.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        61,
+        106,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        27
+      ],
+      "scale": 5.104166666666667,
+      "resized_visible_size": [
+        439,
+        138
+      ],
+      "runtime_alpha_bbox": [
+        36,
+        342,
+        475,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "mini_rot_hound_death_north_west_00.png",
+      "runtime": "mini_rot_hound_death_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        85,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_west_01.png",
+      "runtime": "mini_rot_hound_death_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        27,
+        85,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        52
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        253,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        260,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_west_02.png",
+      "runtime": "mini_rot_hound_death_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        21,
+        34,
+        84,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        45
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        266,
+        190
+      ],
+      "runtime_alpha_bbox": [
+        123,
+        290,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_west_03.png",
+      "runtime": "mini_rot_hound_death_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        18,
+        41,
+        84,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        37
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        279,
+        156
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        324,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_west_04.png",
+      "runtime": "mini_rot_hound_death_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        14,
+        46,
+        88,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        34
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        313,
+        144
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        336,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_west_05.png",
+      "runtime": "mini_rot_hound_death_north_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        51,
+        88,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        29
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        308,
+        123
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        357,
+        410,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_west_06.png",
+      "runtime": "mini_rot_hound_death_north_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        51,
+        88,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        29
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        308,
+        123
+      ],
+      "runtime_alpha_bbox": [
+        102,
+        357,
+        410,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "mini_rot_hound_death_north_00.png",
+      "runtime": "mini_rot_hound_death_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        59,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        108,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        202,
+        235,
+        310,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_01.png",
+      "runtime": "mini_rot_hound_death_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        31,
+        18,
+        61,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        125,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        194,
+        247,
+        319,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_02.png",
+      "runtime": "mini_rot_hound_death_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        29,
+        21,
+        62,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        33,
+        54
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        137,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        256,
+        325,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_03.png",
+      "runtime": "mini_rot_hound_death_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        26,
+        33,
+        66,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        40,
+        45
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        166,
+        187
+      ],
+      "runtime_alpha_bbox": [
+        173,
+        293,
+        339,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_04.png",
+      "runtime": "mini_rot_hound_death_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        50,
+        72,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        28
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        116
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        364,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_05.png",
+      "runtime": "mini_rot_hound_death_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        52,
+        77,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        27
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        253,
+        112
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        368,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_06.png",
+      "runtime": "mini_rot_hound_death_north_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        50,
+        78,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        29
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        270,
+        120
+      ],
+      "runtime_alpha_bbox": [
+        121,
+        360,
+        391,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "mini_rot_hound_death_north_east_00.png",
+      "runtime": "mini_rot_hound_death_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        71,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_east_01.png",
+      "runtime": "mini_rot_hound_death_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        23,
+        74,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        52
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        262,
+        228
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        252,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_east_02.png",
+      "runtime": "mini_rot_hound_death_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        25,
+        75,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        262,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        257,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_east_03.png",
+      "runtime": "mini_rot_hound_death_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        18,
+        27,
+        78,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        48
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        262,
+        210
+      ],
+      "runtime_alpha_bbox": [
+        125,
+        270,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_east_04.png",
+      "runtime": "mini_rot_hound_death_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        15,
+        32,
+        79,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        44
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        280,
+        192
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        288,
+        396,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_east_05.png",
+      "runtime": "mini_rot_hound_death_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        46,
+        81,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        30
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        298,
+        131
+      ],
+      "runtime_alpha_bbox": [
+        107,
+        349,
+        405,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_death_north_east_06.png",
+      "runtime": "mini_rot_hound_death_north_east_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        52,
+        84,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        25
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        306,
+        109
+      ],
+      "runtime_alpha_bbox": [
+        103,
+        371,
+        409,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_east": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        36,
+        87,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        203,
+        149
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        331,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        34,
+        87,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        52
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        203,
+        155
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        325,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        37,
+        87,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        49
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        203,
+        146
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        334,
+        357,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        32,
+        107,
+        99
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        67
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        272,
+        200
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        280,
+        392,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        24,
+        111,
+        106
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        82
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        278,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        117,
+        235,
+        395,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        43,
+        93,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        43
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        224,
+        128
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        352,
+        368,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_east_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_east_06.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        42,
+        89,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        44
+      ],
+      "scale": 2.9878048780487805,
+      "resized_visible_size": [
+        215,
+        131
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        349,
+        363,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_south_east": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_00.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        16,
+        27,
+        73,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        200,
+        182
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        298,
+        356,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_01.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        17,
+        29,
+        74,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        50
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        200,
+        175
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        305,
+        356,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_02.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        18,
+        29,
+        87,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        53
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        242,
+        186
+      ],
+      "runtime_alpha_bbox": [
+        135,
+        294,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_03.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        19,
+        30,
+        89,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        56
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        245,
+        196
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        284,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_04.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        19,
+        22,
+        100,
+        92
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        70
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        284,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        235,
+        398,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_05.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        19,
+        31,
+        91,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        51
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        252,
+        178
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        302,
+        382,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_east_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_east_06.png",
+      "source_size": [
+        108,
+        108
+      ],
+      "source_alpha_bbox": [
+        18,
+        29,
+        75,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        50
+      ],
+      "scale": 3.5,
+      "resized_visible_size": [
+        200,
+        175
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        305,
+        356,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_south": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        15,
+        61,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        57
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        101,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        258,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        35,
+        16,
+        61,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        55
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        101,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        206,
+        266,
+        307,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        27,
+        18,
+        68,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        41,
+        48
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        159,
+        187
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        293,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        18,
+        21,
+        77,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        57
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        229,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        258,
+        371,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        17,
+        19,
+        77,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        63
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        233,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        29,
+        18,
+        67,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        49
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        148,
+        191
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        289,
+        330,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        33,
+        17,
+        63,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        30,
+        54
+      ],
+      "scale": 3.888888888888889,
+      "resized_visible_size": [
+        117,
+        210
+      ],
+      "runtime_alpha_bbox": [
+        198,
+        270,
+        315,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_south_west": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        23,
+        85,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        53,
+        52
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        216,
+        212
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        268,
+        364,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        29,
+        23,
+        84,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        55,
+        50
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        225,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        276,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        16,
+        23,
+        83,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        274,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        119,
+        243,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        15,
+        23,
+        82,
+        78
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        55
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        274,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        119,
+        255,
+        393,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        17,
+        23,
+        82,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        56
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        265,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        251,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        13,
+        23,
+        82,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        282,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        115,
+        235,
+        397,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_south_west_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_south_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        32,
+        24,
+        82,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        50,
+        48
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        204,
+        196
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        284,
+        358,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_west": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        37,
+        37,
+        105,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        48
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        298,
+        210
+      ],
+      "runtime_alpha_bbox": [
+        107,
+        270,
+        405,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        36,
+        103,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        49
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        346,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        83,
+        266,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        37,
+        101,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        48
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        354,
+        210
+      ],
+      "runtime_alpha_bbox": [
+        79,
+        270,
+        433,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        30,
+        101,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        359,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        235,
+        435,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        29,
+        40,
+        105,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        76,
+        44
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        332,
+        192
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        288,
+        422,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        36,
+        38,
+        100,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        46
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        280,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        116,
+        279,
+        396,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_west_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_west_06.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        39,
+        37,
+        104,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        49
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        284,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        114,
+        266,
+        398,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_north_west": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_00.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        19,
+        85,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        239,
+        377,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_01.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        26,
+        18,
+        82,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        56,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        233,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        247,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_02.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        20,
+        82,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        57
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        237,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        243,
+        375,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_03.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        25,
+        22,
+        84,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        245,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        239,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_04.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        24,
+        24,
+        84,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        60,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        249,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        247,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_05.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        13,
+        23,
+        83,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        58
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        291,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        239,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_west_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_west_06.png",
+      "source_size": [
+        100,
+        100
+      ],
+      "source_alpha_bbox": [
+        27,
+        22,
+        85,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        241,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        136,
+        235,
+        377,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_north": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        33,
+        14,
+        59,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        26,
+        59
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        90,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        211,
+        276,
+        301,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        32,
+        16,
+        60,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        28,
+        51
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        97,
+        176
+      ],
+      "runtime_alpha_bbox": [
+        208,
+        304,
+        305,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        14,
+        76,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        52
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        204,
+        179
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        301,
+        358,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        24,
+        20,
+        69,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        45,
+        50
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        155,
+        173
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        307,
+        333,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        23,
+        22,
+        69,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        46,
+        50
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        159,
+        173
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        307,
+        335,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        10,
+        81,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        71
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        248,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        380,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_06.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        27,
+        20,
+        65,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        38,
+        52
+      ],
+      "scale": 3.4507042253521125,
+      "resized_visible_size": [
+        131,
+        179
+      ],
+      "runtime_alpha_bbox": [
+        190,
+        301,
+        321,
+        480
+      ]
+    }
+  ],
+  "skill_shadow_strike_north_east": [
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_00.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_00.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        19,
+        71,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_01.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_01.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        14,
+        20,
+        72,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        55
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        254,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        129,
+        239,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_02.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_02.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        21,
+        79,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        54
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        289,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        244,
+        401,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_03.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_03.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        12,
+        24,
+        80,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        298,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        107,
+        257,
+        405,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_04.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_04.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        25,
+        74,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        50
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        267,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        261,
+        389,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_05.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_05.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        13,
+        25,
+        80,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        50
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        293,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        110,
+        261,
+        403,
+        480
+      ]
+    },
+    {
+      "source": "mini_rot_hound_skill_shadow_strike_north_east_06.png",
+      "runtime": "mini_rot_hound_skill_shadow_strike_north_east_06.png",
+      "source_size": [
+        96,
+        96
+      ],
+      "source_alpha_bbox": [
+        12,
+        24,
+        74,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        271,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        257,
+        391,
+        480
+      ]
+    }
+  ]
+}

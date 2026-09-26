@@ -1,4 +1,17 @@
-extends RefCounted
+extends Node2D
+
+## Ultimate Direction v2 (FAN-3285): every feedback pulse and the overload
+## reach every live enemy on the map, on screen and off — `amp_radius` and
+## `square_half_side` are presentation only, never reach.
+##
+## Doubles as the root script of the authored presentation scene
+## (GuitaristSoundAmpWallOfSound.tscn): the static half executes the
+## mechanics, the instance half receives beat payloads while the scene is the
+## live channel and plays the shared per-victim impact for the enemies each
+## pulse and the overload actually struck.
+
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.guitarist.sound_amp"
 const EXECUTOR_ID := "weapon_ultimate.executor.guitarist.sound_amp"
@@ -10,6 +23,9 @@ const CONTROL_POLICY := {
 	"boss": {"displacement_multiplier": 0.0, "duration_multiplier": 0.25, "allow_movement_lock": false, "allow_execute": false},
 }
 
+var _impacts: Node2D = null
+var _impacts_started := false
+
 
 static func parameter_contract() -> Dictionary:
 	return {
@@ -20,7 +36,6 @@ static func parameter_contract() -> Dictionary:
 		"recovery_tail": {"type": "number", "minimum": 0.0},
 		"amp_radius": {"type": "number", "minimum": 1.0},
 		"square_half_side": {"type": "number", "minimum": 1.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"feedback_damage": {"type": "number", "minimum": 0.0},
 		"overload_damage": {"type": "number", "minimum": 0.0},
 		"feedback_duration": {"type": "number", "minimum": 0.0},
@@ -74,7 +89,8 @@ static func deploy_stage(activation, state: Dictionary) -> void:
 static func feedback_pulse(activation, state: Dictionary, pulse_index: int) -> void:
 	if activation.is_finished() or not bool(state.get("linked", false)):
 		return
-	for raw_target in _square_targets(activation):
+	var victims: Array = []
+	for raw_target in _live_targets(activation):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -89,17 +105,20 @@ static func feedback_pulse(activation, state: Dictionary, pulse_index: int) -> v
 			"speed_multiplier": activation.param_float("feedback_slow", 0.52),
 			"feedback_field": true,
 		})
+		victims.append(target)
 	state["pulses"] = int(state.get("pulses", 0)) + 1
 	activation.present(EXECUTOR_ID + ".feedback:%d" % pulse_index, {
 		"shape": "ring_pulse", "position": activation.origin(),
 		"radius": activation.param_float("square_half_side", 260.0),
+		"victims": victims,
 	})
 
 
 static func overload(activation, state: Dictionary) -> void:
 	if activation.is_finished() or not bool(state.get("linked", false)):
 		return
-	for raw_target in _square_targets(activation):
+	var victims: Array = []
+	for raw_target in _live_targets(activation):
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
@@ -112,8 +131,43 @@ static func overload(activation, state: Dictionary) -> void:
 		activation.apply_control(target, impulse, "overload:%d" % target.get_instance_id(), {
 			"duration": 0.5, "speed_multiplier": 0.75, "feedback_overload": true,
 		})
-	for point in state["points"] as PackedVector2Array:
-		activation.present(EXECUTOR_ID + ".overload", {"shape": "orb_burst", "position": point, "radius": 120.0})
+		victims.append(target)
+	var points := state["points"] as PackedVector2Array
+	for index in points.size():
+		var payload := {"shape": "orb_burst", "position": points[index], "radius": 120.0}
+		if index == 0:
+			# The overload strikes once; only one of its four point bursts may
+			# carry the victims, or the per-victim ripple would play fourfold.
+			payload["victims"] = victims
+		activation.present(EXECUTOR_ID + ".overload", payload)
+
+
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
+func _exit_tree() -> void:
+	_impacts = null
+	_impacts_started = false
 
 
 static func _amp_points(activation) -> PackedVector2Array:
@@ -124,17 +178,5 @@ static func _amp_points(activation) -> PackedVector2Array:
 	return points
 
 
-static func _square_targets(activation) -> Array:
-	var selected: Array = []
-	var half_side: float = activation.param_float("square_half_side", 260.0)
-	var origin: Vector2 = activation.origin()
-	for raw_target in activation.targets(origin, half_side * sqrt(2.0), 0):
-		var target := raw_target as Node2D
-		if target == null or not is_instance_valid(target):
-			continue
-		var offset: Vector2 = target.global_position - origin
-		if absf(offset.x) <= half_side and absf(offset.y) <= half_side:
-			selected.append(target)
-			if selected.size() >= activation.param_int("crowd_cap", 14):
-				break
-	return selected
+static func _live_targets(activation) -> Array:
+	return activation.select_targets(activation.origin(), INF, 0, "nearest")

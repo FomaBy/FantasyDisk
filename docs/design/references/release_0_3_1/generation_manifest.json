@@ -1,0 +1,120 @@
+{
+  "issue": "FAN-3961",
+  "stage": "PixelLab empty-frame source only",
+  "generated_on": "2026-09-23",
+  "provisional_source_reference": {
+    "commit": "e33bded444e301919dc93c8c9b9f0257e640a1ea",
+    "tree": "9a8401ca1a6dda8a4b446fe45de3fa4f97074426"
+  },
+  "inputs": {
+    "comment_id": "01a0cddd-c9da-7c0e-a600-2c316c62d565",
+    "ui_plan": {
+      "attachment_id": "01a0cddd-c61c-763d-ac68-ca7a9377a948",
+      "file": "inputs/ui_plan.json",
+      "sha256": "08453a8282f17b41098086936ab8cb561aad2c533ccf13ef37d29089e4949d16b",
+      "canvas": [1350, 1350]
+    },
+    "layout": {
+      "attachment_id": "01a0cddd-c71a-70b5-9e85-61a04849791a",
+      "file": "inputs/layout.json",
+      "sha256": "7d506c634d1ded6c6f133101f12cd0d196dbb6f751d5854175095ff3dde1f79b"
+    },
+    "original_prompt": {
+      "attachment_id": "01a0cddd-c8f2-74b2-85f4-ac5e0a13a48c",
+      "file": "inputs/empty_frame_prompt.md",
+      "sha256": "9a245ef1c6d5eb83508e51ae00f853de58e948249085d186cd19826c505085b5"
+    },
+    "source_provenance_attachment_id": "01a0cddd-c45b-702b-ad59-8fef1822fb8f",
+    "source_audit_attachment_id": "01a0cddd-c53a-762a-a767-454fffe16669"
+  },
+  "planning_gate": {
+    "command": "python3 <content-zone-image-compositor>/scripts/validate_ui_layout_plan.py --plan inputs/ui_plan.json --report ui_plan.revalidated.report.json --guide-output ui_plan.guide.png",
+    "decision": "ready_for_image",
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "report_file": "ui_plan.revalidated.report.json",
+    "report_sha256": "960913d7172198fb07ed3e95741cc81e5198f02c1e37382b2b6a8eaf39a1fbef"
+  },
+  "pixel_lab_constraints": {
+    "model": "Pro",
+    "max_square_canvas": [512, 512],
+    "approved_plan_canvas": [1350, 1350],
+    "mapping": "uniform 512/1350; source coordinates and content-zone intent preserved"
+  },
+  "selected_source": {
+    "method": "PixelLab PixelArt Workbench static drawing",
+    "drawing_id": "0d0cbdac-0034-44ca-a495-0d09ee5707b0",
+    "file": "base.png",
+    "download": "https://api.pixellab.ai/mcp/pixel-tools/0d0cbdac-0034-44ca-a495-0d09ee5707b0/assets/poster/full.png",
+    "sha256": "6283bd9afbc0c14b777a16ffaa9c767f4dd0db50fb14bc144f7d13312e6c1892",
+    "size_bytes": 5361,
+    "canvas": [512, 512],
+    "format": "PNG",
+    "alpha": "opaque; alpha range 255..255",
+    "palette_colors": 11,
+    "recipe_file": "pixelart_recipe.json",
+    "recipe_sha256": "8976b8785acca23e719ed43e3688b46fc31ea8dae5a16fd5636b6cd073454ff4"
+  },
+  "zone_verification": {
+    "method": "native-size visual review plus exact RGBA pixel read",
+    "source_inspection_image_id": "99c86db0-592e-4d74-a547-1458230a8d0b",
+    "uniform_rgba": "#211F2BFF",
+    "zones": {
+      "game_title": [42, 47, 125, 47],
+      "version": [193, 47, 125, 47],
+      "release_date": [345, 47, 125, 47],
+      "key_changes": [47, 218, 190, 161],
+      "visual_updates": [275, 218, 190, 161]
+    },
+    "text_or_pseudo_text_observed": false,
+    "ornament_intrusion_observed": false
+  },
+  "rejected_attempts": [
+    {
+      "method": "create_image_pro",
+      "job_id": "c5ce921f-123c-4404-8b2d-98cbef32295f",
+      "asset_id": "1fcfe301-1a67-5dae-8aaa-0c0462b0a3f4",
+      "duration_seconds": 418,
+      "reported_cost_generations": 40,
+      "file": "attempt_1_base.png",
+      "sha256": "f58689f23023fca48633a71e189d0417c5b109504781da82ac3e6b28a5df862d",
+      "reason": "central emblem and panel-frame edges intruded into planned content zones"
+    },
+    {
+      "method": "create_image_pro",
+      "job_id": "6fe03936-6b70-4c2a-9714-ca6f69ac58ca",
+      "asset_id": "886af849-3857-575f-8821-c5ff9df252ee",
+      "duration_seconds": 377,
+      "reported_cost_generations": 40,
+      "file": "attempt_2_base.png",
+      "sha256": "3b07f63af08107524450ef1f152de88ace5d5af3f4388bccfffa65991af306a1",
+      "reason": "central emblem and lower-panel frame edges still intruded"
+    },
+    {
+      "method": "edit_image",
+      "job_id": "f2e74525-6b97-4f31-aef5-34bed06202c0",
+      "asset_id": "632d4654-56b0-5fb6-94df-9c377be0c8ed",
+      "duration_seconds": 73,
+      "reported_cost_generations": "approximately 40",
+      "file": "attempt_3_edit.png",
+      "sha256": "9ed9d126c7708de6e9f3dcb5887dfa38f36b1b2483a0797c7ad56f83ae0e58ef",
+      "reason": "edit retained zone intrusion and added texture inside empty areas"
+    }
+  ],
+  "usage": {
+    "pixel_lab_generations_used_before": 2679,
+    "pixel_lab_generations_used_after": 2799,
+    "net_generations_consumed": 120,
+    "pixel_art_workbench_cost": "free for active subscribers",
+    "money_credits_before_and_after": "$0.00"
+  },
+  "scope_boundary": {
+    "repository_edits": false,
+    "final_text_composite": false,
+    "final_poster_render_or_resize": false,
+    "godot_or_performance_work": false,
+    "candidate_qa_integration_or_publication": false,
+    "next_stage_gate": "terminal FAN-3877 PASSED certification and a refreshed dev source head before final release poster/source work"
+  }
+}

@@ -1,179 +1,1126 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_primary_00.png" id="1_bo1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_primary_01.png" id="2_bo2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_primary_02.png" id="3_bo3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_primary_03.png" id="4_bo4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_primary_04.png" id="5_bo5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_primary_05.png" id="6_bo6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_00.png" id="7_bo7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_01.png" id="8_bo8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_02.png" id="9_bo9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_03.png" id="10_bo10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_04.png" id="11_bo11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_05.png" id="12_bo12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_00.png" id="13_bo13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_01.png" id="14_bo14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_02.png" id="15_bo15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_03.png" id="16_bo16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_04.png" id="17_bo17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_05.png" id="18_bo18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_00.png" id="19_bo19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_01.png" id="20_bo20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_02.png" id="21_bo21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_03.png" id="22_bo22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_04.png" id="23_bo23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_05.png" id="24_bo24"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_east.png" id="1_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_east.png" id="2_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south.png" id="3_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_west.png" id="4_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_west.png" id="5_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_west.png" id="6_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north.png" id="7_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_east.png" id="8_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_00.png" id="9_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_01.png" id="10_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_02.png" id="11_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_03.png" id="12_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_04.png" id="13_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_05.png" id="14_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_00.png" id="15_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_01.png" id="16_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_02.png" id="17_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_03.png" id="18_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_04.png" id="19_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_05.png" id="20_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_00.png" id="21_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_01.png" id="22_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_02.png" id="23_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_03.png" id="24_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_04.png" id="25_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_05.png" id="26_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_00.png" id="27_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_01.png" id="28_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_02.png" id="29_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_03.png" id="30_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_04.png" id="31_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_05.png" id="32_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_00.png" id="33_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_01.png" id="34_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_02.png" id="35_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_03.png" id="36_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_04.png" id="37_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_05.png" id="38_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_00.png" id="39_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_01.png" id="40_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_02.png" id="41_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_03.png" id="42_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_04.png" id="43_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_05.png" id="44_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_00.png" id="45_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_01.png" id="46_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_02.png" id="47_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_03.png" id="48_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_04.png" id="49_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_05.png" id="50_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_00.png" id="51_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_01.png" id="52_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_02.png" id="53_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_03.png" id="54_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_04.png" id="55_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_05.png" id="56_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_00.png" id="57_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_01.png" id="58_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_02.png" id="59_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_03.png" id="60_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_04.png" id="61_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_05.png" id="62_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_00.png" id="63_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_01.png" id="64_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_02.png" id="65_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_03.png" id="66_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_04.png" id="67_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_05.png" id="68_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_00.png" id="69_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_01.png" id="70_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_02.png" id="71_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_03.png" id="72_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_04.png" id="73_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_05.png" id="74_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_00.png" id="75_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_01.png" id="76_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_02.png" id="77_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_03.png" id="78_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_04.png" id="79_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_05.png" id="80_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_00.png" id="81_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_01.png" id="82_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_02.png" id="83_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_03.png" id="84_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_04.png" id="85_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_05.png" id="86_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_00.png" id="87_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_01.png" id="88_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_02.png" id="89_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_03.png" id="90_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_04.png" id="91_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_05.png" id="92_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_00.png" id="93_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_01.png" id="94_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_02.png" id="95_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_03.png" id="96_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_04.png" id="97_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_05.png" id="98_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_00.png" id="99_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_01.png" id="100_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_02.png" id="101_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_03.png" id="102_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_04.png" id="103_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_05.png" id="104_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_00.png" id="105_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_01.png" id="106_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_02.png" id="107_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_03.png" id="108_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_00.png" id="109_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_01.png" id="110_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_02.png" id="111_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_03.png" id="112_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_00.png" id="113_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_01.png" id="114_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_02.png" id="115_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_03.png" id="116_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_00.png" id="117_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_01.png" id="118_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_02.png" id="119_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_03.png" id="120_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_00.png" id="121_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_01.png" id="122_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_02.png" id="123_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_03.png" id="124_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_00.png" id="125_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_01.png" id="126_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_02.png" id="127_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_03.png" id="128_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_00.png" id="129_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_01.png" id="130_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_02.png" id="131_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_03.png" id="132_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_00.png" id="133_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_01.png" id="134_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_02.png" id="135_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_03.png" id="136_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_00.png" id="137_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_01.png" id="138_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_02.png" id="139_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_03.png" id="140_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_04.png" id="141_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_05.png" id="142_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_00.png" id="143_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_01.png" id="144_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_02.png" id="145_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_03.png" id="146_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_04.png" id="147_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_05.png" id="148_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_00.png" id="149_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_01.png" id="150_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_02.png" id="151_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_03.png" id="152_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_04.png" id="153_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_05.png" id="154_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_00.png" id="155_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_01.png" id="156_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_02.png" id="157_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_03.png" id="158_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_04.png" id="159_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_05.png" id="160_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_00.png" id="161_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_01.png" id="162_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_02.png" id="163_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_03.png" id="164_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_04.png" id="165_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_05.png" id="166_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_00.png" id="167_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_01.png" id="168_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_02.png" id="169_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_03.png" id="170_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_04.png" id="171_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_05.png" id="172_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_00.png" id="173_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_01.png" id="174_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_02.png" id="175_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_03.png" id="176_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_04.png" id="177_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_05.png" id="178_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_00.png" id="179_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_01.png" id="180_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_02.png" id="181_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_03.png" id="182_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_04.png" id="183_bc"]
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_05.png" id="184_bc"]
 
 [resource]
-animations = [{
-"frames": [
+animations = [
 {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_bo1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_bo2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_bo3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_bo4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_bo5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_bo6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_bo1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_bo2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_bo3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_bo4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_bo5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_bo6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 14.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("19_bo19")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("20_bo20")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("21_bo21")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("22_bo22")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("23_bo23")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("24_bo24")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_bo13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_bo14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_bo15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_bo16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_bo17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_bo18")
-}
-],
-"loop": false,
-"name": &"hit",
-"speed": 12.0
-}, {
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_bo7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_bo8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_bo9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_bo10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_bo11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_bo12")
-}
-],
+"texture": ExtResource("1_bc")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_bc")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_bc")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_bc")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_bc")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_bc")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_bc")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_bc")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_bc")
+}],
+"loop": true,
+"name": &"move_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("16_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("17_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("19_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("20_bc")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_bc")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_bc")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_bc")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_bc")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_bc")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_bc")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_bc")
+}],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("63_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("65_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_bc")
+}],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("69_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("71_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_bc")
+}],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("75_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_bc")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("81_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("83_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_bc")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("87_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_bc")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("93_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_bc")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_bc")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("105_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_bc")
+}],
+"loop": false,
+"name": &"hit_east",
 "speed": 10.0
-}]
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("109_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_bc")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_bc")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("117_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_bc")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("121_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_bc")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_bc")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("129_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_bc")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_bc")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_bc")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_bc")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_bc")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_bc")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_bc")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_bc")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_bc")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_bc")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_bc")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+}
+]

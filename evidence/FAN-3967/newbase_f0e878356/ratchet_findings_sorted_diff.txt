@@ -1,0 +1,9 @@
+1,6d0
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+< Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.
+8d1
+< Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/druid/druid_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows.

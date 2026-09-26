@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3863",
+  "class_id": "robot",
+  "weapon_id": "robot_reactor_core",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "object_id": "35a4cfcd-3eaa-4fc8-aea4-3b191ef2a5da",
+  "animation_group_id": "cdd8c2ac-41a4-4a91-a3e0-55c97c7eb226",
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_contact_sheet.png",
+    "silhouette": "clear and weapon-specific in every frame",
+    "movement": "plasma heat-up, quarter-turn vent rotation, four radial blades, pulsing heat rings, vent closure and glow contraction",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection",
+    "opaque_background": "none; all four corners are transparent and edges are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f00.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f00.png",
+      "alpha_bbox_gt_8": [
+        49,
+        53,
+        207,
+        200
+      ],
+      "minimum_gutter_px": 49,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15614,
+      "raw_pixel_sha256": "8f7b080fbb00977d34d12f0b6599631cbf96fe4732fa6e6ec909ca8e1701a3af",
+      "source_pixel_sha256": "74bb72e99d2d1d2c1ba308ff05b3cafd472987896cfc238bef3fcc829e636770",
+      "runtime_pixel_sha256": "74bb72e99d2d1d2c1ba308ff05b3cafd472987896cfc238bef3fcc829e636770"
+    },
+    {
+      "index": 1,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f01.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f01.png",
+      "alpha_bbox_gt_8": [
+        53,
+        50,
+        204,
+        203
+      ],
+      "minimum_gutter_px": 50,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15299,
+      "raw_pixel_sha256": "e5c2d185e809e9c15a7c4d9c66b4e8e1fc3ea426e9d9e302137075ffc4883afb",
+      "source_pixel_sha256": "952f4bb77d0f2aba61c90d1c411a9d149437d55dc79afa6692542c8099fa38bc",
+      "runtime_pixel_sha256": "952f4bb77d0f2aba61c90d1c411a9d149437d55dc79afa6692542c8099fa38bc"
+    },
+    {
+      "index": 2,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f02.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f02.png",
+      "alpha_bbox_gt_8": [
+        59,
+        57,
+        197,
+        198
+      ],
+      "minimum_gutter_px": 57,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12944,
+      "raw_pixel_sha256": "82fee761dafad3153061e6cb9bb8a38e7a3c62f264c6d27d356673e3da8e978e",
+      "source_pixel_sha256": "ad7df8e160104cd2d6bd9d73e97a6e4d440772c92de99392b5c69ff4ac1b19dc",
+      "runtime_pixel_sha256": "ad7df8e160104cd2d6bd9d73e97a6e4d440772c92de99392b5c69ff4ac1b19dc"
+    },
+    {
+      "index": 3,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f03.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f03.png",
+      "alpha_bbox_gt_8": [
+        46,
+        50,
+        209,
+        214
+      ],
+      "minimum_gutter_px": 42,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 13222,
+      "raw_pixel_sha256": "2224e65f0fc1dbe406e9cc3e4b6a8f7f7ad1e7f189e3d83d5bb99aea402a6193",
+      "source_pixel_sha256": "aa0ea1b1e2ee086d8aad4c3e6536c7b1a4d300a5656ea100cdb105b8bdd6b245",
+      "runtime_pixel_sha256": "aa0ea1b1e2ee086d8aad4c3e6536c7b1a4d300a5656ea100cdb105b8bdd6b245"
+    },
+    {
+      "index": 4,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f04.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f04.png",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14207,
+      "raw_pixel_sha256": "8cdaaea56a7a13a20b1dc0e56ffdc4e405dc4dcd62ea546cb4e2bd7d28efa180",
+      "source_pixel_sha256": "d021702d95bd4315ff5b40caf36c65f17ff8a40bd35b90aebad3b8b683372738",
+      "runtime_pixel_sha256": "d021702d95bd4315ff5b40caf36c65f17ff8a40bd35b90aebad3b8b683372738"
+    },
+    {
+      "index": 5,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f05.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f05.png",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 16855,
+      "raw_pixel_sha256": "98ce7bd4e8da490ec760e8e2c9f09ad3f4367a660bc1c4749042e32683ee39a5",
+      "source_pixel_sha256": "15a46247b32e6564208670390f3f8e3020a8988274bba200d089a36a9bd2c03d",
+      "runtime_pixel_sha256": "15a46247b32e6564208670390f3f8e3020a8988274bba200d089a36a9bd2c03d"
+    },
+    {
+      "index": 6,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f06.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f06.png",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15732,
+      "raw_pixel_sha256": "2c9358beba51d180e0e0d62fa372c08a105b3a7168cb72092dd6e0d1e1c82159",
+      "source_pixel_sha256": "f7a323d41fe6518c681ad97dc2a9ce9fff01a8dc89abd620caaf5d636349ffaf",
+      "runtime_pixel_sha256": "f7a323d41fe6518c681ad97dc2a9ce9fff01a8dc89abd620caaf5d636349ffaf"
+    },
+    {
+      "index": 7,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f07.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f07.png",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14991,
+      "raw_pixel_sha256": "53dc3e875edcd10739097982c14e7e15f518b7065ee16c42d6faf6018b659032",
+      "source_pixel_sha256": "e809bea862ba749a7d3bfd844a31a87b3415f1ffc83ade48aeacb6d09fd84b0f",
+      "runtime_pixel_sha256": "e809bea862ba749a7d3bfd844a31a87b3415f1ffc83ade48aeacb6d09fd84b0f"
+    },
+    {
+      "index": 8,
+      "raw_file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/raw/reactor_core_f08.png",
+      "file": "docs/design/reference-assets-lfs/robot-vfx-FAN-3320-art/reactor_core/reactor_core_f08.png",
+      "alpha_bbox_gt_8": [
+        40,
+        42,
+        216,
+        214
+      ],
+      "minimum_gutter_px": 40,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14993,
+      "raw_pixel_sha256": "064aaec599209678275a1eceb48dcfa33c28a0fdffdf4a910cf19d0e877588fc",
+      "source_pixel_sha256": "83f8b0b937fba0a16b1b061b0f805dfb46d572fef3049c15704f3491be52d45a",
+      "runtime_pixel_sha256": "83f8b0b937fba0a16b1b061b0f805dfb46d572fef3049c15704f3491be52d45a"
+    }
+  ]
+}

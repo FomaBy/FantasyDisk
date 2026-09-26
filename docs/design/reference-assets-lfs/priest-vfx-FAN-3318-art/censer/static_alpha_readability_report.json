@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3771",
+  "weapon_id": "priest_censer",
+  "runtime_dir": "assets/sprites/effects/priest/priest_censer",
+  "transparent_background": true,
+  "safe_gutter_px": 16,
+  "readability_limits": {
+    "max_alpha_allowed": 220,
+    "center_64_mean_alpha_max": 210,
+    "min_adjacent_motion_ratio": 0.01
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "alpha_bbox": [
+        74,
+        16,
+        182,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 26.1445,
+      "mean_alpha_visible_pixels": 151.9314,
+      "visible_ratio_alpha_gt_8": 0.171829,
+      "center_64_mean_alpha": 175.7058,
+      "outer_32_border_mean_alpha": 2.0078
+    },
+    {
+      "frame": 1,
+      "alpha_bbox": [
+        73,
+        16,
+        182,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 26.5942,
+      "mean_alpha_visible_pixels": 153.7263,
+      "visible_ratio_alpha_gt_8": 0.172729,
+      "center_64_mean_alpha": 176.2502,
+      "outer_32_border_mean_alpha": 2.0743
+    },
+    {
+      "frame": 2,
+      "alpha_bbox": [
+        39,
+        16,
+        217,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 29.622,
+      "mean_alpha_visible_pixels": 151.9994,
+      "visible_ratio_alpha_gt_8": 0.194397,
+      "center_64_mean_alpha": 159.4243,
+      "outer_32_border_mean_alpha": 2.0774
+    },
+    {
+      "frame": 3,
+      "alpha_bbox": [
+        36,
+        16,
+        219,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 30.0519,
+      "mean_alpha_visible_pixels": 151.6609,
+      "visible_ratio_alpha_gt_8": 0.197678,
+      "center_64_mean_alpha": 162.2559,
+      "outer_32_border_mean_alpha": 2.0465
+    },
+    {
+      "frame": 4,
+      "alpha_bbox": [
+        35,
+        16,
+        220,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 29.149,
+      "mean_alpha_visible_pixels": 151.1988,
+      "visible_ratio_alpha_gt_8": 0.192276,
+      "center_64_mean_alpha": 162.2166,
+      "outer_32_border_mean_alpha": 2.0545
+    },
+    {
+      "frame": 5,
+      "alpha_bbox": [
+        36,
+        16,
+        219,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 27.7912,
+      "mean_alpha_visible_pixels": 150.8619,
+      "visible_ratio_alpha_gt_8": 0.183746,
+      "center_64_mean_alpha": 161.2676,
+      "outer_32_border_mean_alpha": 2.0509
+    },
+    {
+      "frame": 6,
+      "alpha_bbox": [
+        82,
+        16,
+        174,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 24.3594,
+      "mean_alpha_visible_pixels": 151.4729,
+      "visible_ratio_alpha_gt_8": 0.160522,
+      "center_64_mean_alpha": 175.7395,
+      "outer_32_border_mean_alpha": 2.035
+    },
+    {
+      "frame": 7,
+      "alpha_bbox": [
+        80,
+        16,
+        175,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 24.9552,
+      "mean_alpha_visible_pixels": 152.6323,
+      "visible_ratio_alpha_gt_8": 0.163223,
+      "center_64_mean_alpha": 176.2866,
+      "outer_32_border_mean_alpha": 2.061
+    },
+    {
+      "frame": 8,
+      "alpha_bbox": [
+        79,
+        16,
+        177,
+        240
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 26.0189,
+      "mean_alpha_visible_pixels": 153.357,
+      "visible_ratio_alpha_gt_8": 0.169403,
+      "center_64_mean_alpha": 175.5662,
+      "outer_32_border_mean_alpha": 2.0063
+    }
+  ],
+  "motion": {
+    "distinct_frame_pixel_hashes": 9,
+    "adjacent_pairs_with_motion": 8,
+    "adjacent_changed_pixel_ratios": [
+      0.171539,
+      0.249496,
+      0.241898,
+      0.234695,
+      0.222717,
+      0.221954,
+      0.163712,
+      0.170837
+    ],
+    "mean_absolute_rgba_diffs": [
+      5.595,
+      21.6827,
+      16.8251,
+      15.6862,
+      13.6191,
+      18.1272,
+      5.3969,
+      6.8373
+    ],
+    "motion_score_mean_changed_pixel_ratio": 0.209606,
+    "loop": false,
+    "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+  },
+  "decision": "pass"
+}

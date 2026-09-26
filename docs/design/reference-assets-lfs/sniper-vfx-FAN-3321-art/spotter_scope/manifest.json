@@ -1,0 +1,540 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3864",
+  "source_brief": "FAN-3321",
+  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "class_id": "sniper",
+  "weapon_id": "sniper_spotter_scope",
+  "title": "Прицел Наводчика",
+  "effect_id": "sky_lock",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "no_secrets_recorded": true,
+    "generated_manifest": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/pixellab_generation_manifest.json"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "raw 256x256 PixelLab frame -> nearest-neighbor 224x224 inset at (16,16) on transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true
+  },
+  "pixel_lab": {
+    "object_id": "cce044e5-6fc1-48e6-84aa-6155e490553b",
+    "animation_group_id": "d16eed89-13ad-440c-ba91-183da10d1883",
+    "canonical_asset_key": "sniper/spotter_scope",
+    "canonical_tag": null,
+    "tag_or_name_note": "The blocking CLI does not expose PixelLab tag/name assignment; object and animation IDs are recorded exactly.",
+    "export_ids": [],
+    "generator_manifest": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/pixellab_generation_manifest.json"
+  },
+  "visual_identity": "brass and obsidian spotter scope with crimson lens, angular reticle and sky-lock rune",
+  "motion_contract": "iris shutters, nested reticles rotate, sky-lock beams pulse, artillery markers rain, suppression burst and fading rings",
+  "palette_contract": "aged brass, obsidian, crimson glass, pale gold signal light",
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope",
+    "raw_source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw",
+    "generated_manifest": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/pixellab_generation_manifest.json",
+    "runtime_dir": "assets/sprites/effects/sniper/spotter_scope",
+    "spriteframes": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/sniper/spotter_scope/runtime_manifest.json",
+    "quality_evidence": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_contact_sheet.png"
+  },
+  "animation": {
+    "name": "sniper_spotter_scope_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f00.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f01.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f02.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f03.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f04.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f05.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f06.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f07.png",
+      "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "iris shutters, nested reticles rotate, sky-lock beams pulse, artillery markers rain, suppression burst and fading rings"
+  },
+  "source_runtime_parity": true,
+  "pixel_quality_evidence": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/pixel_quality_evidence.json",
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f00.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f00.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f00.png.import",
+      "raw_encoded_sha256": "9b81abe00bd61801deeb41b33f0e1971101bf5901eb4dea01c74c72a7f354873",
+      "raw_pixel_sha256": "09bab0ff7aac6d07791f290b7acd6611fbf9ceae1da838ef58d7116701e53786",
+      "source_encoded_sha256": "d909eed13e7c351711b6c3310db98f06ec688587f78b5afede6c3dd263e0a9a0",
+      "runtime_encoded_sha256": "d909eed13e7c351711b6c3310db98f06ec688587f78b5afede6c3dd263e0a9a0",
+      "source_pixel_sha256": "277354cd8aaa8ec6c2784e1f23cbacaf9d1031be3a66a77a2b69a5338d484973",
+      "runtime_pixel_sha256": "277354cd8aaa8ec6c2784e1f23cbacaf9d1031be3a66a77a2b69a5338d484973",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        65,
+        44,
+        190,
+        212
+      ],
+      "gutters_px": [
+        65,
+        44,
+        66,
+        44
+      ],
+      "minimum_gutter_px": 44,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14384,
+      "visible_ratio_alpha_gt_8": 0.219482,
+      "opaque_pixels": 14384,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://b7ybclwkd3bca",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f00.png-8092de5c27b140083562833aa32f11c5.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f00.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f01.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f01.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f01.png.import",
+      "raw_encoded_sha256": "d3f4ce6a1ac498e2860d5d1898a4c85cd539dd43f1182f191f4ad1cabe18bbe5",
+      "raw_pixel_sha256": "1d3968636273b305728f2eaa11933a526ff6aa46ccc8e63cbd84211a4cd4ea0c",
+      "source_encoded_sha256": "1ad6ad6b84a8421823a5ed3a43312be7e9adca37cabfff6c9c1a413a07a6ecee",
+      "runtime_encoded_sha256": "1ad6ad6b84a8421823a5ed3a43312be7e9adca37cabfff6c9c1a413a07a6ecee",
+      "source_pixel_sha256": "5c302905c833957f58dca2f0c7e8321f716781246c8fa09cb14a3dd13247f814",
+      "runtime_pixel_sha256": "5c302905c833957f58dca2f0c7e8321f716781246c8fa09cb14a3dd13247f814",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        56,
+        44,
+        197,
+        212
+      ],
+      "gutters_px": [
+        56,
+        44,
+        59,
+        44
+      ],
+      "minimum_gutter_px": 44,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14897,
+      "visible_ratio_alpha_gt_8": 0.22731,
+      "opaque_pixels": 14897,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://c67uewqua6wy3",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f01.png-9626f47ff17757f3f54eff9b1654d255.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f01.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f02.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f02.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f02.png.import",
+      "raw_encoded_sha256": "328e6501dd64b050680022fc4ad92f64e1ae3e5b0256e41b935b087cb1c72997",
+      "raw_pixel_sha256": "0520daf4a552572e854a88e9dc091899a6272e90e205cb6d315e5407cb7e9e8c",
+      "source_encoded_sha256": "5c4cff63278991bfdde5a902dbb1cfc9f9db593e51a2b62e9d6bf56e62994703",
+      "runtime_encoded_sha256": "5c4cff63278991bfdde5a902dbb1cfc9f9db593e51a2b62e9d6bf56e62994703",
+      "source_pixel_sha256": "ab11a0093a5ce732450cbd752c1417471cb01eb4728e2d603a49f795aecd3181",
+      "runtime_pixel_sha256": "ab11a0093a5ce732450cbd752c1417471cb01eb4728e2d603a49f795aecd3181",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        44,
+        206,
+        214
+      ],
+      "gutters_px": [
+        49,
+        44,
+        50,
+        42
+      ],
+      "minimum_gutter_px": 42,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 16961,
+      "visible_ratio_alpha_gt_8": 0.258804,
+      "opaque_pixels": 16961,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://c5w514uyy0uee",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f02.png-ef5379fff27c09ef14c2c5527df99f45.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f02.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f03.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f03.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f03.png.import",
+      "raw_encoded_sha256": "e4b7d935db21a86095a9e986fd553ebedb62f59f4d55b8b2a1ea6b9e7573712f",
+      "raw_pixel_sha256": "cf9df1c11e374f55c684a1521cc2a71bbcce075dc69396b0277f7c047af749be",
+      "source_encoded_sha256": "1d16169a2505d324cec3e3b4b3f7f069bfa78ff8cf47569701ec7918919e9d38",
+      "runtime_encoded_sha256": "1d16169a2505d324cec3e3b4b3f7f069bfa78ff8cf47569701ec7918919e9d38",
+      "source_pixel_sha256": "3b910c8a44d0ff2364d9850d967f4818b9bef447becbba20f727e6ee1786f47f",
+      "runtime_pixel_sha256": "3b910c8a44d0ff2364d9850d967f4818b9bef447becbba20f727e6ee1786f47f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "gutters_px": [
+        49,
+        43,
+        50,
+        44
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 16003,
+      "visible_ratio_alpha_gt_8": 0.244186,
+      "opaque_pixels": 16003,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://12ki7vgo2426",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f03.png-38afa53a9486cf77ec4b5d0d36f3376f.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f03.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f04.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f04.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f04.png.import",
+      "raw_encoded_sha256": "f2f08f24475ad0423c55f9115b385e700175eaf72d8f058a42313c913c12782b",
+      "raw_pixel_sha256": "5d54dc5dda356c23d74c8119c407be6cc647ddf77d72921e947a3e54dbef290a",
+      "source_encoded_sha256": "a72c92c3a5d59be6c6940283f83104fc543dd3ce56f3f7800d520943ae4c94d7",
+      "runtime_encoded_sha256": "a72c92c3a5d59be6c6940283f83104fc543dd3ce56f3f7800d520943ae4c94d7",
+      "source_pixel_sha256": "0de55dd4ff41882a25dde6066ea0cbfd3a3d0d37805570a4911c976ad0848859",
+      "runtime_pixel_sha256": "0de55dd4ff41882a25dde6066ea0cbfd3a3d0d37805570a4911c976ad0848859",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "gutters_px": [
+        49,
+        43,
+        50,
+        44
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15693,
+      "visible_ratio_alpha_gt_8": 0.239456,
+      "opaque_pixels": 15693,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://ch1tcmwkhb3ki",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f04.png-63059fae5ed02c7889e46adb8845673a.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f04.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f05.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f05.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f05.png.import",
+      "raw_encoded_sha256": "85b7e01b6d81aa2d314db447389479bbe0ed1a020af52507fd59850f034ff685",
+      "raw_pixel_sha256": "04acf464b1f794725ef376e69a612d96e21f1e5449f05d034f673f50715a4c0d",
+      "source_encoded_sha256": "1f903e3b5ef61be7236889bbb49cb6d49178049a503dc37b06d5e73e40ebf069",
+      "runtime_encoded_sha256": "1f903e3b5ef61be7236889bbb49cb6d49178049a503dc37b06d5e73e40ebf069",
+      "source_pixel_sha256": "dc4b0a3c3df28457dd00b19c345cfdea45b128445d3fbe89960668ad27d86535",
+      "runtime_pixel_sha256": "dc4b0a3c3df28457dd00b19c345cfdea45b128445d3fbe89960668ad27d86535",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "gutters_px": [
+        49,
+        43,
+        50,
+        44
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15554,
+      "visible_ratio_alpha_gt_8": 0.237335,
+      "opaque_pixels": 15554,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://fpdnhcf5vpv7",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f05.png-0ba91db228739680ee2dc141780cfc8c.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f05.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f06.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f06.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f06.png.import",
+      "raw_encoded_sha256": "1edd9273cf0f5bdba73d28b50ecc63ae6399bc65da060d4ebda605bd6a84a88f",
+      "raw_pixel_sha256": "9c9fa0385432f4f8484a8c2d1f66ef266d96b250f49f2336e30deeb535710064",
+      "source_encoded_sha256": "eaa2bb8603b69ae55120a07799de8c5256551ecc7b91082e5f046f693ba13fe8",
+      "runtime_encoded_sha256": "eaa2bb8603b69ae55120a07799de8c5256551ecc7b91082e5f046f693ba13fe8",
+      "source_pixel_sha256": "5d0f43a08acf959e694edc1fda8ccb9f92f5b5ab51d1f014bd7431697992c67e",
+      "runtime_pixel_sha256": "5d0f43a08acf959e694edc1fda8ccb9f92f5b5ab51d1f014bd7431697992c67e",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        49,
+        43,
+        206,
+        212
+      ],
+      "gutters_px": [
+        49,
+        43,
+        50,
+        44
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15551,
+      "visible_ratio_alpha_gt_8": 0.237289,
+      "opaque_pixels": 15551,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://tqwqormpa7ju",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f06.png-78127b8205d6b393cbc177b56c0b371d.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f06.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f07.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f07.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f07.png.import",
+      "raw_encoded_sha256": "044d40df6f24a84a7a4c0945d5136f8c6afdf3b9829d18a214e69884823bd3eb",
+      "raw_pixel_sha256": "f1470dd2f35905499cb744ad120c8126f21908795b9dd5bedae435c442faef9e",
+      "source_encoded_sha256": "3ea3441c504769cd80a1f136b766ce394b551916a1f460b8a58ae83bb9e9e103",
+      "runtime_encoded_sha256": "3ea3441c504769cd80a1f136b766ce394b551916a1f460b8a58ae83bb9e9e103",
+      "source_pixel_sha256": "9463b52bf930c5cfe45a67a656ae95bd80f96b0cf7c91e427134a952bb8e9a46",
+      "runtime_pixel_sha256": "9463b52bf930c5cfe45a67a656ae95bd80f96b0cf7c91e427134a952bb8e9a46",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        55,
+        43,
+        199,
+        212
+      ],
+      "gutters_px": [
+        55,
+        43,
+        57,
+        44
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 15046,
+      "visible_ratio_alpha_gt_8": 0.229584,
+      "opaque_pixels": 15046,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://cheai67km3rwu",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f07.png-14cead37ebe6e8d94e6e9631391e5c9f.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f07.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/spotter_scope_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw/spotter_scope_f08.png",
+      "runtime_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f08.png",
+      "import_file": "assets/sprites/effects/sniper/spotter_scope/spotter_scope_f08.png.import",
+      "raw_encoded_sha256": "6853caa993267da054b7e6d33609a0e7b51f0ba5b9a2b3563d9bddbe56c3f050",
+      "raw_pixel_sha256": "0588d1b7cb828d584c93da9bfaa8d78b6f43af66e83e7a4029324662ad84309d",
+      "source_encoded_sha256": "b2cc3bec91876702fa7033505be12444e12053ca28f65f8b45c805d43cc7f361",
+      "runtime_encoded_sha256": "b2cc3bec91876702fa7033505be12444e12053ca28f65f8b45c805d43cc7f361",
+      "source_pixel_sha256": "35a664b7a5ca43063a6c79e527d7f2f02ecb0d2bd6e7544aaa92db4336518636",
+      "runtime_pixel_sha256": "35a664b7a5ca43063a6c79e527d7f2f02ecb0d2bd6e7544aaa92db4336518636",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        62,
+        44,
+        192,
+        212
+      ],
+      "gutters_px": [
+        62,
+        44,
+        64,
+        44
+      ],
+      "minimum_gutter_px": 44,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14645,
+      "visible_ratio_alpha_gt_8": 0.223465,
+      "opaque_pixels": 14645,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://nl3qrqb2rtfl",
+      "import_dest_files": [
+        "res://.godot/imported/spotter_scope_f08.png-ce7a7bc505f02e0669bda4be29a386ee.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/spotter_scope/spotter_scope_f08.png",
+      "import_matches_runtime": true
+    }
+  ],
+  "runtime_import_sidecars_present": true
+}

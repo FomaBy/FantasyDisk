@@ -24,13 +24,34 @@ upload начинается последним, но `gh` загружает ass
 byte-exact (имя, размер, SHA-256), и только затем становится public и latest —
 поэтому `latest` никогда не указывает на ещё не готовые установщики.
 Перед необратимым `--draft=false` publisher дополнительно доказывает
-sole-writer boundary (FAN-1276): никакой другой аккаунт не может переписать
-draft assets — репозиторий принадлежит самому публикатору, других
-collaborators и pending invitations нет, deploy keys только read-only, и ни
-одна GitHub App installation с contents/administration write не покрывает
-репозиторий, — и повторно byte-exact сверяет все draft assets последним
-чтением перед публичным edit. Подмена файла после последней чистой проверки
-останавливает публикацию, пока release ещё draft.
+sole-writer boundary (FAN-1276/FAN-2829): никакой другой аккаунт не может
+переписать draft assets — репозиторий принадлежит самому публикатору, других
+collaborators и pending invitations нет, deploy keys только read-only. Полный
+список GitHub Apps фиксирует владелец в двух fresh JSON-attestations из
+`Settings → Applications`: `GET /user/installations` от `ghu_` показывает лишь
+установки текущего App и не является доказательством для аккаунта. Каждый
+файл привязан к account/repository/time/complete inventory; второй создаётся
+только по паузе publisher после проверки draft assets, новее первого и этой
+проверки, а selected installation содержит непустые уникальные canonical
+`full_name` и согласованный полный список repositories. Любой App с
+contents/administration write, неполный, просроченный, повторный или malformed
+файл блокирует запуск либо public edit.
+Затем publisher повторно byte-exact сверяет все draft assets последним чтением
+перед публичным edit. Подмена файла после последней чистой проверки
+останавливает публикацию, пока release ещё draft. Аттестации, cookies и токены
+не сохраняются в git, Multica или логах. Публикационная команда всегда получает
+оба proof path:
+
+```bash
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
+```
+
+Второй proof перечитывается после проверки draft assets непосредственно перед
+public edit; точный JSON template и безопасное временное хранение/удаление — в
+`fantasydisk-release-director`.
 
 ## Клиентский контракт
 

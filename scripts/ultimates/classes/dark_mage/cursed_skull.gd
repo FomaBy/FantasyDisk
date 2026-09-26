@@ -1,6 +1,11 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const ACCESSIBILITY := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
+## Photosensitivity-safe victim burst luminance cap (see _apply_victim_presentation_modes).
+const PHOTOSAFE_IMPACT_ALPHA := 0.6
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.dark_mage.cursed_skull"
 const EXECUTOR_ID := "weapon_ultimate.executor.dark_mage.cursed_skull"
@@ -15,12 +20,13 @@ var _marked: Array = []
 var _marked_ids := {}
 var _transferred_from := {}
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
 	return {
 		"screen_radius": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"curse_duration": {"type": "number", "minimum": 0.1},
 		"outgoing_damage_multiplier": {"type": "number", "minimum": 0.0, "maximum": 1.0},
@@ -28,7 +34,6 @@ static func parameter_contract() -> Dictionary:
 		"pulse_interval": {"type": "number", "minimum": 0.01},
 		"curse_damage": {"type": "number", "minimum": 0.0},
 		"transfer_radius": {"type": "number", "minimum": 0.0},
-		"transfer_cap": {"type": "integer", "minimum": 0},
 		"harvest_delay": {"type": "number", "minimum": 0.0},
 		"harvest_damage": {"type": "number", "minimum": 0.0},
 		"lifetime": {"type": "number", "minimum": 0.1},
@@ -40,8 +45,8 @@ static func execute(activation) -> float:
 		return 0.0
 	var targets: Array = activation.select_targets(
 		activation.origin(),
-		activation.param_float("screen_radius", 900.0),
-		activation.param_int("crowd_cap", 14),
+		INF,
+		0,
 		"nearest"
 	)
 	var effect = activation.spawn(EFFECT_SCENE)
@@ -105,8 +110,12 @@ func crown_targets() -> void:
 		return
 	var pending := _marked.duplicate()
 	_marked.clear()
+	var newly_marked: Array = []
 	for raw_target in pending:
-		_mark(raw_target as Node2D)
+		var target := raw_target as Node2D
+		if _mark(target):
+			newly_marked.append(target)
+	_play_impacts(newly_marked)
 	_activation.present("weapon_ultimate.phase.dark_mage.cursed_skull.execute", {
 		"position": global_position,
 		"radius": _activation.param_float("screen_radius", 900.0) * 0.26,
@@ -157,9 +166,9 @@ func harvest() -> void:
 	})
 
 
-func _mark(target: Node2D) -> void:
+func _mark(target: Node2D) -> bool:
 	if target == null or not is_instance_valid(target) or _marked_ids.has(target.get_instance_id()):
-		return
+		return false
 	var status_id := "dark_mage_ultimate_crown_%d_%d" % [get_instance_id(), target.get_instance_id()]
 	var result: Dictionary = _activation.apply_control(target, Vector2.ZERO, status_id, {
 		"duration": _activation.param_float("curse_duration", 5.5),
@@ -168,15 +177,15 @@ func _mark(target: Node2D) -> void:
 		"marker_color": Color(0.72, 0.28, 0.95, 0.85),
 	})
 	if not bool(result.get("status_applied", false)):
-		return
+		return false
 	_marked_ids[target.get_instance_id()] = true
 	_marked.append(target)
 	_leased_statuses.append({"target": target, "status_id": status_id})
+	return true
 
 
 func _transfer_curse(source: Node2D, pulse: int) -> void:
-	if source == null or not is_instance_valid(source) or transfer_count_for_tests \
-		>= _activation.param_int("transfer_cap", 8) or _transferred_from.has(source.get_instance_id()):
+	if source == null or not is_instance_valid(source) or _transferred_from.has(source.get_instance_id()):
 		return
 	_transferred_from[source.get_instance_id()] = true
 	for raw_target in _activation.select_targets(
@@ -189,19 +198,58 @@ func _transfer_curse(source: Node2D, pulse: int) -> void:
 		if target == null or not is_instance_valid(target) or not _alive(target) \
 			or _marked_ids.has(target.get_instance_id()):
 			continue
-		_mark(target)
+		var marked := _mark(target)
 		transfer_count_for_tests += 1
+		if marked:
+			_play_impacts([target])
 		_activation.present("weapon_ultimate.phase.dark_mage.cursed_skull.active", {
 			"position": target.global_position,
 			"radius": _activation.param_float("transfer_radius", 260.0) * 0.3,
 			"shape": "ring_pulse",
 		})
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
 		return
+	if _impacts == null:
+		_impacts = ImpactPlayer.new()
+		_apply_victim_presentation_modes(_impacts)
+		add_child(_impacts)
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _alive(target: Node2D) -> bool:
 	return target != null and is_instance_valid(target) \
 		and (target.get("health") == null or float(target.get("health")) > 0.0)
+
+
+## Production accessibility snapshot, published on the scene-tree root by Main
+## (`scripts/settings/ultimate_accessibility_settings.gd`). Photosensitivity-
+## safe bounds the victim read: this executor's own damage path already draws
+## each victim's ordinary hit flash, so the burst must not repeat it, and the
+## flipbook plays dimmed. Reduced motion changes nothing here — the burst is a
+## victim-local cue, not travel.
+func _apply_victim_presentation_modes(impacts: Node2D) -> void:
+	var snapshot := ACCESSIBILITY.read_snapshot(get_tree().root if is_inside_tree() else null)
+	if not bool(snapshot[ACCESSIBILITY.PHOTOSENSITIVITY_SAFE_KEY]):
+		return
+	impacts.set("extra_hit_flash", false)
+	impacts.modulate = Color(1.0, 1.0, 1.0, PHOTOSAFE_IMPACT_ALPHA)
+
+
+func victim_presentation_state_for_tests() -> Dictionary:
+	if _impacts == null or not is_instance_valid(_impacts):
+		return {}
+	return {
+		"extra_hit_flash": bool(_impacts.get("extra_hit_flash")),
+		"impact_alpha": _impacts.modulate.a,
+		"snapshot": _impacts.call("snapshot"),
+	}
 
 
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):

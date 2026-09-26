@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3708",
+  "weapon_id": "electric_guitar",
+  "visual_identity": "diagonal electric guitar with five angled neon chord strips and a single white-blue lightning chord",
+  "motion_contract": "alternating angled chord strips sweep and visibly vibrate while lightning jumps across intersections, then recoils",
+  "palette_contract": "cyan, electric blue, magenta, violet, white highlights, charcoal metal outlines",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 9,
+  "unique_pixel_hashes": 9,
+  "duplicate_frame_pairs": [],
+  "adjacent_changed_pixel_ratio": {
+    "min": 0.119797,
+    "max": 0.188828,
+    "mean": 0.163813
+  },
+  "all_pair_changed_pixel_ratio_min": 0.119797,
+  "alpha_bbox_gt_8": [
+    [
+      32,
+      27,
+      228,
+      225
+    ],
+    [
+      31,
+      28,
+      226,
+      225
+    ],
+    [
+      32,
+      30,
+      227,
+      228
+    ],
+    [
+      32,
+      29,
+      227,
+      227
+    ],
+    [
+      30,
+      23,
+      229,
+      226
+    ],
+    [
+      30,
+      22,
+      229,
+      226
+    ],
+    [
+      29,
+      30,
+      224,
+      228
+    ],
+    [
+      30,
+      31,
+      224,
+      228
+    ],
+    [
+      32,
+      28,
+      227,
+      226
+    ]
+  ],
+  "minimum_gutter_px": 22,
+  "edge_visible_pixels_gt_8": 0,
+  "opaque_corner_frames": [],
+  "transparent_pixel_ratio": {
+    "min": 0.795593,
+    "max": 0.798859
+  },
+  "main_component_count": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    3,
+    1,
+    1,
+    1
+  ],
+  "tiny_component_px_after_threshold": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    8,
+    0,
+    0,
+    0
+  ],
+  "pixel_quality_verdict": "PASS",
+  "pixel_hashes": [
+    "092e823ee726836c64da3b9d93ca4bebddb7f0890edffdea01ce14480e123fa9",
+    "96d990b45b70b6a84e495347834ec9708bc99abb3964b62e78361069e0466bc8",
+    "76575e8dbf13ca6a42ab1f5de1b35900cef897ffb2b6187c14d06ae80277b241",
+    "fb2331fd31fda18dad0267ddf4610373688ff58e6d8fe7aac1b1f60b3d40aecb",
+    "6ccae200377bcc372145f68b44803ac02829dc5deffa1ad93203fc2b06ae73eb",
+    "b48c33e2d6cab78c52ca335bb4a472377bb9d6207efc9a3b459c5a85a02edb0e",
+    "678712f5a6e2bcc2751ab6b373be250197e9f0da678023b458f8249a42c7bcb4",
+    "72129f4d1eef5451185021c6cc01c998879c7417f0d378ea06be7da7cad601d4",
+    "6279dbd68dcf5080aef12ea28c90df10fa1256f99ce4fb9f4ecc7b0f26f07937"
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3771",
+  "source_brief": "FAN-3318",
+  "class_id": "priest",
+  "weapon_id": "priest_reliquary",
+  "title": "Суд Светлого Святилища",
+  "ultimate_role": "sanctify_burst",
+  "visual_identity": "portable ivory-gold gothic shrine, blue crystal, open sanctify window, halo and ceremonial chain",
+  "generator": {
+    "route": "PixelLab MCP",
+    "tool": "tools/pixellab_generate_pack.py",
+    "mode": "v3",
+    "pixel_lab_object_id": "fa8c5297-4bdd-497e-9916-cda2e7b40285",
+    "pixel_lab_animation_group_id": "030f22d8-2e59-4de7-b7fb-dd415fb00ac4",
+    "raw_manifest": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/pixellab_generation_manifest.json",
+    "raw_manifest_sha256": "4be7ed061e05db2279c4791b030577888ff36e84ad8c0786b1f6e0f1e72c1a9a",
+    "generation_cost": {
+      "per_pack": "not exposed by the blocking CLI or get_object response",
+      "paid_operation": false
+    },
+    "no_secrets_recorded": true
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16
+  },
+  "postprocess": {
+    "raw_preserved": true,
+    "accepted_source_cleaned": true,
+    "weapon_reference": "assets/sprites/weapons/priest_reliquary.png",
+    "ghost_silhouette": "canonical weapon alpha rendered in the pack accent at 20% opacity behind the PixelLab animation",
+    "effect_alpha_factor": 0.68,
+    "source_runtime_parity": true
+  },
+  "animation": {
+    "name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0,
+    "frame_order": [
+      "priest_reliquary_f00.png",
+      "priest_reliquary_f01.png",
+      "priest_reliquary_f02.png",
+      "priest_reliquary_f03.png",
+      "priest_reliquary_f04.png",
+      "priest_reliquary_f05.png",
+      "priest_reliquary_f06.png",
+      "priest_reliquary_f07.png",
+      "priest_reliquary_f08.png"
+    ]
+  },
+  "spriteframes": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_spriteframes.tres",
+  "contact_sheet": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_contact_sheet.png",
+  "static_alpha_readability_report": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/static_alpha_readability_report.json",
+  "import": {
+    "expected_texture_type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filter": "nearest",
+    "sidecars": {
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f00.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f00.png.import",
+        "sha256": "f3062dd9a2a147c3cf70961223f7472e91fd52b73bdd29627666fd617b41430e",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f01.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f01.png.import",
+        "sha256": "1a82da1aa6a687e6a9a2d9aabeb8a3f37df8f7ff667df0f6be734e2508ec949c",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f02.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f02.png.import",
+        "sha256": "4f62a21d190d365928bdccb3f03fe0d60d31492ae5c1897491dd270ff3952d78",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f03.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f03.png.import",
+        "sha256": "5f3ede6df3370f5c54a63ee5980cd1a4f22ebb1b8bbd49015e72c4258b1d380d",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f04.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f04.png.import",
+        "sha256": "bb9acaf1fca4195a0c2000d34babc94a76495d73d66629c6943a8e3f15439681",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f05.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f05.png.import",
+        "sha256": "88c1d79f20bb5cc20522a5a519b19860931ca900f4147c67aceb0be4c542a35b",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f06.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f06.png.import",
+        "sha256": "e9dcdec90095542d688ad02478227e638c991173f14b14c30f959fe2a5476b26",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f07.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f07.png.import",
+        "sha256": "36137727ddb9f06335ef915ebc08d65c3b12126aae45f5b8b6d09aeef3d5b474",
+        "exists": true
+      },
+      "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f08.png": {
+        "path": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f08.png.import",
+        "sha256": "dea04701a3b6c9e91c16c75a6d1c6630f8cabf5df469f8bc65b6899ebcf7ad62",
+        "exists": true
+      }
+    },
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "verified": true
+  },
+  "motion": {
+    "distinct_frame_pixel_hashes": 9,
+    "adjacent_pairs_with_motion": 8,
+    "adjacent_changed_pixel_ratios": [
+      0.077011,
+      0.080933,
+      0.106277,
+      0.103271,
+      0.085281,
+      0.062744,
+      0.060547,
+      0.072617
+    ],
+    "mean_absolute_rgba_diffs": [
+      1.8216,
+      2.7057,
+      2.8466,
+      3.425,
+      2.4885,
+      1.4774,
+      1.413,
+      1.6445
+    ],
+    "motion_score_mean_changed_pixel_ratio": 0.081085,
+    "loop": false,
+    "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f00.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f00.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f00.png",
+      "raw_source_sha256": "ea336a956db761d9b745a3841f9154f764891a44d70f08f27f1ac9091584673c",
+      "raw_source_pixel_sha256": "416291009f5b23f650dbefb2106b8ed9d23ff63c88280fd7da2e8471537a0a31",
+      "source_sha256": "abadae9badeb636b0244b89a0eaccb39ed9fcc6a8fe2ed71b386972519b362dd",
+      "runtime_sha256": "abadae9badeb636b0244b89a0eaccb39ed9fcc6a8fe2ed71b386972519b362dd",
+      "source_pixel_sha256": "381e432400a2df135f3c18f4b2cfa34f07d4d33c601037f51c05593c49a91203",
+      "runtime_pixel_sha256": "381e432400a2df135f3c18f4b2cfa34f07d4d33c601037f51c05593c49a91203",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.3966,
+      "mean_alpha_visible_pixels": 178.2731,
+      "visible_ratio_alpha_gt_8": 0.254639,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1356
+    },
+    {
+      "frame": 1,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f01.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f01.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f01.png",
+      "raw_source_sha256": "da4825f723e3c3a0e88e3e8a36a3f9a2afd1afb101f9222a6b078ffed71c1996",
+      "raw_source_pixel_sha256": "1777d636b99cac2e0637ed8c6c78dbced46de48f6604cc375722bd95b5f9ef30",
+      "source_sha256": "93792e2594e77934b5fefdb1d91e1314b336d117976d0c93225e79a4ea0cb433",
+      "runtime_sha256": "93792e2594e77934b5fefdb1d91e1314b336d117976d0c93225e79a4ea0cb433",
+      "source_pixel_sha256": "d1df1672f6ebf7f6e0b470c5625fd573512be0380710687b5290bfa465559bfe",
+      "runtime_pixel_sha256": "d1df1672f6ebf7f6e0b470c5625fd573512be0380710687b5290bfa465559bfe",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.3865,
+      "mean_alpha_visible_pixels": 178.2654,
+      "visible_ratio_alpha_gt_8": 0.254593,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1805
+    },
+    {
+      "frame": 2,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f02.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f02.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f02.png",
+      "raw_source_sha256": "12beed54e0b1e75b8b976197efca10d1950abdfff9c72d97f62a6cca316e9d11",
+      "raw_source_pixel_sha256": "f0a17f591fce730e1314d962ea26a16e25491a9e87e32b7879642ad799adda0f",
+      "source_sha256": "54acceafe588b113f864429ec1635c848211975b64823cde5768b2d9d9a96721",
+      "runtime_sha256": "54acceafe588b113f864429ec1635c848211975b64823cde5768b2d9d9a96721",
+      "source_pixel_sha256": "808bba0474c1aef8d74ee82c46a6af67149ca9764295d920cae15bf806e1770a",
+      "runtime_pixel_sha256": "808bba0474c1aef8d74ee82c46a6af67149ca9764295d920cae15bf806e1770a",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4388,
+      "mean_alpha_visible_pixels": 178.268,
+      "visible_ratio_alpha_gt_8": 0.254883,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1857
+    },
+    {
+      "frame": 3,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f03.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f03.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f03.png",
+      "raw_source_sha256": "a03ff604c72fe75ccdd566912c15dfa293effe911001c0f38e3cc0150023f00a",
+      "raw_source_pixel_sha256": "573c38091fa730a5729edbc4d37ee6ca5e43b0b3550cfc476128d471624b5c98",
+      "source_sha256": "2dc268e4e8506d3133c50b9193b628824e8d5e86d9d6845337bc5bec020ecf76",
+      "runtime_sha256": "2dc268e4e8506d3133c50b9193b628824e8d5e86d9d6845337bc5bec020ecf76",
+      "source_pixel_sha256": "473fecc3e0cc0adff6a22cf7a2fabbef7276e3e09429cfb8352598771981bfd7",
+      "runtime_pixel_sha256": "473fecc3e0cc0adff6a22cf7a2fabbef7276e3e09429cfb8352598771981bfd7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.3755,
+      "mean_alpha_visible_pixels": 178.2756,
+      "visible_ratio_alpha_gt_8": 0.254517,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1752
+    },
+    {
+      "frame": 4,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f04.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f04.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f04.png",
+      "raw_source_sha256": "4bedef2a927ea306a0026abe26fcfe5785608b3a63f914a93a4f2a48d9d2a22f",
+      "raw_source_pixel_sha256": "9773767aee70f364dfffaebc47561f32c83af1c5e669f486038e53b089ef71e7",
+      "source_sha256": "05a63d085773ba8a81fba136c2c6814d824f002d99798dfaa3818773c8bba4a7",
+      "runtime_sha256": "05a63d085773ba8a81fba136c2c6814d824f002d99798dfaa3818773c8bba4a7",
+      "source_pixel_sha256": "7e50fe9d3f3f57812fa9132a9e65bae8c09dc3e3bfb5471e28d340989a0bcb4c",
+      "runtime_pixel_sha256": "7e50fe9d3f3f57812fa9132a9e65bae8c09dc3e3bfb5471e28d340989a0bcb4c",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4265,
+      "mean_alpha_visible_pixels": 178.2518,
+      "visible_ratio_alpha_gt_8": 0.254837,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1963
+    },
+    {
+      "frame": 5,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f05.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f05.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f05.png",
+      "raw_source_sha256": "2e59d8fa870916ec401511aac4a2551d01a390b72189d04fe0724f96e114c198",
+      "raw_source_pixel_sha256": "22f42aededfca13d329bc7478daa728f4f6ab43b68d91c93a512c2f4bd9b8f60",
+      "source_sha256": "14a97503a183f608fda0a714eadd216221d9b5ef2e47971447a5bf9dcdcb1449",
+      "runtime_sha256": "14a97503a183f608fda0a714eadd216221d9b5ef2e47971447a5bf9dcdcb1449",
+      "source_pixel_sha256": "a6a19aa2e492af71832a0eae4dae72e562439e25269d2f613e8bd72130fb0d5f",
+      "runtime_pixel_sha256": "a6a19aa2e492af71832a0eae4dae72e562439e25269d2f613e8bd72130fb0d5f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4652,
+      "mean_alpha_visible_pixels": 178.2649,
+      "visible_ratio_alpha_gt_8": 0.255035,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.2121
+    },
+    {
+      "frame": 6,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f06.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f06.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f06.png",
+      "raw_source_sha256": "3cf75141f71137e77bac81a48af0dac2a973a7f917c72c079d2c44a1200aad6a",
+      "raw_source_pixel_sha256": "a2ef1a224b0970b481f8e0a62697c2f48386d73da0223f3cd8b6f586bbed8795",
+      "source_sha256": "63c3d3a5ddc02dea4a7d58816476a03ecb2369fa91b93e33795bab65bc58c159",
+      "runtime_sha256": "63c3d3a5ddc02dea4a7d58816476a03ecb2369fa91b93e33795bab65bc58c159",
+      "source_pixel_sha256": "e94a987b680f47be9dc990cde53aa037932aa92fee997b706b1e58036a8c9ee6",
+      "runtime_pixel_sha256": "e94a987b680f47be9dc990cde53aa037932aa92fee997b706b1e58036a8c9ee6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.5048,
+      "mean_alpha_visible_pixels": 178.2601,
+      "visible_ratio_alpha_gt_8": 0.255264,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.2016
+    },
+    {
+      "frame": 7,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f07.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f07.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f07.png",
+      "raw_source_sha256": "fabb8289577647cf45fbf72a92ca9e316925a014d36280e64b5e3346222484f2",
+      "raw_source_pixel_sha256": "b0ed99d96e7de95024848a874a7a3df2c8358ee174762b8995b84408b403fe57",
+      "source_sha256": "e73b9d706a7f7e45f8be7639a5f48dec49c04d115011abbb5267b29ed14eeaa4",
+      "runtime_sha256": "e73b9d706a7f7e45f8be7639a5f48dec49c04d115011abbb5267b29ed14eeaa4",
+      "source_pixel_sha256": "905525e9583845c5bbafccf6bdd41af58ae031fb302f61e96b0e39bd45ae1a93",
+      "runtime_pixel_sha256": "905525e9583845c5bbafccf6bdd41af58ae031fb302f61e96b0e39bd45ae1a93",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4705,
+      "mean_alpha_visible_pixels": 178.2642,
+      "visible_ratio_alpha_gt_8": 0.255066,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1857
+    },
+    {
+      "frame": 8,
+      "raw_source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw/priest_reliquary_f08.png",
+      "source": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_f08.png",
+      "runtime": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_f08.png",
+      "raw_source_sha256": "377beabaf70d49645625ab44e18c66355ba7e88cbe3d90fdb4587ff494883dca",
+      "raw_source_pixel_sha256": "1685b4f6e48318baf5ef75d9d7a917810962da431c7feaa0f086d8380c0f5782",
+      "source_sha256": "798cd26eac258b91ab6f50d9abc3bd954306c4558464bb852096e731385636ad",
+      "runtime_sha256": "798cd26eac258b91ab6f50d9abc3bd954306c4558464bb852096e731385636ad",
+      "source_pixel_sha256": "64814d955d658b56136a2e5b45646b17e92798d400aa62ca9adeac14acbf107d",
+      "runtime_pixel_sha256": "64814d955d658b56136a2e5b45646b17e92798d400aa62ca9adeac14acbf107d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4689,
+      "mean_alpha_visible_pixels": 178.2474,
+      "visible_ratio_alpha_gt_8": 0.255081,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1831
+    }
+  ]
+}

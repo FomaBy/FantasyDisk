@@ -11,7 +11,6 @@ static func parameter_contract() -> Dictionary:
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"outer_radius": {"type": "number", "minimum": 1.0},
 		"inner_radius": {"type": "number", "minimum": 1.0},
-		"target_cap": {"type": "integer", "minimum": 1},
 		"pulse_count": {"type": "integer", "minimum": 1},
 		"pulse_interval": {"type": "number", "minimum": 0.01},
 		"outer_damage": {"type": "number", "minimum": 0.0},
@@ -53,11 +52,10 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var removed := 0.0
-	for raw_target in activation.targets(
-		point,
-		activation.param_float("outer_radius", 220.0),
-		activation.param_int("target_cap", 12)
-	):
+	var struck: Array = []
+	# Ultimate Direction v2: the outer pool is map-wide; its radius remains a
+	# presentation shape, not a reach or count limit.
+	for raw_target in activation.targets(activation.origin(), INF):
 		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
@@ -69,6 +67,11 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 			pulse_index > 0
 		)
 		removed += float(result.applied)
+		if float(result.applied) > 0.0:
+			struck.append(target)
+	# The pulse beat carries the enemies this tick actually damaged, so the
+	# authored scene plays one victim burst per hit enemy and none anywhere else.
+	activation.present(EXECUTOR_ID + ".pulse", {"position": point, "victims": struck})
 	var hero := _hero(activation)
 	if hero != null:
 		activation.repair(

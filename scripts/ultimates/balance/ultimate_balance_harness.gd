@@ -22,6 +22,112 @@ const Ledger := preload("res://scripts/ultimates/balance/ultimate_charge_ledger.
 const REFERENCE_MAX_HEALTH := 100.0
 const READY_SEARCH_LIMIT := 24
 
+## FAN-2949 coverage ratchet. The 51 executors still carry count caps, so the
+## `coverage=all_enemies` assertion ships behind this migration allowlist with
+## the same semantics `ContactSheetBeatsContract.MIGRATION_ALLOWLIST` uses:
+## seeded with every class, it only ever shrinks (each per-class conversion card
+## removes its own entry; the target state is EMPTY). An entry that names no
+## class package, an entry that states no reason, and an entry for a class that
+## already satisfies v2 (clean sources AND listed in COVERAGE_V2_CLASSES) all
+## fail. A class outside the allowlist is asserted against v2 and fails closed.
+const COVERAGE_MIGRATION_ALLOWLIST: Dictionary = {
+	"elementalist": "awaiting Prism Focus coverage conversion; crowd_cap=18 remains a declared profile rail (FAN-2531 / FAN-2949 ratchet)",
+	"ranger": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"soldier": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+	"thief": "awaiting per-class v2 coverage conversion (FAN-2949 ratchet)",
+}
+
+## The per-class conversion ledger: a class satisfies v2 coverage only when its
+## conversion card has landed HERE and its executor sources carry no count
+## caps. Source cleanliness alone is not satisfaction — an executor whose
+## params merely lack a count cap has not thereby declared map-wide reach.
+##
+## `assassin` (FAN-2952): the trio reaches every live enemy through the
+## activation itself rather than a radius or a count — `shadow_daggers` marks
+## the whole map and serves it in a fixed wave sequence, `chakrams` strikes
+## every enemy on its outbound pass and layers the curved return on top, and
+## `venom_wire` cuts every enemy once per pulse before the wire crossings raise
+## it. The per-enemy floor is proven under crowd pressure in
+## `tests/ultimates/assassin_balance_test.gd`.
+##
+## `berserk` (FAN-2953): every sweep of the Scarlet Whirlwind bites every live
+## enemy with the aimed cross as the geometric bonus, the Executioner's Loop
+## strikes and marks the whole map on its outbound pass with the return leg as
+## the aimed execute bonus, and every Fourfold Rift beat reaches every live
+## enemy with lane membership as attribution. The per-enemy floor is proven
+## under crowd pressure in `tests/ultimates/berserk_balance_test.gd`.
+##
+## `engineer` (FAN-2955): every volley of the sentry hex suppresses the whole
+## map with the three chords as attribution, every microdrone ram wave
+## intercepts every live enemy, and all sixteen smart mines detonate once each
+## as arena-wide pressure waves bounded per TARGET rather than per count. The
+## per-enemy floor is proven under crowd pressure in
+## `tests/ultimates/engineer_balance_test.gd`.
+##
+## `chemist` (FAN-2954): the philosopher's blast crystallizes every live enemy
+## before its bounded per-target transmutation, every acid pour and its finale
+## reach the full map, and every homunculus taunt, stomp and toxin wave reaches
+## the full map while keeping its summon and stack contracts. The per-enemy
+## floor and the class-local `target_limit` vocabulary are proven in
+## `tests/ultimates/chemist_balance_test.gd`.
+##
+## `dark_mage` (FAN-2528): the Abyss Mirror gives every live enemy its original
+## hit while its reflected point stays visual-only, the Cursed Crown marks and
+## pulses every live enemy before harvesting, and the Vanishing Thread gives
+## every live enemy its collapse floor with one bounded aimed focus bonus.
+## The floor is proven under crowd pressure in
+## `tests/ultimates/mechanics/dark_mage_ultimate_balance_test.gd`.
+##
+## `biologist` (FAN-2526): every mycelium wave infects every live enemy,
+## every analysis pulse reaches the whole map after the aimed priority sample,
+## and the Matriarch's pull/root plus terminal hatch cover every live enemy;
+## blooms and larvae stay finite identity bonuses rather than reach bounds.
+##
+## `knight` (FAN-2534): every Phalanx row reaches its corridor, the Tower
+## Shield counter resolves every eligible enemy in its guard arc, and every
+## Holy Flail ring resolves every eligible enemy in its radius. Per-target
+## rails and the total boss caps bound outcome without capping reach.
+##
+## `guitarist` (FAN-2533): every Last Chord riff strip selects the whole map
+## and keeps the perpendicular chord as its aimed corridor bonus, every Wall of
+## Sound feedback pulse and its overload reach every live enemy with the linked
+## square as presentation shape only, and all four Hell Subwoofer waves
+## re-enumerate every eligible enemy in their expanding rings. The trio carries
+## no count-shaped parameter at all; per-target rails and the shared nine-percent
+## boss cap bound outcome. Proven in
+## `tests/ultimates/mechanics/guitarist_ultimate_balance_test.gd`.
+##
+## `robot` (FAN-2537): Magnetic Anchor, Hydraulic Press and Reactor Core
+## use their existing singularity, corridor and reactor-wave geometry. Direct
+## target queries carry no executor-local count-shaped parameter; the Reactor's
+## fixed one-target-per-vent lane remains an identity-shaped attribution while
+## its terminal exhaust re-enumerates the eligible set. Per-target damage,
+## control and the shared boss cap bound outcome. Proven in
+## `tests/ultimates/mechanics/robot_ultimate_balance_test.gd`.
+##
+## `doctor` (FAN-2529): Life and Death keeps its aimed release presentation
+## while its outer damage reaches every eligible enemy, Black Epidemic applies
+## its fixed waves to the whole map, and Emergency Surgery preserves its close
+## orbit. Per-target damage, repair/shield utility, the shared boss cap and
+## activation-owned cleanup bound outcome. Proven in
+## `tests/ultimates/mechanics/doctor_balance_test.gd`.
+##
+## `priest` (FAN-2535): all three fixed-timeline effects enumerate every live
+## enemy. Reliquary keeps its three-ring rank falloff, Censer keeps its
+## prevention-funded counter, and Chime keeps its interrupt/chain split; their
+## per-target floor clamps replace count/radius reach rails. Proven in
+## `tests/ultimates/mechanics/priest_balance_test.gd` and `priest_live_test.gd`.
+const COVERAGE_V2_CLASSES: Array[String] = ["assassin", "berserk", "biologist", "chemist", "dark_mage", "doctor", "druid", "engineer", "guitarist", "knight", "priest", "robot", "sniper"]
+
+## A count-shaped parameter bounds HOW MANY enemies an activation can reach
+## (target_cap, impale_target_cap, dive_target_cap, counter_target_cap,
+## analysis_target_cap, intercept_target_cap, hunt_splash_target_cap and any
+## sibling). Per-target DAMAGE shaping is not a count cap and stays allowed:
+## per_target_cap_fraction, per_target_cap_flat — any `*_target_cap_fraction`
+## or `*_target_cap_flat` shapes damage per target instead of bounding reach.
+const COUNT_CAP_PARAM_PATTERN := "[A-Za-z0-9_]*target_cap[A-Za-z0-9_]*"
+const COUNT_CAP_SHAPING_SUFFIXES := ["_fraction", "_flat"]
+
 ## `output_factor` > 1 is attempted damage beyond the HP present (overkill);
 ## `health_bars_lost` overrides the neutral damage-taken profile.
 const SCENARIOS := [
@@ -68,6 +174,7 @@ static func measure(rows: Array) -> Array[Dictionary]:
 				"charge_per_removed_hp": float(row.get("charge_per_removed_hp", 0.0)),
 				"total_boss_cap": float(row.get("total_boss_cap", 0.0)),
 				"power_archetype": str(row.get("power_archetype", "")),
+				"coverage": str(row.get("coverage", "")),
 				"power_budget_min": float(row.get("power_budget_min", 0.0)),
 				"power_budget_max": float(row.get("power_budget_max", 0.0)),
 				"control_save_seconds": float(row.get("control_save_seconds", 0.0)),
@@ -118,6 +225,16 @@ static func _check_row(row: Dictionary, errors: Array[String]) -> void:
 	var boss_cap := float(row.get("total_boss_cap", 0.0))
 	if boss_cap < Budget.BOSS_CAP_MIN or boss_cap > Budget.BOSS_CAP_MAX:
 		errors.append("row.total_boss_cap: %s = %.3f outside [%.2f, %.2f]" % [key, boss_cap, Budget.BOSS_CAP_MIN, Budget.BOSS_CAP_MAX])
+	# FAN-2949: boss HP is excluded from the standard-monster pool the power
+	# corridor prices. The boss scenario asserts total_boss_cap ONLY — the part
+	# of the activation budget the boss cap refuses (see
+	# Budget.boss_capped_budget) is explicitly NOT a corridor violation, or
+	# every boss row would go falsely red the moment the corridor rises.
+
+	if str(row.get("coverage", "")) != Budget.COVERAGE_ALL_ENEMIES:
+		errors.append(
+			"row.coverage: %s = '%s' must be '%s'" % [key, str(row.get("coverage", "")), Budget.COVERAGE_ALL_ENEMIES]
+		)
 
 	var archetype := str(row.get("power_archetype", ""))
 	if archetype != Budget.POWER_ARCHETYPE_BURST and archetype != Budget.POWER_ARCHETYPE_CONTROL_SAVE:
@@ -128,6 +245,9 @@ static func _check_row(row: Dictionary, errors: Array[String]) -> void:
 
 	var power_min := float(row.get("power_budget_min", 0.0))
 	var power_max := float(row.get("power_budget_max", 0.0))
+	# FAN-2949: POWER_SECONDS_* are k x the canonical encounter window, so this
+	# is the k in [POWER_CORRIDOR_K_MIN, POWER_CORRIDOR_K_MAX] corridor against
+	# the live standard-monster pool (reference output x window seconds).
 	if not is_equal_approx(power_min, reference_dps * Budget.POWER_SECONDS_MIN):
 		errors.append("row.power_budget_min: %s must be %.1fs of its own output" % [key, Budget.POWER_SECONDS_MIN])
 	if not is_equal_approx(power_max, reference_dps * Budget.POWER_SECONDS_MAX):
@@ -305,3 +425,65 @@ static func _activations_in_one_encounter(row: Dictionary, scenario: Dictionary)
 static func _run_encounter_without_reset(ledger: Ledger, row: Dictionary, scenario: Dictionary) -> void:
 	var hp_pool := float(row.get("reference_solo_dps", 0.0)) * Budget.NORMAL_ENCOUNTER_SECONDS
 	ledger.add_removed_health(hp_pool * maxf(float(scenario.get("output_factor", 1.0)), 0.0))
+
+
+## The `coverage=all_enemies` assertion (FAN-2949). `class_sources` maps
+## class_id -> the concatenated executor source of that class package (the
+## caller gathers it; the harness only judges, like `violations()`). Overrides
+## exist so the negative controls can exercise the ratchet itself.
+static func coverage_violations(
+	class_sources: Dictionary,
+	allowlist: Dictionary = COVERAGE_MIGRATION_ALLOWLIST,
+	converted: Array[String] = COVERAGE_V2_CLASSES
+) -> Array[String]:
+	var errors: Array[String] = []
+	for raw_class_id in allowlist.keys():
+		var class_id := str(raw_class_id)
+		if not class_sources.has(class_id):
+			errors.append("coverage.allowlist_unknown: entry '%s' names no class package" % class_id)
+		elif str(allowlist[raw_class_id]).strip_edges().is_empty():
+			errors.append("coverage.allowlist_reason_missing: entry '%s' states no reason" % class_id)
+
+	for raw_class_id in class_sources.keys():
+		var class_id := str(raw_class_id)
+		var source := str(class_sources[raw_class_id])
+		var caps := count_cap_params(source)
+		var clean := caps.is_empty()
+		var is_converted := converted.has(class_id)
+		if allowlist.has(class_id):
+			# Stale entry: the class already satisfies v2, so its allowlist
+			# entry must be gone — the allowlist only ever shrinks.
+			if clean and is_converted:
+				errors.append(
+					"coverage.allowlist_stale: %s already satisfies coverage=%s; remove its entry" % [class_id, Budget.COVERAGE_ALL_ENEMIES]
+				)
+			continue
+		# Outside the allowlist the class is asserted against v2 and fails
+		# closed: converted AND clean, or red.
+		if not is_converted:
+			errors.append(
+				"coverage.conversion_missing: %s is outside the allowlist but not in COVERAGE_V2_CLASSES" % class_id
+			)
+		if not clean:
+			errors.append(
+				"coverage.count_cap: %s declares count-shaped parameters %s — prohibited by coverage=%s" % [class_id, str(caps), Budget.COVERAGE_ALL_ENEMIES]
+			)
+	return errors
+
+
+## Every count-shaped parameter name in an executor source. Per-target damage
+## shaping (`*_target_cap_fraction`, `*_target_cap_flat`) is not a count cap.
+static func count_cap_params(source: String) -> Array[String]:
+	var pattern := RegEx.create_from_string(COUNT_CAP_PARAM_PATTERN)
+	var found: Array[String] = []
+	for raw_match in pattern.search_all(source):
+		var param := str((raw_match as RegExMatch).get_string())
+		var is_shaping := false
+		for suffix in COUNT_CAP_SHAPING_SUFFIXES:
+			if param.ends_with(suffix):
+				is_shaping = true
+				break
+		if not is_shaping and not found.has(param):
+			found.append(param)
+	found.sort()
+	return found

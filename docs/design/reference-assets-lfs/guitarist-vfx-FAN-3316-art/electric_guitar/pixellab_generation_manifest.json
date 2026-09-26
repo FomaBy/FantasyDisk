@@ -1,0 +1,126 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T22:58:29Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "e90881a0-dfed-4683-a01f-f490091e3911",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered diagonal electric guitar relic made of five angled neon chord strips, magenta cyan and violet electric filaments, a single white-blue lightning chord crossing the strings, dark fantasy D&D pixel art, top-down isolated ultimate VFX prop, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same diagonal five chord strips and lightning chord centered with stable proportions and palette; animate the angled strips sweeping in alternating directions, strings visibly vibrating, bright lightning jumping across the chord intersections, small electric sparks snapping on each beat, then recoil to a clean end pose; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "53dfadfd-dbc6-44a6-91f6-dd5de9c21951",
+    "canonical_tag": "guitarist_electric_guitar_last_chord"
+  },
+  "frames": [
+    {
+      "file": "electric_guitar_f00.png",
+      "bytes": 17301,
+      "url_kind": "template",
+      "encoded_sha256": "dbf982d12f32d1d437d3966bcfb49c86ab3f43974da1774aa601626d8561a163",
+      "pixel_sha256": "092e823ee726836c64da3b9d93ca4bebddb7f0890edffdea01ce14480e123fa9",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f00.png",
+      "raw_encoded_sha256": "28ee2e2e1a8c14bb716fd4d42c210738b0424c6f4ed70145b94201d32268ff5f",
+      "raw_pixel_sha256": "3c60b4740419110bb100b80043be0449847d7938a19464a942197fc7b760cdec"
+    },
+    {
+      "file": "electric_guitar_f01.png",
+      "bytes": 23416,
+      "url_kind": "template",
+      "encoded_sha256": "fefd2ce0701a82ccf9a380d4a29fd474f14822c132d91fd5b5ea893c471b2c75",
+      "pixel_sha256": "96d990b45b70b6a84e495347834ec9708bc99abb3964b62e78361069e0466bc8",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f01.png",
+      "raw_encoded_sha256": "713ee29b453a2a0c8a78b99a8355fe8a673d5d1d6797f9f67da03355434638bf",
+      "raw_pixel_sha256": "7e272b8c259933f827c240f5f68748747eb16674e43c4f1ab30cbfb8bb6ceda2"
+    },
+    {
+      "file": "electric_guitar_f02.png",
+      "bytes": 22325,
+      "url_kind": "template",
+      "encoded_sha256": "78d2f30597a514e167faa3dbdaac262c3a094601db59420e426a8918b7ec9fc5",
+      "pixel_sha256": "76575e8dbf13ca6a42ab1f5de1b35900cef897ffb2b6187c14d06ae80277b241",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f02.png",
+      "raw_encoded_sha256": "841385737a9556c22d21d1669aea66b819cd607407053d002fecae927425b79d",
+      "raw_pixel_sha256": "a3f6895a6b38c65d34ab4f59bef6b78c02903f474e9c3c9b8b4950d758512abb"
+    },
+    {
+      "file": "electric_guitar_f03.png",
+      "bytes": 21897,
+      "url_kind": "template",
+      "encoded_sha256": "acd6af23e3ab7d0e395cc8f084fb2d6bf3420b41e9f42177d266a4bebc3a23d1",
+      "pixel_sha256": "fb2331fd31fda18dad0267ddf4610373688ff58e6d8fe7aac1b1f60b3d40aecb",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f03.png",
+      "raw_encoded_sha256": "15baa208575b30e42150192deb3a6d72db9e6bd464fe358c5f47b884e33e4a75",
+      "raw_pixel_sha256": "46f7994e7830463a77ab2ebffdf7124cfa7ba414e91a99e3105566358b84f443"
+    },
+    {
+      "file": "electric_guitar_f04.png",
+      "bytes": 22614,
+      "url_kind": "template",
+      "encoded_sha256": "baf44aa5913e6968f02e224efa7fe1cc13f5cb8d4f9af8043918c3c58eefd3d5",
+      "pixel_sha256": "6ccae200377bcc372145f68b44803ac02829dc5deffa1ad93203fc2b06ae73eb",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f04.png",
+      "raw_encoded_sha256": "b09a4d191ea027b635fb5641983d813234f1358c0546e1f1c3f1d55ae5c68b43",
+      "raw_pixel_sha256": "6e4973395855a7d13e7f3b37f921ee586cd568a8037f4fc818f5d3ad739a92a3"
+    },
+    {
+      "file": "electric_guitar_f05.png",
+      "bytes": 22757,
+      "url_kind": "template",
+      "encoded_sha256": "931dadc9eb28a2f5c50d7bb2864a471b21d10d8dd70c261513eda01b8112a6e5",
+      "pixel_sha256": "b48c33e2d6cab78c52ca335bb4a472377bb9d6207efc9a3b459c5a85a02edb0e",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f05.png",
+      "raw_encoded_sha256": "90d2a6ee454add091e59015d6763627439d7c25d527187127a2ca3c8b0c9dc52",
+      "raw_pixel_sha256": "c6aa97d1314475b17ef0e21f9ae4f2e6618a17f8a8489301784dc2b1ccc95518"
+    },
+    {
+      "file": "electric_guitar_f06.png",
+      "bytes": 20905,
+      "url_kind": "template",
+      "encoded_sha256": "383416a9fda4df4347964d25bb0cc817c0bb655e12f61cf2dc5c97276a551596",
+      "pixel_sha256": "678712f5a6e2bcc2751ab6b373be250197e9f0da678023b458f8249a42c7bcb4",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f06.png",
+      "raw_encoded_sha256": "b45a23a641f7bbd108b1c6ae2af1991cee8f0af5ec8c7ce90fbf77cefb184a54",
+      "raw_pixel_sha256": "d4e8630947a80377618b2e927a6c5710d30c8a58aba638b6ec60a118856d2e65"
+    },
+    {
+      "file": "electric_guitar_f07.png",
+      "bytes": 23549,
+      "url_kind": "template",
+      "encoded_sha256": "cae41572e6f5f2cf5c774efed882526a91db8513ccd5a3b07e1800235cea4a7e",
+      "pixel_sha256": "72129f4d1eef5451185021c6cc01c998879c7417f0d378ea06be7da7cad601d4",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f07.png",
+      "raw_encoded_sha256": "029f5824e51e45aa5aa339dffa3074754654e5d8454529832335b48c3301e0f0",
+      "raw_pixel_sha256": "162c259be1bb41ef87743658ebe6c0e5c3db6867dd2d776f37c78c14d4f3b8d8"
+    },
+    {
+      "file": "electric_guitar_f08.png",
+      "bytes": 23236,
+      "url_kind": "template",
+      "encoded_sha256": "ea5ec119e1c03d1ddb7ee3cda30f4315a65b1d6cc5dd78d0b4b22b372debd910",
+      "pixel_sha256": "6279dbd68dcf5080aef12ea28c90df10fa1256f99ce4fb9f4ecc7b0f26f07937",
+      "raw_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw/electric_guitar_f08.png",
+      "raw_encoded_sha256": "426bf0a3b7ef714a39635f00e97e0b4cee0a0242b3b0deff945ffc35a56fd348",
+      "raw_pixel_sha256": "4f8b928fbdb2be234858770a8e4dc13f8b8e5006d5744cd00fbbe4c705b62be0"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "postprocess": {
+    "raw_source_dir": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw",
+    "accepted_source_normalization": "uniform 224x224 nearest-neighbor scale centered in transparent 256x256 canvas with 16px nominal outer pad",
+    "runtime_copy": "accepted source frames copied byte-for-byte"
+  }
+}

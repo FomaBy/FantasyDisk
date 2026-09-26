@@ -29,14 +29,16 @@
       {"name": "cancel", "phase_id": "weapon_ultimate.phase.sniper.sniper_deadeye_rifle.cleanup"}
     ],
     "pivot": {"x": 0.5, "y": 0.5},
-    "timing": {"windup": 0.0, "release": 0.65, "active": 0.78, "recovery": 1.4, "cancel": 1.85},
+    "timing": {"windup": 0.0, "release": 0.75, "active": 1.25, "recovery": 2.05, "cancel": 2.9},
+    "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100.0, "time_scale_dip": 0.4, "sfx_ducking": true},
+    "identity": {"cast_pose_id": "sniper.cast.steady_breath", "cast_pose_asset": "res://assets/sprites/characters/full_frame/sniper_pixellab/sniper_move_east_05.png", "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/sniper/sniper_deadeye_rifle_ultimate.png", "class_palette_id": "sniper.glacial_crimson"},
     "headless_fallback": "no_op"
   },
   "visual_contract": {
     "ultimate_name": "Один Выстрел",
     "silhouette": "narrow horizontal scope window ending in a single arena-wide tracer",
     "motion_path": "aim lock holds, then one linear full-arena release with a delayed endpoint crack",
-    "timing_rhythm": "0.65s breath hold, 0.13s snap release, 0.62s delayed crack and casing drop",
+    "timing_rhythm": "0.75s breath hold, one snap release, then a 1.30s full-arena endpoint read before the casing fade",
     "impact_language": "one white-blue endpoint flare; no radial burst or persistent ring",
     "required_nodes": ["PhaseNodes/Windup/ScopeVignette", "PhaseNodes/Release/ArenaTracer", "PhaseNodes/Active/EndpointFlash", "PhaseNodes/Recovery/CasingDrop"],
     "scene_node_budget": {"sprites": 4, "line_segments": 4, "simultaneous_emitters": 1},

@@ -193,6 +193,11 @@ quit and remediation observation window. Until that review is terminal
 Build the temporary embedded-PCK exe, wrap it with NSIS, verify the exact NSIS
 CRC algorithm, secret-scan staged payloads, and publish only setup.exe.
 
+The final Windows verification card (`qa_windows`) must include a filled
+performance section per `docs/qa/perf-checklist.md`: metrics M1–M5 measured on
+real Windows hardware with the exact commands from that checklist. A QA verdict
+without the filled performance section is incomplete and must not be accepted.
+
 ## 6. Durable local release — blocking
 
 An ephemeral Multica worktree is never the retained release location. Configure
@@ -271,10 +276,13 @@ dry-run, publish the allowlisted assets, and verify the page, latest manifest
 and installers without GitHub credentials:
 
 ```bash
+FANTASYDISK_INTERACTIVE_PROOF_REFRESH=1 \
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
   --version <version> --dry-run
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
-  --version <version>
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
 python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.py \
   --version <version> --local-release /absolute/durable/releases/v<version>
 ```
@@ -287,6 +295,75 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    (name, size, SHA-256), and only a fully verified draft is made public and
    then latest — `latest/download` can never expose an incomplete installer set.
 
+### Owner-attested App writer proof
+
+Use two independently observed Settings → Applications inventories for the same
+personal account and distribution repository. Create the first proof before the
+command; it must be under two minutes old when the publisher validates it before
+the atomic tag claim, and a stale first proof stops the command before any tag,
+draft or upload. Once the claim is made the first proof is never aged again: the
+uploads and the draft check may legitimately take longer than its window, and it
+keeps its validated identity, inventory and sole-writer binding only as the floor
+the second observation must beat. The command creates and verifies the draft,
+then pauses at the terminal: only then export the second proof and press Enter.
+The second observation must be under two minutes old at that point and newer
+than both the first proof and the completed draft-asset check; a pre-created,
+replayed, missing, stale, malformed, hidden, partial, empty-name, or duplicate
+selected-repository inventory is rejected before `--draft=false`, leaving the
+claimed tag and unpublished draft exactly as observed (burn the version). Unknown
+repository selection is unsafe even for a read-only App.
+
+Keep proofs only in a private temporary directory, never in the checkout, shell
+history, Multica, or logs. Replace the placeholders from the actual Settings UI;
+the `installations` array must contain every visible installed App and each
+`selected` App must include its complete selected-repository inventory.
+
+```bash
+PROOF_DIR="$(mktemp -d)"
+chmod 700 "$PROOF_DIR"
+write_proof() {
+  python3 - "$1" <<'PY'
+import json, sys
+from datetime import datetime, timezone
+json.dump({
+  # JSON field: "complete": true
+  "schema_version": 1,
+  "source": "github-account-applications-settings",
+  "account": "FomaBy",
+  "repository": "FomaBy/FantasyDisk-Releases",
+  "observed_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+  "complete": True,
+  "installations": [{
+    "id": 123456,
+    "app_slug": "example-read-only-app",
+    "permissions": {"contents": "read", "administration": "read"},
+    "repository_selection": "selected",
+    "repositories": {"total_count": 1, "repositories": [
+      {"full_name": "FomaBy/FantasyDisk-Releases"}
+    ]}
+  }]
+}, open(sys.argv[1], "w", encoding="utf-8"), indent=2)
+PY
+}
+write_proof "$PROOF_DIR/writer-proof-first.json"
+python3 skills/codex/fantasydisk-release-director/scripts/github_release_publish.py \
+  --version <version> \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-first.json" \
+  --writer-inventory-proof "$PROOF_DIR/writer-proof-second.json"
+rm -rf "$PROOF_DIR"
+```
+
+When the publisher reports that the draft assets are verified, switch to the
+Settings → Applications export, replace the example installation list with the
+complete current list, run `write_proof "$PROOF_DIR/writer-proof-second.json"`,
+and only then press Enter in the publisher terminal. The example is a complete
+installation-bearing schema, not permission to omit Apps or repositories.
+
+If validation or publication fails, inspect the reported non-secret error, retain
+the proofs only long enough for the authorized incident review, then delete the
+same temporary directory with `rm -rf "$PROOF_DIR"`. Never paste a proof into a
+ticket: it is account-security evidence, not release metadata.
+
    FAN-1276 sole-writer boundary: draft release assets stay writable to any
    account with contents write access until the release goes public, and
    GitHub offers no publish-with-expected-bytes precondition, so
@@ -296,8 +373,20 @@ python3 skills/codex/fantasydisk-release-director/scripts/github_release_verify.
    distribution repository is owned by the authenticated publisher account
    (user-owned), lists no other collaborator and no pending collaboration
    invitation, holds no deploy key that can push, and is covered by no GitHub
-   App installation with contents or administration write; hidden, malformed,
-   or unprovably paginated state blocks publication. Every draft asset is
+   App installation with contents or administration write. Do not treat
+   `GET /user/installations` from a `ghu_` token as account-wide evidence: it
+   covers only that App's visible installations. For a personal account the
+   supported proof is two owner-attested, complete Settings → Applications JSON
+   inventories passed with `--writer-inventory-proof` (pre-draft then
+   pre-public). Each binds account, repository, UTC observation time and full
+   selected-repository details. Each proof must be under two minutes old at its
+   own boundary: the first before the atomic tag claim, the second immediately
+   before the public edit, where it must also be newer than the first proof and
+   than the draft-asset check. The first proof is not re-aged after the claim
+   (FAN-3969), so upload time never burns a correctly proven version. Hidden,
+   malformed, partial, stale, replayed, or writer-bearing
+   evidence blocks publication. Keep attestations, cookies and tokens out of git,
+   Multica and logs. Every draft asset is
    then re-verified byte-exact (name, size, SHA-256) as the last read before
    `gh release edit --draft=false`, so a concurrent asset swap after the last
    clean verification aborts the attempt while the release is still an

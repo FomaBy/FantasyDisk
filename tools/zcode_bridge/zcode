@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""Bridge: Multica daemon (claude stream-json protocol) <-> ZCode CLI (Z.AI GLM).
+
+Accepts Claude Code -p style flags, reads user prompts as stream-json JSONL
+(or plain text) from stdin, runs the real zcode CLI headless, and emits
+Claude Code compatible stream-json events on stdout.
+
+Timeout: ZCODE_TIMEOUT env var, seconds (default 7200). On timeout the child
+is killed but everything it wrote so far is kept and returned in the error
+result — do not revert to subprocess.run(capture_output=True, timeout=...):
+it discards the whole buffer on TimeoutExpired and the daemon logs
+output_bytes=0 (FAN-2894, burned FAN-2516/FAN-2517 at the old 30-min cap).
+"""
+import json, os, signal, subprocess, sys, threading, time, uuid
+
+REAL = "/usr/local/bin/zcode.real"
+
+DEFAULT_TIMEOUT = 7200
+MIN_TIMEOUT = 60
+try:
+    TIMEOUT = int(os.environ.get("ZCODE_TIMEOUT", DEFAULT_TIMEOUT))
+except ValueError:
+    TIMEOUT = DEFAULT_TIMEOUT
+if TIMEOUT < MIN_TIMEOUT:
+    print("zcode: ZCODE_TIMEOUT=%r is below the minimum of %d seconds; "
+          "falling back to default %d" % (os.environ.get("ZCODE_TIMEOUT"), MIN_TIMEOUT, DEFAULT_TIMEOUT),
+          file=sys.stderr)
+    TIMEOUT = DEFAULT_TIMEOUT
+
+def emit(obj):
+    sys.stdout.write(json.dumps(obj, ensure_ascii=False) + "\n")
+    sys.stdout.flush()
+
+def extract_prompt(line):
+    try:
+        msg = json.loads(line)
+    except (json.JSONDecodeError, ValueError):
+        return None
+    if not isinstance(msg, dict):
+        return None
+    if msg.get("type") not in ("user", None):
+        return None
+    m = msg.get("message", msg)
+    content = m.get("content") if isinstance(m, dict) else None
+    if isinstance(content, str):
+        return content
+    parts = []
+    if isinstance(content, list):
+        for p in content:
+            if isinstance(p, dict) and p.get("type") == "text":
+                parts.append(p.get("text", ""))
+    return "\n".join(parts) if parts else None
+
+def _drain(stream, sink):
+    for line in stream:
+        sink.append(line)
+    stream.close()
+
+def run_real(cmd, timeout):
+    """Run cmd, reading stdout/stderr line-by-line as they arrive so a kill
+    keeps everything read so far. Returns (stdout, stderr, timed_out)."""
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, start_new_session=True)
+    out_lines, err_lines = [], []
+    readers = [threading.Thread(target=_drain, args=(proc.stdout, out_lines), daemon=True),
+               threading.Thread(target=_drain, args=(proc.stderr, err_lines), daemon=True)]
+    for t in readers:
+        t.start()
+    timed_out = False
+    try:
+        proc.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        proc.wait()
+    for t in readers:
+        t.join(timeout=5)
+    return "".join(out_lines), "".join(err_lines), timed_out
+
+def main():
+    argv = sys.argv[1:]
+    resume = None
+    disallowed = None
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "--resume" and i + 1 < len(argv):
+            resume = argv[i + 1]; i += 2; continue
+        if a == "--disallowedTools" or a == "--disallowed-tools":
+            disallowed = argv[i + 1] if i + 1 < len(argv) else None; i += 2; continue
+        if a in ("--model", "--max-turns", "--permission-mode", "--output-format",
+                 "--input-format", "--append-system-prompt", "--session"):
+            i += 2 if i + 1 < len(argv) and not argv[i + 1].startswith("--") else 1
+            continue
+        i += 1
+
+    sid_for_init = resume or ("sess_" + str(uuid.uuid4()))
+    emitted_init = False
+
+    for raw in sys.stdin:
+        line = raw.strip()
+        if not line:
+            continue
+        prompt = extract_prompt(line)
+        if prompt is None and "{" not in line[:1]:
+            prompt = line  # plain text stdin
+        if not prompt:
+            continue
+        if not emitted_init:
+            emit({"type": "system", "subtype": "init", "session_id": sid_for_init,
+                  "model": "builtin:zai-coding-plan/GLM-5.3",
+                  "cwd": os.getcwd(), "tools": [], "permission_mode": "bypassPermissions"})
+            emitted_init = True
+        t0 = time.time()
+        cmd = [REAL, "--prompt", prompt, "--mode", "yolo", "--json"]
+        if disallowed:
+            cmd += ["--disallowed-tools", disallowed]
+        if resume:
+            cmd += ["--resume", resume]
+        out = err_out = ""
+        timed_out = False
+        try:
+            out, err_out, timed_out = run_real(cmd, TIMEOUT)
+            body = out.strip()
+            data = json.loads(body) if body and not timed_out else {}
+        except Exception as e:
+            data = {"error": str(e)}
+        if timed_out:
+            partial = out.strip() or err_out.strip()
+            data = {"error":
+                    "zcode run interrupted: timed out after %d seconds "
+                    "(ZCODE_TIMEOUT env var, default %d). Partial output before "
+                    "the cut:\n%s"
+                    % (TIMEOUT, DEFAULT_TIMEOUT,
+                       partial[-4000:] if partial
+                       else "(zcode wrote nothing before the timeout)")}
+        if "response" in data:
+            text = data.get("response", "")
+            sid = data.get("sessionId", sid_for_init)
+            usage = data.get("usage", {}) or {}
+            emit({"type": "assistant",
+                  "message": {"id": "msg_" + str(uuid.uuid4()), "type": "message",
+                              "role": "assistant",
+                              "content": [{"type": "text", "text": text}]},
+                  "session_id": sid})
+            emit({"type": "result", "subtype": "success", "is_error": False,
+                  "duration_ms": int((time.time() - t0) * 1000),
+                  "duration_api_ms": int((time.time() - t0) * 1000),
+                  "num_turns": 1, "result": text, "session_id": sid,
+                  "total_cost_usd": 0.0,
+                  "usage": {"input_tokens": usage.get("inputTokens", 0),
+                            "output_tokens": usage.get("outputTokens", 0),
+                            "cache_read_input_tokens": usage.get("cacheReadTokens", 0),
+                            "cache_creation_input_tokens": usage.get("cacheWriteTokens", 0)}})
+            resume = sid
+            sid_for_init = sid
+        else:
+            err = data.get("error") or err_out.strip()[-500:] or "zcode produced no response"
+            emit({"type": "result", "subtype": "error_during_execution", "is_error": True,
+                  "duration_ms": int((time.time() - t0) * 1000),
+                  "result": err, "session_id": sid_for_init,
+                  "total_cost_usd": 0.0})
+    if not emitted_init:
+        # No prompt delivered: still emit a minimal init+empty result so the
+        # daemon does not hang waiting for output.
+        emit({"type": "system", "subtype": "init", "session_id": sid_for_init,
+              "model": "builtin:zai-coding-plan/GLM-5.3",
+              "cwd": os.getcwd(), "tools": [], "permission_mode": "bypassPermissions"})
+        emit({"type": "result", "subtype": "success", "is_error": False,
+              "duration_ms": 0, "num_turns": 0, "result": "",
+              "session_id": sid_for_init, "total_cost_usd": 0.0})
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()

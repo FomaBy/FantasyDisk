@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
+import importlib.util
 import json
 import os
 import re
@@ -41,17 +42,54 @@ try:
 except ModuleNotFoundError:
     from godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
 
+try:
+    from tools.quality import selection as selection_policy
+except ModuleNotFoundError:
+    from quality import selection as selection_policy
+
+# Keep these names on the stable runner facade. Existing callers and tests
+# monkeypatch/import them from quality_gate.py even though policy now lives in
+# a pure module.
+ANIMATION_REGISTRY_TESTS = selection_policy.ANIMATION_REGISTRY_TESTS
+BALANCE_CONTRACT_TESTS = selection_policy.BALANCE_CONTRACT_TESTS
+BALANCE_SENSITIVE_PATHS = selection_policy.BALANCE_SENSITIVE_PATHS
+CADENCE_STATUS_CONTRACT_TESTS = selection_policy.CADENCE_STATUS_CONTRACT_TESTS
+CONSUMABILITY_GATE_TEST = selection_policy.CONSUMABILITY_GATE_TEST
+CORE_CHANGED_TESTS = selection_policy.CORE_CHANGED_TESTS
+DEFENSIVE_CONTRACT_TESTS = selection_policy.DEFENSIVE_CONTRACT_TESTS
+OFFENSIVE_CONTRACT_TESTS = selection_policy.OFFENSIVE_CONTRACT_TESTS
+PATH_TEST_RULES = selection_policy.PATH_TEST_RULES
+RUNTIME_SMOKE = selection_policy.RUNTIME_SMOKE
+RUNTIME_SMOKE_HELPER_PATH = selection_policy.RUNTIME_SMOKE_HELPER_PATH
+SHARED_PRESENTATION_CONSUMER_TESTS = selection_policy.SHARED_PRESENTATION_CONSUMER_TESTS
+TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES = selection_policy.TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES
+TYPOGRAPHY_INVENTORY_SKIP = selection_policy.TYPOGRAPHY_INVENTORY_SKIP
+TYPOGRAPHY_INVENTORY_TEST = selection_policy.TYPOGRAPHY_INVENTORY_TEST
+ULTIMATE_CLASS_PACKAGE_TESTS = selection_policy.ULTIMATE_CLASS_PACKAGE_TESTS
+ULTIMATE_EXECUTOR_CONTRACT_TESTS = selection_policy.ULTIMATE_EXECUTOR_CONTRACT_TESTS
+ULTIMATE_FEATURE_LIST_TRIGGER_PATHS = selection_policy.ULTIMATE_FEATURE_LIST_TRIGGER_PATHS
+ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES = selection_policy.ULTIMATE_FEATURE_LIST_TRIGGER_PREFIXES
+ULTIMATE_PACKAGE_CONTRACT_TESTS = selection_policy.ULTIMATE_PACKAGE_CONTRACT_TESTS
+
 ROOT = Path(__file__).resolve().parents[1]
 TEST_DIR = ROOT / "tests"
+PRESENTATION_TEST_DIR = TEST_DIR / "ultimates" / "presentation"
+# FAN-3814 (ADR Фаза 2): пер-актёрные анимационные шарды; новая актёрная задача
+# добавляет свой файл, и рекурсивное discovery подбирает его без правок гейта.
+ACTOR_TEST_DIR = TEST_DIR / "actors"
+BALANCE_TEST_DIR = TEST_DIR / "balance"
 GODOT_GATE = ROOT / "tools" / "godot_gate.py"
-RUNTIME_SMOKE = "runtime_smoke_test"
 TIMING_SENSITIVE_GODOT_SCRIPTS = frozenset({
-    "res://tests/berserk_dps_runaway_gate.gd",
+    "res://tests/balance/berserk/berserk_dps_runaway_gate.gd",
     "res://tests/live_balance_simulation_test.gd",
     "res://tests/pool_dot_runaway_gate.gd",
 })
 EXTENDS_RE = re.compile(
     r'^\s*extends\s+(?:SceneTree|["\']res://tests/[^"\']+\.gd["\'])\s*(?:#.*)?$',
+    re.MULTILINE,
+)
+TEST_SCRIPT_EXTENDS_RE = re.compile(
+    r'^\s*extends\s+["\'](?P<resource>res://tests/[^"\']+\.gd)["\']\s*(?:#.*)?$',
     re.MULTILINE,
 )
 REAL_DISCORD_WEBHOOK_RE = re.compile(
@@ -72,115 +110,365 @@ PYTHON_TEST_PATTERN = "test_*.py"
 _WINDOWS_JOB_RUNNER_ARG = "--_quality-gate-windows-job-runner"
 _WINDOWS_JOB_HANDLE_ENV = "_QUALITY_GATE_WINDOWS_JOB_HANDLE"
 _WINDOWS_CLEANUP_TIMEOUT = 5.0
+# A timed-out step is already failing; cleanup may never become the new hang.
+_CLEANUP_TIMEOUT = 30.0
+_UNREADABLE_OUTPUT_NOTICE = (
+    "quality_gate: captured output unavailable: a task-owned descendant still holds "
+    "the pipe after the timeout kill\n"
+)
 
-CORE_CHANGED_TESTS = {
-    "combat_target_query_cache_test",
-    "runtime_smoke_combat_test",
-    "runtime_smoke_ui_test",
-    "weapon_ultimate_contact_sheet_beats_test",
-    "weapon_ultimate_timing_distinctness_test",
-}
-TYPOGRAPHY_INVENTORY_TEST = "semantic_typography_scrum1061_test"
-TYPOGRAPHY_INVENTORY_SKIP = {
-    "scripts/dev_console.gd",
-    "scripts/ui/semantic_typography.gd",
-}
-TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES = {".tscn", ".tres", ".theme"}
-ULTIMATE_EXECUTOR_CONTRACT_TESTS = {
-    "controller_runtime_test",
-    "controller_player_integration_test",
-    "executor_contract_audit_test",
-    "executor_primitives_test",
-    "registry_package_discovery_test",
-}
-ULTIMATE_PACKAGE_CONTRACT_TESTS = {
-    "executor_primitives_test",
-    "registry_contract_test",
-    "registry_package_discovery_test",
-}
-# A class-package rollout changes Player-visible routing, so it must also
-# re-prove the Player integration regression and the tracked-tween wall-time
-# completion/recast/cancel regression, not just the package contracts.
-ULTIMATE_CLASS_PACKAGE_TESTS = ULTIMATE_PACKAGE_CONTRACT_TESTS | {
-    "controller_player_integration_test",
-    "tracked_tween_natural_completion_test",
-}
-OFFENSIVE_CONTRACT_TESTS = {
-    "attribute_consumability_fan1887_test",
-    "attribute_ui_matrix_fan1927_test",
-    "damage_type_isolation_test",
-    "offensive_scaling_contract_test",
-    "stat_formulas_smoke_test",
-}
-CADENCE_STATUS_CONTRACT_TESTS = {
-    "chemist_kit_test",
-    "engineer_kit_test",
-    "persistent_hazard_contract_test",
-    "pool_dot_runaway_gate",
-}
-BALANCE_CONTRACT_TESTS = {
-    "balance_harness_test",
-    "class_damage_table_3variants_test",
-    "global_damage_balance_smoke_test",
-}
-DEFENSIVE_CONTRACT_TESTS = {
-    "assassin_kit_test",
-    "defensive_attribute_contract_fan1895_test",
-    "robot_kit_test",
-    "thief_kit_test",
-}
-PATH_TEST_RULES = {
-    "scripts/attribute_contract.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS,
-    # FAN-2179: berserk_rage_trait_test охраняет rage-слой Берсерка — формулу
-    # (progression_data.gd), данные CLASS_TRAITS (progression_data_characters.gd),
-    # runtime-множитель и ульта-эхо (player.gd), точку применения _rolled_damage
-    # (berserk_weapon.gd). До этого тест исполнялся только full-профилем.
-    "scripts/berserk_weapon.gd": {"berserk_rage_trait_test"},
-    "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | {"coverage_cap_gate"},
-    "scripts/meta_progression_tree_data.gd": {"offensive_scaling_contract_test"},
-    "scripts/player.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
-    "scripts/progression_data.gd": OFFENSIVE_CONTRACT_TESTS | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS | {"berserk_rage_trait_test"},
-    "scripts/progression_data_characters.gd": {"berserk_rage_trait_test"},
-    "scripts/progression_data_balance.gd": OFFENSIVE_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS | DEFENSIVE_CONTRACT_TESTS,
-    "scripts/progression_data_content.gd": {"offensive_scaling_contract_test"},
-    "scripts/progression_data_weapons.gd": {"offensive_scaling_contract_test"} | CADENCE_STATUS_CONTRACT_TESTS | BALANCE_CONTRACT_TESTS,
-    "scripts/sentry_turret.gd": {"engineer_kit_test"},
-    "scripts/stat_formulas.gd": OFFENSIVE_CONTRACT_TESTS,
-    "scripts/status_effects.gd": {"chemist_kit_test", "persistent_hazard_contract_test", "pool_dot_runaway_gate"},
-    "scripts/enemy.gd": {"enemy_separation_behavior_test"},
-    "scripts/threat_indicators.gd": {"hot_path_cache_test"},
-    "scripts/feedback_reporter.gd": {
-        "feedback_request_lifecycle_test",
-        "feedback_relay_contract_test",
-        "feedback_privacy_contract_test",
-        "feedback_privacy_ui_test",
-        "feedback_retry_policy_test",
-        "feedback_webhook_config_test",
-    },
-    "scripts/ui_screens.gd": {"feedback_privacy_ui_test"},
-    "scripts/ui/feedback_overlay.gd": {"feedback_privacy_ui_test"},
-    "scripts/ultimates/controller/ultimate_controller.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/controller/ultimate_activation.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/controller/ultimate_damage_result.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/controller/ultimate_player_host.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/executors/ultimate_control_executor.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/executors/ultimate_executor_library.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/executors/ultimate_targeting_primitives.gd": ULTIMATE_EXECUTOR_CONTRACT_TESTS,
-    "scripts/ultimates/registry/weapon_ultimate_package_discovery.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "scripts/ultimates/registry/weapon_ultimate_registry.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "scripts/ultimates/registry/weapon_ultimate_resolver.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "scripts/ultimates/schema/weapon_ultimate_schema.gd": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "data/ultimates/schema/v1/weapon_ultimate_profile.schema.json": ULTIMATE_PACKAGE_CONTRACT_TESTS,
-    "tests/feedback_webhook_config_test.gd": {"feedback_webhook_config_test"},
-}
+# FAN-3818: attribute_consumability_fan1887_test читает сьюты из своего списка
+# DEFENSIVE_FIXTURES сырым FileAccess по литеральному res://-пути, поэтому
+# перенос/удаление такой фикстуры ломает только его — и до этого правила дыра
+# была видна лишь full-профилю (ровно так FAN-3817 провалил кандидата Фазы 2).
+# Список парсится из самого сьюта: единственный источник правды, зеркала нет.
+CONSUMABILITY_GATE_TEST = "attribute_consumability_fan1887_test"
+CONSUMABILITY_GATE_SOURCE = TEST_DIR / "attribute_consumability_fan1887_test.gd"
+_DEFENSIVE_FIXTURES_BLOCK_RE = re.compile(
+    r"^const DEFENSIVE_FIXTURES := \[(?P<body>[^\]]*)\]", re.MULTILINE
+)
+
+
+def defensive_fixture_paths() -> frozenset[str]:
+    """Repo-relative paths listed in the consumability gate's DEFENSIVE_FIXTURES."""
+    source = CONSUMABILITY_GATE_SOURCE.read_text(encoding="utf-8")
+    match = _DEFENSIVE_FIXTURES_BLOCK_RE.search(source)
+    if match is None:
+        raise RuntimeError(
+            f"DEFENSIVE_FIXTURES block not found in {CONSUMABILITY_GATE_SOURCE.name}"
+        )
+    paths = frozenset(
+        literal[len("res://"):]
+        for literal in re.findall(r'"(res://tests/[^"]+\.gd)"', match.group("body"))
+    )
+    if not paths:
+        raise RuntimeError(
+            f"DEFENSIVE_FIXTURES in {CONSUMABILITY_GATE_SOURCE.name} parsed empty"
+        )
+    return paths
+# FAN-3904: the ultimate feature-list checker (17 classes / 51 weapons) joins
+# the changed profile only when its inputs move.  The gate itself selects and
+# runs the recipe suites once and then hands its own in-memory results (actual
+# command, captured output, exit status) to the checker library inside this
+# process: no suite is launched twice, no manifest or log on disk is imported
+# as evidence, and the checker never launches Godot from inside the gate.
+ULTIMATE_FEATURE_LIST_CHECK = ROOT / "tools" / "ultimate_feature_list_check.py"
+ULTIMATE_FEATURE_LIST_PATH = "data/ultimates/feature_list.json"
+ULTIMATE_FEATURE_LIST_DIR = "build/ultimate_feature_list"
+ULTIMATE_FEATURE_LIST_REPORT = f"{ULTIMATE_FEATURE_LIST_DIR}/report.json"
 DEFAULT_STATIC_TEST_TIMEOUT = 1200.0
 DEFAULT_PYTHON_UNIT_IDLE_TIMEOUT = 60.0
 DEFAULT_GODOT_IMPORT_TIMEOUT = 1200.0
+GENERATED_IMPORT_SIDECARS = (
+    "before_berserk_648p.png.import",
+    "after_berserk_648p.png.import",
+)
+LFS_EVIDENCE_PREFIX = "docs/design/reference-assets-lfs/"
+GODOT_RESOURCE_PREFIX = "res://"
+_URI_SCHEME_PREFIX_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+
+
+def _weapon_ultimate_manifest_paths() -> list[Path]:
+    """Class-local ultimate manifests, in stable order."""
+    directory = ROOT / "docs" / "design" / "references" / "weapon_ultimates"
+    if not directory.is_dir():
+        return []
+    return sorted(directory.glob("*/manifest.json"))
+
+
+def _load_json_object(path: Path, description: str) -> dict:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"cannot read {description}: {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise RuntimeError(f"{description} must be a JSON object: {path}")
+    return payload
+
+
+def _repository_relative_path(raw_path: object, description: str) -> str:
+    if not isinstance(raw_path, str) or not raw_path:
+        raise RuntimeError(f"{description} must be a non-empty repository-relative path")
+    if "\\" in raw_path:
+        raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
+    if _URI_SCHEME_PREFIX_RE.match(raw_path):
+        raise RuntimeError(f"{description} must not use an unsupported URI scheme: {raw_path!r}")
+    path = Path(raw_path)
+    if path.is_absolute() or ".." in path.parts:
+        raise RuntimeError(f"{description} must stay within the repository: {raw_path!r}")
+    return path.as_posix()
+
+
+def _lfs_evidence_path(raw_path: object, description: str) -> str:
+    if isinstance(raw_path, str):
+        raw_path = raw_path.removeprefix(GODOT_RESOURCE_PREFIX)
+    path = _repository_relative_path(raw_path, description)
+    if not path.startswith(LFS_EVIDENCE_PREFIX):
+        raise RuntimeError(
+            f"{description} must be under {LFS_EVIDENCE_PREFIX}: {path!r}"
+        )
+    return path
+
+
+def _certification_capture_declarations(
+    evidence: dict, description: str
+) -> list[tuple[str, dict, str, str]]:
+    """Linked capture manifests and their live/headless script fields.
+
+    The two shapes are already published by separate class packages.  Keeping
+    them explicit prevents an ordinary contact-sheet renderer from being
+    reclassified as a certification runner just because it has similarly named
+    fields.
+    """
+    declarations: list[tuple[str, dict, str, str]] = []
+    certification = evidence.get("certification_capture")
+    if certification is not None:
+        if not isinstance(certification, dict):
+            raise RuntimeError(f"{description}.certification_capture must be an object")
+        runner_key = "runner" if "runner" in certification else "capture_script"
+        declarations.append((
+            "certification_capture",
+            certification,
+            "manifest",
+            runner_key,
+        ))
+    # FAN-3941: the Ranger, Thief and Soldier class manifests publish their
+    # certification link as `evidence.certification` with `capture_manifest`,
+    # `capture_script` and `focused_test`.  A link this lister does not read is
+    # evidence CI never hydrates, so the certification gate then fails on LFS
+    # pointers instead of judging the frames.
+    class_certification = evidence.get("certification")
+    if class_certification is not None:
+        if not isinstance(class_certification, dict):
+            raise RuntimeError(f"{description}.certification must be an object")
+        if "capture_manifest" in class_certification:
+            declarations.append((
+                "certification",
+                class_certification,
+                "capture_manifest",
+                "capture_script",
+            ))
+    live_capture = evidence.get("live_capture")
+    if live_capture is not None:
+        if not isinstance(live_capture, dict):
+            raise RuntimeError(f"{description}.live_capture must be an object")
+        # FAN-3934 CI evidence-input recovery: the Engineer class manifest
+        # publishes its certification link as
+        # `live_capture.certification_manifest`. A key this lister does not
+        # read is evidence CI never hydrates, so the certification gate
+        # fails on LFS pointers instead of judging the frames.
+        for manifest_key in ("capture_manifest", "certification_manifest"):
+            if manifest_key in live_capture:
+                declarations.append((
+                    "live_capture",
+                    live_capture,
+                    manifest_key,
+                    "capture_script",
+                ))
+    return declarations
+
+
+def _linked_certification_manifest_path(
+    declaration: tuple[str, dict, str, str], description: str
+) -> Path:
+    kind, payload, manifest_key, _runner_key = declaration
+    relative = _repository_relative_path(
+        payload.get(manifest_key), f"{description}.{kind}.{manifest_key}"
+    )
+    path = ROOT / relative
+    if not path.is_file():
+        raise RuntimeError(
+            f"{description}.{kind}.{manifest_key} does not exist: {relative}"
+        )
+    return path
+
+
+def _certification_artifact_paths(payload: dict, description: str) -> list[str]:
+    """Every LFS artifact declared by a linked certification manifest.
+
+    FAN-3934: manifests may publish several record lists (the Engineer
+    certification manifest carries hydrated PNGs in `samples` and geometry-only
+    `viewports`). Paths are collected from every present list; a record
+    without a `path` is a geometry descriptor and carries no evidence, but at
+    least one artifact path must resolve overall.
+    """
+    paths: list[str] = []
+    for record_key in ("captures", "sheets", "viewports", "samples"):
+        if record_key not in payload:
+            continue
+        records = payload[record_key]
+        # FAN-3934: some manifests publish `viewports` as a geometry DICT
+        # (not an artifact list); non-list geometry shapes carry no paths and
+        # are skipped, while a list that declares records keeps the original
+        # non-empty contract.
+        if not isinstance(records, list):
+            continue
+        if not records:
+            raise RuntimeError(
+                f"{description}.{record_key} must be a non-empty list"
+            )
+        for index, record in enumerate(records):
+            if not isinstance(record, dict):
+                raise RuntimeError(f"{description}.{record_key}[{index}] must be an object")
+            if "path" not in record:
+                continue
+            paths.append(_lfs_evidence_path(
+                record.get("path"), f"{description}.{record_key}[{index}].path"
+            ))
+    if not paths:
+        raise RuntimeError(
+            f"{description} declared no evidence artifact paths"
+        )
+    return paths
+
+
+def manifest_declared_lfs_evidence_paths() -> list[str]:
+    """LFS evidence reachable from class manifests, including certifications.
+
+    Candidate CI checks out LFS pointers deliberately.  This list is the narrow
+    hydration boundary: every returned path is declared by a class manifest or
+    its explicitly linked certification manifest, and malformed declarations
+    fail the candidate before a pointer could be mistaken for evidence.
+    """
+    manifest_paths = _weapon_ultimate_manifest_paths()
+    if not manifest_paths:
+        raise RuntimeError("no ultimate manifests found for LFS evidence")
+    paths: set[str] = set()
+    for manifest_path in manifest_paths:
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        contact_sheets = evidence.get("contact_sheets", [])
+        if not isinstance(contact_sheets, list):
+            raise RuntimeError(f"{description}.evidence.contact_sheets must be a list")
+        for index, raw_path in enumerate(contact_sheets):
+            if not isinstance(raw_path, str):
+                raise RuntimeError(
+                    f"{description}.evidence.contact_sheets[{index}] must be a path string"
+                )
+            if raw_path.startswith(LFS_EVIDENCE_PREFIX):
+                paths.add(_lfs_evidence_path(
+                    raw_path, f"{description}.evidence.contact_sheets[{index}]"
+                ))
+        for declaration in _certification_capture_declarations(evidence, description):
+            nested_path = _linked_certification_manifest_path(declaration, description)
+            nested_description = nested_path.relative_to(ROOT).as_posix()
+            nested = _load_json_object(nested_path, "certification capture manifest")
+            paths.update(_certification_artifact_paths(nested, nested_description))
+    if not paths:
+        raise RuntimeError("no manifest-declared LFS evidence found")
+    return sorted(paths)
+
+
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+
+def manifest_declared_capture_source_commits() -> list[str]:
+    """Source commits every linked certification manifest records it was rendered from.
+
+    The certification gates prove each recorded `source.commit_sha` is an
+    ancestor of the checked-out candidate.  A shallow candidate checkout
+    cannot prove that on its own, so CI fetches enough history for exactly
+    these commits before the gates run; a manifest that records no usable
+    commit fails the candidate here rather than passing as unprovable.
+    """
+    manifest_paths = _weapon_ultimate_manifest_paths()
+    if not manifest_paths:
+        raise RuntimeError("no ultimate manifests found for capture sources")
+    commits: set[str] = set()
+    for manifest_path in manifest_paths:
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        for declaration in _certification_capture_declarations(evidence, description):
+            nested_path = _linked_certification_manifest_path(declaration, description)
+            nested_description = nested_path.relative_to(ROOT).as_posix()
+            nested = _load_json_object(nested_path, "certification capture manifest")
+            source = nested.get("source")
+            if source is None:
+                continue
+            if not isinstance(source, dict):
+                raise RuntimeError(f"{nested_description}.source must be an object")
+            commit = source.get("commit_sha")
+            if not isinstance(commit, str) or not _COMMIT_SHA_RE.match(commit):
+                raise RuntimeError(
+                    f"{nested_description}.source.commit_sha must be a full lowercase commit SHA"
+                )
+            commits.add(commit)
+    return sorted(commits)
+
+
+def _certification_test_script_path(raw_path: object, description: str) -> str:
+    path = _repository_relative_path(raw_path, description)
+    if not path.startswith("tests/") or not path.endswith(".gd"):
+        raise RuntimeError(f"{description} must name a test GDScript: {path!r}")
+    if not (ROOT / path).is_file():
+        raise RuntimeError(f"{description} does not exist: {path}")
+    return path
+
+
+def certification_capture_pairs() -> dict[str, str]:
+    """Map windowed certification runners to their headless integrity suites."""
+    pairs: dict[str, str] = {}
+    for manifest_path in _weapon_ultimate_manifest_paths():
+        manifest = _load_json_object(manifest_path, "ultimate manifest")
+        evidence = manifest.get("evidence", {})
+        if not isinstance(evidence, dict):
+            raise RuntimeError(f"ultimate manifest evidence must be an object: {manifest_path}")
+        description = manifest_path.relative_to(ROOT).as_posix()
+        for kind, payload, _manifest_key, runner_key in _certification_capture_declarations(
+            evidence, description
+        ):
+            runner = _certification_test_script_path(
+                payload.get(runner_key), f"{description}.{kind}.{runner_key}"
+            )
+            focused_test = _certification_test_script_path(
+                payload.get("focused_test"), f"{description}.{kind}.focused_test"
+            )
+            previous = pairs.setdefault(runner, focused_test)
+            if previous != focused_test:
+                raise RuntimeError(
+                    f"certification runner {runner} maps to both {previous} and {focused_test}"
+                )
+    return pairs
+
+
+def _translate_certification_capture_paths(changed_paths: Iterable[str]) -> set[str]:
+    """Route live-only runner changes through their executable verifier."""
+    translated = set(changed_paths)
+    for runner, focused_test in certification_capture_pairs().items():
+        for suffix in ("", ".uid"):
+            runner_path = f"{runner}{suffix}"
+            if runner_path in translated:
+                translated.remove(runner_path)
+                translated.add(f"{focused_test}{suffix}")
+    return translated
 
 
 def discover_godot_tests() -> list[Path]:
+    non_headless_capture_runners = {
+        ROOT / runner for runner in certification_capture_pairs()
+    }
     tests: list[Path] = []
     for path in sorted(TEST_DIR.rglob("*.gd")):
+        # This is a CLI renderer, not a self-contained test. It requires
+        # `--out` and is invoked only by the visual-gate capture contract.
+        if path == TEST_DIR / "visual_regression" / "capture.gd":
+            continue
+        # This reusable SceneTree base owns lifecycle helpers but has no
+        # standalone completion path. Its executable descendants are selected
+        # when it changes; running the base itself can only time out.
+        if path == ROOT / RUNTIME_SMOKE_HELPER_PATH:
+            continue
+        # Certification runners require a windowed renderer to produce their
+        # evidence. Their paired integrity suite validates the committed LFS
+        # artifacts headlessly, and is selected when the runner changes.
+        if path in non_headless_capture_runners:
+            continue
         try:
             source = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
@@ -196,24 +484,24 @@ def script_resource_path(path: Path) -> str:
 
 
 def _index_by_name(discovered: Sequence[Path]) -> dict[str, Path]:
-    # Selection is name-based (filters, changed-path rules), so two suites that
-    # share a stem across directories would silently shadow each other.  Refuse
-    # the run instead of guessing which one the caller meant.
-    by_name: dict[str, Path] = {}
-    collisions: dict[str, list[Path]] = {}
+    relative = [path.relative_to(ROOT).as_posix() for path in discovered]
+    return {
+        name: ROOT / path
+        for name, path in selection_policy.index_suite_paths(relative).items()
+    }
+
+
+def _dependent_suite_names(
+    discovered: Sequence[Path], dependency_resource: str
+) -> set[str]:
+    """Executable suites that inherit *dependency_resource*, transitively."""
+    relative = [path.relative_to(ROOT).as_posix() for path in discovered]
+    parents: dict[str, str] = {}
     for path in discovered:
-        previous = by_name.get(path.stem)
-        if previous is None:
-            by_name[path.stem] = path
-            continue
-        collisions.setdefault(path.stem, [previous]).append(path)
-    if collisions:
-        details = "; ".join(
-            f"{stem} -> " + ", ".join(item.relative_to(ROOT).as_posix() for item in paths)
-            for stem, paths in sorted(collisions.items())
-        )
-        raise RuntimeError(f"ambiguous Godot test names across directories: {details}")
-    return by_name
+        match = TEST_SCRIPT_EXTENDS_RE.search(path.read_text(encoding="utf-8"))
+        if match is not None:
+            parents[path.relative_to(ROOT).as_posix()] = match.group("resource")
+    return selection_policy.dependent_suite_names(relative, parents, dependency_resource)
 
 
 def discover_python_tests() -> list[Path]:
@@ -277,7 +565,7 @@ def python_unit_commands() -> list[tuple[str, list[str]]]:
 
 def _git_changed_paths(ref: str) -> set[str]:
     result = subprocess.run(
-        ["git", "diff", "--name-only", ref, "--"],
+        ["git", "diff", "--name-status", "-z", "--find-renames", ref, "--"],
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,
@@ -286,7 +574,20 @@ def _git_changed_paths(ref: str) -> set[str]:
     )
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or f"git diff failed for {ref}")
-    changed = {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    changed: set[str] = set()
+    fields = iter(result.stdout.split("\0"))
+    for status in fields:
+        if not status:
+            continue
+        path = next(fields, "")
+        if not path:
+            raise RuntimeError(f"malformed git diff entry for status {status}")
+        changed.add(path)
+        if status.startswith(("R", "C")):
+            destination = next(fields, "")
+            if not destination:
+                raise RuntimeError(f"malformed git diff entry for status {status}")
+            changed.add(destination)
     untracked = subprocess.run(
         ["git", "ls-files", "--others", "--exclude-standard"],
         cwd=ROOT,
@@ -316,18 +617,7 @@ def _resolved_commit(ref: str) -> str:
 
 
 def _affects_typography_inventory(path: str) -> bool:
-    path_parts = Path(path).parts
-    if path.startswith("scripts/"):
-        return (
-            path.endswith(".gd")
-            and path not in TYPOGRAPHY_INVENTORY_SKIP
-            and "/dev/" not in path
-        )
-    return (
-        Path(path).suffix in TYPOGRAPHY_INVENTORY_RESOURCE_SUFFIXES
-        and ".godot" not in path_parts
-        and "build" not in path_parts
-    )
+    return selection_policy.affects_typography_inventory(path)
 
 
 def select_godot_tests(
@@ -338,36 +628,70 @@ def select_godot_tests(
 ) -> list[Path]:
     if profile == "static":
         return []
-    by_name = _index_by_name(discover_godot_tests())
+    discovered = discover_godot_tests()
+    discovered_paths = [path.relative_to(ROOT).as_posix() for path in discovered]
+    changed_paths = _git_changed_paths(changed_ref) if profile == "changed" else set()
+    changed_paths = _translate_certification_capture_paths(changed_paths)
+    parent_resources: dict[str, str] = {}
+    if RUNTIME_SMOKE_HELPER_PATH in changed_paths:
+        for path in discovered:
+            match = TEST_SCRIPT_EXTENDS_RE.search(path.read_text(encoding="utf-8"))
+            if match is not None:
+                parent_resources[path.relative_to(ROOT).as_posix()] = match.group(
+                    "resource"
+                )
+    result = selection_policy.select_suite_paths(
+        profile=profile,
+        filters=filters,
+        changed_paths=changed_paths,
+        discovered_paths=discovered_paths,
+        parent_resources=parent_resources,
+        defensive_fixture_paths=(
+            defensive_fixture_paths() if profile == "changed" else ()
+        ),
+        feature_list_recipe_scripts=(
+            feature_list_recipe_scripts() if profile == "changed" else ()
+        ),
+        skip_umbrella=skip_umbrella,
+    )
+    return [ROOT / path for path in result.suite_paths]
 
-    if profile in {"full", "windows"}:
-        selected_names = set(by_name)
-    else:
-        selected_names = set(CORE_CHANGED_TESTS)
-        for changed_path in _git_changed_paths(changed_ref):
-            selected_names.update(PATH_TEST_RULES.get(changed_path, set()))
-            if changed_path.startswith((
-                "data/ultimates/classes/",
-                "scripts/ultimates/classes/",
-            )):
-                selected_names.update(ULTIMATE_CLASS_PACKAGE_TESTS)
-            if _affects_typography_inventory(changed_path):
-                selected_names.add(TYPOGRAPHY_INVENTORY_TEST)
-            if changed_path.startswith("tests/") and changed_path.endswith(".gd"):
-                selected_names.add(Path(changed_path).stem)
-            if changed_path.startswith(("scripts/", "scenes/")) or changed_path in {
-                "project.godot", "export_presets.cfg"
-            }:
-                selected_names.add(RUNTIME_SMOKE)
 
-    if skip_umbrella:
-        selected_names.discard(RUNTIME_SMOKE)
-    if filters:
-        selected_names = {
-            name for name in selected_names
-            if any(pattern.lower() in name.lower() for pattern in filters)
-        }
-    return [by_name[name] for name in sorted(selected_names) if name in by_name]
+def _touches_ultimate_feature_list(changed_paths: Iterable[str]) -> bool:
+    return selection_policy.touches_ultimate_feature_list(changed_paths)
+
+
+def ultimate_feature_list_selected(profile: str, changed_ref: str) -> bool:
+    """Whether the changed profile owes the ultimate feature-list checker."""
+    if profile != "changed":
+        return False
+    return _touches_ultimate_feature_list(_git_changed_paths(changed_ref))
+
+
+def feature_list_recipe_scripts() -> set[str]:
+    """``res://`` suites the committed feature list maps as active recipes.
+
+    Read leniently: a malformed list selects nothing here and is then rejected
+    by the checker's own validation, which is the authoritative verdict.
+    """
+    try:
+        document = json.loads((ROOT / ULTIMATE_FEATURE_LIST_PATH).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    entries = document.get("entries") if isinstance(document, dict) else None
+    scripts: set[str] = set()
+    for entry in entries if isinstance(entries, list) else []:
+        if not isinstance(entry, dict) or entry.get("state") != "active":
+            continue
+        recipe = entry.get("verification")
+        if (
+            isinstance(recipe, list)
+            and recipe
+            and isinstance(recipe[-1], str)
+            and recipe[-1].startswith("res://tests/")
+        ):
+            scripts.add(recipe[-1])
+    return scripts
 
 
 def _run_command(
@@ -388,6 +712,20 @@ def _run_command(
         )
     if output:
         print(output, end="" if output.endswith("\n") else "\n", flush=True)
+    if timed_out:
+        # Without this the step is indistinguishable from an ordinary failure,
+        # and a silent watchdog kill reads as "the gate hung" (FAN-3829).
+        limit = (
+            f"no output for {idle_timeout:.0f}s"
+            if idle_timeout is not None and time.monotonic() - started < timeout
+            else f"exceeded the {timeout:.0f}s step limit"
+        )
+        print(
+            f"TIMEOUT {name}: {limit} after {time.monotonic() - started:.0f}s; "
+            "task-owned processes terminated, step failed closed",
+            file=sys.stderr,
+            flush=True,
+        )
     result = {
         "name": name,
         "status": "passed" if exit_code == 0 and not timed_out else "failed",
@@ -485,10 +823,34 @@ def _worktree_status() -> list[str]:
     return [line for line in result.stdout.splitlines() if line]
 
 
+def _cleanup_generated_import_sidecars() -> list[str]:
+    """Remove only the two known root sidecars emitted by Godot's import pass."""
+    removed: list[str] = []
+    for relative in GENERATED_IMPORT_SIDECARS:
+        path = ROOT / relative
+        tracked = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", "--", relative],
+            cwd=ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+        if tracked or not path.is_file():
+            continue
+        try:
+            path.unlink()
+        except OSError as exc:
+            print(f"quality_gate: cannot remove generated sidecar {relative}: {exc}", file=sys.stderr)
+            continue
+        removed.append(relative)
+    return removed
+
+
 def _is_certifying(
     args: argparse.Namespace,
     worktree_status: Sequence[str],
     changed_ref_is_integration_base: bool,
+    feature_list_skipped: bool = False,
 ) -> bool:
     return not (
         args.filters
@@ -498,6 +860,7 @@ def _is_certifying(
         or args.shard_count != 1
         or worktree_status
         or not changed_ref_is_integration_base
+        or feature_list_skipped
     )
 
 
@@ -509,7 +872,26 @@ def run_static_checks(
 ) -> list[dict]:
     python_commands = python_unit_commands()
     commands: list[tuple[str, list[str]]] = [
-        ("repository-invariants", [sys.executable, "tools/quality_static_guard.py"]),
+        (
+            "repository-invariants",
+            [
+                sys.executable,
+                "tools/quality_static_guard.py",
+                "--changed-ref",
+                changed_ref,
+            ],
+        ),
+        (
+            "repository-storage-policy",
+            [
+                sys.executable,
+                "tools/repository_storage_policy.py",
+                "--root",
+                str(ROOT),
+                "--changed-ref",
+                changed_ref,
+            ],
+        ),
         *python_commands,
         ("python-syntax", [sys.executable, "-m", "compileall", "-q", "tools", "tests"]),
         ("asset-audit", [sys.executable, "tools/test_audit_unused_assets.py"]),
@@ -709,9 +1091,39 @@ def _run_in_windows_job(command: Sequence[str]) -> int:
         return 125
 
 
+def _descendant_pids(pid: int) -> list[int]:
+    """Every live descendant of *pid*, read before the kill reparents them."""
+    listing = subprocess.run(
+        ["ps", "-Ao", "pid=,ppid="],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    children: dict[int, list[int]] = {}
+    for line in listing.stdout.splitlines():
+        fields = line.split()
+        if len(fields) == 2 and fields[0].isdigit() and fields[1].isdigit():
+            children.setdefault(int(fields[1]), []).append(int(fields[0]))
+    found: list[int] = []
+    pending = [pid]
+    while pending:
+        for child in children.get(pending.pop(), ()):
+            if child not in found and child != pid:
+                found.append(child)
+                pending.append(child)
+    return found
+
+
 def _terminate_process(
     process: subprocess.Popen[str], windows_job: int | None = None
 ) -> None:
+    # A nested `_run_captured` (the live-engine probes in
+    # tests/test_quality_tools.py run tools/godot_gate.py that way) starts its
+    # own session, so killpg alone leaves the real engine running: it keeps the
+    # inherited stdout open and the capture reader below then blocks for as long
+    # as that orphan lives.  The tree is read first — the kill reparents it.
+    descendants = [] if os.name == "nt" else _descendant_pids(process.pid)
     try:
         if os.name == "nt":
             # Popen.kill uses the retained process handle, not a recyclable PID.
@@ -732,6 +1144,21 @@ def _terminate_process(
         # The direct process may have exited while its inherited stdout is
         # still draining.  The reader lifecycle below remains authoritative.
         pass
+    survivors: list[int] = []
+    for pid in descendants:
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except ProcessLookupError:
+            continue
+        except OSError:
+            survivors.append(pid)
+    if survivors:
+        print(
+            "quality_gate: task-owned processes survived the timeout kill: "
+            f"{', '.join(str(pid) for pid in survivors)}; terminate them before rerunning",
+            file=sys.stderr,
+            flush=True,
+        )
 
 
 def _run_captured(
@@ -794,7 +1221,10 @@ def _run_captured(
             return process.returncode, output, False
         except subprocess.TimeoutExpired:
             _terminate_process(process)
-            output, _ = process.communicate()
+            try:
+                output, _ = process.communicate(timeout=_CLEANUP_TIMEOUT)
+            except subprocess.TimeoutExpired:
+                output = _UNREADABLE_OUTPUT_NOTICE
             return 124, output, True
 
     try:
@@ -833,21 +1263,24 @@ def _run_captured(
 
         if timed_out:
             _terminate_process(process, windows_job)
+        cleanup_timeout = _WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else _CLEANUP_TIMEOUT
         try:
-            process.wait(timeout=_WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else None)
+            process.wait(timeout=cleanup_timeout)
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait(timeout=_WINDOWS_CLEANUP_TIMEOUT)
         # Never close a buffered stream while another thread may be in readline().
-        # A timed-out process group is killed above; its inherited descriptors then
-        # reach EOF and let the reader finish cleanly.
-        reader.join(timeout=_WINDOWS_CLEANUP_TIMEOUT if os.name == "nt" else None)
+        # A timed-out process tree is killed above; its inherited descriptors then
+        # reach EOF and let the reader finish cleanly.  The wait stays bounded so a
+        # descendant that outlives the kill fails the step closed instead of
+        # turning cleanup into a second, unbounded hang.
+        reader.join(timeout=cleanup_timeout)
         if reader.is_alive():
             if process.stdout is not None:
                 process.stdout.close()
             reader.join(timeout=_WINDOWS_CLEANUP_TIMEOUT)
             if reader.is_alive():
-                raise RuntimeError("Windows job cleanup did not close the capture reader")
+                raise RuntimeError("timeout cleanup did not close the capture reader")
         if process.stdout is not None:
             process.stdout.close()
         return (124 if timed_out else process.returncode), "".join(output_parts), timed_out
@@ -988,7 +1421,60 @@ def run_godot_test(path: Path, timeout: float) -> dict:
         "timed_out": timed_out,
         "fatal_diagnostic": diagnostic,
         "duration_seconds": round(time.monotonic() - started, 3),
+        # Consumed by main(): the feature-list checker binds its evidence to
+        # the actual log of this run; the report itself never carries output.
+        "output": output,
+        "command": command,
     }
+
+
+def _load_feature_list_checker():
+    """Import the checker library lazily; it imports this module for shared helpers."""
+    module = sys.modules.get("ultimate_feature_list_check")
+    if module is None:
+        # The checker falls back to `import quality_gate`; point that name at the
+        # running module so both share one fatal_output_signal/EXTENDS_RE.
+        running = sys.modules.get(__name__)
+        if running is not None:
+            sys.modules.setdefault("quality_gate", running)
+        spec = importlib.util.spec_from_file_location(
+            "ultimate_feature_list_check", ULTIMATE_FEATURE_LIST_CHECK
+        )
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"cannot load {ULTIMATE_FEATURE_LIST_CHECK}")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        sys.modules["ultimate_feature_list_check"] = module
+    return module
+
+
+def run_ultimate_feature_list_check(profile_run: dict[str, dict]) -> dict:
+    """Bind the feature list to the suites this gate run executed, in this process.
+
+    ``profile_run`` maps each executed ``res://`` suite to the command this run
+    launched, the output it captured and the exit status it observed.  The
+    checker launches nothing and reads no manifest; the trust boundary is the
+    gate process that produced these results.
+    """
+    started = time.monotonic()
+    print("ULTIMATE FEATURE LIST binding evidence to this run's suites", flush=True)
+    try:
+        checker = _load_feature_list_checker()
+        result = checker.bind_profile_run(ROOT, profile_run, ULTIMATE_FEATURE_LIST_REPORT)
+    except Exception as exc:  # noqa: BLE001 - a crashed binding must fail the step closed
+        print(f"ULTIMATE FEATURE LIST FAIL: checker binding raised {exc!r}", file=sys.stderr, flush=True)
+        result = {
+            "name": "ultimate-feature-list",
+            "status": "failed",
+            "exit_code": 1,
+            "errors": [f"checker binding raised {exc!r}"],
+            "report": ULTIMATE_FEATURE_LIST_REPORT,
+        }
+    result.setdefault("name", "ultimate-feature-list")
+    result.setdefault("report", ULTIMATE_FEATURE_LIST_REPORT)
+    result["duration_seconds"] = round(time.monotonic() - started, 3)
+    result["executed_suites"] = sorted(profile_run)
+    return result
 
 
 def _write_report(path: Path, payload: dict) -> None:
@@ -1218,6 +1704,16 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
         help="maximum silent interval for verbose Python discovery (default: 60)",
     )
     parser.add_argument("--list", action="store_true", help="list selected Godot tests and exit")
+    parser.add_argument(
+        "--list-manifest-lfs-evidence",
+        action="store_true",
+        help="list fail-closed manifest-declared LFS evidence paths and exit",
+    )
+    parser.add_argument(
+        "--list-manifest-capture-sources",
+        action="store_true",
+        help="list the source commits linked certification manifests record and exit",
+    )
     parser.add_argument("--report", default="build/quality_gate_report.json")
     parser.add_argument(
         "--combine-reports",
@@ -1234,6 +1730,22 @@ def _parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
+    if args.list_manifest_lfs_evidence:
+        try:
+            for path in manifest_declared_lfs_evidence_paths():
+                print(path)
+        except RuntimeError as exc:
+            print(f"quality_gate: {exc}", file=sys.stderr)
+            return 2
+        return 0
+    if args.list_manifest_capture_sources:
+        try:
+            for commit in manifest_declared_capture_source_commits():
+                print(commit)
+        except RuntimeError as exc:
+            print(f"quality_gate: {exc}", file=sys.stderr)
+            return 2
+        return 0
     if args.combine_reports:
         if args.expected_shard_count is not None and args.expected_shard_count < 1:
             print("quality_gate: expected shard count must be positive", file=sys.stderr)
@@ -1262,12 +1774,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.profile == "windows" and os.name != "nt":
         print("quality_gate: windows profile must run natively on Windows", file=sys.stderr)
         return 2
+    removed_import_sidecars: list[str] = []
     try:
         changed_base_sha = _resolved_commit(args.changed_ref)
+        removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
         selected = select_godot_tests(
             args.profile, args.filters, args.changed_ref, args.skip_umbrella
         )
         selected = selected[args.shard_index::args.shard_count]
+        feature_list_selected = ultimate_feature_list_selected(args.profile, args.changed_ref)
+        # The checker can only bind to suites this run executes; anything the
+        # selection leaves out (filters, shards) makes the step skip and the
+        # run non-certifying rather than letting the checker launch Godot.
+        missing_recipe_suites = sorted(
+            feature_list_recipe_scripts() - {script_resource_path(path) for path in selected}
+        ) if feature_list_selected else []
         initial_worktree_status = _worktree_status()
     except RuntimeError as exc:
         print(f"quality_gate: {exc}", file=sys.stderr)
@@ -1295,6 +1816,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         for path in python_tests:
             print(path.relative_to(ROOT).as_posix())
         print(f"Discovered {len(python_tests)} Python test file(s).")
+        if feature_list_selected and missing_recipe_suites:
+            print(
+                "Ultimate feature-list checker: selected but "
+                f"{len(missing_recipe_suites)} recipe suite(s) are outside this selection"
+            )
+        else:
+            print(
+                "Ultimate feature-list checker: "
+                + ("selected" if feature_list_selected else "not selected")
+            )
         for error in discovery_errors:
             print(f"EMPTY TEST SET: {error}", file=sys.stderr)
         return 1 if discovery_errors else 0
@@ -1325,6 +1856,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     })
     failed = any(item["status"] == "failed" for item in static_results)
     godot_results: list[dict] = []
+    feature_list_result: dict | None = None
     if (
         args.profile != "static"
         and not args.skip_godot
@@ -1337,20 +1869,45 @@ def main(argv: Sequence[str] | None = None) -> int:
             failed = True
         else:
             print(f"GODOT running {len(selected)} test(s) via semaphore gate", flush=True)
+            bind_feature_list = feature_list_selected and not missing_recipe_suites
+            recipe_scripts = feature_list_recipe_scripts() if bind_feature_list else set()
+            # FAN-3904: the checker binds only to results this process produced;
+            # they stay in memory and never pass through a file or the report.
+            profile_run: dict[str, dict] = {}
             for index, path in enumerate(selected, start=1):
                 print(
                     f"GODOT {index}/{len(selected)} {path.relative_to(ROOT).as_posix()}",
                     flush=True,
                 )
                 outcome = run_godot_test(path, args.test_timeout)
+                output = outcome.pop("output", "")
+                command = outcome.pop("command", [])
+                if bind_feature_list and outcome["script"] in recipe_scripts:
+                    profile_run[outcome["script"]] = {**outcome, "output": output, "command": command}
                 godot_results.append(outcome)
                 if outcome["status"] == "failed":
                     failed = True
                     if args.fail_fast:
                         break
+            if bind_feature_list and not (failed and args.fail_fast):
+                # Generated import sidecars would otherwise show up as a dirty
+                # worktree inside the checker's report and void its binding.
+                removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
+                feature_list_result = run_ultimate_feature_list_check(profile_run)
+                if feature_list_result["status"] == "failed":
+                    failed = True
     else:
         import_result = None
+    if feature_list_selected and feature_list_result is None:
+        reason = (
+            f"recipe suites outside this selection: {', '.join(missing_recipe_suites)}"
+            if missing_recipe_suites
+            else "Godot execution did not complete in this run"
+        )
+        print(f"ULTIMATE FEATURE LIST SKIPPED: {reason}", file=sys.stderr, flush=True)
+        feature_list_result = {"name": "ultimate-feature-list", "status": "skipped", "reason": reason}
 
+    removed_import_sidecars.extend(_cleanup_generated_import_sidecars())
     try:
         final_worktree_status = _worktree_status()
     except RuntimeError as exc:
@@ -1358,9 +1915,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 2
     worktree_status = list(dict.fromkeys(initial_worktree_status + final_worktree_status))
     changed_ref_is_integration_base = args.changed_ref == INTEGRATION_CHANGED_REF
-    certifying = _is_certifying(
-        args, worktree_status, changed_ref_is_integration_base
+    feature_list_skipped = (
+        feature_list_result is not None and feature_list_result["status"] == "skipped"
     )
+    certifying = _is_certifying(
+        args, worktree_status, changed_ref_is_integration_base, feature_list_skipped
+    )
+    if feature_list_skipped:
+        print(
+            "QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped",
+            file=sys.stderr,
+        )
     if not changed_ref_is_integration_base:
         print(
             "QUALITY NON-CERTIFYING: changed ref "
@@ -1402,6 +1967,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         static_checks=static_results,
         godot_import_prepass=import_result,
         godot_tests=godot_results,
+        ultimate_feature_list_selected=feature_list_selected,
+        ultimate_feature_list=feature_list_result,
+        generated_import_sidecars_removed=sorted(set(removed_import_sidecars)),
         shard={"index": args.shard_index, "count": args.shard_count},
     )
     _write_report((ROOT / args.report).resolve(), payload)

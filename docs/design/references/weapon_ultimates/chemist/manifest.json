@@ -5,49 +5,117 @@
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
     "profile_source": "data/ultimates/schema/v1/classes/chemist.json",
-    "phase_groups": ["windup", "release", "active", "recovery", "cancel"],
+    "phase_groups": [
+      "windup",
+      "release",
+      "active",
+      "recovery",
+      "cancel"
+    ],
     "max_timeline_seconds": 10.0,
     "headless_fallback": "no_op",
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541",
     "mechanics_status": "damage, taunt, armor dissolve, charges, and ownership remain owned by FAN-1483; this package binds frozen phase IDs only"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "pixellab_usage": "not_required_no_new_source_frames",
-    "new_pixellab_assets": [],
-    "reused_sources": {
-      "blast_powder": {
-        "source_path": "assets/sprites/effects/vfx_weapon_blast_powder.png",
+    "route": "pixellab_animation_frames_for_every_chemist_weapon",
+    "pixellab_usage": "animate_image 9-frame stomp cycle for the homunculus_vial fusion avatar (FAN-2552) plus new transparent-frame animation sources via PixelLab MCP (create_1_direction_object + animate_object) for blast_powder (FAN-2550) and acid_flask (FAN-2551); no Chemist weapon reuses a static accepted asset any more",
+    "new_pixellab_assets": [
+      {
+        "weapon_id": "homunculus_vial",
+        "tool": "animate_image",
+        "job_id": "331684be-2ee9-43cd-8eb6-842051201a17",
+        "seed": 2552,
+        "frame_count": 9,
+        "identity_source": "assets/sprites/allies/ally_homunculus.png",
+        "frames_dir": "assets/sprites/effects/ultimates/chemist/homunculus_vial",
+        "asset_manifest": "assets/sprites/effects/ultimates/chemist/homunculus_vial/manifest.json",
+        "rebuild_tool": "tools/build_fan2552_homunculus_vial_ultimate_pack.py"
+      },
+      {
+        "weapon_id": "blast_powder",
+        "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
+        "pixel_lab_animation_group_id": "87ccdda3-b8ce-4f4f-aff2-71c7738fa956",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/chemist/source/pixellab_blast_powder",
+        "runtime_spriteframes": "assets/sprites/effects/fan2550_blast_powder_ultimate/blast_powder_ultimate_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
-        "note": "Accepted Chemist powder VFX is reused for the five-charge pentagram and transmutation blast."
+        "generation_script": "tools/fan2550_blast_powder_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
       },
-      "acid_flask": {
-        "source_path": "assets/sprites/effects/vfx_weapon_acid_flask.png",
+      {
+        "weapon_id": "acid_flask",
+        "pixel_lab_object_id": "644013e6-0d81-4111-8729-44992f7a0bfa",
+        "pixel_lab_animation_group_id": "5062e756-6788-40a5-a555-56a92217da32",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/chemist/source/pixellab_acid_flask",
+        "runtime_spriteframes": "assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
-        "note": "Accepted Chemist acid-flask VFX is reused for the giant cracked flask; lake and pillars are native vector VFX."
-      },
+        "generation_script": "tools/fan2551_acid_flask_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_acid_flask.json"
+      }
+    ],
+    "reused_sources": {
       "homunculus_vial": {
         "source_path": "assets/sprites/allies/ally_homunculus.png",
         "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
-        "note": "Accepted homunculus, tank, and caster sprites are reused for the fusion/split presentation."
+        "note": "Accepted tank and caster sprites are reused for the fusion/split pair; the avatar now plays the FAN-2552 PixelLab stomp cycle whose frame 0 is the accepted ally_homunculus identity."
       }
-    }
+    },
+    "v2_presentation_reworks": [
+      {
+        "weapon_id": "blast_powder",
+        "card": "FAN-2957",
+        "decision": "existing FAN-2550 PixelLab frames carry the v2 scale and length: slower beat spacing, arena-wide sigil scale-up, full-screen backdrop veil, hero glow highlight; no new PixelLab job required",
+        "pixel_lab_object_id": "f7bc6de6-6b86-4e08-a794-e2d3b8f0c7cb",
+        "pixel_lab_animation_group_id": "87ccdda3-b8ce-4f4f-aff2-71c7738fa956",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+        "scene_driver": "scenes/vfx/ultimates/chemist/chemist_blast_powder_v2.gd",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest.json"
+      },
+      {
+        "weapon_id": "acid_flask",
+        "card": "FAN-2958",
+        "decision": "existing FAN-2551 PixelLab frames carry the v2 scale and length: slower beat spacing, arena-wide lake shoreline scale-up, full-screen backdrop veil, hero glow highlight; no new PixelLab job required",
+        "pixel_lab_object_id": "644013e6-0d81-4111-8729-44992f7a0bfa",
+        "pixel_lab_animation_group_id": "5062e756-6788-40a5-a555-56a92217da32",
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+        "scene_driver": "scenes/vfx/ultimates/chemist/chemist_acid_flask_v2.gd",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_acid_flask.json"
+      },
+      {
+        "weapon_id": "homunculus_vial",
+        "card": "FAN-2959",
+        "decision": "existing FAN-2552 PixelLab stomp frames carry the v2 scale and length: the 9-frame cycle is replayed three times at arena scale, so the envelope shortens from 5.40s to 3.80s without a new PixelLab job; the frames were regenerated for FAN-2552 at 256x256 and only their placement, scale and beat spacing changed",
+        "job_id": "331684be-2ee9-43cd-8eb6-842051201a17",
+        "seed": 2552,
+        "runtime_scene": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+        "scene_driver": "scenes/vfx/ultimates/chemist/chemist_homunculus_vial_v2.gd",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/chemist/provenance_manifest_homunculus_vial.json"
+      }
+    ]
   },
   "weapons": [
     {
       "weapon_id": "blast_powder",
       "title": "Философский Взрыв",
       "scene_path": "scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
-      "silhouette": "five multicolor alchemical charges around a pentagram",
-      "motion_path": "five charges ignite, rotate into a pentagram, then pull inward",
-      "timing_rhythm": "quick five-beat ignition, sharp crystal contraction, then one bright outward release",
-      "impact_language": "crystal implosion becomes one gold-white transmutation blast",
+      "silhouette": "arena-wide violet-gold pentagram with five multicolor alchemical charges at its points",
+      "motion_path": "charges ignite during the cast ceremony, lock into a pentagram, freeze the arena at the impact beat, then the sigil sweeps outward and evaporates",
+      "timing_rhythm": "0.95s alchemical cast ceremony with the hero spotlit, one crystalline implosion into a hitstop-anchored gold-white flash at 1.3s, then a long visible recovery as the sigil evaporates",
+      "impact_language": "one crystalline implosion into a gold-white transmutation flash that darkens and shakes the whole screen",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.5,
+        "release": 0.95,
         "active": 1.3,
-        "recovery": 2.2,
-        "cancel": 3.4
+        "recovery": 2.9,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.chemist.blast_powder.windup",
@@ -56,12 +124,39 @@
         "recovery": "weapon_ultimate.phase.chemist.blast_powder.recover",
         "cancel": "weapon_ultimate.phase.chemist.blast_powder.cleanup"
       },
-      "pivot": [0.5, 0.5],
+      "pivot": [
+        0.5,
+        0.5
+      ],
       "performance": {
-        "max_visual_nodes": 9,
+        "max_visual_nodes": 6,
         "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage"
+        "mechanics_owner": "FAN-1483: normal pull/crystallize and finite transmutation damage",
+        "v2_budget_note": "FAN-2957 re-derivation: 5 drawn nodes (backdrop veil, hero glow, PixelLab frames, pentagram sigil, gold radiance) under a 6-node cap; one shared additive CanvasItemMaterial is the whole material budget, and the veil covers the screen in world space, so nothing draws in a screen-space layer"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the impact shake, and the release flash plays as a calm fade — backdrop veil and gold radiance keep every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating release flash at 0 Hz; WCAG general-flash threshold applies only to repeated flashes"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.chemist.alchemist_surge",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/fan2550_blast_powder_ultimate/blast_powder_ultimate_05.png",
+        "class_palette_id": "palette.chemist.violet_gold_alchemy"
       }
     },
     {
@@ -70,14 +165,14 @@
       "scene_path": "scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
       "silhouette": "one colossal cracked flask flooding an irregular green acid lake",
       "motion_path": "flask tip pours forward, a wave expands outward, then pillars bubble from the lake",
-      "timing_rhythm": "heavy flask reveal, broad flood, sustained bubbling pillars, then a slow evaporation",
+      "timing_rhythm": "0.85s cast ceremony with the hero spotlit under the raised colossal flask, one acid-white impact flash at 1.0s when the pour lands its first corrosion tick, a long sustained corrosion window, then a visible evaporation recovery",
       "impact_language": "corrosive flood, capped charge pillars, and evaporation smoke",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.75,
-        "active": 1.6,
-        "recovery": 3.7,
-        "cancel": 4.8
+        "release": 0.85,
+        "active": 1.0,
+        "recovery": 3.35,
+        "cancel": 3.95
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.chemist.acid_flask.windup",
@@ -86,28 +181,55 @@
         "recovery": "weapon_ultimate.phase.chemist.acid_flask.recover",
         "cancel": "weapon_ultimate.phase.chemist.acid_flask.cleanup"
       },
-      "pivot": [0.5, 0.58],
+      "pivot": [
+        0.5,
+        0.58
+      ],
       "performance": {
         "max_visual_nodes": 9,
         "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mechanics_owner": "FAN-1483: permanent charge cap, armor dissolve, and encounter-bound lake lifetime"
+        "mechanics_owner": "FAN-1483: permanent charge cap, armor dissolve, and encounter-bound lake lifetime",
+        "v2_budget_note": "FAN-2958 re-derivation: 8 drawn nodes (backdrop veil, hero glow, PixelLab frames, arena-wide lake shoreline, three charge pillars, evaporation smoke) under a 9-node cap; one shared additive CanvasItemMaterial is the whole material budget, and the veil covers the screen in world space, so nothing draws in a screen-space layer"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the impact shake, and the release flash plays as a calm fade — backdrop veil and acid surge glow keep every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating acid-white release flash at 0 Hz; WCAG general-flash threshold applies only to repeated flashes"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.chemist.tsar_flask_hurl",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/fan2551_acid_flask_ultimate/acid_flask_ultimate_04.png",
+        "class_palette_id": "palette.chemist.viridian_acid"
       }
     },
     {
       "weapon_id": "homunculus_vial",
       "title": "Совершенный Гомункул",
       "scene_path": "scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
-      "silhouette": "tank and caster fuse into one towering emerald homunculus",
-      "motion_path": "two allies converge through a circle, giant avatar stomps, then both split back out",
-      "timing_rhythm": "measured convergence, a long avatar action hold with beats, then a clean split",
-      "impact_language": "taunt halo, broad stomp rings, and toxic cascade waves",
+      "silhouette": "tank and caster fuse into one arena-tall emerald homunculus stomping inside a screen-wide alchemical circle",
+      "motion_path": "two allies converge through a widening circle, the fused giant lands three arena-wide stomps, then both split back out",
+      "timing_rhythm": "0.9s convergence ceremony with the hero pair spotlit inside the circle, one emerald fusion flash at 1.0s, three heavy stomps at 1.75s / 2.60s / 3.45s with the hitstop on the first, then a short visible split-back recovery",
+      "impact_language": "taunt halo, three expanding stomp rings, and toxic cascade waves",
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.9,
-        "active": 1.7,
-        "recovery": 4.2,
-        "cancel": 5.4
+        "active": 1.75,
+        "recovery": 3.6,
+        "cancel": 3.8
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.chemist.homunculus_vial.windup",
@@ -116,12 +238,39 @@
         "recovery": "weapon_ultimate.phase.chemist.homunculus_vial.recover",
         "cancel": "weapon_ultimate.phase.chemist.homunculus_vial.cleanup"
       },
-      "pivot": [0.5, 0.62],
+      "pivot": [
+        0.5,
+        0.62
+      ],
       "performance": {
-        "max_visual_nodes": 8,
+        "max_visual_nodes": 11,
         "crowd_cap": 14,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "mechanics_owner": "FAN-1483: taunt, stomp/cascade effects, and safe original-pair ownership restoration"
+        "mechanics_owner": "FAN-1483: taunt, stomp/cascade effects, and safe original-pair ownership restoration",
+        "v2_budget_note": "FAN-2959 re-derivation: 10 drawn nodes (backdrop veil, fusion glow, arena-wide alchemical circle, the tank/caster pair, vial burst, PixelLab avatar, taunt halo, stomp wave, toxic cascade) under an 11-node cap; one shared additive CanvasItemMaterial is the whole material budget, and the veil covers the screen in world space, so nothing draws in a screen-space layer"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.34,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still instead of the three stomp shakes, and the fusion flash plays as a calm fade — backdrop veil and fusion glow keep every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating emerald fusion flash at 0 Hz; the three stomps are marked by world-space rings, not by a second full-screen flash. WCAG general-flash threshold applies only to repeated flashes"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.chemist.homunculus_fusion",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar_stomp_04.png",
+        "class_palette_id": "palette.chemist.emerald_homunculus"
       }
     }
   ],
@@ -133,6 +282,14 @@
       "docs/design/references/weapon_ultimates/chemist/chemist_ultimate_timelines_2k.png"
     ],
     "capture_script": "tests/ultimates/presentation/chemist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/chemist_ultimate_timelines.gd"
+    "focused_test": "tests/ultimates/presentation/chemist_ultimate_timelines.gd",
+    "certification_capture": {
+      "manifest": "docs/design/references/weapon_ultimates/chemist/certification_capture_manifest.json",
+      "capture_script": "tests/ultimates/presentation/chemist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/chemist_certification_capture_test.gd",
+      "readability_report": "docs/design/references/weapon_ultimates/chemist/certification_readability_report.md",
+      "capture_root": "docs/design/reference-assets-lfs/ultimate-certification/chemist",
+      "note": "FAN-3937 is the four-mode certification matrix. The older contact sheets above are legacy phase evidence and must not be read as normal/crowded/reduced-motion/photosensitivity-safe certification."
+    }
   }
 }

@@ -1,4 +1,4 @@
 interface:
-  display_name: "FantasyDisk Qwen Dispatcher"
-  short_description: "Run the PM-gated, Qwen-only FantasyDisk allocation contract"
-  default_prompt: "Use $fantasydisk-agent-dispatcher to execute one fail-closed FantasyDisk dispatch cycle from PM-prepared metadata."
+  display_name: "FantasyDisk Canonical Dispatcher"
+  short_description: "Run the PM-gated canonical FantasyDisk allocation contract"
+  default_prompt: "Use $fantasydisk-agent-dispatcher and docs/process/dispatcher-authority.md to execute one fail-closed FantasyDisk dispatch cycle from PM-prepared metadata."

@@ -16,13 +16,12 @@
   "executor": {
     "strategy_id": "weapon_ultimate.executor.assassin.shadow_daggers",
     "params": {
-      "radius": 520.0,
-      "target_count": 7,
+      "backstab_waves": 7,
       "mark_delay": 0.45,
       "backstab_interval": 0.16,
       "reveal_delay": 0.15,
-      "backstab_damage": 256.0,
-      "secondary_damage_ratio": 0.1,
+      "backstab_damage": 332.0,
+      "secondary_damage_ratio": 0.21,
       "untargetable_duration": 1.75
     }
   },

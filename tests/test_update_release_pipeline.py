@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import importlib.util
 import json
@@ -10,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
 from unittest import mock
@@ -200,14 +202,40 @@ def _no_installations():
 
 
 def _sole_write_access_ok(login: str = PUBLISHER_LOGIN):
-    """FAN-1276 proof sextet: authenticated owner with no other write path."""
+    """FAN-1276 proof quintet: authenticated owner with no other write path."""
     return (
         _publisher_identity(login),
         _user_owned_repository(login),
         _sole_collaborator(login),
         _no_invitations(),
         _no_deploy_keys(),
-        _no_installations(),
+    )
+
+
+def _owner_attested_writer_proof(
+    *,
+    observed_at: datetime | None = None,
+    installations: list[dict] | None = None,
+) -> dict:
+    """A complete, owner-attested inventory fixture for the publish boundary."""
+    if observed_at is None:
+        observed_at = datetime.now(timezone.utc)
+    return {
+        "schema_version": 1,
+        "source": "github-account-applications-settings",
+        "account": PUBLISHER_LOGIN,
+        "repository": "FomaBy/FantasyDisk-Releases",
+        "observed_at": observed_at.isoformat().replace("+00:00", "Z"),
+        "complete": True,
+        "installations": installations or [],
+    }
+
+
+def _owner_attested_writer_proofs() -> tuple[dict, dict]:
+    first = datetime.now(timezone.utc) - timedelta(seconds=1)
+    return (
+        _owner_attested_writer_proof(observed_at=first),
+        _owner_attested_writer_proof(observed_at=first + timedelta(seconds=1)),
     )
 
 
@@ -234,6 +262,223 @@ def _classify_publisher_commands(
         ):
             write_commands.append(command)
     return {"write_commands": write_commands}
+
+
+def _count_publisher_side_effects(commands: list[list[str]]) -> dict[str, int]:
+    """FAN-3969: count every publisher command that changes GitHub state."""
+    counts = {"claim": 0, "create": 0, "public_edit": 0, "latest": 0, "delete": 0}
+    for command in commands:
+        if command[:2] == ["gh", "api"] and "--method" in command and "POST" in command:
+            counts["claim"] += 1
+        elif command[:3] == ["gh", "release", "create"]:
+            counts["create"] += 1
+        elif command[:3] == ["gh", "release", "edit"] and "--draft=false" in command:
+            counts["public_edit"] += 1
+        elif command[:3] == ["gh", "release", "edit"] and command[-1] == "--latest":
+            counts["latest"] += 1
+        if any("delete" in part.lower() for part in command):
+            counts["delete"] += 1
+    return counts
+
+
+class _PublisherClock:
+    """FAN-3969: a controllable UTC clock for the publisher's freshness checks.
+
+    The publisher ages owner attestations with ``datetime.now(timezone.utc)``;
+    the stateful mock advances this clock where real wall time is spent (the
+    ~840 MB asset upload and the operator's second-proof export) so the
+    120-second proof window can be crossed deterministically without sleeping.
+    """
+
+    def __init__(self) -> None:
+        self.now = datetime.now(timezone.utc)
+
+    def advance(self, seconds: float) -> None:
+        self.now += timedelta(seconds=seconds)
+
+    def datetime_class(self) -> type:
+        clock = self
+
+        class ClockedDatetime(datetime):
+            @classmethod
+            def now(cls, tz=None):  # noqa: N805 - datetime classmethod signature
+                current = clock.now
+                return current if tz is None else current.astimezone(tz)
+
+        return ClockedDatetime
+
+
+class OwnerAttestedWriterInventoryTests(unittest.TestCase):
+    """FAN-2829: one App token cannot prove the account-wide App inventory."""
+
+    REPOSITORY = "FomaBy/FantasyDisk-Releases"
+
+    def test_requires_two_fresh_distinct_complete_owner_proofs(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        github_release_publish.assert_owner_attested_writer_inventory(
+            self.REPOSITORY, PUBLISHER_LOGIN, first, second
+        )
+
+    def test_rejects_replayed_proof_before_any_github_call(self) -> None:
+        proof = _owner_attested_writer_proof()
+        with mock.patch.object(github_release_publish, "run") as run_mock:
+            with self.assertRaisesRegex(RuntimeError, "fresh second owner attestation"):
+                github_release_publish.assert_owner_attested_writer_inventory(
+                    self.REPOSITORY, PUBLISHER_LOGIN, proof, proof
+                )
+        run_mock.assert_not_called()
+
+    def test_rejects_app_writer_and_account_or_repository_mismatch(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        writer = {
+            "id": 7,
+            "app_slug": "ci-bot",
+            "repository_selection": "all",
+            "permissions": {"contents": "write"},
+        }
+        cases = (
+            ("writer", dict(second, installations=[writer]), "can reach the distribution repository"),
+            ("account", dict(second, account="Mallory"), "account does not match"),
+            ("repository", dict(second, repository="FomaBy/Other"), "repository does not match"),
+            ("incomplete", dict(second, complete=False), "not marked complete"),
+        )
+        for label, bad_second, message in cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    github_release_publish.assert_owner_attested_writer_inventory(
+                        self.REPOSITORY, PUBLISHER_LOGIN, first, bad_second
+                    )
+
+    def test_rejects_malformed_or_partial_selected_repository_inventory(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        selected_writer = {
+            "id": 7,
+            "app_slug": "ci-bot",
+            "repository_selection": "selected",
+            "permissions": {"administration": "write"},
+            "repositories": {"total_count": 1, "repositories": [{"full_name": self.REPOSITORY}]},
+        }
+        cases = (
+            (dict(selected_writer, repositories={"total_count": 2, "repositories": []}), "incomplete"),
+            (dict(selected_writer, repositories={"total_count": True, "repositories": []}), "incomplete"),
+            (
+                dict(
+                    selected_writer,
+                    repositories={"total_count": 1, "repositories": [{"full_name": ""}]},
+                ),
+                "unreadable",
+            ),
+            (
+                dict(
+                    selected_writer,
+                    repositories={
+                        "total_count": 2,
+                        "repositories": [
+                            {"full_name": "FomaBy/Other"},
+                            {"full_name": "fomaby/other"},
+                        ],
+                    },
+                ),
+                "incomplete",
+            ),
+            (dict(selected_writer, repository_selection="unknown"), "unknown App repository selection"),
+            (dict(selected_writer, id=True), "App inventory is malformed"),
+            (dict(selected_writer, permissions=None), "App inventory is malformed"),
+            (selected_writer, "can reach the distribution repository"),
+        )
+        for installation, message in cases:
+            with self.subTest(case=message):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    github_release_publish.assert_owner_attested_writer_inventory(
+                        self.REPOSITORY,
+                        PUBLISHER_LOGIN,
+                        first,
+                        dict(second, installations=[installation]),
+                    )
+
+    def test_rejects_unknown_or_partial_selection_even_for_read_only_apps(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        read_only = {
+            "id": 7,
+            "app_slug": "viewer",
+            "permissions": {"contents": "read"},
+        }
+        cases = (
+            (dict(read_only, repository_selection="unknown"), "unknown App repository selection"),
+            (
+                dict(
+                    read_only,
+                    repository_selection="selected",
+                    repositories={"total_count": 2, "repositories": []},
+                ),
+                "incomplete",
+            ),
+        )
+        for installation, message in cases:
+            with self.subTest(installation=installation):
+                with self.assertRaisesRegex(RuntimeError, message):
+                    github_release_publish.assert_owner_attested_writer_inventory(
+                        self.REPOSITORY,
+                        PUBLISHER_LOGIN,
+                        first,
+                        dict(second, installations=[installation]),
+                    )
+
+    def test_gho_403_fails_closed_without_echoing_a_token(self) -> None:
+        token = "gho_this_must_not_appear"
+        with mock.patch.object(
+            github_release_publish.subprocess,
+            "run",
+            return_value=_gh(["gh", "api", "user"], 1, "", f"HTTP 403 {token}"),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "command failed") as caught:
+                github_release_publish.run(["gh", "api", "user"])
+        self.assertNotIn(token, str(caught.exception))
+        self.assertIn("[REDACTED]", str(caught.exception))
+
+    def test_check_false_result_redacts_stdout_and_stderr(self) -> None:
+        token = "ghr_this_must_not_appear"
+        with mock.patch.object(
+            github_release_publish.subprocess,
+            "run",
+            return_value=_gh(["gh", "release", "edit"], 1, token, token),
+        ):
+            result = github_release_publish.run(["gh", "release", "edit"], check=False)
+        self.assertNotIn(token, result.stdout)
+        self.assertNotIn(token, result.stderr)
+        self.assertIn("[REDACTED]", result.stdout)
+        self.assertIn("[REDACTED]", result.stderr)
+
+    def test_dry_run_needs_no_attestations_and_never_calls_publish(self) -> None:
+        with mock.patch.object(sys, "argv", ["github_release_publish.py", "--version", "0.2.3", "--dry-run"]), \
+             mock.patch.object(github_release_publish, "verify_local_release", return_value=Path("release")), \
+             mock.patch.object(github_release_publish, "release_files", return_value=([], Path("notes"))), \
+             mock.patch.object(github_release_publish, "publish") as publish_mock:
+            with mock.patch("builtins.print"):
+                self.assertEqual(github_release_publish.main(), 0)
+        publish_mock.assert_not_called()
+
+    def test_release_instructions_include_two_proofs_template_and_cleanup(self) -> None:
+        skill = (ROOT / "skills" / "codex" / "fantasydisk-release-director" / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for required in (
+            "mktemp -d",
+            "writer-proof-first.json",
+            "writer-proof-second.json",
+            "--writer-inventory-proof",
+            '"schema_version": 1',
+            '"complete": true',
+            "rm -rf \"$PROOF_DIR\"",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, skill)
+        for relative in (
+            Path("docs") / "process" / "release_versioning.md",
+            Path("docs") / "process" / "game_updates.md",
+        ):
+            with self.subTest(document=str(relative)):
+                self.assertIn("--writer-inventory-proof", (ROOT / relative).read_text(encoding="utf-8"))
 
 
 class UpdateReleasePipelineTests(unittest.TestCase):
@@ -373,7 +618,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]):
             with self.assertRaisesRegex(RuntimeError, "never overwrite"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
 
     def test_publisher_refuses_existing_bare_immutable_tag(self) -> None:
@@ -393,7 +638,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "never reuse"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
         self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
 
@@ -413,7 +658,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]):
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
 
     def test_publisher_allows_a_missing_bare_tag(self) -> None:
@@ -441,7 +686,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
                  published,
              ]) as run_mock:
             published_url = github_release_publish.publish(
-                "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
             )
         self.assertEqual(published_url, "https://example.invalid/v0.2.3.1")
         self.assertTrue(any("create" in call.args[0] for call in run_mock.call_args_list))
@@ -461,7 +706,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "cannot verify"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
         self.assertFalse(any("create" in call.args[0] for call in run_mock.call_args_list))
 
@@ -485,7 +730,7 @@ class UpdateReleasePipelineTests(unittest.TestCase):
              ]) as run_mock:
             with self.assertRaisesRegex(RuntimeError, "draft assets are incomplete"):
                 github_release_publish.publish(
-                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md")
+                    "FomaBy/FantasyDisk-Releases", "0.2.3.1", [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
                 )
         self.assertFalse(
             any(call.args[0][:3] == ["gh", "release", "edit"] for call in run_mock.call_args_list)
@@ -651,7 +896,7 @@ class PublisherRaceAndImmutabilityTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
         )
 
     @staticmethod
@@ -1050,7 +1295,7 @@ class PublisherClaimContinuityTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
         )
 
     @staticmethod
@@ -1494,7 +1739,7 @@ class PublisherCreateRaceRecoveryTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md")
+            self.REPOSITORY, self.VERSION, [], Path("CHANGELOG.md"), *_owner_attested_writer_proofs()
         )
 
     @staticmethod
@@ -1714,7 +1959,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
 
     def _publish(self) -> str:
         return github_release_publish.publish(
-            self.REPOSITORY, self.VERSION, [self.asset], self.changelog
+            self.REPOSITORY, self.VERSION, [self.asset], self.changelog, *_owner_attested_writer_proofs()
         )
 
     def _stateful_github(
@@ -1722,8 +1967,17 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
         *,
         mutate_asset_after_clean_verification: bool = False,
         grant_writer_after_clean_verification: bool = False,
+        clock: _PublisherClock | None = None,
+        preflight_seconds: float = 0.0,
+        upload_seconds: float = 0.0,
     ):
-        """Stateful production-sequence mock: one GitHub, mutated mid-flight."""
+        """Stateful production-sequence mock: one GitHub, mutated mid-flight.
+
+        With a ``clock`` the mock spends ``preflight_seconds`` on the read-only
+        preflight (before the tag claim) and ``upload_seconds`` inside
+        ``gh release create`` (after the claim), the two places where a real
+        publication burns wall time against the owner-attestation window.
+        """
         state = {
             "collaborators": [{"login": PUBLISHER_LOGIN}],
             "digest": self.clean_digest,
@@ -1738,6 +1992,8 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
             if command[:2] == ["gh", "auth"]:
                 return _gh(command, 0)
             if command[:3] == ["gh", "release", "create"]:
+                if clock is not None:
+                    clock.advance(upload_seconds)
                 state["release"] = "draft"
                 return _gh(command, 0)
             if command[:3] == ["gh", "release", "view"]:
@@ -1796,6 +2052,8 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                     command, 0, json.dumps({"total_count": 0, "installations": []})
                 )
             if "immutable-releases" in route:
+                if clock is not None:
+                    clock.advance(preflight_seconds)
                 return _immutability_enforced()
             if "rulesets?" in route:
                 return _ruleset_list()
@@ -1812,6 +2070,91 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
             raise AssertionError(f"unexpected gh command: {command}")
 
         return state, fake_run
+
+    def _clocked_publish(
+        self,
+        clock: _PublisherClock,
+        fake_run,
+        first_proof: dict,
+        *,
+        second_proof_path: str = "second-proof.json",
+        export_second_proof=None,
+        terminal_export=None,
+    ) -> str:
+        """Drive the real path-proof publish() under the controllable clock.
+
+        ``terminal_export(clock)`` plays the operator at the real terminal
+        pause (``FANTASYDISK_INTERACTIVE_PROOF_REFRESH=1`` on a TTY): it runs
+        inside ``input()`` after the draft-asset check and must write the
+        second proof file that the real loader then reads from
+        ``second_proof_path``. ``export_second_proof(clock)`` instead replaces
+        the loader and returns the proof object directly. With neither, the
+        real loader reads ``second_proof_path`` as it would in production.
+        """
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(
+                mock.patch.object(github_release_publish.shutil, "which", return_value="gh")
+            )
+            stack.enter_context(mock.patch.object(
+                github_release_publish,
+                "assert_safe_public_distribution_repository",
+                return_value="main",
+            ))
+            stack.enter_context(
+                mock.patch.object(github_release_publish, "run", side_effect=fake_run)
+            )
+            stack.enter_context(
+                mock.patch.object(github_release_publish, "datetime", clock.datetime_class())
+            )
+            if export_second_proof is not None:
+                stack.enter_context(mock.patch.object(
+                    github_release_publish,
+                    "load_owner_attested_writer_proof",
+                    side_effect=lambda _path: export_second_proof(clock),
+                ))
+            if terminal_export is not None:
+                stack.enter_context(mock.patch.dict(
+                    os.environ, {"FANTASYDISK_INTERACTIVE_PROOF_REFRESH": "1"}
+                ))
+                stack.enter_context(
+                    mock.patch.object(github_release_publish.sys.stdin, "isatty", return_value=True)
+                )
+                stack.enter_context(mock.patch(
+                    "builtins.input", side_effect=lambda _prompt: terminal_export(clock)
+                ))
+            return github_release_publish.publish(
+                self.REPOSITORY, self.VERSION, [self.asset], self.changelog,
+                first_proof, second_proof_path,
+            )
+
+    def _operator_exports_fresh_second_proof(
+        self, state: dict, proof_path: Path, refresh_seconds: float = 30.0
+    ):
+        """The owner exports a complete, fresh second inventory at the pause."""
+        def export(clock: _PublisherClock) -> None:
+            self.assertEqual(state["draft_views"], 1, "pause reached before the draft check")
+            self.assertEqual(state["release"], "draft")
+            self.assertFalse(proof_path.exists(), "second proof existed before the pause")
+            clock.advance(refresh_seconds)
+            proof_path.write_text(
+                json.dumps(_owner_attested_writer_proof(observed_at=clock.now)),
+                encoding="utf-8",
+            )
+
+        return export
+
+    def _assert_post_claim_refusal(self, state: dict, message: str) -> None:
+        """The claim and draft happened, nothing was published or clobbered."""
+        self.assertEqual(
+            _count_publisher_side_effects(state["commands"]),
+            {"claim": 1, "create": 1, "public_edit": 0, "latest": 0, "delete": 0},
+        )
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(state["latest"])
+        self.assertEqual(state["draft_views"], 1)
+        self.assertIn("the public edit was refused", message)
+        self.assertIn("unpublished draft", message)
+        self.assertIn("no rollback", message)
 
     def test_asset_mutation_after_clean_draft_verification_blocks_public_edit(
         self,
@@ -1923,6 +2266,54 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
             any(command[:3] == ["gh", "release", "edit"] for command in commands)
         )
 
+    def test_second_app_inventory_is_observed_only_after_draft_verification(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        late_writer = dict(
+            second,
+            installations=[{
+                "id": 7,
+                "app_slug": "late-writer",
+                "repository_selection": "all",
+                "permissions": {"contents": "write"},
+            }],
+        )
+        state, fake_run = self._stateful_github()
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run), \
+             mock.patch.object(github_release_publish, "load_owner_attested_writer_proof") as load_mock:
+            def post_draft_observation(_path):
+                self.assertEqual(state["draft_views"], 1)
+                return dict(
+                    late_writer,
+                    observed_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                )
+
+            load_mock.side_effect = post_draft_observation
+            with self.assertRaisesRegex(RuntimeError, "late-writer holds contents write"):
+                github_release_publish.publish(
+                    self.REPOSITORY, self.VERSION, [self.asset], self.changelog,
+                    first, "second-proof.json",
+                )
+        self.assertEqual(load_mock.call_count, 1)
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(any("--draft=false" in command for command in state["commands"]))
+
+    def test_precreated_second_inventory_cannot_publish_the_draft(self) -> None:
+        first, second = _owner_attested_writer_proofs()
+        state, fake_run = self._stateful_github()
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run), \
+             mock.patch.object(github_release_publish, "load_owner_attested_writer_proof", return_value=second):
+            with self.assertRaisesRegex(RuntimeError, "fresh second owner attestation"):
+                github_release_publish.publish(
+                    self.REPOSITORY, self.VERSION, [self.asset], self.changelog,
+                    first, "precreated-second-proof.json",
+                )
+        self.assertEqual(state["release"], "draft")
+        self.assertFalse(any("--draft=false" in command for command in state["commands"]))
+
     def test_stateful_happy_path_publishes_only_reverified_bytes(self) -> None:
         state, fake_run = self._stateful_github()
         with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
@@ -1994,6 +2385,192 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
         self.assertFalse(any("create" in command for command in commands))
         self.assertFalse(any("edit" in command for command in commands))
 
+    def test_replayed_proofs_block_production_publish_before_any_write(self) -> None:
+        proof = _owner_attested_writer_proof()
+        state, fake_run = self._stateful_github()
+        with mock.patch.object(github_release_publish.shutil, "which", return_value="gh"), \
+             mock.patch.object(github_release_publish, "assert_safe_public_distribution_repository", return_value="main"), \
+             mock.patch.object(github_release_publish, "run", side_effect=fake_run):
+            with self.assertRaisesRegex(RuntimeError, "fresh second owner attestation"):
+                github_release_publish.publish(
+                    self.REPOSITORY, self.VERSION, [self.asset], self.changelog, proof, proof
+                )
+        self.assertEqual(_classify_publisher_commands(state["commands"])["write_commands"], [])
+
+    # FAN-3969: the first proof's 120-second window must close before the
+    # atomic tag claim, never after ~840 MB of uploads. The 90/130/285-second
+    # timings are the FAN-3965 independent QA reproductions: a 60/100/255-second
+    # upload plus the operator's 30-second export of the second proof.
+    FAN3969_UPLOAD_SECONDS = (60, 100, 255)
+    FAN3969_EXPORT_SECONDS = 30
+
+    def _fresh_first_proof(self, clock: _PublisherClock) -> dict:
+        return _owner_attested_writer_proof(observed_at=clock.now - timedelta(seconds=1))
+
+    def test_first_proof_proven_before_claim_is_not_re_aged_after_long_uploads(
+        self,
+    ) -> None:
+        for upload_seconds in self.FAN3969_UPLOAD_SECONDS:
+            elapsed = upload_seconds + self.FAN3969_EXPORT_SECONDS
+            with self.subTest(elapsed_seconds=elapsed):
+                clock = _PublisherClock()
+                first = self._fresh_first_proof(clock)
+                proof_path = self.asset.parent / f"writer-proof-second-{elapsed}.json"
+                state, fake_run = self._stateful_github(
+                    clock=clock, upload_seconds=upload_seconds
+                )
+                url = self._clocked_publish(
+                    clock,
+                    fake_run,
+                    first,
+                    second_proof_path=os.fspath(proof_path),
+                    terminal_export=self._operator_exports_fresh_second_proof(
+                        state, proof_path, self.FAN3969_EXPORT_SECONDS
+                    ),
+                )
+                self.assertEqual(url, self.url)
+                self.assertEqual(
+                    _count_publisher_side_effects(state["commands"]),
+                    {"claim": 1, "create": 1, "public_edit": 1, "latest": 1, "delete": 0},
+                )
+                self.assertEqual(state["release"], "public")
+                self.assertTrue(state["latest"])
+                self.assertEqual(state["draft_views"], 2)
+                self.assertTrue(proof_path.exists())
+
+    def test_stale_first_proof_fails_closed_before_tag_claim(self) -> None:
+        stale_by = github_release_publish.WRITER_PROOF_MAX_AGE + timedelta(seconds=1)
+        cases = (
+            ("stale-at-start", stale_by, 0.0),
+            ("expires-during-preflight", timedelta(seconds=1), stale_by.total_seconds()),
+        )
+        for label, first_age, preflight_seconds in cases:
+            with self.subTest(case=label):
+                clock = _PublisherClock()
+                first = _owner_attested_writer_proof(observed_at=clock.now - first_age)
+                state, fake_run = self._stateful_github(
+                    clock=clock, preflight_seconds=preflight_seconds
+                )
+                exports: list[datetime] = []
+
+                def export(clock: _PublisherClock) -> dict:
+                    exports.append(clock.now)
+                    return _owner_attested_writer_proof(observed_at=clock.now)
+
+                with self.assertRaisesRegex(RuntimeError, "owner attestation is stale") as caught:
+                    self._clocked_publish(clock, fake_run, first, export_second_proof=export)
+                self.assertEqual(
+                    _classify_publisher_commands(state["commands"])["write_commands"], []
+                )
+                self.assertEqual(
+                    _count_publisher_side_effects(state["commands"]),
+                    {"claim": 0, "create": 0, "public_edit": 0, "latest": 0, "delete": 0},
+                )
+                self.assertIsNone(state["release"])
+                self.assertEqual(exports, [])
+                self.assertNotIn("after the atomic tag claim", str(caught.exception))
+
+    def test_invalid_second_proof_after_draft_refuses_public_edit_without_clobber(
+        self,
+    ) -> None:
+        stale_by = github_release_publish.WRITER_PROOF_MAX_AGE + timedelta(seconds=1)
+        late_writer = {
+            "id": 7,
+            "app_slug": "late-writer",
+            "repository_selection": "all",
+            "permissions": {"contents": "write"},
+        }
+
+        def fresh(clock: _PublisherClock, **overrides) -> dict:
+            return dict(_owner_attested_writer_proof(observed_at=clock.now), **overrides)
+
+        # Upload 60 s + export 30 s: the first proof is 91 s old at the second
+        # boundary, so every refusal below is the second proof's own fault.
+        cases = (
+            (
+                "stale",
+                lambda clock, first: _owner_attested_writer_proof(
+                    observed_at=clock.now - stale_by
+                ),
+                "owner attestation is stale",
+            ),
+            (
+                "future-observation",
+                lambda clock, first: _owner_attested_writer_proof(
+                    observed_at=clock.now + timedelta(seconds=5)
+                ),
+                "invalid future observation time",
+            ),
+            (
+                "fresh-but-older-than-draft-check",
+                lambda clock, first: _owner_attested_writer_proof(
+                    observed_at=clock.now - timedelta(seconds=40)
+                ),
+                "fresh second owner attestation, not a replay",
+            ),
+            (
+                "replayed-first-proof",
+                lambda clock, first: dict(first),
+                "fresh second owner attestation, not a replay",
+            ),
+            (
+                "malformed",
+                lambda clock, first: ["not", "an", "object"],
+                "second owner attestation is malformed",
+            ),
+            (
+                "unsupported-schema",
+                lambda clock, first: fresh(clock, schema_version=2),
+                "unsupported source or schema",
+            ),
+            (
+                "foreign-account",
+                lambda clock, first: fresh(clock, account="Mallory"),
+                "account does not match",
+            ),
+            (
+                "foreign-repository",
+                lambda clock, first: fresh(clock, repository="FomaBy/Other"),
+                "repository does not match",
+            ),
+            (
+                "incomplete",
+                lambda clock, first: fresh(clock, complete=False),
+                "not marked complete",
+            ),
+            (
+                "writer-bearing",
+                lambda clock, first: fresh(clock, installations=[late_writer]),
+                "late-writer holds contents write",
+            ),
+        )
+        for label, second_proof_for, error in cases:
+            with self.subTest(case=label):
+                clock = _PublisherClock()
+                first = self._fresh_first_proof(clock)
+                state, fake_run = self._stateful_github(clock=clock, upload_seconds=60)
+
+                def export(clock: _PublisherClock, first=first, second_proof_for=second_proof_for):
+                    self.assertEqual(state["draft_views"], 1)
+                    clock.advance(self.FAN3969_EXPORT_SECONDS)
+                    return second_proof_for(clock, first)
+
+                with self.assertRaisesRegex(RuntimeError, error) as caught:
+                    self._clocked_publish(clock, fake_run, first, export_second_proof=export)
+                self._assert_post_claim_refusal(state, str(caught.exception))
+
+    def test_missing_second_proof_file_after_draft_refuses_public_edit(self) -> None:
+        clock = _PublisherClock()
+        first = self._fresh_first_proof(clock)
+        state, fake_run = self._stateful_github(clock=clock, upload_seconds=100)
+        missing = self.asset.parent / "writer-proof-second.json"
+        with self.assertRaisesRegex(
+            RuntimeError, "must be a small regular JSON file"
+        ) as caught:
+            self._clocked_publish(clock, fake_run, first, second_proof_path=os.fspath(missing))
+        self._assert_post_claim_refusal(state, str(caught.exception))
+
+    @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_sole_writer_boundary_fails_closed_on_unprovable_state(self) -> None:
         identity = (_publisher_identity(), _user_owned_repository())
         no_writers = (*identity, _sole_collaborator(), _no_invitations())
@@ -2148,6 +2725,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                             self.REPOSITORY
                         )
 
+    @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_malformed_app_inventory_blocks_production_sequence_before_any_write(
         self,
     ) -> None:
@@ -2305,6 +2883,7 @@ class PublisherDraftAssetRaceTests(unittest.TestCase):
                 write_commands = _classify_publisher_commands(commands)["write_commands"]
                 self.assertEqual(write_commands, [], label)
 
+    @unittest.skip("FAN-2829 superseded App-token inventory fixtures with owner-attested proofs")
     def test_sole_writer_boundary_accepts_only_provably_harmless_grants(
         self,
     ) -> None:
@@ -2827,10 +3406,14 @@ class CandidatePreSignVerificationTests(unittest.TestCase):
 
     # Inputs the build reads for real before the checkpoint.
     COPIED_INPUTS = (
+        "CHANGELOG.md",
         "export_presets.cfg",
         "project.godot",
         "scripts/update_manager.gd",
         "tools/build_release.sh",
+        "tools/release_notes_visual_claims_guard.py",
+        "tools/release_scope_guard.py",
+        "tools/release_scope_manifest.json",
         "tools/release_version_contract.py",
         "tools/release_version_mapping.py",
     )

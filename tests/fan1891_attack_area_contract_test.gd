@@ -11,7 +11,9 @@ const LIVE_GEOMETRY_PROPERTIES := [
 	"suppression_width", "inner_width", "outer_width", "sweep_degrees", "cone_degrees",
 ]
 const CANONICAL_DOC_FACTS := {
-	"res://docs/design/content_registry.md": "retired range/projectile-speed/buff axes остаются только legacy assets",
+	# FAN-3913: реестр контента разрезан на разделы; производные атрибуты живут
+	# в UI-разделе, а content_registry.md остался совместимым индексом.
+	"res://docs/design/content/ui.md": "retired range/projectile-speed/buff axes остаются только legacy assets",
 	"res://docs/design/systems/characters_weapons.md": "единая область атаки масштабирует живую геометрию, но не target reach",
 	"res://docs/design/current_game_state.md": "reach/projectile-speed остаются config-defined",
 	"res://docs/design/mechanics_extract.md": "standalone `buff_power` источника нет",

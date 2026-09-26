@@ -1,0 +1,21 @@
+{
+  "issue": "FAN-3152",
+  "pixel_lab_only": true,
+  "openai_images_used": false,
+  "pixel_lab_mcp_config_smoke": "PASS get_balance",
+  "object": {
+    "pixel_lab_object_id": "c3b8b950-2c5f-4f44-999c-6cd953d2c117",
+    "pixel_lab_animation_group_id": "77bb487e-7a65-4b0c-8a4f-24d5857197b6",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "display_name": "berserk_hammer_fourfold_rift",
+    "frame_count": 8,
+    "canvas": [256, 256],
+    "prompt": "single massive two-handed war hammer: long straight wooden handle and separate wide horizontal iron head; no chest, box, cube, axe, sword, character, ground, text, or border",
+    "animation_prompt": "one decisive overhead slam while the long handle and wide horizontal head remain clearly separate and recognizable in every frame"
+  },
+  "source_frames": "docs/design/references/weapon_ultimates/berserk/source/fan3152_hammer/war_hammer_f00.png .. _07.png",
+  "runtime_spriteframes": "assets/sprites/effects/berserk/hammer/war_hammer/war_hammer_spriteframes.tres",
+  "runtime_scene": "scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
+  "scope": "FAN-3152 hammer identity rework only; baseline sword, axe, timing, impact service, and gameplay are unchanged"
+}

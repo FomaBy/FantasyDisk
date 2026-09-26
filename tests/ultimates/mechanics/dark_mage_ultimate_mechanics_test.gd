@@ -86,6 +86,7 @@ func _initialize() -> void:
 	await _test_abyss_mirror()
 	await _test_cursed_crown()
 	await _test_vanishing_thread()
+	await _test_trio_reaches_every_enemy()
 	_holder.queue_free()
 	await process_frame
 	_report()
@@ -102,15 +103,11 @@ func _test_abyss_mirror() -> void:
 	_check(controller.activate(CLASS_ID, "dark_book"), "Abyss Mirror must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 1.2)
-	_check(effect != null and int(effect.get("pair_count_for_tests")) >= 2,
-		"every nearby silhouette must receive an original/mirror pair")
-	_check(effect != null and int(effect.get("kill_reflection_count_for_tests")) == 1,
-		"a lethal original must produce exactly one non-recursive reflection burst, got %d" \
-			% [int(effect.get("kill_reflection_count_for_tests")) if effect != null else -1])
-	_check(_feedback_count([reflection], "abyss_reflection") > 0
-		and _feedback_count([reflection], "abyss_kill_reflection") > 0,
-		"the reflected silhouette must receive the paired hit and one kill burst")
+	_advance(activation, 1.0)
+	_check(effect != null and int(effect.get("pair_count_for_tests")) == host.fixture_targets.size(),
+		"every live silhouette must receive its guaranteed Book floor hit")
+	_check(_feedback_count([original, reflection, boss], "abyss_original") == host.fixture_targets.size(),
+		"the mirror point must remain presentation-only while every target receives the original hit")
 	_check(is_equal_approx(boss.max_health - boss.health, boss.max_health * 0.11),
 		"all Book hits must share the 11% boss cap")
 	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_book.execute")
@@ -140,18 +137,18 @@ func _test_cursed_crown() -> void:
 	_check(controller.activate(CLASS_ID, "cursed_skull"), "Cursed Crown must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 5.7)
+	_advance(activation, 2.9)
 	var epic_status := _status_with_prefix(epic, "dark_mage_ultimate_crown_")
 	var boss_status := _status_with_prefix(boss, "dark_mage_ultimate_crown_")
 	_check(is_equal_approx(StatusEffects.damage_multiplier(epic), 0.65),
 		"the crown must reduce cursed enemy outgoing damage")
-	_check(is_equal_approx(float(epic_status.get("duration", 0.0)), 2.75)
-		and is_equal_approx(float(boss_status.get("duration", 0.0)), 1.375),
+	_check(is_equal_approx(float(epic_status.get("duration", 0.0)), 1.5)
+		and is_equal_approx(float(boss_status.get("duration", 0.0)), 0.75),
 		"epic and boss curse duration must obey the shared resistance policy")
-	_check(effect != null and int(effect.get("transfer_count_for_tests")) == 1,
-		"one killed cursed target must transfer its curse once to the nearby unmarked target")
+	_check(effect != null and int(effect.get("transfer_count_for_tests")) == 0,
+		"map-wide Crown coverage leaves no unmarked target for a count-limited transfer")
 	_check(not _status_with_prefix(replacement, "dark_mage_ultimate_crown_").is_empty(),
-		"the transfer recipient must receive the same crown curse contract")
+		"the distant recipient must receive the same Crown curse contract directly")
 	_check(effect != null and int(effect.get("harvest_count_for_tests")) == 1,
 		"the crown must harvest the remaining marks once")
 	_check(is_equal_approx(boss.max_health - boss.health, boss.max_health * 0.11),
@@ -180,14 +177,13 @@ func _test_vanishing_thread() -> void:
 	_check(controller.activate(CLASS_ID, "dark_wand"), "Vanishing Thread must activate")
 	var activation = controller.active_activation()
 	var effect := _effect(activation)
-	_advance(activation, 0.7)
-	_check(effect != null and int(effect.get("marked_count_for_tests")) == 3
-		and int(effect.get("collapse_count_for_tests")) == 3,
-		"the aimed rail must mark and collapse exactly its three distinct nodes")
-	_check(off_rail.received.is_empty(), "the thread must not leak outside its aimed corridor")
-	_check(first.received.size() == 1 and second.received.size() == 1
-		and float(second.received[0]["amount"]) > float(first.received[0]["amount"]),
-		"each distinct chain node must raise the final collapse ramp")
+	_advance(activation, 1.4)
+	_check(effect != null and int(effect.get("marked_count_for_tests")) == 4
+		and int(effect.get("collapse_count_for_tests")) == 4,
+		"the Thread must mark and collapse every live target, not an aimed count-shaped rail")
+	_check(not off_rail.received.is_empty(), "the Thread must reach targets beyond its presentation corridor")
+	_check(first.received.size() == 1 and second.received.size() == 1,
+		"every non-focus target must keep the same nontrivial collapse floor")
 	_check(is_equal_approx(boss.max_health - boss.health, boss.max_health * 0.11),
 		"all simultaneous collapse nodes must share the 11% boss cap")
 	_check(_has_presentation(host, "weapon_ultimate.phase.dark_mage.dark_wand.execute")
@@ -200,6 +196,33 @@ func _test_vanishing_thread() -> void:
 	_check(not is_instance_valid(effect) and not host.active,
 		"Thread cancel must drop the activation-owned effect and active latch")
 	await _drop(host)
+
+
+## Ultimate Direction v2: reach is never limited by the visible scene. Every
+## live enemy receives the guaranteed floor, including a silhouette parked well
+## beyond the authored arena geometry.
+func _test_trio_reaches_every_enemy() -> void:
+	for weapon_id in ["dark_book", "cursed_skull", "dark_wand"]:
+		var host := await _host()
+		for index in 25:
+			_target(host, Vector2(0.0, -240.0 + float(index) * 20.0), 4000.0, 4000.0)
+		_target(host, Vector2(4000.0, -3000.0), 4000.0, 4000.0)
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id),
+			"%s map-wide fixture must activate" % weapon_id)
+		var activation = controller.active_activation()
+		_advance(activation, 7.0)
+		var reached := 0
+		for raw_target in host.fixture_targets:
+			if not (raw_target as Target).received.is_empty():
+				reached += 1
+		_check(reached == host.fixture_targets.size(),
+			"%s must reach every live enemy on the map, got %d of %d" % [
+				weapon_id, reached, host.fixture_targets.size(),
+			])
+		controller.cancel()
+		await process_frame
+		await _drop(host)
 
 
 func _host() -> Host:

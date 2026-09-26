@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3702",
+  "weapon_id": "engineer_pressure_mines",
+  "source_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/manifest.json",
+  "pixel_lab_object_id": "f8ef1f3b-009b-4b4f-8e98-31898ef0773c",
+  "pixel_lab_animation_group_id": "3629c39b-5073-4ac2-bea3-1b9bb6ec5d9d",
+  "frame_count": 9,
+  "frame_order": [
+    "pressure_mines_f00.png",
+    "pressure_mines_f01.png",
+    "pressure_mines_f02.png",
+    "pressure_mines_f03.png",
+    "pressure_mines_f04.png",
+    "pressure_mines_f05.png",
+    "pressure_mines_f06.png",
+    "pressure_mines_f07.png",
+    "pressure_mines_f08.png"
+  ],
+  "spriteframes": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_spriteframes.tres",
+  "animation": {
+    "name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0
+  },
+  "import": {
+    "expected_texture_type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filter": "nearest",
+    "sidecars": {
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f00.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f00.png.import",
+        "sha256": "102c4a5b4814875fed09f35b8a27ef1533faf22ecbc70574af24a03e11d7c836",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f01.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f01.png.import",
+        "sha256": "301f94b23437a08042bc0603f1641515307e7ca4d66c48d15d49ca29dee95f80",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f02.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f02.png.import",
+        "sha256": "e8acbc4686492a0f5811a0b855d77b102a091d269a950ee92656a9df727fbe5b",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f03.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f03.png.import",
+        "sha256": "edcce5050414f73d2f402a2e1a6754b7a2649af8ff300f5cce392549e8dc7a90",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f04.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f04.png.import",
+        "sha256": "df75620c5bcac49a5e54bd106b711ecd093930aabe8765a5170ebc135c02224f",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f05.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f05.png.import",
+        "sha256": "88526398fcb885565edef44a1aef1b6a95660919a65c1c0abf5b85984c61ad76",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f06.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f06.png.import",
+        "sha256": "71da1f5b56bce26744b4cd7d5983d19f3c479824938ac2a4bb82605478609127",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f07.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f07.png.import",
+        "sha256": "8193638ea8f0329978fcf4b49ee51bfcda8e3be416deb0fc3a1a1acc5774a634",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f08.png": {
+        "path": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f08.png.import",
+        "sha256": "b6b72f4d4b509970214823f915b326440664b15bb7fb32b7ef048e1bcebb41b7",
+        "exists": true
+      }
+    },
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "verified": true
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f00.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f00.png",
+      "source_sha256": "fa4da517771219b821631a263d116d1289c3743d19219996b7fba6e76778028f",
+      "runtime_sha256": "fa4da517771219b821631a263d116d1289c3743d19219996b7fba6e76778028f",
+      "source_pixel_sha256": "09ef2a9d4a520f4a147e629fdf3f4b0dd14eb3e914aa86e388a70e363104f7ca",
+      "runtime_pixel_sha256": "09ef2a9d4a520f4a147e629fdf3f4b0dd14eb3e914aa86e388a70e363104f7ca",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        24,
+        12,
+        232,
+        211
+      ]
+    },
+    {
+      "frame": 1,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f01.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f01.png",
+      "source_sha256": "b0090e81b6a0db6bfdff3ca745334c45f041b473ab7dccb82a27019a563b43f1",
+      "runtime_sha256": "b0090e81b6a0db6bfdff3ca745334c45f041b473ab7dccb82a27019a563b43f1",
+      "source_pixel_sha256": "3b4e1a33e8e0735478472d45861422ff5ea06b3557fd071e5a59a67cf3765953",
+      "runtime_pixel_sha256": "3b4e1a33e8e0735478472d45861422ff5ea06b3557fd071e5a59a67cf3765953",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        21,
+        14,
+        234,
+        213
+      ]
+    },
+    {
+      "frame": 2,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f02.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f02.png",
+      "source_sha256": "67be6c0df6390e0441ffa1b41e13a19e3d01b2de2ff814b3d129362e76626821",
+      "runtime_sha256": "67be6c0df6390e0441ffa1b41e13a19e3d01b2de2ff814b3d129362e76626821",
+      "source_pixel_sha256": "4d70f7083e0cff927fd42e0df3013e66d498b7fba54c2c8ffc0f84c3b1cd04c6",
+      "runtime_pixel_sha256": "4d70f7083e0cff927fd42e0df3013e66d498b7fba54c2c8ffc0f84c3b1cd04c6",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        20,
+        18,
+        236,
+        213
+      ]
+    },
+    {
+      "frame": 3,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f03.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f03.png",
+      "source_sha256": "4ca76459c369a34136cc9150af22582d3ae11d478a0d88a5b8c8cba464787ebc",
+      "runtime_sha256": "4ca76459c369a34136cc9150af22582d3ae11d478a0d88a5b8c8cba464787ebc",
+      "source_pixel_sha256": "34438b095e3c8fe488258d46bec8612509ef087749238397a6cd7b445ac47692",
+      "runtime_pixel_sha256": "34438b095e3c8fe488258d46bec8612509ef087749238397a6cd7b445ac47692",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        19,
+        23,
+        236,
+        213
+      ]
+    },
+    {
+      "frame": 4,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f04.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f04.png",
+      "source_sha256": "0c0614a1b7612db3546c1f32b8c63603f9a0269b5048b37339fe6725d4ad8f7c",
+      "runtime_sha256": "0c0614a1b7612db3546c1f32b8c63603f9a0269b5048b37339fe6725d4ad8f7c",
+      "source_pixel_sha256": "ba1f3ec4e8c0751777e98055fece5a8a621bf2dcaa2ba1ec93294f499c4dd26e",
+      "runtime_pixel_sha256": "ba1f3ec4e8c0751777e98055fece5a8a621bf2dcaa2ba1ec93294f499c4dd26e",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        19,
+        27,
+        237,
+        235
+      ]
+    },
+    {
+      "frame": 5,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f05.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f05.png",
+      "source_sha256": "04191689e8fd408db0e61a5e064556ef024b55f99cfdd4efe75249dda6f89f4e",
+      "runtime_sha256": "04191689e8fd408db0e61a5e064556ef024b55f99cfdd4efe75249dda6f89f4e",
+      "source_pixel_sha256": "47a2f9c9440bad7c631d70b535e0b0c0b660c2e6b069eeeb636cfab8917d7621",
+      "runtime_pixel_sha256": "47a2f9c9440bad7c631d70b535e0b0c0b660c2e6b069eeeb636cfab8917d7621",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        18,
+        28,
+        237,
+        244
+      ]
+    },
+    {
+      "frame": 6,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f06.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f06.png",
+      "source_sha256": "7ca4b132fd16c172c1ad081381faefb13bea3c96b269114ee860c0556bcc57f1",
+      "runtime_sha256": "7ca4b132fd16c172c1ad081381faefb13bea3c96b269114ee860c0556bcc57f1",
+      "source_pixel_sha256": "4c74a923f2224a583219733f9564e7a3bfce781daffe5fe967c9483268f56082",
+      "runtime_pixel_sha256": "4c74a923f2224a583219733f9564e7a3bfce781daffe5fe967c9483268f56082",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        19,
+        24,
+        237,
+        240
+      ]
+    },
+    {
+      "frame": 7,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f07.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f07.png",
+      "source_sha256": "715a7c4db30b07717bc0906c0be7eed3784fbaf54c5c4ea98d4a11f957aee41e",
+      "runtime_sha256": "715a7c4db30b07717bc0906c0be7eed3784fbaf54c5c4ea98d4a11f957aee41e",
+      "source_pixel_sha256": "e596756a5697cb785e1c5cb045033e307f0ca1820651e0859dfd9a3cf187155e",
+      "runtime_pixel_sha256": "e596756a5697cb785e1c5cb045033e307f0ca1820651e0859dfd9a3cf187155e",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        20,
+        18,
+        236,
+        230
+      ]
+    },
+    {
+      "frame": 8,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/pressure_mines/pressure_mines_f08.png",
+      "runtime": "assets/sprites/effects/engineer/pressure_mines/pressure_mines_f08.png",
+      "source_sha256": "7ee67878754825c5f4ad3f9fec7b6491d42dbdb39947b34638bc1f8881a033a4",
+      "runtime_sha256": "7ee67878754825c5f4ad3f9fec7b6491d42dbdb39947b34638bc1f8881a033a4",
+      "source_pixel_sha256": "d9625b9d15ac5ec2d5ecbda8f372b65e44688d243539aa30eeb94d51a55b2bbf",
+      "runtime_pixel_sha256": "d9625b9d15ac5ec2d5ecbda8f372b65e44688d243539aa30eeb94d51a55b2bbf",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        21,
+        12,
+        234,
+        224
+      ]
+    }
+  ],
+  "parity": "source and runtime encoded/pixel hashes must match for every frame; SpriteFrames order mirrors frame_order",
+  "secret_handling": "no credentials stored; PixelLab token was environment-only",
+  "spriteframes_sha256": "3a61d0ef22ecd2bfa50ff26cf0c9634950b76a86a20265eb8e222f7873ae45f3"
+}

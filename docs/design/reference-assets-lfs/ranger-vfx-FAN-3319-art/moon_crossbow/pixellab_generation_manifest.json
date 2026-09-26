@@ -1,0 +1,97 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T22:44:20Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "0d7cf2cb-f6d8-421a-bac5-b1a604d528d4",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered oversized moon crossbow ultimate VFX prop with a carved teal-and-bronze stock, silver crescent limbs, a luminous cobalt crescent moon core and four pale-blue split moon bolts, dark fantasy D&D pixel art seen from above, isolated clean readable silhouette, transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the crescent moon crossbow, teal-and-bronze stock, silver limbs and four split moon bolts centered with stable proportions; the crescent core rotates and brightens, the crossbow string draws back, pale-blue bolts launch one by one into a four-way split orbit, a silver moon halo expands, then the shards curve back and the glow fades to a single crescent spark; make every frame a distinct measurable motion beat with string tension, bolt travel, crescent rotation or halo radius changing, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "moon_crossbow_f00.png",
+      "bytes": 30396,
+      "url_kind": "template",
+      "encoded_sha256": "d8c55c41f351e7c4765bcc60f538f40e75c19fee5219256fa46ac88954df70f0",
+      "pixel_sha256": "49de4634adcf0cb5261b7cd087ec208bc9fd87f68e584fc8f3c68b6c1c7449e4"
+    },
+    {
+      "file": "moon_crossbow_f01.png",
+      "bytes": 35128,
+      "url_kind": "template",
+      "encoded_sha256": "e7939659555cd3b59446809b6f24d00ebd3bd107ade74ebd6206f6aec854a3ee",
+      "pixel_sha256": "0981c1d12a6257c5053ccfc69fe49c8c2c22c29b21a18a1e13a865c983876d27"
+    },
+    {
+      "file": "moon_crossbow_f02.png",
+      "bytes": 39271,
+      "url_kind": "template",
+      "encoded_sha256": "636e47818be5e01e48d484996fd4e175e65ca546402d6d1a56c7be1fc8fa5e17",
+      "pixel_sha256": "431dd3998e9e7f7c73bc0d1f9305a61ee7cda8b897d57ce6d9d87b0d57cdd89c"
+    },
+    {
+      "file": "moon_crossbow_f03.png",
+      "bytes": 38012,
+      "url_kind": "template",
+      "encoded_sha256": "5528951059aaccfe2abfd268917da803089545a137580bd6da7ba7944048535a",
+      "pixel_sha256": "8441e4f8ed30173046a93cd7f2eae9b50d682ffa156b8f8cddce2ae16763bf62"
+    },
+    {
+      "file": "moon_crossbow_f04.png",
+      "bytes": 39610,
+      "url_kind": "template",
+      "encoded_sha256": "0ff3daf70504fa305d8ec6b0e0fafd71e1c594be627234df8c3dcc92a9380ebb",
+      "pixel_sha256": "7deedca7b229281fec305ac018a4aec9eacb39c2857a0752e3269c9e0e5483d8"
+    },
+    {
+      "file": "moon_crossbow_f05.png",
+      "bytes": 40313,
+      "url_kind": "template",
+      "encoded_sha256": "ce75c9610e8e1564cfc6de808859457ee5ac860041321742ba827e3989f47a7f",
+      "pixel_sha256": "800f1883510b41a17650aade81143fd55baab34644df26d15f023a5d031a0b3e"
+    },
+    {
+      "file": "moon_crossbow_f06.png",
+      "bytes": 39282,
+      "url_kind": "template",
+      "encoded_sha256": "243df0b9eabcfb2e452913897a316a75cdd26f283bc18329af2f283d205680c7",
+      "pixel_sha256": "ad72b051c5df02bd1a4bdfd2693522424d0d0c775631c9a1ff2bc1117f0960c5"
+    },
+    {
+      "file": "moon_crossbow_f07.png",
+      "bytes": 38870,
+      "url_kind": "template",
+      "encoded_sha256": "13bf468986cb77268656fb5b5f18a01ecbd3a7bc8ef4f36d640bcb07fc03d6fe",
+      "pixel_sha256": "7845aa42ce914f51e120698d12b40a9fc0388047238b8ac1521d85c83a10bea8"
+    },
+    {
+      "file": "moon_crossbow_f08.png",
+      "bytes": 38754,
+      "url_kind": "template",
+      "encoded_sha256": "2ef5ad2985e9d3c0d46bf1378043760e9af76267f92aaf4a9376a9ce30a0d525",
+      "pixel_sha256": "3ae9ba9026d5b86b00b31f76cf3ab2b6007fd997e7d36f375007de517217237e"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "pixel_lab": {
+    "object_id": "0d7cf2cb-f6d8-421a-bac5-b1a604d528d4",
+    "animation_group_id": "1f0e7ad0-8dfb-4a20-837b-e90723ee0d38",
+    "canonical_tag": "ranger_moon_crossbow_ultimate"
+  }
+}

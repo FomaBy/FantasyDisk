@@ -16,20 +16,43 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "pixellab_mcp": "not_invoked_no_new_isolated_raster_asset",
-    "new_pixellab_assets": [],
-    "reused_sources": {
-      "chakrams": {
-        "source_path": "assets/sprites/weapons/chakrams.png",
+    "route": "pixellab_animation_source_for_chakrams_and_shadow_daggers_reused_approved_asset_for_venom_wire",
+    "pixellab_mcp": "invoked for assassin/chakrams (FAN-2541) and assassin/shadow_daggers (FAN-2542): new transparent-frame animation sources via create_1_direction_object + animate_object; venom_wire still composes its approved project weapon sprite at runtime and is untouched by those cards",
+    "new_pixellab_assets": [
+      {
+        "weapon_id": "chakrams",
+        "issue": "FAN-2541",
+        "pixel_lab_object_id": "defd0c32-6ceb-47aa-b791-02edaa7f93c5",
+        "pixel_lab_animation_group_id": "b8cddfa4-f173-4785-a4b1-afb7f4ab8986",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/assassin/source/pixellab_chakrams",
+        "runtime_spriteframes": "assets/sprites/effects/fan2541_chakrams_ultimate/chakrams_ultimate_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
-        "note": "Approved project weapon sprite; the eight-disc formation is composed at runtime."
+        "generation_script": "tools/fan2541_chakrams_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_chakrams.json",
+        "note": "The isolated source is one moon-chakram ring; the eight-disc compass formation stays a runtime composition, so the ring identity is generated once and instanced eight times."
       },
-      "shadow_daggers": {
-        "source_path": "assets/sprites/weapons/shadow_daggers.png",
+      {
+        "weapon_id": "shadow_daggers",
+        "issue": "FAN-2542",
+        "pixel_lab_object_id": "7e33b12d-e6cf-41d6-acaf-a96687ebbcee",
+        "pixel_lab_animation_group_id": "ddc3b13c-51ee-4290-9547-76a6c24cae5d",
+        "create_tool": "create_1_direction_object",
+        "animate_tool": "animate_object",
+        "mode": "v3",
+        "frame_count": 9,
+        "source_dir": "docs/design/references/weapon_ultimates/assassin/source/pixellab_shadow_daggers",
+        "runtime_spriteframes": "assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-        "note": "Approved project weapon sprite; afterimages and slash reveal are composed at runtime."
-      },
+        "generation_script": "tools/fan2541_chakrams_pixellab.py",
+        "provenance_manifest": "docs/design/references/weapon_ultimates/assassin/provenance_manifest_shadow_daggers.json",
+        "note": "The isolated source is one shadow dagger whose violet edge glow pulses in place; the four backstab afterimages stay a runtime composition, so the blade identity is generated once and instanced four times with staggered frame phases."
+      }
+    ],
+    "reused_sources": {
       "venom_wire": {
         "source_path": "assets/sprites/weapons/venom_wire.png",
         "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
@@ -42,15 +65,15 @@
       "weapon_id": "chakrams",
       "title": "Восемь Лун",
       "scene_path": "scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
-      "silhouette": "eight silver moon-discs in a compass orbit",
-      "motion_path": "tight orbit expands to eight radial arcs then crescent return stack",
-      "impact_language": "eight-way disc launch and returning crescent cut",
+      "silhouette": "eight silver moon-discs in a compass orbit over a darkened arena",
+      "motion_path": "hero cast gleam, tight orbit expands to an arena-wide eight-lane compass sweep, then crescent return stack",
+      "impact_language": "backdrop darkens, eight-way disc launch with first-impact flash and returning crescent cut",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.5,
+        "release": 0.8,
         "active": 1.0,
-        "recovery": 6.9,
-        "cancel": 7.6
+        "recovery": 3.0,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.assassin.chakrams.windup",
@@ -60,10 +83,37 @@
         "cancel": "weapon_ultimate.phase.assassin.chakrams.cleanup"
       },
       "performance": {
-        "max_visual_nodes": 12,
+        "max_visual_nodes": 14,
         "crowd_cap": 24,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "return_pass_damage_owner": "mechanics FAN-1473"
+        "return_pass_damage_owner": "mechanics FAN-1473",
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.45,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.moonlit_orbit_stance",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/chakrams.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the eight moon discs hold their compass bearings while alpha and radius preserve every phase; orbit rotation and flipbook stepping are disabled",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json.",
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing"
       }
     },
     {
@@ -75,10 +125,10 @@
       "impact_language": "simultaneous crimson slash reveal",
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.45,
+        "release": 0.75,
         "active": 1.1,
-        "recovery": 4.9,
-        "cancel": 5.8
+        "recovery": 2.7,
+        "cancel": 3.5
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.assassin.shadow_daggers.windup",
@@ -91,7 +141,33 @@
         "max_visual_nodes": 9,
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "marked_damage_owner": "mechanics FAN-1473"
+        "marked_damage_owner": "mechanics FAN-1473",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.14,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the four dagger afterimages hold their authored frames and positions while phase scale and alpha preserve the execution silhouette",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json.",
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.silent_execution",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_04.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
       }
     },
     {
@@ -105,8 +181,8 @@
         "windup": 0.0,
         "release": 0.65,
         "active": 1.2,
-        "recovery": 5.35,
-        "cancel": 6.2
+        "recovery": 3.0,
+        "cancel": 3.7
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.assassin.venom_wire.windup",
@@ -119,18 +195,104 @@
         "max_visual_nodes": 11,
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "toxin_burst_owner": "mechanics FAN-1473"
+        "toxin_burst_owner": "mechanics FAN-1473",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.silent_execution",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/venom_wire.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.24,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the six anchors hold their hex bearings while the web's phase scale and alpha preserve the trap read without fast travel",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     }
   ],
   "evidence": {
     "contact_sheets": [
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_648p.png",
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_720p.png",
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_1080p.png",
-      "docs/design/references/weapon_ultimates/assassin/assassin_ultimate_timelines_2k.png"
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/assassin/assassin_certification_2k.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/assassin_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/assassin_ultimate_timelines.gd"
+    "capture_script": "tests/ultimates/presentation/assassin_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/assassin_certification_capture_test.gd",
+    "authored_timeline_sheets": [
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_648p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_720p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_1080p.png",
+      "docs/design/reference-assets-lfs/assassin-ultimate-timelines-fan3014/assassin_ultimate_timelines_2k.png"
+    ],
+    "authored_capture_script": "tests/ultimates/presentation/assassin_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/assassin_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3942",
+      "source_ref": "agent/codex-dev-sol-5-6/1062ac31f630",
+      "source_commit_sha": "77ad159d781581cdbe9771987e8a9cd5fd524c1c",
+      "source_tree_sha": "08d97ff36ad5715c2508f639949aff0b5fc629bc",
+      "capture_manifest": "docs/design/references/weapon_ultimates/assassin/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/assassin/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/assassin_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/assassin_certification_capture_test.gd",
+      "weapon_ids": [
+        "chakrams",
+        "shadow_daggers",
+        "venom_wire"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "sheet_sha256": {
+        "648p_release": "d4962636393d8c3db1fb36c33b2a17d45ddfc9775903bc8b9411656b206506ad",
+        "648p_active": "cd4bd7184fa3c0780e4f7ebc9e690c3bbb0dc86ae1ec894e856da2a5a146081a",
+        "648p_recovery": "a98584b833cbdc32d2f3abdff3231176be97598e6c94f5e1d38f237b7b49100c",
+        "720p_release": "ec3d0b76cf975e242953a4d356faab1f01a21596aa4a46ba35c9b51b6b64a74e",
+        "720p_active": "49f9fe4bfa83f45c5e5bb0a196f987ba8e0036f615ece35a4c48a9039779a9d3",
+        "720p_recovery": "96f1f6af392452f0194685cc65483f7e730309f37ab763dff5ba93eabe822844",
+        "1080p_release": "19e87a7aae75b33c227ec92350dd79a25bb8d0ca56fa274291a9f632c1fde477",
+        "1080p_active": "43ee8ab63e7ff98b7e209d91e6ad91afdcb3b8316f6dab15dfff01adb8b7aeed",
+        "1080p_recovery": "c97f112db488f9e75495ed77e9479feb70a4ee0323ed9ee4279165b898299e8c",
+        "2k_release": "b7d804286c57685ddda9ca57dd40043fd045b29a3c424bab3a50add8c773d626",
+        "2k_active": "d6e30fe3f1d43866c98b8e6f80a61a93b2845ae2d77c52cee82c081c3b6f4798",
+        "2k_recovery": "daff52e5a107549349ccbb45193b1d39078c4ade88c9d8e49b804102d94ae6c6"
+      },
+      "live_samples": 144,
+      "note": "Twelve native-size beat/mode matrices index 144 fresh measurements from real Main.tscn combat runs with Player.activate_ultimate(), the shared presentation runtime, shipped executors, cast-pose replacement, HUD, Enemy hazards, victim impacts, and independent reduced-motion/photosensitivity-safe variants."
+    }
   }
 }

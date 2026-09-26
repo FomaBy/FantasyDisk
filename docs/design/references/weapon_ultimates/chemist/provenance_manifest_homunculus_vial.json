@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-2959",
+  "reworks": "FAN-2552",
+  "weapon": "chemist/homunculus_vial",
+  "title": "Совершенный Гомункул",
+  "direction_version": "v2",
+  "generation": {
+    "route": "reused_fan2552_pixellab_animation_frames",
+    "decision": "No new PixelLab job. The FAN-2552 pack is a full 9-frame stomp cycle at 256x256 with binary alpha, so it carries the v2 scale (drawn at 2.3-2.55x instead of 1.5-1.7x, arena-tall) and the v2 length (the cycle is replayed three times inside a shorter envelope). Regeneration is only required where existing frames cannot carry the new scale or length; here they can, so the source is reused bit-for-bit and only placement, scale and beat spacing changed.",
+    "tool": "PixelLab MCP animate_image (original FAN-2552 run)",
+    "job_id": "331684be-2ee9-43cd-8eb6-842051201a17",
+    "seed": 2552,
+    "identity_source": "assets/sprites/allies/ally_homunculus.png",
+    "frame_count": 9,
+    "frames_dir": "assets/sprites/effects/ultimates/chemist/homunculus_vial",
+    "asset_manifest": "assets/sprites/effects/ultimates/chemist/homunculus_vial/manifest.json",
+    "rebuild_tool": "tools/build_fan2552_homunculus_vial_ultimate_pack.py"
+  },
+  "envelope_change": {
+    "before": {"windup": 0.0, "release": 0.9, "active": 1.7, "recovery": 4.2, "cancel": 5.4},
+    "after": {"windup": 0.0, "release": 0.9, "active": 1.75, "recovery": 3.6, "cancel": 3.8},
+    "why": "The v1 envelope ran 5.40s total, 1.40s over the v2 ceiling of 4.00s. The whole reduction comes out of the drawn tail (the v1 split-back held from 4.20s to 5.40s) and out of moving the drawn `active` marker onto the first real stomp.",
+    "mechanics_untouched": "data/ultimates/classes/chemist/homunculus_vial.json is unchanged: fuse_at 0.9, beat_count 3, beat_interval 0.85, recover_at 4.2, damage 62.0, target_limit 14 and every control/taunt value stay exactly as shipped. The executor's own recover_at (4.2s) governs the activation lifetime and is deliberately independent of the drawn presentation envelope, exactly as it already is for blast_powder and acid_flask.",
+    "beat_coverage": "The three executor stomps (fuse_at + beat_interval * n) land at 1.75s, 2.60s and 3.45s. All three stay inside the drawn active window 0.90-3.60s, each one gets an avatar slam frame on the exact beat, an expanding StompWave ring and a camera shake, so no damage tick is left without a drawn hit. tests/ultimates/presentation/chemist_ultimate_timelines.gd asserts this coverage."
+  },
+  "presence": {
+    "fullscreen_footprint": "BackdropVeil is refitted to the visible rect every frame by the scene driver (viewport rect / camera zoom, 2% overscan), so the darken covers the screen at every supported viewport and battle zoom",
+    "backdrop": "darken, with one emerald fusion flash at 1.00s",
+    "camera_shake": "re-armed on each of the three stomps, 11.0 px peak decaying over 0.55s, gated by the player's screen_shake setting",
+    "hitstop_ms": 120,
+    "sfx_ducking": "-9 dB on the SFX bus for the release..recovery window, reference-counted so overlapping casts duck once and hand the bus back"
+  },
+  "identity": {
+    "cast_pose_id": "cast_pose.chemist.homunculus_fusion",
+    "weapon_silhouette_asset": "res://assets/sprites/effects/ultimates/chemist/homunculus_vial/avatar_stomp_04.png",
+    "class_palette_id": "palette.chemist.emerald_homunculus",
+    "why_not_generic": "The visual core is the homunculus avatar itself, drawn from this pair's own PixelLab frames, inside the alchemical circle the vial opens. No other pair in the roster uses these frames, this pose id or this palette id, and the schema fails closed on a silhouette asset shared between two keys."
+  },
+  "phase_binding": {
+    "windup": {"seconds": 0.0, "frames": "no avatar yet (cast ceremony: the tank/caster pair converges, the circle widens and brightens, the fusion glow rises under the pair, backdrop darkens)"},
+    "release": {"seconds": 0.9, "frames": "0-1 (the vial burst flashes at 1.00s and the avatar forms at frame 0, growing out of the pair)"},
+    "active": {"seconds": 1.75, "frames": "4-7 replayed three times (stomp contact frame 4 lands on 1.75s / 2.60s / 3.45s; the first takes the 120 ms hitstop, each expands a StompWave ring and pulses the toxic cascade)"},
+    "recovery": {"seconds": 3.6, "frames": "8 then 0 (the avatar rises back and shrinks while the pair fades back in at their original anchors)"},
+    "cancel": {"seconds": 3.8, "frames": "alpha reaches zero; Timeline releases every handle and the driver restores camera offset and SFX bus"}
+  },
+  "distinctness": "blast_powder is a gold-rune pentagram with five multicolor kegs on a 3.60s crystal-implosion beat (active window 1.60s); acid_flask is a colossal dark-glass flask flooding a wide acid-green lake on a 3.95s heavy-flood beat (active window 2.35s); homunculus_vial is the only one built on a fused emerald giant landing three discrete stomps, on its own 3.80s beat (active window 1.85s). Both distinctness axes stay >= 0.10s from either sibling.",
+  "accessibility": {
+    "full_screen_flash_hz": 0.0,
+    "max_flash_coverage_ratio": 1.0,
+    "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still through all three stomps, and the fusion flash plays as a calm damped fade on the backdrop veil and fusion glow",
+    "note": "Only the single fusion flash at 1.00s is full-screen, and it does not repeat, so the WCAG 2.3.1 general-flash threshold (which applies to repeated flashes) is not engaged. The three stomps are marked by world-space rings rather than a second full-screen flash, precisely so the effect does not become a 1.2 Hz full-screen strobe."
+  },
+  "budget": {
+    "drawn_nodes": 10,
+    "max_visual_nodes": 11,
+    "crowd_cap": 14,
+    "max_unique_materials": 1,
+    "max_fullscreen_materials": 1,
+    "note": "One shared additive CanvasItemMaterial across the nine world-space drawn nodes; the backdrop veil carries no material and draws in world space, so the measured screen-space material count is 0 against a declared budget of 1."
+  },
+  "verification": {
+    "commands": [
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/chemist_ultimate_timelines.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/visual_direction_contract_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_presentation_budget_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation_contract_test.gd"},
+      {"command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd"},
+      {"command": "windowed capture: python3 tools/godot_gate.py --path . --script res://tests/ultimates/presentation/chemist_ultimate_contact_capture.gd"}
+    ]
+  }
+}

@@ -1,0 +1,319 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "weapon_id": "restore_potion",
+  "weapon": "doctor/restore_potion",
+  "effect_id": "cast_flash",
+  "effect_role": "cast",
+  "generated_at": "2026-08-28T03:14:35Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "pixellab": {
+    "object_id": "612282bd-d2f9-4efa-a60c-e6e0ed2e7ea8",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": null,
+      "size": 256,
+      "view": "top-down"
+    },
+      "animation_group_id": "7382e3f5-ed00-490d-b7c2-47d18adf2f24",
+      "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same potion flask stays centered with identical silhouette, scale and palette in every frame; liquid sloshes, healing sigil pulses from dim to bright, small glass shards orbit then settle, with obvious measurable motion between each frame; all frames remain fully inside the transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the stored PixelLab reference image; f01..f08 are the eight generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/restore_potion/cast_flash",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_00.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_01.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_02.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_03.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_04.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_05.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_06.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_07.png",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_00.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_01.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_02.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_03.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_04.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_05.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_06.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_07.png.import",
+      "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": false,
+    "fps": 14
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Removed two generated flat background rectangles from f00 only: plague_syringe_infection_wave and plague_syringe_victim_impact; no other frames were altered."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_00.png",
+      "bytes": 23149,
+      "source_encoded_sha256": "404b5e5e8bb6c4a557d3162f4799f6db0e1e4acaa0b5d541353e5a1ce69ac967",
+      "source_pixel_sha256": "bf282d06fa7b34f2fdb35018020e95fb6c7c5710615385c8ceb576dfdb9ef27b",
+      "runtime_encoded_sha256": "404b5e5e8bb6c4a557d3162f4799f6db0e1e4acaa0b5d541353e5a1ce69ac967",
+      "runtime_pixel_sha256": "bf282d06fa7b34f2fdb35018020e95fb6c7c5710615385c8ceb576dfdb9ef27b",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        11,
+        211,
+        242
+      ],
+      "visible_pixels": 27209,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": null
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_01.png",
+      "bytes": 26864,
+      "source_encoded_sha256": "8027b5dd0eacc7cd6c856b988bac07bcadf53326cab7eafe6516d962fed0310e",
+      "source_pixel_sha256": "05523db75291136054c56b43a78fca821ab192e1ec24997d0dd278727ffe82d1",
+      "runtime_encoded_sha256": "8027b5dd0eacc7cd6c856b988bac07bcadf53326cab7eafe6516d962fed0310e",
+      "runtime_pixel_sha256": "05523db75291136054c56b43a78fca821ab192e1ec24997d0dd278727ffe82d1",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        11,
+        211,
+        242
+      ],
+      "visible_pixels": 27267,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 15976
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_02.png",
+      "bytes": 26140,
+      "source_encoded_sha256": "35dc7f7061b257c04933c088d8ae5d2830165c03f348fb5646dce57300652030",
+      "source_pixel_sha256": "0cb0b302b1543d0b371bb8b25cfe53d56a256fb59f15c73ec6df351eafcff697",
+      "runtime_encoded_sha256": "35dc7f7061b257c04933c088d8ae5d2830165c03f348fb5646dce57300652030",
+      "runtime_pixel_sha256": "0cb0b302b1543d0b371bb8b25cfe53d56a256fb59f15c73ec6df351eafcff697",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        11,
+        211,
+        242
+      ],
+      "visible_pixels": 27289,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 9881
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_03.png",
+      "bytes": 27125,
+      "source_encoded_sha256": "8586238a41465ca20d81ed3c15ab834e4b8f553915b8c509de07e96846fb184c",
+      "source_pixel_sha256": "c8caa699cc0fb000157160fd02bd318813a75c47a6d4027ebc1f3d197e9001ff",
+      "runtime_encoded_sha256": "8586238a41465ca20d81ed3c15ab834e4b8f553915b8c509de07e96846fb184c",
+      "runtime_pixel_sha256": "c8caa699cc0fb000157160fd02bd318813a75c47a6d4027ebc1f3d197e9001ff",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        11,
+        211,
+        242
+      ],
+      "visible_pixels": 27282,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 11240
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_04.png",
+      "bytes": 26879,
+      "source_encoded_sha256": "2af8effa0d646fc8b2dea03381b18ffb0e10c80665f150350e9363bbd329f448",
+      "source_pixel_sha256": "5d35e3bc4de006e212678a0611079922f32830c0357ebcb76ea05ba1288b728e",
+      "runtime_encoded_sha256": "2af8effa0d646fc8b2dea03381b18ffb0e10c80665f150350e9363bbd329f448",
+      "runtime_pixel_sha256": "5d35e3bc4de006e212678a0611079922f32830c0357ebcb76ea05ba1288b728e",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        38,
+        11,
+        214,
+        242
+      ],
+      "visible_pixels": 27884,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 14933
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_05.png",
+      "bytes": 23203,
+      "source_encoded_sha256": "c7ecd235715052e9de129cfd985763852eab14dc3d1abef4d1e3eb1889e709ba",
+      "source_pixel_sha256": "87411ec775158fb539ab9fbb85f6b3e23864300724d6e227a8ce240638676a5b",
+      "runtime_encoded_sha256": "c7ecd235715052e9de129cfd985763852eab14dc3d1abef4d1e3eb1889e709ba",
+      "runtime_pixel_sha256": "87411ec775158fb539ab9fbb85f6b3e23864300724d6e227a8ce240638676a5b",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        36,
+        11,
+        217,
+        242
+      ],
+      "visible_pixels": 27570,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 15479
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_06.png",
+      "bytes": 21940,
+      "source_encoded_sha256": "dc914e3fdb4b48f0f33d0a93bf0113dadac8de812493448c0df9462735cb1ee3",
+      "source_pixel_sha256": "b650580a11ff729d9702c9c8322a0dcb3d00ab968f2f0d2e843f52827d419442",
+      "runtime_encoded_sha256": "dc914e3fdb4b48f0f33d0a93bf0113dadac8de812493448c0df9462735cb1ee3",
+      "runtime_pixel_sha256": "b650580a11ff729d9702c9c8322a0dcb3d00ab968f2f0d2e843f52827d419442",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        43,
+        11,
+        212,
+        242
+      ],
+      "visible_pixels": 27432,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 7638
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_07.png",
+      "bytes": 21593,
+      "source_encoded_sha256": "48a1e7894a8aba23b4d8802f9487ce5442dddb7da1a722e9aea0e521b2d3cbd0",
+      "source_pixel_sha256": "2b9bf77110f43bc939ec0a01d883c67c80e29e87fc5e9caf09619c834588102f",
+      "runtime_encoded_sha256": "48a1e7894a8aba23b4d8802f9487ce5442dddb7da1a722e9aea0e521b2d3cbd0",
+      "runtime_pixel_sha256": "2b9bf77110f43bc939ec0a01d883c67c80e29e87fc5e9caf09619c834588102f",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        11,
+        211,
+        242
+      ],
+      "visible_pixels": 27276,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 6413
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/restore_potion_cast_flash/restore_potion_cast_flash_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_08.png",
+      "bytes": 21868,
+      "source_encoded_sha256": "b18e71f4a90d369ed6a7b3ffab6787ca67bcde958340d5e176686130ce2bf439",
+      "source_pixel_sha256": "64adeecef8372eb1a779639b7f435bea8bd6e5b28b09656aa0001da7cae1f11f",
+      "runtime_encoded_sha256": "b18e71f4a90d369ed6a7b3ffab6787ca67bcde958340d5e176686130ce2bf439",
+      "runtime_pixel_sha256": "64adeecef8372eb1a779639b7f435bea8bd6e5b28b09656aa0001da7cae1f11f",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        44,
+        11,
+        211,
+        242
+      ],
+      "visible_pixels": 27291,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 5165
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 5165,
+    "consecutive_changed_pixels_max": 15976,
+    "loop_wrap_pixel_hashes_differ": true
+  }
+}

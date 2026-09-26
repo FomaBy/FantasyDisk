@@ -1,50 +1,22 @@
-# Versioning And Branching Policy
+# Versioning and branching policy
 
-Обновлено: 2026-08-01
+Updated: 2026-08-01. FantasyDisk uses SemVer before 1.0 plus technical-hotfix format `X.Y.Z.R` for a changed technical byte between patch releases. `main` is immutable released history; `dev` is the active integration branch. Multica FantasyDisk (`FAN-*`) is the authoritative task/status/owner source; local task files, task board, and legacy Jira/SCRUM are read-only mirrors/history.
 
-## Текущее Правило
+The current released line is immutable `v0.3.0` on `main`; active Multica work targets `0.3.1` on `dev`. `0.1.8` and `0.1.9` are cancelled planned versions and must not appear in new issues, mirrors, fixVersions, or release/freeze notes. Sprint cadence is short (about two days), not weekly.
 
-FantasyDisk использует SemVer для продуктовых релизов до 1.0, с отдельным
-явным форматом для технических hotfix:
+Release freeze FAN-1128/FAN-1210 завершён публикацией `0.2.4`;
+новые продуктовые изменения идут в следующую SemVer-версию.
 
-- `main` - стабильная линия выпущенных версий;
-- `dev` - активная рабочая ветка текущей линии `0.2.x`;
-- Multica проект `FantasyDisk` (issues `FAN-*`) - authoritative task
-  queue/status/owner source; local task files and task board are
-  mirrors/spec/evidence only. Legacy Jira (SCRUM-*) — read-only historical
-  archive (см. docs/process/jira_to_multica_cutover.md).
-- текущий stable release: `0.2.4` опубликован; дальнейшая работа ведётся на
-  `dev` через активную Multica board.
-- `0.1.8` и `0.1.9` отменены как плановые версии: новые Multica issues, mirrors,
-  fixVersions и release/freeze notes не должны использовать эти номера.
-- после `0.2.0` patch-линия идет как `0.2.1`, `0.2.2`, `0.2.3`, `0.2.4`, ...;
-  изменённый технический байт между patch-релизами получает отдельный формат
-  `X.Y.Z.R`, например `0.2.3.1`, а неизменные артефакты повторно доставляются
-  под прежним immutable номером.
-- **Кадэнс спринтов — короткий, ~2 дня** (агентная скорость разработки), НЕ недельный.
+## Branch ownership and protection
 
-## Feature Block
-
-Feature block 0.1.5 снят релизом `v0.1.5` (2026-06-15). После опубликованного
-`0.2.4` (на 2026-07-16) задачи ведутся через Multica (task board — локальное
-зеркало), с обязательной проверкой `Контур`, owner, locked paths и dirty
-worktree. Директива пользователя 2026-07-03: все задачи, добавляемые в любые
-чаты, сразу попадают в active Multica board с metadata `release` явно указанной
-целевой версии. Release freeze FAN-1128/FAN-1210 завершён публикацией `0.2.4`;
-новые продуктовые изменения идут в следующую SemVer-версию. Ограничение только
-на доказанные release blockers действует лишь при явно объявленном freeze
-текущего релиза.
-
-## Branch Ownership
-
-| Branch | Назначение | Правило |
+| Branch | Purpose | Rule |
 | --- | --- | --- |
-| `main` | Стабильная выпущенная линия | Не вести обычную разработку напрямую |
-| `dev` | Интеграционная ветка `0.2.x` | Работать по Multica; task branches разводить через owner/locked paths, интегрировать только после exact-SHA QA |
+| `main` | Stable released line | No ordinary feature development. |
+| `dev` | Active `0.3.1` integration | Work through Multica task branches; integrate only approved exact content. |
 
-## Правила Для Агентов
+GitHub `dev-protection` for `FomaBy/FantasyDisk` requires a pull request, `static-quality` and `visual-regression` from `.github/workflows/quality.yml`, resolved review threads, no force push, and no deletion. `dev-runtime-health*` scheduled/manual jobs are not required checks. Rename a required job only with the matching ruleset update. Emergency bypass is owner-admin-only and GitHub records it in its ruleset audit trail.
 
-Перед началом любой задачи агент должен проверить текущую ветку:
+Before work:
 
 ```bash
 git branch --show-current
@@ -53,77 +25,35 @@ git fetch origin --prune
 git rev-parse origin/dev
 ```
 
-Ожидаемая база для task branch:
+Use a clean isolated task branch from fresh `origin/dev`. If on `main` or operator `dev`, do not implement there. Dirty WIP, divergent history, overlap, or conflicts are a real Multica blocker. Commit and push only owned locked paths after focused verification; never add `.godot/`, caches, secrets, tokens, or accidental generated sidecars.
 
-```text
-origin/dev
+## Release boundary and machine-readable gate
+
+`0.3.0` is frozen at `v0.3.0`; all `0.3.1` work goes to `dev`. A `0.3.0.R` technical hotfix is the only exception, branches from `main`, contains no new game content, and follows the release gate.
+
+The version registry is `tools/release_scope_manifest.json` (schema 1). Each entry has one `path` or `project_setting`, an `introduced_in` version, and a canonical `id`. Validate it with:
+
+```bash
+python3 tools/release_scope_guard.py --version 0.3.0
 ```
 
-Если агент находится на `main` или напрямую на operator `dev`:
+The guard rejects content introduced after the target version and invalid manifests (bad version, duplicate id, `..` path, or unknown key) with exit 2. `tools/build_release.sh` calls it after version mapping. Its contract is covered by `tests/test_release_scope_guard.py`; an author adding an asset or feature flag registers it in the same commit.
 
-- не начинать разработку в `main`;
-- создать/использовать отдельную task branch от свежего `origin/dev`;
-- если есть незакоммиченные изменения и переключение рискованно, остановиться и явно описать ситуацию.
+## Content-freeze entry conditions
 
-Если ветки `dev` нет:
+PM declares `0.3.1` freeze only when all board work is done, the release-scope guard proves the boundary, `CHANGELOG.md` has dated `## [0.3.1]`, config/export presets carry the canonical version, a clean release gate is green, and `0.3.0` publication is complete. After freeze, only proven `0.3.1` release blockers enter `dev`.
 
-- создать `dev` от актуального `main`, если это безопасно и соответствует задаче;
-- зафиксировать действие в финальном ответе.
+## Integration and prohibitions
 
-## GitHub Sync На Границах Задачи
+Developers publish immutable candidates; independent same-card QA verifies the exact SHA; the dedicated integrator serially promotes approved content to `dev`. Never force-push, rewrite protected history, push a probe merge, or reuse a conflict-probe commit as integration. Use GitHub mergeability or `git merge --no-commit --no-ff` followed by `git merge --abort` in a disposable worktree.
 
-Директива пользователя 2026-06-28: вся работа AI-агентов должна сразу
-синхронизироваться с GitHub.
+## Prohibitions
 
-- Перед началом новой задачи агент обязан подтянуть актуальный `dev` из GitHub:
-  `git fetch origin --prune` и `git pull --ff-only origin dev` или эквивалентная
-  безопасная интеграция без переписывания истории.
-- Если pull невозможен из-за dirty WIP, diverged history, locked-path overlap или
-  конфликта, агент не начинает новую задачу. Он фиксирует blocker/owner note в
-  Multica и ждёт routing/sync решения.
-- После завершения задачи агент выполняет требуемую focused-проверку, делает
-  intentional commit и push task candidate в том же прогоне. Local mirrors
-  обновляются только когда задача действительно меняет их содержимое.
-- Задача не считается завершённой, если изменения остались только локально в
-  dirty tree. Multica `done`/`in_review` разрешены только после успешного push или
-  после явного blocker-комментария о failed push.
-- Коммитить можно только файлы своей задачи/locked paths. Чужой WIP, `.godot/`,
-  caches, secrets, tokens и случайные generated sidecars не добавлять.
+- Do not commit `.godot/`.
+- Do not make ordinary feature changes directly in `main`.
+- Do not move work between `main` and `dev` with destructive commands without explicit authority.
+- Do not run `git reset --hard`, `git checkout -- <file>`, or an equivalent destructive operation without explicit permission.
+- Do not start a new task without a safe fresh GitHub sync.
+- Do not leave a completed task unpushed.
 
-## Release Flow
-
-Текущий ожидаемый flow:
-
-1. `main` хранит последнюю проверенную стабильную версию.
-2. Task branches создаются от свежего `origin/dev`; после независимой exact-SHA
-   QA отдельный DevOps issue интегрирует одобренный SHA в `dev`.
-3. Активные задачи, баги, QA defects и release blockers закрываются в текущем
-   release-цикле; Codex и Claude могут работать параллельно только при разных
-   owner/locked paths.
-4. После проверки `dev` можно будет слить в `main` как новую стабильную версию.
-5. После релиза документация должна быть обновлена и отражать новую стабильную версию.
-
-## Документация Версий
-
-Документы должны явно понимать текущую линию разработки:
-
-- `docs/design/current_game_state.md` описывает активное состояние `dev`, если не указано иначе.
-- Multica issues по умолчанию создаются для `dev`/активной board; `docs/tasks/*.md`
-  создаются только как local spec/evidence mirrors.
-- release/finalization tasks должны явно указывать, какую версию готовят.
-
-## Запреты
-
-- Не коммитить `.godot/`.
-- Не делать обычные feature changes напрямую в `main`.
-- Не переносить изменения между `main` и `dev` destructive-командами без явного запроса.
-- Не делать `git reset --hard`, `git checkout -- <file>` или похожие destructive operations без явного разрешения.
-- Не начинать новую задачу без предварительного безопасного pull из GitHub.
-- Не оставлять завершённую задачу незапушенной.
-
-## Текущий Статус На 2026-07-16
-
-- Активная ветка: `dev`.
-- `main` содержит опубликованный stable release `0.2.4`.
-- `v0.2.2`, `v0.2.3` и `v0.2.4` immutable; повторная доставка использует те же
-  проверенные байты, а новый технический байт получает новый tag/version.
+After a successful `origin/dev` push, fast-forward `/Users/sergeyfomin/Documents/AI Agent` only if it exists, is clean, and can fast-forward; never overwrite operator WIP. Release publication, final Windows verification, and financially chargeable actions remain separately authorized.

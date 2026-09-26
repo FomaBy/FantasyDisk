@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3708",
+  "class_id": "guitarist",
+  "weapon_id": "electric_guitar",
+  "effect_id": "last_chord",
+  "pixel_lab": {
+    "object_id": "e90881a0-dfed-4683-a01f-f490091e3911",
+    "animation_group_id": "53dfadfd-dbc6-44a6-91f6-dd5de9c21951",
+    "canonical_tag": "guitarist_electric_guitar_last_chord",
+    "generator_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/pixellab_generation_manifest.json"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "224x224 nearest-neighbor art centered in 256x256 canvas",
+    "flipbook_duration_seconds": 3.0
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar",
+    "raw_source_dir": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/raw",
+    "runtime_dir": "assets/sprites/effects/guitarist/electric_guitar",
+    "spriteframes": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/contact_sheet.png"
+  },
+  "source_runtime_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f00.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f00.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f00.png.import",
+      "source_encoded_sha256": "dbf982d12f32d1d437d3966bcfb49c86ab3f43974da1774aa601626d8561a163",
+      "runtime_encoded_sha256": "dbf982d12f32d1d437d3966bcfb49c86ab3f43974da1774aa601626d8561a163",
+      "source_pixel_sha256": "092e823ee726836c64da3b9d93ca4bebddb7f0890edffdea01ce14480e123fa9",
+      "runtime_pixel_sha256": "092e823ee726836c64da3b9d93ca4bebddb7f0890edffdea01ce14480e123fa9",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://dcn0jhl508dn0",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f00.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f00.png-30fe5c77f8febbb8c972e32ab27cc2eb.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f01.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f01.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f01.png.import",
+      "source_encoded_sha256": "fefd2ce0701a82ccf9a380d4a29fd474f14822c132d91fd5b5ea893c471b2c75",
+      "runtime_encoded_sha256": "fefd2ce0701a82ccf9a380d4a29fd474f14822c132d91fd5b5ea893c471b2c75",
+      "source_pixel_sha256": "96d990b45b70b6a84e495347834ec9708bc99abb3964b62e78361069e0466bc8",
+      "runtime_pixel_sha256": "96d990b45b70b6a84e495347834ec9708bc99abb3964b62e78361069e0466bc8",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://ysdtawyudvhqh",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f01.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f01.png-996fba034977e248cc086d91b697d8d2.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f02.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f02.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f02.png.import",
+      "source_encoded_sha256": "78d2f30597a514e167faa3dbdaac262c3a094601db59420e426a8918b7ec9fc5",
+      "runtime_encoded_sha256": "78d2f30597a514e167faa3dbdaac262c3a094601db59420e426a8918b7ec9fc5",
+      "source_pixel_sha256": "76575e8dbf13ca6a42ab1f5de1b35900cef897ffb2b6187c14d06ae80277b241",
+      "runtime_pixel_sha256": "76575e8dbf13ca6a42ab1f5de1b35900cef897ffb2b6187c14d06ae80277b241",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://dr5d8560edvsk",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f02.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f02.png-8407af31f562acc16cad48bd96ddf6ec.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f03.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f03.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f03.png.import",
+      "source_encoded_sha256": "acd6af23e3ab7d0e395cc8f084fb2d6bf3420b41e9f42177d266a4bebc3a23d1",
+      "runtime_encoded_sha256": "acd6af23e3ab7d0e395cc8f084fb2d6bf3420b41e9f42177d266a4bebc3a23d1",
+      "source_pixel_sha256": "fb2331fd31fda18dad0267ddf4610373688ff58e6d8fe7aac1b1f60b3d40aecb",
+      "runtime_pixel_sha256": "fb2331fd31fda18dad0267ddf4610373688ff58e6d8fe7aac1b1f60b3d40aecb",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://ryhz7pj90tzjx",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f03.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f03.png-d3f60c6046226c477f090699fc903810.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f04.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f04.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f04.png.import",
+      "source_encoded_sha256": "baf44aa5913e6968f02e224efa7fe1cc13f5cb8d4f9af8043918c3c58eefd3d5",
+      "runtime_encoded_sha256": "baf44aa5913e6968f02e224efa7fe1cc13f5cb8d4f9af8043918c3c58eefd3d5",
+      "source_pixel_sha256": "6ccae200377bcc372145f68b44803ac02829dc5deffa1ad93203fc2b06ae73eb",
+      "runtime_pixel_sha256": "6ccae200377bcc372145f68b44803ac02829dc5deffa1ad93203fc2b06ae73eb",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://z6qnz6rezyu5z",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f04.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f04.png-fe23aa160d32fc9b35cd2799a33af57e.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f05.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f05.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f05.png.import",
+      "source_encoded_sha256": "931dadc9eb28a2f5c50d7bb2864a471b21d10d8dd70c261513eda01b8112a6e5",
+      "runtime_encoded_sha256": "931dadc9eb28a2f5c50d7bb2864a471b21d10d8dd70c261513eda01b8112a6e5",
+      "source_pixel_sha256": "b48c33e2d6cab78c52ca335bb4a472377bb9d6207efc9a3b459c5a85a02edb0e",
+      "runtime_pixel_sha256": "b48c33e2d6cab78c52ca335bb4a472377bb9d6207efc9a3b459c5a85a02edb0e",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://v45y3d9xwwgxq",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f05.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f05.png-e2593619bfccec2dafade7f4056d6be0.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f06.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f06.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f06.png.import",
+      "source_encoded_sha256": "383416a9fda4df4347964d25bb0cc817c0bb655e12f61cf2dc5c97276a551596",
+      "runtime_encoded_sha256": "383416a9fda4df4347964d25bb0cc817c0bb655e12f61cf2dc5c97276a551596",
+      "source_pixel_sha256": "678712f5a6e2bcc2751ab6b373be250197e9f0da678023b458f8249a42c7bcb4",
+      "runtime_pixel_sha256": "678712f5a6e2bcc2751ab6b373be250197e9f0da678023b458f8249a42c7bcb4",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://x92ttce9gsxdl",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f06.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f06.png-10a43690280810c5d24e01ccb774578a.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f07.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f07.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f07.png.import",
+      "source_encoded_sha256": "cae41572e6f5f2cf5c774efed882526a91db8513ccd5a3b07e1800235cea4a7e",
+      "runtime_encoded_sha256": "cae41572e6f5f2cf5c774efed882526a91db8513ccd5a3b07e1800235cea4a7e",
+      "source_pixel_sha256": "72129f4d1eef5451185021c6cc01c998879c7417f0d378ea06be7da7cad601d4",
+      "runtime_pixel_sha256": "72129f4d1eef5451185021c6cc01c998879c7417f0d378ea06be7da7cad601d4",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://d3mee507plt6a",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f07.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f07.png-a443e8489f55e7215fd0f5db7ca0e0ea.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/electric_guitar/electric_guitar_f08.png",
+      "runtime_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f08.png",
+      "import_file": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f08.png.import",
+      "source_encoded_sha256": "ea5ec119e1c03d1ddb7ee3cda30f4315a65b1d6cc5dd78d0b4b22b372debd910",
+      "runtime_encoded_sha256": "ea5ec119e1c03d1ddb7ee3cda30f4315a65b1d6cc5dd78d0b4b22b372debd910",
+      "source_pixel_sha256": "6279dbd68dcf5080aef12ea28c90df10fa1256f99ce4fb9f4ecc7b0f26f07937",
+      "runtime_pixel_sha256": "6279dbd68dcf5080aef12ea28c90df10fa1256f99ce4fb9f4ecc7b0f26f07937",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://ryhjtmv4phkrs",
+      "import_source_file": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f08.png",
+      "import_dest_files": [
+        "res://.godot/imported/electric_guitar_f08.png-676d3dd8665aaf0b177f8c51e23a690f.ctex"
+      ],
+      "import_matches_runtime": true
+    }
+  ],
+  "spriteframes_contract": {
+    "animation_name": "electric_guitar_last_chord",
+    "fps": 3.0,
+    "loop": false,
+    "frame_order": [
+      "electric_guitar_f00.png",
+      "electric_guitar_f01.png",
+      "electric_guitar_f02.png",
+      "electric_guitar_f03.png",
+      "electric_guitar_f04.png",
+      "electric_guitar_f05.png",
+      "electric_guitar_f06.png",
+      "electric_guitar_f07.png",
+      "electric_guitar_f08.png"
+    ],
+    "imports_match_runtime": true
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1492",
+  "issue": "FAN-3733",
   "class_id": "guitarist",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -10,27 +10,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "pixellab_mcp": "not_invoked_no_new_isolated_raster_asset",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "electric_guitar",
+      "bass_guitar",
+      "sound_amp"
+    ],
+    "integrated_art_candidate": "616662417a595fbf91d536f2fe02a151714c12b9",
+    "art_integration_anchor": "7f26497aff9928e474b94b4068de1e895626c3a8",
     "reused_sources": {
       "electric_guitar": {
-        "source_path": "docs/design/references/weapon_attack_animations/electric_guitar/vfx_weapon_electric_guitar_source.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_electric_guitar.png",
+        "spriteframes": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn",
-        "note": "Accepted guitar VFX is composed into five colored strips and a final chord; no raster asset was generated."
+        "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame last-chord lightning riff pack, integrated byte-identically."
       },
       "bass_guitar": {
-        "source_path": "docs/design/references/weapon_attack_animations/bass_guitar/vfx_weapon_bass_guitar_source.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_bass_guitar.png",
+        "spriteframes": "assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn",
-        "note": "Accepted bass VFX is composed with vector compression rings; no raster asset was generated."
+        "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame hell-subwoofer compression pack, integrated byte-identically."
       },
       "sound_amp": {
-        "source_path": "docs/design/references/weapon_attack_animations/sound_amp/vfx_source_1024.png",
-        "runtime_path": "assets/sprites/effects/vfx_weapon_sound_amp.png",
+        "spriteframes": "assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn",
-        "note": "Accepted amplifier VFX is composed into a cardinal stage wall; no raster asset was generated."
+        "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame wall-of-sound overload pack, integrated byte-identically."
       }
     }
   },
@@ -42,7 +47,16 @@
       "silhouette": "five neon angled riff strips crossed by a single lightning chord",
       "motion_path": "five alternating diagonal strips sweep the arena before a perpendicular chord crosses them",
       "impact_language": "bright chord intersections mark normal-enemy stun beats without changing gameplay",
-      "timing_seconds": {"windup": 0.0, "release": 0.52, "active": 1.3, "recovery": 4.7, "cancel": 5.4},
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/guitarist/electric_guitar/electric_guitar_spriteframes.tres",
+          "animation": "electric_guitar_last_chord",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
+        }
+      },
+      "timing_seconds": {"windup": 0.0, "release": 0.65, "active": 0.9, "recovery": 2.8, "cancel": 3.4},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.electric_guitar.windup",
         "release": "weapon_ultimate.phase.guitarist.electric_guitar.execute",
@@ -51,7 +65,10 @@
         "cancel": "weapon_ultimate.phase.guitarist.electric_guitar.cleanup"
       },
       "pivot": {"x": 0.5, "y": 0.5},
-      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "max_unique_materials": 1, "max_fullscreen_materials": 1, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"},
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady blue stage veil is alpha-damped while riff timing stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; diagonal riff strips remain centered below the HUD"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 90, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "cast_pose.guitarist.power_chord", "weapon_silhouette_asset": "res://assets/sprites/effects/guitarist/electric_guitar/electric_guitar_f04.png", "class_palette_id": "palette.guitarist.neon_stage"}
     },
     {
       "weapon_id": "bass_guitar",
@@ -60,7 +77,16 @@
       "silhouette": "a dark central bass core driving four concentric compression waves",
       "motion_path": "blue pull ring tightens, purple weight compresses, red lift expands, then black-gold shock ejects",
       "impact_language": "sequential pull, heavy compression, launch ripple, and broad subwoofer knockback shock",
-      "timing_seconds": {"windup": 0.0, "release": 0.7, "active": 2.3, "recovery": 5.0, "cancel": 5.8},
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/guitarist/bass_guitar/bass_guitar_spriteframes.tres",
+          "animation": "bass_guitar_hell_subwoofer",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
+        }
+      },
+      "timing_seconds": {"windup": 0.0, "release": 0.75, "active": 1.05, "recovery": 3.05, "cancel": 3.7},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.bass_guitar.windup",
         "release": "weapon_ultimate.phase.guitarist.bass_guitar.execute",
@@ -69,7 +95,10 @@
         "cancel": "weapon_ultimate.phase.guitarist.bass_guitar.cleanup"
       },
       "pivot": {"x": 0.5, "y": 0.5},
-      "performance": {"max_visual_nodes": 6, "crowd_cap": 12, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+      "performance": {"max_visual_nodes": 6, "crowd_cap": 12, "max_unique_materials": 1, "max_fullscreen_materials": 1, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"},
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady bass-stage veil is alpha-damped while compression-wave timing stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; concentric bass waves retain a readable center under crowd load"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 130, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "cast_pose.guitarist.power_chord", "weapon_silhouette_asset": "res://assets/sprites/effects/guitarist/bass_guitar/bass_guitar_f04.png", "class_palette_id": "palette.guitarist.neon_stage"}
     },
     {
       "weapon_id": "sound_amp",
@@ -78,7 +107,16 @@
       "silhouette": "four cardinal speaker pylons joined by a glowing square cable wall",
       "motion_path": "amps rise at cardinal points, cables lock a square, cones pulse inward, then feedback explodes four ways",
       "impact_language": "contained feedback field resolves as a symmetric four-direction overload",
-      "timing_seconds": {"windup": 0.0, "release": 0.68, "active": 1.6, "recovery": 5.25, "cancel": 6.0},
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
+          "animation": "guitarist_sound_amp_wall_of_sound",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/provenance_manifest.json"
+        }
+      },
+      "timing_seconds": {"windup": 0.0, "release": 0.8, "active": 1.1, "recovery": 3.3, "cancel": 3.8},
       "phase_ids": {
         "windup": "weapon_ultimate.phase.guitarist.sound_amp.windup",
         "release": "weapon_ultimate.phase.guitarist.sound_amp.execute",
@@ -87,17 +125,50 @@
         "cancel": "weapon_ultimate.phase.guitarist.sound_amp.cleanup"
       },
       "pivot": {"x": 0.5, "y": 0.5},
-      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"}
+      "performance": {"max_visual_nodes": 12, "crowd_cap": 14, "max_unique_materials": 1, "max_fullscreen_materials": 1, "runtime_enforcement_owner": "FAN-1541", "mechanics_owner": "backend ultimate task"},
+      "quality": {"max_viewport_coverage_ratio": 0.3, "hud_bands_clear": true, "reduced_motion_substitute": "camera motion is suppressed and the steady amber stage veil is alpha-damped while the four-way speaker beat stays unchanged", "reduced_motion_preserves_timing": true, "full_screen_flash_hz": 0.0, "max_flash_coverage_ratio": 0.0, "measurement": "FAN-3943 live four-mode certification matrix; speaker pylons retain cardinal readability with HUD visible"},
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 110, "sfx_ducking": true},
+      "identity": {"cast_pose_id": "cast_pose.guitarist.power_chord", "weapon_silhouette_asset": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f04.png", "class_palette_id": "palette.guitarist.neon_stage"}
     }
   ],
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/guitarist/guitarist_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/guitarist_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/guitarist_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/guitarist/guitarist_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/guitarist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/guitarist_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/guitarist_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/guitarist_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3943",
+      "source_ref": "agent/claude-dev-fable/9426dc35badb",
+      "source_commit_sha": "50174fb6b1282527b68f8c33bd757bcb614dd47e",
+      "source_tree_sha": "08663585acaa3209a58a3bc8b62cd5197db030e2",
+      "capture_manifest": "docs/design/references/weapon_ultimates/guitarist/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/guitarist/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/guitarist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/guitarist_certification_capture_test.gd",
+      "weapon_ids": ["electric_guitar", "bass_guitar", "sound_amp"],
+      "modes": ["normal", "crowded", "reduced_motion", "photosensitivity_safe"],
+      "beats": ["release", "active", "recovery"],
+      "viewports": {"648p": "1152x648", "720p": "1280x720", "1080p": "1920x1080", "2k": "2560x1440"},
+      "sheet_sha256": {
+        "648p": "e3487d63670d43803a5c7b204e525a4f1115dc29bda2f8090cce7059638b30af",
+        "720p": "2177575976fcc001bf3e8a7b3abdcbf7764274f5698a2eb281316ab0efdbe5f1",
+        "1080p": "3361803df774a156a6a286658dff66f1d0b4c60680ef5a4f80e7afee87cac004",
+        "2k": "cbe993ddc9606840734d19a3e598cb7803d471eca5bf8643f9618f59fa805a59"
+      },
+      "live_samples": 144,
+      "note": "Each native-size sheet carries all twelve weapon x mode cells at the active beat from a real Main scene, player, combat HUD and shipped Enemy hazards. The manifest records release, active and recovery measurements for all 48 combinations and keeps the older authored timeline sheets only as provenance."
+    }
   }
 }

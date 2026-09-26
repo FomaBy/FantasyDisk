@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T15:13:42Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "fa8c5297-4bdd-497e-9916-cda2e7b40285",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single portable Priest reliquary called the Judgment of the Bright Sanctuary, a small ivory-gold gothic shrine with a blue crystal, cross finial, open arched window and trailing ceremonial chain, dark fantasy D&D pixel art, top-down isolated centered object, unmistakable reliquary silhouette, transparent background, no text, no border, generous margin",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "animate the same Judgment of the Bright Sanctuary reliquary in place without changing silhouette or camera: the blue crystal brightens, the shrine window opens with a contained ivory beam, a golden sanctify sigil blooms beneath it and a soft halo expands and contracts, the chain sways slightly; keep the shrine centered with a clear transparent center, clean readable edges, no clipping, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "priest_reliquary_f00.png",
+      "bytes": 26850,
+      "url_kind": "template",
+      "encoded_sha256": "ea336a956db761d9b745a3841f9154f764891a44d70f08f27f1ac9091584673c",
+      "pixel_sha256": "416291009f5b23f650dbefb2106b8ed9d23ff63c88280fd7da2e8471537a0a31"
+    },
+    {
+      "file": "priest_reliquary_f01.png",
+      "bytes": 29426,
+      "url_kind": "template",
+      "encoded_sha256": "da4825f723e3c3a0e88e3e8a36a3f9a2afd1afb101f9222a6b078ffed71c1996",
+      "pixel_sha256": "1777d636b99cac2e0637ed8c6c78dbced46de48f6604cc375722bd95b5f9ef30"
+    },
+    {
+      "file": "priest_reliquary_f02.png",
+      "bytes": 30792,
+      "url_kind": "template",
+      "encoded_sha256": "12beed54e0b1e75b8b976197efca10d1950abdfff9c72d97f62a6cca316e9d11",
+      "pixel_sha256": "f0a17f591fce730e1314d962ea26a16e25491a9e87e32b7879642ad799adda0f"
+    },
+    {
+      "file": "priest_reliquary_f03.png",
+      "bytes": 29493,
+      "url_kind": "template",
+      "encoded_sha256": "a03ff604c72fe75ccdd566912c15dfa293effe911001c0f38e3cc0150023f00a",
+      "pixel_sha256": "573c38091fa730a5729edbc4d37ee6ca5e43b0b3550cfc476128d471624b5c98"
+    },
+    {
+      "file": "priest_reliquary_f04.png",
+      "bytes": 27259,
+      "url_kind": "template",
+      "encoded_sha256": "4bedef2a927ea306a0026abe26fcfe5785608b3a63f914a93a4f2a48d9d2a22f",
+      "pixel_sha256": "9773767aee70f364dfffaebc47561f32c83af1c5e669f486038e53b089ef71e7"
+    },
+    {
+      "file": "priest_reliquary_f05.png",
+      "bytes": 27259,
+      "url_kind": "template",
+      "encoded_sha256": "2e59d8fa870916ec401511aac4a2551d01a390b72189d04fe0724f96e114c198",
+      "pixel_sha256": "22f42aededfca13d329bc7478daa728f4f6ab43b68d91c93a512c2f4bd9b8f60"
+    },
+    {
+      "file": "priest_reliquary_f06.png",
+      "bytes": 26614,
+      "url_kind": "template",
+      "encoded_sha256": "3cf75141f71137e77bac81a48af0dac2a973a7f917c72c079d2c44a1200aad6a",
+      "pixel_sha256": "a2ef1a224b0970b481f8e0a62697c2f48386d73da0223f3cd8b6f586bbed8795"
+    },
+    {
+      "file": "priest_reliquary_f07.png",
+      "bytes": 26685,
+      "url_kind": "template",
+      "encoded_sha256": "fabb8289577647cf45fbf72a92ca9e316925a014d36280e64b5e3346222484f2",
+      "pixel_sha256": "b0ed99d96e7de95024848a874a7a3df2c8358ee174762b8995b84408b403fe57"
+    },
+    {
+      "file": "priest_reliquary_f08.png",
+      "bytes": 27438,
+      "url_kind": "template",
+      "encoded_sha256": "377beabaf70d49645625ab44e18c66355ba7e88cbe3d90fdb4587ff494883dca",
+      "pixel_sha256": "1685b4f6e48318baf5ef75d9d7a917810962da431c7feaa0f086d8380c0f5782"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

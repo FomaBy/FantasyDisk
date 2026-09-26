@@ -1,0 +1,27 @@
+{
+  "issue": "FAN-3967",
+  "base": {
+    "sha": "4dd28d94d1af3d82586ae43523ca28ea7b8d6568",
+    "measured_in": "detached temporary worktree, fresh import cache"
+  },
+  "merge_commit": "31e3d53f318b771472c3126862d9f550712431f9",
+  "ratchet": {
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/combat_primitive_ratchet_test.gd",
+    "base_exit": 1,
+    "candidate_exit": 0,
+    "base_count": 7,
+    "candidate_count": 0,
+    "removed": [
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive scene outside the ratchet: res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn (1). The standard requires a PixelLab flipbook; the allowlist never grows.",
+      "Combat primitive ratchet: new combat primitive script outside the ratchet: res://scenes/vfx/ultimates/druid/druid_ultimate_v2_driver.gd (2). The standard requires a PixelLab flipbook; the allowlist never grows."
+    ],
+    "added": [],
+    "candidate_result": "Combat primitive ratchet passed: 18 allowlisted scenes (96 primitive nodes), 9 allowlisted scripts (12 construction sites), 0 violations outside the ratchet."
+  },
+  "untracked_after_godot_import_on_candidate": 0
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1476",
+  "issue": "FAN-3715",
   "class_id": "elementalist",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -16,23 +16,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "elementalist_orb_ring",
+      "elementalist_prism_focus",
+      "elementalist_meteor_core"
+    ],
+    "integrated_art_candidate": "1234c72b4787cc8a5632125b52071b1f997c38f0",
+    "art_integration_anchor": "dc3c5b6425eaf3bdf46374f543522b804b89f835",
     "reused_sources": {
       "elementalist_orb_ring": {
-        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_orb_ring.png",
+        "spriteframes": "assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame Grand Conclave pack, integrated byte-identically."
       },
       "elementalist_prism_focus": {
-        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_prism_focus.png",
+        "spriteframes": "assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame prism lattice pack, integrated byte-identically."
       },
       "elementalist_meteor_core": {
-        "source_path": "assets/sprites/effects/vfx_weapon_elementalist_meteor_core.png",
+        "spriteframes": "assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame starfall meteor pack, integrated byte-identically."
       }
     }
   },
@@ -44,12 +53,21 @@
       "silhouette": "four tinted elemental avatar orbs on a square orbit guide",
       "motion_path": "square orbit accelerates around the moving hero through four sequential element cast beats",
       "impact_language": "burn, freeze, gale, and shock beats merge into a white combined supernova",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/elementalist/orb_ring/orb_ring_spriteframes.tres",
+          "animation": "elementalist_orb_ring_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.7,
         "active": 1.0,
-        "recovery": 7.6,
-        "cancel": 8.4
+        "recovery": 3.05,
+        "cancel": 3.7
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.elementalist.elementalist_orb_ring.windup",
@@ -61,8 +79,25 @@
       "performance": {
         "max_visual_nodes": 10,
         "crowd_cap": 24,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "sequential_status_nova_owner": "mechanics FAN-1477"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "camera motion is suppressed and the steady elemental veil is alpha-damped without changing beat timing",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3943 live four-mode certification matrix; the elemental orbit remains centered between HUD bands"
+      },
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 100, "sfx_ducking": true},
+      "identity": {
+        "cast_pose_id": "cast_pose.elementalist.fourfold_conclave",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/elementalist/orb_ring/orb_ring_f04.png",
+        "class_palette_id": "palette.elementalist.prismatic_arcana"
       }
     },
     {
@@ -72,12 +107,21 @@
       "silhouette": "single aimed prism with an arena-crossing beam lattice",
       "motion_path": "prism unfolds, refracted X-beams form a lattice that slowly rotates across the arena",
       "impact_language": "staggered triple focus hits end in a rainbow fracture shatter",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/elementalist/prism_focus/prism_focus_spriteframes.tres",
+          "animation": "elementalist_prism_focus_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 0.55,
-        "active": 0.85,
-        "recovery": 6.4,
-        "cancel": 7.2
+        "release": 0.65,
+        "active": 0.9,
+        "recovery": 2.75,
+        "cancel": 3.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.elementalist.elementalist_prism_focus.windup",
@@ -89,8 +133,25 @@
       "performance": {
         "max_visual_nodes": 9,
         "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "triple_hit_cap_owner": "mechanics FAN-1477"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.29,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "camera motion is suppressed and the steady violet veil is alpha-damped without changing the refraction beats",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3943 live four-mode certification matrix; the aimed prism remains readable against hazards and HUD"
+      },
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 90, "sfx_ducking": true},
+      "identity": {
+        "cast_pose_id": "cast_pose.elementalist.fourfold_conclave",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/elementalist/prism_focus/prism_focus_f04.png",
+        "class_palette_id": "palette.elementalist.prismatic_arcana"
       }
     },
     {
@@ -100,12 +161,21 @@
       "silhouette": "local sky veil, growing rune shadow, and one giant meteor",
       "motion_path": "long fair ground telegraph, then a vertical meteor drop onto the aim point",
       "impact_language": "one massive impact leaves a pulsing gravity-fire crater with cooling embers",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/elementalist/meteor_core/meteor_core_spriteframes.tres",
+          "animation": "elementalist_meteor_core_ultimate",
+          "frame_count": 9,
+          "frame_size": [256, 256],
+          "provenance_manifest": "docs/design/reference-assets-lfs/elementalist-vfx-FAN-3314-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 2.45,
-        "active": 2.75,
-        "recovery": 8.1,
-        "cancel": 8.9
+        "release": 0.95,
+        "active": 1.2,
+        "recovery": 3.4,
+        "cancel": 3.9
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.elementalist.elementalist_meteor_core.windup",
@@ -117,19 +187,118 @@
       "performance": {
         "max_visual_nodes": 6,
         "crowd_cap": 20,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
         "boss_damage_cap_owner": "mechanics FAN-1477"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "camera motion is suppressed and the steady ember veil is alpha-damped while the meteor telegraph keeps its timing",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3943 live four-mode certification matrix; the meteor silhouette remains local and leaves HUD bands clear"
+      },
+      "presence": {"fullscreen_footprint": true, "backdrop": "darken", "camera_shake": true, "hitstop_ms": 140, "sfx_ducking": true},
+      "identity": {
+        "cast_pose_id": "cast_pose.elementalist.fourfold_conclave",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/elementalist/meteor_core/meteor_core_f04.png",
+        "class_palette_id": "palette.elementalist.prismatic_arcana"
       }
     }
   ],
+  "effectiveness_evidence": {
+    "runner": "res://tools/ultimate_effectiveness_report.gd",
+    "baseline_source_sha": "89397858fb8d33eb3a81ad6fbee76b7ea80365c4",
+    "scenario_order": ["solo", "crowd_5", "crowd_10", "crowd_20", "elite", "boss"],
+    "rows": [
+      {
+        "weapon_id": "elementalist_orb_ring",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [637.246065456, 3156.12241229683, 5908.80750705687, 10785.1252253289, 637.246065456, 637.246065455998]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [637.246065456, 3156.12241229683, 5908.80750705687, 10785.1252253289, 637.246065456, 637.246065455998]
+        },
+        "total_boss_cap": 0.1,
+        "normal_charge": 32.66,
+        "elite_charge": 40.62,
+        "encounters_to_ready": 4
+      },
+      {
+        "weapon_id": "elementalist_prism_focus",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [928.516404816, 4642.58202408, 9485.924351904, 19122.418931616, 928.516404816, 928.516404816]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [928.516404816, 4642.58202408, 9485.924351904, 19122.418931616, 928.516404816, 928.516404816]
+        },
+        "total_boss_cap": 0.1,
+        "normal_charge": 32.66,
+        "elite_charge": 40.62,
+        "encounters_to_ready": 4
+      },
+      {
+        "weapon_id": "elementalist_meteor_core",
+        "baseline": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [925.7317445376, 4628.658722688, 9257.31744537599, 18514.634890752, 925.7317445376, 925.731744537599]
+        },
+        "final": {
+          "targets_struck": [1, 5, 10, 20, 1, 1],
+          "damage_applied": [925.7317445376, 4628.658722688, 9257.31744537599, 18514.634890752, 925.7317445376, 925.731744537599]
+        },
+        "total_boss_cap": 0.1,
+        "normal_charge": 32.66,
+        "elite_charge": 40.62,
+        "encounters_to_ready": 4
+      }
+    ]
+  },
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/elementalist/elementalist_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/elementalist_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/elementalist_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/elementalist/elementalist_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/elementalist_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/elementalist_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/elementalist_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/elementalist_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3943",
+      "source_ref": "agent/codex-dev-sol-5-6/039dfddda019",
+      "source_commit_sha": "38dfb001db2d9f6ff89223ee857a97366acdf324",
+      "source_tree_sha": "aa85ef09ec03a1cf996944aa8cede21d3359c849",
+      "capture_manifest": "docs/design/references/weapon_ultimates/elementalist/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/elementalist/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/elementalist_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/elementalist_certification_capture_test.gd",
+      "weapon_ids": ["elementalist_orb_ring", "elementalist_prism_focus", "elementalist_meteor_core"],
+      "modes": ["normal", "crowded", "reduced_motion", "photosensitivity_safe"],
+      "beats": ["release", "active", "recovery"],
+      "viewports": {"648p": "1152x648", "720p": "1280x720", "1080p": "1920x1080", "2k": "2560x1440"},
+      "sheet_sha256": {
+        "648p": "dd865ef6340de804a64c2a741d899b244661a2f68340ba6f0a2b4bea8322dd26",
+        "720p": "6a9c11f7d322c6c1967e877262ad8801bffceffa499faf401a2a98494c5b38a3",
+        "1080p": "95334c192b955ad8446ac9992b492ac7ad864ab35eef745ac63db5482ac81fb1",
+        "2k": "34192762c176e9f96680e3a053551a90a924962c91e9f4829de094703810d47f"
+      },
+      "live_samples": 144,
+      "note": "Each native-size sheet carries all twelve weapon x mode cells at the active beat from a real Main scene, player, combat HUD and shipped Enemy hazards. The manifest records release, active and recovery measurements for all 48 combinations and keeps the older authored timeline sheets only as provenance."
+    }
   }
 }

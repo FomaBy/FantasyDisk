@@ -608,7 +608,7 @@ func _build_body(parent: Control, s: float) -> void:
 	_build_summary_panel.add_child(_build_summary_label)
 
 	# SCRUM-893: «Арсенал» — механика оружия и ульта словами (та же дата-база,
-	# что у кодекса: weapon.description + ultimate_config).
+	# что у кодекса: weapon.description + канонический weapon-ultimate FAN-2515).
 	var arsenal_panel := PanelContainer.new()
 	arsenal_panel.name = "ArsenalPanel"
 	arsenal_panel.visible = false
@@ -1545,7 +1545,7 @@ func _refresh_build_summary() -> void:
 		return
 	var character_id := str(_player.get("character_id"))
 	var weapon: Dictionary = ProgressionData.weapon(character_id, str(_player.get("weapon_id")))
-	var ultimate: Dictionary = ProgressionData.ultimate_config(character_id)
+	var ultimate: Dictionary = WeaponUltimateText.text_for(character_id, str(_player.get("weapon_id")))
 	var artifacts: Array = _player.get("artifacts") if _player.get("artifacts") != null else []
 	var weapon_title := str(weapon.get("title", "—"))
 	var ultimate_title := str(ultimate.get("title", "—"))
@@ -1576,7 +1576,7 @@ func _refresh_arsenal() -> void:
 	var weapon: Dictionary = ProgressionData.weapon(character_id, str(_player.get("weapon_id")))
 	_add_arsenal_entry("ArsenalWeapon", "Оружие — %s" % str(weapon.get("title", "—")),
 		str(weapon.get("description", "")))
-	var ultimate: Dictionary = ProgressionData.ultimate_config(character_id)
+	var ultimate: Dictionary = WeaponUltimateText.text_for(character_id, str(_player.get("weapon_id")))
 	if not ultimate.is_empty():
 		_add_arsenal_entry("ArsenalUltimate", "Ульта — %s" % str(ultimate.get("title", "")),
 			str(ultimate.get("description", "")))

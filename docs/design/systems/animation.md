@@ -36,6 +36,187 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   Those blocked characters stay on their already-valid live runtime packs until
   PixelLab exposes complete data; no legacy/manual fallback was used for refreshed
   source.
+- FAN-2606 (2026-08-17) reviewed the live Sniper pack that SCRUM-869 left in
+  place (SCRUM-433 source, PixelLab character
+  `74c4f7db-ed7f-4b6a-b9b3-bc18e417563c`) and rejected it: `south`,
+  `south-east`, `east` and `south-west` are clean, but `north-east`, `north`,
+  `north-west` and `west` break identity between move frames `02` and `03` —
+  the cloak and arm/shoulder gear appear or disappear mid-loop, so a 10 fps
+  walk flickers the silhouette ~1.7x per second. The defect is in the PixelLab
+  source rows, not in runtime normalization: canvas, `245` px visible height,
+  footline `y=479` and pivot `x≈255` are constant across all 56 frames, the
+  `.tres` maps every direction to its own textures with no mirror stand-in, and
+  Hero Select is unaffected because its preview cycles only the eight (clean)
+  idle frames. Fixing it needs regenerated PixelLab rows for those four
+  directions, i.e. an `art_assets` pass — not a runtime change. Evidence:
+  `tools/build_fan2606_sniper_animation_review.py`,
+  `tools/capture_fan2606_sniper_walk.gd`, sheets under
+  `docs/design/previews/fan2606_sniper_*` (regenerated per revision; they always
+  describe the pack at the commit that contains them).
+- FAN-2606 re-review after the FAN-2845 regeneration (`c1fc219e`) — `north` and
+  `west` are now clean and accepted; `north-east` and `north-west` still drift
+  and stay rejected. `north-east` loses the cloak on move frames `00`–`01` and
+  regains it from `02`; `north-west` carries a wide cape plus orange arm/leg
+  straps on `00`–`02` and drops both on `03`–`05`. Both breaks are in the new
+  PixelLab source rows (`4b1c980c-…`, `98195326-…`), not in normalization —
+  `assets/sprites/characters/pixellab/sniper/` shows the same split before the
+  512 px pass. Useful calibration from this pack: within a move row the
+  alpha-area max/min ratio is `1.05`–`1.18` for every accepted direction and
+  `1.24` / `1.38` for the two rejected ones, and the largest single-frame area
+  jump is `≤14.3%` accepted vs `20.6%` / `31.4%` rejected. The bands are too
+  close to gate on automatically — treat them as review aids, not a threshold.
+- FAN-2606 accepted the Sniper pack after FAN-2855 (`c8c4326f`) regenerated
+  `north-east` / `north-west` in `mode=v3` with the action description pinning
+  cloak and straps. FAN-2855 wrote **source frames only** — the manifest's old
+  "runtime integration files intentionally untouched" note meant the game still
+  played the rejected FAN-2845 rows — so FAN-2606 normalized those two rows into
+  the runtime pack with `tools/normalize_pixellab_rows.py`, which reuses
+  `normalize_frame()` from the importer instead of re-deriving the maths.
+  Re-normalizing the two untouched idle frames reproduced the committed runtime
+  PNGs byte-for-byte, which is the check that the parameters were right. All
+  eight rows now sit in the stable band (area max/min `1.05`–`1.18`, largest
+  single-frame jump `≤14.3%`) and `animation_roster_audit.py` reports zero sniper
+  findings. **Any source-pack regeneration needs this normalization step before
+  the art reaches the screen** — that is the gap this card hit twice.
+  Residual: `north-west` is the calmest row in the pack (mean per-step diff
+  `2.17` vs `2.17`–`4.52` across the pack) and reads closer to a straight-behind
+  view than a three-quarter one; consistent and artifact-free, but the weakest
+  row if the pack is ever revisited.
+- FAN-2593 (2026-08-17) rejected the live Berserk pack (SCRUM-703 240 px
+  redraw, PixelLab character `8486ce45-f749-4c63-9a6d-f0477d619c2d`): `east`,
+  `north-west` and `south-west` were clean, but `south`, `south-east`,
+  `north-east`, `north` and `west` baked an axe/sword/dagger into the hands and
+  swapped costume mid-loop — `north-east` ran a dark harness with a fur pauldron
+  on `00`–`02` and a bare torso in blue denim on `03`–`05`, `north` carried three
+  outfits. The break was in the PixelLab source rows, not in normalization.
+- FAN-2593 accepted the Berserk pack after FAN-3324 (integrated as FAN-3684,
+  `5fa9c441`) regenerated those five rows. Unlike the sniper case, FAN-3684 wrote
+  **both** source and runtime frames, so no `normalize_pixellab_rows.py` pass was
+  owed: re-normalizing all 8 directions from source reproduced the committed
+  runtime PNGs byte-for-byte across all 56 frames, which is the check that the
+  runtime is a faithful render of the accepted art. The three accepted source
+  rows stayed byte-identical; FAN-3684 additionally re-normalized four runtime
+  frames (`move_east_02/04`, `move_south-west_01/04`, `idle_south`) whose source
+  never changed — those were stale runtime output, and the byte-for-byte
+  re-normalization is what proves the correction rather than a substitution.
+  Identity band after regeneration (area max/min, largest non-wrap single-frame
+  jump): `south` `1.024`/`1.4%`, `south-east` `1.110`/`4.1%`, `north-east`
+  `1.071`/`4.8%`, `north` `1.061`/`4.3%`, `west` `1.131`/`7.7%` — all five
+  collapsed from `1.309`/`26.0%`, `1.655`/`48.2%`, `1.201`/`18.7%` etc. into the
+  stable band. The two untouched rows `east` (`1.156`/`15.2%`) and `south-west`
+  (`1.186`/`10.9%`) still sit marginally outside the FAN-2606 sniper band while
+  reading as one character throughout, which reconfirms those numbers are review
+  aids and not a gate. `animation_roster_audit.py` reports four berserk findings,
+  all loop discontinuity on `south_east` / `south_west` (and their `walk`
+  aliases) — a wrap-step-length note, not an identity defect; zero stray alpha
+  and zero pivot drift. Evidence:
+  `tools/build_fan2593_berserk_animation_review.py`, sheets under
+  `docs/design/reference-assets-lfs/FAN-2593-berserk/fan2593_berserk_*` (regenerated per revision; they always
+  describe the pack at the commit that contains them), and
+  `tests/berserk_pixellab_pack_test.gd`, which locks the machine-checkable half
+  of the contract: 8 explicit directions, 1-frame idle / 6-frame move rows with
+  `walk` aliasing `move`, no texture shared across two directional rows, no
+  `attack` row in the body pack, and `512x512` canvas / `245` px visible height /
+  footline `y=480` / pivot `x≈256` on every frame. Identity and empty hands stay
+  a visual verdict — the gate deliberately does not pretend to measure them.
+- FAN-2596 (2026-08-17) audited the live Dark Mage pack (SCRUM-704 240–250 px
+  redraw, PixelLab character `9bb0eca8-5afe-49d4-8e56-7115a45efdcc`,
+  `walking-6-frames`) and **accepted it unchanged** — no regeneration pass was
+  needed. All 8 idle rotations and all 8 × 6 move rows are explicit: every
+  `dark_mage_*_west*` frame is pixel-distinct from its east counterpart flipped
+  (mean abs delta `3.55`–`7.57`, zero identical frames, so no mirror
+  substitution), and `north` is a true back view. Normalization is exact rather
+  than merely stable: every one of the 56 runtime frames is a 512 px canvas with
+  visible height `246` and the footline pinned at `y=480` (**0 px** drift), and
+  alpha is fully binary (only value `255`, no anti-aliased fringe or stray
+  specks). `alpha_bbox_report.json` covers all 56 frames, so PixelLab provenance
+  is complete. Attack stays weapon-owned: `dark_mage_spriteframes.tres` holds
+  only `idle`/`move`/`walk` × 8 directions (1-frame idle, 6-frame locomotion at
+  10 fps, `walk_*` aliasing the `move_*` sources), no `attack`/`cast`/`death`
+  row, all 56 textures drawn from `dark_mage_pixellab/`, and the body rig forces
+  `flip_h = false` on directional rows (`player.gd::_update_sprite_facing`).
+  Evidence: `tools/build_fan2596_dark_mage_animation_review.py`,
+  `tools/capture_fan2596_dark_mage_walk.gd`, sheets under
+  `docs/design/previews/fan2596_dark_mage_*`, captures under
+  `build/qa/fan2596_dark_mage/` (captures are build artifacts, not committed).
+  Two findings were investigated and knowingly accepted rather than hidden:
+  (1) `animation_roster_audit.py` flags `move_north`/`walk_north` as a loop
+  discontinuity (`wrap diff 14 vs mean step 6`), but that is the coarse
+  ratio-vs-mean guard misfiring on the calmest row in the pack — the wrap step
+  (`3.59`) is *smaller* than the row's own largest inner step (`3.69`, frame
+  `02→03`), so the loop is continuous and the ratio only trips because the back
+  view has the least visible limb motion; (2) the hand aura is uneven across
+  directions — six face/side rows carry the violet aura through the walk cycle,
+  `north` legitimately hides both hands behind the cloak, but `south` walks with
+  both hands lowered and no aura at all even though its idle has it, and a
+  ~16 px cyan eye glow appears in only `south` frames `03..05` and `south-east`
+  frames `00..02`. Both are per-direction generation variance in a "subtle
+  controlled arcane aura around empty open hands" the manifest prompt defines as
+  an effect, not a held prop; both are invisible at the live combat scale
+  (`0.7168`) in the 720p/1080p captures. Consistent and artifact-free otherwise,
+  but the `south` locomotion row is the weakest row if the pack is ever
+  revisited by the art lane.
+- FAN-2598 (2026-08-17) audited the live Druid pack (SCRUM-426, PixelLab
+  character `4078113b-fece-4087-a035-9ed3714a6514`) and **accepted it
+  unchanged** — no regeneration pass was needed. All 8 idle rotations and all
+  8 × 6 `walking-6-frames` move rows are explicit: every `druid_*_west*` frame
+  is pixel-distinct from its east counterpart flipped (no mirror substitution),
+  and `north` is a true back view. Every runtime frame is a 512 px transparent
+  canvas with the footline stable at `y≈486-487` (bbox drift ≤1 px) and
+  horizontal anchor drift within normal gait sway. `animation_roster_audit.py`
+  reports zero druid findings; live 720p/1080p captures show identity-stable,
+  artifact-free loops. Attack stays weapon-owned: `druid_spriteframes.tres`
+  holds only `idle`/`move`/`walk` × 8 directions (1-frame idle, 6-frame
+  locomotion at 10 fps) and the body rig forces `flip_h = false` on directional
+  rows. Evidence: `tools/build_fan2598_druid_animation_review.py`,
+  `tools/capture_fan2598_druid_walk.gd`, sheets under
+  `docs/design/previews/fan2598_druid_*`, captures under
+  `build/qa/fan2598_druid/` (captures are build artifacts, not committed).
+- FAN-2597 (2026-08-17) audited the live Doctor pack (SCRUM-705 v3 redraw,
+  PixelLab character `3e0a2b30-308e-48a8-a5a6-bb28a5038ca9`) and **accepted it
+  unchanged** — no regeneration pass was needed. The card's open question was
+  `north`: the manifest carries a real PixelLab `north` animation
+  (`cc8114ed-774d-4acb-b86e-0a82a7b8fae0`) and the frames confirm it — a true
+  back view (hood rear, no beak), pixel-distinct from every other direction,
+  not a mirror stand-in: all 16 direction anchors (8 idle + 8 move `00`) hash
+  distinct, and no direction equals another flipped. Every runtime frame is
+  244 px visible height on a 512 px canvas with the footline pinned at `y=480`.
+  `animation_roster_audit.py` reports zero doctor findings (the perceptual
+  loop-continuity check passes all eight rows); alpha-area max/min spans
+  `1.07`–`1.30` (`east`/`west` widest from profile gait sway — review-aid
+  territory per the FAN-2606 calibration note, not a rejection signal), and the
+  live 720p/1080p captures show identity-stable, artifact-free loops. Attack
+  stays weapon-owned: `doctor_spriteframes.tres` holds only
+  `idle`/`move`/`walk` × 8 directions and the body rig forces `flip_h = false`
+  on directional rows. Evidence: `tools/build_fan2597_doctor_animation_review.py`,
+  `tools/capture_fan2597_doctor_walk.gd`, sheets under
+  `docs/design/previews/fan2597_doctor_*`, captures under
+  `build/qa/fan2597_doctor/` (captures are build artifacts, not committed).
+- FAN-2594 (2026-08-17) audited the live Biologist pack (SCRUM-421 source,
+  SCRUM-869 refresh, PixelLab character
+  `cb13813a-f0a8-4d18-b019-4bd7fb1eb3f4`) and **accepted it unchanged** — no
+  regeneration pass was needed. All 16 direction anchors (8 idle + 8 move `00`)
+  hash distinct and no direction equals another flipped, so every row is real
+  art, not a mirror stand-in. Every runtime frame is 245 px visible height on a
+  512 px canvas with the footline pinned at `y=496` and pivot `x≈256`; the
+  `.tres` maps all 27 rows (`idle`/`move`/`walk` × 8 + 3 south aliases) to that
+  direction's own textures at the fleet-standard 1-frame idle / 6-frame 10 fps
+  locomotion timing. `animation_roster_audit.py` reports zero biologist
+  findings; alpha-area max/min spans `1.07`–`1.23` with the largest single-frame
+  jump `19.1%` (`west`, profile gait sway — matches the accepted doctor `west`
+  at `1.23` and stays under the FAN-2606 rejection examples). Attack stays
+  weapon-owned: the body pack holds no attack rows and the body rig forces
+  `flip_h = false` on directional rows. Residuals (review-aid, below the
+  FAN-2606 silhouette-flicker bar, colour-level only): the `west` hood-front
+  element
+  reads as a cream vial on move `00`–`02` and an exposed cheek on `03`–`05`
+  (~6×7 px at live scale), and the `north-west` satchel flap flips dark/lit at
+  the same stride boundary; both are within-silhouette tone changes an
+  `art_assets` pass could clean up if the pack is ever revisited. Evidence:
+  `tools/build_fan2594_biologist_animation_review.py`,
+  `tools/capture_fan2594_biologist_walk.gd`, sheets under
+  `docs/design/previews/fan2594_biologist_*`, captures under
+  `build/qa/fan2594_biologist/` (build artifacts, not committed).
 - SCRUM-885 (2026-07-08) performs a focused Knight-only run through the same
   importer using PixelLab character `c1a7d633-7353-4861-aea3-8d937b601cba`
   (`FantasyDisk Knight PixelLab SCRUM-430 no-shield 2026-06-30`). It regenerated
@@ -118,6 +299,14 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   SpriteFrames, frame counts, states, timings and gameplay behavior were not
   changed.
 
+### Per-actor registry data (FAN-3638)
+
+`FULL_FRAME_SPRITEFRAMES` is assembled at class load from
+`data/animation/<kind>/<actor_id>.json` (one file per actor; schema documented
+in `scripts/full_frame_animation_registry.gd`). A new or reworked actor adds or
+edits only its own JSON — the registry script itself is owned by `core` and is
+not touched by actor tasks (`docs/process/ownership_map.md`).
+
 ### Runtime registry/loader audit (SCRUM-721)
 
 Audit of the animation **runtime** loaders only (no art/motion/clip changes):
@@ -140,6 +329,140 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
   loading reviewed and left as-is (covered by `sliced_rig_manifest_smoke_test` /
   `skeletal_rig_rest_det_smoke_test`; manifests preload part textures, smoke gates the
   string `source` path + `attack_part`/`torso` coverage).
+
+### Eight-direction non-player contract (FAN-2519)
+
+Runtime foundation for explicit eight-direction packs on non-player actors
+(monsters, elites, bosses, summons); live 0.3.x packs keep their existing
+west-facing/flip or `_left`/`_right` contracts until their 0.3.1 packs land.
+
+- **Direction naming** mirrors the player contract: octant suffixes `east`,
+  `south_east`, `south`, `south_west`, `west`, `north_west`, `north`,
+  `north_east` (clockwise from east), rows named `<state>_<suffix>`
+  (`move_north_east`, `attack_south`, `death_west`, `skill_shard_fan_east`,
+  `strike_<suffix>` for `<behavior>:<attack_id>:<phase>` elites). A zero
+  vector names `south` exactly like `player.gd`.
+- **Contract declaration**: registry config key `explicit_eight_directions:
+  true` (or owner meta `full_frame_explicit_eight_directions` for
+  scene-driven entities). `configure_entity_visual` lifts the flag onto the
+  animated body. A declared state must expose all eight directional rows;
+  `has_full_directional_rows(frames, state)` is the audit helper, and
+  `tests/full_frame_eight_direction_contract_test.gd` gates every registry
+  entry declaring the flag.
+- **Fallback policy**: directional rows resolve through the existing state
+  candidate ladder first. A missing directional row degrades to the
+  undirected row of the same state ladder — never to a horizontally-mirrored
+  stand-in (`flip_h` is forbidden on the whole contract) and never to another
+  actor's frames. Degradation is observable, not silent: the body carries
+  `directional_row_resolved` / `directional_fallback_used` metas alongside
+  the existing `last_requested_state` / `last_resolved_state` pair, plus
+  `last_resolved_direction_suffix` for QA captures.
+- **Last-facing persistence**: every non-zero direction passed to
+  `play_state` is normalized into `last_facing_direction` on the body; zero
+  directions reuse it (default west, matching west-facing sources). Enemies
+  therefore resolve `hit`/`death` (which pass `Vector2.ZERO`) to the last
+  movement facing. Horizontal `_left`/`_right` packs keep their stricter
+  memory (`last_horizontal_facing_right`): vertical inputs collapse to the
+  last horizontal facing.
+- **State transitions**: the resolver switches rows only on explicit caller
+  requests and never restarts an already-playing row (frame progress is
+  preserved), so gameplay timing, collision and AI behavior are untouched —
+  the registry remains a visual state bridge with no animation clock of its
+  own. Death one-shots and delayed frees stay owned by
+  `enemy.gd`/`ally_minion.gd`; both now measure death duration from the
+  resolved directional row and detect death availability through the
+  registry (`has_state`), which understands directional-only packs.
+- **Pause/cleanup**: the registry spawns no timers, tweens or helper nodes,
+  and the animated body inherits the actor's process mode — combat-world
+  pause freezes eight-direction visuals with their owner, and all resolver
+  state lives in body metas that die with the actor on death/despawn.
+- FAN-2618 (2026-08-18) delivers the second live FAN-2519 pack and the first
+  for `standard_monster`: `enemy/bone_shaman`. PixelLab MCP humanoid character
+  `fa5b71b2-0532-404b-b5d9-b640d0bef7c0` (v3 mode, 8 rotations from a text
+  description matching the existing skull-masked ram-horned staff shaman, no
+  reference-image rotation) plus four v3 custom animation groups — `move`
+  (shuffling forward with staff tap, 6f), `attack` (staff-slam curse cast,
+  6f), `hit` (pained flinch, 4f), `death` (collapse and scatter, 6f) — each
+  generated for all 8 directions (v3 jobs default `keep_first_frame=true`;
+  the duplicate reference frame at index 0 of every direction was dropped
+  before normalization, keeping the documented frame counts). No `hover`
+  state — bone_shaman is ground-based, not flying. Source frames live under
+  `assets/sprites/enemies/pixellab/bone_shaman/` with `manifest.json` and
+  `alpha_bbox_report.json`; runtime frames are transparent `512x512` canvases
+  under `assets/sprites/enemies/full_frame/bone_shaman/` normalized to
+  `245px` visible height / `32px` bottom padding (fleet standard).
+  `bone_shaman_spriteframes.tres` exposes exactly `idle_<dir>` / `move_<dir>`
+  / `attack_<dir>` / `hit_<dir>` / `death_<dir>` for all 8 directions (40
+  rows, no undirected fallback rows) and the registry entry sets
+  `explicit_eight_directions: true`. bone_shaman has no elite-style skill
+  phases; the plain `"attack"`/`"hit"`/`"death"` requests from `enemy.gd`
+  resolve directly through the generic `_state_candidates` ladder. Old
+  non-directional pack (single west-facing `move`/`attack`/`attack_primary`/
+  `hit`/`death`, mirrored via `source_faces_left`) is backed up under
+  `docs/design/backups/fan2618_bone_shaman_pre_directional/`. Build tooling:
+  `tools/build_fan2618_bone_shaman_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack,
+  `tests/full_frame_registry_integrity_test.gd` passes, and
+  `tests/animation_smoke_test.gd::_test_full_frame_animation_registry` now
+  branches its standard-enemy assertions on the registry's own
+  `explicit_eight_directions` flag (mirroring the FAN-2901 mini-elite
+  pattern) instead of a hardcoded ID list. AI, collision, damage and
+  encounter timing are unchanged — registry-only visual integration.
+- FAN-2628 (2026-08-17) delivers the first live FAN-2519 pack:
+  `mini_elite/mini_rot_hound`. PixelLab MCP quadruped character
+  `73b7080a-741b-4f80-8699-28b0674149ee` (dog template, standard-mode 8
+  rotations) plus five animation groups — `move` (template
+  `walk-6-frames`, 6f), `attack` (v3 custom "lunging bite attack", 6f),
+  `hit` (v3 custom flinch, 4f), `death` (v3 custom collapse, 6f), and
+  `skill_shadow_strike` (v3 custom shadow pounce, 6f) — each generated for
+  all 8 directions. Source frames live under
+  `assets/sprites/elites/pixellab/mini_rot_hound/` with `manifest.json` and
+  `alpha_bbox_report.json`; runtime frames are transparent `512x512`
+  canvases under `assets/sprites/elites/full_frame/mini_rot_hound/`
+  normalized to `245px` visible height / `32px` bottom padding (fleet
+  standard), except the last 2-4 `death_<dir>` frames whose splayed
+  four-limb collapse pose is wider than tall and is instead scaled to fit
+  the `512px` canvas width, so those frames read shorter than `245px` while
+  the footline (`bottom_padding=32`) stays pinned. `mini_rot_hound_spriteframes.tres`
+  exposes exactly `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
+  `death_<dir>` / `skill_shadow_strike_<dir>` for all 8 directions (48 rows,
+  no undirected fallback rows) and the registry entry sets
+  `explicit_eight_directions: true`. `mini_rot_hound` shares the
+  `night_stalker` elite behavior (`elite_attack_id=shadow_strike`); the
+  generic `attack_<dir>` rows cover the direct `_play_rig_action("attack",
+  ...)` calls in `_strike_shadow_strike`, and `skill_shadow_strike_<dir>`
+  covers the phased `night_stalker:shadow_strike:<windup|strike|recover>`
+  state key from `_play_elite_attack_phase_animation` (the resolver's
+  colon-split candidate ladder matches `skill_shadow_strike` for all three
+  phases, so one row set covers the whole attack). `hit`/`death` resolve
+  through the plain `"hit"`/`"death"` requests in `enemy.gd`. Old
+  non-directional pack (`attack_primary`, `move`, `death`, `skill_rot_lunge`,
+  `skill_bleed_howl`) is backed up under
+  `docs/design/backups/fan2628_mini_rot_hound_pre_directional/` — its
+  `skill_rot_lunge`/`skill_bleed_howl` rows were never live (the shared
+  night_stalker resolver never requested those names). Build tooling:
+  `tools/build_fan2628_mini_rot_hound_pack.py`. Evidence:
+  `tests/full_frame_eight_direction_contract_test.gd` audits the live pack
+  (`Eight-direction live packs audited: 1`),
+  `tests/full_frame_registry_integrity_test.gd` passes, and
+  `build/qa/animation_roster_audit/` carries the contact sheet + findings.
+  AI, collision, damage and encounter timing are unchanged — registry-only
+  visual integration.
+
+- FAN-2619 (2026-08-19) converts the flying `standard_monster`
+  `enemy/winged_spark` to the explicit-eight-direction PixelLab contract.
+  Its source frames are in `assets/sprites/enemies/pixellab/winged_spark/`;
+  normalized runtime frames are in
+  `assets/sprites/enemies/full_frame/winged_spark/`, with all frames kept at
+  `512x512`, `245px` visible height, and `32px` bottom padding. The SpriteFrames
+  resource exposes `idle_<dir>` / `move_<dir>` / `attack_<dir>` / `hit_<dir>` /
+  `death_<dir>` for all eight directions (40 rows, no undirected fallback rows)
+  and registry `explicit_eight_directions: true`; `idle_<dir>` is the six-frame
+  hover-flap loop because the resolver has no distinct hover state. The old
+  flip-mirrored pack is retained in
+  `docs/design/backups/fan2619_winged_spark_pre_directional/`; build tooling is
+  `tools/build_fan2619_winged_spark_pack.py`. AI, collision, damage, and
+  encounter timing are unchanged — registry-only visual integration.
 
 ## Player Motion
 
@@ -676,7 +999,8 @@ Audit of the animation **runtime** loaders only (no art/motion/clip changes):
 - `enemy.gd` передает elite phases в rig как animation variant `<elite_behavior>:<elite_attack_id>:<phase>` вместе с backend duration. `cutout_rig_2d.gd` держит pose layer для `iron_bastion`, `night_stalker`, `plague_prophet`, `shard_marshal`; VFX и damage остаются в backend/effects layer.
 - SCRUM-368 (2026-06-14) перевел route elites `iron_bastion`, `night_stalker` и `plague_prophet` на production full-frame SpriteFrames через `FullFrameAnimationRegistry` kind `elite`. У каждой элитки есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и `attack_*` validator aliases. Backend phase variants (`<elite_behavior>:<attack_id>:<phase>`) резолвятся в соответствующую accepted skill row без изменения damage/VFX timing.
 - SCRUM-371 (2026-06-14) добавил тот же production full-frame contract для `shard_marshal`: `move`, `attack`/`attack_primary`, `skill_shard_fan`, `skill_command_pulse` и matching `attack_*` aliases; backend phase `shard_marshal:shard_fan:*` визуально резолвится в `skill_shard_fan`.
-- SCRUM-376 (2026-06-14) подключил full-frame contract для всех mini-elites через SCRUM-372 `mini_elite_kind` visual-id hook: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_rot_hound`, `mini_shadow_devourer`. У каждого есть `move` 6f loop, `attack`/`attack_primary` 6f one-shot, две 6f `skill_*` строки и matching `attack_*` aliases; missing mini-specific frames fallback'аются на base `elite_behavior`. SCRUM-370 добавил каждому `death` 6f one-shot.
+- FAN-2623 заменил для `shard_marshal` прежний недирекционный pack на завершённый PixelLab character export `06de6f32-fca4-43f2-a657-b011a85d7632`: `idle` (1f), `move` (8f loop), `attack` (7f), `hit` (5f), `death` (7f), `skill_shard_fan` (7f) и `skill_command_pulse` (7f) теперь имеют явные строки по всем восьми направлениям. Runtime кадры нормализованы в 512×512 с общим pivot/footline; `explicit_eight_directions: true` запрещает `flip_h`, а `mini_swarm_sniper` остаётся намеренным fallback на базовый `shard_marshal`.
+- FAN-3627 (2026-08-28) завершает actor-local full-frame contract для девяти target mini-elites: `mini_scavenger_reaper`, `mini_plague_bellringer`, `mini_bone_warden`, `mini_spark_wight`, `mini_shadow_devourer`, `mini_siege_rammer`, `mini_swarm_sniper`, `mini_void_phantom`, `mini_plague_berserker`. Каждый pack использует завершённый PixelLab character export с 8 направлениями, прозрачный 512×512 runtime, общую footline/pivot-нормализацию, provenance manifest и `explicit_eight_directions: true`; `mini_rot_hound` намеренно оставлен byte-identical. Для `mini_scavenger_reaper` и `mini_void_phantom` заново получены только шесть проблемных направленных кадров (`move_north`/`move_west`), прочие кадры сохранены. Собственный `mini_plague_berserker` использует фактические состояния `move`, `attack`, `hit`, `death`, `skill_poison_volley`; fallback на `plague_prophet`/другие elite packs удалён. `tools/build_fan3627_mini_elite_pack.py` воспроизводит SpriteFrames, runtime PNG и alpha/SHA-256 audit без изменения gameplay, collision, damage, timing или balance.
 - SCRUM-377 (2026-06-14) подключил full-frame contract для боссов `rift_warden`, `disk_devourer`, `bone_archon`, `brood_mother`, `ashen_colossus`: `move`, `attack`/`attack_primary`, две 6f `skill_*` строки и matching `attack_*` aliases. SCRUM-378 добавил Back-end visual-only hooks: boss callbacks запрашивают matching `skill_*` state через `FullFrameAnimationRegistry`, а damage/VFX timing/targeting/cooldowns остаются прежними. SCRUM-370 добавил `death` 6f one-shot rows для всех 5 boss SpriteFrames.
 - SCRUM-793 (2026-07-02) promotes accepted SCRUM-779 PixelLab single-view boss
   candidates into the existing live full-frame rows for `disk_devourer`

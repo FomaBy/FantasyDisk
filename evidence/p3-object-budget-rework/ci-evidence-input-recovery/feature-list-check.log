@@ -1,0 +1,43 @@
+command (complete argv): python3 tools/ultimate_feature_list_check.py
+source: a09bca47f56fdc71dc37cc29da5179c20c35c4a4 tree 5736137d2a966fb4274a8ff81d42bccc3db9761c
+Mon Sep 14 01:21:16 UTC 2026
+ultimate_feature_list: 17 classes / 51 weapons validated; 51 active entries over 17 distinct recipes
+ultimate_feature_list: 51 entries, 17 distinct recipes, candidate a09bca47f56fdc71dc37cc29da5179c20c35c4a4
+IMPORT CACHE warming once before 17 recipe(s)
+PASS  Godot import cache pre-pass (5.5s)
+RECIPE 1/17 res://tests/ultimates/mechanics/berserk_live_test.gd -> berserk/sword, berserk/axe, berserk/hammer
+PASS  res://tests/ultimates/mechanics/berserk_live_test.gd (3.6s)
+RECIPE 2/17 res://tests/ultimates/soldier_runtime_test.gd -> soldier/soldier_rifle, soldier/soldier_grenade, soldier/soldier_bayonet
+PASS  res://tests/ultimates/soldier_runtime_test.gd (1.1s)
+RECIPE 3/17 res://tests/ultimates/mechanics/thief_live_test.gd -> thief/thief_coin_pouch, thief/thief_shadow_cloak, thief/thief_smoke_bomb
+PASS  res://tests/ultimates/mechanics/thief_live_test.gd (0.6s)
+RECIPE 4/17 res://tests/ultimates/mechanics/elementalist_live_test.gd -> elementalist/elementalist_orb_ring, elementalist/elementalist_prism_focus, elementalist/elementalist_meteor_core
+PASS  res://tests/ultimates/mechanics/elementalist_live_test.gd (3.7s)
+RECIPE 5/17 res://tests/ultimates/mechanics/sniper_live_test.gd -> sniper/sniper_deadeye_rifle, sniper/sniper_spotter_scope, sniper/sniper_shatter_rounds
+PASS  res://tests/ultimates/mechanics/sniper_live_test.gd (0.8s)
+RECIPE 6/17 res://tests/ultimates/mechanics/priest_live_test.gd -> priest/priest_reliquary, priest/priest_censer, priest/priest_chime
+PASS  res://tests/ultimates/mechanics/priest_live_test.gd (4.2s)
+RECIPE 7/17 res://tests/ultimates/mechanics/biologist_live_test.gd -> biologist/biologist_spore_lens, biologist/biologist_sample_injector, biologist/biologist_symbiote_seed
+PASS  res://tests/ultimates/mechanics/biologist_live_test.gd (0.7s)
+RECIPE 8/17 res://tests/ultimates/mechanics/robot_ultimate_live_test.gd -> robot/robot_magnetic_anchor, robot/robot_hydraulic_press, robot/robot_reactor_core
+PASS  res://tests/ultimates/mechanics/robot_ultimate_live_test.gd (3.9s)
+RECIPE 9/17 res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd -> engineer/engineer_sentry_wrench, engineer/engineer_repair_drone, engineer/engineer_pressure_mines
+PASS  res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd (4.6s)
+RECIPE 10/17 res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd -> dark_mage/dark_book, dark_mage/cursed_skull, dark_mage/dark_wand
+PASS  res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd (3.8s)
+RECIPE 11/17 res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd -> guitarist/electric_guitar, guitarist/bass_guitar, guitarist/sound_amp
+PASS  res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd (3.7s)
+RECIPE 12/17 res://tests/ultimates/mechanics/assassin_live_test.gd -> assassin/chakrams, assassin/shadow_daggers, assassin/venom_wire
+PASS  res://tests/ultimates/mechanics/assassin_live_test.gd (0.7s)
+RECIPE 13/17 res://tests/ultimates/mechanics/ranger_live_test.gd -> ranger/moon_crossbow, ranger/storm_longbow, ranger/hunter_trap
+PASS  res://tests/ultimates/mechanics/ranger_live_test.gd (3.8s)
+RECIPE 14/17 res://tests/ultimates/mechanics/doctor_live_test.gd -> doctor/restore_potion, doctor/plague_syringe, doctor/bone_saw
+PASS  res://tests/ultimates/mechanics/doctor_live_test.gd (0.6s)
+RECIPE 15/17 res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd -> chemist/blast_powder, chemist/acid_flask, chemist/homunculus_vial
+PASS  res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd (1.1s)
+RECIPE 16/17 res://tests/ultimates/mechanics/knight_trio_integration_test.gd -> knight/long_spear, knight/tower_shield, knight/holy_flail
+PASS  res://tests/ultimates/mechanics/knight_trio_integration_test.gd (0.5s)
+RECIPE 17/17 res://tests/ultimates/mechanics/druid_live_test.gd -> druid/summon_amulet, druid/briar_staff, druid/raven_totem
+PASS  res://tests/ultimates/mechanics/druid_live_test.gd (4.1s)
+ULTIMATE FEATURE LIST PASSED: 51 passing, 0 failed, 0 blocked, 0 not_started; report=build/ultimate_feature_list/report.json
+exit_status=0

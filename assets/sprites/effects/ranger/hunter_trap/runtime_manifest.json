@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3859",
+  "weapon_id": "hunter_trap",
+  "animation": {
+    "name": "ranger_hunter_trap_ultimate",
+    "fps": 3.0,
+    "loop": false,
+    "frame_count": 9
+  },
+  "runtime_directory": "assets/sprites/effects/ranger/hunter_trap",
+  "spriteframes": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_spriteframes.tres",
+  "frame_order": [
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png",
+    "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png"
+  ],
+  "source_runtime_byte_parity": true,
+  "source_runtime_pixel_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png",
+      "sha256": "456053c93b34c4992939b14cfab8a329482bf5099f83cf5c42fc9e175ddc304e",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png.import",
+        "uid": "uid://dsawucwb123a7",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f00.png-fa60337df628355fde7046be7126bb27.ctex"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png",
+      "sha256": "68342e69397b3484046e96018e10ac0b2d0ae984ac12d790a9d9b09a81c37cd9",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png.import",
+        "uid": "uid://c607tdqqqx7ed",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f01.png-eeb5fd846d0e8aad5617c79f863ea420.ctex"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png",
+      "sha256": "2d2415298a82d546c0c1ce8d5e55cbb124965af520a5afc8bdac9831a045ef4b",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png.import",
+        "uid": "uid://ch3tv2nghp4cs",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f02.png-e7e8fbbcc1cd4f504a193794593ec90b.ctex"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png",
+      "sha256": "87ea28d53a3a955acb8c8adcd6cdba7529f5fd32c48098e48644a890c6106ca1",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png.import",
+        "uid": "uid://vweu7jk8ibg5",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f03.png-4fce6d53f4a5f75465fd639d8a59f35d.ctex"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png",
+      "sha256": "8a95eeabfb3c677186b78d76c8ae0ed9fc80daec11b64c97d712272e00592f2b",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png.import",
+        "uid": "uid://cc826p5jhoxas",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f04.png-177344757e932bc8d9e3a16688154c19.ctex"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png",
+      "sha256": "d3a1472e28647214d9d052618e1e6345bff151b64a27d21656b2f8f339421fc3",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png.import",
+        "uid": "uid://d1kkya55rb2ak",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f05.png-e59eac849ea1fdfc3c0d0a9badb578cd.ctex"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png",
+      "sha256": "9c693017c184cadaf03bd510ffade3f6f1d593b582e1295e1a7fceebbb924f18",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png.import",
+        "uid": "uid://y4cqbypnxeg6",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f06.png-82e5e57df8863d56d9930a4e2e14d03a.ctex"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png",
+      "sha256": "dc8181bc9bf4e3bae528387264a240620d97adf5388dd0a497c72bcc29d0cee7",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png.import",
+        "uid": "uid://diqq3tossofhc",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f07.png-a9e0b6c3320dc3e6761e2f3001fceac1.ctex"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png",
+      "sha256": "8e73973b20c9629cec5737910a28450e4a5573eec2afef0e6660b81672e8ea55",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png.import",
+        "uid": "uid://boi6podru3uhm",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f08.png-ae03b4671513aaa1370f07692c56ffb2.ctex"
+        ]
+      }
+    }
+  ]
+}

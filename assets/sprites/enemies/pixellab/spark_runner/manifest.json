@@ -1,0 +1,56 @@
+{
+  "character_id": "spark_runner",
+  "pixellab_character_id": "0566999a-870f-478e-94ec-093cb265ff32",
+  "generated_at": "2026-08-18",
+  "source": "PixelLab MCP",
+  "mode": "standard (idle rotations, quadruped/dog template) + template walking-6-frames (move) + v3 custom (attack/hit/death)",
+  "body_type": "quadruped",
+  "view": "low top-down",
+  "runtime_canvas": [
+    384,
+    384
+  ],
+  "target_visible_height": 182,
+  "bottom_padding": 42,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "template_animation_id": "walk-6-frames",
+      "fps": 9.0,
+      "action_description": "default template walk cycle"
+    },
+    "attack": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "lunging bite-and-claw attack, quadruped lunges forward snapping jaws and swiping a clawed paw",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 5,
+      "mode": "v3",
+      "action_description": "flinching hit reaction, quadruped recoils and staggers back from an impact",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 7,
+      "mode": "v3",
+      "action_description": "collapsing death, quadruped legs buckle and body collapses to the ground and goes still",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2611: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/spark_runner (ground runner, not flying - hover is inapplicable). 8 idle rotations + 8x6 move frames + 8x7 attack frames + 8x5 hit frames + 8x7 death frames, all normalized to 182px visible height on a transparent 384x384 canvas, footline pinned at bottom_padding=42 (matches the prior registry scale=0.34/position=(0,-38) so on-screen size is unchanged)."
+}

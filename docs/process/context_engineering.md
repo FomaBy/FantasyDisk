@@ -12,7 +12,9 @@ Context is intentionally layered:
 
 1. Workspace context contains durable cross-project invariants.
 2. Agent instructions contain only role and authority deltas.
-3. Bound skills route PM, Qwen, developer, and QA work to the needed procedure.
+3. Bound skills route PM, the canonical dispatcher, developer, and QA work to
+   the needed procedure; the authority record is
+   `docs/process/dispatcher-authority.md`.
 4. Repository `AGENTS.md` contains project gotchas and links to domain context.
 5. Process/design docs, tests, fixtures, and code are rich references loaded
    only when the current scope needs them.

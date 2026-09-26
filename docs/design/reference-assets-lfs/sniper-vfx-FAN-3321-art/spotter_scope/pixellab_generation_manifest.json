@@ -1,0 +1,100 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T08:11:46Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "cce044e5-6fc1-48e6-84aa-6155e490553b",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Sniper ultimate spotter-scope targeting relic: a brass and obsidian optical scope with a glowing crimson lens, nested angular reticle rings and a compact sky-lock rune, dark fantasy D&D pixel art seen straight from above, isolated VFX prop on a transparent background, crisp readable weapon-specific silhouette, generous empty margin, no text, no border, no characters",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single sniper spotter-scope relic centered with stable outline, proportions, palette and position in every frame; animate measurable ultimate motion: the glass lens shutters open, nested brass reticle rings rotate into a sky lock, crimson targeting beams pulse upward and rain nine rhythmic artillery markers, then the scope flashes a focused suppression burst and powers down with fading orbit rings; preserve the spotter-scope identity and all details, every frame distinct and readable, no duplicate frames, no clipping, no stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    },
+    "animation_group_id": "d16eed89-13ad-440c-ba91-183da10d1883",
+    "canonical_asset_key": "sniper/spotter_scope"
+  },
+  "frames": [
+    {
+      "file": "spotter_scope_f00.png",
+      "bytes": 18899,
+      "url_kind": "template",
+      "encoded_sha256": "9b81abe00bd61801deeb41b33f0e1971101bf5901eb4dea01c74c72a7f354873",
+      "pixel_sha256": "09bab0ff7aac6d07791f290b7acd6611fbf9ceae1da838ef58d7116701e53786"
+    },
+    {
+      "file": "spotter_scope_f01.png",
+      "bytes": 26678,
+      "url_kind": "template",
+      "encoded_sha256": "d3f4ce6a1ac498e2860d5d1898a4c85cd539dd43f1182f191f4ad1cabe18bbe5",
+      "pixel_sha256": "1d3968636273b305728f2eaa11933a526ff6aa46ccc8e63cbd84211a4cd4ea0c"
+    },
+    {
+      "file": "spotter_scope_f02.png",
+      "bytes": 23204,
+      "url_kind": "template",
+      "encoded_sha256": "328e6501dd64b050680022fc4ad92f64e1ae3e5b0256e41b935b087cb1c72997",
+      "pixel_sha256": "0520daf4a552572e854a88e9dc091899a6272e90e205cb6d315e5407cb7e9e8c"
+    },
+    {
+      "file": "spotter_scope_f03.png",
+      "bytes": 22798,
+      "url_kind": "template",
+      "encoded_sha256": "e4b7d935db21a86095a9e986fd553ebedb62f59f4d55b8b2a1ea6b9e7573712f",
+      "pixel_sha256": "cf9df1c11e374f55c684a1521cc2a71bbcce075dc69396b0277f7c047af749be"
+    },
+    {
+      "file": "spotter_scope_f04.png",
+      "bytes": 23688,
+      "url_kind": "template",
+      "encoded_sha256": "f2f08f24475ad0423c55f9115b385e700175eaf72d8f058a42313c913c12782b",
+      "pixel_sha256": "5d54dc5dda356c23d74c8119c407be6cc647ddf77d72921e947a3e54dbef290a"
+    },
+    {
+      "file": "spotter_scope_f05.png",
+      "bytes": 20945,
+      "url_kind": "template",
+      "encoded_sha256": "85b7e01b6d81aa2d314db447389479bbe0ed1a020af52507fd59850f034ff685",
+      "pixel_sha256": "04acf464b1f794725ef376e69a612d96e21f1e5449f05d034f673f50715a4c0d"
+    },
+    {
+      "file": "spotter_scope_f06.png",
+      "bytes": 22363,
+      "url_kind": "template",
+      "encoded_sha256": "1edd9273cf0f5bdba73d28b50ecc63ae6399bc65da060d4ebda605bd6a84a88f",
+      "pixel_sha256": "9c9fa0385432f4f8484a8c2d1f66ef266d96b250f49f2336e30deeb535710064"
+    },
+    {
+      "file": "spotter_scope_f07.png",
+      "bytes": 24990,
+      "url_kind": "template",
+      "encoded_sha256": "044d40df6f24a84a7a4c0945d5136f8c6afdf3b9829d18a214e69884823bd3eb",
+      "pixel_sha256": "f1470dd2f35905499cb744ad120c8126f21908795b9dd5bedae435c442faef9e"
+    },
+    {
+      "file": "spotter_scope_f08.png",
+      "bytes": 27749,
+      "url_kind": "template",
+      "encoded_sha256": "6853caa993267da054b7e6d33609a0e7b51f0ba5b9a2b3563d9bddbe56c3f050",
+      "pixel_sha256": "0588d1b7cb828d584c93da9bfaa8d78b6f43af66e83e7a4029324662ad84309d"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/spotter_scope",
+  "postprocess": {
+    "method": "raw PixelLab frame preserved under raw/; accepted frame is 224x224 nearest-neighbor inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true
+  }
+}

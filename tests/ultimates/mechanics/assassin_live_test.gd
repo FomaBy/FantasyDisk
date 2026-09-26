@@ -102,7 +102,7 @@ func _initialize() -> void:
 	await _test_eight_moons_return_execute()
 	await _test_moment_before_death()
 	await _test_black_web()
-	await _test_black_web_unique_target_cap()
+	await _test_trio_reaches_every_enemy()
 	await _test_cancel_restores_owner()
 	_test_charge_and_persistence_contract()
 	_holder.queue_free()
@@ -113,7 +113,10 @@ func _initialize() -> void:
 func _test_eight_moons_return_execute() -> void:
 	var host := await _host()
 	var durable := _target(host, Vector2(86.0, 36.0), 1000.0, 1000.0)
-	var low_health := _target(host, Vector2(-86.0, -36.0), 20.0, 100.0)
+	# Under one fifth of its pool, so the return pass may execute it — but with
+	# enough HP left to survive the v2 outbound sweep, which now reaches every
+	# live enemy at the secondary ratio instead of only the lanes it crosses.
+	var low_health := _target(host, Vector2(-86.0, -36.0), 200.0, 1000.0)
 	var controller := Controller.new(host, _registry)
 	_check(controller.activate(CLASS_ID, "chakrams"), "Eight Moons must activate")
 	var activation := controller.active_activation()
@@ -162,7 +165,9 @@ func _test_moment_before_death() -> void:
 		"sequential backstabs must store damage instead of resolving early")
 	_check(effect != null and int(effect.get("backstab_count_for_tests")) == 3,
 		"all three sequential backstabs must enter the activation ledger")
-	_advance(host, activation, 0.5)
+	# The v2 sequence runs a FIXED seven waves, so the reveal lands at the
+	# declared 1.72 s regardless of how many silhouettes the wave list holds.
+	_advance(host, activation, 1.0)
 	_check(alpha.received.size() == 1 and beta.received.size() == 1 and gamma.received.size() == 1,
 		"the final reveal must resolve every stored mark once")
 	_check(alpha.received[0]["tick"] == beta.received[0]["tick"]
@@ -196,11 +201,15 @@ func _test_black_web() -> void:
 	_check(not _black_web_status(normal).is_empty()
 		and is_equal_approx(float(_black_web_status(epic).get("duration", 0.0)), 1.5),
 		"poison control must be full on normals and half-duration on epics")
-	_check(outside.received.is_empty(), "Black Web must not leak beyond its hex geometry")
+	# Ultimate Direction v2: the hex geometry decides how many cuts a silhouette
+	# takes, never whether it is reached — a target well outside the web is still
+	# cut once per pulse.
+	_check(not outside.received.is_empty(),
+		"Black Web must reach a live enemy standing outside its hex geometry")
 	_advance(host, activation, 0.5)
-	_check(effect != null and int(effect.get("cut_count_for_tests")) == 6,
-		"two chord targets across three pulses must receive six bounded poison cuts")
-	_check(effect != null and int(effect.get("burst_count_for_tests")) == 2,
+	_check(effect != null and int(effect.get("cut_count_for_tests")) == 9,
+		"all three live targets must take one cut in each of the three pulses")
+	_check(effect != null and int(effect.get("burst_count_for_tests")) == 3,
 		"each poisoned target must resolve one toxin burst")
 	_check(_feedback_count([normal, epic], "black_web_toxin_burst") == 2,
 		"toxin bursts must keep explicit feedback attribution")
@@ -212,24 +221,34 @@ func _test_black_web() -> void:
 	await _drop(host)
 
 
-func _test_black_web_unique_target_cap() -> void:
-	var host := await _host()
-	for index in 25:
-		_target(host, Vector2(0.0, -240.0 + float(index) * 20.0), 2000.0, 2000.0)
-	var controller := Controller.new(host, _registry)
-	_check(controller.activate(CLASS_ID, "venom_wire"),
-		"Black Web crowd-cap fixture must activate")
-	var activation := controller.active_activation()
-	_advance(host, activation, 0.01)
-	var hit_targets := 0
-	for raw_target in host.fixture_targets:
-		if not (raw_target as FixtureTarget).received.is_empty():
-			hit_targets += 1
-	_check(hit_targets == 24,
-		"Black Web must admit at most 24 unique targets across all wire segments")
-	controller.cancel()
-	await process_frame
-	await _drop(host)
+## Ultimate Direction v2 (FAN-2952): no count-shaped cap survives in the trio.
+## Each weapon is cast against a crowd far larger than its old cap plus one
+## silhouette parked thousands of pixels off-screen, and every one of them has
+## to end the cast damaged.
+func _test_trio_reaches_every_enemy() -> void:
+	for weapon_id in ["chakrams", "shadow_daggers", "venom_wire"]:
+		var host := await _host()
+		for index in 25:
+			_target(host, Vector2(0.0, -240.0 + float(index) * 20.0), 4000.0, 4000.0)
+		_target(host, Vector2(4000.0, -3000.0), 4000.0, 4000.0)
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id),
+			"%s map-wide fixture must activate" % weapon_id)
+		var activation := controller.active_activation()
+		# Past the longest declared cast in the trio (1.72 s), so a sequence that
+		# resolves only on its final beat is measured after that beat.
+		_advance(host, activation, 2.0)
+		var reached := 0
+		for raw_target in host.fixture_targets:
+			if not (raw_target as FixtureTarget).received.is_empty():
+				reached += 1
+		_check(reached == host.fixture_targets.size(),
+			"%s must reach every live enemy on the map, got %d of %d" % [
+				weapon_id, reached, host.fixture_targets.size(),
+			])
+		controller.cancel()
+		await process_frame
+		await _drop(host)
 
 
 func _test_cancel_restores_owner() -> void:

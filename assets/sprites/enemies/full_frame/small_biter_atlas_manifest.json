@@ -1,0 +1,1694 @@
+{
+ "version": 1,
+ "source_tres_sha256": "12ae84643521236f704d0ae8a9ceb2c067460ac44be7328273a48290199a829c",
+ "packer": "tools/build_small_biter_atlas.py",
+ "layout": {
+  "page_size": 4096,
+  "slot": 512,
+  "pages": 3,
+  "slots_per_page": 64,
+  "frame_equivalents": 192
+ },
+ "import_settings": {
+  "importer": "texture",
+  "type": "CompressedTexture2D",
+  "compress/mode": 0,
+  "mipmaps/generate": false,
+  "note": "lossless, no mipmaps \u2014 recorded from the committed .png.import sidecars; same settings class as the original per-frame textures"
+ },
+ "frames": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_east.png",
+   "sha256": "d3c2f1adefcb1b163b5960b10dd58ba9affaa3e4052e3c84154c5b13daf805e8",
+   "page": 0,
+   "x": 0,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south_east.png",
+   "sha256": "4bd88b9f3dc35585960f0a45820e2af1bbd7f10d90db12229e0deb9b9f2be7eb",
+   "page": 0,
+   "x": 512,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south.png",
+   "sha256": "2fd894732d077a3e5b8fcfb3f90736dce6d3f6cc4550f1538cb5635c4aa1d618",
+   "page": 0,
+   "x": 1024,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_south_west.png",
+   "sha256": "e3da9642da0f8910ce7a154dd1d21f053c173ef81f5749be7e7b5a7f3321a2a8",
+   "page": 0,
+   "x": 1536,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_west.png",
+   "sha256": "59c4e68efe0388f2b6388bbf34e476b88454f572d77f8151f514fc50530246ae",
+   "page": 0,
+   "x": 2048,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north_west.png",
+   "sha256": "dfb84af8fdc8745edf0207d5bc5230a67562d4db04be30521cad553640a44a37",
+   "page": 0,
+   "x": 2560,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north.png",
+   "sha256": "6995e5fef42fcbd5862eeea196a121edfdf7bd689284e4ba6df02d2e3a4a7fb0",
+   "page": 0,
+   "x": 3072,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_idle_north_east.png",
+   "sha256": "203b5cefdb38e2029e763d39d1ad855cdb2794523af8ec334ea1f60b8370be46",
+   "page": 0,
+   "x": 3584,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_00.png",
+   "sha256": "ad615907b6dfabce461110eadd4c743d44ff3936ece6bac054e72db443d0190b",
+   "page": 0,
+   "x": 0,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_01.png",
+   "sha256": "cfa7131c699d9aa14164de6947753648901101c1215b7809f9d32810bfdb4dc6",
+   "page": 0,
+   "x": 512,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_02.png",
+   "sha256": "8fc7e09be6eb3ccabe1d1f8ba34ef064ba9f948a77e277cb0d1b5a11d0d9e207",
+   "page": 0,
+   "x": 1024,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_03.png",
+   "sha256": "6ad16602fc9fed7bd2d2b52c2705e1dea774ec598ab30a82294320746749429d",
+   "page": 0,
+   "x": 1536,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_04.png",
+   "sha256": "1c92c2e5861ead0572a831ceadc9779a72f66fec555134ef04376180e3f3137e",
+   "page": 0,
+   "x": 2048,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_east_05.png",
+   "sha256": "9f77bbc7731fa12495e179f860b57bbe0b96be049911227412494147077fcdc2",
+   "page": 0,
+   "x": 2560,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_00.png",
+   "sha256": "ba39ce9aeaf0b8a9ba20579f83a24ad5ed409723d065df3304271e3c3799766c",
+   "page": 0,
+   "x": 3072,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_01.png",
+   "sha256": "6523d21545aad3aa752c2c51b872ed1d2e2c61389dfd2dd396455e799b1e3de8",
+   "page": 0,
+   "x": 3584,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_02.png",
+   "sha256": "b97d0cce36305f889d09b2f6b5e09ba93733862840d479bfe366f0c66d306385",
+   "page": 0,
+   "x": 0,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_03.png",
+   "sha256": "efac37de329572c6a9978e9717e23e3a61343c305bd6bf1c0abf3429b87f2e53",
+   "page": 0,
+   "x": 512,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_04.png",
+   "sha256": "bfd15cdd87b263fe9c9e17feeafce24bb24e455e98ba06fed192faa3327f6f21",
+   "page": 0,
+   "x": 1024,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_east_05.png",
+   "sha256": "1d6d212f1767ddc3b42ba8c21051e20c252ccbfecdd5a42b670030f94609d0bc",
+   "page": 0,
+   "x": 1536,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_00.png",
+   "sha256": "d551d4579a00c5474cd0894f83c9671d298fad63d9aca9c4e9c13261df99f628",
+   "page": 0,
+   "x": 2048,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_01.png",
+   "sha256": "ebd936785690f57027c7f99c14f8076a03238b0cba96ee605f44ddb1a7354dc6",
+   "page": 0,
+   "x": 2560,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_02.png",
+   "sha256": "0183eee2321d752d5c4181c72f464a7270a50f114aad1f60866357f5547e59ef",
+   "page": 0,
+   "x": 3072,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_03.png",
+   "sha256": "40a627ec6ab632471eca558dc41217f41ab00ba87c7ea07799f4f4096efb5d69",
+   "page": 0,
+   "x": 3584,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_04.png",
+   "sha256": "e45467da932e1b5310926fd3e28a09c51b8c1609e4f2e6707f4c800b3c6d3715",
+   "page": 0,
+   "x": 0,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_05.png",
+   "sha256": "e0b41d3893f302aa7f6b6b783956096a00196acb4650d1fd49cd861fba7832ef",
+   "page": 0,
+   "x": 512,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_00.png",
+   "sha256": "b3c94c3df9a0f9feb2e17ae751882a615fd55b1698e0ecfbc30daee1cd73b54d",
+   "page": 0,
+   "x": 1024,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_01.png",
+   "sha256": "f2b8e9c1ca344932897e36b6331280f594af78e93cedb4a03e4e281fc8b856c3",
+   "page": 0,
+   "x": 1536,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_02.png",
+   "sha256": "912f397abbe6a6abf0664622d49e2fe8b89a1e1d1937fc25d1e3330eeefc3124",
+   "page": 0,
+   "x": 2048,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_03.png",
+   "sha256": "acdd39eb7aa53f1f6d11f6fbca174a950c0bc7ae25401e1e2cf7e776fc61f32c",
+   "page": 0,
+   "x": 2560,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_04.png",
+   "sha256": "ba06a05aa95a1a9916d3342dfe55c28d9e50b02e6be55157b918061b7f0bf05c",
+   "page": 0,
+   "x": 3072,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_south_west_05.png",
+   "sha256": "37e76eb0237e6f07542386c6a087726403e9b972c7ab4d8201984692a64fa396",
+   "page": 0,
+   "x": 3584,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_00.png",
+   "sha256": "028c1c2506ae6b586bcc7d038e28b5a3b2e0ee48708f273d10dca7b5448e7a8a",
+   "page": 0,
+   "x": 0,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_01.png",
+   "sha256": "661b5da12508aa9172f544bdb76f1ae86176b75cdc9feaa671f691ecb4d48153",
+   "page": 0,
+   "x": 512,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_02.png",
+   "sha256": "a203ce24c702f986d56e254a6c94caa01b2331076ccaa2e85e5220bcde2a90ca",
+   "page": 0,
+   "x": 1024,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_03.png",
+   "sha256": "b5920c590e35bbcc4308c6a73b546a22b722f8bd9dbb60177b2ce3aa079b5464",
+   "page": 0,
+   "x": 1536,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_04.png",
+   "sha256": "709a072f7bf13b23b047fab5e2e84369448a723a35d50680ad3d720a94664ca4",
+   "page": 0,
+   "x": 2048,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_west_05.png",
+   "sha256": "a18e6fbcc8d76573580007f91950a845d15666a51ce8c640547e6a7684e471b0",
+   "page": 0,
+   "x": 2560,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_00.png",
+   "sha256": "5c43fbbe70cd94ad7fa41b64fd6faed1e30b69e9f64a5edcf98de4a590cb8763",
+   "page": 0,
+   "x": 3072,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_01.png",
+   "sha256": "78f12660b81760ad6d06877e767bc80ba2090d82da8dacd4134a4c33e4d4847a",
+   "page": 0,
+   "x": 3584,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_02.png",
+   "sha256": "025c9012acbf42dc47e66a249c7ec498a0e7f99050e0d5bc737597a1170ba812",
+   "page": 0,
+   "x": 0,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_03.png",
+   "sha256": "cd4120ef02ca7437bb9e7ab4a466842dc5128d88ef65693ff10e115be5fb20f8",
+   "page": 0,
+   "x": 512,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_04.png",
+   "sha256": "69530118ae7c4c7ba67e1a379c4286461ff2c88efba98f3af31981f181229731",
+   "page": 0,
+   "x": 1024,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_west_05.png",
+   "sha256": "a22a786822eaafd9a450c37a426825a88d1fe04d72433c08e9e549a333566838",
+   "page": 0,
+   "x": 1536,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_00.png",
+   "sha256": "05ba79d42888c0630dff3b8ef9a8257e0eae132f29a077e55134cf4c5544b551",
+   "page": 0,
+   "x": 2048,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_01.png",
+   "sha256": "8696cd9680666f23df2fba6ab2050840b705533cf9466029b19ea3e4b6776e8b",
+   "page": 0,
+   "x": 2560,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_02.png",
+   "sha256": "f7ad31a3f157e45b3e1de22fe24983f81a0c322c5569209c26e58b4cad53c576",
+   "page": 0,
+   "x": 3072,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_03.png",
+   "sha256": "24a4353cd738eacf803b0f97a2c1633ae33ae0f8f36806b67d8dd8a5215e5bec",
+   "page": 0,
+   "x": 3584,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_04.png",
+   "sha256": "34113623742641510823e33c4cc2f23cb6e9eae39fbe6b3f7fcf00b253c9f832",
+   "page": 0,
+   "x": 0,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_05.png",
+   "sha256": "f4c23ffef4c33043b3e4bb671412b4c6b488609770976c81e9ee87926538c053",
+   "page": 0,
+   "x": 512,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_00.png",
+   "sha256": "b786f82416ae9e142571cf5c66390c9cc4dc4e47d85016a6f633b1a1f404dd41",
+   "page": 0,
+   "x": 1024,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_01.png",
+   "sha256": "a2392a5aeeb000cbbaf1e15881eb52e1f848f799191a82ef5df999ebc8acdce6",
+   "page": 0,
+   "x": 1536,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_02.png",
+   "sha256": "25883d8015e78fc4d80751afaed2590d326796274bce0087875893e5804cd8f8",
+   "page": 0,
+   "x": 2048,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_03.png",
+   "sha256": "cede7e5f919eefb68de476a65dd36e5172a0b5c88224fae8682500a056300760",
+   "page": 0,
+   "x": 2560,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_04.png",
+   "sha256": "1a4609afae0687fdf9dda883b0aac4ec12e35880e52cbf6e0dcf61d91bbc5a6b",
+   "page": 0,
+   "x": 3072,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_move_north_east_05.png",
+   "sha256": "3e442085f82836418d540a32f93809db7769fc15cd8dd7ea1fc35dd68750c4f5",
+   "page": 0,
+   "x": 3584,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_00.png",
+   "sha256": "fe5fe0140036109bb3ef45705e4f65fe713c13ff14030aa4baefbed8a007a6a0",
+   "page": 0,
+   "x": 0,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_01.png",
+   "sha256": "8a16d78e3c8498886c57069fc92f92af767eeb97370778abbfc59c73304b223c",
+   "page": 0,
+   "x": 512,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_02.png",
+   "sha256": "c0eda415a2e69e2137e8e499b982874a3f834495793614004c8e8db375a58761",
+   "page": 0,
+   "x": 1024,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_03.png",
+   "sha256": "a875f07c6869dcc98e1d7785539b6509297a987c0f4112c5c56747e8694e6f1f",
+   "page": 0,
+   "x": 1536,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_04.png",
+   "sha256": "87a26170f628f32822971673f71fbc17c1d60164493644bc38341c3039919d3a",
+   "page": 0,
+   "x": 2048,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_east_05.png",
+   "sha256": "9c0f3c9071f40348168b0180151e55014d4d200f4ef1e59b3a01196e76857080",
+   "page": 0,
+   "x": 2560,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_00.png",
+   "sha256": "a8aef827aefacf1ccf853450953f653fdcaf8b5ecf87a950789d5d0a30dae90f",
+   "page": 0,
+   "x": 3072,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_01.png",
+   "sha256": "cdf6d942f1e9171388ec5e9740dccc6bc4bc32749e0cefb5dcf4829927e852ee",
+   "page": 0,
+   "x": 3584,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_02.png",
+   "sha256": "60b9308d505a14f87388de59dc2d805f8e3c880eea12c45a465d43c01febf63e",
+   "page": 1,
+   "x": 0,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_03.png",
+   "sha256": "9fa6741bae53348d64630df479d4ba14a7a1e7733db3183ba3ba0ffd2c667d9a",
+   "page": 1,
+   "x": 512,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_04.png",
+   "sha256": "2d50253380df96859899cff6bf87e6990323e0ca83b3e175e91814b20b5369c1",
+   "page": 1,
+   "x": 1024,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_east_05.png",
+   "sha256": "312db89e8290dfe559aeb6b89e48490c7d5e105a438a6df87b8bb69fa27d75b9",
+   "page": 1,
+   "x": 1536,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_00.png",
+   "sha256": "78a37c58d8438eb3bb29aff0742b9bdfefaccf6c89a180c8957bb5af1d82b79f",
+   "page": 1,
+   "x": 2048,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_01.png",
+   "sha256": "91c9ce643a07a3a051d21f28999309f85709f02293092487123c2bbe393560ba",
+   "page": 1,
+   "x": 2560,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_02.png",
+   "sha256": "ac8e23f53a082c1cd6aa2770ca1efa93a89f32be99a5ef9efa6dddd3f7325a44",
+   "page": 1,
+   "x": 3072,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_03.png",
+   "sha256": "101f7391a73e0cfff561ac20aaa0ab6f7ef71b40e28851502eceab5ec64b7263",
+   "page": 1,
+   "x": 3584,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_04.png",
+   "sha256": "506e7fdeb6d2d4d57b905a493f8df8f3017d5ed260561286e10a0c0054105e39",
+   "page": 1,
+   "x": 0,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_05.png",
+   "sha256": "7858f386a2f52e8ce451db14515588b39f6cb42a80e9e1170fd59f46b0f7d429",
+   "page": 1,
+   "x": 512,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_00.png",
+   "sha256": "01d173aea7f920e5b6ebf8d1301848b0744933fb665cf43445193ca4abf98a53",
+   "page": 1,
+   "x": 1024,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_01.png",
+   "sha256": "e9f89ec6ce6ef2ce00d4d36c215168d210b856154e4758ecfc14b4f012e30b75",
+   "page": 1,
+   "x": 1536,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_02.png",
+   "sha256": "28702e420e2daaeb9695a89dbfe3921fad7d9f63a81d6fcbfb87d12174198251",
+   "page": 1,
+   "x": 2048,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_03.png",
+   "sha256": "96de20cf0ac0373a2dcd1fcabccc987cc16307ea008d6e9e6bbbb1daf3af1752",
+   "page": 1,
+   "x": 2560,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_04.png",
+   "sha256": "41760ace7768652271d02142cdf4167270ac44eff98b436256337010546ac5d5",
+   "page": 1,
+   "x": 3072,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_south_west_05.png",
+   "sha256": "9465c4735f8c33be2dae646e12f06598aee7adb351464456b41ef9dd2f362426",
+   "page": 1,
+   "x": 3584,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_00.png",
+   "sha256": "c007aa299e96e910ff2821d55a1102dee88280843a020716cb463cddaca51e15",
+   "page": 1,
+   "x": 0,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_01.png",
+   "sha256": "c2ddede3cbfcc72cebe28b3f3117698acb16e893412411d0a7241788c3aadf52",
+   "page": 1,
+   "x": 512,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_02.png",
+   "sha256": "dcbdeea64f67d60ee51c562f514b969f6f341b5f57c935e38c01a563ad5d8160",
+   "page": 1,
+   "x": 1024,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_03.png",
+   "sha256": "7a45dcfcd8c0f2beeddca52a3780e47adc9a90555ce25125b367b88dd10f76f2",
+   "page": 1,
+   "x": 1536,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_04.png",
+   "sha256": "f18e6dd384a0026fbe1272c1b14402d1ab282728774ed8fbf91fee11d9de44f3",
+   "page": 1,
+   "x": 2048,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_west_05.png",
+   "sha256": "283b9a6cad924c1f380680c1fc39ac6f7387671f7420ef9764890a5ddf86b5bf",
+   "page": 1,
+   "x": 2560,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_00.png",
+   "sha256": "f0adcfc48627a86a4a34317a3afce5ab6966512c4ca67b305d05cfb5f45f76d0",
+   "page": 1,
+   "x": 3072,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_01.png",
+   "sha256": "b044e091db4301968b9acc4a7b07a7e052d6fdfe26f2fedbae8f71c50e1b5ef5",
+   "page": 1,
+   "x": 3584,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_02.png",
+   "sha256": "e4e73697a0db04519cd24af40f851edb5067990397802e99d24a640e9fd64d3c",
+   "page": 1,
+   "x": 0,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_03.png",
+   "sha256": "5d91e4fcf8b42ef71deade1b3c239501fbca52f10b2725728a93b1bc69bbcf0a",
+   "page": 1,
+   "x": 512,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_04.png",
+   "sha256": "156c68b53593da764beae5ee48b3975ad89678e723083abff73843d3a513958a",
+   "page": 1,
+   "x": 1024,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_west_05.png",
+   "sha256": "28d049b5521bb4f525dc85f34cbfb68e9e7cb18a133c22a5e4edad1a1a3d2d28",
+   "page": 1,
+   "x": 1536,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_00.png",
+   "sha256": "a8bd1c4d0f4bee877e2754644b9d00b01a80cb00da21bee2b8dbf1639e9571cb",
+   "page": 1,
+   "x": 2048,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_01.png",
+   "sha256": "10b2ff45f012ca0230679b77106c042afa897e2a6aa7dcb8bcb84dff1e81f5e8",
+   "page": 1,
+   "x": 2560,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_02.png",
+   "sha256": "3fdd8a3d30a754778374a7a92b3b7484fa310a8a84aa9f25e5c2ec064d8a26f0",
+   "page": 1,
+   "x": 3072,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_03.png",
+   "sha256": "21a27b7680087d5651888276547d7ac252e666d9d01d326dea4d0d68d663d1aa",
+   "page": 1,
+   "x": 3584,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_04.png",
+   "sha256": "27c9bf3174d6e465e89ec1c78cd39d76a1a525ed3260e9a751816eb0883653af",
+   "page": 1,
+   "x": 0,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_05.png",
+   "sha256": "60eac63e9fb25f271af673febb7025eb68db29cf199604a1fa614965a770a116",
+   "page": 1,
+   "x": 512,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_00.png",
+   "sha256": "ba18a668dc5373039c2f58f3b64956708352cb98aa3c8d2271607890d3c4a6b5",
+   "page": 1,
+   "x": 1024,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_01.png",
+   "sha256": "d2195e5f864041a82a43f30052dc301eedfee776e1b7f0e497fa06a17cc882c6",
+   "page": 1,
+   "x": 1536,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_02.png",
+   "sha256": "0c121ba17c6cb10340042ff0d2dc3df170b93ed3089aa32f23de604f2faf4aa9",
+   "page": 1,
+   "x": 2048,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_03.png",
+   "sha256": "b82b11c22a70169c88d8fefe3cd8ce5c0c6d37e82a6aa2dbbc797cbcd05112f1",
+   "page": 1,
+   "x": 2560,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_04.png",
+   "sha256": "0868428b1de1a2c29b14291ec8ca154d807974ca5971c26289997066f463b2aa",
+   "page": 1,
+   "x": 3072,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_attack_north_east_05.png",
+   "sha256": "0f2cb4a7c2d59544736df14d0121fd62614d62c504e0eb68f74cd87440c7bf7d",
+   "page": 1,
+   "x": 3584,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_00.png",
+   "sha256": "baca64345b43d193e42f0784074aea19d0a9bc8fc3d165c2837dffc4c017aaf8",
+   "page": 1,
+   "x": 0,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_01.png",
+   "sha256": "86af7938f72ec560f0214c5f6c515adbb41dc864b1a4b38f7f04b8b5a96b2ba3",
+   "page": 1,
+   "x": 512,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_02.png",
+   "sha256": "98af18d3402b2b3b8e9d0b5dbb354578a00ada3174c79e696d135dab25c67b6f",
+   "page": 1,
+   "x": 1024,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_east_03.png",
+   "sha256": "873121b5a4e4a7f01b0e1b8ce1aabff31706f293030896e7790d858917965e6d",
+   "page": 1,
+   "x": 1536,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_00.png",
+   "sha256": "3b8d6d108ce9a91600539c96fe0d385787f9fee5cf7872ed4ee6fb41a02f9358",
+   "page": 1,
+   "x": 2048,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_01.png",
+   "sha256": "5e63f557f01dae0aacbddcb7ac3f730d9d17d937bc2a7029f76ff20f68fc72ac",
+   "page": 1,
+   "x": 2560,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_02.png",
+   "sha256": "80dbaadd8488f9496e3276e8b95719273616079542c8f9d54c865cfee141fd4e",
+   "page": 1,
+   "x": 3072,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_east_03.png",
+   "sha256": "34ebde1b28cbf0c1b7381cbb8ed5392b174ea710e9c03f58eb7ee2618cc71d69",
+   "page": 1,
+   "x": 3584,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_00.png",
+   "sha256": "4bc2b9954f6889c1a5b8505f62579f0794a0477e3a6892e5e553e5a467b428d5",
+   "page": 1,
+   "x": 0,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_01.png",
+   "sha256": "073c55b4d722db0453b4595deaa99003935e64cc95de23b9da1d96fc6d0ee87e",
+   "page": 1,
+   "x": 512,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_02.png",
+   "sha256": "e65fa42d15c89346a43f87e937e5dc83be289bfafd261747591bb5adb12e9da1",
+   "page": 1,
+   "x": 1024,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_03.png",
+   "sha256": "4301ab1b9f8f382e05d06feccdabc7bd282d5777708eccbe3453aee26223dd8f",
+   "page": 1,
+   "x": 1536,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_00.png",
+   "sha256": "0e97c6811cc744cb451b887b65e81e5e26d0ac49dddf5d34f7ff2e3ea791bae3",
+   "page": 1,
+   "x": 2048,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_01.png",
+   "sha256": "46ff6cdadf5536a90384c5363f28c8d71aca0a881669ee36a100e90077071606",
+   "page": 1,
+   "x": 2560,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_02.png",
+   "sha256": "f83bbbf97a83e0946e6000b95a3e9fcd8c356e4dbdbea232fd3747fc3f63d8ed",
+   "page": 1,
+   "x": 3072,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_south_west_03.png",
+   "sha256": "6678cca1ef83acba9c709ddfb06f2ea33743119397efba3a8ad9922e4f8d463b",
+   "page": 1,
+   "x": 3584,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_00.png",
+   "sha256": "722ea69b4e6ac928c64a23c115a620467036bdc3610137f5e5a87c63a6846a99",
+   "page": 1,
+   "x": 0,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_01.png",
+   "sha256": "635defe952e8cc222d517d53fff6afb86b62e12978a8cec0f9e94d1cf553e5c4",
+   "page": 1,
+   "x": 512,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_02.png",
+   "sha256": "7a4b08527bff790ec39e5b5a41fc80e67b6d7a508bde94688428fad0091abb45",
+   "page": 1,
+   "x": 1024,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_west_03.png",
+   "sha256": "1695c10b9b256014e0bfc1c8ac1c7448e717028457fc805aeca0f074ef6f0d68",
+   "page": 1,
+   "x": 1536,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_00.png",
+   "sha256": "6e8e1963f3c9eb869479ed94c4f55486952d7ae07238d5e3ea25caf879f71644",
+   "page": 1,
+   "x": 2048,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_01.png",
+   "sha256": "b3e8ed269e4c13bfd5000f47593bfb2a5eb7b840029c605ed45428dee8aad6d6",
+   "page": 1,
+   "x": 2560,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_02.png",
+   "sha256": "e341c7981fe4d23534d3f6d44c1459d9f255e492c0f9187a2d862af23c46ca08",
+   "page": 1,
+   "x": 3072,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_west_03.png",
+   "sha256": "738a0aeb9c37d728684dee40fef52be6223bc30e0cedd3a1a27945ee238b5922",
+   "page": 1,
+   "x": 3584,
+   "y": 3584,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_00.png",
+   "sha256": "b83317193ae69396f617905ca88095780baa256167e90783d6ac98f8df253965",
+   "page": 2,
+   "x": 0,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_01.png",
+   "sha256": "da6ebeb658be9bea11f8e6202a51f67a4df30777626b39e6b985ea8f8b8b6807",
+   "page": 2,
+   "x": 512,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_02.png",
+   "sha256": "0f85f7efb8171667c77009fceb3b96c8c56abf46aa240b04f6d3f8d600469a01",
+   "page": 2,
+   "x": 1024,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_03.png",
+   "sha256": "73daa3255f01c07ba7c5a2c9d6e4f6eff24af6117243b9dffdaa5947f6ac948d",
+   "page": 2,
+   "x": 1536,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_00.png",
+   "sha256": "7646f5d45b07fb0bec3a9bebf542492eefcfc5e4e64cf9d1c5a9b271cf216b8a",
+   "page": 2,
+   "x": 2048,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_01.png",
+   "sha256": "947dfacc99e08cfd8b919308accb9761e8330e08518428e35edc6d1fcc0d3090",
+   "page": 2,
+   "x": 2560,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_02.png",
+   "sha256": "754d724cdd694b0f23de624b3006b6d6ebbb7c385f2b783c1051a16a069514af",
+   "page": 2,
+   "x": 3072,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_hit_north_east_03.png",
+   "sha256": "5c87506854d406c9046ff69d35d8a48f21d85965625ea9627c736e7c7314db4b",
+   "page": 2,
+   "x": 3584,
+   "y": 0,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_00.png",
+   "sha256": "4f8ae7f4359bac1927a00a7f0e50a1e125df932aa89ab9584a97fbdeb763b247",
+   "page": 2,
+   "x": 0,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_01.png",
+   "sha256": "120e34b9db05e4b2ac5684ca7d1ff948a954c549d2356713c9d0944442d12348",
+   "page": 2,
+   "x": 512,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_02.png",
+   "sha256": "3cb0bc015f03c626f3acb847e96e53eb344c4695c957b011546503871d1c7dde",
+   "page": 2,
+   "x": 1024,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_03.png",
+   "sha256": "47b31f5c25222d0ac0c38e6b5f77f2c20cc2be5e841a6e3ec6e6e35ffad35427",
+   "page": 2,
+   "x": 1536,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_04.png",
+   "sha256": "2f95a734473124c6675dc1f18a384079a7c75f38b2426c5f615ad6a2b80baadd",
+   "page": 2,
+   "x": 2048,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_east_05.png",
+   "sha256": "cc7988fe33a71c82f1f8cc711e89990e0ee75e0acb9bb48f7962e8f075dca291",
+   "page": 2,
+   "x": 2560,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_00.png",
+   "sha256": "a91f67420e1da6441ed2f00c576e2594c0a087487c5fc8754286d3c7630b2cc4",
+   "page": 2,
+   "x": 3072,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_01.png",
+   "sha256": "b77cdf72a0e198cd5cf23445f661960f5cfaf39d315cebceb364d471ccc931e1",
+   "page": 2,
+   "x": 3584,
+   "y": 512,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_02.png",
+   "sha256": "0ed60be462c1a3b314ee51744d814434ba3e0a9c094e6abd8137105b94553e42",
+   "page": 2,
+   "x": 0,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_03.png",
+   "sha256": "e7751842436c57095c5f21ef52d431ba657d8f67316544d9c12d647017f6aca8",
+   "page": 2,
+   "x": 512,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_04.png",
+   "sha256": "aee0df4809254d2a950a5b059b30fd8ee7a244cfbdfaa1b714b66749a6d971c4",
+   "page": 2,
+   "x": 1024,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_east_05.png",
+   "sha256": "672e90e4583f41fb8e7625521e8e8c813008edc7ea2d1fd6463062d751c3e31b",
+   "page": 2,
+   "x": 1536,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_00.png",
+   "sha256": "483157ea940cab336af0f2ac2175844c4501cd3362d73000b6f2839727a335aa",
+   "page": 2,
+   "x": 2048,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_01.png",
+   "sha256": "21ac7a5bb5947a9e51fb1fa68afce23560ab24639948686fb56120c5bfa3d4d2",
+   "page": 2,
+   "x": 2560,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_02.png",
+   "sha256": "a0205eab6f0399b2e5802e390276910cd6cdf844ebdd33a6df800283bfda5503",
+   "page": 2,
+   "x": 3072,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_03.png",
+   "sha256": "70e4a8ba199b038e1dd77fa231cde27368f17808bb2257695acc0f630e75baa1",
+   "page": 2,
+   "x": 3584,
+   "y": 1024,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_04.png",
+   "sha256": "fc3d42bac16116c617715d2b87501770387625396886d057f05dc84b9257ae5b",
+   "page": 2,
+   "x": 0,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_05.png",
+   "sha256": "2cb3e0e7d9a4df170ddb6c8a67e414e3b371be5e18612fe983bb8253e77ba6bf",
+   "page": 2,
+   "x": 512,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_00.png",
+   "sha256": "ab22000f5f6d22cc89748bd67f7b1475ebfc23cfbeeef43f0d2b26d66127adb4",
+   "page": 2,
+   "x": 1024,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_01.png",
+   "sha256": "480b7ab1cddc0557b08ca80536e963ba18b8fe61cbf8020d8ea3a525a9656968",
+   "page": 2,
+   "x": 1536,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_02.png",
+   "sha256": "cd8e2b2d6c7503987ede83d9061f675bde92610cc484b20cb9828cc14cd80cbb",
+   "page": 2,
+   "x": 2048,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_03.png",
+   "sha256": "0674d94f6024fc544685b2b89f251268e1dc19c1231f194433d6c1fd283264df",
+   "page": 2,
+   "x": 2560,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_04.png",
+   "sha256": "5c7ac0ecf1bd08635a98e85e8e3de29f0ad307583ef93974baf826e31e8ab408",
+   "page": 2,
+   "x": 3072,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_south_west_05.png",
+   "sha256": "69818309068c68f4cd1aa621897bdcabecebb8ef9aa59dbc6ec33de0c6d9f2cf",
+   "page": 2,
+   "x": 3584,
+   "y": 1536,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_00.png",
+   "sha256": "a6a75bc8451a969050f5c78bde38476944a1626ada0ee7fd606f8212b1e597c3",
+   "page": 2,
+   "x": 0,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_01.png",
+   "sha256": "6954bdbc18e324e10e390a00ba3cd82cb426c3b8d9f2dbcc5a2a686dc041bd10",
+   "page": 2,
+   "x": 512,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_02.png",
+   "sha256": "06672ec13ca6ec9d4d5ded8b25118d171e20f73497221da923b19bc8383a8e9c",
+   "page": 2,
+   "x": 1024,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_03.png",
+   "sha256": "34111ec943c465909a348459b0f6ebdbccee25a331ff5fe32bf2b7a7f3cf0a40",
+   "page": 2,
+   "x": 1536,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_04.png",
+   "sha256": "8c84b34f19c7f1bf88f50bc7f5212519c089330bd81ada72c2bd0c9ec2bd3f4f",
+   "page": 2,
+   "x": 2048,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_west_05.png",
+   "sha256": "8b8a3f4fcad82774634313c3f4e314fffcb468fbbb21b449b9c5d8516163ab95",
+   "page": 2,
+   "x": 2560,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_00.png",
+   "sha256": "7a84febaa9d353bd3b4be97b6345e6e2774cf40a8c22705dcaf9492176748237",
+   "page": 2,
+   "x": 3072,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_01.png",
+   "sha256": "07ae2f59616faabe999fcae03d7b2443e9107d0a5c77b17ef1b8e82d5f13a1ec",
+   "page": 2,
+   "x": 3584,
+   "y": 2048,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_02.png",
+   "sha256": "c65e593594cb32350003c493b27548bbbfdd36c77fe9c762eb486fa3c743fe2b",
+   "page": 2,
+   "x": 0,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_03.png",
+   "sha256": "2c8b84af8a701cfb5f9a8c7ad805607e1162086c473ffa208670cbb45252f969",
+   "page": 2,
+   "x": 512,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_04.png",
+   "sha256": "2ea7920cf646686fb38002646b19c4d24c6dc9b9a6d985eed178a81b048a57d0",
+   "page": 2,
+   "x": 1024,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_west_05.png",
+   "sha256": "97cd4bd290793a8f31cd564a2e16a279b48e34274d00af05229af7040bc8107c",
+   "page": 2,
+   "x": 1536,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_00.png",
+   "sha256": "6b82c7877b9e21e9e243725ef63330895ce3f4dd52736971beaadc23456a11a5",
+   "page": 2,
+   "x": 2048,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_01.png",
+   "sha256": "e8d55b1ea7abfffd184e4db402d821707bf0ec57f3f02cb2fec2a2fd9ce8a2c7",
+   "page": 2,
+   "x": 2560,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_02.png",
+   "sha256": "fde359cfa9030cb2279ec9e2ed10e0dde97e8aa90d2e27fd8d4cd7d42b385ac8",
+   "page": 2,
+   "x": 3072,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_03.png",
+   "sha256": "cccf6664c6961a973b29e56e77a5e577a88f8077adb59284b7d8f6d65dc01d68",
+   "page": 2,
+   "x": 3584,
+   "y": 2560,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_04.png",
+   "sha256": "09157ba90b5463d8e4ee0d230f4fea2a5fa1a2b2101ca6a5a0fcd54b40ea671f",
+   "page": 2,
+   "x": 0,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_05.png",
+   "sha256": "41de98a89b23907a7e70f6157cd6493dbdd8fdeb17e9a44f026edd54591746a5",
+   "page": 2,
+   "x": 512,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_00.png",
+   "sha256": "cfa2b53aa04b7982ea398634266ca0da995864cad9da5f71132db1e7915aacc3",
+   "page": 2,
+   "x": 1024,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_01.png",
+   "sha256": "82e7a8759e26c47293bbae253a3d1d019705981641a504e532eca62fd8fa93b5",
+   "page": 2,
+   "x": 1536,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_02.png",
+   "sha256": "87d4f9174a96c1a5791dcf256e6dd3feac4ac7608a5f89e6c3391901144a8a58",
+   "page": 2,
+   "x": 2048,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_03.png",
+   "sha256": "6e2c8339bdc612e52fd6b5d6df89ef1528f04eab30fd0514bd5f37618d39b8fb",
+   "page": 2,
+   "x": 2560,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_04.png",
+   "sha256": "29de6549cbd051eaff0323a56e2dd56d08afc8171deb9e4c6ac04db36de9cc1c",
+   "page": 2,
+   "x": 3072,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/small_biter/small_biter_death_north_east_05.png",
+   "sha256": "8a4f16a4db2124844dcd2374ca3f8373bacef1fb4bc5e8aa932483975554b283",
+   "page": 2,
+   "x": 3584,
+   "y": 3072,
+   "w": 512,
+   "h": 512
+  }
+ ],
+ "pages": [
+  {
+   "page": 0,
+   "path": "res://assets/sprites/enemies/full_frame/small_biter_atlas_0.png",
+   "sha256": "36b41c9bd504277ce35ba2c50531f591db920836d22abfffdd9c489a47df0d4d"
+  },
+  {
+   "page": 1,
+   "path": "res://assets/sprites/enemies/full_frame/small_biter_atlas_1.png",
+   "sha256": "7201238e7c0e1be892e2582963cce912f83ecaf0dd33df9363094902c588705c"
+  },
+  {
+   "page": 2,
+   "path": "res://assets/sprites/enemies/full_frame/small_biter_atlas_2.png",
+   "sha256": "b4bdb4803f55ef845abc9341f438e06ba08e8631605af0da3b2fb2a8748943f1"
+  }
+ ]
+}

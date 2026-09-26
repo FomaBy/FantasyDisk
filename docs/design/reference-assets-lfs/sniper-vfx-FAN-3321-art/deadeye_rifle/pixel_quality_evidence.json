@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3864",
+  "class_id": "sniper",
+  "weapon_id": "sniper_deadeye_rifle",
+  "object_id": "415abc19-95e7-40a8-97f5-e4c0167beb05",
+  "animation_group_id": "838e229a-b1ed-460e-8a02-4a7a89754229",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_contact_sheet.png",
+    "silhouette": "clear and weapon-specific in every frame",
+    "movement": "scope iris tightens, runes charge along barrel, straight rail tracer fires with recoil and focused impact star, then dissipates",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection; detached particles are intentional release accents",
+    "opaque_background": "none; all four corners are transparent and edges are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "frames": [
+    {
+      "index": 0,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f00.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f00.png",
+      "alpha_bbox_gt_8": [
+        25,
+        99,
+        232,
+        155
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4399,
+      "raw_pixel_sha256": "c9244c2095b4cf1b92ef8fd3c4144fdd7e2a876d5f7c119766f90713134ecaa2",
+      "source_pixel_sha256": "570b10a8bc1c3874e4ec38a78b446f93eb7263af11631f5471c7b98ac31b6dc9",
+      "runtime_pixel_sha256": "570b10a8bc1c3874e4ec38a78b446f93eb7263af11631f5471c7b98ac31b6dc9"
+    },
+    {
+      "index": 1,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f01.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f01.png",
+      "alpha_bbox_gt_8": [
+        24,
+        99,
+        230,
+        156
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4555,
+      "raw_pixel_sha256": "46a38f924c4653e5dc82ee6b801a7e5614d3fb2688ed297b67cfdd307a6305e2",
+      "source_pixel_sha256": "4bf74ed20fb30a5bff27655765c65b5e549944d57d9a61caacc99094e927306d",
+      "runtime_pixel_sha256": "4bf74ed20fb30a5bff27655765c65b5e549944d57d9a61caacc99094e927306d"
+    },
+    {
+      "index": 2,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f02.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f02.png",
+      "alpha_bbox_gt_8": [
+        23,
+        101,
+        230,
+        157
+      ],
+      "minimum_gutter_px": 23,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4490,
+      "raw_pixel_sha256": "ab2a16a826e7d49a5874ed4e5640b3ab7c6b1582280bec4a849af17f05088019",
+      "source_pixel_sha256": "476fe80f17c9b4ea48f3517eef1c2c35df2db85fc70ade8ac03760db5544bf37",
+      "runtime_pixel_sha256": "476fe80f17c9b4ea48f3517eef1c2c35df2db85fc70ade8ac03760db5544bf37"
+    },
+    {
+      "index": 3,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f03.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f03.png",
+      "alpha_bbox_gt_8": [
+        22,
+        100,
+        229,
+        156
+      ],
+      "minimum_gutter_px": 22,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4507,
+      "raw_pixel_sha256": "48bd92f99ea0275566fb68ddae3c5d1dca907a3d8a875c3120136131aa85f8b9",
+      "source_pixel_sha256": "34e823fa0328b97a199d05d858ea87dee0c294b4080cb4a9d07272a120d1d4f4",
+      "runtime_pixel_sha256": "34e823fa0328b97a199d05d858ea87dee0c294b4080cb4a9d07272a120d1d4f4"
+    },
+    {
+      "index": 4,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f04.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f04.png",
+      "alpha_bbox_gt_8": [
+        16,
+        99,
+        230,
+        155
+      ],
+      "minimum_gutter_px": 16,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4558,
+      "raw_pixel_sha256": "01a68deb913eac520d0fbc9bcd5b1c65b70f2e67412d921a943977e53d52f08e",
+      "source_pixel_sha256": "435bd016967f23d6f41b92655a561a9f6ab1cee2fae49dd7ad4716948b766b28",
+      "runtime_pixel_sha256": "435bd016967f23d6f41b92655a561a9f6ab1cee2fae49dd7ad4716948b766b28"
+    },
+    {
+      "index": 5,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f05.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f05.png",
+      "alpha_bbox_gt_8": [
+        16,
+        99,
+        235,
+        155
+      ],
+      "minimum_gutter_px": 16,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4497,
+      "raw_pixel_sha256": "7cdfba8201764290f0edd1db7905b0d58f0fdb18ac447932e1e97edadd3035e0",
+      "source_pixel_sha256": "387113b87ef290cbd6dd33e2686822963688353b69b73aebae82e9c592d13e10",
+      "runtime_pixel_sha256": "387113b87ef290cbd6dd33e2686822963688353b69b73aebae82e9c592d13e10"
+    },
+    {
+      "index": 6,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f06.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f06.png",
+      "alpha_bbox_gt_8": [
+        24,
+        100,
+        230,
+        157
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4572,
+      "raw_pixel_sha256": "a215b76a5310f5dfbc3b7be8fd35652f361b39a13bc6059e107376082c28d16b",
+      "source_pixel_sha256": "067e201a7011f7215283c2d20d6ba4666c0255a03c0e78d895e61964a5fe3885",
+      "runtime_pixel_sha256": "067e201a7011f7215283c2d20d6ba4666c0255a03c0e78d895e61964a5fe3885"
+    },
+    {
+      "index": 7,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f07.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f07.png",
+      "alpha_bbox_gt_8": [
+        26,
+        99,
+        232,
+        156
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4608,
+      "raw_pixel_sha256": "59ba3a5395876c21f2eb65f0b0c25f9dfe52480e84a58abddb071a272257c800",
+      "source_pixel_sha256": "7efe42ad6330c8a0a962d47317449d8a270b84835d15d4dbe97b133e683bb666",
+      "runtime_pixel_sha256": "7efe42ad6330c8a0a962d47317449d8a270b84835d15d4dbe97b133e683bb666"
+    },
+    {
+      "index": 8,
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f08.png",
+      "file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f08.png",
+      "alpha_bbox_gt_8": [
+        25,
+        98,
+        231,
+        155
+      ],
+      "minimum_gutter_px": 25,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4631,
+      "raw_pixel_sha256": "a396dc9050929ba0cc40940b7e8416a67a9cf4376fb0fed8bcabf2aef9b71475",
+      "source_pixel_sha256": "c896ff9b5a79b974f870e9be700ea6a4cecc50739d3ab197a8aae728e7fa19db",
+      "runtime_pixel_sha256": "c896ff9b5a79b974f870e9be700ea6a4cecc50739d3ab197a8aae728e7fa19db"
+    }
+  ]
+}

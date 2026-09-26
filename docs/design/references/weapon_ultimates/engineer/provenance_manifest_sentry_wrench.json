@@ -1,0 +1,263 @@
+{
+  "issue": "FAN-2565",
+  "weapon": "engineer/engineer_sentry_wrench",
+  "tool": "PixelLab MCP via tools/fan2565_sentry_wrench_pixellab.py",
+  "generated_at": "2026-08-18T02:45:07Z",
+  "object": {
+    "pixel_lab_object_id": "7a713b53-f9bb-477c-b478-b4096bc17c33",
+    "pixel_lab_animation_group_id": "1fda802e-eb3c-4d18-b304-09de5d50b521",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "dark fantasy pixel art engineer sentry turret pylon seen from the side: exactly one single tall narrow vertical tower, at least twice as tall as it is wide, standing on a small square footplate no wider than the tower itself, a compact hexagonal turret head with two short gun barrels at the very top, pale mint and teal painted metal with warm copper trim and one small glowing cyan lens, upright and centered with clear empty margin on all four sides, isolated game sprite on a fully transparent background, only one tower and nothing else, no round platform, no circular base disc, no ground, no shadow, no characters, no text, no extra machines",
+      "size": 256,
+      "view": "sidescroller"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same single tall sentry tower stays centered and upright and keeps its identity in every frame, it never becomes a different machine and nothing else enters the frame: it starts as a low folded stack of armor plates, then telescopes straight upward into the full tall tower, the hexagonal head at the top unfolds and the two barrels swing out and lock forward, the barrels flash and recoil while firing twice, then the head folds back down and the tower telescopes back down into the low folded stack venting one small puff of steam",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "sentry_pylon_f00.png",
+      "bytes": 10225
+    },
+    {
+      "file": "sentry_pylon_f01.png",
+      "bytes": 11380
+    },
+    {
+      "file": "sentry_pylon_f02.png",
+      "bytes": 11775
+    },
+    {
+      "file": "sentry_pylon_f03.png",
+      "bytes": 13156
+    },
+    {
+      "file": "sentry_pylon_f04.png",
+      "bytes": 12797
+    },
+    {
+      "file": "sentry_pylon_f05.png",
+      "bytes": 12600
+    },
+    {
+      "file": "sentry_pylon_f06.png",
+      "bytes": 12453
+    },
+    {
+      "file": "sentry_pylon_f07.png",
+      "bytes": 12143
+    },
+    {
+      "file": "sentry_pylon_f08.png",
+      "bytes": 11617
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "runtime_pack": {
+    "directory": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy",
+    "source_canvas": [
+      256,
+      256
+    ],
+    "shared_crop_rect": [
+      32,
+      12,
+      184,
+      248
+    ],
+    "downscale": 2,
+    "runtime_canvas": [
+      76,
+      118
+    ],
+    "frames": [
+      {
+        "frame": 0,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_00.png",
+        "sha256": "6d30a9bd23f2ab54b6cdee176076a9fb24f9d61326e5410f46307078a36d5f3f",
+        "used_rect": [
+          30,
+          3,
+          64,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          46.88,
+          61.27
+        ],
+        "islands": [
+          2786
+        ]
+      },
+      {
+        "frame": 1,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_01.png",
+        "sha256": "082c99dfd70b9049a0891f5da0c2d1da44c160008b6ace3c97927c259dcfcd63",
+        "used_rect": [
+          30,
+          3,
+          64,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          46.88,
+          61.27
+        ],
+        "islands": [
+          2786
+        ]
+      },
+      {
+        "frame": 2,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_02.png",
+        "sha256": "f69fd64ee2c651dd19b3a4749d409f75dd71d1c42859efb4201ec28b948c0b00",
+        "used_rect": [
+          9,
+          3,
+          64,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          45.53,
+          58.39
+        ],
+        "islands": [
+          2961
+        ]
+      },
+      {
+        "frame": 3,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_03.png",
+        "sha256": "86612506f81be12a2f850dcea3a803f1d27f09698974c43dfc5a64a641644b1d",
+        "used_rect": [
+          1,
+          2,
+          64,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          45.28,
+          57.92
+        ],
+        "islands": [
+          2982
+        ]
+      },
+      {
+        "frame": 4,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_04.png",
+        "sha256": "4bef93e582c0f220856119ca6ee87810dc432b52ac11443eeeaac3013996709b",
+        "used_rect": [
+          3,
+          1,
+          64,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          45.36,
+          57.17
+        ],
+        "islands": [
+          3017
+        ]
+      },
+      {
+        "frame": 5,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_05.png",
+        "sha256": "f7b247c1a97c23e46ead29f92a04d83d077cfce5759db759a018c9e4c2448214",
+        "used_rect": [
+          30,
+          2,
+          64,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          46.94,
+          60.92
+        ],
+        "islands": [
+          2801
+        ]
+      },
+      {
+        "frame": 6,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_06.png",
+        "sha256": "1c63566b04fec72199e4c17506272568579f2fb5472edc4b0f8970273fcc7c04",
+        "used_rect": [
+          30,
+          1,
+          73,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          47.71,
+          62.1
+        ],
+        "islands": [
+          2956
+        ]
+      },
+      {
+        "frame": 7,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_07.png",
+        "sha256": "f1cb19764347c5b2e3ccec068ca885eab1555defd8c358775789eceaedb49e0a",
+        "used_rect": [
+          31,
+          3,
+          74,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          47.7,
+          62.92
+        ],
+        "islands": [
+          2885
+        ]
+      },
+      {
+        "frame": 8,
+        "path": "assets/sprites/effects/ultimates/engineer/sentry_wrench_deploy/sentry_pylon_08.png",
+        "sha256": "670fc9971dea7d719966d50073e2f206e63131a7f40c44d762e5a7b66e80a08a",
+        "used_rect": [
+          30,
+          3,
+          72,
+          117
+        ],
+        "semi_transparent_pixels": 0,
+        "alpha_centroid": [
+          47.12,
+          61.37
+        ],
+        "islands": [
+          2795,
+          17
+        ]
+      }
+    ],
+    "quality": {
+      "distinct_frames": 9,
+      "semi_transparent_pixels_total": 0,
+      "pivot_drift_px": [
+        2.43,
+        5.75
+      ],
+      "largest_stray_island_px": 17
+    }
+  }
+}

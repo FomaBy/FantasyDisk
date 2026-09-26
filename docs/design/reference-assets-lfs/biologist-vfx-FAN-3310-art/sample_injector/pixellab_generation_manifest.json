@@ -1,0 +1,93 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T19:03:31Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "025da89d-6915-4f78-a8e6-93b085fd229a",
+    "pixel_lab_animation_group_id": "9607491a-3841-43b3-9584-f3aad6902eeb",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered oversized biological sample injector needle with a cyan glass reservoir, a luminous green-white extraction beam and a compact double DNA helix target sigil, dark fantasy D&D pixel art seen from above, isolated ultimate impact VFX prop, clean readable silhouette, empty transparent background, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the injector rail and helix target centered with stable proportions; the needle charges along a straight line, a cyan sample beam fires into the target, the double DNA helix rotates, three analysis rings pulse one after another on distinct per-victim impact beats, then the beam contracts to a clean spark; every frame must have clear measurable motion, no duplicate frames, no clipping or stray pixels, transparent background, no new objects or text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "sample_injector_f00.png",
+      "bytes": 23742,
+      "url_kind": "template",
+      "encoded_sha256": "54ba4feef51977036598b760a0b439352c2573175b7478063737acffc7b2ec9b",
+      "pixel_sha256": "26947f88a141d73aba7ef4208e871e746b118a637d7c2eb926554c45385d174e"
+    },
+    {
+      "file": "sample_injector_f01.png",
+      "bytes": 22743,
+      "url_kind": "template",
+      "encoded_sha256": "529e897bc2d765397d2cdac542b0d785cf86695983a63b0ee19d63d51715a69e",
+      "pixel_sha256": "0081385df7390bc83a036bf9ae904acdb6b8e909ec181448a5ad3f3d6d8e5cac"
+    },
+    {
+      "file": "sample_injector_f02.png",
+      "bytes": 20347,
+      "url_kind": "template",
+      "encoded_sha256": "d331708d09233638cfc2a31fc0f7fddd910cb9df6b7b0172bf912929e250029f",
+      "pixel_sha256": "61f268e8c2b41c084ef73653e08a91b84964681ffbe5e7783c332e2999185b6a"
+    },
+    {
+      "file": "sample_injector_f03.png",
+      "bytes": 16590,
+      "url_kind": "template",
+      "encoded_sha256": "9cadb9cdd0041f57435300734fe063bb654229c77727436c648e148323952a3d",
+      "pixel_sha256": "eb0dff25dec7340f1d5ea12912bcf581444be2f38b04a55e338ab75776205e10"
+    },
+    {
+      "file": "sample_injector_f04.png",
+      "bytes": 21077,
+      "url_kind": "template",
+      "encoded_sha256": "1a3972fb5fc11c959693b4aa16f81ff1c8034e566aa1e91b595e4ed4854d77c0",
+      "pixel_sha256": "b9a82917f426428f4fbcc688f1e87774241917f6113131b5dc59b17892c0cc54"
+    },
+    {
+      "file": "sample_injector_f05.png",
+      "bytes": 17349,
+      "url_kind": "template",
+      "encoded_sha256": "5be32f7382ed47f5dc15371afd74b841833757a88638016d7c9a7e8175fb1a6f",
+      "pixel_sha256": "bd7d32e8368a4d6eb57022d03868a1541e6921a037b83014b4d7e3e6c343179a"
+    },
+    {
+      "file": "sample_injector_f06.png",
+      "bytes": 15893,
+      "url_kind": "template",
+      "encoded_sha256": "576e40cfb6ba4518be36b2f8f55582d152dc81c7c992ec625eff7460637578ca",
+      "pixel_sha256": "6380bb66e18cdd7a0415e191f28598ad8be6a6d1ec43897604cde84b9e8f0a87"
+    },
+    {
+      "file": "sample_injector_f07.png",
+      "bytes": 11486,
+      "url_kind": "template",
+      "encoded_sha256": "d08dc9bfae3b6c7c90b0eb4170369273b0b6971b0d19ac2d1b84a86e215f4bc1",
+      "pixel_sha256": "0e38ac62094413efb63752d4b164aec5b5799832add0ea9fcf9572ba7a2b1c0c"
+    },
+    {
+      "file": "sample_injector_f08.png",
+      "bytes": 6155,
+      "url_kind": "template",
+      "encoded_sha256": "739620d89079a72b0c95311a619b6997317e32e0b52397ec7103c86c32619b67",
+      "pixel_sha256": "a08ada2b29f2f0229f58c451d9525e7981ce9532d6884e270e856c4c948afa1e"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

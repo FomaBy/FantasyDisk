@@ -1,0 +1,7 @@
+{
+  "committed_list_passes": true,
+  "corrupted_value": 1.5,
+  "detector_rejected": true,
+  "expected": 1.0,
+  "fixture": "duration list[0] +0.5 (all others authentic)"
+}

@@ -1,0 +1,92 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T03:45:00Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "48fe51bd-6724-4c65-a5d6-dd6fda15c283",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single ivory bone saw slash arc with serrated surgical blade, bright gold sparks and a red-green vitality ribbon, dark fantasy D&D pixel art, top-down isolated VFX object, centered on transparent background, no character, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same surgical saw arc stays centered with stable bone-white and gold palette; the serration sweeps through a fast close orbit, sparks trail from left to right and the vitality ribbon tightens, with clear directional measurable motion in every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "bone_saw_orbit_slash_f00.png",
+      "bytes": 20461,
+      "url_kind": "template",
+      "encoded_sha256": "aba241aef5d2f2c629cb5382abb166d723b1e6722b7ddbf3f02fbe1f4b65b620",
+      "pixel_sha256": "f0a76eaf6240b3074fa94aa819843aa8a9414ef9e41ab496ddb1407f7e13b841"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f01.png",
+      "bytes": 25602,
+      "url_kind": "template",
+      "encoded_sha256": "33f492cbb8d502f029b3e92423c2f0aa805b7ebad849074c7220152cd988b20f",
+      "pixel_sha256": "99c0b2155076e7c4b1bc77ecf9106d83ac1f1f70e49b9829e6cbc30b7e1b1eca"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f02.png",
+      "bytes": 24812,
+      "url_kind": "template",
+      "encoded_sha256": "f50b66370b0e38731e4075b4885f9b8aad56f2736f542a2bc71d37fadeb2d579",
+      "pixel_sha256": "53f3050bf974a529c7ea1cb2e570895aadf5a02e038acfc195e1937104647c18"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f03.png",
+      "bytes": 26169,
+      "url_kind": "template",
+      "encoded_sha256": "8a474e3e29c8a8fc50df66cd5d3f0dfb1a6a1add053a3280b9e592bbb3036a12",
+      "pixel_sha256": "3322fc3c0eae29ea26a48566fc9f87cf0f2e9d43b33813535ac8bdb793bfdd00"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f04.png",
+      "bytes": 23744,
+      "url_kind": "template",
+      "encoded_sha256": "ac421a3e76cd1897612346a1988cf7a6ec2a7fc3f6c0f9ffd31b89d25b07c628",
+      "pixel_sha256": "f2046f2f8a40373a932d845df0d0704d0aba229e06feebf85a266f80b62977a7"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f05.png",
+      "bytes": 23179,
+      "url_kind": "template",
+      "encoded_sha256": "def05d9136604edf27937a40479e7eab5d813955218d4d4c716b454ab28f555e",
+      "pixel_sha256": "22d3e64831651e8f5ddee8a0c114575272dc5d6e04dbdce5604780fbb42aa462"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f06.png",
+      "bytes": 23767,
+      "url_kind": "template",
+      "encoded_sha256": "b0acd4760e7ab0afd7c04a79c7b6329edaffd51bf54eacfb9bb5fdaa7133bd0c",
+      "pixel_sha256": "08182d9528ac164e1834a25ee1d1a167524b5e555faa12207815ff8aec99b03c"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f07.png",
+      "bytes": 24154,
+      "url_kind": "template",
+      "encoded_sha256": "79eaf28824fb09419e7a519306374450cf9394ad6f12c814631fc09cba6d7451",
+      "pixel_sha256": "ebf6dfbd4bd10246383d4afd0e77a17cf388c4e45a2bbb2630821c9c4f7c6f16"
+    },
+    {
+      "file": "bone_saw_orbit_slash_f08.png",
+      "bytes": 25674,
+      "url_kind": "template",
+      "encoded_sha256": "c031bac354d5203a46e18d7a8233b8c11acfc811c044c18abb9ce2edc6a85a5f",
+      "pixel_sha256": "7f76ae026161fef4c9f3afb1b7c6c9231845bb6e6e4716388af6eb626827419c"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

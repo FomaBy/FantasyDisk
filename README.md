@@ -139,3 +139,9 @@ Setup и SHA256SUMS), а Discord сообщает Telegram download link.
 **не переносится в репозиторий**. Задачи ведутся в Multica (`multica` CLI); legacy
 `tools/jira_*.py` — archive-only. На Windows работает сама игра — Godot
 кросс-платформенный; AI-оркестрация остаётся на Mac.
+
+## Лицензия
+
+Исходный код — [Apache License 2.0](LICENSE). Игровые ассеты (арт, анимации,
+аудио в `assets/`) в Apache-лицензию не входят: права сохранены, сборка игры из
+исходников разрешена — подробности в [assets/LICENSE.md](assets/LICENSE.md).

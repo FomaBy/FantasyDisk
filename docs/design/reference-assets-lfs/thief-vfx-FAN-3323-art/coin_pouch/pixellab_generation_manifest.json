@@ -1,0 +1,101 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T09:44:12Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "888048ef-fa34-467b-bb82-bb39339f1730",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Thief ultimate coin pouch: supple dark brown leather drawstring pouch tipped open, a bright fan of engraved gold coins and three small amber coin-sparks spilling from it, top-down D&D dark fantasy pixel art, isolated VFX prop on transparent background, crisp thief-specific silhouette, generous empty margin, no character, no text, no border, no background",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single Thief coin pouch and engraved gold coins centered with stable outline, proportions, palette and identity in every frame; animate a readable ultimate coin-ricochet release: drawstring pouch snaps open, gold coins spill outward in a curved ricochet trail with amber glints, the lead coin flashes at the impact beat, then the coins arc back toward the pouch and settle; measurable motion and distinct silhouettes in every frame, no static duplicates, no clipping, no stray pixels, transparent background, no new objects, no text",
+      "frame_count": 8
+    },
+    "animation_group_id": "d3eb13ee-6813-4be0-b5b3-578209282353",
+    "canonical_asset_key": "thief/coin_pouch"
+  },
+  "frames": [
+    {
+      "file": "coin_pouch_f00.png",
+      "bytes": 36552,
+      "url_kind": "template",
+      "encoded_sha256": "f0b4050175b6cb736d9c9977dc8e9d781e046ed91f3431cbcedd935fbbc7ca04",
+      "pixel_sha256": "bbcbc410b9f25d6f66e274f1bc86cab8523f448152d3faaea7bbc4a865b5d595"
+    },
+    {
+      "file": "coin_pouch_f01.png",
+      "bytes": 41344,
+      "url_kind": "template",
+      "encoded_sha256": "54a7080dcbf42223217c59b26fff1dabd23da19de03f450d2d5f12ba54ee47d6",
+      "pixel_sha256": "db18490a6f2d090777eb168afc4cdc09ce39cc28b67ed865b68c581328c38566"
+    },
+    {
+      "file": "coin_pouch_f02.png",
+      "bytes": 42746,
+      "url_kind": "template",
+      "encoded_sha256": "ee1d01e08a00058d410603d884640f05fe94d0ccb5fcdc96725288c5bd38fab4",
+      "pixel_sha256": "0e2af8aa51d64e45138b8cef19553f296fdc51c5e7e88cbcc68288abea9ddaeb"
+    },
+    {
+      "file": "coin_pouch_f03.png",
+      "bytes": 43597,
+      "url_kind": "template",
+      "encoded_sha256": "73a35b0e3afa88c3e65322383898ccc95c479540bd3eb1214d2bf8e1311544dc",
+      "pixel_sha256": "366d8a3b98e99a1b9b90b1e91aab15f8e9604f65f617eccc35b36320e471834f"
+    },
+    {
+      "file": "coin_pouch_f04.png",
+      "bytes": 42895,
+      "url_kind": "template",
+      "encoded_sha256": "6e3c63d003658309c1032acc399772ec7e58e29aca6e2569969f65674d6c31e9",
+      "pixel_sha256": "b26cef010d4328d54693fd8628722d2d1a6e08bfeb211fa18793b6c4a14255dd"
+    },
+    {
+      "file": "coin_pouch_f05.png",
+      "bytes": 41661,
+      "url_kind": "template",
+      "encoded_sha256": "c11eb1a4f44d79e5acc2c7037191fc251aa5370f4edf3d50c4014f6c8d2faeb0",
+      "pixel_sha256": "981b578389b955c0a42e93165d99908f7d89037e4724a69cee90afbe0107b338"
+    },
+    {
+      "file": "coin_pouch_f06.png",
+      "bytes": 41056,
+      "url_kind": "template",
+      "encoded_sha256": "19a7154fe9b006f64e22ec6e75c2db974635e0cf5621950ea85e2bb3f7c92409",
+      "pixel_sha256": "a077594be5013c6aa58b0297c2642698188f8394851eb76c22b98aac43498135"
+    },
+    {
+      "file": "coin_pouch_f07.png",
+      "bytes": 41252,
+      "url_kind": "template",
+      "encoded_sha256": "eaeffcee191cb1e277d8cfab34fc71db365ae201ff7b10c216ce3755c4ff0154",
+      "pixel_sha256": "968349ad2c891748521426942c809d51b01f5863739ad0376380547454ae92f4"
+    },
+    {
+      "file": "coin_pouch_f08.png",
+      "bytes": 41910,
+      "url_kind": "template",
+      "encoded_sha256": "b13765a74cc3f613ef1343d3512384fc163f4837f85daa11df7c05029294d6a0",
+      "pixel_sha256": "d83d4dfa597150b7c16623c99f6e7b4d49e267f5526132aa3eed65802541d3dc"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/coin_pouch",
+  "postprocess": {
+    "method": "raw PixelLab 256x256 frames preserved under raw/; accepted/runtime frames are nearest-neighbor 224x224 inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "accepted_safe_gutter_px": 16
+  }
+}

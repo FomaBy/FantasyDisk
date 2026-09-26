@@ -16,23 +16,3 @@ material = SubResource("CanvasItemMaterial_press")
 z_index = 11
 sprite_frames = ExtResource("2_frames")
 animation = &"compress"
-
-[node name="UpperPressure" type="Line2D" parent="."]
-z_index = 12
-antialiased = true
-
-[node name="LowerPressure" type="Line2D" parent="."]
-z_index = 12
-antialiased = true
-
-[node name="UpperJaw" type="Line2D" parent="."]
-z_index = 13
-antialiased = true
-
-[node name="LowerJaw" type="Line2D" parent="."]
-z_index = 13
-antialiased = true
-
-[node name="ImpactAxis" type="Line2D" parent="."]
-z_index = 14
-antialiased = true

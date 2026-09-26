@@ -60,15 +60,15 @@ func _measure(weapon_id: String, row: Dictionary, profile: Dictionary) -> Dictio
 		"soldier_rifle":
 			solo_coefficient = float(params.get("damage", 0.0)) * float(params.get("volley_count", 0))
 			representative_aoe_coefficient = solo_coefficient
-			crowd_cap = int(params.get("target_limit", 0))
+			crowd_cap = 0
 		"soldier_grenade":
 			solo_coefficient = float(params.get("damage", 0.0)) 				+ float(params.get("crater_damage", 0.0)) * float(params.get("crater_ticks", 0))
 			representative_aoe_coefficient = float(params.get("grenade_count", 0)) * solo_coefficient
-			crowd_cap = int(params.get("target_limit", 0))
+			crowd_cap = 0
 		"soldier_bayonet":
 			solo_coefficient = float(params.get("damage", 0.0))
 			representative_aoe_coefficient = solo_coefficient * float(params.get("rank_count", 0))
-			crowd_cap = int(params.get("target_limit", 0))
+			crowd_cap = 0
 			defense_seconds = float(params.get("pin_duration", 0.0))
 	var power_midpoint := (float(row["power_budget_min"]) + float(row["power_budget_max"])) * 0.5
 	return {
@@ -94,15 +94,15 @@ func _test_weapon(
 	var params := (profile.get("executor", {}) as Dictionary).get("params", {}) as Dictionary
 	match weapon_id:
 		"soldier_rifle":
-			_check(int(params.get("volley_count", 0)) == 3 and int(metrics["crowd_cap"]) == 3,
-				"rifle must retain three volleys over three dense-corridor seats")
+			_check(int(params.get("volley_count", 0)) == 3 and not params.has("target_limit"),
+				"rifle must retain three volleys without a target-count cap")
 		"soldier_grenade":
 			_check(int(params.get("grenade_count", 0)) == 7 and int(params.get("seed", 0)) == 1469
-				and int(metrics["crowd_cap"]) == 26,
-				"grenade must retain seven deterministic throws and its crowd rail")
+				and not params.has("target_limit"),
+				"grenade must retain seven deterministic throws without a target-count cap")
 		"soldier_bayonet":
-			_check(int(params.get("rank_count", 0)) == 3 and int(metrics["crowd_cap"]) == 18,
-				"bayonet must retain three ranks and its corridor rail")
+			_check(int(params.get("rank_count", 0)) == 3 and not params.has("target_limit"),
+				"bayonet must retain three ranks without a target-count cap")
 			_check(float(metrics["defense_seconds"]) >= 2.2
 				and is_equal_approx(float(params.get("guard_defense", 0.0)), 0.25),
 				"bayonet must contribute a decisive pin plus its declared guard")
@@ -117,10 +117,10 @@ func _test_trio(metrics: Dictionary) -> void:
 		and float((metrics["soldier_bayonet"] as Dictionary)["aoe_output"])
 		> float((metrics["soldier_rifle"] as Dictionary)["aoe_output"]),
 		"grenade, bayonet and rifle must keep distinct descending crowd roles")
-	_check(int((metrics["soldier_rifle"] as Dictionary)["crowd_cap"]) == 3
-		and int((metrics["soldier_grenade"] as Dictionary)["crowd_cap"]) == 26
-		and int((metrics["soldier_bayonet"] as Dictionary)["crowd_cap"]) == 18,
-		"the trio must retain distinct 3/26/18 target rails")
+	_check(is_zero_approx(float((metrics["soldier_rifle"] as Dictionary)["crowd_cap"]))
+		and is_zero_approx(float((metrics["soldier_grenade"] as Dictionary)["crowd_cap"]))
+		and is_zero_approx(float((metrics["soldier_bayonet"] as Dictionary)["crowd_cap"])),
+		"the trio must keep map-wide targeting without count-shaped caps")
 	_check(is_equal_approx(float((metrics["soldier_bayonet"] as Dictionary)["defense_seconds"]), 2.4)
 		and is_zero_approx(float((metrics["soldier_rifle"] as Dictionary)["defense_seconds"]))
 		and is_zero_approx(float((metrics["soldier_grenade"] as Dictionary)["defense_seconds"])),

@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3859",
+  "weapon_id": "storm_longbow",
+  "animation": {
+    "name": "ranger_storm_longbow_ultimate",
+    "fps": 3.0,
+    "loop": false,
+    "frame_count": 9
+  },
+  "runtime_directory": "assets/sprites/effects/ranger/storm_longbow",
+  "spriteframes": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_spriteframes.tres",
+  "frame_order": [
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f00.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f01.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f02.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f03.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f04.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f05.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f06.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f07.png",
+    "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f08.png"
+  ],
+  "source_runtime_byte_parity": true,
+  "source_runtime_pixel_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f00.png",
+      "sha256": "da2cf81eae9ffd58e3268fc599fff41f3f077da166bc74ae44e34d66f87adbe0",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f00.png.import",
+        "uid": "uid://c62466jtjxdju",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f00.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f00.png-effe0ba47b27e24643ef3231aa157d3a.ctex"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f01.png",
+      "sha256": "3b64fd555709e4547e1caee35f448d81445a758b65347c71a19631fecdc0e966",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f01.png.import",
+        "uid": "uid://mlus7rqjtxar",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f01.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f01.png-d18d4e1325ae9f06d6d3a978e80405df.ctex"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f02.png",
+      "sha256": "e8a20e087bd9c7b094a32df7e97e96bc640484b3f57262482a035950f1b67d1e",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f02.png.import",
+        "uid": "uid://bexn7eiifrllr",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f02.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f02.png-e6501b252facb7e42ca6468807499984.ctex"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f03.png",
+      "sha256": "df3eb0008e4b7946160813d081cd2994972cff1cf6c69b9c10460ea4fb1736cf",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f03.png.import",
+        "uid": "uid://chrfvatdtlij3",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f03.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f03.png-aefd6955d14c6a8f933a35cad32b85ac.ctex"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f04.png",
+      "sha256": "fd4d5a460b8a68c910ba31e9a207125bb784611522a14957ec1a668818e6cb8f",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f04.png.import",
+        "uid": "uid://dtft260ptfg75",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f04.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f04.png-2fe1ce22f546e2acfdb17604d5819fc6.ctex"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f05.png",
+      "sha256": "e5f9616d0e9b4f37fc32a21904d8d527f593807cf9135c33efa344744a4ed767",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f05.png.import",
+        "uid": "uid://wvyf0bvtrtsg",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f05.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f05.png-d2bfa94ff46cac9666db74d11a95bf62.ctex"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f06.png",
+      "sha256": "ab302cee9aef922833074bbfdb50ba42673b316d609f68441ae5d16417080bea",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f06.png.import",
+        "uid": "uid://cw5ml0haj4dfs",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f06.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f06.png-dc4b86f623aa5ae23ff477a6d4b5eb4f.ctex"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f07.png",
+      "sha256": "a865c0b08fd8c33b64f936df5fb64af5b9947b77a54a08089775841bdee25655",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f07.png.import",
+        "uid": "uid://yexglpsd5vl1",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f07.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f07.png-0f653502fd5b7d3c2c798a0b10c5b193.ctex"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "file": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f08.png",
+      "sha256": "a496b8d3c27bc428efb82110f45b9bfbd6a22642522a212560f57eddcc505fdf",
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/storm_longbow/storm_longbow_f08.png.import",
+        "uid": "uid://c4a7y4j7kbuel",
+        "source_file": "res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_f08.png",
+        "dest_files": [
+          "res://.godot/imported/storm_longbow_f08.png-7536d312e652493e27df64dacff311dc.ctex"
+        ]
+      }
+    }
+  ]
+}

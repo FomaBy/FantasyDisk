@@ -1,0 +1,59 @@
+{
+  "tool": "tools/pixellab_wait_animation_frames.py",
+  "generated_at": "2026-08-18T15:27:41Z",
+  "object": {
+    "pixel_lab_object_id": "9e0a4744-52f0-4931-a25a-e17ea15b2aa1",
+    "pixel_lab_animation_group_id": "99b87171-0535-4eab-bbf9-3fb6c6505b94",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object"
+  },
+  "frames": [
+    {
+      "file": "sword_victim_explosion_f00.png",
+      "bytes": 16116,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f01.png",
+      "bytes": 12023,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f02.png",
+      "bytes": 12947,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f03.png",
+      "bytes": 11019,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f04.png",
+      "bytes": 27507,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f05.png",
+      "bytes": 10525,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f06.png",
+      "bytes": 6833,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f07.png",
+      "bytes": 4721,
+      "url_kind": "template"
+    },
+    {
+      "file": "sword_victim_explosion_f08.png",
+      "bytes": 3709,
+      "url_kind": "template"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

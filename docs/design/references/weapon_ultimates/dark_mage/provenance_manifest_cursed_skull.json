@@ -1,0 +1,121 @@
+{
+  "issue": "FAN-3602",
+  "class_id": "dark_mage",
+  "weapon_id": "cursed_skull",
+  "canonical_id": "dark_mage/cursed_skull",
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-27T23:47:45Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "a89c1100-d53b-4000-8481-02ef7667565c",
+    "pixel_lab_animation_group_id": "4268cc09-babf-41d7-b00d-6b8a6c8711d0",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one single colossal ivory skull crown with three hanging black curse chains and violet soul wisps, dark fantasy D&D pixel art seen straight from above, centered isolated effect, only one skull crown and chains, empty transparent background, clean silhouette, no characters, no extra props, no text, no border",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the skull crown and three chains centered with the same shape and size in every frame; crown rises slightly while violet soul wisps travel along the chains, three curse nodes pulse, then the jaw opens for one bright violet harvest contraction; every frame stays visibly active, transparent background, no new objects, no text, no cropping",
+      "frame_count": 8
+    }
+  },
+  "frames": [
+    {
+      "file": "cursed_skull_f00.png",
+      "bytes": 39937,
+      "url_kind": "template",
+      "encoded_sha256": "63d1aedb35af95da3dfcc2c8e04755687115e1b11f0c8c855132563dca3e7827",
+      "pixel_sha256": "f846c9a69914cf38c7d47ef55d0654849f2c6f4316ca22adbb1e530e062ca9d3"
+    },
+    {
+      "file": "cursed_skull_f01.png",
+      "bytes": 42400,
+      "url_kind": "template",
+      "encoded_sha256": "7184396ec4897d1ffb2af4a7460589846dd0dfe629fe354df1f0f038b722bc53",
+      "pixel_sha256": "5d9444755d08a1ba40c5090a106db996bdc1afc920be69f53688e45bd5e85419"
+    },
+    {
+      "file": "cursed_skull_f02.png",
+      "bytes": 41502,
+      "url_kind": "template",
+      "encoded_sha256": "5c7e4d3acdfd4baf706bd29f6a8f036e2bf16e159d6e5c82c09b9fdceae9ba0c",
+      "pixel_sha256": "895ffd6592c195951b4fba0a1af026f5a862da6e6e6568b2e1f33c5b89be0b20"
+    },
+    {
+      "file": "cursed_skull_f03.png",
+      "bytes": 41736,
+      "url_kind": "template",
+      "encoded_sha256": "13d3cbd634d4135a0a72844a3216a49f15f87531f90191b4dd6218b928a9c7b7",
+      "pixel_sha256": "8f40a89c2cdbc5c57aa7aa44abf8e8a018bb22b0c71fd2995a38431dceb0ecfa"
+    },
+    {
+      "file": "cursed_skull_f04.png",
+      "bytes": 46338,
+      "url_kind": "template",
+      "encoded_sha256": "ab5cccc3e6b6356c6961cddcc2e4e8410269ec3918371af78f4a3fb9021ac3b2",
+      "pixel_sha256": "4a0a4fd73976b92b3c3c06406c2864d0dec4d10987dd73bb55a98a18bc2c152c"
+    },
+    {
+      "file": "cursed_skull_f05.png",
+      "bytes": 44127,
+      "url_kind": "template",
+      "encoded_sha256": "5da546dd5802c320b6d0cbf2292987156f35d6013421e51659b8f12c5864b125",
+      "pixel_sha256": "96977ba15c73fe3a907fbb48c7b81a18fb5cd6287dbd01d5939e7ba0eba256b7"
+    },
+    {
+      "file": "cursed_skull_f06.png",
+      "bytes": 44162,
+      "url_kind": "template",
+      "encoded_sha256": "1e5b7cc4db3de35ddd2ce7636dc081a6df1dcf0b16b1af58d6a5645794627cef",
+      "pixel_sha256": "0088d9b928bf25525041b2cf78eb5afbeecc6977ec00c5bfc4a6176c45303ce6"
+    },
+    {
+      "file": "cursed_skull_f07.png",
+      "bytes": 43754,
+      "url_kind": "template",
+      "encoded_sha256": "54bdf7d81e4ba34e109e27b9afd58b89100c19edfcb93102879b0f9fef340f11",
+      "pixel_sha256": "9a821acdd362991a813c367778f90fa9df89b5f9916719299fed51864e50e413"
+    },
+    {
+      "file": "cursed_skull_f08.png",
+      "bytes": 43692,
+      "url_kind": "template",
+      "encoded_sha256": "dfb8c46c9cec0a90879c188c39a683cab33df5e70d1a931b98a86ce5e20d446f",
+      "pixel_sha256": "65976772fc42be6051b1e4abc353eabb441c73ba3d0cce57cc5c622fe4575be5"
+    }
+  ],
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616/cursed_skull",
+    "runtime_dir": "assets/sprites/effects/dark_mage/cursed_skull",
+    "runtime_spriteframes": "assets/sprites/effects/dark_mage/cursed_skull/cursed_skull_spriteframes.tres",
+    "animation": "cursed_crown",
+    "frame_width": 256,
+    "frame_height": 256,
+    "frame_count": 9,
+    "source_frame_pattern": "cursed_skull_f%02d.png (00..08)",
+    "runtime_frame_pattern": "cursed_skull_%02d.png (00..08)",
+    "frame_order": "ascending numeric suffix 00 -> 08",
+    "source_runtime_parity": "each runtime frame is a byte-exact copy of the matching source frame by index",
+    "loop": false,
+    "speed_fps": 6.0
+  },
+  "verification": {
+    "frame_size": "256x256 RGBA",
+    "max_border_alpha": 0,
+    "semi_transparent_pixels_per_frame": 0,
+    "distinct_pixel_hashes": 9,
+    "visible_pixels_alpha_gt_40_range": [30559, 33975],
+    "adjacent_frame_changed_pixels_range": [9963, 20867],
+    "visual_review": "source frames 00, 05 and 08 reviewed; skull crown, chains and violet harvest remain readable"
+  },
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

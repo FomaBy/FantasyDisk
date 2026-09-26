@@ -1,0 +1,453 @@
+{
+  "issue": "FAN-3859",
+  "weapon_id": "hunter_trap",
+  "quality": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "transparent_background": true,
+    "no_clipping": true,
+    "min_gutter_px": 20,
+    "max_gutter_px": 20,
+    "edge_visible_pixels_max": 0,
+    "distinct_frames": 9,
+    "duplicate_frame_count": 0,
+    "transition_changed_pixels": [
+      21719,
+      23858,
+      21826,
+      21632,
+      11984,
+      9646,
+      16606,
+      23991
+    ],
+    "motion_nontrivial": true,
+    "generated_manifest_hash_match": true,
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true,
+    "static_duplicate_pairs": [],
+    "semi_transparent_pixels_total": 0,
+    "small_component_count_le_2px_total": 0,
+    "seams_detected": false,
+    "manual_visual_review": "contact sheet shows a readable isolated silhouette on every frame; no opaque backdrop"
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f00.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png.import",
+      "raw_encoded_sha256": "88a9b2bed122528108bfa1ae5a3d20fdaa5017910f38c1fe7897b1e84065cb9c",
+      "raw_pixel_sha256": "83cb79b4e5d390c854572b7d9a6448afa2b0b4f07a20e5c3b2c211fbff12029b",
+      "generated_manifest_encoded_sha256": "88a9b2bed122528108bfa1ae5a3d20fdaa5017910f38c1fe7897b1e84065cb9c",
+      "generated_manifest_pixel_sha256": "83cb79b4e5d390c854572b7d9a6448afa2b0b4f07a20e5c3b2c211fbff12029b",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "456053c93b34c4992939b14cfab8a329482bf5099f83cf5c42fc9e175ddc304e",
+      "accepted_pixel_sha256": "fcd0989811eaae06fed933c3d31ecf9ce9980added02d7f3ebe825dd903ca6f7",
+      "runtime_encoded_sha256": "456053c93b34c4992939b14cfab8a329482bf5099f83cf5c42fc9e175ddc304e",
+      "runtime_pixel_sha256": "fcd0989811eaae06fed933c3d31ecf9ce9980added02d7f3ebe825dd903ca6f7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        23,
+        236,
+        233
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 13,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.16,
+        129.96
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png.import",
+        "uid": "uid://dsawucwb123a7",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f00.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f00.png-fa60337df628355fde7046be7126bb27.ctex"
+        ]
+      }
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f01.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png.import",
+      "raw_encoded_sha256": "bbee67f7c0e7bac662326b93fde0c13adb775b0850133806e27cde788698576a",
+      "raw_pixel_sha256": "decf5557f6207ef09d707610e32fd8725a0bcbcafbb303a9b8984059188ca17d",
+      "generated_manifest_encoded_sha256": "bbee67f7c0e7bac662326b93fde0c13adb775b0850133806e27cde788698576a",
+      "generated_manifest_pixel_sha256": "decf5557f6207ef09d707610e32fd8725a0bcbcafbb303a9b8984059188ca17d",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "68342e69397b3484046e96018e10ac0b2d0ae984ac12d790a9d9b09a81c37cd9",
+      "accepted_pixel_sha256": "c850859f9221ab4298184866d9486a52dca397fb3b219493727af4d6ea4eb2bb",
+      "runtime_encoded_sha256": "68342e69397b3484046e96018e10ac0b2d0ae984ac12d790a9d9b09a81c37cd9",
+      "runtime_pixel_sha256": "c850859f9221ab4298184866d9486a52dca397fb3b219493727af4d6ea4eb2bb",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        28,
+        236,
+        230
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 11,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.65,
+        130.55
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png.import",
+        "uid": "uid://c607tdqqqx7ed",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f01.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f01.png-eeb5fd846d0e8aad5617c79f863ea420.ctex"
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f02.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png.import",
+      "raw_encoded_sha256": "8bab5060122d4135189228c363be28e18df3e17512df96e3be8a0a1556000606",
+      "raw_pixel_sha256": "d86556746edd82413bfd3fd0285988df00643a2d634d89488dc958e8979c1197",
+      "generated_manifest_encoded_sha256": "8bab5060122d4135189228c363be28e18df3e17512df96e3be8a0a1556000606",
+      "generated_manifest_pixel_sha256": "d86556746edd82413bfd3fd0285988df00643a2d634d89488dc958e8979c1197",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "2d2415298a82d546c0c1ce8d5e55cbb124965af520a5afc8bdac9831a045ef4b",
+      "accepted_pixel_sha256": "e76b1580572e22842e7fbc987b13f1123173418b075adefd721b9dfb0c3a485b",
+      "runtime_encoded_sha256": "2d2415298a82d546c0c1ce8d5e55cbb124965af520a5afc8bdac9831a045ef4b",
+      "runtime_pixel_sha256": "e76b1580572e22842e7fbc987b13f1123173418b075adefd721b9dfb0c3a485b",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        25,
+        236,
+        226
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 11,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.75,
+        130.33
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png.import",
+        "uid": "uid://ch3tv2nghp4cs",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f02.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f02.png-e7e8fbbcc1cd4f504a193794593ec90b.ctex"
+        ]
+      }
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f03.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png.import",
+      "raw_encoded_sha256": "6d48ffffebfab82b5bc3b015b49a2c5e1bfdd3b22e13df5108017f4e75c79558",
+      "raw_pixel_sha256": "242cfd1a23229c697926efbb3de2a9ba01930d05fbb41fed07c93db07846c4e7",
+      "generated_manifest_encoded_sha256": "6d48ffffebfab82b5bc3b015b49a2c5e1bfdd3b22e13df5108017f4e75c79558",
+      "generated_manifest_pixel_sha256": "242cfd1a23229c697926efbb3de2a9ba01930d05fbb41fed07c93db07846c4e7",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "87ea28d53a3a955acb8c8adcd6cdba7529f5fd32c48098e48644a890c6106ca1",
+      "accepted_pixel_sha256": "f3e67fb8bac64af0eaab7810d780fb7c468d9f12f8778193e3c0fc17715e2bc7",
+      "runtime_encoded_sha256": "87ea28d53a3a955acb8c8adcd6cdba7529f5fd32c48098e48644a890c6106ca1",
+      "runtime_pixel_sha256": "f3e67fb8bac64af0eaab7810d780fb7c468d9f12f8778193e3c0fc17715e2bc7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        25,
+        236,
+        226
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 12,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.33,
+        131.49
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png.import",
+        "uid": "uid://vweu7jk8ibg5",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f03.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f03.png-4fce6d53f4a5f75465fd639d8a59f35d.ctex"
+        ]
+      }
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f04.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png.import",
+      "raw_encoded_sha256": "43cc5c4337441c794d4d421d3715a832f17c9d0f0b1196d727d833b2535d19a8",
+      "raw_pixel_sha256": "25136cf33d3c4f8994d033579a950d33630dfc1c2d86e4eda2220ee93bc26d8d",
+      "generated_manifest_encoded_sha256": "43cc5c4337441c794d4d421d3715a832f17c9d0f0b1196d727d833b2535d19a8",
+      "generated_manifest_pixel_sha256": "25136cf33d3c4f8994d033579a950d33630dfc1c2d86e4eda2220ee93bc26d8d",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "8a95eeabfb3c677186b78d76c8ae0ed9fc80daec11b64c97d712272e00592f2b",
+      "accepted_pixel_sha256": "9dd8411b890b5b5f2fc3be7cc33c35345f35d6b0bdc0971c999160c48075a93f",
+      "runtime_encoded_sha256": "8a95eeabfb3c677186b78d76c8ae0ed9fc80daec11b64c97d712272e00592f2b",
+      "runtime_pixel_sha256": "9dd8411b890b5b5f2fc3be7cc33c35345f35d6b0bdc0971c999160c48075a93f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        28,
+        236,
+        229
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 6,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.53,
+        136.63
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png.import",
+        "uid": "uid://cc826p5jhoxas",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f04.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f04.png-177344757e932bc8d9e3a16688154c19.ctex"
+        ]
+      }
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f05.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png.import",
+      "raw_encoded_sha256": "8953de2cdf0b9d788035543404939b6b37d9d5267f7893c42c196ca0a201aaa5",
+      "raw_pixel_sha256": "0ec9348a52ed74b2c55601f45df33c59bb8f2e4149178878819fb5556927a688",
+      "generated_manifest_encoded_sha256": "8953de2cdf0b9d788035543404939b6b37d9d5267f7893c42c196ca0a201aaa5",
+      "generated_manifest_pixel_sha256": "0ec9348a52ed74b2c55601f45df33c59bb8f2e4149178878819fb5556927a688",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "d3a1472e28647214d9d052618e1e6345bff151b64a27d21656b2f8f339421fc3",
+      "accepted_pixel_sha256": "3c3dd4a5648dd8bb5fb2d33e30c65257a9e8ca18beac89b8a935468489ae207f",
+      "runtime_encoded_sha256": "d3a1472e28647214d9d052618e1e6345bff151b64a27d21656b2f8f339421fc3",
+      "runtime_pixel_sha256": "3c3dd4a5648dd8bb5fb2d33e30c65257a9e8ca18beac89b8a935468489ae207f",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        32,
+        236,
+        217
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 4,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        130.04,
+        131.89
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png.import",
+        "uid": "uid://d1kkya55rb2ak",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f05.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f05.png-e59eac849ea1fdfc3c0d0a9badb578cd.ctex"
+        ]
+      }
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f06.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png.import",
+      "raw_encoded_sha256": "c3503cdd6ef9d5dc149ad33a7368489f372bb4e3e5fc774cb024c4cfdb3ec218",
+      "raw_pixel_sha256": "ab3a53e45fc28330904e1fc0b78e84856da070d8c7293575f951771888cbc4a4",
+      "generated_manifest_encoded_sha256": "c3503cdd6ef9d5dc149ad33a7368489f372bb4e3e5fc774cb024c4cfdb3ec218",
+      "generated_manifest_pixel_sha256": "ab3a53e45fc28330904e1fc0b78e84856da070d8c7293575f951771888cbc4a4",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "9c693017c184cadaf03bd510ffade3f6f1d593b582e1295e1a7fceebbb924f18",
+      "accepted_pixel_sha256": "f165d4cdde4a4089135b10b219856f9f217cac7f777ffbc9cbeddcd4d7e135ca",
+      "runtime_encoded_sha256": "9c693017c184cadaf03bd510ffade3f6f1d593b582e1295e1a7fceebbb924f18",
+      "runtime_pixel_sha256": "f165d4cdde4a4089135b10b219856f9f217cac7f777ffbc9cbeddcd4d7e135ca",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        29,
+        236,
+        217
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 6,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.84,
+        132.17
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png.import",
+        "uid": "uid://y4cqbypnxeg6",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f06.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f06.png-82e5e57df8863d56d9930a4e2e14d03a.ctex"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f07.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png.import",
+      "raw_encoded_sha256": "f52af37cd4cbdcd2b4793b9008dc13676d910611472ed147c8dc165f5a922082",
+      "raw_pixel_sha256": "088e72ab813899def0eee3134bcaa812d17da466b1d4b01c7ad218c4e310195e",
+      "generated_manifest_encoded_sha256": "f52af37cd4cbdcd2b4793b9008dc13676d910611472ed147c8dc165f5a922082",
+      "generated_manifest_pixel_sha256": "088e72ab813899def0eee3134bcaa812d17da466b1d4b01c7ad218c4e310195e",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "dc8181bc9bf4e3bae528387264a240620d97adf5388dd0a497c72bcc29d0cee7",
+      "accepted_pixel_sha256": "ac95e6d4ee83c2118a0b8f3e9dcfbc27dd935b965e01a35b32a5982fc04badae",
+      "runtime_encoded_sha256": "dc8181bc9bf4e3bae528387264a240620d97adf5388dd0a497c72bcc29d0cee7",
+      "runtime_pixel_sha256": "ac95e6d4ee83c2118a0b8f3e9dcfbc27dd935b965e01a35b32a5982fc04badae",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        31,
+        236,
+        219
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 2,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        128.75,
+        132.61
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png.import",
+        "uid": "uid://diqq3tossofhc",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f07.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f07.png-a9e0b6c3320dc3e6761e2f3001fceac1.ctex"
+        ]
+      }
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/hunter_trap_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/ranger-vfx-FAN-3319-art/hunter_trap/raw/hunter_trap_f08.png",
+      "runtime_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png",
+      "import_file": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png.import",
+      "raw_encoded_sha256": "3887fce0d4486635df1c3f4c9e616b0afda8af6163bfe4a64300c539c3f40165",
+      "raw_pixel_sha256": "6b465dcc1aa4d7cde4211ba1d729b7bdc05abeeef90cdbcd5cb2629ba0b6409b",
+      "generated_manifest_encoded_sha256": "3887fce0d4486635df1c3f4c9e616b0afda8af6163bfe4a64300c539c3f40165",
+      "generated_manifest_pixel_sha256": "6b465dcc1aa4d7cde4211ba1d729b7bdc05abeeef90cdbcd5cb2629ba0b6409b",
+      "generated_manifest_hash_match": true,
+      "accepted_encoded_sha256": "8e73973b20c9629cec5737910a28450e4a5573eec2afef0e6660b81672e8ea55",
+      "accepted_pixel_sha256": "e63219fb1d6314021db70feb6986e2be7843e2c00f8cff0902b1e080acd147f6",
+      "runtime_encoded_sha256": "8e73973b20c9629cec5737910a28450e4a5573eec2afef0e6660b81672e8ea55",
+      "runtime_pixel_sha256": "e63219fb1d6314021db70feb6986e2be7843e2c00f8cff0902b1e080acd147f6",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox_gt_8": [
+        20,
+        22,
+        236,
+        226
+      ],
+      "minimum_gutter_px": 20,
+      "edge_visible_pixels": 0,
+      "semi_transparent_pixels": 0,
+      "component_count": 4,
+      "small_component_count_le_2px": 0,
+      "alpha_centroid": [
+        129.3,
+        129.0
+      ],
+      "import": {
+        "status": "imported",
+        "path": "assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png.import",
+        "uid": "uid://boi6podru3uhm",
+        "source_file": "res://assets/sprites/effects/ranger/hunter_trap/hunter_trap_f08.png",
+        "dest_files": [
+          "res://.godot/imported/hunter_trap_f08.png-ae03b4671513aaa1370f07692c56ffb2.ctex"
+        ]
+      }
+    }
+  ]
+}

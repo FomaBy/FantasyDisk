@@ -1,0 +1,55 @@
+{
+  "character_id": "void_mage",
+  "pixellab_character_id": "63c8426e-dd29-48b7-b2d7-00dad7f592c3",
+  "generated_at": "2026-08-18",
+  "source": "PixelLab MCP",
+  "mode": "v3 reference-image rotation (idle, 1f) + template walking-6-frames (move) + v3 custom (attack/hit/death)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "template_animation_id": "walking-6-frames",
+      "fps": 9.0
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "casting a void spell, thrusting hand forward and unleashing a burst of dark energy",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "action_description": "recoiling in pain from a hit, flinching backward",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "collapsing and dissolving into void smoke, dying",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2614: dedicated 8-direction pack replacing the single authored horizontal view + flip for standard_monster/void_mage. 8 idle rotations (1f) + 8x6 move frames + 8x6 attack frames + 8x4 hit frames + 8x6 death frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. void_mage is ground-based (no hover). FAN-3052: re-animated move west/north-west/south-east (walking-6-frames, same animation group) to fix inconsistent pink-item visibility across frames within a direction row; other directions/states untouched."
+}

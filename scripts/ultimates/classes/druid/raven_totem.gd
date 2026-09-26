@@ -1,6 +1,8 @@
 extends Node2D
 
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.druid.raven_totem"
 const EXECUTOR_ID := "weapon_ultimate.executor.druid.raven_totem"
@@ -14,8 +16,16 @@ var wisp_return_count_for_tests := 0
 var _activation = null
 var _marked: Array = []
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
+## Ultimate Direction v2 (FAN-3239): the mark, every dive wave and the collapse
+## reach every live enemy on the map — `mark_radius` is the presentation ring,
+## never reach. `crowd_cap` and `dive_target_cap` stay declared only because the
+## read-only class-wide Druid package/balance suites freeze them in the JSON;
+## the executor no longer reads them, and the class-wide conversion card strips
+## them together with the siblings' caps.
 static func parameter_contract() -> Dictionary:
 	return {
 		"lifetime": {"type": "number", "minimum": 0.1},
@@ -88,12 +98,7 @@ func configure(activation) -> void:
 func mark() -> void:
 	if _activation == null or _activation.is_finished():
 		return
-	_marked = _activation.select_targets(
-		global_position,
-		_activation.param_float("mark_radius", 520.0),
-		_activation.param_int("crowd_cap", 22),
-		"nearest"
-	)
+	_marked = _activation.select_targets(global_position, INF, 0, "nearest")
 	for raw_target in _marked:
 		var target := raw_target as Node2D
 		if target == null or not is_instance_valid(target):
@@ -115,9 +120,9 @@ func dive(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	dive_count_for_tests += 1
-	var target_cap: int = mini(_activation.param_int("dive_target_cap", 3), _marked.size())
-	for offset in target_cap:
-		var target := _marked[(wave * target_cap + offset) % _marked.size()] as Node
+	var victims: Array = []
+	for raw_target in _marked:
+		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = _deal(
@@ -128,14 +133,16 @@ func dive(wave: int) -> void:
 		)
 		if result != null and float(result.applied) > 0.0:
 			wisp_return_count_for_tests += 1
+			victims.append(target)
+	_play_impacts(victims)
 
 
 func collapse() -> void:
 	if _activation == null or _activation.is_finished():
 		return
-	var target_cap: int = mini(_activation.param_int("dive_target_cap", 3), _marked.size())
-	for offset in target_cap:
-		var target := _marked[offset] as Node
+	var victims: Array = []
+	for raw_target in _marked:
+		var target := raw_target as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = _deal(
@@ -146,10 +153,26 @@ func collapse() -> void:
 		)
 		if result != null and float(result.applied) > 0.0:
 			wisp_return_count_for_tests += 1
+			victims.append(target)
+	_play_impacts(victims)
 	_activation.present(EXECUTOR_ID + ".collapse", {
 		"position": global_position, "radius": _activation.param_float("mark_radius", 520.0),
 		"shape": "ring_pulse",
 	})
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, global_position)
+		_impacts_started = true
 
 
 func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
@@ -174,4 +197,6 @@ func _exit_tree() -> void:
 			target.set_meta(StatusEffects.META_KEY, owned)
 	_leased_statuses.clear()
 	_marked.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null

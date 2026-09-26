@@ -1,0 +1,10 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+ENGINEER_ACCESSIBILITY_TEMPORAL={"display_server":"macOS","event_coverage_floor":0.01,"fullscreen_coverage_floor":0.8,"luminance_delta":0.18,"pixel_stride":4,"renderer":"Apple M4 Pro","rendering_method":"gl_compatibility","results":[{"declared_max_flash_coverage_ratio":0.06,"duration_seconds":4.6,"flash_events":0,"full_screen_flash_hz":0.0,"max_flash_coverage_ratio":0.0,"samples":138,"weapon_id":"engineer_sentry_wrench"},{"declared_max_flash_coverage_ratio":0.0,"duration_seconds":5.5,"flash_events":0,"full_screen_flash_hz":0.0,"max_flash_coverage_ratio":0.0,"samples":165,"weapon_id":"engineer_repair_drone"},{"declared_max_flash_coverage_ratio":0.0,"duration_seconds":4.0,"flash_events":0,"full_screen_flash_hz":0.0,"max_flash_coverage_ratio":0.0,"samples":120,"weapon_id":"engineer_pressure_mines"}],"sample_hz":30.0,"seed":394720260910,"viewport":[1152,648]}
+engineer_accessibility_modes_test: PASS (12 production mode casts, crowded/repeated feedback, lifecycle restoration, windowed temporal bounds)
+WARNING: 20 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2535)
+ERROR: 4 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+exit=0

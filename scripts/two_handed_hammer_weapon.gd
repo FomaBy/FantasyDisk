@@ -6,6 +6,10 @@ const HAMMER_VFX_SCENE := preload("res://scenes/vfx/BerserkHammerSlamVfx.tscn")
 
 func _show_circle_area(owner_node: Node2D) -> void:
 	if owner_node == null or not is_instance_valid(owner_node): return
+	# FAN-2981: the textured slam (flash + ring + dust) around the hero comes
+	# from the shared berserk reference layer — the same one the sword pattern
+	# uses — instead of the former Line2D/Polygon2D zone markup.
+	super._show_circle_area(owner_node)
 	var center := owner_node.global_position
 	var visual_scale := Vector2.ONE
 	# SCRUM-1043 backend may expose these protected geometry hooks. Fallbacks

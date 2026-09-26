@@ -91,12 +91,24 @@ static func _aura_texture(parent: Node2D) -> Texture2D:
 	return RING_TEXTURE
 
 
+# FAN-3934: один неизменяемый аддитивный материал на весь бой. Каждый telegraph/
+# burst/aura раньше получал собственный CanvasItemMaterial (Object), что в P3
+# держало сотни неотличимых по визуалу копий. Свойства материала никто не мутирует
+# после создания — цвет всегда задаётся через modulate спрайта.
+static var _additive_material: CanvasItemMaterial
+
+
+static func additive_material() -> CanvasItemMaterial:
+	if _additive_material == null:
+		_additive_material = CanvasItemMaterial.new()
+		_additive_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	return _additive_material
+
+
 static func _additive(texture: Texture2D, color: Color) -> Sprite2D:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
-	var material := CanvasItemMaterial.new()
-	material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	sprite.material = material
+	sprite.material = additive_material()
 	sprite.modulate = color
 	return sprite
 
@@ -126,24 +138,26 @@ static func telegraph(parent: Node2D, radius: float, color: Color, windup: float
 
 	# grow + fade in over the first part of the windup
 	var fade_in := minf(windup * 0.4, 0.25)
-	var grow := holder.create_tween()
-	grow.set_parallel(true)
-	grow.tween_property(zone, "scale", Vector2.ONE * target_scale, minf(windup * 0.5, 0.3)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	# Этап C (читаемость): пик альфы зоны 0.5 → 0.62 — телеграф виден и на
-	# светлых аренах / под шумом боя.
-	grow.tween_property(zone, "modulate:a", 0.62, fade_in)
-	grow.tween_property(rim, "modulate:a", 0.9, fade_in)
 	# urgency pulse for the middle of the windup
 	var pulse := holder.create_tween()
 	pulse.set_loops()
 	pulse.tween_property(zone, "modulate:a", 0.78, 0.32).set_delay(fade_in).set_trans(Tween.TRANS_SINE)
 	pulse.tween_property(zone, "modulate:a", 0.5, 0.32).set_trans(Tween.TRANS_SINE)
-	# Этап C (читаемость): последние ~25% замаха — ускоренный пульс «сейчас
-	# рванёт» (период ~0.12s, пик 0.85). Отдельный tween глушит средний пульс и
-	# мигает чаще; при queue_free телеграфа все tween'ы узла гаснут сами.
-	var urgent := holder.create_tween()
-	urgent.tween_interval(maxf(windup * 0.75, fade_in))
-	urgent.tween_callback(func() -> void:
+	# FAN-3934: grow и urgent-переключение объединены в один tween (было два).
+	# Тайминги идентичны: параллельный рост, затем interval до точки ускоренного
+	# пульса (t=75% замаха) и переключение. Средний пульс остаётся отдельным
+	# циклическим tween'ом — у него другой период.
+	var grow_elapsed := maxf(minf(windup * 0.5, 0.3), fade_in)
+	var urgent_delay := maxf(maxf(windup * 0.75, fade_in) - grow_elapsed, 0.0)
+	var timeline := holder.create_tween()
+	timeline.set_parallel(true)
+	timeline.tween_property(zone, "scale", Vector2.ONE * target_scale, minf(windup * 0.5, 0.3)).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# Этап C (читаемость): пик альфы зоны 0.5 → 0.62 — телеграф виден и на
+	# светлых аренах / под шумом боя.
+	timeline.tween_property(zone, "modulate:a", 0.62, fade_in)
+	timeline.tween_property(rim, "modulate:a", 0.9, fade_in)
+	timeline.chain().tween_interval(urgent_delay)
+	timeline.chain().tween_callback(func() -> void:
 		pulse.kill()
 		if not is_instance_valid(holder) or not is_instance_valid(zone):
 			return

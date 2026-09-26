@@ -1,0 +1,953 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_east_00.png" id="tex_001"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_south_east_00.png" id="tex_002"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_south_00.png" id="tex_003"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_south_west_00.png" id="tex_004"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_west_00.png" id="tex_005"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_north_west_00.png" id="tex_006"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_north_00.png" id="tex_007"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_idle_north_east_00.png" id="tex_008"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_east_00.png" id="tex_009"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_east_01.png" id="tex_010"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_east_02.png" id="tex_011"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_east_03.png" id="tex_012"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_east_04.png" id="tex_013"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_east_05.png" id="tex_014"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_east_00.png" id="tex_015"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_east_01.png" id="tex_016"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_east_02.png" id="tex_017"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_east_03.png" id="tex_018"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_east_04.png" id="tex_019"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_east_05.png" id="tex_020"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_00.png" id="tex_021"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_01.png" id="tex_022"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_02.png" id="tex_023"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_03.png" id="tex_024"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_04.png" id="tex_025"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_05.png" id="tex_026"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_west_00.png" id="tex_027"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_west_01.png" id="tex_028"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_west_02.png" id="tex_029"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_west_03.png" id="tex_030"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_west_04.png" id="tex_031"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_south_west_05.png" id="tex_032"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_west_00.png" id="tex_033"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_west_01.png" id="tex_034"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_west_02.png" id="tex_035"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_west_03.png" id="tex_036"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_west_04.png" id="tex_037"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_west_05.png" id="tex_038"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_west_00.png" id="tex_039"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_west_01.png" id="tex_040"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_west_02.png" id="tex_041"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_west_03.png" id="tex_042"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_west_04.png" id="tex_043"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_west_05.png" id="tex_044"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_00.png" id="tex_045"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_01.png" id="tex_046"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_02.png" id="tex_047"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_03.png" id="tex_048"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_04.png" id="tex_049"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_05.png" id="tex_050"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_east_00.png" id="tex_051"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_east_01.png" id="tex_052"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_east_02.png" id="tex_053"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_east_03.png" id="tex_054"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_east_04.png" id="tex_055"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_move_north_east_05.png" id="tex_056"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_east_00.png" id="tex_057"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_east_01.png" id="tex_058"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_east_02.png" id="tex_059"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_east_03.png" id="tex_060"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_east_04.png" id="tex_061"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_east_05.png" id="tex_062"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_east_00.png" id="tex_063"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_east_01.png" id="tex_064"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_east_02.png" id="tex_065"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_east_03.png" id="tex_066"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_east_04.png" id="tex_067"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_east_05.png" id="tex_068"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_00.png" id="tex_069"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_01.png" id="tex_070"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_02.png" id="tex_071"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_03.png" id="tex_072"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_04.png" id="tex_073"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_05.png" id="tex_074"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_west_00.png" id="tex_075"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_west_01.png" id="tex_076"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_west_02.png" id="tex_077"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_west_03.png" id="tex_078"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_west_04.png" id="tex_079"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_south_west_05.png" id="tex_080"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_00.png" id="tex_081"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_01.png" id="tex_082"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_02.png" id="tex_083"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_03.png" id="tex_084"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_04.png" id="tex_085"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_west_05.png" id="tex_086"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_west_00.png" id="tex_087"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_west_01.png" id="tex_088"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_west_02.png" id="tex_089"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_west_03.png" id="tex_090"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_west_04.png" id="tex_091"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_west_05.png" id="tex_092"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_00.png" id="tex_093"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_01.png" id="tex_094"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_02.png" id="tex_095"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_03.png" id="tex_096"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_04.png" id="tex_097"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_05.png" id="tex_098"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_east_00.png" id="tex_099"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_east_01.png" id="tex_100"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_east_02.png" id="tex_101"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_east_03.png" id="tex_102"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_east_04.png" id="tex_103"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_caster/runtime/homunculus_caster_attack_north_east_05.png" id="tex_104"]
+
+[resource]
+animations = [
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_003")
+}
+],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_021")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_022")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_023")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_024")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_025")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_026")
+}
+],
+"loop": true,
+"name": &"move",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_069")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_070")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_071")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_072")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_073")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_074")
+}
+],
+"loop": false,
+"name": &"attack",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_021")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_022")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_023")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_024")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_025")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_026")
+}
+],
+"loop": true,
+"name": &"walk",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_001")
+}
+],
+"loop": true,
+"name": &"idle_east",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_002")
+}
+],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_003")
+}
+],
+"loop": true,
+"name": &"idle_south",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_004")
+}
+],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_005")
+}
+],
+"loop": true,
+"name": &"idle_west",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_006")
+}
+],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_007")
+}
+],
+"loop": true,
+"name": &"idle_north",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_008")
+}
+],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_009")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_010")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_011")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_012")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_013")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_014")
+}
+],
+"loop": true,
+"name": &"move_east",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_015")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_016")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_017")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_018")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_019")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_020")
+}
+],
+"loop": true,
+"name": &"move_south_east",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_021")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_022")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_023")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_024")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_025")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_026")
+}
+],
+"loop": true,
+"name": &"move_south",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_027")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_028")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_029")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_030")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_031")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_032")
+}
+],
+"loop": true,
+"name": &"move_south_west",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_033")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_034")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_035")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_036")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_037")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_038")
+}
+],
+"loop": true,
+"name": &"move_west",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_039")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_040")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_041")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_042")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_043")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_044")
+}
+],
+"loop": true,
+"name": &"move_north_west",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_045")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_046")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_047")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_048")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_049")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_050")
+}
+],
+"loop": true,
+"name": &"move_north",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_051")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_052")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_053")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_054")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_055")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_056")
+}
+],
+"loop": true,
+"name": &"move_north_east",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_057")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_058")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_059")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_060")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_061")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_062")
+}
+],
+"loop": false,
+"name": &"attack_east",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_063")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_064")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_065")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_066")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_067")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_068")
+}
+],
+"loop": false,
+"name": &"attack_south_east",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_069")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_070")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_071")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_072")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_073")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_074")
+}
+],
+"loop": false,
+"name": &"attack_south",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_075")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_076")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_077")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_078")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_079")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_080")
+}
+],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_081")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_082")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_083")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_084")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_085")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_086")
+}
+],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_087")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_088")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_089")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_090")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_091")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_092")
+}
+],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_093")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_094")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_095")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_096")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_097")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_098")
+}
+],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_099")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_100")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_101")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_102")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_103")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_104")
+}
+],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_033")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_034")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_035")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_036")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_037")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_038")
+}
+],
+"loop": true,
+"name": &"move_left",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_009")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_010")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_011")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_012")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_013")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_014")
+}
+],
+"loop": true,
+"name": &"move_right",
+"speed": 10.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_081")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_082")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_083")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_084")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_085")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_086")
+}
+],
+"loop": false,
+"name": &"attack_left",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_057")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_058")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_059")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_060")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_061")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_062")
+}
+],
+"loop": false,
+"name": &"attack_right",
+"speed": 12.0
+},
+{
+"frames": [
+{
+"duration": 1.0,
+"texture": ExtResource("tex_069")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_070")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_071")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_072")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_073")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("tex_074")
+}
+],
+"loop": false,
+"name": &"attack_primary",
+"speed": 12.0
+}
+]

@@ -54,6 +54,7 @@ static func vent_wave(activation, wave: int) -> void:
 	if activation == null or activation.is_finished():
 		return
 	var count: int = activation.param_int("vent_count", 8)
+	var victims: Array = []
 	# Quadratic offset per wave: the vent ring visibly accelerates its spin.
 	var spin := float(wave * (wave + 1)) * 0.11
 	for index in count:
@@ -65,15 +66,18 @@ static func vent_wave(activation, wave: int) -> void:
 			if target != null and is_instance_valid(target):
 				activation.deal_damage(target, activation.scaled_damage("vent_damage", 6.50),
 					{"source": "robot_reactor_vent", "wave": wave, "vent": index}, "vent:%d:%d" % [wave, index])
-	activation.present(EXECUTOR_ID + ".vent_wave", {"position": activation.origin(), "radius": activation.param_float("range", 300.0), "shape": "ring_pulse"})
+				victims.append(target)
+	activation.present(EXECUTOR_ID + ".vent_wave", {"position": activation.origin(), "radius": activation.param_float("range", 300.0), "shape": "ring_pulse", "victims": victims})
 
 
 static func final_vent(activation) -> void:
 	if activation == null or activation.is_finished():
 		return
+	var victims: Array = []
 	for raw_target in activation.targets(activation.origin(), activation.param_float("range", 300.0), 0):
 		var target := raw_target as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(target, activation.scaled_damage("final_damage", 10.0),
 				{"source": "robot_reactor_final_vent"}, "final", true)
-	activation.present(EXECUTOR_ID + ".final_vent", {"position": activation.origin(), "radius": activation.param_float("range", 300.0), "shape": "orb_burst"})
+			victims.append(target)
+	activation.present(EXECUTOR_ID + ".final_vent", {"position": activation.origin(), "radius": activation.param_float("range", 300.0), "shape": "orb_burst", "victims": victims})

@@ -1,7 +1,7 @@
 extends Node2D
 
-const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
-
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/assassin/shadow_daggers/victim_impact/victim_impact_spriteframes.tres")
 const PROFILE_ID := "weapon_ultimate.profile.assassin.shadow_daggers"
 const EXECUTOR_ID := "weapon_ultimate.executor.assassin.shadow_daggers"
 const EFFECT_SCENE := "res://scripts/ultimates/classes/assassin/shadow_daggers.tscn"
@@ -18,12 +18,12 @@ var _targets: Array = []
 var _leased_player: Node = null
 var _previous_invisibility := 0.0
 var _leased_invisibility := 0.0
+var _impacts: Node2D = null
 
 
 static func parameter_contract() -> Dictionary:
 	return {
-		"radius": {"type": "number", "minimum": 0.0},
-		"target_count": {"type": "integer", "minimum": 1},
+		"backstab_waves": {"type": "integer", "minimum": 1},
 		"mark_delay": {"type": "number", "minimum": 0.0},
 		"backstab_interval": {"type": "number", "minimum": 0.01},
 		"reveal_delay": {"type": "number", "minimum": 0.0},
@@ -33,34 +33,36 @@ static func parameter_contract() -> Dictionary:
 	}
 
 
+## Ultimate Direction v2 (FAN-2952): every live enemy on the map is marked, on
+## screen and off. Reach is no longer a radius and no longer a count, so the
+## ordered set is taken straight from the activation — the `priority_target_
+## selector` primitive cannot express it, because its contract requires a finite
+## radius.
+##
+## The sequence keeps the shipped mark -> backstab -> reveal identity through a
+## FIXED wave count instead of one step per mark: wave `w` backstabs every mark
+## with `index % waves == w`, so the whole crowd is served inside one constant
+## active window and the declared cast length stops depending on how many
+## silhouettes happen to stand there.
 static func execute(activation) -> float:
-	activation.set_primitive_state({"source": activation.origin()})
-	if not Library.execute_primitive("priority_target_selector", activation, {
-		"center": "source",
-		"radius": activation.param_float("radius", 520.0),
-		"limit": activation.param_int("target_count", 7),
-		"priority": "highest_hp",
-		"hint": {},
-	}):
-		return 0.0
-	var targets = activation.primitive_value("targets", [])
-	if not targets is Array:
-		targets = []
+	var targets: Array = activation.select_targets(activation.origin(), INF, 0, "highest_hp", {})
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
-	effect.call("configure", activation, targets as Array)
+	effect.call("configure", activation, targets)
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
+	var waves: int = activation.param_int("backstab_waves", 7)
+	var interval: float = activation.param_float("backstab_interval", 0.16)
 	tween.tween_interval(activation.param_float("mark_delay", 0.45))
-	for index in (targets as Array).size():
-		tween.tween_callback(Callable(effect, "backstab").bind(index))
-		tween.tween_interval(activation.param_float("backstab_interval", 0.16))
+	for wave in waves:
+		tween.tween_callback(Callable(effect, "backstab_wave").bind(wave, waves))
+		tween.tween_interval(interval)
 	tween.tween_interval(activation.param_float("reveal_delay", 0.15))
 	tween.tween_callback(Callable(effect, "reveal"))
 	return activation.param_float("mark_delay", 0.45) \
-		+ float((targets as Array).size()) * activation.param_float("backstab_interval", 0.16) \
+		+ float(waves) * interval \
 		+ activation.param_float("reveal_delay", 0.15)
 
 
@@ -74,6 +76,18 @@ func configure(activation, targets: Array) -> void:
 				and activation.record_target_value(target, STORED_DAMAGE_KEY, 0.0, "mark"):
 			marked_count_for_tests += 1
 	_lease_owner_untargetable(activation.param_float("untargetable_duration", 1.75))
+
+
+## One wave of the fixed sequence: every mark this wave owns, backstabbed in the
+## marking order. `index % waves` partitions the whole mark list, so across the
+## `waves` callbacks every live enemy is backstabbed exactly once.
+func backstab_wave(wave: int, waves: int) -> void:
+	if waves <= 0:
+		return
+	var index := wave
+	while index < _targets.size():
+		backstab(index)
+		index += waves
 
 
 func backstab(index: int) -> void:
@@ -95,6 +109,7 @@ func backstab(index: int) -> void:
 func reveal() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var struck: Array[Node] = []
 	for index in _targets.size():
 		var target := _targets[index] as Node
 		if target == null or not is_instance_valid(target):
@@ -104,11 +119,22 @@ func reveal() -> void:
 		)
 		if stored == null or float(stored) <= 0.0:
 			continue
+		struck.append(target)
 		reveal_count_for_tests += 1
 		_deal(target, float(stored), "reveal:%d" % index, index > 0, {
 			"ultimate_mechanic": "moment_before_death_reveal",
 			"sequence_index": index,
 		})
+	_play_impacts(struck)
+
+
+func _play_impacts(victims: Array[Node]) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+	_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
 
 
 ## Player already owns the canonical short invisibility gate used by Assassin

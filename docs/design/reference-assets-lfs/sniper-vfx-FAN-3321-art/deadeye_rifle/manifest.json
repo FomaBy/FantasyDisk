@@ -1,0 +1,540 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3864",
+  "source_brief": "FAN-3321",
+  "base_sha": "8553691c7390be492e8edf8df59a5cce3a26e5bc",
+  "base_tree": "a63263bdc450a1eb3ebc213444f4707c5510de06",
+  "class_id": "sniper",
+  "weapon_id": "sniper_deadeye_rifle",
+  "title": "Выстрел Мертвого Глаза",
+  "effect_id": "steady_breath_rail",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "no_secrets_recorded": true,
+    "generated_manifest": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/pixellab_generation_manifest.json"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "raw 256x256 PixelLab frame -> nearest-neighbor 224x224 inset at (16,16) on transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "source_runtime_pixel_parity": true
+  },
+  "pixel_lab": {
+    "object_id": "415abc19-95e7-40a8-97f5-e4c0167beb05",
+    "animation_group_id": "838e229a-b1ed-460e-8a02-4a7a89754229",
+    "canonical_asset_key": "sniper/deadeye_rifle",
+    "canonical_tag": null,
+    "tag_or_name_note": "The blocking CLI does not expose PixelLab tag/name assignment; object and animation IDs are recorded exactly.",
+    "export_ids": [],
+    "generator_manifest": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/pixellab_generation_manifest.json"
+  },
+  "visual_identity": "obsidian long sniper rifle with brass scope, crimson rune rail and ruby muzzle crystal",
+  "motion_contract": "scope iris tightens, runes charge along barrel, straight rail tracer fires with recoil and focused impact star, then dissipates",
+  "palette_contract": "obsidian steel, aged brass, glacial cyan etching, ruby crimson rail energy",
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle",
+    "raw_source_dir": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw",
+    "generated_manifest": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/pixellab_generation_manifest.json",
+    "runtime_dir": "assets/sprites/effects/sniper/deadeye_rifle",
+    "spriteframes": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_spriteframes.tres",
+    "runtime_manifest": "assets/sprites/effects/sniper/deadeye_rifle/runtime_manifest.json",
+    "quality_evidence": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_contact_sheet.png"
+  },
+  "animation": {
+    "name": "sniper_deadeye_rifle_ultimate",
+    "frame_order": [
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f00.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f01.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f02.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f03.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f04.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f05.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f06.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f07.png",
+      "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f08.png"
+    ],
+    "distinct_pixel_frames": 9,
+    "adjacent_pixel_changes": 8,
+    "motion_contract": "scope iris tightens, runes charge along barrel, straight rail tracer fires with recoil and focused impact star, then dissipates"
+  },
+  "source_runtime_parity": true,
+  "pixel_quality_evidence": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/pixel_quality_evidence.json",
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f00.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f00.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f00.png.import",
+      "raw_encoded_sha256": "b751b186938008f37e2a5033c06af9641345fae678958945ffa74b50a3519cb7",
+      "raw_pixel_sha256": "c9244c2095b4cf1b92ef8fd3c4144fdd7e2a876d5f7c119766f90713134ecaa2",
+      "source_encoded_sha256": "fe6fc44fa640b3e8154849fc5f02a6a13a4eae9c7caf30176d529dbd6b8e57a4",
+      "runtime_encoded_sha256": "fe6fc44fa640b3e8154849fc5f02a6a13a4eae9c7caf30176d529dbd6b8e57a4",
+      "source_pixel_sha256": "570b10a8bc1c3874e4ec38a78b446f93eb7263af11631f5471c7b98ac31b6dc9",
+      "runtime_pixel_sha256": "570b10a8bc1c3874e4ec38a78b446f93eb7263af11631f5471c7b98ac31b6dc9",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        25,
+        99,
+        232,
+        155
+      ],
+      "gutters_px": [
+        25,
+        99,
+        24,
+        101
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4399,
+      "visible_ratio_alpha_gt_8": 0.067123,
+      "opaque_pixels": 4399,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://ddamhjf6hqn6i",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f00.png-6adee7a630a37a79b66f5c118c1cd7ff.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f00.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f01.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f01.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f01.png.import",
+      "raw_encoded_sha256": "788ebb53b7f0ced217653971cecc7c6c58dbc3bb1389b40e2405345b3d090cd2",
+      "raw_pixel_sha256": "46a38f924c4653e5dc82ee6b801a7e5614d3fb2688ed297b67cfdd307a6305e2",
+      "source_encoded_sha256": "b11274f5d1adff4ca4ba8dc342cbd1c95c8aeea8410e8a8bd22294796fc0aca8",
+      "runtime_encoded_sha256": "b11274f5d1adff4ca4ba8dc342cbd1c95c8aeea8410e8a8bd22294796fc0aca8",
+      "source_pixel_sha256": "4bf74ed20fb30a5bff27655765c65b5e549944d57d9a61caacc99094e927306d",
+      "runtime_pixel_sha256": "4bf74ed20fb30a5bff27655765c65b5e549944d57d9a61caacc99094e927306d",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        24,
+        99,
+        230,
+        156
+      ],
+      "gutters_px": [
+        24,
+        99,
+        26,
+        100
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4555,
+      "visible_ratio_alpha_gt_8": 0.069504,
+      "opaque_pixels": 4555,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://dpcrae32rtimp",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f01.png-f0de0d98a1ee3f365ba2e0372c7060d6.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f01.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f02.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f02.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f02.png.import",
+      "raw_encoded_sha256": "8236a1d00d36f410de4eb8173f29ffc33a0bf203765e6dd30854ba117a14a4b6",
+      "raw_pixel_sha256": "ab2a16a826e7d49a5874ed4e5640b3ab7c6b1582280bec4a849af17f05088019",
+      "source_encoded_sha256": "915e05c284b13da83a7284f2782271d62df412e0d4197d875723bfbc9829b552",
+      "runtime_encoded_sha256": "915e05c284b13da83a7284f2782271d62df412e0d4197d875723bfbc9829b552",
+      "source_pixel_sha256": "476fe80f17c9b4ea48f3517eef1c2c35df2db85fc70ade8ac03760db5544bf37",
+      "runtime_pixel_sha256": "476fe80f17c9b4ea48f3517eef1c2c35df2db85fc70ade8ac03760db5544bf37",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        23,
+        101,
+        230,
+        157
+      ],
+      "gutters_px": [
+        23,
+        101,
+        26,
+        99
+      ],
+      "minimum_gutter_px": 23,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4490,
+      "visible_ratio_alpha_gt_8": 0.068512,
+      "opaque_pixels": 4490,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bsm06vh4hewvg",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f02.png-6d722c0e887cbdf4fb42b0984d9ddef1.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f02.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f03.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f03.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f03.png.import",
+      "raw_encoded_sha256": "5d8929fbf69222c8b6ff35bb30615702f785dd037a58649a8b2e2192f6eb8362",
+      "raw_pixel_sha256": "48bd92f99ea0275566fb68ddae3c5d1dca907a3d8a875c3120136131aa85f8b9",
+      "source_encoded_sha256": "1c86e9a1d04d0e1b5638f5f45dfaac7cd26f6377bf37a8735f55be2c7922fa3d",
+      "runtime_encoded_sha256": "1c86e9a1d04d0e1b5638f5f45dfaac7cd26f6377bf37a8735f55be2c7922fa3d",
+      "source_pixel_sha256": "34e823fa0328b97a199d05d858ea87dee0c294b4080cb4a9d07272a120d1d4f4",
+      "runtime_pixel_sha256": "34e823fa0328b97a199d05d858ea87dee0c294b4080cb4a9d07272a120d1d4f4",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        22,
+        100,
+        229,
+        156
+      ],
+      "gutters_px": [
+        22,
+        100,
+        27,
+        100
+      ],
+      "minimum_gutter_px": 22,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4507,
+      "visible_ratio_alpha_gt_8": 0.068771,
+      "opaque_pixels": 4507,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://cs6t22vslxwqe",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f03.png-e38effabb6b5977b0f6d4c650daaee91.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f03.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f04.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f04.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f04.png.import",
+      "raw_encoded_sha256": "8e52b3f6b09e4dd3e8dc2257197b7a65113b5dee74bd033e197354717ae0885f",
+      "raw_pixel_sha256": "01a68deb913eac520d0fbc9bcd5b1c65b70f2e67412d921a943977e53d52f08e",
+      "source_encoded_sha256": "1f6043983b02c3919b408119412c0893b9f8395827df213422ea92e0adf7ea19",
+      "runtime_encoded_sha256": "1f6043983b02c3919b408119412c0893b9f8395827df213422ea92e0adf7ea19",
+      "source_pixel_sha256": "435bd016967f23d6f41b92655a561a9f6ab1cee2fae49dd7ad4716948b766b28",
+      "runtime_pixel_sha256": "435bd016967f23d6f41b92655a561a9f6ab1cee2fae49dd7ad4716948b766b28",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        16,
+        99,
+        230,
+        155
+      ],
+      "gutters_px": [
+        16,
+        99,
+        26,
+        101
+      ],
+      "minimum_gutter_px": 16,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4558,
+      "visible_ratio_alpha_gt_8": 0.06955,
+      "opaque_pixels": 4558,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://bo02re0tlh8on",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f04.png-135b266a3937bd154021cc521474c65d.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f04.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f05.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f05.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f05.png.import",
+      "raw_encoded_sha256": "d79019b94cae447987ce94c6bc5f791d5ed73d68a2a5ad8dd8810e439eb4fe7b",
+      "raw_pixel_sha256": "7cdfba8201764290f0edd1db7905b0d58f0fdb18ac447932e1e97edadd3035e0",
+      "source_encoded_sha256": "af761781596ef3c18a1c3cf939ec30ad3496f93bf1f4f7826c106ad81ea7d6bf",
+      "runtime_encoded_sha256": "af761781596ef3c18a1c3cf939ec30ad3496f93bf1f4f7826c106ad81ea7d6bf",
+      "source_pixel_sha256": "387113b87ef290cbd6dd33e2686822963688353b69b73aebae82e9c592d13e10",
+      "runtime_pixel_sha256": "387113b87ef290cbd6dd33e2686822963688353b69b73aebae82e9c592d13e10",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        16,
+        99,
+        235,
+        155
+      ],
+      "gutters_px": [
+        16,
+        99,
+        21,
+        101
+      ],
+      "minimum_gutter_px": 16,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4497,
+      "visible_ratio_alpha_gt_8": 0.068619,
+      "opaque_pixels": 4497,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://brgf5cmhhvxwv",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f05.png-8a5fe1a0cdac47cfdc40d6b53564f41b.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f05.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f06.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f06.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f06.png.import",
+      "raw_encoded_sha256": "c37c9b63ef6353a38d4f205eda956210c5d17809c935447589cffbbcb3229423",
+      "raw_pixel_sha256": "a215b76a5310f5dfbc3b7be8fd35652f361b39a13bc6059e107376082c28d16b",
+      "source_encoded_sha256": "6bc587838a8a925554d9c388c94dd41f6af843f1222cbc40983dc105b18fb16c",
+      "runtime_encoded_sha256": "6bc587838a8a925554d9c388c94dd41f6af843f1222cbc40983dc105b18fb16c",
+      "source_pixel_sha256": "067e201a7011f7215283c2d20d6ba4666c0255a03c0e78d895e61964a5fe3885",
+      "runtime_pixel_sha256": "067e201a7011f7215283c2d20d6ba4666c0255a03c0e78d895e61964a5fe3885",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        24,
+        100,
+        230,
+        157
+      ],
+      "gutters_px": [
+        24,
+        100,
+        26,
+        99
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4572,
+      "visible_ratio_alpha_gt_8": 0.069763,
+      "opaque_pixels": 4572,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://c7c7yxkc73i7v",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f06.png-cf095fc8cff364d8e46fa781c165ef46.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f06.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f07.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f07.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f07.png.import",
+      "raw_encoded_sha256": "47a4a351d1258f52b115b3a251d5ef5384d133593f9a5b1b7205247fa093f999",
+      "raw_pixel_sha256": "59ba3a5395876c21f2eb65f0b0c25f9dfe52480e84a58abddb071a272257c800",
+      "source_encoded_sha256": "bb616e4df8325f442e09bd15b556a07ecce2823dbfbc65d00e9766b5930e5298",
+      "runtime_encoded_sha256": "bb616e4df8325f442e09bd15b556a07ecce2823dbfbc65d00e9766b5930e5298",
+      "source_pixel_sha256": "7efe42ad6330c8a0a962d47317449d8a270b84835d15d4dbe97b133e683bb666",
+      "runtime_pixel_sha256": "7efe42ad6330c8a0a962d47317449d8a270b84835d15d4dbe97b133e683bb666",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        26,
+        99,
+        232,
+        156
+      ],
+      "gutters_px": [
+        26,
+        99,
+        24,
+        100
+      ],
+      "minimum_gutter_px": 24,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4608,
+      "visible_ratio_alpha_gt_8": 0.070312,
+      "opaque_pixels": 4608,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://u3ea618ai154",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f07.png-3423c49c711e3778fdb14ff2c1a966b4.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f07.png",
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/deadeye_rifle_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/sniper-vfx-FAN-3321-art/deadeye_rifle/raw/deadeye_rifle_f08.png",
+      "runtime_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f08.png",
+      "import_file": "assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f08.png.import",
+      "raw_encoded_sha256": "6fc9c470723390a0ade16938ea44ed40f81d3d8f61f574d2246d59ae5a494f04",
+      "raw_pixel_sha256": "a396dc9050929ba0cc40940b7e8416a67a9cf4376fb0fed8bcabf2aef9b71475",
+      "source_encoded_sha256": "bda1cd1925768de1b9af80e612a772ef392b834ea5fb740b9222c599b375010b",
+      "runtime_encoded_sha256": "bda1cd1925768de1b9af80e612a772ef392b834ea5fb740b9222c599b375010b",
+      "source_pixel_sha256": "c896ff9b5a79b974f870e9be700ea6a4cecc50739d3ab197a8aae728e7fa19db",
+      "runtime_pixel_sha256": "c896ff9b5a79b974f870e9be700ea6a4cecc50739d3ab197a8aae728e7fa19db",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_bbox_gt_8": [
+        25,
+        98,
+        231,
+        155
+      ],
+      "gutters_px": [
+        25,
+        98,
+        25,
+        101
+      ],
+      "minimum_gutter_px": 25,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 4631,
+      "visible_ratio_alpha_gt_8": 0.070663,
+      "opaque_pixels": 4631,
+      "max_alpha": 255,
+      "corner_alpha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "import_uid": "uid://crgyqokji5dof",
+      "import_dest_files": [
+        "res://.godot/imported/deadeye_rifle_f08.png-675c9522e5249dab5a4d2eeba32108a8.ctex"
+      ],
+      "importer": "texture",
+      "import_source_file": "res://assets/sprites/effects/sniper/deadeye_rifle/deadeye_rifle_f08.png",
+      "import_matches_runtime": true
+    }
+  ],
+  "runtime_import_sidecars_present": true
+}

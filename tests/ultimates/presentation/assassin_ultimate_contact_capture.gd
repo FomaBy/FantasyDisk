@@ -2,7 +2,7 @@ extends SceneTree
 
 const SPEC := preload("res://tests/ultimates/presentation/assassin_ultimate_timelines.gd")
 const PACKS := [
-	{"weapon_id": "chakrams", "scene": preload("res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn"), "time": 3.4, "position": Vector2(0.18, 0.55), "title": "CHAKRAMS — EIGHT MOONS / compass orbit", "color": Color(0.79, 0.62, 1.0)},
+	{"weapon_id": "chakrams", "scene": preload("res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn"), "time": 2.4, "position": Vector2(0.18, 0.55), "title": "CHAKRAMS — EIGHT MOONS / arena compass sweep", "color": Color(0.79, 0.62, 1.0)},
 	{"weapon_id": "shadow_daggers", "scene": preload("res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn"), "time": 2.6, "position": Vector2(0.50, 0.55), "title": "SHADOW DAGGERS — MOMENT BEFORE DEATH / freeze reveal", "color": Color(0.74, 0.35, 1.0)},
 	{"weapon_id": "venom_wire", "scene": preload("res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn"), "time": 2.8, "position": Vector2(0.82, 0.55), "title": "VENOM WIRE — BLACK WEB / hex collapse", "color": Color(0.42, 1.0, 0.32)},
 ]

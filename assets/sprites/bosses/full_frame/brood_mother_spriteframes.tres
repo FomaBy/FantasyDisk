@@ -1,35 +1,309 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_00.png" id="1_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_01.png" id="2_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_02.png" id="3_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_03.png" id="4_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_04.png" id="5_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_attack_primary_05.png" id="6_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_00.png" id="7_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_01.png" id="8_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_02.png" id="9_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_03.png" id="10_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_04.png" id="11_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_death_05.png" id="12_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_00.png" id="13_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_01.png" id="14_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_02.png" id="15_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_03.png" id="16_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_04.png" id="17_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_move_05.png" id="18_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_00.png" id="19_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_01.png" id="20_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_02.png" id="21_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_03.png" id="22_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_04.png" id="23_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_brood_spawn_05.png" id="24_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_00.png" id="25_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_01.png" id="26_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_02.png" id="27_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_03.png" id="28_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_04.png" id="29_brood_mother"]
-[ext_resource type="Texture2D" path="res://assets/sprites/bosses/full_frame/brood_mother/brood_mother_skill_web_zone_05.png" id="30_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_east_00.png" id="1_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_south_east_00.png" id="2_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_south_00.png" id="3_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_south_west_00.png" id="4_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_west_00.png" id="5_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_north_west_00.png" id="6_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_north_00.png" id="7_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_idle_north_east_00.png" id="8_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_00.png" id="9_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_01.png" id="10_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_02.png" id="11_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_03.png" id="12_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_04.png" id="13_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_05.png" id="14_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_east_06.png" id="15_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_00.png" id="16_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_01.png" id="17_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_02.png" id="18_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_03.png" id="19_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_04.png" id="20_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_05.png" id="21_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_east_06.png" id="22_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_00.png" id="23_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_01.png" id="24_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_02.png" id="25_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_03.png" id="26_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_04.png" id="27_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_05.png" id="28_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_06.png" id="29_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_00.png" id="30_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_01.png" id="31_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_02.png" id="32_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_03.png" id="33_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_04.png" id="34_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_05.png" id="35_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_south_west_06.png" id="36_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_00.png" id="37_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_01.png" id="38_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_02.png" id="39_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_03.png" id="40_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_04.png" id="41_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_05.png" id="42_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_west_06.png" id="43_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_00.png" id="44_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_01.png" id="45_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_02.png" id="46_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_03.png" id="47_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_04.png" id="48_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_05.png" id="49_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_west_06.png" id="50_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_00.png" id="51_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_01.png" id="52_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_02.png" id="53_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_03.png" id="54_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_04.png" id="55_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_05.png" id="56_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_06.png" id="57_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_00.png" id="58_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_01.png" id="59_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_02.png" id="60_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_03.png" id="61_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_04.png" id="62_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_05.png" id="63_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_move_north_east_06.png" id="64_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_east_00.png" id="65_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_east_01.png" id="66_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_east_02.png" id="67_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_east_03.png" id="68_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_east_04.png" id="69_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_east_05.png" id="70_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_east_00.png" id="71_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_east_01.png" id="72_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_east_02.png" id="73_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_east_03.png" id="74_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_east_04.png" id="75_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_east_05.png" id="76_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_00.png" id="77_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_01.png" id="78_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_02.png" id="79_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_03.png" id="80_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_04.png" id="81_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_05.png" id="82_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_west_00.png" id="83_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_west_01.png" id="84_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_west_02.png" id="85_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_west_03.png" id="86_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_west_04.png" id="87_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_south_west_05.png" id="88_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_west_00.png" id="89_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_west_01.png" id="90_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_west_02.png" id="91_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_west_03.png" id="92_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_west_04.png" id="93_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_west_05.png" id="94_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_west_00.png" id="95_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_west_01.png" id="96_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_west_02.png" id="97_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_west_03.png" id="98_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_west_04.png" id="99_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_west_05.png" id="100_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_00.png" id="101_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_01.png" id="102_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_02.png" id="103_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_03.png" id="104_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_04.png" id="105_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_05.png" id="106_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_east_00.png" id="107_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_east_01.png" id="108_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_east_02.png" id="109_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_east_03.png" id="110_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_east_04.png" id="111_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_attack_north_east_05.png" id="112_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_east_00.png" id="113_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_east_01.png" id="114_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_east_02.png" id="115_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_east_03.png" id="116_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_east_04.png" id="117_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_east_05.png" id="118_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_east_00.png" id="119_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_east_01.png" id="120_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_east_02.png" id="121_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_east_03.png" id="122_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_east_04.png" id="123_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_east_05.png" id="124_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_00.png" id="125_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_01.png" id="126_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_02.png" id="127_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_03.png" id="128_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_04.png" id="129_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_05.png" id="130_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_west_00.png" id="131_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_west_01.png" id="132_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_west_02.png" id="133_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_west_03.png" id="134_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_west_04.png" id="135_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_south_west_05.png" id="136_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_west_00.png" id="137_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_west_01.png" id="138_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_west_02.png" id="139_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_west_03.png" id="140_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_west_04.png" id="141_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_west_05.png" id="142_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_west_00.png" id="143_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_west_01.png" id="144_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_west_02.png" id="145_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_west_03.png" id="146_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_west_04.png" id="147_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_west_05.png" id="148_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_00.png" id="149_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_01.png" id="150_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_02.png" id="151_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_03.png" id="152_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_04.png" id="153_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_05.png" id="154_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_east_00.png" id="155_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_east_01.png" id="156_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_east_02.png" id="157_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_east_03.png" id="158_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_east_04.png" id="159_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_hit_north_east_05.png" id="160_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_east_00.png" id="161_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_east_01.png" id="162_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_east_02.png" id="163_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_east_03.png" id="164_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_east_04.png" id="165_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_east_05.png" id="166_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_east_00.png" id="167_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_east_01.png" id="168_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_east_02.png" id="169_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_east_03.png" id="170_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_east_04.png" id="171_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_east_05.png" id="172_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_00.png" id="173_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_01.png" id="174_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_02.png" id="175_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_03.png" id="176_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_04.png" id="177_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_05.png" id="178_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_west_00.png" id="179_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_west_01.png" id="180_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_west_02.png" id="181_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_west_03.png" id="182_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_west_04.png" id="183_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_south_west_05.png" id="184_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_west_00.png" id="185_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_west_01.png" id="186_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_west_02.png" id="187_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_west_03.png" id="188_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_west_04.png" id="189_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_west_05.png" id="190_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_west_00.png" id="191_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_west_01.png" id="192_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_west_02.png" id="193_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_west_03.png" id="194_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_west_04.png" id="195_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_west_05.png" id="196_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_00.png" id="197_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_01.png" id="198_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_02.png" id="199_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_03.png" id="200_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_04.png" id="201_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_05.png" id="202_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_east_00.png" id="203_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_east_01.png" id="204_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_east_02.png" id="205_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_east_03.png" id="206_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_east_04.png" id="207_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_death_north_east_05.png" id="208_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_east_00.png" id="209_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_east_01.png" id="210_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_east_02.png" id="211_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_east_03.png" id="212_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_east_04.png" id="213_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_east_05.png" id="214_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_east_00.png" id="215_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_east_01.png" id="216_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_east_02.png" id="217_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_east_03.png" id="218_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_east_04.png" id="219_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_east_05.png" id="220_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_00.png" id="221_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_01.png" id="222_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_02.png" id="223_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_03.png" id="224_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_04.png" id="225_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_05.png" id="226_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_west_00.png" id="227_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_west_01.png" id="228_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_west_02.png" id="229_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_west_03.png" id="230_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_west_04.png" id="231_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_south_west_05.png" id="232_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_west_00.png" id="233_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_west_01.png" id="234_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_west_02.png" id="235_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_west_03.png" id="236_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_west_04.png" id="237_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_west_05.png" id="238_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_west_00.png" id="239_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_west_01.png" id="240_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_west_02.png" id="241_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_west_03.png" id="242_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_west_04.png" id="243_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_west_05.png" id="244_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_00.png" id="245_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_01.png" id="246_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_02.png" id="247_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_03.png" id="248_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_04.png" id="249_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_05.png" id="250_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_east_00.png" id="251_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_east_01.png" id="252_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_east_02.png" id="253_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_east_03.png" id="254_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_east_04.png" id="255_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_brood_spawn_north_east_05.png" id="256_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_east_00.png" id="257_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_east_01.png" id="258_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_east_02.png" id="259_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_east_03.png" id="260_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_east_04.png" id="261_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_east_05.png" id="262_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_east_00.png" id="263_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_east_01.png" id="264_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_east_02.png" id="265_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_east_03.png" id="266_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_east_04.png" id="267_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_east_05.png" id="268_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_00.png" id="269_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_01.png" id="270_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_02.png" id="271_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_03.png" id="272_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_04.png" id="273_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_05.png" id="274_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_west_00.png" id="275_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_west_01.png" id="276_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_west_02.png" id="277_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_west_03.png" id="278_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_west_04.png" id="279_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_south_west_05.png" id="280_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_west_00.png" id="281_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_west_01.png" id="282_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_west_02.png" id="283_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_west_03.png" id="284_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_west_04.png" id="285_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_west_05.png" id="286_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_west_00.png" id="287_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_west_01.png" id="288_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_west_02.png" id="289_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_west_03.png" id="290_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_west_04.png" id="291_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_west_05.png" id="292_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_00.png" id="293_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_01.png" id="294_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_02.png" id="295_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_03.png" id="296_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_04.png" id="297_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_05.png" id="298_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_east_00.png" id="299_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_east_01.png" id="300_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_east_02.png" id="301_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_east_03.png" id="302_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_east_04.png" id="303_brood_mother"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bosses/brood_mother_8dir/runtime/brood_mother_skill_web_zone_north_east_05.png" id="304_brood_mother"]
 
 [resource]
 animations = [
@@ -37,192 +311,2192 @@ animations = [
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("2_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_brood_mother")
 }],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
+"loop": true,
+"name": &"idle_east",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_brood_mother")
-}, {
-"duration": 1.0,
 "texture": ExtResource("2_brood_mother")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("3_brood_mother")
-}, {
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("4_brood_mother")
-}, {
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("5_brood_mother")
-}, {
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("6_brood_mother")
 }],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("7_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("8_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("9_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_brood_mother")
 }],
-"loop": false,
-"name": &"death",
-"speed": 10.0
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("14_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("15_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("16_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("17_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("18_brood_mother")
+"texture": ExtResource("8_brood_mother")
 }],
 "loop": true,
-"name": &"move",
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("15_brood_mother")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("20_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("21_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("22_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("23_brood_mother")
-}, {
-"duration": 1.0,
-"texture": ExtResource("24_brood_mother")
-}],
-"loop": false,
-"name": &"skill_brood_spawn",
-"speed": 12.0
+"texture": ExtResource("16_brood_mother")
 },
 {
-"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("18_brood_mother")
+},
+{
 "duration": 1.0,
 "texture": ExtResource("19_brood_mother")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("20_brood_mother")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("21_brood_mother")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("22_brood_mother")
-}, {
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("23_brood_mother")
-}, {
+},
+{
 "duration": 1.0,
 "texture": ExtResource("24_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("27_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_brood_mother")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("33_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_brood_mother")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("37_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("39_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_brood_mother")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("44_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("45_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_brood_mother")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("57_brood_mother")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("58_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("64_brood_mother")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_brood_mother")
 }],
 "loop": false,
-"name": &"attack_brood_spawn",
+"name": &"attack_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_brood_mother")
-}, {
+"texture": ExtResource("71_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_brood_mother")
-}, {
+"texture": ExtResource("72_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_brood_mother")
-}, {
+"texture": ExtResource("73_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_brood_mother")
-}, {
+"texture": ExtResource("74_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_brood_mother")
-}, {
+"texture": ExtResource("75_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_brood_mother")
+"texture": ExtResource("76_brood_mother")
 }],
 "loop": false,
-"name": &"skill_web_zone",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_brood_mother")
-}, {
+"texture": ExtResource("77_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("26_brood_mother")
-}, {
+"texture": ExtResource("78_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("27_brood_mother")
-}, {
+"texture": ExtResource("79_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("28_brood_mother")
-}, {
+"texture": ExtResource("80_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("29_brood_mother")
-}, {
+"texture": ExtResource("81_brood_mother")
+},
+{
 "duration": 1.0,
-"texture": ExtResource("30_brood_mother")
+"texture": ExtResource("82_brood_mother")
 }],
 "loop": false,
-"name": &"attack_web_zone",
+"name": &"attack_south",
 "speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_brood_mother")
+}],
+"loop": false,
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_brood_mother")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_brood_mother")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_brood_mother")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_brood_mother")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("118_brood_mother")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("119_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("123_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_brood_mother")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("125_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("128_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_brood_mother")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("131_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("133_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_brood_mother")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("137_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("138_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_brood_mother")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("148_brood_mother")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("149_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("153_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_brood_mother")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("155_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("160_brood_mother")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("161_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_brood_mother")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_brood_mother")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("173_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("174_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_brood_mother")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("179_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("181_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_brood_mother")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("185_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("188_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_brood_mother")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("191_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("195_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_brood_mother")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("197_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("202_brood_mother")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("203_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_brood_mother")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_brood_mother")
+}],
+"loop": false,
+"name": &"skill_brood_spawn_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_brood_mother")
+}],
+"loop": false,
+"name": &"skill_web_zone_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("65_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("66_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("67_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("68_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("69_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("71_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("72_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("73_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("74_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("75_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("76_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("77_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("78_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("79_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("80_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("81_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("82_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("83_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("85_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("89_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("92_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("95_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("99_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("101_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("106_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("107_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_brood_mother")
+}],
+"loop": false,
+"name": &"attack_primary_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("215_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("216_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("221_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("223_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("227_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("230_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("233_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("237_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("239_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("244_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("245_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_brood_mother")
+}],
+"loop": false,
+"name": &"attack_brood_spawn_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("257_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("258_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("263_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("265_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("266_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("267_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("268_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("269_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("270_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("271_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("272_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("273_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("274_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("275_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("276_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("277_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("278_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("279_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("280_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("281_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("282_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("283_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("284_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("285_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("286_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("287_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("288_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("289_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("290_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("291_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("292_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("293_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("294_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("295_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("296_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("297_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("298_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("299_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("300_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("301_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("302_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("303_brood_mother")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("304_brood_mother")
+}],
+"loop": false,
+"name": &"attack_web_zone_north_east",
+"speed": 10.0
 }
 ]

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-2542",
+  "weapon": "assassin/shadow_daggers",
+  "title": "Мгновение до Смерти",
+  "generated_at": "2026-08-18T06:34:17Z",
+  "config_smoke": "PASS: python3 tools/pixellab_auth_smoke.py returned a JSON-RPC get_balance result without exposing credentials",
+  "generation": {
+    "route": "pixellab_new_isolated_animation_frames",
+    "tool": "PixelLab MCP (https://api.pixellab.ai/mcp)",
+    "object": {
+      "pixel_lab_object_id": "7e33b12d-e6cf-41d6-acaf-a96687ebbcee",
+      "create_tool": "create_1_direction_object",
+      "create_params": {
+        "size": 256,
+        "view": "top-down",
+        "description": "one single shadow assassin dagger, a slim curved black steel blade with a sharp violet-glowing cutting edge and a small dark hilt, dark fantasy pixel art seen straight from above, deep black-violet metal, only this one dagger exists in the image, one centered object pointing up, nothing around it, empty background, no second dagger, no crossed blades, no hands, no characters, no scattered blades, no extra props, no border decoration, no text"
+      }
+    },
+    "animation": {
+      "pixel_lab_animation_group_id": "ddc3b13c-51ee-4290-9547-76a6c24cae5d",
+      "reported_group_id": "05fea934-a72c-49c2-b2f6-791e9e3f72eb",
+      "frame_path_group_id": "62e31cbb-27ef-44a4-9fa3-5140eb6fc4b2",
+      "animate_tool": "animate_object",
+      "mode": "v3",
+      "frame_count": 9,
+      "frame_url_template": "https://backblaze.pixellab.ai/file/pixellab-characters/objects/7a9fb7cd-0060-48a4-a4dc-50f7b1124b0c/7e33b12d-e6cf-41d6-acaf-a96687ebbcee/animations/62e31cbb-27ef-44a4-9fa3-5140eb6fc4b2/unknown/{i}.png",
+      "animation_description": "the dagger keeps exactly the same shape, size, length, pose and colors in every frame and stays centered in the same place pointing up; only the light moves: a violet-white afterimage glow runs from the hilt out along the cutting edge to the tip and fades back, the blade darkens to near black between pulses, faint dark shadow streaks trail the edge, nothing else appears and nothing leaves the frame"
+    }
+  },
+  "direction_notes": [
+    "The isolated source is one dagger, not the four-afterimage formation: the backstab passes are composed at runtime by the scene, so a single blade keeps identity stable and costs one texture set.",
+    "frame_count is requested as 8 for a 256x256 object; PixelLab returns 8 generated frames plus the stored reference frame = 9, matching the accepted FAN-2541/FAN-2550/FAN-2551 packs.",
+    "The animation description pins shape, size, length, pose, colour and position so only the edge glow travels; this is what keeps identity, silhouette and pivot stable across the cycle.",
+    "PixelLab reports three distinct ids for this job and all three are recorded rather than reconciled: animate_object returned ddc3b13c, the get_object text report lists group 05fea934, and the frame URL path carries 62e31cbb. The downloaded frames come from the frame URL template above, which is the id the download step actually resolved.",
+    "tools/pixellab_generate_pack.py created the object and queued the animate job, then exited 5 ('no animation frame URLs') for the same text-report reason recorded in provenance_manifest_chakrams.json; tools/fan2541_chakrams_pixellab.py waited on the animation frames themselves and downloaded that same job's output. No asset was substituted and no new fetch script was needed."
+  ],
+  "reproducibility": {
+    "generation_script": "tools/fan2541_chakrams_pixellab.py",
+    "create_command": "python3 tools/pixellab_generate_pack.py --source-dir <dir> --manifest-out <json> --frame-count 8 --size 256 --view top-down --animate-mode v3 --frame-prefix shadow_dagger_f --description <create_params.description> --animation-description <animation.animation_description>",
+    "fetch_command": "python3 tools/fan2541_chakrams_pixellab.py --object-id 7e33b12d-e6cf-41d6-acaf-a96687ebbcee --group-id ddc3b13c-51ee-4290-9547-76a6c24cae5d --source-dir <dir> --manifest-out <json> --frame-prefix shadow_dagger_f --frame-count 9",
+    "replay_note": "Auth resolves through tools/pixellab_auth_smoke.read_auth_header (AUTH_HEADER, PIXELLAB_BEARER_TOKEN, or ~/.codex/config.toml). PixelLab objects auto-delete after 8 hours, so the downloaded frames under source/ are the durable record; a replay regenerates, it does not restore."
+  },
+  "asset": {
+    "source_dir": "docs/design/references/weapon_ultimates/assassin/source/pixellab_shadow_daggers",
+    "source_frames": [
+      "shadow_dagger_f00.png",
+      "shadow_dagger_f01.png",
+      "shadow_dagger_f02.png",
+      "shadow_dagger_f03.png",
+      "shadow_dagger_f04.png",
+      "shadow_dagger_f05.png",
+      "shadow_dagger_f06.png",
+      "shadow_dagger_f07.png",
+      "shadow_dagger_f08.png"
+    ],
+    "frame_bytes": {
+      "shadow_dagger_f00.png": 4869,
+      "shadow_dagger_f01.png": 4829,
+      "shadow_dagger_f02.png": 4781,
+      "shadow_dagger_f03.png": 3865,
+      "shadow_dagger_f04.png": 3699,
+      "shadow_dagger_f05.png": 3839,
+      "shadow_dagger_f06.png": 4898,
+      "shadow_dagger_f07.png": 4961,
+      "shadow_dagger_f08.png": 4856
+    },
+    "runtime_dir": "assets/sprites/effects/fan2542_shadow_daggers_ultimate",
+    "runtime_spriteframes": "assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_spriteframes.tres",
+    "runtime_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+    "runtime_animation": "backstab_afterimages"
+  },
+  "frame_verification": {
+    "size_px": "256x256",
+    "frame_count": 9,
+    "background": "fully transparent: max alpha on every frame border is 0",
+    "matte_or_halo": "none: 0 semi-transparent pixels across all frames (binary alpha)",
+    "crop": "none: every frame bounding box is inset from all four edges (x111..145, y40..210 of 256x256)",
+    "identity_stability": "opaque area 2392-2513 px (4.8% spread) across the 9 frames; the drawn bounding box is identical on 8 of 9 frames and one pixel row shorter on the last"
+  },
+  "auth": "PIXELLAB_BEARER_TOKEN env / ~/.codex/config.toml (never committed, never printed)"
+}

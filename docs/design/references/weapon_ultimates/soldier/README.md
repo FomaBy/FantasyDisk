@@ -12,7 +12,7 @@ timeline covers the five required presentation groups of
 and points at the immutable Cast phase IDs of
 `data/ultimates/schema/v1/classes/soldier.json`
 (`release→execute`, `impact/active→active`, `recovery→recover`,
-`cancel→cleanup`). The longest timeline ends at 8.4 seconds, below the contract
+`cancel→cleanup`). The longest timeline ends at 3.8 seconds, below the contract
 limit of 10.0 seconds.
 
 The ready Soldier overlay/script pairs are now active at
@@ -26,16 +26,16 @@ The three assets use intentionally different visual language and rhythm:
 
 - Rifle — «Приказ: Сплошной Огонь»: a spectral rank raises rifles behind a war
   banner and sweeps one arena-crossing lane with three evenly spaced volleys,
-  then covers the retreat with smoke. 4.1 s active window over 5.6 s total — an
+  then covers the retreat with smoke. 1.7 s active window over 3.2 s total — an
   even three-beat cadence.
 - Grenade — «Семь Секунд до Ада»: one high lob seeds seven oversized grenades
   around the aim point, a shared fuse ring counts down in seven beats, and the
-  chain detonates outside-in into a central fire column. 7.45 s active window
-  over 8.4 s total — the slow-burn silhouette of the set.
+  chain detonates outside-in into a central fire column. 1.9 s active window
+  over 3.5 s total — the slow-burn silhouette of the set.
 - Bayonet — «Последняя Атака»: three time-offset ghost infantry ranks charge one
   aimed corridor, cross bayonets on the pin, and fall back to a rally salute
   while the hero holds a short frontal guard and never leaves the origin.
-  2.88 s active window over 4.25 s total — the staccato of the set.
+  2.1 s active window over 3.8 s total — the staccato of the set.
 
 No new raster source art was required, so no PixelLab generation ran and
 `new_pixellab_assets` is empty. All three scenes reuse the accepted project

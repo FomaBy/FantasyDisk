@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3858",
+  "class_id": "knight",
+  "weapon_id": "tower_shield",
+  "visual_identity": "royal knight tower shield with gold rim, cobalt field and raised heraldic lion crest",
+  "motion_contract": "guard sigils lock into a barrier, the shield braces with recoil, contact sparks strike, then a controlled counter pulse releases",
+  "palette_contract": "dark steel, cobalt blue, gold, ivory crest, white guard sparks, charcoal outlines",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_count": 9,
+  "unique_pixel_hashes": 9,
+  "duplicate_frame_pairs": [],
+  "adjacent_changed_pixel_ratio": {
+    "min": 0.100739,
+    "max": 0.336349,
+    "mean": 0.243004
+  },
+  "all_pair_changed_pixel_ratio_min": 0.100739,
+  "alpha_bbox_gt_8": [
+    [
+      45,
+      20,
+      211,
+      237
+    ],
+    [
+      45,
+      20,
+      211,
+      237
+    ],
+    [
+      45,
+      20,
+      211,
+      237
+    ],
+    [
+      27,
+      20,
+      230,
+      237
+    ],
+    [
+      26,
+      20,
+      230,
+      237
+    ],
+    [
+      34,
+      20,
+      222,
+      237
+    ],
+    [
+      41,
+      20,
+      216,
+      237
+    ],
+    [
+      27,
+      20,
+      230,
+      237
+    ],
+    [
+      44,
+      20,
+      211,
+      237
+    ]
+  ],
+  "minimum_gutter_px": 19,
+  "edge_visible_pixels_gt_8": 0,
+  "opaque_corner_frames": [],
+  "transparent_pixel_ratio": {
+    "min": 0.566055,
+    "max": 0.590973
+  },
+  "main_component_count": [
+    1,
+    1,
+    2,
+    9,
+    8,
+    3,
+    5,
+    10,
+    1
+  ],
+  "tiny_component_px_after_threshold": [
+    0,
+    0,
+    1,
+    2,
+    2,
+    0,
+    0,
+    2,
+    0
+  ],
+  "pixel_quality_verdict": "PASS",
+  "pixel_hashes": [
+    "f913ce3e18b2a5d62a912d5b4557e44c22bc6fabaddd7314134c7d6061029340",
+    "bc9148054c1e335f2a21d991c6338f587b4059eacfb225ba3ebf89f79751b0ef",
+    "6b9a9b414ba5eaa48d1e87b13e8adc3501d9d0a521e3730c9ca34994dd7f3862",
+    "c61bba1bf1a2417f2bed7f5e76def6ffaf7b280f3298a0adce86f25a9f8772cb",
+    "a00ee063cf93d1b1741e1dd06fe18599fb710cff74b8eec5093558f46c323c84",
+    "e0143e2981af41b3fe4c513d7a547dcb605680cecbae8dbb6ae0999670ea2fc0",
+    "7fa361304876940f46c59f0f02d647123bd3456cd921d329b8f8711229cabe3c",
+    "1ae13cf52a9633791e36ca0734648e36a24e855db3f5815f70d6d8f02dda064f",
+    "a49a2d659a8ef34552440fd379f7469ba4f192d79b36034446c22ea7183ffd0c"
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3860",
+  "class_id": "soldier",
+  "weapon_id": "soldier_grenade",
+  "object_id": "b3ca7a06-1f1e-4316-8629-4d7875232325",
+  "animation_group_id": "b90ade3b-8520-45a4-9d8b-ed40267c45b2",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_contact_sheet.png",
+    "silhouette": "clear, centered and weapon-specific in every frame",
+    "movement": "outside-in fuse sparks and staggered grenade flares lead into a contracting amber blast ring and a compact smoke ember",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection; detached sparks/trails are intentional release accents",
+    "opaque_background": "none; all four corners are transparent and edge rows are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "frames": [
+    {
+      "index": 0,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f00.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f00.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21525,
+      "source_pixel_sha256": "93097f78b2b6114a0bec747e66d624694c413b14183ff33e86565dcd21786ae1",
+      "runtime_pixel_sha256": "93097f78b2b6114a0bec747e66d624694c413b14183ff33e86565dcd21786ae1"
+    },
+    {
+      "index": 1,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f01.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f01.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 21479,
+      "source_pixel_sha256": "b982c8af5a2a3a490bb9f1a6ec498c2490bcbe2b8b2c9598ce08fe941c7be705",
+      "runtime_pixel_sha256": "b982c8af5a2a3a490bb9f1a6ec498c2490bcbe2b8b2c9598ce08fe941c7be705"
+    },
+    {
+      "index": 2,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f02.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f02.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20347,
+      "source_pixel_sha256": "64458863dbcc150fb219bcb1622dd142aa443bdc1a425a2766a8ea48b3c28ba6",
+      "runtime_pixel_sha256": "64458863dbcc150fb219bcb1622dd142aa443bdc1a425a2766a8ea48b3c28ba6"
+    },
+    {
+      "index": 3,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f03.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f03.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20378,
+      "source_pixel_sha256": "53795190feb8a402992108afe3da9b9f28035513128f3a082f540d3765809142",
+      "runtime_pixel_sha256": "53795190feb8a402992108afe3da9b9f28035513128f3a082f540d3765809142"
+    },
+    {
+      "index": 4,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f04.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f04.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20409,
+      "source_pixel_sha256": "1df66b8a1b08e1516407130b05acfe8a03c2cb74b4c0fdd459472e28a6e449a5",
+      "runtime_pixel_sha256": "1df66b8a1b08e1516407130b05acfe8a03c2cb74b4c0fdd459472e28a6e449a5"
+    },
+    {
+      "index": 5,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f05.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f05.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20334,
+      "source_pixel_sha256": "3e3350580cdf9b62c2bc9fbe6586f3ac5e0ef539afb5e1b0422c8c084db62551",
+      "runtime_pixel_sha256": "3e3350580cdf9b62c2bc9fbe6586f3ac5e0ef539afb5e1b0422c8c084db62551"
+    },
+    {
+      "index": 6,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f06.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f06.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20415,
+      "source_pixel_sha256": "0515231343eab450c40eb2ac1b5e8052ebdbf1c182bcc0bef0e92c7df9b7994b",
+      "runtime_pixel_sha256": "0515231343eab450c40eb2ac1b5e8052ebdbf1c182bcc0bef0e92c7df9b7994b"
+    },
+    {
+      "index": 7,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f07.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f07.png",
+      "alpha_bbox_gt_8": [
+        36,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20451,
+      "source_pixel_sha256": "7a50b117d47b2cd24d381de13a5fe8bc4ff09ca82b6898c22528e45a0a4461b9",
+      "runtime_pixel_sha256": "7a50b117d47b2cd24d381de13a5fe8bc4ff09ca82b6898c22528e45a0a4461b9"
+    },
+    {
+      "index": 8,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/grenade_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/grenade/raw/grenade_f08.png",
+      "runtime_file": "assets/sprites/effects/soldier/grenade/grenade_f08.png",
+      "alpha_bbox_gt_8": [
+        37,
+        34,
+        223,
+        223
+      ],
+      "minimum_gutter_px": 33,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 20346,
+      "source_pixel_sha256": "788f7974ea22c6cc45e732929fd34263c264584a1380af60854635e8eb2af06a",
+      "runtime_pixel_sha256": "788f7974ea22c6cc45e732929fd34263c264584a1380af60854635e8eb2af06a"
+    }
+  ],
+  "decision": "pass"
+}

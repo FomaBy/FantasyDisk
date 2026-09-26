@@ -3,8 +3,9 @@
 Updated: 2026-07-26
 
 PM owns professional readiness and policy. PM does not assign delivery workers
-or launch dev/QA. Qwen Operations Dispatcher alone performs mechanical
-allocation from PM-prepared metadata.
+or launch dev/QA. The canonical dispatcher in
+`docs/process/dispatcher-authority.md` alone performs mechanical allocation
+from PM-prepared metadata.
 
 Use `docs/process/story_points.md` for the complete CUE/Fibonacci rubric and the
 bound `multica-workspace-governance` references for the server transaction.
@@ -27,7 +28,7 @@ decision with no safe default.
 
 ## 2. Estimate and decompose
 
-Judge Complexity, Uncertainty, and Effort holistically. CUE не складывается по формуле.
+Judge Complexity, Uncertainty, and Effort holistically. CUE does not sum by formula and is not an additive formula. Use `1, 2, 3, 5, 8, 13`, exactly one `SP:<N>` label, matching `story_points`, and matching `estimation_model`.
 Do not translate Story Points into time or score the factors independently.
 
 Allowed Story Points are `1, 2, 3, 5, 8, 13`. Prefer independently acceptable
@@ -81,17 +82,16 @@ work is absent; never borrow downward.
 
 ## 5. Pre-stage lifecycle
 
-Before implementation handoff, create or reuse one unassigned `backlog` QA
-child with its own CUE, complexity, acceptance criteria, and routing gate. Set
-`pipeline_status=awaiting_candidate` and record that it waits on the
-implementation's exact SHA.
+Before implementation handoff, record the expected independent same-card QA
+lane and exact-candidate handoff fields. QA starts only after the developer
+publishes an immutable candidate and PM admits it under the shared guard.
 
 For a failed or inconclusive verdict, define a bounded defect/rework issue with
 reproduction, expected/actual behavior, evidence, candidate SHA, scope,
 acceptance criteria, and its own estimation. Do not send ambiguous “fix QA”
-work to Qwen.
+work to the canonical dispatcher.
 
-## 6. Hand off to Qwen
+## 6. Hand off to the canonical dispatcher
 
 On a ready unassigned `backlog` target, set:
 
@@ -105,8 +105,8 @@ dispatch_candidate_sha=<required exact SHA for QA>
 ```
 
 Clear `waiting_on` only after the dependency is proven satisfied. Re-read the
-entire gate. Qwen then chooses an eligible worker and performs the only allowed
-launch sequence.
+entire gate. The canonical dispatcher then chooses an eligible worker and
+performs the only allowed launch sequence.
 
 PM must not substitute:
 
@@ -125,14 +125,15 @@ On a completion trigger:
 2. Verify exact pushed SHA, ancestry, checks, documentation, cleanup, and live
    capacity/overlap.
 3. Prepare the pre-staged QA child or next bounded stage.
-4. Hand the consistent gate to Qwen.
+4. Hand the consistent gate to the canonical dispatcher.
 
-Supervise Qwen for duplicate runs, gate bypass, stale capacity, quota scope,
-reviewer conflicts, and lifecycle mismatch. Fix policy/configuration—not product
-scope—when Qwen violates the deterministic contract.
+Supervise the canonical dispatcher for duplicate runs, gate bypass, stale
+capacity, quota scope, reviewer conflicts, and lifecycle mismatch. Fix
+policy/configuration—not product scope—when it violates the deterministic
+contract.
 
 ## Communication
 
-Start Multica comments with a concise Russian summary, then give technical
+Start Multica comments with a concise plain-language summary, then give technical
 fields. Keep agent IDs, quota state, leases, reset times, incident history, and
 candidate SHA in live records rather than durable Markdown.

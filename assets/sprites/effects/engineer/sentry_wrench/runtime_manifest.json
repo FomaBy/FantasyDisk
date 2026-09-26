@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3702",
+  "weapon_id": "engineer_sentry_wrench",
+  "source_manifest": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/manifest.json",
+  "pixel_lab_object_id": "dafb294e-a7be-4999-9126-f6ad4a7b326a",
+  "pixel_lab_animation_group_id": "3ea90354-40a8-49a7-9606-662bc9e0f617",
+  "frame_count": 9,
+  "frame_order": [
+    "sentry_wrench_f00.png",
+    "sentry_wrench_f01.png",
+    "sentry_wrench_f02.png",
+    "sentry_wrench_f03.png",
+    "sentry_wrench_f04.png",
+    "sentry_wrench_f05.png",
+    "sentry_wrench_f06.png",
+    "sentry_wrench_f07.png",
+    "sentry_wrench_f08.png"
+  ],
+  "spriteframes": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_spriteframes.tres",
+  "animation": {
+    "name": "ultimate_flipbook",
+    "loop": false,
+    "speed_fps": 3.0,
+    "target_duration_seconds": 3.0
+  },
+  "import": {
+    "expected_texture_type": "CompressedTexture2D",
+    "compression": "lossless",
+    "mipmaps": false,
+    "filter": "nearest",
+    "sidecars": {
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f00.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f00.png.import",
+        "sha256": "241d97277bcce4e5d59ea3dd3f97f24748bdb3c203eeb6fd0c05b91be1c60ebd",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f01.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f01.png.import",
+        "sha256": "085a5ae47b5f27b6e41edcf378b9d5d95dc13071ad9198c9806b2d4d011ed325",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f02.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f02.png.import",
+        "sha256": "7f28f4f7fc8eb553e985930025570ec249b7e13586f2e4d372f67fccb6662a2d",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f03.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f03.png.import",
+        "sha256": "4894215e792ccf8e651eff246330d2f96f99f5e065472c467a9d6cd54fe41254",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f04.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f04.png.import",
+        "sha256": "ae6bc57d478cb498efca05745a1eb33ce654460a311cba2213215773c5c37fa6",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f05.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f05.png.import",
+        "sha256": "2cd1838805ff174b948a84f2a47d54c46d29a3b079afcb9e1fceb2fd7a04bbbd",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f06.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f06.png.import",
+        "sha256": "fc7eb8ccba421b8115ebf0e0c7cb56a5875c1c4ada7e1be4a872522fa8d01dd0",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f07.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f07.png.import",
+        "sha256": "e49ce1e7b7340a9c3974976449a51d97f39123e5f8c3ef1c6285e35f1f4cfccc",
+        "exists": true
+      },
+      "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f08.png": {
+        "path": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f08.png.import",
+        "sha256": "ee8ff888491311dfdaa46797575f757d10e7105b3dc1b78a707eac5c10cae68c",
+        "exists": true
+      }
+    },
+    "godot_version": "4.7.stable.official.5b4e0cb0f",
+    "verified": true
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f00.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f00.png",
+      "source_sha256": "6602770f91b9d19fa5817aa17a236a7fc39df1d7c1beb6559d499f10ee8c4579",
+      "runtime_sha256": "6602770f91b9d19fa5817aa17a236a7fc39df1d7c1beb6559d499f10ee8c4579",
+      "source_pixel_sha256": "47a225bace9a0b1329b66a18b715daca9c0dc3a37c0a99527fa2e50611c549f5",
+      "runtime_pixel_sha256": "47a225bace9a0b1329b66a18b715daca9c0dc3a37c0a99527fa2e50611c549f5",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        58,
+        4,
+        198,
+        253
+      ]
+    },
+    {
+      "frame": 1,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f01.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f01.png",
+      "source_sha256": "b769a7df7eb85035c2a63b054697028d181e09120093af9bd901a67fc92e7da5",
+      "runtime_sha256": "b769a7df7eb85035c2a63b054697028d181e09120093af9bd901a67fc92e7da5",
+      "source_pixel_sha256": "eec0f3f51a800d5985951507746647032383fb9ede35e7ef9b3efd1117f7ff42",
+      "runtime_pixel_sha256": "eec0f3f51a800d5985951507746647032383fb9ede35e7ef9b3efd1117f7ff42",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        58,
+        5,
+        199,
+        254
+      ]
+    },
+    {
+      "frame": 2,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f02.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f02.png",
+      "source_sha256": "250e965dfd157c75f9fdfd3d5fcc778525f7bc7e871959f97f3945c56a1449bf",
+      "runtime_sha256": "250e965dfd157c75f9fdfd3d5fcc778525f7bc7e871959f97f3945c56a1449bf",
+      "source_pixel_sha256": "bee070c30437982ddf42b2cf717103498d98d1d4a22f069faa17da4fa648328d",
+      "runtime_pixel_sha256": "bee070c30437982ddf42b2cf717103498d98d1d4a22f069faa17da4fa648328d",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        59,
+        5,
+        199,
+        254
+      ]
+    },
+    {
+      "frame": 3,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f03.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f03.png",
+      "source_sha256": "eb148cd400826e64c2db8152c57353de8b7dd101a06e1001b5028da28d8bf71a",
+      "runtime_sha256": "eb148cd400826e64c2db8152c57353de8b7dd101a06e1001b5028da28d8bf71a",
+      "source_pixel_sha256": "055988d8d183324c9dd8262259b8279ef294e558eb9165ed3a12dd2ca719d79b",
+      "runtime_pixel_sha256": "055988d8d183324c9dd8262259b8279ef294e558eb9165ed3a12dd2ca719d79b",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        59,
+        4,
+        200,
+        253
+      ]
+    },
+    {
+      "frame": 4,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f04.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f04.png",
+      "source_sha256": "f797d369f347c2ca8de51e8be5625b5661b42eab222f70021f13a5ceb3891c35",
+      "runtime_sha256": "f797d369f347c2ca8de51e8be5625b5661b42eab222f70021f13a5ceb3891c35",
+      "source_pixel_sha256": "9e8fba01bbe723590fb37fb89b034c3cbbd47b8178851667fe6b59513572c4dd",
+      "runtime_pixel_sha256": "9e8fba01bbe723590fb37fb89b034c3cbbd47b8178851667fe6b59513572c4dd",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        59,
+        3,
+        200,
+        252
+      ]
+    },
+    {
+      "frame": 5,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f05.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f05.png",
+      "source_sha256": "bf8a6ef97d21d2d15b48402f6f94a7aa27c415a5a2963d42af4ce8ead350795b",
+      "runtime_sha256": "bf8a6ef97d21d2d15b48402f6f94a7aa27c415a5a2963d42af4ce8ead350795b",
+      "source_pixel_sha256": "6927e8e65721896f077225a1dd64c622b1470ff39347b034d22994cf4c98f6cd",
+      "runtime_pixel_sha256": "6927e8e65721896f077225a1dd64c622b1470ff39347b034d22994cf4c98f6cd",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        59,
+        3,
+        199,
+        252
+      ]
+    },
+    {
+      "frame": 6,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f06.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f06.png",
+      "source_sha256": "19603fe9250c884c42d95ac03d67218b5295cc45952d70abfeda59440832169e",
+      "runtime_sha256": "19603fe9250c884c42d95ac03d67218b5295cc45952d70abfeda59440832169e",
+      "source_pixel_sha256": "fcdb8ed0c9bff3ad13bb7d977f777091837ba293fd3fdc44450402fc6beee32f",
+      "runtime_pixel_sha256": "fcdb8ed0c9bff3ad13bb7d977f777091837ba293fd3fdc44450402fc6beee32f",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        58,
+        3,
+        198,
+        252
+      ]
+    },
+    {
+      "frame": 7,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f07.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f07.png",
+      "source_sha256": "fe7b06714040b8d9da8d8e4d99f0e346fb7c1b82ade1946dfb03ec6281435a0d",
+      "runtime_sha256": "fe7b06714040b8d9da8d8e4d99f0e346fb7c1b82ade1946dfb03ec6281435a0d",
+      "source_pixel_sha256": "ecda25d2f6c9a8cf296040d0e4de28fd98af35f1c4663f8a5f6698a07f6b2c52",
+      "runtime_pixel_sha256": "ecda25d2f6c9a8cf296040d0e4de28fd98af35f1c4663f8a5f6698a07f6b2c52",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        57,
+        3,
+        198,
+        252
+      ]
+    },
+    {
+      "frame": 8,
+      "source": "docs/design/reference-assets-lfs/engineer-vfx-FAN-3315-art/sentry_wrench/sentry_wrench_f08.png",
+      "runtime": "assets/sprites/effects/engineer/sentry_wrench/sentry_wrench_f08.png",
+      "source_sha256": "6e9b1749a73a61db92077caeb4c7612ccad9be3437fb236ee90e1b32b724a400",
+      "runtime_sha256": "6e9b1749a73a61db92077caeb4c7612ccad9be3437fb236ee90e1b32b724a400",
+      "source_pixel_sha256": "42832fb1d8f6d47f720e9b325c1a59b2907926dcf6d8816f12772e4902e309ca",
+      "runtime_pixel_sha256": "42832fb1d8f6d47f720e9b325c1a59b2907926dcf6d8816f12772e4902e309ca",
+      "size": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        57,
+        3,
+        198,
+        252
+      ]
+    }
+  ],
+  "parity": "source and runtime encoded/pixel hashes must match for every frame; SpriteFrames order mirrors frame_order",
+  "secret_handling": "no credentials stored; PixelLab token was environment-only",
+  "spriteframes_sha256": "09817ea317d2535aa963cbc59ab64c706db007728929a03e3319a469e8e63fa3"
+}

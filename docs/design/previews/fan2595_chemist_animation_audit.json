@@ -1,0 +1,2672 @@
+{
+  "alpha_report": {
+    "bottom_padding": 4,
+    "frame_count": 56,
+    "runtime_canvas": [
+      512,
+      512
+    ],
+    "target_visible_height": 245
+  },
+  "character_id": "chemist",
+  "direction_count": 8,
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "errors": [],
+  "frames": [
+    {
+      "direction": "south",
+      "kind": "idle",
+      "name": "chemist_idle_south.png",
+      "runtime": {
+        "alpha_area": 23995,
+        "alpha_bbox": [
+          182,
+          263,
+          331,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "7a11a9dfa42e336424573753381d60f5a709fb64730f087cb492dbafe13c1a01",
+        "mode": "RGBA",
+        "pixel_sha256": "6e10a1431e2f2a4be08364e3635295cd30bed219a65426dcce3a2ead3a1a1090",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5916,
+        "alpha_bbox": [
+          86,
+          65,
+          160,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "77d89e90a2978200d9528530a189a837406f797768523cd173ad6463e4ec307c",
+        "mode": "RGBA",
+        "pixel_sha256": "57edea043c551f213d3782722f1dfb303db3e51aa9e3901179f68279ce4eaed9",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south",
+      "kind": "move",
+      "name": "chemist_move_south_00.png",
+      "runtime": {
+        "alpha_area": 20950,
+        "alpha_bbox": [
+          192,
+          263,
+          319,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "a9f0aa3553d1a6f22262862b1fb6979623f88f5e86952fb56fb02abb88bb4ba0",
+        "mode": "RGBA",
+        "pixel_sha256": "0bfb8badcd2df6a50003fafe366c3a6f96e83781f5ed2620cd846a6947ad2c99",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5012,
+        "alpha_bbox": [
+          95,
+          67,
+          157,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "7d241a386bc3d3ca528ab60ae2cde8dc7a9ecb909ab0eb07344575aeae2026a5",
+        "mode": "RGBA",
+        "pixel_sha256": "6c3e995540cbe592d067d0e2d9f8c8e6aa7b848a716c7f674bf5ba5b2497e97a",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south",
+      "kind": "move",
+      "name": "chemist_move_south_01.png",
+      "runtime": {
+        "alpha_area": 20810,
+        "alpha_bbox": [
+          192,
+          263,
+          319,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "a2147bb5c0e3fbe7f28e5e1316fe8dd7ec943491affe69ba2958510f730c487c",
+        "mode": "RGBA",
+        "pixel_sha256": "cf7cc6ae420e5b6d495a036889b8695f10a8352c5f456b5833f09492291be069",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4976,
+        "alpha_bbox": [
+          95,
+          67,
+          157,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "5af40607316a6d60e9d9131b40e714fc30e3c525ed0bf2845c94f4c79d88a428",
+        "mode": "RGBA",
+        "pixel_sha256": "7f42fee20a6a0293e760527b0eb1a30085aff09d3ef01f7749f3627d1360a09e",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south",
+      "kind": "move",
+      "name": "chemist_move_south_02.png",
+      "runtime": {
+        "alpha_area": 20075,
+        "alpha_bbox": [
+          193,
+          263,
+          319,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "df8528775c3053edb9a0e37caa4dafeabce98b62ec8046c69ec41f1489d1c232",
+        "mode": "RGBA",
+        "pixel_sha256": "2b2c7985d3026c36f784e72534f58fa0742439d0483bb715a333a4e84f944b7c",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4702,
+        "alpha_bbox": [
+          95,
+          68,
+          156,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "2cb50cb20ffecc36865967f3402a1927b454a093495655f914ff4519bbb04937",
+        "mode": "RGBA",
+        "pixel_sha256": "095bed1d96ca86576308a5db1e5cf4eedb6a3fe0f1016d83c041b486f6d38ec6",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south",
+      "kind": "move",
+      "name": "chemist_move_south_03.png",
+      "runtime": {
+        "alpha_area": 20997,
+        "alpha_bbox": [
+          190,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "18afe64164e4c98b524fd1c11210740a86697aa10f97bfefa3a86ae29671c8b1",
+        "mode": "RGBA",
+        "pixel_sha256": "253e01da7912b1e10d6863bd6f68e6602f4d8053e6d4fabb7f6f40721665a344",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5483,
+        "alpha_bbox": [
+          96,
+          67,
+          163,
+          192
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "fc6104bf3200926aff45bf4b0a0864b9edc48f46a4a333949e1805a470fc1c92",
+        "mode": "RGBA",
+        "pixel_sha256": "8c7ce0d35f378506107250677f548bfe90a887c0cba6f47e0489f334d8cc4e75",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south",
+      "kind": "move",
+      "name": "chemist_move_south_04.png",
+      "runtime": {
+        "alpha_area": 22867,
+        "alpha_bbox": [
+          186,
+          263,
+          327,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "3ac9c790cb354bade5116907b2062ea6611ecccb6dfc8327e3c75895a3fe7662",
+        "mode": "RGBA",
+        "pixel_sha256": "7a61e9da337ce662fd381f4173ae3aad4ca7662a5bdefbe7d610866cc5666f5e",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5306,
+        "alpha_bbox": [
+          94,
+          67,
+          162,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "8b73238a94454fb66b31a3a45f135c5b9bde065400d4ad2857bb28e4ee5bd58e",
+        "mode": "RGBA",
+        "pixel_sha256": "11f10b3487e84ab61d90224d883c179c2503fafdcefd4f38c59843b08c5cce40",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south",
+      "kind": "move",
+      "name": "chemist_move_south_05.png",
+      "runtime": {
+        "alpha_area": 21515,
+        "alpha_bbox": [
+          188,
+          263,
+          324,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "3326a22304515196470d1b6e2e749c76af65d899b1c1e5956c85be977e85b535",
+        "mode": "RGBA",
+        "pixel_sha256": "17ee48f32ed80030474a60dd457d6160504827db667b5b322e1ca75bfdf84942",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5217,
+        "alpha_bbox": [
+          95,
+          67,
+          162,
+          188
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "fdf426f3e2bb692f0824c8d54ce6114aecfcf14b6e9c533c9d7f47ac46882b2b",
+        "mode": "RGBA",
+        "pixel_sha256": "017cc29521e99ddfad376f6b4ab3221e380a9832a5a9b6c6588e7b7dc795216c",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "idle",
+      "name": "chemist_idle_south-east.png",
+      "runtime": {
+        "alpha_area": 23970,
+        "alpha_bbox": [
+          181,
+          263,
+          331,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d25c830b553de9a5be41f969d3145706f3dd25aa4021a871b58c82e63e56913a",
+        "mode": "RGBA",
+        "pixel_sha256": "a9201adf175f48532b7209c8f7a6180e77cea43c763fcf3106f2c5fe42f6f6c8",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5816,
+        "alpha_bbox": [
+          87,
+          65,
+          161,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "8b27d2c9b76c9c906043a27ceed4c516cbfb7bb94c075e34babf28e60d9a12bf",
+        "mode": "RGBA",
+        "pixel_sha256": "15adf811fbbeb1107ded2db2e3b07855a5470f6ab8e6a3cf075f61329aeecb3a",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "move",
+      "name": "chemist_move_south-east_00.png",
+      "runtime": {
+        "alpha_area": 19298,
+        "alpha_bbox": [
+          195,
+          263,
+          317,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "5220ea6f9f6ad9ad26f9f57d4e8175e313136865b8bd0a679a9c5d14e9703cb0",
+        "mode": "RGBA",
+        "pixel_sha256": "ee5a95112a17d2d3a9dda6e71d327b5e35fc28a949e92d456090bac41d9eb18d",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4853,
+        "alpha_bbox": [
+          91,
+          66,
+          152,
+          189
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c26de6969705bcaea22efab2fba70004df33c561d25287aa5edffddc6dff3985",
+        "mode": "RGBA",
+        "pixel_sha256": "21e6f7c836ce838e63777e7ab841732ed292081d937cf2be5434db3e9f3fb7f8",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "move",
+      "name": "chemist_move_south-east_01.png",
+      "runtime": {
+        "alpha_area": 20054,
+        "alpha_bbox": [
+          184,
+          263,
+          327,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "afd4538381033942f4a0e9e53acda69fe9845f6910feade34cbc325765ab3ec0",
+        "mode": "RGBA",
+        "pixel_sha256": "f9189d3a3ffdf57b769b04a413f37b14de2549d09ba61621e592065fabe9d571",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4806,
+        "alpha_bbox": [
+          92,
+          65,
+          162,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "03a8b007b07e8c194174b81e12d611e2f0046fb8d5a2954ff38e9befc2103965",
+        "mode": "RGBA",
+        "pixel_sha256": "df0bb4ff3ecba6352cfc491c0294a0f2257fc3e5bdea66ad7a39b74ab285da54",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "move",
+      "name": "chemist_move_south-east_02.png",
+      "runtime": {
+        "alpha_area": 20733,
+        "alpha_bbox": [
+          186,
+          263,
+          325,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "249115c99bc129a374ee9eeb87b97929691481ae853684b1dd95f9e5f67b2344",
+        "mode": "RGBA",
+        "pixel_sha256": "3e8b94fd90aab49e966002a248dfd5a9b69536a450c9ff1d42ba94f9c58442b1",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4821,
+        "alpha_bbox": [
+          93,
+          65,
+          160,
+          183
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d3490eee4e95baa495c542dda4f6de76ebbd6f79af887dec878c25a1178e990e",
+        "mode": "RGBA",
+        "pixel_sha256": "57aff7f3a18a17c4a13c42afc9b7e4d657274a225fba9fa870521baeabb25404",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "move",
+      "name": "chemist_move_south-east_03.png",
+      "runtime": {
+        "alpha_area": 20209,
+        "alpha_bbox": [
+          190,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "9985bbca49f4a552a9277a7d11f5c8b8fcb59b6cd953e5a43ec43324f61943c3",
+        "mode": "RGBA",
+        "pixel_sha256": "0e94ae083aace4f1231b113377913a70d154300dbc38af9005aa563935007203",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5133,
+        "alpha_bbox": [
+          91,
+          66,
+          157,
+          189
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "77b49fd3ced8e82091c22d7243cd3361bf392fbb30617b012664d85084336470",
+        "mode": "RGBA",
+        "pixel_sha256": "26f129d62c258fe33e119e21eaaaaa6407cf4a5b8c3476ae079657bfeed14ba9",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "move",
+      "name": "chemist_move_south-east_04.png",
+      "runtime": {
+        "alpha_area": 19329,
+        "alpha_bbox": [
+          186,
+          263,
+          325,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c9121c65ae884bfa32e790228449120024390b406297af9ed63f457bdf0caa93",
+        "mode": "RGBA",
+        "pixel_sha256": "bff1d26cdd0649dc928f7876dd55472ca89d333774bac422d7f1e156cd7317b6",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5044,
+        "alpha_bbox": [
+          90,
+          65,
+          161,
+          190
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "b16005c86b16f731735c63ee41813f4c76c3c0133cdf1deb5c3c8f4fb3caf788",
+        "mode": "RGBA",
+        "pixel_sha256": "fa445437ba925b1172f97b4cb5477222b02642434426348f2fe6695023aa71ae",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-east",
+      "kind": "move",
+      "name": "chemist_move_south-east_05.png",
+      "runtime": {
+        "alpha_area": 19155,
+        "alpha_bbox": [
+          190,
+          263,
+          323,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "b5df3457e0704194a4e24d99b84c5918c90a982014db94b05071f0786a50162b",
+        "mode": "RGBA",
+        "pixel_sha256": "389cc5283a75f65578d8c2c8bd3d457fb48ab5f0248e54f8a35bd49061fdce3c",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5004,
+        "alpha_bbox": [
+          91,
+          65,
+          159,
+          190
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "e4710a8b2b9747553809b27c4c00869585698ba1edf55187c538d4f8d7fd47a9",
+        "mode": "RGBA",
+        "pixel_sha256": "83850bd15d3490ba7eb160cc99735234b8ceac03bd87b35c80fb4526af72dad4",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "idle",
+      "name": "chemist_idle_east.png",
+      "runtime": {
+        "alpha_area": 20309,
+        "alpha_bbox": [
+          186,
+          263,
+          327,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "bdfcde7e99e8f19357a1e5640fc9a86fa22c9dba109bcc811dda9c2f32760762",
+        "mode": "RGBA",
+        "pixel_sha256": "9fd5f3ffebd40f651aaae7c1fb4d412815ad617403b15cb324efac397c69ce39",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5275,
+        "alpha_bbox": [
+          86,
+          64,
+          158,
+          189
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c749513613929bbec86f4c0950219d5fe75644a0f256d9dfcd377e0b65ca0719",
+        "mode": "RGBA",
+        "pixel_sha256": "34d9c70b36f5cc7fba03c88c4153a5615124fc9742aec3750cff24ca11d63dc2",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "move",
+      "name": "chemist_move_east_00.png",
+      "runtime": {
+        "alpha_area": 19141,
+        "alpha_bbox": [
+          184,
+          263,
+          328,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c6bdfd2f50946754c0c99c8ad7907bd41d3939d023fbf020dae7c40ace8a80b6",
+        "mode": "RGBA",
+        "pixel_sha256": "b7240a3679748701c975318fdcf2fb5f72c11ee435ef3345f69d2b63c6bfccfc",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5061,
+        "alpha_bbox": [
+          86,
+          61,
+          160,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "91ea303c0f36bc5302ffeb30aee611d56576f44841235f7386f86929c624103e",
+        "mode": "RGBA",
+        "pixel_sha256": "3c58decbcf663f9d94568e0af53ef269a5d9c5313b7cd94fb960f9ad7cdcaa83",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "move",
+      "name": "chemist_move_east_01.png",
+      "runtime": {
+        "alpha_area": 22482,
+        "alpha_bbox": [
+          178,
+          263,
+          334,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d07384a9cbd12a6141173469a60abf4e0a0f0d8792d8b31a2e9bdba6b6bdddc4",
+        "mode": "RGBA",
+        "pixel_sha256": "b3e219eede264864772fb1aa4041f14e6427cf95fc25df39b9ec9d21d6ffd355",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4933,
+        "alpha_bbox": [
+          87,
+          71,
+          160,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "7e48e4641547fc88cb9758c9870a7adbabacff20845e0186b9f0882fc536d47d",
+        "mode": "RGBA",
+        "pixel_sha256": "1e954c983019539c14fca524506a27ebb6ac483bdb71620be0e2751c0127b2bf",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "move",
+      "name": "chemist_move_east_02.png",
+      "runtime": {
+        "alpha_area": 21359,
+        "alpha_bbox": [
+          187,
+          263,
+          325,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "673e43f92403b9d998383218fe00370526940aca76b0d1393ba7ac625f0c0b60",
+        "mode": "RGBA",
+        "pixel_sha256": "6913ef9ffde9c10b49e3623868f3bff8d0f89f555e4f948fdbd1145e04dc2bef",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4883,
+        "alpha_bbox": [
+          88,
+          70,
+          154,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "b72e23961af6ce8236336a29871d660c2c878ac6cf8f7bee4406be7c3d9d921e",
+        "mode": "RGBA",
+        "pixel_sha256": "37e3cecdb1e8da9c33322e73c68c69583b96d5c022cb56a63dd7ea489d3688ec",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "move",
+      "name": "chemist_move_east_03.png",
+      "runtime": {
+        "alpha_area": 22266,
+        "alpha_bbox": [
+          188,
+          263,
+          325,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "53f831097ca720ea17046cdddb30f5498edce9cacdc57d3bb9423db9c1cd5ea9",
+        "mode": "RGBA",
+        "pixel_sha256": "d2b8febcf9b2ec088016ba1e2dbed0843a12da3daac5cf703455363b954064eb",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5004,
+        "alpha_bbox": [
+          89,
+          68,
+          154,
+          184
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "69bcde315260830ec90de695e2f5a2113c196d43b3ef4ea46c8f0f46056f5783",
+        "mode": "RGBA",
+        "pixel_sha256": "a52c7e4a5b22d094065e1f4682021c96b199d6b92cc61805446d22b136cc5c0a",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "move",
+      "name": "chemist_move_east_04.png",
+      "runtime": {
+        "alpha_area": 18139,
+        "alpha_bbox": [
+          188,
+          263,
+          324,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "708b948d28a7e2817072285251bd3d1778562c6a741bbacdc6dc81f01e311055",
+        "mode": "RGBA",
+        "pixel_sha256": "89ed65cd9839a70bd316bcefc0fdc08fa78c00bfaee7daefd6cdba8174f2c687",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5104,
+        "alpha_bbox": [
+          90,
+          60,
+          162,
+          190
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "44191a4c9a7883d43e28dfd19b2eb605e78188cff24f4363c265a305966808ea",
+        "mode": "RGBA",
+        "pixel_sha256": "26e8081b65c405b45a0c3abc8afff58aabc752d681a721a12a51afd3f3221284",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "east",
+      "kind": "move",
+      "name": "chemist_move_east_05.png",
+      "runtime": {
+        "alpha_area": 21079,
+        "alpha_bbox": [
+          178,
+          263,
+          335,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "4def9e5a38e87f8fca9363720caa3b989fdec8f4ce74c731d0a2b63e3313ea5c",
+        "mode": "RGBA",
+        "pixel_sha256": "db5161b54348f641a351a2ecd73726a690186933894ccdfe950ea3669b94bfe6",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5471,
+        "alpha_bbox": [
+          90,
+          67,
+          170,
+          192
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "b6fa2536ab6f53d70be12936ec5c1463e39d6c63c98b522a1f2840acc5f0c013",
+        "mode": "RGBA",
+        "pixel_sha256": "b57db5e74ef994ec8abde491cad8dd5bd4e73e7a87432ee386126f2875ac0892",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "idle",
+      "name": "chemist_idle_north-east.png",
+      "runtime": {
+        "alpha_area": 18077,
+        "alpha_bbox": [
+          198,
+          263,
+          313,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "8614e75628ca5c896bcf72261118c38720dc8e0b0c0bca66d58d00bd75a0b582",
+        "mode": "RGBA",
+        "pixel_sha256": "e0702b3048c8d3e9249f51f48bf8fe2010e3698577d6d4d835853dbe61f202ad",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4404,
+        "alpha_bbox": [
+          87,
+          65,
+          144,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "ef798cef5144557266ac5d0a050477ea2058c7ce9716ed4802cac1d15b0d373b",
+        "mode": "RGBA",
+        "pixel_sha256": "132e8d52069a72a6536046badd6f1a44627a935d2327566342de73605f22791d",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "move",
+      "name": "chemist_move_north-east_00.png",
+      "runtime": {
+        "alpha_area": 18688,
+        "alpha_bbox": [
+          196,
+          263,
+          316,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c9e39c2a7739c619fdbd1719318b7e7e6b3281171647f639844db17603ac9bca",
+        "mode": "RGBA",
+        "pixel_sha256": "988c742705d52e17bdccd7c9e7d423698379b4168f59d35a14073b517412f07b",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4699,
+        "alpha_bbox": [
+          90,
+          63,
+          150,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "bc77f6f3777b359bb8f46b000b784bcad34fb1697b9b0e9325b70afad7fd13b7",
+        "mode": "RGBA",
+        "pixel_sha256": "fd356da15367b9638bb98d75aa066b1d4b7830bb27af76354d44d0e1f0e7b75d",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "move",
+      "name": "chemist_move_north-east_01.png",
+      "runtime": {
+        "alpha_area": 20225,
+        "alpha_bbox": [
+          183,
+          263,
+          329,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "5c57886acb6fbc5f16dd5d8101d422f0ead448952469109779ab9cfbeedb4e2c",
+        "mode": "RGBA",
+        "pixel_sha256": "09fbc77644f519dfcd858c30c37971d99fc72e5c24ae2c6944d7f5b529ad6c11",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4772,
+        "alpha_bbox": [
+          87,
+          67,
+          158,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "e5ab4366d2a93d003dede08f13bb25575794f974942143948e87230f1074bfa0",
+        "mode": "RGBA",
+        "pixel_sha256": "0a6cc5a715ad00beb2f88d110aa9cf55341d7bdc2db074ff87bcd85c04f68151",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "move",
+      "name": "chemist_move_north-east_02.png",
+      "runtime": {
+        "alpha_area": 20043,
+        "alpha_bbox": [
+          194,
+          263,
+          318,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "85b6c4d9d986388d6c9c1f5d38a45891486f20b151eeb763342c2c4d40ea84dc",
+        "mode": "RGBA",
+        "pixel_sha256": "9f8f4628d4340adef4374aa96722ab8987351b7c7e3f3812fa8656a70fa0ac4b",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4549,
+        "alpha_bbox": [
+          91,
+          68,
+          150,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "5373f80761eaa91a3fa7ea84c3f4b595e079996ac2e77618fd1313419c55a523",
+        "mode": "RGBA",
+        "pixel_sha256": "4beea02f4474b41521bdf9a1d5908754a21ee94913b4e0aa4862ee6606735980",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "move",
+      "name": "chemist_move_north-east_03.png",
+      "runtime": {
+        "alpha_area": 17732,
+        "alpha_bbox": [
+          201,
+          263,
+          311,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c7586e4bc6bfcf41f4d40c9e11e213435721873df83acd8caba780a3d7935ee1",
+        "mode": "RGBA",
+        "pixel_sha256": "9f8dc55b40f8c7158bb16d3efa4cba4e27a89303388a5a770c934a697657e5d7",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4406,
+        "alpha_bbox": [
+          90,
+          65,
+          145,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "95f4f6d81409bd413c2df9ebc35ce502eade87752ec09a0b2f492f5346da50e4",
+        "mode": "RGBA",
+        "pixel_sha256": "10417a13c836e14978d90ba85ebe7b3183fb7d1e21f15c75cd794e4d35180e87",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "move",
+      "name": "chemist_move_north-east_04.png",
+      "runtime": {
+        "alpha_area": 20561,
+        "alpha_bbox": [
+          188,
+          263,
+          325,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "94dd717e6261fa207b03b07990485a22a9ec06e7044dbf63a4bfd3b0aa56c75e",
+        "mode": "RGBA",
+        "pixel_sha256": "366bf031f8eddf232489bf871a712ed81b41cfec227943c18123bc4a593ca18a",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4932,
+        "alpha_bbox": [
+          88,
+          63,
+          155,
+          183
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "3b5f61e388cc18652ba763ca1181bb404e33b526b549a61cc8785948d736c682",
+        "mode": "RGBA",
+        "pixel_sha256": "b47241b32883ecfe186e4920a02410efd71cab4d18c87732cbf165de2d14f628",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-east",
+      "kind": "move",
+      "name": "chemist_move_north-east_05.png",
+      "runtime": {
+        "alpha_area": 21542,
+        "alpha_bbox": [
+          176,
+          263,
+          335,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "cfe92b912eea0a92031bfcfe0ae518136d072750fdf829ee37d651d7492a14c1",
+        "mode": "RGBA",
+        "pixel_sha256": "e14cf12a6e92b0b7c9debad3fc89be64a8025cee43f2ea6abe034e134c458199",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5176,
+        "alpha_bbox": [
+          88,
+          66,
+          166,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "9734f2820f11c8594a8388d3388979a3be5df79ae3d7dc6e75f3c8451cc457b1",
+        "mode": "RGBA",
+        "pixel_sha256": "8d1010757b7d680a59262a108c60a66be245c692d3ad10516cdc7d880dbb25a2",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "idle",
+      "name": "chemist_idle_north.png",
+      "runtime": {
+        "alpha_area": 19540,
+        "alpha_bbox": [
+          198,
+          263,
+          313,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "3c84a9fb13b2f30c0dfc362bb28f01ce24d71e755393e2148c82883b7f736a49",
+        "mode": "RGBA",
+        "pixel_sha256": "4aca4bc28ba851a27f57af64452a4b83a97ee02b237c82a1feef320fdfc35eb9",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4621,
+        "alpha_bbox": [
+          92,
+          66,
+          148,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "589feb99ebf8517c55f1f3779961802b48e2d93900efc589d6cc44b4a9599a5e",
+        "mode": "RGBA",
+        "pixel_sha256": "87555d8e20e6ffd68018edb1c4c1b0fa2da0d933ed53bf34b6c665c8692fab9c",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "move",
+      "name": "chemist_move_north_00.png",
+      "runtime": {
+        "alpha_area": 19332,
+        "alpha_bbox": [
+          198,
+          263,
+          314,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "40e331f9404d68d91c61b48bed7e61d995fc7ef00f99702bfd1395f0e21ad970",
+        "mode": "RGBA",
+        "pixel_sha256": "18ffe72b872f715acbf3b025c2b748745af11522ae514d20ea44d1d31ac6eb4c",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4804,
+        "alpha_bbox": [
+          97,
+          64,
+          155,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "37c6b99ef1e123bcb9ee26b0dd2be2fbe2625d6d4592f8a41a87edb838123a62",
+        "mode": "RGBA",
+        "pixel_sha256": "ec8d578cba9be6cdd417aa487d9dc5a0ed70b568fab4116f2a1abe5bdc82559e",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "move",
+      "name": "chemist_move_north_01.png",
+      "runtime": {
+        "alpha_area": 19633,
+        "alpha_bbox": [
+          196,
+          263,
+          315,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "f02e65ab592c492294f4abf3467e0bdd37b66e94e00d1008c42657dc5fcd3429",
+        "mode": "RGBA",
+        "pixel_sha256": "cfc893ebec1d331a69ab1d2f7e160f1f3b0cebad01065ec5205f15d92658d8c4",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4793,
+        "alpha_bbox": [
+          95,
+          64,
+          154,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "3f65ae844581f97e05c88d82c6257f212c770d31ee50f4f08e64f51760787f97",
+        "mode": "RGBA",
+        "pixel_sha256": "620b2b31dd96dceacfe5ac40dab2f8e09c79ef88f1838002a6b4403f8f854cd5",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "move",
+      "name": "chemist_move_north_02.png",
+      "runtime": {
+        "alpha_area": 19847,
+        "alpha_bbox": [
+          196,
+          263,
+          315,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "580c29e2b354c57fa35853e2f5361462729e848354b9140c27a343addf8f2099",
+        "mode": "RGBA",
+        "pixel_sha256": "ae3433ccb575171cdac54adc6ef773ccbad5fd3797db96eff88ec20a6ad9750f",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4690,
+        "alpha_bbox": [
+          97,
+          66,
+          155,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "5f0ea39c0b9134f74e3db38dc4651a2c9ccc01a6bfae10cb2e51f545ada0921f",
+        "mode": "RGBA",
+        "pixel_sha256": "a8959ea5ba509fd9d330791f008678e7ce98047aaaa7d3b1a8bd3068db597c93",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "move",
+      "name": "chemist_move_north_03.png",
+      "runtime": {
+        "alpha_area": 18618,
+        "alpha_bbox": [
+          200,
+          263,
+          313,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "1758ea1c4398e8f791fd783976ad43184d1df01b766aec7b72022e64d5c6393e",
+        "mode": "RGBA",
+        "pixel_sha256": "7060648d9dec1af56ff41a5beb0f1539582926d2f87dfe8ed96ef4e2596c0696",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4553,
+        "alpha_bbox": [
+          98,
+          66,
+          154,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "fd19988305b8cd8eb0ed3806e1076d7af906430a2876cd88428d5628e302945b",
+        "mode": "RGBA",
+        "pixel_sha256": "74718c7ec728f52be9a2dad4cf3101b58bd838f9d83cad815dd6fc2044991f4b",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "move",
+      "name": "chemist_move_north_04.png",
+      "runtime": {
+        "alpha_area": 19859,
+        "alpha_bbox": [
+          196,
+          263,
+          315,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "bfa070e5e7cb25012937fbccd079bc1867ba72653e55f8091323e1c5d6739526",
+        "mode": "RGBA",
+        "pixel_sha256": "6031bd5379f7bb4df547580e5cf13fb620473680b1afa88b801f25c0ad7ddcd4",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4534,
+        "alpha_bbox": [
+          97,
+          66,
+          154,
+          183
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "56ba8fa68620f586523c94f0dde2fec6aadce465f0e4591452fce438c6fc74de",
+        "mode": "RGBA",
+        "pixel_sha256": "f09ce264309139acfd7bc046818f8d0c5f79f8392c043babf43fda94d3217777",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north",
+      "kind": "move",
+      "name": "chemist_move_north_05.png",
+      "runtime": {
+        "alpha_area": 19030,
+        "alpha_bbox": [
+          199,
+          263,
+          313,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "44b9e67620df0200052aaf2b706d901054f650a6cb4c9b0d82e2039f8dc25bd7",
+        "mode": "RGBA",
+        "pixel_sha256": "b0041fb1e12e710db1fd973aeb635ccbd60e4ea8b93a2478aab21c7cd7767c23",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4571,
+        "alpha_bbox": [
+          98,
+          66,
+          154,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "ab756eac7da680be90c81873ad70246e6a2472354ba0e519dbce0fdf784df23e",
+        "mode": "RGBA",
+        "pixel_sha256": "eba55556c2dbe9a229cc4ceb0cb066c201a322bb84c324f65e5b4529e1cab516",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "idle",
+      "name": "chemist_idle_north-west.png",
+      "runtime": {
+        "alpha_area": 21566,
+        "alpha_bbox": [
+          182,
+          263,
+          329,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "67414c6d9eb2d9c58b3ae9cc4b871422bc3aec5795d095884297f28f67bb6a84",
+        "mode": "RGBA",
+        "pixel_sha256": "be5778af7bb12e551e5d1bafbea93f2dce2ec1c3208f4d4e1635aaae532d56a3",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4894,
+        "alpha_bbox": [
+          88,
+          65,
+          158,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "421d5b982e06e792ea007d4cb5655c86ed0c044f2d0ede58efdcdbb193c5b659",
+        "mode": "RGBA",
+        "pixel_sha256": "db870c4c01ba74ff2d29a67ec7620672e38035247cc493363f5c77c50f5a878e",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "move",
+      "name": "chemist_move_north-west_00.png",
+      "runtime": {
+        "alpha_area": 21833,
+        "alpha_bbox": [
+          184,
+          263,
+          327,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "38833da932317c40d8534786ace55b7391ea73dafaf9f70a101939f72d561076",
+        "mode": "RGBA",
+        "pixel_sha256": "d2531d356c86534dad83a4d31ca65efe87967f73f0d4c5639b122d3045bdb4b2",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4797,
+        "alpha_bbox": [
+          89,
+          67,
+          156,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "371a6f45532752916213cea6f46a08568e8baefaf1228737dff6351031effc00",
+        "mode": "RGBA",
+        "pixel_sha256": "d0b037e536fdc411e9c4e76881041a05de19f932087a9adcaf9fe1e7e5286541",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "move",
+      "name": "chemist_move_north-west_01.png",
+      "runtime": {
+        "alpha_area": 20387,
+        "alpha_bbox": [
+          190,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "2702a4700d9284b5aebed138eee2ae290c39913d6b3b7a5facfbff715e82ba7e",
+        "mode": "RGBA",
+        "pixel_sha256": "b8d75adf798e12725c64a928b07538a639f0e077f7837350e825e14c485ef439",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4416,
+        "alpha_bbox": [
+          93,
+          68,
+          154,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "accd2154cc3cc1137b0c0c23d3429dca964923738a69afb8ec06df5d7e39d1d6",
+        "mode": "RGBA",
+        "pixel_sha256": "5a5f8cd2f2500ce5a69b889ea0cbc00e5a2a93fef1bc1d54d4609053113ff046",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "move",
+      "name": "chemist_move_north-west_02.png",
+      "runtime": {
+        "alpha_area": 19455,
+        "alpha_bbox": [
+          192,
+          263,
+          320,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c9d3c4caa0e9ec2d25b00b20869d7b5083dc0fbdb4084850a2ac295562e255c2",
+        "mode": "RGBA",
+        "pixel_sha256": "288f71cc7cf41115e2e32c09e2d6e90d58c1d6172d033abe416c189ef12444ff",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4430,
+        "alpha_bbox": [
+          93,
+          65,
+          154,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "05c1d96c97aace922986a57604567e953335d4950583fd8d4fa4db6bde7f5911",
+        "mode": "RGBA",
+        "pixel_sha256": "ae99064c4f96dcc2c2f4e859ed0654fa883e26916488fae1715796760c6bcd1e",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "move",
+      "name": "chemist_move_north-west_03.png",
+      "runtime": {
+        "alpha_area": 19219,
+        "alpha_bbox": [
+          194,
+          263,
+          318,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "425c903f1cc6f1a89c3558f91a12a2a6575908c396f206760333fd855d2a484b",
+        "mode": "RGBA",
+        "pixel_sha256": "06e8c5ab3b0fe5ba63bc8cd05fa5636951d29a99055f06ed9a2e9679a5a2b12e",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4511,
+        "alpha_bbox": [
+          93,
+          63,
+          153,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d0f998e1a8c9d2af531c2fc87ccc0b735f14625331be0e4237b8673164e3d99d",
+        "mode": "RGBA",
+        "pixel_sha256": "96a59d40aec5a0fa08a56f577611e8f0950204414563a4760a710cc8f634fe3e",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "move",
+      "name": "chemist_move_north-west_04.png",
+      "runtime": {
+        "alpha_area": 19412,
+        "alpha_bbox": [
+          193,
+          263,
+          319,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "4c60343d61b78b3ea3259b47967f8da3d828e3fb2eebb8cf49a1a8aa53700164",
+        "mode": "RGBA",
+        "pixel_sha256": "f2f9f6e3d6881cd7aa16c35a924b645ecb1dedc7fcf6b250d6e94dc6b2807e41",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4553,
+        "alpha_bbox": [
+          92,
+          63,
+          153,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "6606172f2dc3d567205d304c008b6181cf33b68ae5f3c32ba439b8eecc77096b",
+        "mode": "RGBA",
+        "pixel_sha256": "13b865343dd1036f8cb0159cb2d4852ec5b4e9e32a27c93a281002e4a502d1e2",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "north-west",
+      "kind": "move",
+      "name": "chemist_move_north-west_05.png",
+      "runtime": {
+        "alpha_area": 20618,
+        "alpha_bbox": [
+          188,
+          263,
+          324,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "27a55bcd11b4f4da596238979e2462e57e7bcb364116aeef1ff69efbdce1e0fe",
+        "mode": "RGBA",
+        "pixel_sha256": "cf3591588796d31f5e64916df53f56c9f8a2f6c7df2c8544c116c44ababecdce",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4712,
+        "alpha_bbox": [
+          90,
+          65,
+          155,
+          182
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "603b45d779c267a11286d2a29cd47630e86c7123e68ee7ad36fe5b1a8d2723b8",
+        "mode": "RGBA",
+        "pixel_sha256": "e44328969ff9f9d3fbdce30f3442739c1dc07947dc36b7f2719966d1bd78061d",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "idle",
+      "name": "chemist_idle_west.png",
+      "runtime": {
+        "alpha_area": 19329,
+        "alpha_bbox": [
+          200,
+          263,
+          313,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "9c1fd9773be7cdb7e0bc38eae2ca4364108913c05a03950b91f94ecfaccee675",
+        "mode": "RGBA",
+        "pixel_sha256": "2fb411193ac5ff9299526596c408c0986a8790bdca5b4a546694f332949ef765",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4723,
+        "alpha_bbox": [
+          99,
+          65,
+          155,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "6378b520d05b2b0574d0de967b3694cc7fd18de4a5c9bff09253d7c1cc8c6f82",
+        "mode": "RGBA",
+        "pixel_sha256": "7f0a4ae2d1849da950dc610557021ef86ec26b40911a68f9195999d8de5f723f",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "move",
+      "name": "chemist_move_west_00.png",
+      "runtime": {
+        "alpha_area": 18763,
+        "alpha_bbox": [
+          192,
+          263,
+          319,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "56b32180b7bc9ce6a21caade313cccf6aa09928b39120316d7f8e5eda8a396c8",
+        "mode": "RGBA",
+        "pixel_sha256": "5bf2a2357a75c0c6843f09e4ed4592e13b6a308211010625cae3081789c6794c",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4606,
+        "alpha_bbox": [
+          95,
+          64,
+          158,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "2ea3e7a3a8baf23d5923918f6920597dcae31515141b5a3dc30d7f5df9bd2c18",
+        "mode": "RGBA",
+        "pixel_sha256": "ad2015750d6ed43e0d06167f8d1c462e4734f73ab244e454381b0f6a4148f343",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "move",
+      "name": "chemist_move_west_01.png",
+      "runtime": {
+        "alpha_area": 19636,
+        "alpha_bbox": [
+          187,
+          263,
+          325,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "42ec6d5a541f7cd4b388cd750d85916959b8d25cb574f0873b360658c20627d0",
+        "mode": "RGBA",
+        "pixel_sha256": "39c3f403bc23d154f01731d18e6fc5a8240b5520377c46432298e9b5903f49d5",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4612,
+        "alpha_bbox": [
+          91,
+          67,
+          158,
+          186
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "1313cebbe27227034999067979727225a28c38d5eff4b1de2a8c145ba4c28fd5",
+        "mode": "RGBA",
+        "pixel_sha256": "950c6da33d5529116940f3e89799c8a1f91991a20c90f8b507e8728cb1b3ed56",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "move",
+      "name": "chemist_move_west_02.png",
+      "runtime": {
+        "alpha_area": 20200,
+        "alpha_bbox": [
+          186,
+          263,
+          326,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "66cf4f712c07a8bf928ba49b4972737f1b99a3eb79c110143501721a0766f972",
+        "mode": "RGBA",
+        "pixel_sha256": "2a0a3092ab4b4b72ead944277e45338b8d7b9bf51759c4ff5126f9cd81f89e71",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4750,
+        "alpha_bbox": [
+          88,
+          68,
+          156,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d62ab03060c69489e95839a1df1096a409d4ba1bfa84a02dbcb01fb499c7137b",
+        "mode": "RGBA",
+        "pixel_sha256": "03ca4ca6e6a6f68cb693122db50deb7064612d08b109345a788a04050bfb9d3d",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "move",
+      "name": "chemist_move_west_03.png",
+      "runtime": {
+        "alpha_area": 19204,
+        "alpha_bbox": [
+          191,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "e83dd1f197ef349faaa230adf12b9ac45725da78f277f4d704b412e8a0542bbd",
+        "mode": "RGBA",
+        "pixel_sha256": "835680c0fa699c6993307dbc5a961fd55c7febcf23231e0aadc0a32ad4cd3074",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4512,
+        "alpha_bbox": [
+          91,
+          68,
+          154,
+          187
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "67e6b6e215638fce740e72e52972f3035aff5dc4744109c74b5b39bd3bb1d555",
+        "mode": "RGBA",
+        "pixel_sha256": "0a1ef4102603b8933c93cbb518cd9a9b1d49c347fcc09b75d0c2c576e89a1428",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "move",
+      "name": "chemist_move_west_04.png",
+      "runtime": {
+        "alpha_area": 18945,
+        "alpha_bbox": [
+          200,
+          263,
+          313,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "c4702d44a14972c4ed64e06c396e77edc28a2dae077f473cfe45f132f10526f1",
+        "mode": "RGBA",
+        "pixel_sha256": "f26369a438a7a1e719c28a2e9847221dbf3965684abe32a9b81606f0d38307f7",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4619,
+        "alpha_bbox": [
+          102,
+          64,
+          158,
+          185
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "ccc188eb866730a52fdc641114dcd8e14f3027d1d7d274500a61d15afec3cdeb",
+        "mode": "RGBA",
+        "pixel_sha256": "2bf481fc1b3cb019b41d55e8768b399adced72fecfbcddcf2c6b8b64311b06ca",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "west",
+      "kind": "move",
+      "name": "chemist_move_west_05.png",
+      "runtime": {
+        "alpha_area": 20283,
+        "alpha_bbox": [
+          191,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "7292b707e8f2400b85d4ac68a95e71ca722aba0c8516d88ca48c46a7610875a4",
+        "mode": "RGBA",
+        "pixel_sha256": "20d908223e3eb4a01c9ab97e1d19f020ab775b60f01977873f8d7c3757fd5dd1",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4781,
+        "alpha_bbox": [
+          97,
+          65,
+          160,
+          184
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "ffeb48f71e4d7533c8c8f35959f60c7553d332607898f6f0e3943392fc296d91",
+        "mode": "RGBA",
+        "pixel_sha256": "e3dddc65c8eb38fb057e83be653c4f5daecb6fc6fb4a89d6c46a0740b147ba96",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "idle",
+      "name": "chemist_idle_south-west.png",
+      "runtime": {
+        "alpha_area": 18793,
+        "alpha_bbox": [
+          196,
+          263,
+          317,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "e5a465a9ca0bba65fb974218153866e392ac9779e5fe041d7d2f0fd2a7bc4d74",
+        "mode": "RGBA",
+        "pixel_sha256": "f62a8e2116ff8440f50026f48b4605110235138c92f4e853d98026d150f275c0",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4823,
+        "alpha_bbox": [
+          99,
+          65,
+          160,
+          189
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "fecbbc691d0c8d7ef3e6f4e8d4029fec2c704f60c343d4ff7890e63c575bd7ae",
+        "mode": "RGBA",
+        "pixel_sha256": "fa50fa4740b42cf69925719400bcd3c7911d9b0fb50db0779aa4bc93528b4585",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "move",
+      "name": "chemist_move_south-west_00.png",
+      "runtime": {
+        "alpha_area": 17686,
+        "alpha_bbox": [
+          197,
+          263,
+          315,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "b2040cf92713e1a5f8ff7f12be3bc32cbcc3d47a7b85d116589e878533cc4a13",
+        "mode": "RGBA",
+        "pixel_sha256": "f252c7c5919c2eb9232c16b665eea7bec56478c068eec21aa0217f0b9f8017a1",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4450,
+        "alpha_bbox": [
+          104,
+          65,
+          163,
+          188
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d32b3e9b22a3ccddaca740e52547056471cf8861474327431d141e77494d028c",
+        "mode": "RGBA",
+        "pixel_sha256": "89e7e2a5b346b307afb8ed3b5383b66d83a330e3fbbd3ed115107298f36033b5",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "move",
+      "name": "chemist_move_south-west_01.png",
+      "runtime": {
+        "alpha_area": 18825,
+        "alpha_bbox": [
+          192,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "6d188822e7240dd8e0fa148d51e0471ad13e548bc041fb0cdb499f1abaac5952",
+        "mode": "RGBA",
+        "pixel_sha256": "2e416321c13638e7dcfd04515db073caeb7eb65e34f3a1fa7c06bf2f47281294",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4790,
+        "alpha_bbox": [
+          99,
+          66,
+          164,
+          189
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "f94bcaa036dbe0c40e178ba10279c35fc00d16b455e4cffb9e1ba040c60cd7ee",
+        "mode": "RGBA",
+        "pixel_sha256": "7297904d6e8a4f60f5c9eee447b9fc89fa3701fa7722c775dc38f6823dd930c1",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "move",
+      "name": "chemist_move_south-west_02.png",
+      "runtime": {
+        "alpha_area": 18535,
+        "alpha_bbox": [
+          193,
+          263,
+          319,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "73776110cefd6146250c58eaee3bb13999421aff8f3a87cfda0b2dbcbae883b9",
+        "mode": "RGBA",
+        "pixel_sha256": "54ca3c5fd93fca4f1c5e09cc275dd588cdfdbd7f8c1688306b1d0771c0554dc4",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4794,
+        "alpha_bbox": [
+          101,
+          66,
+          165,
+          190
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "dab54ad9148083aab9b90f0598702cc6bce402cd6de9639c50902ec7e0f21cd6",
+        "mode": "RGBA",
+        "pixel_sha256": "3e36a55dbb326c24e430a95d0f8ccb3d93db932a2a4664ae2bbc72f16bc797a5",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "move",
+      "name": "chemist_move_south-west_03.png",
+      "runtime": {
+        "alpha_area": 17942,
+        "alpha_bbox": [
+          196,
+          263,
+          317,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "2304796e622fce084c1096b9c4d68c20b842f0f9729eabfe217e00622fba400c",
+        "mode": "RGBA",
+        "pixel_sha256": "6415af3f28ec7a0fd554461c6d2fa0a00d19ff87476ecb1cfd759efc1e6c6f01",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4738,
+        "alpha_bbox": [
+          104,
+          65,
+          166,
+          191
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "7db697cee9922f1c6f3f015262b163a5626729be8fb581d9eb327af415a38917",
+        "mode": "RGBA",
+        "pixel_sha256": "29a650a11f3d83e1521a83320462f516169853fee6390d53b4eabae867152606",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "move",
+      "name": "chemist_move_south-west_04.png",
+      "runtime": {
+        "alpha_area": 18611,
+        "alpha_bbox": [
+          192,
+          263,
+          321,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "3165f2d20fb6bb658ef4de8c22ee9131388861bb79056c48415a7beabe9869de",
+        "mode": "RGBA",
+        "pixel_sha256": "5a4001c462dd3e7641154ae0fa063249b5b99728aeb3e4a48184325579b792b0",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 5011,
+        "alpha_bbox": [
+          98,
+          64,
+          165,
+          191
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "b8518b0c6e09d759c99c65b0d5f961d524c55fb61cf1e8a91d688ebdb6753266",
+        "mode": "RGBA",
+        "pixel_sha256": "18bc6aee946100488e9663d87f1a367d4cb9104051e6f964d23eba4d1d435ae6",
+        "size": [
+          252,
+          252
+        ]
+      }
+    },
+    {
+      "direction": "south-west",
+      "kind": "move",
+      "name": "chemist_move_south-west_05.png",
+      "runtime": {
+        "alpha_area": 18495,
+        "alpha_bbox": [
+          196,
+          263,
+          316,
+          508
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "0e256ea33185210046cfbcee83ec4566c327752be0c8000eb70f605aabfb91e0",
+        "mode": "RGBA",
+        "pixel_sha256": "dd1b8eee7f30fbde5af51bae89d6a89245f111e872eafb183c2d4c6a3c6db46d",
+        "size": [
+          512,
+          512
+        ]
+      },
+      "source": {
+        "alpha_area": 4966,
+        "alpha_bbox": [
+          104,
+          64,
+          166,
+          191
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "encoded_sha256": "d46611ac2c4a338e99b0db733dd5fff16d0bb55f78d3bf1bfbe5ccb86579c55c",
+        "mode": "RGBA",
+        "pixel_sha256": "f3ebc442fe85148ceb68a369d3a7fb4a1bbedf2c6b44c31ef9f4d187198488f8",
+        "size": [
+          252,
+          252
+        ]
+      }
+    }
+  ],
+  "idle_duplicate_count": 0,
+  "idle_duplicates": [],
+  "manifest": {
+    "frame_count_per_direction": 6,
+    "inventory_frame_count": 24,
+    "pixellab_character_id": "c7fe44d3-1f15-45a1-b762-b2862833b151",
+    "regenerated_directions": [
+      "east",
+      "north-east",
+      "north-west",
+      "west"
+    ],
+    "source": "PixelLab MCP",
+    "untouched_directions": [
+      "south",
+      "south-east",
+      "north",
+      "south-west"
+    ]
+  },
+  "mirror_pair_count": 0,
+  "mirror_pairs": [],
+  "portrait_path": "res://assets/sprites/characters/full_frame/chemist_pixellab/chemist_idle_south.png",
+  "runtime_contract": {
+    "alpha_bbox_bottoms": [
+      508
+    ],
+    "alpha_bbox_heights": [
+      245
+    ],
+    "footline_bottom": 508,
+    "size": [
+      512,
+      512
+    ],
+    "visible_height": 245,
+    "x_center_range": [
+      255.0,
+      256.0
+    ]
+  },
+  "runtime_frame_count": 56,
+  "source_contract": {
+    "alpha_area_ratio_by_direction": {
+      "east": 1.120418,
+      "north": 1.05955,
+      "north-east": 1.174762,
+      "north-west": 1.086277,
+      "south": 1.1661,
+      "south-east": 1.06804,
+      "south-west": 1.126067,
+      "west": 1.059619
+    },
+    "max_alpha_area_ratio": 1.174762,
+    "mode": "RGBA",
+    "size": [
+      252,
+      252
+    ]
+  },
+  "source_frame_count": 56,
+  "spriteframes": {
+    "animation_count": 27,
+    "animation_names": [
+      "idle",
+      "move",
+      "walk",
+      "idle_south",
+      "idle_south_east",
+      "idle_east",
+      "idle_north_east",
+      "idle_north",
+      "idle_north_west",
+      "idle_west",
+      "idle_south_west",
+      "move_south",
+      "move_south_east",
+      "move_east",
+      "move_north_east",
+      "move_north",
+      "move_north_west",
+      "move_west",
+      "move_south_west",
+      "walk_south",
+      "walk_south_east",
+      "walk_east",
+      "walk_north_east",
+      "walk_north",
+      "walk_north_west",
+      "walk_west",
+      "walk_south_west"
+    ],
+    "body_attack_animations": [],
+    "frame_counts": {
+      "idle": 1,
+      "idle_east": 1,
+      "idle_north": 1,
+      "idle_north_east": 1,
+      "idle_north_west": 1,
+      "idle_south": 1,
+      "idle_south_east": 1,
+      "idle_south_west": 1,
+      "idle_west": 1,
+      "move": 6,
+      "move_east": 6,
+      "move_north": 6,
+      "move_north_east": 6,
+      "move_north_west": 6,
+      "move_south": 6,
+      "move_south_east": 6,
+      "move_south_west": 6,
+      "move_west": 6,
+      "walk": 6,
+      "walk_east": 6,
+      "walk_north": 6,
+      "walk_north_east": 6,
+      "walk_north_west": 6,
+      "walk_south": 6,
+      "walk_south_east": 6,
+      "walk_south_west": 6,
+      "walk_west": 6
+    },
+    "walk_aliases_move": true
+  },
+  "tool": "tools/build_fan2595_chemist_animation_review.py",
+  "verdict": "PASS"
+}

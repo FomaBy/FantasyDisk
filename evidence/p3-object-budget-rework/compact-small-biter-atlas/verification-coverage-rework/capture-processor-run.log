@@ -1,0 +1,9 @@
+command (complete argv): python3 evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/capture_histogram_processor.py <case1-sprite.png> <case0-reference.png> false true
+processor_sha256: c147849b9c33018188afeac9d9587f2b8d28a609a03dfff9e3b875dc9fd55f37
+inputs: exported-windowed-captures/capture-attack_east-case1-sprite.png sha256=e022cda4135d4f96fc6304ae022fdbf12bda822690b8bdbcb2246aa98156ae7e
+        exported-windowed-captures/capture-attack_east-case0-reference.png sha256=cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12
+source: 5fe0b8e148f47b56f49560ea815075d428d01c81
+purpose: execute the capture-derived assertions of old-vs-new-control-derived.json against the exact committed blobs
+Sun Sep 13 18:29:34 UTC 2026
+FAN3934_CAPTURE_PROCESSOR {"processor": "capture_histogram_processor.py", "inputs": {"evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case1-sprite.png": "e022cda4135d4f96fc6304ae022fdbf12bda822690b8bdbcb2246aa98156ae7e", "evidence/p3-object-budget-rework/compact-small-biter-atlas/verification-coverage-rework/exported-windowed-captures/capture-attack_east-case0-reference.png": "cfd0e526199031bcb853f82d5289a5cac398104aeede414079306e07bb1c0b12"}, "old_checker_histogram_equal": false, "spatial_sha_differ": true, "matches_derived_record": true}
+exit_status=0

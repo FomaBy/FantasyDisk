@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3771",
+  "weapon_id": "priest_reliquary",
+  "runtime_dir": "assets/sprites/effects/priest/priest_reliquary",
+  "transparent_background": true,
+  "safe_gutter_px": 16,
+  "readability_limits": {
+    "max_alpha_allowed": 220,
+    "center_64_mean_alpha_max": 210,
+    "min_adjacent_motion_ratio": 0.01
+  },
+  "frames": [
+    {
+      "frame": 0,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.3966,
+      "mean_alpha_visible_pixels": 178.2731,
+      "visible_ratio_alpha_gt_8": 0.254639,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1356
+    },
+    {
+      "frame": 1,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.3865,
+      "mean_alpha_visible_pixels": 178.2654,
+      "visible_ratio_alpha_gt_8": 0.254593,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1805
+    },
+    {
+      "frame": 2,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4388,
+      "mean_alpha_visible_pixels": 178.268,
+      "visible_ratio_alpha_gt_8": 0.254883,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1857
+    },
+    {
+      "frame": 3,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.3755,
+      "mean_alpha_visible_pixels": 178.2756,
+      "visible_ratio_alpha_gt_8": 0.254517,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1752
+    },
+    {
+      "frame": 4,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4265,
+      "mean_alpha_visible_pixels": 178.2518,
+      "visible_ratio_alpha_gt_8": 0.254837,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1963
+    },
+    {
+      "frame": 5,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4652,
+      "mean_alpha_visible_pixels": 178.2649,
+      "visible_ratio_alpha_gt_8": 0.255035,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.2121
+    },
+    {
+      "frame": 6,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.5048,
+      "mean_alpha_visible_pixels": 178.2601,
+      "visible_ratio_alpha_gt_8": 0.255264,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.2016
+    },
+    {
+      "frame": 7,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4705,
+      "mean_alpha_visible_pixels": 178.2642,
+      "visible_ratio_alpha_gt_8": 0.255066,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1857
+    },
+    {
+      "frame": 8,
+      "alpha_bbox": [
+        47,
+        19,
+        209,
+        236
+      ],
+      "max_alpha": 189,
+      "mean_alpha_all_pixels": 45.4689,
+      "mean_alpha_visible_pixels": 178.2474,
+      "visible_ratio_alpha_gt_8": 0.255081,
+      "center_64_mean_alpha": 187.2019,
+      "outer_32_border_mean_alpha": 2.1831
+    }
+  ],
+  "motion": {
+    "distinct_frame_pixel_hashes": 9,
+    "adjacent_pairs_with_motion": 8,
+    "adjacent_changed_pixel_ratios": [
+      0.077011,
+      0.080933,
+      0.106277,
+      0.103271,
+      0.085281,
+      0.062744,
+      0.060547,
+      0.072617
+    ],
+    "mean_absolute_rgba_diffs": [
+      1.8216,
+      2.7057,
+      2.8466,
+      3.425,
+      2.4885,
+      1.4774,
+      1.413,
+      1.6445
+    ],
+    "motion_score_mean_changed_pixel_ratio": 0.081085,
+    "loop": false,
+    "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+  },
+  "decision": "pass"
+}

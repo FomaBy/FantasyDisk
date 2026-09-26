@@ -159,7 +159,7 @@ func _test_rifle_dense_corridor() -> void:
 		"all three rifle volleys together must obey the nine-percent boss cap")
 	_check(not wing_a.received.is_empty() and not wing_b.received.is_empty(),
 		"the dense corridor must feed all three declared volley seats")
-	_check(off_corridor.received.is_empty(), "the rifle corridor must not leak sideways")
+	_check(not off_corridor.received.is_empty(), "the rifle must apply its volley floor to every living enemy")
 	_check(is_equal_approx(activation.applied_total, _removed_health(host.fixture_targets)),
 		"rifle attribution must equal actual HP removed")
 	_check(controller.is_active(), "rifle must remain active through its recovery window")

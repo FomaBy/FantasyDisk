@@ -1,0 +1,9 @@
+FAN-3934 QA-rework regression evidence (body-flash exact endpoint)
+
+== BEFORE fix (candidate 52ee0d77f27fb07d9ed2104d6fbfb80ee8e7e878) ==
+command: FSD_GODOT_RUN_TIMEOUT=180 GODOT_BIN=/Applications/Godot.app/Contents/MacOS/Godot python3 tools/godot_gate.py --headless --path . --script res://tests/p3_feedback_allocation_test.gd
+result: P3_FEEDBACK_ALLOCATION_TEST FAIL: repeated flash/reuse drifted the body tint (channel r: 0.62001264095306 vs 0.62000000476837)
+exit_status=1
+
+== AFTER fix (endpoint assigned exactly at lifetime crossing) ==
+same command; result: P3_FEEDBACK_ALLOCATION_TEST PASS; exit_status=0

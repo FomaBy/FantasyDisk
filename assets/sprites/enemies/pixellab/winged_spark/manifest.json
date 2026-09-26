@@ -1,0 +1,59 @@
+{
+  "character_id": "winged_spark",
+  "pixellab_character_id": "918ad402-d90d-49bb-ac6a-1897e112cfcb",
+  "generated_at": "2026-08-19",
+  "source": "PixelLab MCP",
+  "mode": "v3 (idle/move/attack/hit/death, all custom v3, 8 directions each)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "states": {
+    "idle": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "hovering in place in mid-air, wings flapping steadily up and down, body bobbing gently with each flap, legs dangling loose",
+      "fps": 8.0,
+      "note": "hover-flap loop (flying identity; resolves through the idle state, no separate hover state name)"
+    },
+    "move": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "flying forward aggressively, powerful wing beats propelling the body ahead, torso leaning into the direction of travel, claws reaching forward, tail trailing behind",
+      "fps": 10.0
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "lunging forward in mid-air with a vicious clawed swipe attack, wings snapping back for thrust, mouth open baring fangs, body coiling then striking forward",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "action_description": "recoiling in pain from a hit while airborne, flinching backward, wings flaring out for balance, body jerking back briefly",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "dying and falling out of the sky, wings crumpling and going limp, body going ragdoll and collapsing downward, defeated",
+      "fps": 10.0
+    }
+  },
+  "notes": "FAN-2519 explicit-eight-direction pack for standard_monster/winged_spark (FAN-2619). 8x6 idle(hover)/move/attack/death frames + 8x4 hit frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. Replaces the single west-facing flip-mirrored winged_spark pack (source_faces_left=true, single hover_flap/move/attack_primary/death rows)."
+}

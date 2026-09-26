@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "issue": "FAN-1494",
+  "issue": "FAN-3675",
   "class_id": "druid",
   "contract": {
     "schema": "data/ultimates/presentation_schema/v1/weapon_ultimate_presentation_manifest.schema.json",
@@ -16,23 +16,32 @@
     "runtime_adapter_status": "unbound_shared_adapter_owned_by_FAN-1541"
   },
   "generator_provenance": {
-    "route": "reused_approved_assets_no_new_raster_generation",
-    "new_pixellab_assets": [],
+    "route": "integrated_approved_pixellab_animation_frames",
+    "new_pixellab_assets": [
+      "summon_amulet",
+      "briar_staff",
+      "raven_totem"
+    ],
+    "integrated_art_candidate": "a14f9246527b866ea12ad9d425c2f122a41cc53e",
+    "art_integration_anchor": "0bf1c18492402eb4959054653481e80fc77b1118",
     "reused_sources": {
       "summon_amulet": {
-        "source_path": "assets/sprites/effects/vfx_weapon_summon_amulet.png",
+        "spriteframes": "assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame Wild Hunt pack, integrated byte-identically."
       },
       "briar_staff": {
-        "source_path": "assets/sprites/effects/vfx_weapon_briar_staff.png",
+        "spriteframes": "assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame briar lattice pack, integrated byte-identically."
       },
       "raven_totem": {
-        "source_path": "assets/sprites/effects/vfx_weapon_raven_totem.png",
+        "spriteframes": "assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres",
         "runtime_scene": "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
-        "note": "Approved weapon ultimate VFX sprite; no new isolated source frame was created."
+        "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json",
+        "note": "Accepted PixelLab nine-frame raven vortex pack, integrated byte-identically."
       }
     }
   },
@@ -41,15 +50,27 @@
       "weapon_id": "summon_amulet",
       "title": "Дикая Охота",
       "scene_path": "scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
-      "silhouette": "eight spectral beasts on an amulet hunt sigil",
-      "motion_path": "radial eight-direction burst, curved hunting sweep around the sigil, then a leap back into it",
-      "impact_language": "staggered pack bites on priority targets ending in one sigil swallow",
+      "silhouette": "spectral Wild Hunt wolf crossing eight directional marks on an amulet sigil",
+      "motion_path": "eight-direction hunt marks converge into a forward lunge, then snap back to the amulet",
+      "impact_language": "one spectral bite burst per affected victim over the existing white hit flash",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/druid/summon_amulet/summon_amulet_spriteframes.tres",
+          "animation": "druid_summon_amulet_ultimate",
+          "frame_count": 9,
+          "frame_size": [
+            256,
+            256
+          ],
+          "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.85,
         "active": 1.15,
-        "recovery": 6.6,
-        "cancel": 7.4
+        "recovery": 2.85,
+        "cancel": 3.6
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.druid.summon_amulet.windup",
@@ -66,22 +87,60 @@
         "max_visual_nodes": 11,
         "crowd_cap": 24,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "summon_cap_and_persistence_owner": "mechanics FAN-1495"
+        "summon_cap_and_persistence_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/summon_amulet/summon_amulet_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the Wild Hunt holds one accepted source frame while phase scale and alpha preserve the summon envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     },
     {
       "weapon_id": "briar_staff",
       "title": "Лес за Одно Дыхание",
       "scene_path": "scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
-      "silhouette": "five ground roots carrying a connected bramble lattice with open safe paths",
-      "motion_path": "staff slam, then a sequential outward root race and wall growth between the tips",
-      "impact_language": "root impale hold followed by thorn crowns that burst and wither",
+      "silhouette": "sequential briar lattice with readable open paths between the root growths",
+      "motion_path": "staff slam, then ordered root growth, lattice closure, and thorn-crown wither",
+      "impact_language": "one briar impale burst per affected victim over the existing white hit flash",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/druid/briar_staff/briar_staff_spriteframes.tres",
+          "animation": "druid_briar_staff_ultimate",
+          "frame_count": 9,
+          "frame_size": [
+            256,
+            256
+          ],
+          "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
-        "release": 1.1,
-        "active": 1.55,
-        "recovery": 7.9,
-        "cancel": 8.6
+        "release": 0.95,
+        "active": 1.45,
+        "recovery": 3.0,
+        "cancel": 3.75
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.druid.briar_staff.windup",
@@ -98,22 +157,60 @@
         "max_visual_nodes": 12,
         "crowd_cap": 20,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "boss_control_cap_owner": "mechanics FAN-1495"
+        "boss_control_cap_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 130,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/briar_staff/briar_staff_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the briar lattice holds one accepted source frame while phase scale and alpha preserve the growth envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     },
     {
       "weapon_id": "raven_totem",
       "title": "Ночь Тысячи Крыльев",
       "scene_path": "scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
-      "silhouette": "opened totem wings under three layered raven arcs and marked prey",
-      "motion_path": "wings open, counter-rotating flock layers gather, then staggered dives run at marked prey",
-      "impact_language": "per-mark dive streaks, returning wisps, and one final collapse pulse",
+      "silhouette": "layered raven vortex around a totem with visible marked prey",
+      "motion_path": "counter-rotating wing layers gather, then staggered dives return and collapse",
+      "impact_language": "one raven dive burst per affected victim over the existing white hit flash",
+      "channels": {
+        "flipbook": {
+          "spriteframes": "assets/sprites/effects/druid/raven_totem/raven_totem_spriteframes.tres",
+          "animation": "druid_raven_totem_ultimate",
+          "frame_count": 9,
+          "frame_size": [
+            256,
+            256
+          ],
+          "provenance_manifest": "docs/design/reference-assets-lfs/druid-vfx-FAN-3313-art/provenance_manifest.json"
+        }
+      },
       "timing_seconds": {
         "windup": 0.0,
         "release": 0.6,
-        "active": 0.95,
-        "recovery": 8.4,
-        "cancel": 9.2
+        "active": 1.25,
+        "recovery": 2.65,
+        "cancel": 3.4
       },
       "phase_ids": {
         "windup": "weapon_ultimate.phase.druid.raven_totem.windup",
@@ -130,18 +227,100 @@
         "max_visual_nodes": 11,
         "crowd_cap": 22,
         "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
-        "accuracy_slow_and_wisp_return_owner": "mechanics FAN-1495"
+        "accuracy_slow_and_wisp_return_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/raven_totem/raven_totem_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the raven vortex holds one accepted source frame while phase scale and alpha preserve the gathering envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
       }
     }
   ],
   "evidence": {
     "contact_sheets": [
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_648p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_720p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_1080p.png",
+      "docs/design/reference-assets-lfs/ultimate-certification/druid/druid_certification_2k.png"
+    ],
+    "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
+    "focused_test": "tests/ultimates/presentation/druid_certification_capture_test.gd",
+    "authored_timeline_sheets": [
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_648p.png",
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_720p.png",
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_1080p.png",
       "docs/design/references/weapon_ultimates/druid/druid_ultimate_timelines_2k.png"
     ],
-    "capture_script": "tests/ultimates/presentation/druid_ultimate_contact_capture.gd",
-    "focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd"
+    "authored_capture_script": "tests/ultimates/presentation/druid_ultimate_contact_capture.gd",
+    "authored_focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd",
+    "live_capture": {
+      "issue": "FAN-3942",
+      "source_ref": "agent/claude-dev-fable/9426dc35badb",
+      "source_commit_sha": "4955fe7e3d4e25137ae73a3f8eb60c181220cc81",
+      "source_tree_sha": "eccc58cfddb9efa57b0fab84bfc68e9ac3fc6114",
+      "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
+      "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
+      "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
+      "focused_test": "tests/ultimates/presentation/druid_certification_capture_test.gd",
+      "weapon_ids": [
+        "summon_amulet",
+        "briar_staff",
+        "raven_totem"
+      ],
+      "modes": [
+        "normal",
+        "crowded",
+        "reduced_motion",
+        "photosensitivity_safe"
+      ],
+      "beats": [
+        "release",
+        "active",
+        "recovery"
+      ],
+      "viewports": {
+        "648p": "1152x648",
+        "720p": "1280x720",
+        "1080p": "1920x1080",
+        "2k": "2560x1440"
+      },
+      "sheet_sha256": {
+        "648p_release": "c342caed913ed5b839c26f894538ba38827ff5886f92024b2d08e4164dbca183",
+        "648p_active": "ed8cee627c95d40902ce9981ea62cd79d3c3d47bbe882594c31156a7c019f43d",
+        "648p_recovery": "a314548409c82943a40462683bee7fc1709f187ce30d283f944cab0708ff5a8d",
+        "720p_release": "3205fcd185368c7c4d632194553f4f22bdfc205edff758ac6bb64fbdcbc1f5d1",
+        "720p_active": "204fcf02a95a3d556bf1185f16dc866c01e610f2e830106a5ab18450ca0b6d3b",
+        "720p_recovery": "35200acaec5fc248a1c0890e4982ea6a71578d1238cf15c6b993c54710e04e74",
+        "1080p_release": "4bcba2df6e83ac36ece5811fe14479ac9e5b32bf98bae95bcd1eaed78ca3d4b7",
+        "1080p_active": "b803f81249bed0c117d0d0dd81dc74cf85c4b0cfb87fba87175b2e92de68d24e",
+        "1080p_recovery": "a2a57265ef534b969fc1780b0ea231df9ce0c6a9024b3b952cc9ca4dcf4741db",
+        "2k_release": "4d51dc5b4492ebf5a91f5776264bcf2fcfcab0d8cf2d274b9f0d08598815a14d",
+        "2k_active": "dcb856d9c11afb0df803e98e6133754f2dddb730937b056dfd6f42d9fc4c5fa0",
+        "2k_recovery": "97d517d16006f615a0637a1adb3c098b7d68fda3b8e1558d46cc56a1db9a16a3"
+      },
+      "live_samples": 144,
+      "note": "Twelve native-size beat/mode matrices index 144 fresh measurements from real Main.tscn combat runs with Player.activate_ultimate(), the shared presentation runtime, shipped executors, cast-pose replacement, HUD, Enemy hazards, victim impacts, and independent reduced-motion/photosensitivity-safe variants."
+    }
   }
 }

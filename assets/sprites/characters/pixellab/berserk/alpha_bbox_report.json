@@ -1,1957 +1,1691 @@
 {
-  "task": "SCRUM-703",
-  "source": "PixelLab MCP",
-  "character_id": "8486ce45-f749-4c63-9a6d-f0477d619c2d",
-  "character_name": "FantasyDisk Berserk SCRUM-703 240px unarmed",
-  "frame_count": 56,
-  "target_visible_height_px": 245,
   "runtime_canvas": [
     512,
     512
   ],
-  "height_contract": {
-    "required_px": [
-      240,
-      250
-    ],
-    "hard_note_px": [
-      230,
-      260
-    ],
-    "runtime_height_min_max": [
-      245,
-      245
-    ],
-    "primary_south_idle_runtime_bbox": {
-      "x": 147,
-      "y": 235,
-      "w": 217,
-      "h": 245,
-      "x2": 364,
-      "y2": 480
-    },
-    "height_outliers_240_250": [],
-    "qa_note": "PASS: every idle/move runtime alpha bbox is 245 px high; no frame is below 230 px or above 260 px."
-  },
-  "runtime_width_min_max": [
-    116,
-    221
-  ],
-  "source_height_min_max": [
-    115,
-    129
-  ],
-  "source_width_min_max": [
-    57,
-    109
-  ],
-  "replacement_notes": [
-    "North-west move uses PixelLab v3 custom replacement f82b711b-d1e1-4ffa-907c-75046dda6934, source frames 1..6, after deleting failed walking-6-frames north-west because frames 0..2 baked a hammer-like prop."
-  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "alpha_threshold": 0,
   "frames": [
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_south.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south.png",
-      "source_canvas": [
+      "source": "berserk_idle_south.png",
+      "runtime": "berserk_idle_south.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 71,
-        "y": 66,
-        "w": 107,
-        "h": 121,
-        "x2": 178,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        71,
+        66,
+        178,
+        187
       ],
-      "runtime_bbox": {
-        "x": 147,
-        "y": 235,
-        "w": 217,
-        "h": 245,
-        "x2": 364,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "south",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        107,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        217,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        365,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_00.png",
-      "source_canvas": [
+      "source": "berserk_move_south_00.png",
+      "runtime": "berserk_move_south_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 75,
-        "y": 67,
-        "w": 102,
-        "h": 116,
-        "x2": 177,
-        "y2": 183
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        70,
+        67,
+        178,
+        187
       ],
-      "runtime_bbox": {
-        "x": 148,
-        "y": 235,
-        "w": 215,
-        "h": 245,
-        "x2": 363,
-        "y2": 480
-      },
-      "scale": 2.112069,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        108,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0416666666666665,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_01.png",
-      "source_canvas": [
+      "source": "berserk_move_south_01.png",
+      "runtime": "berserk_move_south_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 74,
-        "y": 66,
-        "w": 103,
-        "h": 116,
-        "x2": 177,
-        "y2": 182
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        67,
+        68,
+        178,
+        187
       ],
-      "runtime_bbox": {
-        "x": 147,
-        "y": 235,
-        "w": 218,
-        "h": 245,
-        "x2": 365,
-        "y2": 480
-      },
-      "scale": 2.112069,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        111,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        229,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        371,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_02.png",
-      "source_canvas": [
+      "source": "berserk_move_south_02.png",
+      "runtime": "berserk_move_south_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 75,
-        "y": 66,
-        "w": 102,
-        "h": 116,
-        "x2": 177,
-        "y2": 182
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        65,
+        67,
+        179,
+        187
       ],
-      "runtime_bbox": {
-        "x": 148,
-        "y": 235,
-        "w": 215,
-        "h": 245,
-        "x2": 363,
-        "y2": 480
-      },
-      "scale": 2.112069,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        114,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0416666666666665,
+      "resized_visible_size": [
+        233,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        235,
+        373,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_03.png",
-      "source_canvas": [
+      "source": "berserk_move_south_03.png",
+      "runtime": "berserk_move_south_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 73,
-        "y": 67,
-        "w": 105,
-        "h": 118,
-        "x2": 178,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        63,
+        66,
+        180,
+        187
       ],
-      "runtime_bbox": {
-        "x": 147,
-        "y": 235,
-        "w": 218,
-        "h": 245,
-        "x2": 365,
-        "y2": 480
-      },
-      "scale": 2.076271,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        117,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        237,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        138,
+        235,
+        375,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_04.png",
-      "source_canvas": [
+      "source": "berserk_move_south_04.png",
+      "runtime": "berserk_move_south_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 72,
-        "y": 67,
-        "w": 105,
-        "h": 118,
-        "x2": 177,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        68,
+        66,
+        179,
+        187
       ],
-      "runtime_bbox": {
-        "x": 147,
-        "y": 235,
-        "w": 218,
-        "h": 245,
-        "x2": 365,
-        "y2": 480
-      },
-      "scale": 2.076271,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        111,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        225,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        235,
+        369,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south_05.png",
-      "source_canvas": [
+      "source": "berserk_move_south_05.png",
+      "runtime": "berserk_move_south_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 73,
-        "y": 67,
-        "w": 105,
-        "h": 118,
-        "x2": 178,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        72,
+        66,
+        179,
+        187
       ],
-      "runtime_bbox": {
-        "x": 147,
-        "y": 235,
-        "w": 218,
-        "h": 245,
-        "x2": 365,
-        "y2": 480
-      },
-      "scale": 2.076271,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        107,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        217,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        148,
+        235,
+        365,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_south-east.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south-east.png",
-      "source_canvas": [
+      "source": "berserk_idle_south-east.png",
+      "runtime": "berserk_idle_south-east.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 68,
-        "y": 68,
-        "w": 107,
-        "h": 119,
-        "x2": 175,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        68,
+        68,
+        175,
+        187
       ],
-      "runtime_bbox": {
-        "x": 146,
-        "y": 235,
-        "w": 220,
-        "h": 245,
-        "x2": 366,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "south-east",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        107,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        220,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        235,
+        366,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-east_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_00.png",
-      "source_canvas": [
+      "source": "berserk_move_south-east_00.png",
+      "runtime": "berserk_move_south-east_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 81,
-        "y": 69,
-        "w": 85,
-        "h": 120,
-        "x2": 166,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        66,
+        70,
+        175,
+        187
       ],
-      "runtime_bbox": {
-        "x": 169,
-        "y": 235,
-        "w": 174,
-        "h": 245,
-        "x2": 343,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-east",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        109,
+        117
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.094017094017094,
+      "resized_visible_size": [
+        228,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        142,
+        235,
+        370,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-east_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_01.png",
-      "source_canvas": [
+      "source": "berserk_move_south-east_01.png",
+      "runtime": "berserk_move_south-east_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 84,
-        "y": 72,
-        "w": 80,
-        "h": 120,
-        "x2": 164,
-        "y2": 192
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        62,
+        72,
+        178,
+        187
       ],
-      "runtime_bbox": {
-        "x": 174,
-        "y": 235,
-        "w": 163,
-        "h": 245,
-        "x2": 337,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-east",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        116,
+        115
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.130434782608696,
+      "resized_visible_size": [
+        247,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        379,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-east_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_02.png",
-      "source_canvas": [
+      "source": "berserk_move_south-east_02.png",
+      "runtime": "berserk_move_south-east_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 83,
-        "y": 72,
-        "w": 83,
-        "h": 121,
-        "x2": 166,
-        "y2": 193
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        61,
+        70,
+        181,
+        187
       ],
-      "runtime_bbox": {
-        "x": 172,
-        "y": 235,
-        "w": 168,
-        "h": 245,
-        "x2": 340,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-east",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        120,
+        117
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.094017094017094,
+      "resized_visible_size": [
+        251,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        235,
+        381,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-east_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_03.png",
-      "source_canvas": [
+      "source": "berserk_move_south-east_03.png",
+      "runtime": "berserk_move_south-east_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 78,
-        "y": 68,
-        "w": 99,
-        "h": 119,
-        "x2": 177,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        59,
+        68,
+        187,
+        187
       ],
-      "runtime_bbox": {
-        "x": 154,
-        "y": 235,
-        "w": 204,
-        "h": 245,
-        "x2": 358,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-east",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        128,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        264,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        388,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-east_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_04.png",
-      "source_canvas": [
+      "source": "berserk_move_south-east_04.png",
+      "runtime": "berserk_move_south-east_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 68,
-        "w": 99,
-        "h": 116,
-        "x2": 176,
-        "y2": 184
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        60,
+        65,
+        192,
+        187
       ],
-      "runtime_bbox": {
-        "x": 151,
-        "y": 235,
-        "w": 209,
-        "h": 245,
-        "x2": 360,
-        "y2": 480
-      },
-      "scale": 2.112069,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-east",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        132,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0081967213114753,
+      "resized_visible_size": [
+        265,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        389,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-east_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-east_05.png",
-      "source_canvas": [
+      "source": "berserk_move_south-east_05.png",
+      "runtime": "berserk_move_south-east_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 79,
-        "y": 68,
-        "w": 98,
-        "h": 117,
-        "x2": 177,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        63,
+        64,
+        188,
+        187
       ],
-      "runtime_bbox": {
-        "x": 153,
-        "y": 235,
-        "w": 205,
-        "h": 245,
-        "x2": 358,
-        "y2": 480
-      },
-      "scale": 2.094017,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-east",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        125,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        249,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        132,
+        235,
+        381,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_east.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_east.png",
-      "source_canvas": [
+      "source": "berserk_idle_east.png",
+      "runtime": "berserk_idle_east.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 71,
-        "y": 67,
-        "w": 93,
-        "h": 122,
-        "x2": 164,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        71,
+        67,
+        164,
+        189
       ],
-      "runtime_bbox": {
-        "x": 162,
-        "y": 235,
-        "w": 187,
-        "h": 245,
-        "x2": 349,
-        "y2": 480
-      },
-      "scale": 2.008197,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "east",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        93,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0081967213114753,
+      "resized_visible_size": [
+        187,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        349,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_east_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_00.png",
-      "source_canvas": [
+      "source": "berserk_move_east_00.png",
+      "runtime": "berserk_move_east_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 83,
-        "y": 69,
-        "w": 67,
-        "h": 121,
-        "x2": 150,
-        "y2": 190
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        83,
+        69,
+        150,
+        190
       ],
-      "runtime_bbox": {
-        "x": 188,
-        "y": 235,
-        "w": 136,
-        "h": 245,
-        "x2": 324,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "east",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        67,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        136,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        188,
+        235,
+        324,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_east_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_01.png",
-      "source_canvas": [
+      "source": "berserk_move_east_01.png",
+      "runtime": "berserk_move_east_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 69,
-        "w": 81,
-        "h": 119,
-        "x2": 158,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        77,
+        69,
+        158,
+        188
       ],
-      "runtime_bbox": {
-        "x": 172,
-        "y": 235,
-        "w": 167,
-        "h": 245,
-        "x2": 339,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "east",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        81,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        167,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        172,
+        235,
+        339,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_east_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_02.png",
-      "source_canvas": [
+      "source": "berserk_move_east_02.png",
+      "runtime": "berserk_move_east_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 84,
-        "y": 69,
-        "w": 73,
-        "h": 117,
-        "x2": 157,
-        "y2": 186
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        84,
+        69,
+        157,
+        186
       ],
-      "runtime_bbox": {
-        "x": 179,
-        "y": 235,
-        "w": 153,
-        "h": 245,
-        "x2": 332,
-        "y2": 480
-      },
-      "scale": 2.094017,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "east",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        73,
+        117
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.094017094017094,
+      "resized_visible_size": [
+        153,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        333,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_east_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_03.png",
-      "source_canvas": [
+      "source": "berserk_move_east_03.png",
+      "runtime": "berserk_move_east_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 83,
-        "y": 68,
-        "w": 62,
-        "h": 119,
-        "x2": 145,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        83,
+        68,
+        145,
+        187
       ],
-      "runtime_bbox": {
-        "x": 192,
-        "y": 235,
-        "w": 128,
-        "h": 245,
-        "x2": 320,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "east",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        62,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        128,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        192,
+        235,
+        320,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_east_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_04.png",
-      "source_canvas": [
+      "source": "berserk_move_east_04.png",
+      "runtime": "berserk_move_east_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 82,
-        "y": 69,
-        "w": 80,
-        "h": 119,
-        "x2": 162,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        82,
+        69,
+        162,
+        188
       ],
-      "runtime_bbox": {
-        "x": 173,
-        "y": 235,
-        "w": 165,
-        "h": 245,
-        "x2": 338,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "east",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        80,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        165,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        339,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_east_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_east_05.png",
-      "source_canvas": [
+      "source": "berserk_move_east_05.png",
+      "runtime": "berserk_move_east_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 88,
-        "y": 69,
-        "w": 74,
-        "h": 121,
-        "x2": 162,
-        "y2": 190
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        88,
+        69,
+        162,
+        190
       ],
-      "runtime_bbox": {
-        "x": 181,
-        "y": 235,
-        "w": 150,
-        "h": 245,
-        "x2": 331,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "east",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        74,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        150,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        181,
+        235,
+        331,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_north-east.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north-east.png",
-      "source_canvas": [
+      "source": "berserk_idle_north-east.png",
+      "runtime": "berserk_idle_north-east.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 70,
-        "y": 64,
-        "w": 77,
-        "h": 122,
-        "x2": 147,
-        "y2": 186
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        70,
+        64,
+        147,
+        186
       ],
-      "runtime_bbox": {
-        "x": 178,
-        "y": 235,
-        "w": 155,
-        "h": 245,
-        "x2": 333,
-        "y2": 480
-      },
-      "scale": 2.008197,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "north-east",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        77,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0081967213114753,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-east_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_00.png",
-      "source_canvas": [
+      "source": "berserk_move_north-east_00.png",
+      "runtime": "berserk_move_north-east_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 82,
-        "y": 66,
-        "w": 101,
-        "h": 120,
-        "x2": 183,
-        "y2": 186
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        69,
+        64,
+        149,
+        187
       ],
-      "runtime_bbox": {
-        "x": 153,
-        "y": 235,
-        "w": 206,
-        "h": 245,
-        "x2": 359,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-east",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        80,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        159,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        176,
+        235,
+        335,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-east_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_01.png",
-      "source_canvas": [
+      "source": "berserk_move_north-east_01.png",
+      "runtime": "berserk_move_north-east_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 65,
-        "w": 109,
-        "h": 121,
-        "x2": 186,
-        "y2": 186
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        68,
+        67,
+        163,
+        190
       ],
-      "runtime_bbox": {
-        "x": 145,
-        "y": 235,
-        "w": 221,
-        "h": 245,
-        "x2": 366,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-east",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        95,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        189,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        162,
+        235,
+        351,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-east_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_02.png",
-      "source_canvas": [
+      "source": "berserk_move_north-east_02.png",
+      "runtime": "berserk_move_north-east_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 83,
-        "y": 66,
-        "w": 93,
-        "h": 120,
-        "x2": 176,
-        "y2": 186
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        68,
+        68,
+        173,
+        189
       ],
-      "runtime_bbox": {
-        "x": 161,
-        "y": 235,
-        "w": 190,
-        "h": 245,
-        "x2": 351,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-east",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        105,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        213,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        363,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-east_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_03.png",
-      "source_canvas": [
+      "source": "berserk_move_north-east_03.png",
+      "runtime": "berserk_move_north-east_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 81,
-        "y": 64,
-        "w": 77,
-        "h": 121,
-        "x2": 158,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        72,
+        64,
+        178,
+        187
       ],
-      "runtime_bbox": {
-        "x": 178,
-        "y": 235,
-        "w": 156,
-        "h": 245,
-        "x2": 334,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-east",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        106,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        211,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        361,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-east_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_04.png",
-      "source_canvas": [
+      "source": "berserk_move_north-east_04.png",
+      "runtime": "berserk_move_north-east_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 101,
-        "y": 65,
-        "w": 57,
-        "h": 120,
-        "x2": 158,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        74,
+        62,
+        175,
+        185
       ],
-      "runtime_bbox": {
-        "x": 198,
-        "y": 235,
-        "w": 116,
-        "h": 245,
-        "x2": 314,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-east",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        101,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        201,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        156,
+        235,
+        357,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-east_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-east_05.png",
-      "source_canvas": [
+      "source": "berserk_move_north-east_05.png",
+      "runtime": "berserk_move_north-east_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 79,
-        "y": 65,
-        "w": 77,
-        "h": 120,
-        "x2": 156,
-        "y2": 185
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        76,
+        64,
+        169,
+        188
       ],
-      "runtime_bbox": {
-        "x": 177,
-        "y": 235,
-        "w": 157,
-        "h": 245,
-        "x2": 334,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-east",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        93,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9758064516129032,
+      "resized_visible_size": [
+        184,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        348,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_north.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north.png",
-      "source_canvas": [
+      "source": "berserk_idle_north.png",
+      "runtime": "berserk_idle_north.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 70,
-        "y": 63,
-        "w": 92,
-        "h": 123,
-        "x2": 162,
-        "y2": 186
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        70,
+        63,
+        162,
+        186
       ],
-      "runtime_bbox": {
-        "x": 164,
-        "y": 235,
-        "w": 183,
-        "h": 245,
-        "x2": 347,
-        "y2": 480
-      },
-      "scale": 1.99187,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "north",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        92,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_00.png",
-      "source_canvas": [
+      "source": "berserk_move_north_00.png",
+      "runtime": "berserk_move_north_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 88,
-        "y": 69,
-        "w": 81,
-        "h": 119,
-        "x2": 169,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        66,
+        60,
+        169,
+        188
       ],
-      "runtime_bbox": {
-        "x": 172,
-        "y": 235,
-        "w": 167,
-        "h": 245,
-        "x2": 339,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        103,
+        128
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9140625,
+      "resized_visible_size": [
+        197,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        355,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_01.png",
-      "source_canvas": [
+      "source": "berserk_move_north_01.png",
+      "runtime": "berserk_move_north_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 88,
-        "y": 70,
-        "w": 78,
-        "h": 118,
-        "x2": 166,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        63,
+        61,
+        174,
+        191
       ],
-      "runtime_bbox": {
-        "x": 175,
-        "y": 235,
-        "w": 162,
-        "h": 245,
-        "x2": 337,
-        "y2": 480
-      },
-      "scale": 2.076271,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        111,
+        130
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.8846153846153846,
+      "resized_visible_size": [
+        209,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        361,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_02.png",
-      "source_canvas": [
+      "source": "berserk_move_north_02.png",
+      "runtime": "berserk_move_north_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 84,
-        "y": 70,
-        "w": 85,
-        "h": 117,
-        "x2": 169,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        64,
+        64,
+        178,
+        192
       ],
-      "runtime_bbox": {
-        "x": 167,
-        "y": 235,
-        "w": 178,
-        "h": 245,
-        "x2": 345,
-        "y2": 480
-      },
-      "scale": 2.094017,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        114,
+        128
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9140625,
+      "resized_visible_size": [
+        218,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        147,
+        235,
+        365,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_03.png",
-      "source_canvas": [
+      "source": "berserk_move_north_03.png",
+      "runtime": "berserk_move_north_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 91,
-        "y": 67,
-        "w": 77,
-        "h": 115,
-        "x2": 168,
-        "y2": 182
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        67,
+        63,
+        178,
+        192
       ],
-      "runtime_bbox": {
-        "x": 174,
-        "y": 235,
-        "w": 164,
-        "h": 245,
-        "x2": 338,
-        "y2": 480
-      },
-      "scale": 2.130435,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        111,
+        129
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.8992248062015504,
+      "resized_visible_size": [
+        211,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        361,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_04.png",
-      "source_canvas": [
+      "source": "berserk_move_north_04.png",
+      "runtime": "berserk_move_north_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 90,
-        "y": 67,
-        "w": 77,
-        "h": 115,
-        "x2": 167,
-        "y2": 182
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        71,
+        60,
+        175,
+        191
       ],
-      "runtime_bbox": {
-        "x": 174,
-        "y": 235,
-        "w": 164,
-        "h": 245,
-        "x2": 338,
-        "y2": 480
-      },
-      "scale": 2.130435,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        104,
+        131
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.8702290076335877,
+      "resized_visible_size": [
+        195,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        353,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north_05.png",
-      "source_canvas": [
+      "source": "berserk_move_north_05.png",
+      "runtime": "berserk_move_north_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 90,
-        "y": 67,
-        "w": 77,
-        "h": 115,
-        "x2": 167,
-        "y2": 182
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        74,
+        58,
+        171,
+        188
       ],
-      "runtime_bbox": {
-        "x": 174,
-        "y": 235,
-        "w": 164,
-        "h": 245,
-        "x2": 338,
-        "y2": 480
-      },
-      "scale": 2.130435,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        97,
+        130
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.8846153846153846,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_north-west.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_north-west.png",
-      "source_canvas": [
+      "source": "berserk_idle_north-west.png",
+      "runtime": "berserk_idle_north-west.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 63,
-        "w": 97,
-        "h": 121,
-        "x2": 174,
-        "y2": 184
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        77,
+        63,
+        174,
+        184
       ],
-      "runtime_bbox": {
-        "x": 158,
-        "y": 235,
-        "w": 196,
-        "h": 245,
-        "x2": 354,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "north-west",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        97,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        196,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        354,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-west_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_00.png",
-      "source_canvas": [
+      "source": "berserk_move_north-west_00.png",
+      "runtime": "berserk_move_north-west_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 64,
-        "w": 100,
-        "h": 124,
-        "x2": 177,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        77,
+        64,
+        177,
+        188
       ],
-      "runtime_bbox": {
-        "x": 157,
-        "y": 235,
-        "w": 198,
-        "h": 245,
-        "x2": 355,
-        "y2": 480
-      },
-      "scale": 1.975806,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-west",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        100,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9758064516129032,
+      "resized_visible_size": [
+        198,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        157,
+        235,
+        355,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-west_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_01.png",
-      "source_canvas": [
+      "source": "berserk_move_north-west_01.png",
+      "runtime": "berserk_move_north-west_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 67,
-        "w": 103,
-        "h": 124,
-        "x2": 180,
-        "y2": 191
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        77,
+        67,
+        180,
+        191
       ],
-      "runtime_bbox": {
-        "x": 154,
-        "y": 235,
-        "w": 204,
-        "h": 245,
-        "x2": 358,
-        "y2": 480
-      },
-      "scale": 1.975806,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-west",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        103,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9758064516129032,
+      "resized_visible_size": [
+        204,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        358,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-west_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_02.png",
-      "source_canvas": [
+      "source": "berserk_move_north-west_02.png",
+      "runtime": "berserk_move_north-west_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 76,
-        "y": 65,
-        "w": 108,
-        "h": 126,
-        "x2": 184,
-        "y2": 191
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        76,
+        65,
+        184,
+        191
       ],
-      "runtime_bbox": {
-        "x": 151,
-        "y": 235,
-        "w": 210,
-        "h": 245,
-        "x2": 361,
-        "y2": 480
-      },
-      "scale": 1.944444,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-west",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        108,
+        126
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9444444444444444,
+      "resized_visible_size": [
+        210,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        235,
+        361,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-west_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_03.png",
-      "source_canvas": [
+      "source": "berserk_move_north-west_03.png",
+      "runtime": "berserk_move_north-west_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 76,
-        "y": 62,
-        "w": 109,
-        "h": 129,
-        "x2": 185,
-        "y2": 191
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        76,
+        62,
+        185,
+        191
       ],
-      "runtime_bbox": {
-        "x": 152,
-        "y": 235,
-        "w": 207,
-        "h": 245,
-        "x2": 359,
-        "y2": 480
-      },
-      "scale": 1.899225,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-west",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        109,
+        129
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.8992248062015504,
+      "resized_visible_size": [
+        207,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        235,
+        359,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-west_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_04.png",
-      "source_canvas": [
+      "source": "berserk_move_north-west_04.png",
+      "runtime": "berserk_move_north-west_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 77,
-        "y": 63,
-        "w": 106,
-        "h": 126,
-        "x2": 183,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        77,
+        63,
+        183,
+        189
       ],
-      "runtime_bbox": {
-        "x": 153,
-        "y": 235,
-        "w": 206,
-        "h": 245,
-        "x2": 359,
-        "y2": 480
-      },
-      "scale": 1.944444,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-west",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        106,
+        126
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9444444444444444,
+      "resized_visible_size": [
+        206,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        153,
+        235,
+        359,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_north-west_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_north-west_05.png",
-      "source_canvas": [
+      "source": "berserk_move_north-west_05.png",
+      "runtime": "berserk_move_north-west_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 78,
-        "y": 67,
-        "w": 104,
-        "h": 121,
-        "x2": 182,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        78,
+        67,
+        182,
+        188
       ],
-      "runtime_bbox": {
-        "x": 150,
-        "y": 235,
-        "w": 211,
-        "h": 245,
-        "x2": 361,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "north-west",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        104,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        211,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        235,
+        361,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_west.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_west.png",
-      "source_canvas": [
+      "source": "berserk_idle_west.png",
+      "runtime": "berserk_idle_west.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 95,
-        "y": 65,
-        "w": 78,
-        "h": 123,
-        "x2": 173,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        95,
+        65,
+        173,
+        188
       ],
-      "runtime_bbox": {
-        "x": 178,
-        "y": 235,
-        "w": 155,
-        "h": 245,
-        "x2": 333,
-        "y2": 480
-      },
-      "scale": 1.99187,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "west",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        78,
+        123
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.991869918699187,
+      "resized_visible_size": [
+        155,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        178,
+        235,
+        333,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_west_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_00.png",
-      "source_canvas": [
+      "source": "berserk_move_west_00.png",
+      "runtime": "berserk_move_west_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 100,
-        "y": 68,
-        "w": 70,
-        "h": 120,
-        "x2": 170,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        87,
+        67,
+        173,
+        189
       ],
-      "runtime_bbox": {
-        "x": 184,
-        "y": 235,
-        "w": 143,
-        "h": 245,
-        "x2": 327,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "west",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        86,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0081967213114753,
+      "resized_visible_size": [
+        173,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        170,
+        235,
+        343,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_west_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_01.png",
-      "source_canvas": [
+      "source": "berserk_move_west_01.png",
+      "runtime": "berserk_move_west_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 91,
-        "y": 71,
-        "w": 77,
-        "h": 118,
-        "x2": 168,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        89,
+        70,
+        177,
+        190
       ],
-      "runtime_bbox": {
-        "x": 176,
-        "y": 235,
-        "w": 160,
-        "h": 245,
-        "x2": 336,
-        "y2": 480
-      },
-      "scale": 2.076271,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "west",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        88,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0416666666666665,
+      "resized_visible_size": [
+        180,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        346,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_west_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_02.png",
-      "source_canvas": [
+      "source": "berserk_move_west_02.png",
+      "runtime": "berserk_move_west_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 96,
-        "y": 71,
-        "w": 69,
-        "h": 118,
-        "x2": 165,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        96,
+        66,
+        182,
+        187
       ],
-      "runtime_bbox": {
-        "x": 184,
-        "y": 235,
-        "w": 143,
-        "h": 245,
-        "x2": 327,
-        "y2": 480
-      },
-      "scale": 2.076271,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "west",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        86,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_west_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_03.png",
-      "source_canvas": [
+      "source": "berserk_move_west_03.png",
+      "runtime": "berserk_move_west_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 102,
-        "y": 66,
-        "w": 74,
-        "h": 121,
-        "x2": 176,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        91,
+        64,
+        187,
+        188
       ],
-      "runtime_bbox": {
-        "x": 181,
-        "y": 235,
-        "w": 150,
-        "h": 245,
-        "x2": 331,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "west",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        96,
+        124
+      ],
+      "alpha_threshold": 0,
+      "scale": 1.9758064516129032,
+      "resized_visible_size": [
+        190,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        161,
+        235,
+        351,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_west_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_04.png",
-      "source_canvas": [
+      "source": "berserk_move_west_04.png",
+      "runtime": "berserk_move_west_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 92,
-        "y": 67,
-        "w": 83,
-        "h": 121,
-        "x2": 175,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        81,
+        67,
+        184,
+        187
       ],
-      "runtime_bbox": {
-        "x": 172,
-        "y": 235,
-        "w": 168,
-        "h": 245,
-        "x2": 340,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "west",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        103,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0416666666666665,
+      "resized_visible_size": [
+        210,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        151,
+        235,
+        361,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_west_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_west_05.png",
-      "source_canvas": [
+      "source": "berserk_move_west_05.png",
+      "runtime": "berserk_move_west_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 96,
-        "y": 67,
-        "w": 79,
-        "h": 121,
-        "x2": 175,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        84,
+        70,
+        179,
+        189
       ],
-      "runtime_bbox": {
-        "x": 176,
-        "y": 235,
-        "w": 160,
-        "h": 245,
-        "x2": 336,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "west",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        95,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        196,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        158,
+        235,
+        354,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_idle_south-west.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_idle_south-west.png",
-      "source_canvas": [
+      "source": "berserk_idle_south-west.png",
+      "runtime": "berserk_idle_south-west.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 82,
-        "y": 67,
-        "w": 91,
-        "h": 122,
-        "x2": 173,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        82,
+        67,
+        173,
+        189
       ],
-      "runtime_bbox": {
-        "x": 164,
-        "y": 235,
-        "w": 183,
-        "h": 245,
-        "x2": 347,
-        "y2": 480
-      },
-      "scale": 2.008197,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "idle",
-      "direction": "south-west",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        91,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0081967213114753,
+      "resized_visible_size": [
+        183,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        164,
+        235,
+        347,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-west_00.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_00.png",
-      "source_canvas": [
+      "source": "berserk_move_south-west_00.png",
+      "runtime": "berserk_move_south-west_00.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 83,
-        "y": 67,
-        "w": 86,
-        "h": 121,
-        "x2": 169,
-        "y2": 188
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        83,
+        67,
+        169,
+        188
       ],
-      "runtime_bbox": {
-        "x": 169,
-        "y": 235,
-        "w": 174,
-        "h": 245,
-        "x2": 343,
-        "y2": 480
-      },
-      "scale": 2.024793,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-west",
-      "frame": 0
+      "source_alpha_bbox_size": [
+        86,
+        121
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.024793388429752,
+      "resized_visible_size": [
+        174,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        169,
+        235,
+        343,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-west_01.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_01.png",
-      "source_canvas": [
+      "source": "berserk_move_south-west_01.png",
+      "runtime": "berserk_move_south-west_01.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 80,
-        "y": 68,
-        "w": 88,
-        "h": 119,
-        "x2": 168,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        80,
+        68,
+        168,
+        187
       ],
-      "runtime_bbox": {
-        "x": 165,
-        "y": 235,
-        "w": 181,
-        "h": 245,
-        "x2": 346,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-west",
-      "frame": 1
+      "source_alpha_bbox_size": [
+        88,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        181,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        166,
+        235,
+        347,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-west_02.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_02.png",
-      "source_canvas": [
+      "source": "berserk_move_south-west_02.png",
+      "runtime": "berserk_move_south-west_02.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 82,
-        "y": 67,
-        "w": 86,
-        "h": 120,
-        "x2": 168,
-        "y2": 187
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        82,
+        67,
+        168,
+        187
       ],
-      "runtime_bbox": {
-        "x": 168,
-        "y": 235,
-        "w": 176,
-        "h": 245,
-        "x2": 344,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-west",
-      "frame": 2
+      "source_alpha_bbox_size": [
+        86,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0416666666666665,
+      "resized_visible_size": [
+        176,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        168,
+        235,
+        344,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-west_03.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_03.png",
-      "source_canvas": [
+      "source": "berserk_move_south-west_03.png",
+      "runtime": "berserk_move_south-west_03.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 91,
-        "y": 69,
-        "w": 75,
-        "h": 122,
-        "x2": 166,
-        "y2": 191
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        91,
+        69,
+        166,
+        191
       ],
-      "runtime_bbox": {
-        "x": 180,
-        "y": 235,
-        "w": 151,
-        "h": 245,
-        "x2": 331,
-        "y2": 480
-      },
-      "scale": 2.008197,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-west",
-      "frame": 3
+      "source_alpha_bbox_size": [
+        75,
+        122
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0081967213114753,
+      "resized_visible_size": [
+        151,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        331,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-west_04.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_04.png",
-      "source_canvas": [
+      "source": "berserk_move_south-west_04.png",
+      "runtime": "berserk_move_south-west_04.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 93,
-        "y": 69,
-        "w": 73,
-        "h": 120,
-        "x2": 166,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        93,
+        69,
+        166,
+        189
       ],
-      "runtime_bbox": {
-        "x": 181,
-        "y": 235,
-        "w": 149,
-        "h": 245,
-        "x2": 330,
-        "y2": 480
-      },
-      "scale": 2.041667,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-west",
-      "frame": 4
+      "source_alpha_bbox_size": [
+        73,
+        120
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0416666666666665,
+      "resized_visible_size": [
+        149,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        182,
+        235,
+        331,
+        480
+      ]
     },
     {
-      "source": "assets/sprites/characters/pixellab/berserk/berserk_move_south-west_05.png",
-      "runtime": "assets/sprites/characters/full_frame/berserk_pixellab/berserk_move_south-west_05.png",
-      "source_canvas": [
+      "source": "berserk_move_south-west_05.png",
+      "runtime": "berserk_move_south-west_05.png",
+      "source_size": [
         252,
         252
       ],
-      "source_bbox": {
-        "x": 94,
-        "y": 70,
-        "w": 74,
-        "h": 119,
-        "x2": 168,
-        "y2": 189
-      },
-      "runtime_canvas": [
-        512,
-        512
+      "source_alpha_bbox": [
+        94,
+        70,
+        168,
+        189
       ],
-      "runtime_bbox": {
-        "x": 180,
-        "y": 235,
-        "w": 152,
-        "h": 245,
-        "x2": 332,
-        "y2": 480
-      },
-      "scale": 2.058824,
-      "target_height": 245,
-      "bottom_padding": 32,
-      "animation": "move",
-      "direction": "south-west",
-      "frame": 5
+      "source_alpha_bbox_size": [
+        74,
+        119
+      ],
+      "alpha_threshold": 0,
+      "scale": 2.0588235294117645,
+      "resized_visible_size": [
+        152,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        180,
+        235,
+        332,
+        480
+      ]
     }
   ]
 }

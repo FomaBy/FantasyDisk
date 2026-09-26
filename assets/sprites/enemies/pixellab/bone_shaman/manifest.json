@@ -1,0 +1,85 @@
+{
+  "character_id": "bone_shaman",
+  "pixellab_character_id": "fa5b71b2-0532-404b-b5d9-b640d0bef7c0",
+  "generated_at": "2026-08-18",
+  "source": "PixelLab MCP",
+  "mode": "v3 (idle rotations + move/attack/hit/death, all custom v3)",
+  "body_type": "humanoid",
+  "view": "low top-down",
+  "runtime_canvas": [
+    512,
+    512
+  ],
+  "target_visible_height": 245,
+  "bottom_padding": 32,
+  "directions": [
+    "east",
+    "south-east",
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east"
+  ],
+  "animation_group_ids": {
+    "move": "18998370-89ac-47e4-99de-d8c8c81013d3",
+    "attack": "ccd339c7-27b0-4762-82a1-c5ec712e02a2",
+    "hit": "78df8f82-3393-4474-b997-a3c4dabb0b45",
+    "death": "e7541097-9650-4e8f-9eed-301337b93855"
+  },
+  "fan2912_rework": {
+    "rework_for": "FAN-2618 candidate 38e0752b36c318dd86c70b9039b85fbac06637f5, rejected by QA FAN-2752",
+    "regenerated_rows": ["attack_west", "attack_east", "attack_north", "attack_north_east"],
+    "reason": "identity substitution, missing/flickering staff, in-row viewpoint rotation, static frames read as no attack",
+    "jobs": {
+      "attack_west": {"mode": "v3", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "a473dcc5-8ed5-4498-8824-912539dc8f02", "source_frame_indices": [1, 2, 3, 4, 5, 6]},
+      "attack_east": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "b5022c4a-af9f-4b41-bf2a-8d2a8e714e4a", "source_frame_indices": [0, 3, 6, 9, 12, 15]},
+      "attack_north": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "41030a2e-cd4e-4f35-a102-1d37cefd088b", "source_frame_indices": [0, 3, 6, 9, 12, 15]},
+      "attack_north_east": {"mode": "pro", "animation_group_id": "ccd339c7-27b0-4762-82a1-c5ec712e02a2", "job_id": "bdae2049-8965-44aa-9876-5934529f194e", "source_frame_indices": [0, 3, 6, 9, 12, 15]}
+    },
+    "notes": "v3 mode failed identity/staff readability twice on east/north/north-east; escalated to pro mode (cross-direction reference, 16 fixed frames for this 64px canvas), then evenly sampled 6 of the 16 frames to match the existing attack frame-count/fps contract. west passed on the first v3 attempt, but that v3 attack_west job (a473dcc5) was later found by QA FAN-2913 to rotate to face-camera from frame 3 onward, superseded below."
+  },
+  "fan3036_rework": {
+    "rework_for": "FAN-2912 candidate 39f87d77ef79a0fec2554f0f8fb028aeab46f8a3, rejected by QA FAN-2913",
+    "regenerated_rows": ["attack_west"],
+    "reason": "attack_west stayed in side profile for frames 1-2 then rotated to face the camera from frame 3 through 6, violating the single-viewpoint-per-row acceptance criterion",
+    "attempts": [
+      {"job_id": "55e73c9e-1791-4d07-b44b-0c3aaa70331a", "mode": "v3", "outcome": "rejected: fixed profile held, but lost the skull mask/identity in frames 4-6 (magic-flare action_description overwhelmed the character)"},
+      {"job_id": "7f107fa1-2a2b-4048-b4b3-33071f379659", "mode": "v3", "outcome": "rejected: reproduced the original face-camera rotation from frame 4 despite explicit profile-lock wording in the prompt"},
+      {"job_id": "fea8f1f5-5ef9-49fe-9685-9a90d5c63a39", "mode": "v3 interpolation", "outcome": "accepted", "custom_start_frame": "character rotation image for west", "end_frame": "character rotation image for west (same anchor)", "source_frame_indices": [0, 1, 2, 3, 4, 5]}
+    ],
+    "notes": "Free-form action_description alone was insufficient to hold the viewpoint across all 6 frames in v3 mode; anchoring both custom_start_frame and end_frame to the existing west rotation image forced the interpolation to keep the same side-on camera framing throughout. Only attack_west/00-05 in pixellab/ and full_frame/ plus this manifest changed; attack_east/north/north_east and all non-attack states are untouched (verified via git diff against 39f87d77ef79a0fec2554f0f8fb028aeab46f8a3)."
+  },
+  "states": {
+    "idle": {
+      "frame_count": 1,
+      "source": "rotations"
+    },
+    "move": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "shuffling forward, robe swaying, staff tapping the ground with each step",
+      "fps": 9.0
+    },
+    "attack": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "raising the ritual staff overhead and slamming it forward to cast a dark curse, purple energy flaring from the skull totem",
+      "fps": 12.0
+    },
+    "hit": {
+      "frame_count": 4,
+      "mode": "v3",
+      "action_description": "flinching backward in pain from a hit, recoiling with a pained snarl",
+      "fps": 10.0
+    },
+    "death": {
+      "frame_count": 6,
+      "mode": "v3",
+      "action_description": "collapsing and dying, crumbling to the ground as the staff falls from its grip and bones scatter",
+      "fps": 10.0
+    }
+  },
+  "notes": "First FAN-2519 explicit-eight-direction pack for standard_monster/bone_shaman. 8 idle rotations + 8x6 move/attack/death frames + 8x4 hit frames, all normalized to 245px visible height on a transparent 512x512 canvas, footline pinned at bottom_padding=32. No hover state (bone_shaman is ground-based, not flying)."
+}

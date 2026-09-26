@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3771",
+  "source_brief": "FAN-3318",
+  "class_id": "priest",
+  "route": "pixellab",
+  "generator": {
+    "tool": "PixelLab MCP via tools/pixellab_generate_pack.py",
+    "config_smoke": "PASS: tools/pixellab_auth_smoke.py get_balance",
+    "create_tool": "create_1_direction_object",
+    "animate_tool": "animate_object",
+    "mode": "v3",
+    "generation_cost": {
+      "per_pack": "not exposed by the blocking CLI or get_object response",
+      "paid_operation": false
+    },
+    "no_secrets_recorded": true
+  },
+  "base_ref": "dev",
+  "base_sha": "71fe5d79d3fee13cd38bdbe23ade6c029a652eeb",
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16
+  },
+  "postprocess": {
+    "raw_pixel_lab_frames_preserved": true,
+    "accepted_source_runtime_pixel_parity": true,
+    "method": "Normalize raw frames into a 224 px safe box, keep alpha transparent, add a low-opacity canonical weapon silhouette behind the effect, copy accepted PNGs byte-for-byte to runtime.",
+    "rebuild_command": "python3 docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/rebuild_runtime_pack.py"
+  },
+  "packs": [
+    {
+      "weapon_id": "priest_censer",
+      "title": "Нерушимый Обет",
+      "ultimate_role": "ward_pulses",
+      "visual_identity": "suspended gold-and-ivory censer, chained incense capsule, teal ember and expanding ward rings",
+      "pixel_lab_object_id": "4a2d3282-d5dd-4bd1-8b98-b1ca00ed45f6",
+      "pixel_lab_animation_group_id": "647099af-429f-4603-8d2e-29d2b8abb510",
+      "animation": {
+        "name": "ultimate_flipbook",
+        "loop": false,
+        "speed_fps": 3.0,
+        "target_duration_seconds": 3.0,
+        "frame_order": [
+          "priest_censer_f00.png",
+          "priest_censer_f01.png",
+          "priest_censer_f02.png",
+          "priest_censer_f03.png",
+          "priest_censer_f04.png",
+          "priest_censer_f05.png",
+          "priest_censer_f06.png",
+          "priest_censer_f07.png",
+          "priest_censer_f08.png"
+        ]
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer",
+        "runtime_dir": "assets/sprites/effects/priest/priest_censer",
+        "runtime_manifest": "assets/sprites/effects/priest/priest_censer/runtime_manifest.json",
+        "spriteframes": "assets/sprites/effects/priest/priest_censer/priest_censer_spriteframes.tres",
+        "contact_sheet": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/priest_censer_contact_sheet.png",
+        "static_alpha_readability_report": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/censer/static_alpha_readability_report.json"
+      },
+      "frame_count": 9,
+      "motion": {
+        "distinct_frame_pixel_hashes": 9,
+        "adjacent_pairs_with_motion": 8,
+        "adjacent_changed_pixel_ratios": [
+          0.171539,
+          0.249496,
+          0.241898,
+          0.234695,
+          0.222717,
+          0.221954,
+          0.163712,
+          0.170837
+        ],
+        "mean_absolute_rgba_diffs": [
+          5.595,
+          21.6827,
+          16.8251,
+          15.6862,
+          13.6191,
+          18.1272,
+          5.3969,
+          6.8373
+        ],
+        "motion_score_mean_changed_pixel_ratio": 0.209606,
+        "loop": false,
+        "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+      },
+      "source_runtime_parity": true
+    },
+    {
+      "weapon_id": "priest_chime",
+      "title": "Три Колокола Рассвета",
+      "ultimate_role": "prayer_chain",
+      "visual_identity": "three linked ivory-and-gold prayer bells, blue gems, ribbons and staggered concentric sound waves",
+      "pixel_lab_object_id": "1aa84b6a-5666-437f-9ba0-43e1aa8e72f2",
+      "pixel_lab_animation_group_id": "44dda2f3-c433-494e-a89e-e08e004904e9",
+      "animation": {
+        "name": "ultimate_flipbook",
+        "loop": false,
+        "speed_fps": 3.0,
+        "target_duration_seconds": 3.0,
+        "frame_order": [
+          "priest_chime_f00.png",
+          "priest_chime_f01.png",
+          "priest_chime_f02.png",
+          "priest_chime_f03.png",
+          "priest_chime_f04.png",
+          "priest_chime_f05.png",
+          "priest_chime_f06.png",
+          "priest_chime_f07.png",
+          "priest_chime_f08.png"
+        ]
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime",
+        "runtime_dir": "assets/sprites/effects/priest/priest_chime",
+        "runtime_manifest": "assets/sprites/effects/priest/priest_chime/runtime_manifest.json",
+        "spriteframes": "assets/sprites/effects/priest/priest_chime/priest_chime_spriteframes.tres",
+        "contact_sheet": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/priest_chime_contact_sheet.png",
+        "static_alpha_readability_report": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/chime/static_alpha_readability_report.json"
+      },
+      "frame_count": 9,
+      "motion": {
+        "distinct_frame_pixel_hashes": 9,
+        "adjacent_pairs_with_motion": 8,
+        "adjacent_changed_pixel_ratios": [
+          0.298248,
+          0.31105,
+          0.320999,
+          0.346375,
+          0.276474,
+          0.313599,
+          0.313126,
+          0.317398
+        ],
+        "mean_absolute_rgba_diffs": [
+          16.0475,
+          17.1293,
+          18.6903,
+          22.9312,
+          14.2404,
+          18.0301,
+          18.0392,
+          19.3678
+        ],
+        "motion_score_mean_changed_pixel_ratio": 0.312159,
+        "loop": false,
+        "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+      },
+      "source_runtime_parity": true
+    },
+    {
+      "weapon_id": "priest_reliquary",
+      "title": "Суд Светлого Святилища",
+      "ultimate_role": "sanctify_burst",
+      "visual_identity": "portable ivory-gold gothic shrine, blue crystal, open sanctify window, halo and ceremonial chain",
+      "pixel_lab_object_id": "fa8c5297-4bdd-497e-9916-cda2e7b40285",
+      "pixel_lab_animation_group_id": "030f22d8-2e59-4de7-b7fb-dd415fb00ac4",
+      "animation": {
+        "name": "ultimate_flipbook",
+        "loop": false,
+        "speed_fps": 3.0,
+        "target_duration_seconds": 3.0,
+        "frame_order": [
+          "priest_reliquary_f00.png",
+          "priest_reliquary_f01.png",
+          "priest_reliquary_f02.png",
+          "priest_reliquary_f03.png",
+          "priest_reliquary_f04.png",
+          "priest_reliquary_f05.png",
+          "priest_reliquary_f06.png",
+          "priest_reliquary_f07.png",
+          "priest_reliquary_f08.png"
+        ]
+      },
+      "paths": {
+        "raw_source_dir": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/raw",
+        "accepted_source_dir": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary",
+        "runtime_dir": "assets/sprites/effects/priest/priest_reliquary",
+        "runtime_manifest": "assets/sprites/effects/priest/priest_reliquary/runtime_manifest.json",
+        "spriteframes": "assets/sprites/effects/priest/priest_reliquary/priest_reliquary_spriteframes.tres",
+        "contact_sheet": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/priest_reliquary_contact_sheet.png",
+        "static_alpha_readability_report": "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/reliquary/static_alpha_readability_report.json"
+      },
+      "frame_count": 9,
+      "motion": {
+        "distinct_frame_pixel_hashes": 9,
+        "adjacent_pairs_with_motion": 8,
+        "adjacent_changed_pixel_ratios": [
+          0.077011,
+          0.080933,
+          0.106277,
+          0.103271,
+          0.085281,
+          0.062744,
+          0.060547,
+          0.072617
+        ],
+        "mean_absolute_rgba_diffs": [
+          1.8216,
+          2.7057,
+          2.8466,
+          3.425,
+          2.4885,
+          1.4774,
+          1.413,
+          1.6445
+        ],
+        "motion_score_mean_changed_pixel_ratio": 0.081085,
+        "loop": false,
+        "seam_policy": "one-shot flipbook; no loop seam is presented to gameplay"
+      },
+      "source_runtime_parity": true
+    }
+  ],
+  "scope_guard": {
+    "allowed_paths": [
+      "docs/design/reference-assets-lfs/priest-vfx-FAN-3318-art/**",
+      "assets/sprites/effects/priest/**"
+    ],
+    "gameplay_changed": false,
+    "scenes_changed": false,
+    "shared_runtime_changed": false,
+    "balance_changed": false
+  }
+}

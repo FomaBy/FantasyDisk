@@ -1,0 +1,319 @@
+{
+  "schema_version": 2,
+  "issue": "FAN-3613",
+  "class_id": "doctor",
+  "weapon_id": "bone_saw",
+  "weapon": "doctor/bone_saw",
+  "effect_id": "cast_flash",
+  "effect_role": "cast",
+  "generated_at": "2026-08-28T03:41:45Z",
+  "generator": {
+    "route": "PixelLab MCP via blocking tools/pixellab_generate_pack.py",
+    "tool": "tools/pixellab_generate_pack.py",
+    "tool_version": "1.0.0",
+    "encoder": {
+      "library": "Pillow",
+      "library_version": "11.3.0",
+      "builder_version": "1.0.0"
+    },
+    "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+  },
+  "pixellab": {
+    "object_id": "1b7d235a-e0d9-41fe-a9f8-b420c9afc135",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "single close-orbit bone saw with ivory serrated blade, dark steel hub, surgical gold glints and warm sparks, dark fantasy D&D pixel art, top-down isolated object, centered on transparent background, no hands, no character, no extra props, no text",
+      "size": 256,
+      "view": "top-down"
+    },
+      "animation_group_id": "0f6a24bd-d0e9-49ad-a30e-bbe6f7d9de8f",
+      "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "the same bone saw stays centered with identical silhouette, scale and palette; the serrated blade snaps into motion, surgical gold glints sweep around the edge and small sparks flicker with clear measurable motion every frame; fully inside transparent 256px canvas, no blank frames, no text",
+      "frame_count": 8
+    },
+    "requested_generated_frame_count": 8,
+    "actual_frame_count": 9,
+    "frame_contract": "f00 is the stored PixelLab reference image; f01..f08 are the eight generated animation frames."
+  },
+  "asset": {
+    "source_dir": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash",
+    "source_frames": [
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f00.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f01.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f02.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f03.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f04.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f05.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f06.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f07.png",
+      "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f08.png"
+    ],
+    "runtime_dir": "assets/sprites/effects/doctor/bone_saw/cast_flash",
+    "runtime_frames": [
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_00.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_01.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_02.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_03.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_04.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_05.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_06.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_07.png",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_08.png"
+    ],
+    "runtime_import_sidecars": [
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_00.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_01.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_02.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_03.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_04.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_05.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_06.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_07.png.import",
+      "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_08.png.import"
+    ],
+    "runtime_spriteframes": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_spriteframes.tres",
+    "frame_size_px": [
+      256,
+      256
+    ],
+    "requested_generated_frame_count": 8,
+    "frame_count": 9,
+    "frame_order": "00..08 maps to f00..f08",
+    "loop": false,
+    "fps": 14
+  },
+  "normalization": {
+    "source_runtime_parity": "Every runtime PNG is byte-identical to its matching source PNG after final raster cleanup.",
+    "transparent_canvas": "RGBA 256x256; binary alpha; all canvas edges fully transparent; visible content remains inset.",
+    "postprocess": "Removed two generated flat background rectangles from f00 only: plague_syringe_infection_wave and plague_syringe_victim_impact; no other frames were altered."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f00.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_00.png",
+      "bytes": 46793,
+      "source_encoded_sha256": "72dd92657268e0bc7210893e4c1485de9dcbc9b3f13d29163460aab941e21769",
+      "source_pixel_sha256": "90ccbcc2fd6c43039bb5e89b859485540bf1a09eaeeca49f47a3d5aa9e3620fe",
+      "runtime_encoded_sha256": "72dd92657268e0bc7210893e4c1485de9dcbc9b3f13d29163460aab941e21769",
+      "runtime_pixel_sha256": "90ccbcc2fd6c43039bb5e89b859485540bf1a09eaeeca49f47a3d5aa9e3620fe",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        25,
+        26,
+        230,
+        232
+      ],
+      "visible_pixels": 27099,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": null
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f01.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_01.png",
+      "bytes": 55670,
+      "source_encoded_sha256": "11ec0a82f14641456cb3ae2db6aa8fe5bbbbe4856375989c2c9096e52f6cadab",
+      "source_pixel_sha256": "01af353f63955eab92a0650c8406df933d70183afa60c35b4637c2b6efb678d5",
+      "runtime_encoded_sha256": "11ec0a82f14641456cb3ae2db6aa8fe5bbbbe4856375989c2c9096e52f6cadab",
+      "runtime_pixel_sha256": "01af353f63955eab92a0650c8406df933d70183afa60c35b4637c2b6efb678d5",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        26,
+        26,
+        230,
+        230
+      ],
+      "visible_pixels": 27207,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 17321
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f02.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_02.png",
+      "bytes": 53221,
+      "source_encoded_sha256": "fdb9b5ff55951f8dd8a8fbfef76782928d1ea228cc30471331ddedc1b264f8b0",
+      "source_pixel_sha256": "afc9a7ea773bbfa296915463afec0212d17a7ca71fe6d515963f98d43192067f",
+      "runtime_encoded_sha256": "fdb9b5ff55951f8dd8a8fbfef76782928d1ea228cc30471331ddedc1b264f8b0",
+      "runtime_pixel_sha256": "afc9a7ea773bbfa296915463afec0212d17a7ca71fe6d515963f98d43192067f",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        26,
+        27,
+        229,
+        230
+      ],
+      "visible_pixels": 27108,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18462
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f03.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_03.png",
+      "bytes": 44860,
+      "source_encoded_sha256": "cf7aaf000ed0fab2bb17241617b4c64ff99f8d5f6e19f7f7242c5be211551c3f",
+      "source_pixel_sha256": "188fea66e47b2416a25537d71036a008f9b193fe3ec9a1d78ff71c1c2a34ab0b",
+      "runtime_encoded_sha256": "cf7aaf000ed0fab2bb17241617b4c64ff99f8d5f6e19f7f7242c5be211551c3f",
+      "runtime_pixel_sha256": "188fea66e47b2416a25537d71036a008f9b193fe3ec9a1d78ff71c1c2a34ab0b",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        26,
+        26,
+        229,
+        231
+      ],
+      "visible_pixels": 26236,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 21291
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f04.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_04.png",
+      "bytes": 43906,
+      "source_encoded_sha256": "947e2d457f583c5c0a31fab3d947efdd3a257f58006642138f6aadad2d8c6efe",
+      "source_pixel_sha256": "4e85192ef0daeac1780df1ef93d129b28e185e20e95d962ae9a5961250b41ab1",
+      "runtime_encoded_sha256": "947e2d457f583c5c0a31fab3d947efdd3a257f58006642138f6aadad2d8c6efe",
+      "runtime_pixel_sha256": "4e85192ef0daeac1780df1ef93d129b28e185e20e95d962ae9a5961250b41ab1",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        24,
+        26,
+        230,
+        232
+      ],
+      "visible_pixels": 26291,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 17929
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f05.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_05.png",
+      "bytes": 47629,
+      "source_encoded_sha256": "85e33c08eb5891f76f853dfb9f66db606925895829478e3d40cc2cff7c61705c",
+      "source_pixel_sha256": "3877e665f486e922cc6db20dbe9aacd179b04ce42e790e266c31f6c2dad2341a",
+      "runtime_encoded_sha256": "85e33c08eb5891f76f853dfb9f66db606925895829478e3d40cc2cff7c61705c",
+      "runtime_pixel_sha256": "3877e665f486e922cc6db20dbe9aacd179b04ce42e790e266c31f6c2dad2341a",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        24,
+        23,
+        231,
+        232
+      ],
+      "visible_pixels": 25811,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 20919
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f06.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_06.png",
+      "bytes": 51123,
+      "source_encoded_sha256": "7bb44ea2f7230e4e9e99a152567685aa5e91832c0089019c5b93e014fb7eeda0",
+      "source_pixel_sha256": "4179ce6002a16ebcf73b80ca6792258caf5072f6fa13e66dce503bafaf991245",
+      "runtime_encoded_sha256": "7bb44ea2f7230e4e9e99a152567685aa5e91832c0089019c5b93e014fb7eeda0",
+      "runtime_pixel_sha256": "4179ce6002a16ebcf73b80ca6792258caf5072f6fa13e66dce503bafaf991245",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        24,
+        23,
+        231,
+        234
+      ],
+      "visible_pixels": 26722,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 19021
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f07.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_07.png",
+      "bytes": 52336,
+      "source_encoded_sha256": "d03251b5b62c17f45b8014f0a308eb9d68b79282c18843f96b171783222c1bca",
+      "source_pixel_sha256": "4e304716f95f64b60258c2180f6e4c8b8b9a1ab332837ad081fef46ee1658d2d",
+      "runtime_encoded_sha256": "d03251b5b62c17f45b8014f0a308eb9d68b79282c18843f96b171783222c1bca",
+      "runtime_pixel_sha256": "4e304716f95f64b60258c2180f6e4c8b8b9a1ab332837ad081fef46ee1658d2d",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        27,
+        26,
+        230,
+        231
+      ],
+      "visible_pixels": 27362,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 20324
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/doctor-vfx-FAN-3613/bone_saw_cast_flash/bone_saw_cast_flash_f08.png",
+      "runtime_file": "assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_08.png",
+      "bytes": 49938,
+      "source_encoded_sha256": "bf23d752d0361193f3cd15ddab0458dd4a484ea1cc12766761d4b63cc98295aa",
+      "source_pixel_sha256": "bcd680cff8a8d36194214705577719f1744e5687dd0a0ac81906cfaf5cb1ecaf",
+      "runtime_encoded_sha256": "bf23d752d0361193f3cd15ddab0458dd4a484ea1cc12766761d4b63cc98295aa",
+      "runtime_pixel_sha256": "bcd680cff8a8d36194214705577719f1744e5687dd0a0ac81906cfaf5cb1ecaf",
+      "size_px": [
+        256,
+        256
+      ],
+      "alpha_bbox": [
+        26,
+        26,
+        230,
+        231
+      ],
+      "visible_pixels": 26908,
+      "edge_visible_pixels": 0,
+      "border_max_alpha": 0,
+      "changed_pixels_from_previous": 18629
+    }
+  ],
+  "frame_verification": {
+    "method": "Pillow RGBA decode plus SHA-256 encoded/pixel hashes; exact per-pixel change count between consecutive frames.",
+    "result": "PASS",
+    "transparent_edge_max_alpha": 0,
+    "semi_transparent_pixel_count": 0,
+    "consecutive_changed_pixels_min": 17321,
+    "consecutive_changed_pixels_max": 21291,
+    "loop_wrap_pixel_hashes_differ": true
+  }
+}

@@ -97,6 +97,7 @@ func _initialize() -> void:
 	await _test_reliquary()
 	await _test_censer()
 	await _test_chime()
+	await _test_trio_reaches_every_enemy()
 	_test_charge_and_persistence_contract()
 	_holder.queue_free()
 	await process_frame
@@ -298,6 +299,41 @@ func _test_chime() -> void:
 		_check(_status_with_prefix(target, "priest_ultimate_chime_").is_empty(),
 			"Chime completion must clear only its status leases")
 	await _drop(host)
+
+
+## Ultimate Direction v2: visible rings, chains and counter arcs keep their
+## identity, but they no longer decide who is eligible. Every live enemy must
+## receive the guaranteed channel, including crowds larger than the old rails
+## and one silhouette parked far outside every old radius.
+func _test_trio_reaches_every_enemy() -> void:
+	for weapon_id in ["priest_reliquary", "priest_censer", "priest_chime"]:
+		var host := await _host()
+		for index in 25:
+			_target(host, Vector2(80.0 + float(index) * 18.0, 0.0), 10000.0, 10000.0)
+		_target(host, Vector2(4000.0, -3000.0), 10000.0, 10000.0)
+		var controller := Controller.new(host, _registry)
+		_check(controller.activate(CLASS_ID, weapon_id),
+			"%s map-wide fixture must activate" % weapon_id)
+		var activation := controller.active_activation()
+		var effect := _effect(activation)
+		if weapon_id == "priest_censer" and effect != null:
+			effect.call("_store_actual_prevention", {"absorbed_amount": 100000.0})
+			effect.call("counter_burst")
+		elif weapon_id == "priest_reliquary":
+			_advance(activation, 5.35)
+		else:
+			_advance(activation, 2.35)
+		var reached := 0
+		for raw_target in host.fixture_targets:
+			if not (raw_target as FixtureTarget).received.is_empty():
+				reached += 1
+		_check(reached == host.fixture_targets.size(),
+			"%s must reach every live enemy, got %d of %d" % [
+				weapon_id, reached, host.fixture_targets.size(),
+			])
+		controller.cancel()
+		await process_frame
+		await _drop(host)
 
 
 func _test_charge_and_persistence_contract() -> void:

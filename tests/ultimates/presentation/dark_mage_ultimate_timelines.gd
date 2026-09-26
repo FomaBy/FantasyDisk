@@ -2,47 +2,55 @@ extends SceneTree
 
 const PROFILE_PATH := "res://data/ultimates/schema/v1/classes/dark_mage.json"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/dark_mage/manifest.json"
+const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const TIMELINE := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
 const SCENES := {
 	"dark_book": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn"),
 	"cursed_skull": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn"),
 	"dark_wand": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn"),
+}
+const EFFECT_SCENES := {
+	"dark_book": preload("res://scripts/ultimates/classes/dark_mage/dark_book.tscn"),
+	"cursed_skull": preload("res://scripts/ultimates/classes/dark_mage/cursed_skull.tscn"),
+	"dark_wand": preload("res://scripts/ultimates/classes/dark_mage/dark_wand.tscn"),
 }
 const WEAPON_IDS := ["dark_book", "cursed_skull", "dark_wand"]
 const PACKS := [
 	{
 		"weapon_id": "dark_book",
 		"scene": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn"),
-		"time": 3.22,
+		"time": 1.95,
 		"title": "DARK BOOK — ABYSS MIRROR",
 		"position": Vector2(0.18, 0.54),
 		"color": Color(0.76, 0.42, 1.0),
-		"required_nodes": ["BookGhost", "MirrorPlane", "OriginalShadow", "ReflectionShadow", "PairedDetonation"],
+		"required_nodes": ["AbyssMirror", "ReflectionLeft", "ReflectionRight"],
 	},
 	{
 		"weapon_id": "cursed_skull",
 		"scene": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn"),
-		"time": 5.22,
+		"time": 2.55,
 		"title": "CURSED SKULL — CURSED CROWN",
 		"position": Vector2(0.5, 0.54),
 		"color": Color(0.68, 0.9, 0.42),
-		"required_nodes": ["SkullCrown", "CurseChains", "SoulWispLeft", "HarvestBite"],
+		"required_nodes": ["CursedCrown", "SoulOrbitLeft", "SoulOrbitRight"],
 	},
 	{
 		"weapon_id": "dark_wand",
 		"scene": preload("res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn"),
-		"time": 3.08,
+		"time": 2.5,
 		"title": "DARK WAND — VANISHING THREAD",
 		"position": Vector2(0.82, 0.54),
 		"color": Color(0.4, 0.84, 1.0),
-		"required_nodes": ["WandGhost", "OuterThread", "NodeMarks", "CollapseAfterimage"],
+		"required_nodes": ["VanishingThread", "ThreadEchoNear", "ThreadEchoFar"],
 	},
 ]
 const CAPTURES := [
-	{"name": "648p", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
-	{"name": "720p", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
-	{"name": "1080p", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
-	{"name": "2k", "path": "res://docs/design/references/weapon_ultimates/dark_mage/dark_mage_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
+	{"name": "648p", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_648p.png", "size": Vector2i(1152, 648)},
+	{"name": "720p", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_720p.png", "size": Vector2i(1280, 720)},
+	{"name": "1080p", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_1080p.png", "size": Vector2i(1920, 1080)},
+	{"name": "2k", "path": "res://docs/design/reference-assets-lfs/dark-mage-ultimate-timelines/dark_mage_ultimate_timelines_2k.png", "size": Vector2i(2560, 1440)},
 ]
 const PANEL_HALF_WIDTH_RATIO := 0.145
 const PANEL_HALF_HEIGHT_RATIO := 0.30
@@ -52,6 +60,7 @@ const CAPTURE_ALPHA_EPSILON := 0.01
 const REQUIRED_PHASES := ["windup", "release", "active", "recovery", "cancel"]
 const REQUIRED_CHANNELS := ["animation", "vfx", "sfx"]
 const MAX_TIMELINE_SECONDS := 10.0
+const SOURCE_LFS_ROOT := "docs/design/reference-assets-lfs/dark-mage-vfx-FAN-3616"
 
 
 class HandleProbe extends RefCounted:
@@ -59,6 +68,46 @@ class HandleProbe extends RefCounted:
 
 	func release() -> void:
 		released += 1
+
+
+class VictimProbe extends Node2D:
+	var health := 100.0
+	var flashes := 0
+
+	func _combat_feedback_enabled() -> bool:
+		return true
+
+	func _show_hit_flash() -> void:
+		flashes += 1
+
+
+class ImpactActivationProbe extends RefCounted:
+	var values := {}
+
+	func origin() -> Vector2:
+		return Vector2.ZERO
+
+	func is_finished() -> bool:
+		return false
+
+	func param_float(_key: String, fallback: float) -> float:
+		return fallback
+
+	func scaled_damage(_key: String, fallback: float) -> float:
+		return fallback
+
+	func present(_phase_id: String, _payload: Dictionary) -> void:
+		pass
+
+	func apply_control(_target: Node, _impulse: Vector2, _status_id: String, _status: Dictionary) -> Dictionary:
+		return {"status_applied": true}
+
+	func record_target_value(target: Node, key: String, value: Variant, _event_id: String) -> bool:
+		values["%d:%s" % [target.get_instance_id(), key]] = value
+		return true
+
+	func target_value(target: Node, key: String, fallback: Variant) -> Variant:
+		return values.get("%d:%s" % [target.get_instance_id(), key], fallback)
 
 
 func _initialize() -> void:
@@ -75,12 +124,15 @@ func _initialize() -> void:
 	_expect(is_equal_approx(float(contract.get("max_timeline_seconds", -1.0)), MAX_TIMELINE_SECONDS), "manifest must retain the ten-second cap", errors)
 	_expect(not str(contract.get("runtime_adapter_status", "")).is_empty(), "runtime adapter boundary must be documented", errors)
 	_check_provenance(manifest, errors)
+	_check_provenance_negative_cases(manifest, errors)
 	var profiles := _profiles_by_weapon(profile_root)
 	var packages := _packages_by_weapon(manifest)
 	_expect(packages.size() == 3, "manifest must contain exactly three Dark Mage weapon packages", errors)
 	for weapon_id in WEAPON_IDS:
 		_check_package(weapon_id, profiles.get(weapon_id, {}) as Dictionary, packages.get(weapon_id, {}) as Dictionary, errors)
+	_check_v2_adoption(manifest, packages, errors)
 	_check_distinction(packages, errors)
+	_check_weapon_local_impacts(packages, errors)
 	_check_capture_composition(errors)
 	_check_capture_evidence(errors)
 	if not errors.is_empty():
@@ -92,18 +144,79 @@ func _initialize() -> void:
 
 func _check_provenance(manifest: Dictionary, errors: Array[String]) -> void:
 	var provenance := manifest.get("generator_provenance", {}) as Dictionary
-	_expect(str(provenance.get("route", "")) == "reused_approved_assets_no_new_raster_generation", "provenance must explain why no new raster source was generated", errors)
-	_expect((provenance.get("new_pixellab_assets", []) as Array).is_empty(), "no PixelLab IDs may be invented when no new raster asset was created", errors)
+	_expect(str(provenance.get("route", "")) == "reused_approved_assets_plus_new_pixellab_animation_frames", "provenance must declare the reused-assets-plus-new-PixelLab-frames route", errors)
+	var new_assets := {}
+	for raw_id in provenance.get("new_pixellab_assets", []) as Array:
+		new_assets[str(raw_id)] = true
+	_expect(new_assets.size() == WEAPON_IDS.size(), "new PixelLab assets must list each Dark Mage weapon exactly once, with no foreign or duplicate entries", errors)
+	for weapon_id in WEAPON_IDS:
+		_expect(new_assets.has(weapon_id), "%s must be declared as a newly generated PixelLab asset" % weapon_id, errors)
 	_expect(not str(provenance.get("historical_source_note", "")).is_empty(), "historical generator provenance must be retained", errors)
 	var sources := provenance.get("reused_sources", {}) as Dictionary
 	for weapon_id in WEAPON_IDS:
 		var source := sources.get(weapon_id, {}) as Dictionary
 		for key in ["source_reference", "source_notes", "weapon_runtime_path", "vfx_runtime_path", "runtime_scene"]:
 			var path := str(source.get(key, ""))
-			_expect(not path.is_empty() and FileAccess.file_exists("res://%s" % path), "%s %s must be recorded and exist" % [weapon_id, key], errors)
+			var exists := FileAccess.file_exists("res://%s" % path)
+			if key == "source_reference" and not exists:
+				exists = _tracked_file_exists(path)
+			_expect(not path.is_empty() and exists, "%s %s must be recorded and exist" % [weapon_id, key], errors)
+		_expect(str(source.get("source_reference", "")).begins_with(SOURCE_LFS_ROOT + "/"), "%s source reference must use the dedicated LFS pack" % weapon_id, errors)
+		_expect(str(source.get("source_notes", "")) == str((provenance.get("new_pack_manifests", {}) as Dictionary).get(weapon_id, "")), "%s source notes must point to its provenance manifest" % weapon_id, errors)
 		_expect(_file_sha256(str(source.get("weapon_runtime_path", ""))) == str(source.get("weapon_sha256", "")), "%s weapon SHA-256 must match the reused asset" % weapon_id, errors)
 		_expect(_file_sha256(str(source.get("vfx_runtime_path", ""))) == str(source.get("vfx_sha256", "")), "%s VFX SHA-256 must match the reused asset" % weapon_id, errors)
 		_expect(source.get("modified", true) == false, "%s reused assets must remain unmodified" % weapon_id, errors)
+	_check_pixellab_pack_provenance(provenance, errors)
+
+
+func _check_pixellab_pack_provenance(provenance: Dictionary, errors: Array[String]) -> void:
+	var pack_manifests := provenance.get("new_pack_manifests", {}) as Dictionary
+	_expect(pack_manifests.size() == WEAPON_IDS.size(), "manifest must declare a pack provenance file for exactly the three Dark Mage weapons", errors)
+	var object_ids := {}
+	var animation_group_ids := {}
+	for weapon_id in WEAPON_IDS:
+		var manifest_path := str(pack_manifests.get(weapon_id, ""))
+		_expect(not manifest_path.is_empty(), "%s must record a PixelLab pack provenance manifest path" % weapon_id, errors)
+		if manifest_path.is_empty():
+			continue
+		var pack := _load_json("res://%s" % manifest_path, errors)
+		if pack.is_empty():
+			continue
+		_expect(str(pack.get("class_id", "")) == "dark_mage", "%s pack provenance must be class-local to Dark Mage" % weapon_id, errors)
+		_expect(str(pack.get("weapon_id", "")) == weapon_id, "%s pack provenance weapon ID must be exact" % weapon_id, errors)
+		var pack_object := pack.get("object", {}) as Dictionary
+		var object_id := str(pack_object.get("pixel_lab_object_id", ""))
+		var animation_group_id := str(pack_object.get("pixel_lab_animation_group_id", ""))
+		_expect(not object_id.is_empty(), "%s must record a PixelLab object ID" % weapon_id, errors)
+		_expect(not animation_group_id.is_empty(), "%s must record a PixelLab animation group ID" % weapon_id, errors)
+		_expect(not object_ids.has(object_id), "%s PixelLab object ID must be unique to this weapon" % weapon_id, errors)
+		_expect(not animation_group_ids.has(animation_group_id), "%s PixelLab animation group ID must be unique to this weapon" % weapon_id, errors)
+		object_ids[object_id] = true
+		animation_group_ids[animation_group_id] = true
+		var asset := pack.get("asset", {}) as Dictionary
+		var source_dir := str(asset.get("source_dir", ""))
+		_expect(source_dir.begins_with(SOURCE_LFS_ROOT + "/"), "%s source frames must use the dedicated LFS pack" % weapon_id, errors)
+		for raw_frame in asset.get("source_frames", []) as Array:
+			var source_frame := "%s/%s" % [source_dir, str(raw_frame)]
+			_expect(FileAccess.file_exists("res://%s" % source_frame), "%s LFS source frame must resolve: %s" % [weapon_id, source_frame], errors)
+
+
+func _check_provenance_negative_cases(manifest: Dictionary, errors: Array[String]) -> void:
+	_expect_provenance_case_rejected(manifest, {"route": "reused_approved_assets_no_new_raster_generation", "new_pixellab_assets": []}, "superseded no-new-raster contract", errors)
+	_expect_provenance_case_rejected(manifest, {"new_pixellab_assets": []}, "empty PixelLab asset list", errors)
+	_expect_provenance_case_rejected(manifest, {"new_pixellab_assets": ["dark_book", "cursed_skull", "unknown_weapon"]}, "foreign PixelLab asset ID", errors)
+	_expect_provenance_case_rejected(manifest, {"new_pixellab_assets": ["dark_book", "dark_book", "cursed_skull"]}, "duplicate PixelLab asset ID", errors)
+
+
+func _expect_provenance_case_rejected(manifest: Dictionary, overrides: Dictionary, case_name: String, errors: Array[String]) -> void:
+	var mutated := manifest.duplicate(true)
+	var provenance := (mutated.get("generator_provenance", {}) as Dictionary).duplicate(true)
+	for key in overrides:
+		provenance[key] = overrides[key]
+	mutated["generator_provenance"] = provenance
+	var case_errors: Array[String] = []
+	_check_provenance(mutated, case_errors)
+	_expect(not case_errors.is_empty(), "provenance check must fail-closed on %s" % case_name, errors)
 
 
 func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary, errors: Array[String]) -> void:
@@ -113,6 +226,10 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 		return
 	_expect(str(package.get("weapon_id", "")) == weapon_id, "%s package weapon ID must be exact" % weapon_id, errors)
 	var timing := package.get("timing_seconds", {}) as Dictionary
+	_expect(float(timing.get("cancel", 0.0)) >= 2.5 and float(timing.get("cancel", 0.0)) <= 4.0,
+		"%s presentation must last 2.5-4.0 seconds" % weapon_id, errors)
+	_expect(float(timing.get("recovery", 0.0)) - float(timing.get("active", 0.0)) >= 1.2,
+		"%s active window must last at least 1.2 seconds" % weapon_id, errors)
 	var phases := package.get("phase_ids", {}) as Dictionary
 	var previous := -1.0
 	for phase_name in REQUIRED_PHASES:
@@ -133,6 +250,39 @@ func _check_package(weapon_id: String, profile: Dictionary, package: Dictionary,
 		_expect(float(pivot[0]) >= 0.0 and float(pivot[0]) <= 1.0 and float(pivot[1]) >= 0.0 and float(pivot[1]) <= 1.0, "%s pivot must stay normalized" % weapon_id, errors)
 	_check_scene(weapon_id, package, errors)
 	_check_lifecycle(weapon_id, timing, phases, errors)
+
+
+## FAN-2528: this card closes Dark Mage's own migration entries. The shared
+## ratchets and the class-focused timeline proof must agree, so no future v1
+## timing, generic silhouette or missing readable-impact declaration can slip
+## back behind an allowlist.
+func _check_v2_adoption(manifest: Dictionary, packages: Dictionary, errors: Array[String]) -> void:
+	_expect(DirectionContract.violations("dark_mage", manifest).is_empty(),
+		"Dark Mage must satisfy every visual-direction gate: %s" % [
+			str(DirectionContract.violations("dark_mage", manifest)),
+		], errors)
+	for gate in DirectionContract.GATES:
+		_expect(not (DirectionContract.ADOPTION_GAPS.get(gate, {}) as Dictionary).has("dark_mage"),
+			"Dark Mage must leave the %s visual-direction allowlist" % gate, errors)
+	for weapon_id in WEAPON_IDS:
+		var key := "dark_mage/%s" % weapon_id
+		var package := packages.get(weapon_id, {}) as Dictionary
+		_expect(not Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST.has(key),
+			"%s must leave the presentation V2 migration allowlist" % key, errors)
+		errors.append_array(Schema.v2_envelope_errors(package.get("timing_seconds"), key))
+		var presence := package.get("presence", {}) as Dictionary
+		_expect(presence.get("fullscreen_footprint") == true
+			and presence.get("camera_shake") == true
+			and float(presence.get("hitstop_ms", 0.0)) >= 80.0
+			and float(presence.get("hitstop_ms", 0.0)) <= 150.0,
+			"%s must declare full-screen presence, shake and 80-150ms hitstop" % key, errors)
+		var identity := package.get("identity", {}) as Dictionary
+		_expect(not str(identity.get("cast_pose_id", "")).is_empty()
+			and FileAccess.file_exists(str(identity.get("cast_pose_asset", "")))
+			and FileAccess.file_exists(str(identity.get("weapon_silhouette_asset", "")))
+			and str(identity.get("cast_pose_asset", "")) != str(identity.get("weapon_silhouette_asset", ""))
+			and str(identity.get("class_palette_id", "")) == "dark_mage.abyssal_violet",
+			"%s must bind Dark Mage pose, unique weapon silhouette and palette" % key, errors)
 
 
 func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String]) -> void:
@@ -157,7 +307,95 @@ func _check_scene(weapon_id: String, package: Dictionary, errors: Array[String])
 	var performance := package.get("performance", {}) as Dictionary
 	_expect(max_visual_nodes == int(performance.get("max_visual_nodes", -1)), "%s scene and manifest visual budgets must agree" % weapon_id, errors)
 	_expect(crowd_cap == int(performance.get("crowd_cap", -1)), "%s scene and manifest crowd caps must agree" % weapon_id, errors)
+	_expect(int(instance.get_meta("max_unique_materials", 0)) == int(performance.get("max_unique_materials", -1))
+		and int(instance.get_meta("max_fullscreen_materials", 0)) == int(performance.get("max_fullscreen_materials", -1)),
+		"%s scene and manifest material budgets must agree" % weapon_id, errors)
+	_expect(DirectionContract.scene_material_violations(instance, "dark_mage/%s" % weapon_id).is_empty(),
+		"%s scene must fit its declared V2 material budget" % weapon_id, errors)
+	_check_scene_flipbook(weapon_id, package, instance, errors)
 	instance.queue_free()
+
+
+func _check_scene_flipbook(weapon_id: String, package: Dictionary, instance: Node2D, errors: Array[String]) -> void:
+	var flipbook := ((package.get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
+	var expected_path := "res://%s" % str(flipbook.get("spriteframes", ""))
+	var expected_animation := StringName(str(flipbook.get("animation", "")))
+	var matching_flipbooks := 0
+	var pending: Array[Node] = [instance]
+	while not pending.is_empty():
+		var node := pending.pop_back() as Node
+		for child in node.get_children():
+			pending.append(child)
+			_expect(not (child is ColorRect or child is Polygon2D or child is Line2D),
+				"%s must not contain visible flat geometry: %s" % [weapon_id, child.name], errors)
+			if child is AnimatedSprite2D:
+				var sprite := child as AnimatedSprite2D
+				if sprite.sprite_frames != null and sprite.sprite_frames.resource_path == expected_path \
+						and sprite.animation == expected_animation:
+					matching_flipbooks += 1
+	_expect(matching_flipbooks >= 1,
+		"%s must render its exact integrated SpriteFrames/animation identity" % weapon_id, errors)
+
+
+func _check_weapon_local_impacts(packages: Dictionary, errors: Array[String]) -> void:
+	for weapon_id in WEAPON_IDS:
+		var effect := (EFFECT_SCENES[weapon_id] as PackedScene).instantiate() as Node2D
+		root.add_child(effect)
+		effect.set("ultimate_damage_sink", Callable(self, "_damage_sink"))
+		var activation := ImpactActivationProbe.new()
+		var victims: Array = []
+		for index in 3:
+			var victim := VictimProbe.new()
+			victim.position = Vector2(80.0 + float(index) * 120.0, 0.0)
+			root.add_child(victim)
+			victims.append(victim)
+		match weapon_id:
+			"dark_book":
+				effect.call("configure", activation, victims)
+				for index in victims.size():
+					effect.call("detonate_pair", index)
+			"cursed_skull":
+				effect.call("configure", activation, victims)
+				effect.call("crown_targets")
+			"dark_wand":
+				effect.call("configure", activation, victims, victims[0])
+				for index in victims.size():
+					effect.call("mark_node", index)
+				effect.call("collapse")
+		var impacts := _impact_player(effect)
+		_expect(impacts != null, "%s must start the shared weapon-local victim impact" % weapon_id, errors)
+		if impacts != null:
+			var planned := impacts.call("snapshot") as Dictionary
+			_expect(int(planned.get("victims", 0)) == victims.size(),
+				"%s must enqueue every actually affected enemy" % weapon_id, errors)
+			_expect(float(planned.get("burst_seconds", 0.0)) >= 0.3 and float(planned.get("burst_seconds", 0.0)) <= 0.6,
+				"%s victim impact must last 0.3-0.6 seconds" % weapon_id, errors)
+			_expect(int(planned.get("stagger_frames", 0)) >= ImpactPlayer.STAGGER_MIN_FRAMES \
+					and int(planned.get("stagger_frames", 0)) <= ImpactPlayer.STAGGER_MAX_FRAMES,
+				"%s victim ripple must stagger outward by 3-8 frames" % weapon_id, errors)
+			impacts.call("advance", 1.0)
+			var played := impacts.call("snapshot") as Dictionary
+			_expect(int(played.get("flashes", 0)) == victims.size(),
+				"%s load degradation must never drop the existing white victim flash" % weapon_id, errors)
+			var flipbook := (((packages.get(weapon_id, {}) as Dictionary).get("channels", {}) as Dictionary).get("flipbook", {}) as Dictionary)
+			var expected_path := "res://%s" % str(flipbook.get("spriteframes", ""))
+			var burst := impacts.find_child("VictimImpact0", true, false) as AnimatedSprite2D
+			_expect(burst != null and burst.sprite_frames != null and burst.sprite_frames.resource_path == expected_path,
+				"%s victim impact must use its own integrated flipbook" % weapon_id, errors)
+		effect.queue_free()
+		for victim in victims:
+			(victim as Node).queue_free()
+
+
+func _impact_player(effect: Node) -> Node:
+	for child in effect.get_children():
+		if child.get_script() == ImpactPlayer:
+			return child
+	return null
+
+
+func _damage_sink(_target: Node, _amount: float, _feedback: Dictionary, _event_id: String, _secondary: bool) -> Dictionary:
+	return {"killed": false}
 
 
 func _check_lifecycle(weapon_id: String, timing: Dictionary, phases: Dictionary, errors: Array[String]) -> void:
@@ -345,6 +583,15 @@ static func is_capture_item_visible(item: CanvasItem, scene: Node2D) -> bool:
 
 
 static func _capture_item_local_rect(item: CanvasItem) -> Rect2:
+	if item is AnimatedSprite2D:
+		var sprite := item as AnimatedSprite2D
+		if sprite.sprite_frames == null:
+			return Rect2()
+		var texture := sprite.sprite_frames.get_frame_texture(sprite.animation, sprite.frame)
+		if texture == null:
+			return Rect2()
+		var size := texture.get_size()
+		return Rect2((-size * 0.5 if sprite.centered else Vector2.ZERO) + sprite.offset, size)
 	if item is Sprite2D:
 		return (item as Sprite2D).get_rect()
 	if item is Line2D:
@@ -415,6 +662,13 @@ func _file_sha256(path: String) -> String:
 	context.start(HashingContext.HASH_SHA256)
 	context.update(FileAccess.get_file_as_bytes("res://%s" % path))
 	return context.finish().hex_encode()
+
+
+func _tracked_file_exists(path: String) -> bool:
+	var output := []
+	if OS.execute("git", ["ls-tree", "-r", "--name-only", "HEAD", "--", path], output, false) != 0:
+		return false
+	return "".join(PackedStringArray(output)).strip_edges().split("\n", false).has(path)
 
 
 func _load_json(path: String, errors: Array[String]) -> Dictionary:

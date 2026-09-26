@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "groups": {
+    "godot": {
+      "minimum_test_files": 444
+    },
+    "python": {
+      "minimum_test_files": 30
+    }
+  }
+}

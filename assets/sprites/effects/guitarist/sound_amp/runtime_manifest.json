@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3708",
+  "class_id": "guitarist",
+  "weapon_id": "sound_amp",
+  "effect_id": "wall_of_sound",
+  "pixel_lab": {
+    "object_id": "1687ef1f-47a2-42cf-99ff-150fc036bf65",
+    "animation_group_id": "17f9139c-5ea7-4411-a51e-936e1dfdadc5",
+    "canonical_tag": "guitarist_sound_amp_wall_of_sound",
+    "generator_manifest": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/pixellab_generation_manifest.json"
+  },
+  "frame_contract": {
+    "size_px": [
+      256,
+      256
+    ],
+    "frame_count_requested": 8,
+    "frame_count_returned": 9,
+    "frame_rate_fps": 3.0,
+    "duration_seconds": 3.0,
+    "loop": false,
+    "transparent_background": true,
+    "accepted_safe_gutter_px": 16,
+    "normalization": "224x224 nearest-neighbor art centered in 256x256 canvas",
+    "flipbook_duration_seconds": 3.0
+  },
+  "paths": {
+    "source_dir": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp",
+    "raw_source_dir": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/raw",
+    "runtime_dir": "assets/sprites/effects/guitarist/sound_amp",
+    "spriteframes": "assets/sprites/effects/guitarist/sound_amp/sound_amp_spriteframes.tres",
+    "pixel_quality_evidence": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/pixel_quality_evidence.json",
+    "contact_sheet": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/contact_sheet.png"
+  },
+  "source_runtime_parity": true,
+  "frames": [
+    {
+      "index": 0,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f00.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f00.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f00.png.import",
+      "source_encoded_sha256": "d3053211852ab66dacbf9e289ad80d0ca3cb424f2dc56bbab74d97dbad19553c",
+      "runtime_encoded_sha256": "d3053211852ab66dacbf9e289ad80d0ca3cb424f2dc56bbab74d97dbad19553c",
+      "source_pixel_sha256": "4b60115195bc4115811b82814b2cd8874ad2b17ac2024f084d09f01ceadaf112",
+      "runtime_pixel_sha256": "4b60115195bc4115811b82814b2cd8874ad2b17ac2024f084d09f01ceadaf112",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://x969z422yk3dj",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f00.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f00.png-b621b3abe0932f6ed6878df6f6020663.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 1,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f01.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f01.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f01.png.import",
+      "source_encoded_sha256": "b99d5d5c6f746633a741b28e65de3b2d9d857fa8af62c501be77ea064d4b2f25",
+      "runtime_encoded_sha256": "b99d5d5c6f746633a741b28e65de3b2d9d857fa8af62c501be77ea064d4b2f25",
+      "source_pixel_sha256": "4ec8b6dfba3197630cf1d93ba979b6a21854a6e6525ee59f92c57cd2cdd43ab7",
+      "runtime_pixel_sha256": "4ec8b6dfba3197630cf1d93ba979b6a21854a6e6525ee59f92c57cd2cdd43ab7",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://ghakclpedesy3",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f01.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f01.png-dcf7deded8734d1e8bf3115d98dae97b.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 2,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f02.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f02.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f02.png.import",
+      "source_encoded_sha256": "36ea02ca81c7f5b5a8b1f252680937ec05cb1bab57f8389a743098f2b5234a28",
+      "runtime_encoded_sha256": "36ea02ca81c7f5b5a8b1f252680937ec05cb1bab57f8389a743098f2b5234a28",
+      "source_pixel_sha256": "d507e919eb14035ca78603f4a992f7fe895e0e49462baa9e5b25b524bec8db88",
+      "runtime_pixel_sha256": "d507e919eb14035ca78603f4a992f7fe895e0e49462baa9e5b25b524bec8db88",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://d95p5lfsqz5eu",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f02.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f02.png-a1a0acdd750b9fc79023d34b7c8b8380.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 3,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f03.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f03.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f03.png.import",
+      "source_encoded_sha256": "e2efc268f712f63754c4b100e96d58b1bb9f03fb091ff5f9bb6896e00211cef1",
+      "runtime_encoded_sha256": "e2efc268f712f63754c4b100e96d58b1bb9f03fb091ff5f9bb6896e00211cef1",
+      "source_pixel_sha256": "fbc230fc14ddeaa3e0f72492c955cce9e879f0f33762b86a391bfc351a7c2769",
+      "runtime_pixel_sha256": "fbc230fc14ddeaa3e0f72492c955cce9e879f0f33762b86a391bfc351a7c2769",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://puudg84zvld6r",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f03.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f03.png-b70aad34b8b5919143160aa3d39607f5.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 4,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f04.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f04.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f04.png.import",
+      "source_encoded_sha256": "974402fa29d609d1358305991d1fd7b814d82efde1ecbd8836a6f0468bc00867",
+      "runtime_encoded_sha256": "974402fa29d609d1358305991d1fd7b814d82efde1ecbd8836a6f0468bc00867",
+      "source_pixel_sha256": "fdd64130b16984f4a2ca64b8cf71eddabf332a6e992365bcd43bc9d2e9a86661",
+      "runtime_pixel_sha256": "fdd64130b16984f4a2ca64b8cf71eddabf332a6e992365bcd43bc9d2e9a86661",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://2dle5h6ysr39m",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f04.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f04.png-4735a6fa945942850cea983ddd27a74f.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 5,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f05.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f05.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f05.png.import",
+      "source_encoded_sha256": "26481ea5272161578fbf88837e2a05c76055f5c59b9b605e40355ec46b2b12f2",
+      "runtime_encoded_sha256": "26481ea5272161578fbf88837e2a05c76055f5c59b9b605e40355ec46b2b12f2",
+      "source_pixel_sha256": "1fb94273a665c48d31e9b0a3c1d5f999352ac63fa568a8361c321b3ff25ced67",
+      "runtime_pixel_sha256": "1fb94273a665c48d31e9b0a3c1d5f999352ac63fa568a8361c321b3ff25ced67",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://xwmn9qdkem9wq",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f05.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f05.png-7a89de43b9bfdd92708e3ddbead46a37.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 6,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f06.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f06.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f06.png.import",
+      "source_encoded_sha256": "6e5aad7190ed8e9a1e892598772d7c90deedd44d7bb03e6229bae0cfd564adc8",
+      "runtime_encoded_sha256": "6e5aad7190ed8e9a1e892598772d7c90deedd44d7bb03e6229bae0cfd564adc8",
+      "source_pixel_sha256": "b9692b8855e3b442549d1503361dec21a4b16669c8d69ec464c24b3183075e05",
+      "runtime_pixel_sha256": "b9692b8855e3b442549d1503361dec21a4b16669c8d69ec464c24b3183075e05",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://fza54uzeygshg",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f06.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f06.png-236d0eab16e33f827050c1fe3bfe743b.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 7,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f07.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f07.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f07.png.import",
+      "source_encoded_sha256": "7426036dd6a1880878c6523712079c1d3a69d4c7b13128f2ae1a36030b59b2e6",
+      "runtime_encoded_sha256": "7426036dd6a1880878c6523712079c1d3a69d4c7b13128f2ae1a36030b59b2e6",
+      "source_pixel_sha256": "78f845c4004b3ac18918d098229d015e6ddedc0887f0ae713a060cf7d7007042",
+      "runtime_pixel_sha256": "78f845c4004b3ac18918d098229d015e6ddedc0887f0ae713a060cf7d7007042",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://gdjp5trs9cvte",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f07.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f07.png-fa47a796a3bb0f17ae46da150a25aaf8.ctex"
+      ],
+      "import_matches_runtime": true
+    },
+    {
+      "index": 8,
+      "source_file": "docs/design/reference-assets-lfs/guitarist-vfx-FAN-3316-art/sound_amp/sound_amp_f08.png",
+      "runtime_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f08.png",
+      "import_file": "assets/sprites/effects/guitarist/sound_amp/sound_amp_f08.png.import",
+      "source_encoded_sha256": "6c95594064b7e5c1a25df577d6bc0d36e13ca30cc5eeed30f74c954add32b164",
+      "runtime_encoded_sha256": "6c95594064b7e5c1a25df577d6bc0d36e13ca30cc5eeed30f74c954add32b164",
+      "source_pixel_sha256": "36cd5179c05c6841d8ee227ba79d1d16f9804aab71ef71b9ac4a79e888c50520",
+      "runtime_pixel_sha256": "36cd5179c05c6841d8ee227ba79d1d16f9804aab71ef71b9ac4a79e888c50520",
+      "source_runtime_byte_parity": true,
+      "source_runtime_pixel_parity": true,
+      "size_px": [
+        256,
+        256
+      ],
+      "import_uid": "uid://84z5c2csxx7nn",
+      "import_source_file": "res://assets/sprites/effects/guitarist/sound_amp/sound_amp_f08.png",
+      "import_dest_files": [
+        "res://.godot/imported/sound_amp_f08.png-c9f12c620404a41d2ec211e6c89e92d4.ctex"
+      ],
+      "import_matches_runtime": true
+    }
+  ],
+  "spriteframes_contract": {
+    "animation_name": "guitarist_sound_amp_wall_of_sound",
+    "fps": 3.0,
+    "loop": false,
+    "frame_order": [
+      "sound_amp_f00.png",
+      "sound_amp_f01.png",
+      "sound_amp_f02.png",
+      "sound_amp_f03.png",
+      "sound_amp_f04.png",
+      "sound_amp_f05.png",
+      "sound_amp_f06.png",
+      "sound_amp_f07.png",
+      "sound_amp_f08.png"
+    ],
+    "imports_match_runtime": true
+  }
+}

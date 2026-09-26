@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/ranger/storm_longbow/storm_longbow_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.ranger.storm_longbow"
 const EXECUTOR_ID := "weapon_ultimate.executor.ranger.storm_longbow"
@@ -18,6 +20,8 @@ var _axis := Vector2.RIGHT
 var _perpendicular := Vector2.DOWN
 var _start := Vector2.ZERO
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
@@ -131,6 +135,7 @@ func strike(index: int) -> void:
 			{"ultimate_mechanic": "storm_beat", "beat": index, "rank": rank}
 		)
 		_push(target)
+	_play_impacts(ranked)
 	_activation.present(EXECUTOR_ID + ".beat", {
 		"position": _start + _axis * front,
 		"radius": _activation.param_float("half_width", 120.0),
@@ -192,6 +197,20 @@ func _has_lease(target: Node) -> bool:
 	return false
 
 
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _start)
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _start)
+		_impacts_started = true
+
+
 func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedback: Dictionary):
 	if not ultimate_damage_sink.is_valid():
 		return null
@@ -215,4 +234,6 @@ func _exit_tree() -> void:
 			target.set_meta(StatusEffects.META_KEY, owned)
 	_leased_statuses.clear()
 	_rail.clear()
+	_impacts = null
+	_impacts_started = false
 	_activation = null

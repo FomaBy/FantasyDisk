@@ -243,6 +243,9 @@ for required_input in \
   tools/build_release.sh \
   tools/create_macos_dmg.sh \
   tools/godot_gate.py \
+  tools/release_notes_visual_claims_guard.py \
+  tools/release_scope_guard.py \
+  tools/release_scope_manifest.json \
   tools/release_version_contract.py \
   tools/release_version_mapping.py \
   tools/scan_release_secrets.py \
@@ -282,6 +285,24 @@ pathlib.Path(path).write_text(
 PY
 fi
 
+# Assemble only inside the detached source snapshot. The caller checkout and
+# published source objects remain untouched, while downstream guards consume
+# the same canonical notes that will be packaged.
+if [[ -d "${WORKTREE_DIR}/changelog.d" ]]; then
+  if [[ ! -f "${WORKTREE_DIR}/tools/assemble_changelog.py" ]]; then
+    echo "ERROR: source-pinned snapshot has changelog fragments but no assembler"
+    exit 2
+  fi
+  echo "==> Assembling canonical release notes from source-pinned fragments"
+  if ! python3 "${WORKTREE_DIR}/tools/assemble_changelog.py" \
+    --fragments "${WORKTREE_DIR}/changelog.d" \
+    --changelog "${WORKTREE_DIR}/CHANGELOG.md" \
+    --write; then
+    echo "ERROR: canonical release-note assembly failed"
+    exit 2
+  fi
+fi
+
 echo "==> Проверка версии ${SOURCE_LABEL} и export presets"
 if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.py" \
   --version "${VERSION}" \
@@ -291,6 +312,23 @@ if ! VERSION_MAPPING="$(python3 "${WORKTREE_DIR}/tools/release_version_mapping.p
   exit 2
 fi
 IFS=$'\t' read -r MACOS_SHORT_VERSION MACOS_BUILD_VERSION WINDOWS_PRODUCT_VERSION WINDOWS_FILE_VERSION <<< "${VERSION_MAPPING}"
+
+echo "==> Проверка release scope ${SOURCE_LABEL}"
+if ! python3 "${WORKTREE_DIR}/tools/release_scope_guard.py" \
+  --version "${VERSION}" \
+  --root "${WORKTREE_DIR}" \
+  --manifest "${WORKTREE_DIR}/tools/release_scope_manifest.json"; then
+  echo "    ERROR: snapshot содержит контент, закреплённый за более поздней версией"
+  exit 2
+fi
+
+echo "==> Проверка визуальных утверждений release notes ${SOURCE_LABEL}"
+if ! python3 "${WORKTREE_DIR}/tools/release_notes_visual_claims_guard.py" \
+  --version "${VERSION}" \
+  --changelog "${WORKTREE_DIR}/CHANGELOG.md"; then
+  echo "    ERROR: CHANGELOG.md утверждает собственный визуал/раскадровку без ссылки на карточку с пройденной живой QA"
+  exit 2
+fi
 
 echo "==> Проверка честной маркировки macOS-канала в клиенте ${SOURCE_LABEL}"
 CLIENT_MACOS_CHANNEL="$(sed -n 's/^const MACOS_UPDATE_CHANNEL := "\([a-z]*\)".*$/\1/p' \

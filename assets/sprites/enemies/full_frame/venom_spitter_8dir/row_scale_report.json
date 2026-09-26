@@ -1,0 +1,5418 @@
+{
+  "idle_east": [
+    {
+      "source": "venom_spitter_idle_east.png",
+      "runtime": "venom_spitter_idle_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        2,
+        15,
+        83,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        55
+      ],
+      "scale": 4.454545454545454,
+      "resized_visible_size": [
+        361,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        235,
+        437,
+        480
+      ]
+    }
+  ],
+  "idle_south_east": [
+    {
+      "source": "venom_spitter_idle_south_east.png",
+      "runtime": "venom_spitter_idle_south_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        6,
+        15,
+        81,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        317,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        235,
+        415,
+        480
+      ]
+    }
+  ],
+  "idle_south": [
+    {
+      "source": "venom_spitter_idle_south.png",
+      "runtime": "venom_spitter_idle_south.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        9,
+        79,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        278,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        117,
+        235,
+        395,
+        480
+      ]
+    }
+  ],
+  "idle_south_west": [
+    {
+      "source": "venom_spitter_idle_south_west.png",
+      "runtime": "venom_spitter_idle_south_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        10,
+        14,
+        85,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        322,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        95,
+        235,
+        417,
+        480
+      ]
+    }
+  ],
+  "idle_west": [
+    {
+      "source": "venom_spitter_idle_west.png",
+      "runtime": "venom_spitter_idle_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        15,
+        89,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        363,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        235,
+        437,
+        480
+      ]
+    }
+  ],
+  "idle_north_west": [
+    {
+      "source": "venom_spitter_idle_north_west.png",
+      "runtime": "venom_spitter_idle_north_west.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        15,
+        90,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        336,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        235,
+        424,
+        480
+      ]
+    }
+  ],
+  "idle_north": [
+    {
+      "source": "venom_spitter_idle_north.png",
+      "runtime": "venom_spitter_idle_north.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        7,
+        78,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        66
+      ],
+      "scale": 3.712121212121212,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    }
+  ],
+  "idle_north_east": [
+    {
+      "source": "venom_spitter_idle_north_east.png",
+      "runtime": "venom_spitter_idle_north_east.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        2,
+        15,
+        82,
+        75
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        327,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        235,
+        419,
+        480
+      ]
+    }
+  ],
+  "move_east": [
+    {
+      "source": "venom_spitter_move_east_00.png",
+      "runtime": "venom_spitter_move_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        18,
+        82,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        382,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        235,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_east_01.png",
+      "runtime": "venom_spitter_move_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        18,
+        81,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        382,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        235,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_east_02.png",
+      "runtime": "venom_spitter_move_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        2,
+        18,
+        79,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        377,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        235,
+        445,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_east_03.png",
+      "runtime": "venom_spitter_move_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        19,
+        81,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        382,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        235,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_east_04.png",
+      "runtime": "venom_spitter_move_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        2,
+        18,
+        79,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        377,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        235,
+        445,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_east_05.png",
+      "runtime": "venom_spitter_move_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        19,
+        81,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        49
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        382,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        65,
+        240,
+        447,
+        480
+      ]
+    }
+  ],
+  "move_south_east": [
+    {
+      "source": "venom_spitter_move_south_east_00.png",
+      "runtime": "venom_spitter_move_south_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        8,
+        18,
+        81,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        331,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_east_01.png",
+      "runtime": "venom_spitter_move_south_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        9,
+        18,
+        80,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        53
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        322,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        95,
+        240,
+        417,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_east_02.png",
+      "runtime": "venom_spitter_move_south_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        20,
+        82,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        49
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        318,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        97,
+        258,
+        415,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_east_03.png",
+      "runtime": "venom_spitter_move_south_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        20,
+        81,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        318,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        97,
+        253,
+        415,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_east_04.png",
+      "runtime": "venom_spitter_move_south_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        20,
+        80,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        50
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        313,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        253,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_east_05.png",
+      "runtime": "venom_spitter_move_south_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        19,
+        82,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        71,
+        48
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        322,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        95,
+        262,
+        417,
+        480
+      ]
+    }
+  ],
+  "move_south": [
+    {
+      "source": "venom_spitter_move_south_00.png",
+      "runtime": "venom_spitter_move_south_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        17,
+        76,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        263,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        240,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_01.png",
+      "runtime": "venom_spitter_move_south_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        17,
+        76,
+        68
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        51
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        263,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        244,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_02.png",
+      "runtime": "venom_spitter_move_south_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        17,
+        76,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        46
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        268,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        267,
+        390,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_03.png",
+      "runtime": "venom_spitter_move_south_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        17,
+        76,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        268,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        235,
+        390,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_04.png",
+      "runtime": "venom_spitter_move_south_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        19,
+        17,
+        76,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        57,
+        52
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        263,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        240,
+        387,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_05.png",
+      "runtime": "venom_spitter_move_south_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        18,
+        17,
+        76,
+        63
+      ],
+      "source_alpha_bbox_size": [
+        58,
+        46
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        268,
+        213
+      ],
+      "runtime_alpha_bbox": [
+        122,
+        267,
+        390,
+        480
+      ]
+    }
+  ],
+  "move_south_west": [
+    {
+      "source": "venom_spitter_move_south_west_00.png",
+      "runtime": "venom_spitter_move_south_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        17,
+        84,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        52
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        314,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        240,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_west_01.png",
+      "runtime": "venom_spitter_move_south_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        17,
+        84,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        50
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        314,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        249,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_west_02.png",
+      "runtime": "venom_spitter_move_south_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        17,
+        84,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        47
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        314,
+        217
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        263,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_west_03.png",
+      "runtime": "venom_spitter_move_south_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        18,
+        85,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        314,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        235,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_west_04.png",
+      "runtime": "venom_spitter_move_south_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        17,
+        18,
+        85,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        52
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        314,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        240,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_south_west_05.png",
+      "runtime": "venom_spitter_move_south_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        16,
+        18,
+        84,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        49
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        314,
+        227
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        253,
+        413,
+        480
+      ]
+    }
+  ],
+  "move_west": [
+    {
+      "source": "venom_spitter_move_west_00.png",
+      "runtime": "venom_spitter_move_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        17,
+        89,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        368,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        235,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_west_01.png",
+      "runtime": "venom_spitter_move_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        17,
+        88,
+        64
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        47
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        368,
+        230
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        250,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_west_02.png",
+      "runtime": "venom_spitter_move_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        17,
+        89,
+        65
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        48
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        368,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        245,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_west_03.png",
+      "runtime": "venom_spitter_move_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        17,
+        87,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        49
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        363,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        240,
+        437,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_west_04.png",
+      "runtime": "venom_spitter_move_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        17,
+        88,
+        66
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        49
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        363,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        240,
+        437,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_west_05.png",
+      "runtime": "venom_spitter_move_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        17,
+        87,
+        67
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        50
+      ],
+      "scale": 4.9,
+      "resized_visible_size": [
+        363,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        235,
+        437,
+        480
+      ]
+    }
+  ],
+  "move_north_west": [
+    {
+      "source": "venom_spitter_move_north_west_00.png",
+      "runtime": "venom_spitter_move_north_west_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        89,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        325,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        243,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_west_01.png",
+      "runtime": "venom_spitter_move_north_west_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        89,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        325,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        243,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_west_02.png",
+      "runtime": "venom_spitter_move_north_west_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        90,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        329,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        239,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_west_03.png",
+      "runtime": "venom_spitter_move_north_west_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        89,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        325,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        243,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_west_04.png",
+      "runtime": "venom_spitter_move_north_west_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        12,
+        15,
+        89,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        325,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        235,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_west_05.png",
+      "runtime": "venom_spitter_move_north_west_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        11,
+        15,
+        90,
+        73
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        334,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        89,
+        235,
+        423,
+        480
+      ]
+    }
+  ],
+  "move_north": [
+    {
+      "source": "venom_spitter_move_north_00.png",
+      "runtime": "venom_spitter_move_north_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        77,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        59
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        253,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        243,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_01.png",
+      "runtime": "venom_spitter_move_north_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        15,
+        10,
+        78,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        253,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        239,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_02.png",
+      "runtime": "venom_spitter_move_north_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        9,
+        77,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        61
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        253,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        235,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_03.png",
+      "runtime": "venom_spitter_move_north_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        14,
+        11,
+        77,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        59
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        253,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        243,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_04.png",
+      "runtime": "venom_spitter_move_north_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        10,
+        76,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        63,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        253,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        130,
+        239,
+        383,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_05.png",
+      "runtime": "venom_spitter_move_north_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        13,
+        9,
+        77,
+        69
+      ],
+      "source_alpha_bbox_size": [
+        64,
+        60
+      ],
+      "scale": 4.016393442622951,
+      "resized_visible_size": [
+        257,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        128,
+        239,
+        385,
+        480
+      ]
+    }
+  ],
+  "move_north_east": [
+    {
+      "source": "venom_spitter_move_north_east_00.png",
+      "runtime": "venom_spitter_move_north_east_00.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        18,
+        78,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        74,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        336,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        235,
+        424,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_east_01.png",
+      "runtime": "venom_spitter_move_north_east_01.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        5,
+        18,
+        78,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        331,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_east_02.png",
+      "runtime": "venom_spitter_move_north_east_02.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        19,
+        77,
+        72
+      ],
+      "source_alpha_bbox_size": [
+        73,
+        53
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        331,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        240,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_east_03.png",
+      "runtime": "venom_spitter_move_north_east_03.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        4,
+        19,
+        76,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        327,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        244,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_east_04.png",
+      "runtime": "venom_spitter_move_north_east_04.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        19,
+        75,
+        71
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        327,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        244,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_move_north_east_05.png",
+      "runtime": "venom_spitter_move_north_east_05.png",
+      "source_size": [
+        92,
+        92
+      ],
+      "source_alpha_bbox": [
+        3,
+        19,
+        75,
+        70
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        51
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        327,
+        231
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        249,
+        419,
+        480
+      ]
+    }
+  ],
+  "attack_east": [
+    {
+      "source": "venom_spitter_attack_east_00.png",
+      "runtime": "venom_spitter_attack_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        32,
+        99,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        336,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        247,
+        424,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_east_01.png",
+      "runtime": "venom_spitter_attack_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        34,
+        102,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        55
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        349,
+        228
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        252,
+        431,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_east_02.png",
+      "runtime": "venom_spitter_attack_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        33,
+        107,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        365,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        247,
+        439,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_east_03.png",
+      "runtime": "venom_spitter_attack_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        31,
+        112,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        59
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        386,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        63,
+        235,
+        449,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_east_04.png",
+      "runtime": "venom_spitter_attack_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        33,
+        99,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        56
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        336,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        247,
+        424,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_east_05.png",
+      "runtime": "venom_spitter_attack_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        36,
+        100,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        53
+      ],
+      "scale": 4.1525423728813555,
+      "resized_visible_size": [
+        336,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        260,
+        424,
+        480
+      ]
+    }
+  ],
+  "attack_south_east": [
+    {
+      "source": "venom_spitter_attack_south_east_00.png",
+      "runtime": "venom_spitter_attack_south_east_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        14,
+        27,
+        91,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        56
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        314,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        251,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_east_01.png",
+      "runtime": "venom_spitter_attack_south_east_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        9,
+        27,
+        95,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        351,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        239,
+        431,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_east_02.png",
+      "runtime": "venom_spitter_attack_south_east_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        10,
+        26,
+        100,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        368,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        235,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_east_03.png",
+      "runtime": "venom_spitter_attack_south_east_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        10,
+        25,
+        91,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        331,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        235,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_east_04.png",
+      "runtime": "venom_spitter_attack_south_east_04.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        12,
+        25,
+        91,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        323,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        235,
+        417,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_east_05.png",
+      "runtime": "venom_spitter_attack_south_east_05.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        16,
+        25,
+        91,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        306,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        103,
+        235,
+        409,
+        480
+      ]
+    }
+  ],
+  "attack_south": [
+    {
+      "source": "venom_spitter_attack_south_00.png",
+      "runtime": "venom_spitter_attack_south_00.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        18,
+        16,
+        85,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        58
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        222,
+        192
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        288,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_01.png",
+      "runtime": "venom_spitter_attack_south_01.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        18,
+        17,
+        85,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        63
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        222,
+        209
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        271,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_02.png",
+      "runtime": "venom_spitter_attack_south_02.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        18,
+        16,
+        85,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        71
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        222,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        245,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_03.png",
+      "runtime": "venom_spitter_attack_south_03.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        18,
+        14,
+        85,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        74
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        222,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_04.png",
+      "runtime": "venom_spitter_attack_south_04.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        18,
+        15,
+        85,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        74
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        222,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        235,
+        367,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_05.png",
+      "runtime": "venom_spitter_attack_south_05.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        18,
+        16,
+        85,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        58
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        222,
+        192
+      ],
+      "runtime_alpha_bbox": [
+        145,
+        288,
+        367,
+        480
+      ]
+    }
+  ],
+  "attack_south_west": [
+    {
+      "source": "venom_spitter_attack_south_west_00.png",
+      "runtime": "venom_spitter_attack_south_west_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        24,
+        96,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        325,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        239,
+        419,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_west_01.png",
+      "runtime": "venom_spitter_attack_south_west_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        18,
+        24,
+        96,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        329,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        239,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_west_02.png",
+      "runtime": "venom_spitter_attack_south_west_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        18,
+        23,
+        100,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        346,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        83,
+        235,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_west_03.png",
+      "runtime": "venom_spitter_attack_south_west_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        13,
+        23,
+        101,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        372,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        70,
+        235,
+        442,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_west_04.png",
+      "runtime": "venom_spitter_attack_south_west_04.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        12,
+        24,
+        99,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        57
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        368,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        239,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_south_west_05.png",
+      "runtime": "venom_spitter_attack_south_west_05.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        25,
+        96,
+        77
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        52
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        325,
+        220
+      ],
+      "runtime_alpha_bbox": [
+        94,
+        260,
+        419,
+        480
+      ]
+    }
+  ],
+  "attack_west": [
+    {
+      "source": "venom_spitter_attack_west_00.png",
+      "runtime": "venom_spitter_attack_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        25,
+        32,
+        108,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        53
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        339,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        264,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_west_01.png",
+      "runtime": "venom_spitter_attack_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        32,
+        108,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        53
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        343,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        264,
+        427,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_west_02.png",
+      "runtime": "venom_spitter_attack_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        30,
+        110,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        92,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        376,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        243,
+        444,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_west_03.png",
+      "runtime": "venom_spitter_attack_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        31,
+        109,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        93,
+        56
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        380,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        66,
+        251,
+        446,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_west_04.png",
+      "runtime": "venom_spitter_attack_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        26,
+        32,
+        109,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        53
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        339,
+        216
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        264,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_west_05.png",
+      "runtime": "venom_spitter_attack_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        13,
+        31,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        388,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        62,
+        235,
+        450,
+        480
+      ]
+    }
+  ],
+  "attack_north_west": [
+    {
+      "source": "venom_spitter_attack_north_west_00.png",
+      "runtime": "venom_spitter_attack_north_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        25,
+        31,
+        107,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        59
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        314,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        99,
+        254,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_west_01.png",
+      "runtime": "venom_spitter_attack_north_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        23,
+        31,
+        107,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        59
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        322,
+        226
+      ],
+      "runtime_alpha_bbox": [
+        95,
+        254,
+        417,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_west_02.png",
+      "runtime": "venom_spitter_attack_north_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        21,
+        32,
+        108,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        57
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        333,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        262,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_west_03.png",
+      "runtime": "venom_spitter_attack_north_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        32,
+        107,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        61
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        345,
+        234
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        246,
+        429,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_west_04.png",
+      "runtime": "venom_spitter_attack_north_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        31,
+        107,
+        95
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        348,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        430,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_west_05.png",
+      "runtime": "venom_spitter_attack_north_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        15,
+        31,
+        109,
+        95
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        360,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        235,
+        436,
+        480
+      ]
+    }
+  ],
+  "attack_north": [
+    {
+      "source": "venom_spitter_attack_north_00.png",
+      "runtime": "venom_spitter_attack_north_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        22,
+        18,
+        88,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        66
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        219,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        261,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_01.png",
+      "runtime": "venom_spitter_attack_north_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        22,
+        20,
+        88,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        65
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        219,
+        215
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        265,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_02.png",
+      "runtime": "venom_spitter_attack_north_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        22,
+        22,
+        88,
+        95
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        73
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        219,
+        242
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        238,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_03.png",
+      "runtime": "venom_spitter_attack_north_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        22,
+        23,
+        88,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        70
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        219,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        248,
+        365,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_04.png",
+      "runtime": "venom_spitter_attack_north_04.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        14,
+        22,
+        96,
+        96
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        74
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        271,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        235,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_05.png",
+      "runtime": "venom_spitter_attack_north_05.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        22,
+        20,
+        88,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        66,
+        66
+      ],
+      "scale": 3.310810810810811,
+      "resized_visible_size": [
+        219,
+        219
+      ],
+      "runtime_alpha_bbox": [
+        146,
+        261,
+        365,
+        480
+      ]
+    }
+  ],
+  "attack_north_east": [
+    {
+      "source": "venom_spitter_attack_north_east_00.png",
+      "runtime": "venom_spitter_attack_north_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        32,
+        99,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        339,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        86,
+        239,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_east_01.png",
+      "runtime": "venom_spitter_attack_north_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        34,
+        100,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        57
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        343,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        247,
+        427,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_east_02.png",
+      "runtime": "venom_spitter_attack_north_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        14,
+        33,
+        104,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        58
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        368,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        243,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_east_03.png",
+      "runtime": "venom_spitter_attack_north_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        11,
+        32,
+        109,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        98,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        400,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        56,
+        239,
+        456,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_east_04.png",
+      "runtime": "venom_spitter_attack_north_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        32,
+        112,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        96,
+        59
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        392,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        239,
+        452,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_attack_north_east_05.png",
+      "runtime": "venom_spitter_attack_north_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        31,
+        98,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        60
+      ],
+      "scale": 4.083333333333333,
+      "resized_visible_size": [
+        327,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        235,
+        419,
+        480
+      ]
+    }
+  ],
+  "hit_east": [
+    {
+      "source": "venom_spitter_hit_east_00.png",
+      "runtime": "venom_spitter_hit_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        35,
+        100,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        51
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        396,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        58,
+        240,
+        454,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_east_01.png",
+      "runtime": "venom_spitter_hit_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        15,
+        37,
+        101,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        51
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        405,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        54,
+        240,
+        459,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_east_02.png",
+      "runtime": "venom_spitter_hit_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        12,
+        38,
+        101,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        89,
+        50
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        419,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        46,
+        244,
+        465,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_east_03.png",
+      "runtime": "venom_spitter_hit_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        15,
+        36,
+        101,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        52
+      ],
+      "scale": 4.711538461538462,
+      "resized_visible_size": [
+        405,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        54,
+        235,
+        459,
+        480
+      ]
+    }
+  ],
+  "hit_south_east": [
+    {
+      "source": "venom_spitter_hit_south_east_00.png",
+      "runtime": "venom_spitter_hit_south_east_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        16,
+        25,
+        91,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        317,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        235,
+        415,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_east_01.png",
+      "runtime": "venom_spitter_hit_south_east_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        16,
+        29,
+        91,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        317,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        243,
+        415,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_east_02.png",
+      "runtime": "venom_spitter_hit_south_east_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        20,
+        30,
+        90,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        56
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        296,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        108,
+        243,
+        404,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_east_03.png",
+      "runtime": "venom_spitter_hit_south_east_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        21,
+        28,
+        89,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        68,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        287,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        112,
+        235,
+        399,
+        480
+      ]
+    }
+  ],
+  "hit_south": [
+    {
+      "source": "venom_spitter_hit_south_00.png",
+      "runtime": "venom_spitter_hit_south_00.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        22,
+        22,
+        81,
+        79
+      ],
+      "source_alpha_bbox_size": [
+        59,
+        57
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        233,
+        225
+      ],
+      "runtime_alpha_bbox": [
+        140,
+        255,
+        373,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_01.png",
+      "runtime": "venom_spitter_hit_south_01.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        25,
+        28,
+        77,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        52,
+        62
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        205,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        235,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_02.png",
+      "runtime": "venom_spitter_hit_south_02.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        24,
+        24,
+        78,
+        82
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        58
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        213,
+        229
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        251,
+        363,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_03.png",
+      "runtime": "venom_spitter_hit_south_03.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        24,
+        21,
+        78,
+        80
+      ],
+      "source_alpha_bbox_size": [
+        54,
+        59
+      ],
+      "scale": 3.9516129032258065,
+      "resized_visible_size": [
+        213,
+        233
+      ],
+      "runtime_alpha_bbox": [
+        150,
+        247,
+        363,
+        480
+      ]
+    }
+  ],
+  "hit_south_west": [
+    {
+      "source": "venom_spitter_hit_south_west_00.png",
+      "runtime": "venom_spitter_hit_south_west_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        20,
+        26,
+        98,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        329,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        235,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_west_01.png",
+      "runtime": "venom_spitter_hit_south_west_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        26,
+        99,
+        84
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        338,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        87,
+        235,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_west_02.png",
+      "runtime": "venom_spitter_hit_south_west_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        25,
+        98,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        79,
+        58
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        334,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        89,
+        235,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_south_west_03.png",
+      "runtime": "venom_spitter_hit_south_west_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        18,
+        26,
+        101,
+        81
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        55
+      ],
+      "scale": 4.224137931034483,
+      "resized_visible_size": [
+        351,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        80,
+        248,
+        431,
+        480
+      ]
+    }
+  ],
+  "hit_west": [
+    {
+      "source": "venom_spitter_hit_west_00.png",
+      "runtime": "venom_spitter_hit_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        34,
+        107,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        377,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        244,
+        445,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_west_01.png",
+      "runtime": "venom_spitter_hit_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        23,
+        34,
+        108,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        53
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        386,
+        240
+      ],
+      "runtime_alpha_bbox": [
+        63,
+        240,
+        449,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_west_02.png",
+      "runtime": "venom_spitter_hit_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        33,
+        106,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        54
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        381,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        66,
+        235,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_west_03.png",
+      "runtime": "venom_spitter_hit_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        23,
+        35,
+        108,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        52
+      ],
+      "scale": 4.537037037037037,
+      "resized_visible_size": [
+        386,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        63,
+        244,
+        449,
+        480
+      ]
+    }
+  ],
+  "hit_north_west": [
+    {
+      "source": "venom_spitter_hit_north_west_00.png",
+      "runtime": "venom_spitter_hit_north_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        32,
+        108,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        368,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        235,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_west_01.png",
+      "runtime": "venom_spitter_hit_north_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        23,
+        34,
+        109,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        376,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        68,
+        257,
+        444,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_west_02.png",
+      "runtime": "venom_spitter_hit_north_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        34,
+        112,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        51
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        394,
+        223
+      ],
+      "runtime_alpha_bbox": [
+        59,
+        257,
+        453,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_west_03.png",
+      "runtime": "venom_spitter_hit_north_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        34,
+        116,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        94,
+        53
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        411,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        50,
+        248,
+        461,
+        480
+      ]
+    }
+  ],
+  "hit_north": [
+    {
+      "source": "venom_spitter_hit_north_00.png",
+      "runtime": "venom_spitter_hit_north_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        22,
+        20,
+        89,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        67,
+        66
+      ],
+      "scale": 3.356164383561644,
+      "resized_visible_size": [
+        225,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        144,
+        258,
+        369,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_01.png",
+      "runtime": "venom_spitter_hit_north_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        24,
+        23,
+        86,
+        92
+      ],
+      "source_alpha_bbox_size": [
+        62,
+        69
+      ],
+      "scale": 3.356164383561644,
+      "resized_visible_size": [
+        208,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        152,
+        248,
+        360,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_02.png",
+      "runtime": "venom_spitter_hit_north_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        24,
+        23,
+        85,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        61,
+        70
+      ],
+      "scale": 3.356164383561644,
+      "resized_visible_size": [
+        205,
+        235
+      ],
+      "runtime_alpha_bbox": [
+        154,
+        245,
+        359,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_03.png",
+      "runtime": "venom_spitter_hit_north_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        30,
+        20,
+        79,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        49,
+        73
+      ],
+      "scale": 3.356164383561644,
+      "resized_visible_size": [
+        164,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        174,
+        235,
+        338,
+        480
+      ]
+    }
+  ],
+  "hit_north_east": [
+    {
+      "source": "venom_spitter_hit_north_east_00.png",
+      "runtime": "venom_spitter_hit_north_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        34,
+        100,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        56
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        357,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        78,
+        239,
+        435,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_east_01.png",
+      "runtime": "venom_spitter_hit_north_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        36,
+        102,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        55
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        365,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        244,
+        439,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_east_02.png",
+      "runtime": "venom_spitter_hit_north_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        36,
+        103,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        55
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        348,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        244,
+        430,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_hit_north_east_03.png",
+      "runtime": "venom_spitter_hit_north_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        21,
+        34,
+        102,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        348,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        235,
+        430,
+        480
+      ]
+    }
+  ],
+  "death_east": [
+    {
+      "source": "venom_spitter_death_east_00.png",
+      "runtime": "venom_spitter_death_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        36,
+        101,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        393,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        235,
+        453,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_east_01.png",
+      "runtime": "venom_spitter_death_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        14,
+        38,
+        102,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        51
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        407,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        244,
+        459,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_east_02.png",
+      "runtime": "venom_spitter_death_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        44,
+        104,
+        88
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        44
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        407,
+        203
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        277,
+        459,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_east_03.png",
+      "runtime": "venom_spitter_death_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        53,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        90,
+        38
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        416,
+        176
+      ],
+      "runtime_alpha_bbox": [
+        48,
+        304,
+        464,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_east_04.png",
+      "runtime": "venom_spitter_death_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        52,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        39
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        421,
+        180
+      ],
+      "runtime_alpha_bbox": [
+        46,
+        300,
+        467,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_east_05.png",
+      "runtime": "venom_spitter_death_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        52,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        39
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        421,
+        180
+      ],
+      "runtime_alpha_bbox": [
+        46,
+        300,
+        467,
+        480
+      ]
+    }
+  ],
+  "death_south_east": [
+    {
+      "source": "venom_spitter_death_south_east_00.png",
+      "runtime": "venom_spitter_death_south_east_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        16,
+        30,
+        93,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        337,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        235,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_east_01.png",
+      "runtime": "venom_spitter_death_south_east_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        16,
+        32,
+        93,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        55
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        337,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        239,
+        425,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_east_02.png",
+      "runtime": "venom_spitter_death_south_east_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        21,
+        42,
+        96,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        75,
+        45
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        328,
+        197
+      ],
+      "runtime_alpha_bbox": [
+        92,
+        283,
+        420,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_east_03.png",
+      "runtime": "venom_spitter_death_south_east_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        16,
+        44,
+        98,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        82,
+        43
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        359,
+        188
+      ],
+      "runtime_alpha_bbox": [
+        76,
+        292,
+        435,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_east_04.png",
+      "runtime": "venom_spitter_death_south_east_04.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        15,
+        44,
+        98,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        43
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        363,
+        188
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        292,
+        437,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_east_05.png",
+      "runtime": "venom_spitter_death_south_east_05.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        15,
+        44,
+        98,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        43
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        363,
+        188
+      ],
+      "runtime_alpha_bbox": [
+        74,
+        292,
+        437,
+        480
+      ]
+    }
+  ],
+  "death_south": [
+    {
+      "source": "venom_spitter_death_south_00.png",
+      "runtime": "venom_spitter_death_south_00.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        17,
+        86,
+        74
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        57
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        264,
+        218
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        262,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_01.png",
+      "runtime": "venom_spitter_death_south_01.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        18,
+        86,
+        76
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        58
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        264,
+        222
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        258,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_02.png",
+      "runtime": "venom_spitter_death_south_02.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        20,
+        86,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        63
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        264,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        239,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_03.png",
+      "runtime": "venom_spitter_death_south_03.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        22,
+        86,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        264,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_04.png",
+      "runtime": "venom_spitter_death_south_04.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        22,
+        86,
+        86
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        264,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_05.png",
+      "runtime": "venom_spitter_death_south_05.png",
+      "source_size": [
+        104,
+        104
+      ],
+      "source_alpha_bbox": [
+        17,
+        21,
+        86,
+        85
+      ],
+      "source_alpha_bbox_size": [
+        69,
+        64
+      ],
+      "scale": 3.828125,
+      "resized_visible_size": [
+        264,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        235,
+        388,
+        480
+      ]
+    }
+  ],
+  "death_south_west": [
+    {
+      "source": "venom_spitter_death_south_west_00.png",
+      "runtime": "venom_spitter_death_south_west_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        20,
+        26,
+        98,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        335,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        235,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_west_01.png",
+      "runtime": "venom_spitter_death_south_west_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        29,
+        99,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        54
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        344,
+        232
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        248,
+        428,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_west_02.png",
+      "runtime": "venom_spitter_death_south_west_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        33,
+        96,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        77,
+        50
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        331,
+        215
+      ],
+      "runtime_alpha_bbox": [
+        90,
+        265,
+        421,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_west_03.png",
+      "runtime": "venom_spitter_death_south_west_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        13,
+        36,
+        91,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        78,
+        47
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        335,
+        202
+      ],
+      "runtime_alpha_bbox": [
+        88,
+        278,
+        423,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_west_04.png",
+      "runtime": "venom_spitter_death_south_west_04.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        11,
+        37,
+        91,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        80,
+        46
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        344,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        84,
+        282,
+        428,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_south_west_05.png",
+      "runtime": "venom_spitter_death_south_west_05.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        11,
+        37,
+        92,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        81,
+        46
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        348,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        82,
+        282,
+        430,
+        480
+      ]
+    }
+  ],
+  "death_west": [
+    {
+      "source": "venom_spitter_death_west_00.png",
+      "runtime": "venom_spitter_death_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        25,
+        34,
+        108,
+        87
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        384,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        64,
+        235,
+        448,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_west_01.png",
+      "runtime": "venom_spitter_death_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        37,
+        109,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        53
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        393,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        235,
+        453,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_west_02.png",
+      "runtime": "venom_spitter_death_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        23,
+        45,
+        110,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        45
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        402,
+        208
+      ],
+      "runtime_alpha_bbox": [
+        55,
+        272,
+        457,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_west_03.png",
+      "runtime": "venom_spitter_death_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        52,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        39
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        407,
+        180
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        300,
+        459,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_west_04.png",
+      "runtime": "venom_spitter_death_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        51,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        40
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        407,
+        185
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        295,
+        459,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_west_05.png",
+      "runtime": "venom_spitter_death_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        20,
+        50,
+        108,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        41
+      ],
+      "scale": 4.622641509433962,
+      "resized_visible_size": [
+        407,
+        190
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        290,
+        459,
+        480
+      ]
+    }
+  ],
+  "death_north_west": [
+    {
+      "source": "venom_spitter_death_north_west_00.png",
+      "runtime": "venom_spitter_death_north_west_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        24,
+        34,
+        108,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        56
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        368,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        235,
+        440,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_west_01.png",
+      "runtime": "venom_spitter_death_north_west_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        22,
+        36,
+        109,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        54
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        381,
+        236
+      ],
+      "runtime_alpha_bbox": [
+        66,
+        244,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_west_02.png",
+      "runtime": "venom_spitter_death_north_west_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        19,
+        41,
+        110,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        49
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        398,
+        214
+      ],
+      "runtime_alpha_bbox": [
+        57,
+        266,
+        455,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_west_03.png",
+      "runtime": "venom_spitter_death_north_west_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        48,
+        105,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        89,
+        42
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        389,
+        184
+      ],
+      "runtime_alpha_bbox": [
+        62,
+        296,
+        451,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_west_04.png",
+      "runtime": "venom_spitter_death_north_west_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        49,
+        104,
+        90
+      ],
+      "source_alpha_bbox_size": [
+        88,
+        41
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        385,
+        179
+      ],
+      "runtime_alpha_bbox": [
+        64,
+        301,
+        449,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_west_05.png",
+      "runtime": "venom_spitter_death_north_west_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        17,
+        45,
+        101,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        46
+      ],
+      "scale": 4.375,
+      "resized_visible_size": [
+        368,
+        201
+      ],
+      "runtime_alpha_bbox": [
+        72,
+        279,
+        440,
+        480
+      ]
+    }
+  ],
+  "death_north": [
+    {
+      "source": "venom_spitter_death_north_00.png",
+      "runtime": "venom_spitter_death_north_00.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        23,
+        18,
+        88,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        65,
+        65
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        245,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        134,
+        235,
+        379,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_01.png",
+      "runtime": "venom_spitter_death_north_01.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        21,
+        20,
+        91,
+        83
+      ],
+      "source_alpha_bbox_size": [
+        70,
+        63
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        264,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        124,
+        243,
+        388,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_02.png",
+      "runtime": "venom_spitter_death_north_02.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        19,
+        26,
+        91,
+        89
+      ],
+      "source_alpha_bbox_size": [
+        72,
+        63
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        271,
+        237
+      ],
+      "runtime_alpha_bbox": [
+        120,
+        243,
+        391,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_03.png",
+      "runtime": "venom_spitter_death_north_03.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        13,
+        39,
+        96,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        83,
+        54
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        313,
+        204
+      ],
+      "runtime_alpha_bbox": [
+        100,
+        276,
+        413,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_04.png",
+      "runtime": "venom_spitter_death_north_04.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        12,
+        47,
+        97,
+        92
+      ],
+      "source_alpha_bbox_size": [
+        85,
+        45
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        320,
+        170
+      ],
+      "runtime_alpha_bbox": [
+        96,
+        310,
+        416,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_05.png",
+      "runtime": "venom_spitter_death_north_05.png",
+      "source_size": [
+        112,
+        112
+      ],
+      "source_alpha_bbox": [
+        13,
+        44,
+        97,
+        93
+      ],
+      "source_alpha_bbox_size": [
+        84,
+        49
+      ],
+      "scale": 3.769230769230769,
+      "resized_visible_size": [
+        317,
+        185
+      ],
+      "runtime_alpha_bbox": [
+        98,
+        295,
+        415,
+        480
+      ]
+    }
+  ],
+  "death_north_east": [
+    {
+      "source": "venom_spitter_death_north_east_00.png",
+      "runtime": "venom_spitter_death_north_east_00.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        15,
+        34,
+        101,
+        91
+      ],
+      "source_alpha_bbox_size": [
+        86,
+        57
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        370,
+        245
+      ],
+      "runtime_alpha_bbox": [
+        71,
+        235,
+        441,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_east_01.png",
+      "runtime": "venom_spitter_death_north_east_01.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        14,
+        36,
+        103,
+        92
+      ],
+      "source_alpha_bbox_size": [
+        89,
+        56
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        383,
+        241
+      ],
+      "runtime_alpha_bbox": [
+        64,
+        239,
+        447,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_east_02.png",
+      "runtime": "venom_spitter_death_north_east_02.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        18,
+        42,
+        105,
+        94
+      ],
+      "source_alpha_bbox_size": [
+        87,
+        52
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        374,
+        224
+      ],
+      "runtime_alpha_bbox": [
+        69,
+        256,
+        443,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_east_03.png",
+      "runtime": "venom_spitter_death_north_east_03.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        12,
+        46,
+        107,
+        94
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        48
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        408,
+        206
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        274,
+        460,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_east_04.png",
+      "runtime": "venom_spitter_death_north_east_04.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        12,
+        48,
+        107,
+        94
+      ],
+      "source_alpha_bbox_size": [
+        95,
+        46
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        408,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        52,
+        282,
+        460,
+        480
+      ]
+    },
+    {
+      "source": "venom_spitter_death_north_east_05.png",
+      "runtime": "venom_spitter_death_north_east_05.png",
+      "source_size": [
+        124,
+        124
+      ],
+      "source_alpha_bbox": [
+        16,
+        48,
+        107,
+        94
+      ],
+      "source_alpha_bbox_size": [
+        91,
+        46
+      ],
+      "scale": 4.298245614035087,
+      "resized_visible_size": [
+        391,
+        198
+      ],
+      "runtime_alpha_bbox": [
+        60,
+        282,
+        451,
+        480
+      ]
+    }
+  ]
+}

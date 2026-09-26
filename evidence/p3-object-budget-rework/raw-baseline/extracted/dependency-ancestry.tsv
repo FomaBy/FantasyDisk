@@ -1,0 +1,7 @@
+identifier	issue_id	status	qa_verdict	candidate_sha	candidate_tree	ancestor_of_holistic	tree_matches_metadata
+FAN-3879	01a06a5a-f25c-737a-85b9-79945bcdb2ee	done	PASSED	4d45c02db72b803a5db1d1cbaa9c68074f03f26e	14c5c0387748a6db037d59270547000a1e23050f	yes	yes
+FAN-3886	01a06a5b-0a33-7e1d-a04d-cbee1da83b32	done	PASSED	d92471ef988157a5338aa06b902a0a08f929c529	3c0587520562e5c5cedd3b810dc62272e5672408	yes	yes
+FAN-3888	01a06a5b-3cac-7f07-8e5e-b370c980866e	done	PASSED	70cfc3a077f3832a1582efb5e01647f8ca7a522e	39b4306652f465db82250dfbe4c288eb1a319284	yes	yes
+FAN-3889	01a06a5b-4020-7ec6-a6fd-ace41d17801c	done	PASSED	cffc4e486bb6455b6e0f2bca63ff9ae3fc9a9047	c150d03dc18d3f8263b0011c80853fefe071f8cf	yes	yes
+FAN-3890	01a06a5b-438b-75ef-8fa1-badf374393bd	done	PASSED	e175e01541fb03fd17d26b02f90cccff287ab4f6	32e3a0640fc1a1a05a8bf84dc6cac9c7a32c9ff5	yes	yes
+FAN-3891	01a06a5b-46f0-7885-9828-b73b046a6916	done	PASSED	2dac15fac0db8adf311f274ef654b3d927e4ce33	e4a423855ffab4e8c83a2e5255fef4e65f4cf5cf	yes	yes

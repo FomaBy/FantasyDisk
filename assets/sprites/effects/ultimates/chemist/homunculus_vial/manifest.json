@@ -1,0 +1,138 @@
+{
+  "issue": "FAN-2552",
+  "ultimate_key": "chemist/homunculus_vial",
+  "generator": "PixelLab MCP animate_image",
+  "job_id": "331684be-2ee9-43cd-8eb6-842051201a17",
+  "seed": 2552,
+  "action_prompt": "towering alchemical golem raises both flaming fists high overhead, slams them down in one heavy ground stomp, its round glass body compresses with the impact, then it rises back up tall to its original stance",
+  "identity_source": "assets/sprites/allies/ally_homunculus.png",
+  "canvas": [
+    256,
+    256
+  ],
+  "frame_0_note": "index 0 is the accepted identity source frame returned unchanged by the job",
+  "alpha_contract": {
+    "visible_alpha_threshold": 8,
+    "speck_max_px": 12,
+    "pivot_tolerance_px": 10
+  },
+  "frames": [
+    {
+      "file": "avatar_stomp_00.png",
+      "sha256": "248403548ae1475f036f48e9dd6552a242a56a904c618026c6dee9ffbc5ea60a",
+      "alpha_bbox": [
+        45,
+        11,
+        212,
+        245
+      ],
+      "bbox_fill_ratio": 0.402,
+      "main_component_px": 15698,
+      "speck_px_removed": 4
+    },
+    {
+      "file": "avatar_stomp_01.png",
+      "sha256": "fa587c8997fdcf8ab7d069286d4f41304cec00e1db0d1dbbf5500716c48108a2",
+      "alpha_bbox": [
+        38,
+        10,
+        223,
+        241
+      ],
+      "bbox_fill_ratio": 0.383,
+      "main_component_px": 16385,
+      "speck_px_removed": 0
+    },
+    {
+      "file": "avatar_stomp_02.png",
+      "sha256": "73a5c0009dae1c9215e05b97b8ec1a4f82397b9b82632180900643d9e9de870b",
+      "alpha_bbox": [
+        36,
+        11,
+        223,
+        234
+      ],
+      "bbox_fill_ratio": 0.468,
+      "main_component_px": 19498,
+      "speck_px_removed": 0
+    },
+    {
+      "file": "avatar_stomp_03.png",
+      "sha256": "6553ac878f66be9e0261a044e0fef0418b5c9388535fc4f501eddd75fbbc7f49",
+      "alpha_bbox": [
+        36,
+        15,
+        223,
+        229
+      ],
+      "bbox_fill_ratio": 0.445,
+      "main_component_px": 17526,
+      "speck_px_removed": 20
+    },
+    {
+      "file": "avatar_stomp_04.png",
+      "sha256": "e4183a24933b1f9fd39cb0aa33a9096cdb5fe28f4d2ad0a830e2b4cebac355dd",
+      "alpha_bbox": [
+        38,
+        13,
+        216,
+        244
+      ],
+      "bbox_fill_ratio": 0.655,
+      "main_component_px": 25967,
+      "speck_px_removed": 51
+    },
+    {
+      "file": "avatar_stomp_05.png",
+      "sha256": "0149f342056213008da86dd5dfd8ee8351b074c6d7aac2a0f5fe912c5a32d6cc",
+      "alpha_bbox": [
+        39,
+        26,
+        215,
+        244
+      ],
+      "bbox_fill_ratio": 0.522,
+      "main_component_px": 19195,
+      "speck_px_removed": 130
+    },
+    {
+      "file": "avatar_stomp_06.png",
+      "sha256": "df1922d0c1c4eb0558520d58d5224f1ce48f4478ba0bfde05a9cacba71e4be3f",
+      "alpha_bbox": [
+        40,
+        59,
+        214,
+        244
+      ],
+      "bbox_fill_ratio": 0.481,
+      "main_component_px": 14558,
+      "speck_px_removed": 64
+    },
+    {
+      "file": "avatar_stomp_07.png",
+      "sha256": "6048486ab839c918bd1598bbf17c8f5e877a132b1bb0ae05f51a5012d4827659",
+      "alpha_bbox": [
+        60,
+        51,
+        195,
+        244
+      ],
+      "bbox_fill_ratio": 0.583,
+      "main_component_px": 14956,
+      "speck_px_removed": 0
+    },
+    {
+      "file": "avatar_stomp_08.png",
+      "sha256": "f26cf83450d5202d17580f841f16bfb9ee21d0b8f3a6487db68c436c8f194905",
+      "alpha_bbox": [
+        50,
+        30,
+        211,
+        245
+      ],
+      "bbox_fill_ratio": 0.453,
+      "main_component_px": 15677,
+      "speck_px_removed": 0
+    }
+  ]
+}

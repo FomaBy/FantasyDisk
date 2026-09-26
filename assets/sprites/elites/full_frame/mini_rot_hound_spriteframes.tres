@@ -1,284 +1,1566 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_00.png" id="1_mrh1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_01.png" id="2_mrh2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_02.png" id="3_mrh3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_03.png" id="4_mrh4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_04.png" id="5_mrh5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_primary_05.png" id="6_mrh6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_00.png" id="7_mrh7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_01.png" id="8_mrh8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_02.png" id="9_mrh9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_03.png" id="10_mrh10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_04.png" id="11_mrh11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_05.png" id="12_mrh12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_00.png" id="13_mrh13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_01.png" id="14_mrh14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_02.png" id="15_mrh15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_03.png" id="16_mrh16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_04.png" id="17_mrh17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_05.png" id="18_mrh18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_00.png" id="19_mrh19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_01.png" id="20_mrh20"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_02.png" id="21_mrh21"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_03.png" id="22_mrh22"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_04.png" id="23_mrh23"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_rot_lunge_05.png" id="24_mrh24"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_00.png" id="25_mrh25"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_01.png" id="26_mrh26"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_02.png" id="27_mrh27"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_03.png" id="28_mrh28"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_04.png" id="29_mrh29"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_bleed_howl_05.png" id="30_mrh30"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_east.png" id="1_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_east.png" id="2_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south.png" id="3_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_west.png" id="4_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_west.png" id="5_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_west.png" id="6_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north.png" id="7_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_east.png" id="8_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_00.png" id="9_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_01.png" id="10_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_02.png" id="11_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_03.png" id="12_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_04.png" id="13_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_05.png" id="14_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_00.png" id="15_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_01.png" id="16_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_02.png" id="17_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_03.png" id="18_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_04.png" id="19_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_05.png" id="20_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_00.png" id="21_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_01.png" id="22_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_02.png" id="23_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_03.png" id="24_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_04.png" id="25_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_05.png" id="26_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_00.png" id="27_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_01.png" id="28_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_02.png" id="29_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_03.png" id="30_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_04.png" id="31_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_05.png" id="32_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_00.png" id="33_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_01.png" id="34_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_02.png" id="35_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_03.png" id="36_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_04.png" id="37_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_05.png" id="38_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_00.png" id="39_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_01.png" id="40_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_02.png" id="41_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_03.png" id="42_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_04.png" id="43_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_05.png" id="44_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_00.png" id="45_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_01.png" id="46_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_02.png" id="47_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_03.png" id="48_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_04.png" id="49_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_05.png" id="50_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_00.png" id="51_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_01.png" id="52_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_02.png" id="53_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_03.png" id="54_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_04.png" id="55_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_05.png" id="56_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_00.png" id="57_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_01.png" id="58_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_02.png" id="59_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_03.png" id="60_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_04.png" id="61_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_05.png" id="62_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_06.png" id="63_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_00.png" id="64_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_01.png" id="65_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_02.png" id="66_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_03.png" id="67_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_04.png" id="68_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_05.png" id="69_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_06.png" id="70_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_00.png" id="71_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_01.png" id="72_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_02.png" id="73_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_03.png" id="74_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_04.png" id="75_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_05.png" id="76_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_06.png" id="77_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_00.png" id="78_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_01.png" id="79_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_02.png" id="80_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_03.png" id="81_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_04.png" id="82_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_05.png" id="83_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_06.png" id="84_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_00.png" id="85_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_01.png" id="86_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_02.png" id="87_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_03.png" id="88_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_04.png" id="89_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_05.png" id="90_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_06.png" id="91_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_00.png" id="92_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_01.png" id="93_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_02.png" id="94_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_03.png" id="95_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_04.png" id="96_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_05.png" id="97_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_06.png" id="98_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_00.png" id="99_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_01.png" id="100_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_02.png" id="101_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_03.png" id="102_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_04.png" id="103_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_05.png" id="104_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_06.png" id="105_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_00.png" id="106_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_01.png" id="107_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_02.png" id="108_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_03.png" id="109_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_04.png" id="110_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_05.png" id="111_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_06.png" id="112_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_00.png" id="113_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_01.png" id="114_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_02.png" id="115_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_03.png" id="116_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_04.png" id="117_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_00.png" id="118_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_01.png" id="119_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_02.png" id="120_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_03.png" id="121_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_04.png" id="122_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_00.png" id="123_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_01.png" id="124_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_02.png" id="125_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_03.png" id="126_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_04.png" id="127_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_00.png" id="128_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_01.png" id="129_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_02.png" id="130_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_03.png" id="131_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_04.png" id="132_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_00.png" id="133_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_01.png" id="134_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_02.png" id="135_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_03.png" id="136_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_04.png" id="137_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_00.png" id="138_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_01.png" id="139_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_02.png" id="140_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_03.png" id="141_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_04.png" id="142_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_00.png" id="143_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_01.png" id="144_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_02.png" id="145_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_03.png" id="146_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_04.png" id="147_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_00.png" id="148_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_01.png" id="149_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_02.png" id="150_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_03.png" id="151_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_04.png" id="152_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_00.png" id="153_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_01.png" id="154_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_02.png" id="155_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_03.png" id="156_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_04.png" id="157_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_05.png" id="158_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_06.png" id="159_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_00.png" id="160_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_01.png" id="161_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_02.png" id="162_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_03.png" id="163_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_04.png" id="164_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_05.png" id="165_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_06.png" id="166_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_00.png" id="167_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_01.png" id="168_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_02.png" id="169_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_03.png" id="170_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_04.png" id="171_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_05.png" id="172_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_06.png" id="173_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_00.png" id="174_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_01.png" id="175_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_02.png" id="176_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_03.png" id="177_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_04.png" id="178_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_05.png" id="179_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_06.png" id="180_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_00.png" id="181_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_01.png" id="182_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_02.png" id="183_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_03.png" id="184_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_04.png" id="185_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_05.png" id="186_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_06.png" id="187_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_00.png" id="188_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_01.png" id="189_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_02.png" id="190_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_03.png" id="191_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_04.png" id="192_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_05.png" id="193_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_06.png" id="194_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_00.png" id="195_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_01.png" id="196_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_02.png" id="197_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_03.png" id="198_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_04.png" id="199_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_05.png" id="200_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_06.png" id="201_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_00.png" id="202_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_01.png" id="203_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_02.png" id="204_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_03.png" id="205_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_04.png" id="206_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_05.png" id="207_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_06.png" id="208_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_00.png" id="209_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_01.png" id="210_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_02.png" id="211_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_03.png" id="212_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_04.png" id="213_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_05.png" id="214_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_06.png" id="215_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_00.png" id="216_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_01.png" id="217_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_02.png" id="218_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_03.png" id="219_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_04.png" id="220_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_05.png" id="221_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_06.png" id="222_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_00.png" id="223_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_01.png" id="224_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_02.png" id="225_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_03.png" id="226_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_04.png" id="227_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_05.png" id="228_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_06.png" id="229_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_00.png" id="230_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_01.png" id="231_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_02.png" id="232_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_03.png" id="233_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_04.png" id="234_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_05.png" id="235_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_06.png" id="236_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_00.png" id="237_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_01.png" id="238_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_02.png" id="239_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_03.png" id="240_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_04.png" id="241_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_05.png" id="242_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_06.png" id="243_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_00.png" id="244_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_01.png" id="245_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_02.png" id="246_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_03.png" id="247_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_04.png" id="248_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_05.png" id="249_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_06.png" id="250_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_00.png" id="251_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_01.png" id="252_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_02.png" id="253_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_03.png" id="254_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_04.png" id="255_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_05.png" id="256_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_06.png" id="257_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_00.png" id="258_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_01.png" id="259_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_02.png" id="260_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_03.png" id="261_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_04.png" id="262_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_05.png" id="263_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_06.png" id="264_mrh"]
 
 [resource]
 animations = [
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_mrh1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_mrh2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_mrh3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_mrh4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_mrh5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_mrh6")
-}
-],
-"loop": false,
-"name": &"attack",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("1_mrh1")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("2_mrh2")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("3_mrh3")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("4_mrh4")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("5_mrh5")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("6_mrh6")
-}
-],
-"loop": false,
-"name": &"attack_primary",
-"speed": 12.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("7_mrh7")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("8_mrh8")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("9_mrh9")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("10_mrh10")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("11_mrh11")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("12_mrh12")
-}
-],
-"loop": false,
-"name": &"death",
-"speed": 10.0
-},
-{
-"frames": [
-{
-"duration": 1.0,
-"texture": ExtResource("13_mrh13")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("14_mrh14")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("15_mrh15")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("16_mrh16")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("17_mrh17")
-},
-{
-"duration": 1.0,
-"texture": ExtResource("18_mrh18")
-}
-],
+"texture": ExtResource("1_mrh")
+}],
 "loop": true,
-"name": &"move",
+"name": &"idle_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_mrh")
+}],
+"loop": true,
+"name": &"idle_south_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_mrh")
+}],
+"loop": true,
+"name": &"idle_south",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_mrh")
+}],
+"loop": true,
+"name": &"idle_south_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_mrh")
+}],
+"loop": true,
+"name": &"idle_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_mrh")
+}],
+"loop": true,
+"name": &"idle_north_west",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_mrh")
+}],
+"loop": true,
+"name": &"idle_north",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_mrh")
+}],
+"loop": true,
+"name": &"idle_north_east",
+"speed": 1.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("10_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("11_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("12_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("13_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("14_mrh")
+}],
+"loop": true,
+"name": &"move_east",
 "speed": 9.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_mrh19")
+"texture": ExtResource("15_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_mrh20")
+"texture": ExtResource("16_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_mrh21")
+"texture": ExtResource("17_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_mrh22")
+"texture": ExtResource("18_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_mrh23")
+"texture": ExtResource("19_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_mrh24")
-}
-],
+"texture": ExtResource("20_mrh")
+}],
+"loop": true,
+"name": &"move_south_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("22_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("23_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("24_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("25_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("26_mrh")
+}],
+"loop": true,
+"name": &"move_south",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("27_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("28_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("29_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("30_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("31_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("32_mrh")
+}],
+"loop": true,
+"name": &"move_south_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("33_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("34_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("35_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("36_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("37_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("38_mrh")
+}],
+"loop": true,
+"name": &"move_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("40_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("41_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("42_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("43_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("44_mrh")
+}],
+"loop": true,
+"name": &"move_north_west",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("45_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("46_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("47_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("48_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("49_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("50_mrh")
+}],
+"loop": true,
+"name": &"move_north",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("51_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("52_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("53_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("54_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("55_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("56_mrh")
+}],
+"loop": true,
+"name": &"move_north_east",
+"speed": 9.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("57_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("58_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("59_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("60_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("61_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("62_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("63_mrh")
+}],
 "loop": false,
-"name": &"skill_rot_lunge",
+"name": &"attack_east",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("19_mrh19")
+"texture": ExtResource("64_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("20_mrh20")
+"texture": ExtResource("65_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("21_mrh21")
+"texture": ExtResource("66_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("22_mrh22")
+"texture": ExtResource("67_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("23_mrh23")
+"texture": ExtResource("68_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("24_mrh24")
-}
-],
+"texture": ExtResource("69_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("70_mrh")
+}],
 "loop": false,
-"name": &"attack_rot_lunge",
+"name": &"attack_south_east",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_mrh25")
+"texture": ExtResource("71_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_mrh26")
+"texture": ExtResource("72_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_mrh27")
+"texture": ExtResource("73_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_mrh28")
+"texture": ExtResource("74_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_mrh29")
+"texture": ExtResource("75_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_mrh30")
-}
-],
+"texture": ExtResource("76_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("77_mrh")
+}],
 "loop": false,
-"name": &"skill_bleed_howl",
+"name": &"attack_south",
 "speed": 12.0
 },
 {
-"frames": [
-{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("25_mrh25")
+"texture": ExtResource("78_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("26_mrh26")
+"texture": ExtResource("79_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("27_mrh27")
+"texture": ExtResource("80_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("28_mrh28")
+"texture": ExtResource("81_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("29_mrh29")
+"texture": ExtResource("82_mrh")
 },
 {
 "duration": 1.0,
-"texture": ExtResource("30_mrh30")
-}
-],
+"texture": ExtResource("83_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("84_mrh")
+}],
 "loop": false,
-"name": &"attack_bleed_howl",
+"name": &"attack_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("85_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("86_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("87_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("88_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("89_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("90_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("91_mrh")
+}],
+"loop": false,
+"name": &"attack_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("92_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("93_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("94_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("95_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("96_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("97_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("98_mrh")
+}],
+"loop": false,
+"name": &"attack_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("99_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("100_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("101_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("102_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("103_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("104_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("105_mrh")
+}],
+"loop": false,
+"name": &"attack_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("106_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("107_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("108_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("109_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("110_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("111_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("112_mrh")
+}],
+"loop": false,
+"name": &"attack_north_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("113_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("114_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("115_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("116_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("117_mrh")
+}],
+"loop": false,
+"name": &"hit_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("118_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("119_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("120_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("121_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("122_mrh")
+}],
+"loop": false,
+"name": &"hit_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("123_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("124_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("125_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("126_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("127_mrh")
+}],
+"loop": false,
+"name": &"hit_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("128_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("129_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("130_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("131_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("132_mrh")
+}],
+"loop": false,
+"name": &"hit_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("133_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("134_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("135_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("136_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("137_mrh")
+}],
+"loop": false,
+"name": &"hit_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("138_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("139_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("140_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("141_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("142_mrh")
+}],
+"loop": false,
+"name": &"hit_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("143_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("144_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("145_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("146_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("147_mrh")
+}],
+"loop": false,
+"name": &"hit_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("148_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("149_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("150_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("151_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("152_mrh")
+}],
+"loop": false,
+"name": &"hit_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("153_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("154_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("155_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("156_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("157_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("158_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("159_mrh")
+}],
+"loop": false,
+"name": &"death_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("160_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("161_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("162_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("163_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("164_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("165_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("166_mrh")
+}],
+"loop": false,
+"name": &"death_south_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("167_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("168_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("169_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("170_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("171_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("172_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("173_mrh")
+}],
+"loop": false,
+"name": &"death_south",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("174_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("175_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("176_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("177_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("178_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("179_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("180_mrh")
+}],
+"loop": false,
+"name": &"death_south_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("181_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("182_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("183_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("184_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("185_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("186_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("187_mrh")
+}],
+"loop": false,
+"name": &"death_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("188_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("189_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("190_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("191_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("192_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("193_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("194_mrh")
+}],
+"loop": false,
+"name": &"death_north_west",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("195_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("196_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("197_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("198_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("199_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("200_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("201_mrh")
+}],
+"loop": false,
+"name": &"death_north",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("202_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("203_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("204_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("205_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("206_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("207_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("208_mrh")
+}],
+"loop": false,
+"name": &"death_north_east",
+"speed": 10.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("209_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("210_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("211_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("212_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("213_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("214_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("215_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("216_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("217_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("218_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("219_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("220_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("221_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("222_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_south_east",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("223_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("224_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("225_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("226_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("227_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("228_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("229_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_south",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("230_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("231_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("232_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("233_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("234_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("235_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("236_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_south_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("237_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("238_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("239_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("240_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("241_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("242_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("243_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("244_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("245_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("246_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("247_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("248_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("249_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("250_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_north_west",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("251_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("252_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("253_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("254_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("255_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("256_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("257_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_north",
+"speed": 12.0
+},
+{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("258_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("259_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("260_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("261_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("262_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("263_mrh")
+},
+{
+"duration": 1.0,
+"texture": ExtResource("264_mrh")
+}],
+"loop": false,
+"name": &"skill_shadow_strike_north_east",
 "speed": 12.0
 }
 ]

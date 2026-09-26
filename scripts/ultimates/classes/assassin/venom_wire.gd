@@ -2,6 +2,8 @@ extends Node2D
 
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/assassin/venom_wire/victim_impact/victim_impact_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.assassin.venom_wire"
 const EXECUTOR_ID := "weapon_ultimate.executor.assassin.venom_wire"
@@ -38,13 +40,14 @@ var burst_count_for_tests := 0
 var _activation = null
 var _affected: Dictionary = {}
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
 	return {
 		"web_radius": {"type": "number", "minimum": 0.01},
 		"wire_half_width": {"type": "number", "minimum": 0.0},
-		"target_limit": {"type": "integer", "minimum": 1},
 		"cut_pulses": {"type": "integer", "minimum": 1},
 		"cut_interval": {"type": "number", "minimum": 0.01},
 		"max_cuts_per_pulse": {"type": "integer", "minimum": 1},
@@ -111,12 +114,19 @@ static func web_segments(points: PackedVector2Array) -> Array[PackedVector2Array
 	return segments
 
 
+## Ultimate Direction v2 (FAN-2952): the Black Web is map-wide. Every live enemy
+## takes the pulse's base cut wherever it stands, on screen or off; the nine
+## shipped wires raise that to one cut per crossing, bounded by
+## `max_cuts_per_pulse` — a per-target shaping bound, never a reach bound.
 func cut_pulse(pulse: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	var hits_by_target: Dictionary = {}
-	var newly_admitted := 0
-	var target_limit: int = _activation.param_int("target_limit", 24)
+	var struck: Array[Node2D] = []
+	for raw_target in _activation.select_targets(global_position, INF, 0, "nearest"):
+		var target := raw_target as Node2D
+		if _alive(target):
+			hits_by_target[target.get_instance_id()] = {"target": target, "crossings": 0}
 	for segment in web_segments_for_tests:
 		var offset := segment[1] - segment[0]
 		for raw_target in _activation.targets_in_corridor(
@@ -124,30 +134,22 @@ func cut_pulse(pulse: int) -> void:
 			offset,
 			offset.length(),
 			_activation.param_float("wire_half_width", 32.0),
-			_activation.param_int("target_limit", 24)
+			0
 		):
 			var target := raw_target as Node2D
-			if not _alive(target):
+			if target == null or not hits_by_target.has(target.get_instance_id()):
 				continue
-			var target_id := target.get_instance_id()
-			if not _affected.has(target_id) and not hits_by_target.has(target_id):
-				if _affected.size() + newly_admitted >= target_limit:
-					continue
-				newly_admitted += 1
-			var entry: Dictionary = hits_by_target.get(target_id, {"target": target, "cuts": 0})
-			entry["cuts"] = mini(
-				int(entry["cuts"]) + 1,
-				_activation.param_int("max_cuts_per_pulse", 3)
-			)
-			hits_by_target[target_id] = entry
+			var crossed := hits_by_target[target.get_instance_id()] as Dictionary
+			crossed["crossings"] = int(crossed["crossings"]) + 1
 	for target_id in hits_by_target:
 		var entry := hits_by_target[target_id] as Dictionary
 		var target := entry["target"] as Node2D
-		var cuts := int(entry["cuts"])
-		if cuts <= 0:
-			continue
+		var cuts := clampi(
+			int(entry["crossings"]), 1, _activation.param_int("max_cuts_per_pulse", 3)
+		)
 		var first_contact := not _affected.has(target_id)
 		_affected[target_id] = target
+		struck.append(target)
 		_activation.add_target_value(target, STACK_KEY, float(cuts), "cuts:%d" % pulse)
 		cut_count_for_tests += cuts
 		_deal(
@@ -158,11 +160,13 @@ func cut_pulse(pulse: int) -> void:
 			{"ultimate_mechanic": "black_web_poison_cut", "cuts": cuts, "pulse": pulse}
 		)
 		_pull_and_poison(target, first_contact)
+	_play_impacts(struck)
 
 
 func toxin_burst() -> void:
 	if _activation == null or _activation.is_finished():
 		return
+	var struck: Array[Node] = []
 	for target_id in _affected.keys():
 		var target := _affected[target_id] as Node
 		if target == null or not is_instance_valid(target):
@@ -170,6 +174,7 @@ func toxin_burst() -> void:
 		var stacks = _activation.consume_target_value(target, STACK_KEY, "toxin_burst", null)
 		if stacks == null or float(stacks) <= 0.0:
 			continue
+		struck.append(target)
 		burst_count_for_tests += 1
 		var multiplier: float = 1.0 + maxf(float(stacks) - 1.0, 0.0) \
 			* _activation.param_float("stack_bonus", 0.08)
@@ -180,6 +185,21 @@ func toxin_burst() -> void:
 			false,
 			{"ultimate_mechanic": "black_web_toxin_burst", "poison_stacks": stacks}
 		)
+	_play_impacts(struck)
+
+
+func _play_impacts(victims: Array) -> void:
+	if victims.is_empty() or _activation == null:
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(victims, _activation.origin())
+	else:
+		_impacts.play(VICTIM_FRAMES, victims, _activation.origin())
+		_impacts_started = true
 
 
 func _pull_and_poison(target: Node2D, first_contact: bool) -> void:
@@ -187,6 +207,13 @@ func _pull_and_poison(target: Node2D, first_contact: bool) -> void:
 	var impulse := toward_center.normalized() * minf(
 		_activation.param_float("pull_strength", 360.0), toward_center.length()
 	) if toward_center.length_squared() > 0.001 else Vector2.ZERO
+	# The poison is leased once per silhouette; every later pulse only drags it
+	# toward the center. Re-writing an identical status on every pulse bought
+	# nothing but a refreshed timer.
+	if not first_contact:
+		if bool(_activation.apply_control(target, impulse, "", {}).get("displaced", false)):
+			pull_count_for_tests += 1
+		return
 	var status_id := "assassin_ultimate_black_web_%d_%d" % [get_instance_id(), target.get_instance_id()]
 	var result: Dictionary = _activation.apply_control(target, impulse, status_id, {
 		"duration": _activation.param_float("poison_duration", 3.0),
@@ -195,7 +222,7 @@ func _pull_and_poison(target: Node2D, first_contact: bool) -> void:
 	})
 	if bool(result.get("displaced", false)):
 		pull_count_for_tests += 1
-	if first_contact and bool(result.get("status_applied", false)):
+	if bool(result.get("status_applied", false)):
 		_leased_statuses.append({"target": target, "status_id": status_id})
 
 

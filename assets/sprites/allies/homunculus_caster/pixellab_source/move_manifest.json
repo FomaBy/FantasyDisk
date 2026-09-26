@@ -1,0 +1,467 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-29T02:39:27Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "character": {
+    "pixel_lab_character_id": "141b0023-8e08-4814-8a98-c270fd22d1c0",
+    "animate_tool": "animate_character",
+    "animate_params": {
+      "character_id": "141b0023-8e08-4814-8a98-c270fd22d1c0",
+      "mode": "v3",
+      "action_description": "six-frame walking in place for a small emerald-green spectral alchemical homunculus caster; preserve one coherent humanoid identity, robe and proportions across all eight directions; no spell effects",
+      "animation_name": "move",
+      "directions": [
+        "south",
+        "south-east",
+        "east",
+        "north-east",
+        "north",
+        "north-west",
+        "west",
+        "south-west"
+      ],
+      "frame_count": 6
+    }
+  },
+  "frames": [
+    {
+      "file": "homunculus_caster_move_south_00.png",
+      "direction": "south",
+      "index": 0,
+      "bytes": 4238,
+      "url_kind": "character_direct",
+      "encoded_sha256": "debef21673f939d38f7e90df38279690394b025f29cc88698385a974c839acca",
+      "pixel_sha256": "2b2e3cf4933ee318a48fe29efef21e90a078a27dc941abd57317bcf0ebc1e9e9"
+    },
+    {
+      "file": "homunculus_caster_move_south_01.png",
+      "direction": "south",
+      "index": 1,
+      "bytes": 4915,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ff6a9e5695dcc0d8b7997dddc6c64e939ae0c8226e706471a0f8795dd3266dae",
+      "pixel_sha256": "94b54af19af8f9877651458c1a8d88d287bed2d5110be5bab5108eec244029fb"
+    },
+    {
+      "file": "homunculus_caster_move_south_02.png",
+      "direction": "south",
+      "index": 2,
+      "bytes": 4802,
+      "url_kind": "character_direct",
+      "encoded_sha256": "09d8e218135e15185f431a9ea1c76d653fdbe267578b802c35911711c23c4799",
+      "pixel_sha256": "f11b5706f93589e46d80132d9f0f211c64fc7504840daf5f3fb157a1dbf839e7"
+    },
+    {
+      "file": "homunculus_caster_move_south_03.png",
+      "direction": "south",
+      "index": 3,
+      "bytes": 4961,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5a4d4b6d09cef6a9a035aeeb9cb67fa778b672bcde58df691210cd36b058559b",
+      "pixel_sha256": "573e2d5de5c35cbe608cbcd73e470208273b60e2c6a089d615e73221b0ae0b2d"
+    },
+    {
+      "file": "homunculus_caster_move_south_04.png",
+      "direction": "south",
+      "index": 4,
+      "bytes": 4646,
+      "url_kind": "character_direct",
+      "encoded_sha256": "761f3ab5fcd9f1821caf75167c2ba00b8750701fd4f08e42e99d13814f6ec2e6",
+      "pixel_sha256": "89d0fd76a73e5964000b235994eaa3c8b22374b2a5adde31845943bd2fea5d8d"
+    },
+    {
+      "file": "homunculus_caster_move_south_05.png",
+      "direction": "south",
+      "index": 5,
+      "bytes": 4919,
+      "url_kind": "character_direct",
+      "encoded_sha256": "d9fed90e13675debd5dc20a737435d64fcdff3814262874d09ddddf576fdf16e",
+      "pixel_sha256": "c0d9bd66b1f74ad9ce3e2d66c5db52d044d34fbd480df20ae31231fcd9037491"
+    },
+    {
+      "file": "homunculus_caster_move_south_east_00.png",
+      "direction": "south-east",
+      "index": 0,
+      "bytes": 3932,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f83418ce1087f0ad4ce08f66b013ae422375b85a725748c47ff46b643e86883b",
+      "pixel_sha256": "1a10b8dda08565c4582979e002323cb6865648502fc6a8db526c20d33f7ad8bc"
+    },
+    {
+      "file": "homunculus_caster_move_south_east_01.png",
+      "direction": "south-east",
+      "index": 1,
+      "bytes": 3626,
+      "url_kind": "character_direct",
+      "encoded_sha256": "84e3661468153b947bb64fcdc44f24a289dd7ea103c17f15dfe1c02932fa639a",
+      "pixel_sha256": "b5c6c738227dc7197644ed76e12859ba7a09be17135030ef42974acd4cdd4b48"
+    },
+    {
+      "file": "homunculus_caster_move_south_east_02.png",
+      "direction": "south-east",
+      "index": 2,
+      "bytes": 3566,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1b848a70c8477fa26618ecac13757c6192b145ffcbc964504a5244dfaa8bc5aa",
+      "pixel_sha256": "d1838e48bb6c1fc45285c11acce110fcdd74454e55e19194297fa9cd5646759e"
+    },
+    {
+      "file": "homunculus_caster_move_south_east_03.png",
+      "direction": "south-east",
+      "index": 3,
+      "bytes": 4118,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f95d392e5a68b0a7688d9b57868f88b9491a02a4afe223dd3ff2520b20c2f388",
+      "pixel_sha256": "ce4d71f1fdc6e299035730b2d7863cba356144676c3d87de3f123afba1275a5b"
+    },
+    {
+      "file": "homunculus_caster_move_south_east_04.png",
+      "direction": "south-east",
+      "index": 4,
+      "bytes": 4062,
+      "url_kind": "character_direct",
+      "encoded_sha256": "608c9bd77af129857137c051449ab721e4a91d6a4aab7494c8abc09eb69094dc",
+      "pixel_sha256": "c8056d3bce27b14533a0867322f89a14eafdf1cc8727a5a8b38a1c26a0f4af35"
+    },
+    {
+      "file": "homunculus_caster_move_south_east_05.png",
+      "direction": "south-east",
+      "index": 5,
+      "bytes": 4345,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b0e5e6b06a1868110ca491d5a6ec2fe8cfb9e00f5bda2f4227c0eeaa78d260dd",
+      "pixel_sha256": "d4dd844604a4805ca55c6502186d68b979174632d1450c2fc6b819c7e3eec88f"
+    },
+    {
+      "file": "homunculus_caster_move_east_00.png",
+      "direction": "east",
+      "index": 0,
+      "bytes": 3065,
+      "url_kind": "character_direct",
+      "encoded_sha256": "942ed6afff35d0f11cb59754eb284f02428d4733170e0b5ae5dbb35ffa4046a9",
+      "pixel_sha256": "dbedc25fe8003dcafb0d5eb50da191cd652a6ea6abf1a52d1b83bebf2d5081bb"
+    },
+    {
+      "file": "homunculus_caster_move_east_01.png",
+      "direction": "east",
+      "index": 1,
+      "bytes": 3512,
+      "url_kind": "character_direct",
+      "encoded_sha256": "a9940c9ca8417705ba6a0acb20847ba6508698b2f33b1b0bf6c464cb826a7cb0",
+      "pixel_sha256": "09129b5ff89a2534eaf01acbf483670892a607d7c4fe1a9f2650daef4c6184a0"
+    },
+    {
+      "file": "homunculus_caster_move_east_02.png",
+      "direction": "east",
+      "index": 2,
+      "bytes": 3225,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8150b1138a8f0e2f575cf21a2170434a07ceb5f9cd47216cb580d85830eb4b23",
+      "pixel_sha256": "29e3e8a79df61ddc2f3c17d464f895f5d6dff49593bb522fc64d83af5dad85fe"
+    },
+    {
+      "file": "homunculus_caster_move_east_03.png",
+      "direction": "east",
+      "index": 3,
+      "bytes": 3300,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fc089aefce9afb57c905f34a45bb064496a5a0228ac335dfdb3fda7ff18b6ee6",
+      "pixel_sha256": "1daa8f636b82bdb83a9b5705428daa3c56fc60b8037e02930247d0e50e6102b3"
+    },
+    {
+      "file": "homunculus_caster_move_east_04.png",
+      "direction": "east",
+      "index": 4,
+      "bytes": 3143,
+      "url_kind": "character_direct",
+      "encoded_sha256": "9cfa3f96fe812853d4c5d8e8b65e8d1580e75857b3a86de94febecca9fc0beb5",
+      "pixel_sha256": "89e90b304195af294f3dade899ab4403364def3ba982fdaae55703aa002479d5"
+    },
+    {
+      "file": "homunculus_caster_move_east_05.png",
+      "direction": "east",
+      "index": 5,
+      "bytes": 3286,
+      "url_kind": "character_direct",
+      "encoded_sha256": "caa191efaed636a4cb0ff28a5e2f74bdce2f437b81c0d583d0f35a4f9e3594d1",
+      "pixel_sha256": "134656d36eca45782b61783a8cbc26275a96ce955aef3ee7ce4e3ec0cba72a67"
+    },
+    {
+      "file": "homunculus_caster_move_north_east_00.png",
+      "direction": "north-east",
+      "index": 0,
+      "bytes": 4067,
+      "url_kind": "character_direct",
+      "encoded_sha256": "483d0afeab56f2534a3d10dd28cd05bb28c9728ca8649f574d10f1957c0b1cc0",
+      "pixel_sha256": "dcf28f6e3ed3e1ca0034baeb2307ad764a555928a286f1a7341bd375687e9c14"
+    },
+    {
+      "file": "homunculus_caster_move_north_east_01.png",
+      "direction": "north-east",
+      "index": 1,
+      "bytes": 4149,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3caa42960b436a426d7bc304870b5c0e1a0e985a67253411b15ce198e04016c7",
+      "pixel_sha256": "b54a82fc66da5760df3795c9a824a57376ec5d5947eec6ed45551e4822b06073"
+    },
+    {
+      "file": "homunculus_caster_move_north_east_02.png",
+      "direction": "north-east",
+      "index": 2,
+      "bytes": 3864,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b9571fa65435f0bdec13dcb1f93d06c58f5fd3cb6eb47c5cbbe82d098174307f",
+      "pixel_sha256": "31cfdc33e1be12660c42c567eb43597bc65a7160d6bc318822a3cc60a07d168b"
+    },
+    {
+      "file": "homunculus_caster_move_north_east_03.png",
+      "direction": "north-east",
+      "index": 3,
+      "bytes": 3857,
+      "url_kind": "character_direct",
+      "encoded_sha256": "b23c6d38a0ce55f436a9656d5d3b93646f2573d36b3f96e15e3b46766d4341c8",
+      "pixel_sha256": "ab5dd667fa5d197220c5eceaf5ae0364c6916819ecd35e917525d252369fcbd3"
+    },
+    {
+      "file": "homunculus_caster_move_north_east_04.png",
+      "direction": "north-east",
+      "index": 4,
+      "bytes": 3751,
+      "url_kind": "character_direct",
+      "encoded_sha256": "ee0d9b9d843ea67b503ce3f2237f655fb0ad2e8b5702abe82fcd03cdb2600f45",
+      "pixel_sha256": "2fe7ba9b89290c916ac9d3a057aafb74f5e091920b3f045cf427461cd6cef00c"
+    },
+    {
+      "file": "homunculus_caster_move_north_east_05.png",
+      "direction": "north-east",
+      "index": 5,
+      "bytes": 3786,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e3727f93d9988d47f73281fccc352a66c8f8d883eee7a1aeebe0489c428eeb40",
+      "pixel_sha256": "928007c141f7aec2754213e6b3270b9a52d1f8e753257cb4a4fac71354a7b1ec"
+    },
+    {
+      "file": "homunculus_caster_move_north_00.png",
+      "direction": "north",
+      "index": 0,
+      "bytes": 3899,
+      "url_kind": "character_direct",
+      "encoded_sha256": "2233eaae2a445c4423e5aa005291086d5c4baa01533d1c3f13aff7195f4b0386",
+      "pixel_sha256": "dd9b5065f66ef090eb4bb4d841ae08e1b31dc14a851d63bd4fbf65ede1f50ec8"
+    },
+    {
+      "file": "homunculus_caster_move_north_01.png",
+      "direction": "north",
+      "index": 1,
+      "bytes": 3785,
+      "url_kind": "character_direct",
+      "encoded_sha256": "16ba5f771c9e9d07ea405c596250459d433cbd9db084bc57ca7854108632a350",
+      "pixel_sha256": "79bb6bdcd79ce3e61f71cc04096662cb613afe567c2b6be906d1633ff3d0efc9"
+    },
+    {
+      "file": "homunculus_caster_move_north_02.png",
+      "direction": "north",
+      "index": 2,
+      "bytes": 3609,
+      "url_kind": "character_direct",
+      "encoded_sha256": "f3d4fdc116fe603d6b4a0cc5e2123360f67ef60c610e2ab8ca498552ee72f987",
+      "pixel_sha256": "0928998e6c34c6a115f42bb3fe13f0b15829c0ba5bef811f5d61b6bcef13846a"
+    },
+    {
+      "file": "homunculus_caster_move_north_03.png",
+      "direction": "north",
+      "index": 3,
+      "bytes": 4140,
+      "url_kind": "character_direct",
+      "encoded_sha256": "01b74642e3021b9aee6b1edacf0e637cdcef062e8ca61ee808e6d83b3791cb3d",
+      "pixel_sha256": "01f98eace0bfeb1232a2db83ee8cd0b3418727dde1df75ddc9e20bee3c68dce9"
+    },
+    {
+      "file": "homunculus_caster_move_north_04.png",
+      "direction": "north",
+      "index": 4,
+      "bytes": 3925,
+      "url_kind": "character_direct",
+      "encoded_sha256": "c2939eb230b5d2b59dd3006a9e5d627d53e36150339384a07063f4c6ab1c4350",
+      "pixel_sha256": "d26e30d01d12ddef30c45633062336342afc09f6419b3443d2e356b3819dd0e9"
+    },
+    {
+      "file": "homunculus_caster_move_north_05.png",
+      "direction": "north",
+      "index": 5,
+      "bytes": 3831,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0fbdc1133f00a015b1c587f17e1aaa97718b6b3615bd5e74069175f22f690f9e",
+      "pixel_sha256": "6e93876d6dca94fee98f19f683a3996bdad5ad5d27f26aec58fd103bc7fef8e2"
+    },
+    {
+      "file": "homunculus_caster_move_north_west_00.png",
+      "direction": "north-west",
+      "index": 0,
+      "bytes": 3679,
+      "url_kind": "character_direct",
+      "encoded_sha256": "00fa4a16532d310c84f453b3ccb1801a0342561c9754dea59974e741ed7eabff",
+      "pixel_sha256": "126ef3b42db8d5d1b1ff80843aa0afa23794ad15fd39dc60bb73a0e225f4e2de"
+    },
+    {
+      "file": "homunculus_caster_move_north_west_01.png",
+      "direction": "north-west",
+      "index": 1,
+      "bytes": 3752,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1a80fcd399eee3a6165fec4848b17c23cde9b254aa1a855860ada4f15f8885f0",
+      "pixel_sha256": "66774f4711c827644703b52744238ec6a954df15b9e42de2f833a2b438c098ab"
+    },
+    {
+      "file": "homunculus_caster_move_north_west_02.png",
+      "direction": "north-west",
+      "index": 2,
+      "bytes": 3548,
+      "url_kind": "character_direct",
+      "encoded_sha256": "15b04b9c17f2fdbe383f2ec74d10897f606cb1f9b8d09f997f07b28c3abe9ad2",
+      "pixel_sha256": "e716c4b71d16fcab0cda386ff1d139b217825e71142406f3ae021c990202da01"
+    },
+    {
+      "file": "homunculus_caster_move_north_west_03.png",
+      "direction": "north-west",
+      "index": 3,
+      "bytes": 3579,
+      "url_kind": "character_direct",
+      "encoded_sha256": "e746800a74902afd8fb9aebb1556d421a1171d67ae0772b2f8108400453de63f",
+      "pixel_sha256": "26abc33720766e184dfc015e5a51f1536fce6ffc734f0ce5252d8548b49a1841"
+    },
+    {
+      "file": "homunculus_caster_move_north_west_04.png",
+      "direction": "north-west",
+      "index": 4,
+      "bytes": 3516,
+      "url_kind": "character_direct",
+      "encoded_sha256": "0effcfb64e463e60dbffa23a622b036f0cf98a8f8010b29e21d28047d4b3241c",
+      "pixel_sha256": "4e3af46ba757084907d3c5b9b29120e59da3b2c00724a141559566489c800480"
+    },
+    {
+      "file": "homunculus_caster_move_north_west_05.png",
+      "direction": "north-west",
+      "index": 5,
+      "bytes": 3610,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8d397136d0b718cac185454ae02def5cd4381960eb7233c995f02373eb79ddbe",
+      "pixel_sha256": "2ce111648a567828c88f97f53850fba67930cde2d38cd0c96e804e5bef38dfcb"
+    },
+    {
+      "file": "homunculus_caster_move_west_00.png",
+      "direction": "west",
+      "index": 0,
+      "bytes": 3142,
+      "url_kind": "character_direct",
+      "encoded_sha256": "73234f9449aac252b8eb8332383b7091868f6ab5e6a7704b0a8a02909641fc13",
+      "pixel_sha256": "92272a6c64bc3cf90e00bf22db5ebfc240bc68f780ecaf5952a4185a1ee385d7"
+    },
+    {
+      "file": "homunculus_caster_move_west_01.png",
+      "direction": "west",
+      "index": 1,
+      "bytes": 3492,
+      "url_kind": "character_direct",
+      "encoded_sha256": "83a0d617e4698430412f36312ca18d11181c379aed4e5c62014e223a2c0df5fc",
+      "pixel_sha256": "6859580e67690766e7f00a1b6519f36fa071db58c0a873d3bc32ea1a90408e50"
+    },
+    {
+      "file": "homunculus_caster_move_west_02.png",
+      "direction": "west",
+      "index": 2,
+      "bytes": 3368,
+      "url_kind": "character_direct",
+      "encoded_sha256": "8c87699661ead90d819c20709f91bb156d86570bc2abf133b99b1126815ce725",
+      "pixel_sha256": "23944bc28bcc08946df7d45a5a35a02fac5738fca1f4579b843b726160414527"
+    },
+    {
+      "file": "homunculus_caster_move_west_03.png",
+      "direction": "west",
+      "index": 3,
+      "bytes": 3348,
+      "url_kind": "character_direct",
+      "encoded_sha256": "11b14cc7b6aa9a105ba7308d771ab46606a9d37b5a1a99c9c2cac596accbd1b5",
+      "pixel_sha256": "74608a780a3bfb85f463957ab075a4872da259b20da6fcac2b818bc0151f678c"
+    },
+    {
+      "file": "homunculus_caster_move_west_04.png",
+      "direction": "west",
+      "index": 4,
+      "bytes": 3146,
+      "url_kind": "character_direct",
+      "encoded_sha256": "1804a34b54172272bd2473042f3ba8ecfc0be66997b0c1a8cab723504b771b18",
+      "pixel_sha256": "b759a0255f04830c9ded87903b334f5b05e8ae74a5da5e9e5cdc26ca697fd057"
+    },
+    {
+      "file": "homunculus_caster_move_west_05.png",
+      "direction": "west",
+      "index": 5,
+      "bytes": 3206,
+      "url_kind": "character_direct",
+      "encoded_sha256": "af1a78fccab9a2b9ce7cca3daf8b19c56867fe79f84f5f6e66cedf9199454115",
+      "pixel_sha256": "43b2ec8cb38c674f28c45b8e3d96c89b57c92e1cdb4e713597b2f006feae4e91"
+    },
+    {
+      "file": "homunculus_caster_move_south_west_00.png",
+      "direction": "south-west",
+      "index": 0,
+      "bytes": 4269,
+      "url_kind": "character_direct",
+      "encoded_sha256": "fc98e48228f802f0d9ad9067aaa4b991dc541d768a148c6a745d486a43d5a01f",
+      "pixel_sha256": "a99ff516e44ec4b23f618ab7e6a35f456385607e0a7ea0d33f78c88cfc22906a"
+    },
+    {
+      "file": "homunculus_caster_move_south_west_01.png",
+      "direction": "south-west",
+      "index": 1,
+      "bytes": 4217,
+      "url_kind": "character_direct",
+      "encoded_sha256": "be66fc4122e11eb7d68a38ba630054a157d40f7ed52fb3800badef02c1faa627",
+      "pixel_sha256": "a5d2ef54acaa4c9e66ca764302f573c57abc3a8006339ff172aebd7b1a3ab064"
+    },
+    {
+      "file": "homunculus_caster_move_south_west_02.png",
+      "direction": "south-west",
+      "index": 2,
+      "bytes": 3961,
+      "url_kind": "character_direct",
+      "encoded_sha256": "5a50d29f3b19de5967206e95bf6be01fa365a618eb600087e83b2b6be794618c",
+      "pixel_sha256": "8ce01d33730e5d8a326902cd19eabd99d28053cd73523a7bdb28d3948413e610"
+    },
+    {
+      "file": "homunculus_caster_move_south_west_03.png",
+      "direction": "south-west",
+      "index": 3,
+      "bytes": 4022,
+      "url_kind": "character_direct",
+      "encoded_sha256": "da517a9e4a403cdf8dbed391e095339e8c90692c7507e3a268e8378bee014344",
+      "pixel_sha256": "381f2084a0fb27858f170bdc3a40798a9342c736be72d5d0e8929d7a9ad52d30"
+    },
+    {
+      "file": "homunculus_caster_move_south_west_04.png",
+      "direction": "south-west",
+      "index": 4,
+      "bytes": 3946,
+      "url_kind": "character_direct",
+      "encoded_sha256": "3a1b14a906d3e160a71c4fb67e595252caa53da88f6a470974b5b713d285b67b",
+      "pixel_sha256": "c6a7820d8c900f784236da400e3b3d763a478db75d72733d7e88eb802b89d636"
+    },
+    {
+      "file": "homunculus_caster_move_south_west_05.png",
+      "direction": "south-west",
+      "index": 5,
+      "bytes": 4156,
+      "url_kind": "character_direct",
+      "encoded_sha256": "69485baa2f9241ee2133a87daf03d95ca7da019b99c310b04812e5bb7effa5ae",
+      "pixel_sha256": "e3890671399bb79792aba1b4b1bb4dce7704bd7eced1dbc78230266ae06e829d"
+    }
+  ],
+  "frame_count": 48,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

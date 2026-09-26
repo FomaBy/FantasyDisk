@@ -9,9 +9,9 @@ const PD := preload("res://scripts/progression_data.gd")
 const CLASS_ID := "priest"
 const WEAPONS := ["priest_reliquary", "priest_censer", "priest_chime"]
 const EXPECTED_RAILS := {
-	"priest_reliquary": {"crowd_cap": 22, "pillar_at": 5.3},
-	"priest_censer": {"counter_at": 6.3, "counter_target_cap": 12},
-	"priest_chime": {"crowd_cap": 18, "chain_targets": 6, "third_toll_at": 4.1},
+	"priest_reliquary": {"crowd_floor": 0.4, "pillar_at": 5.3},
+	"priest_censer": {"counter_at": 6.3, "counter_floor": 0.41},
+	"priest_chime": {"chain_floor": 0.27, "third_toll_at": 4.1},
 }
 
 var _errors: Array[String] = []

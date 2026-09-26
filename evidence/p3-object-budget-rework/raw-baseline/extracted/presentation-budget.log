@@ -1,0 +1,28 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+WeaponUltimatePresentationRuntime: visual-node budget rejected: drawn visual nodes 8 exceed max_visual_nodes cap 7
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is missing (source=runtime, value=<null>)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is invalid (source=runtime, value=0)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is invalid (source=runtime, value=-1)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: invalid cap relation: max_visual_nodes=23 exceeds crowd_cap=22
+WeaponUltimatePresentationRuntime: visual-node budget rejected: drawn visual nodes 11 exceed max_visual_nodes cap 10
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is missing (source=runtime, value=<null>)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is invalid (source=runtime, value=0)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is invalid (source=runtime, value=-1)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: invalid cap relation: max_visual_nodes=27 exceeds crowd_cap=26
+WeaponUltimatePresentationRuntime: visual-node budget rejected: drawn visual nodes 8 exceed max_visual_nodes cap 7
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is missing (source=runtime, value=<null>)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is invalid (source=runtime, value=0)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: max_visual_nodes cap is invalid (source=runtime, value=-1)
+WeaponUltimatePresentationRuntime: visual-node budget rejected: invalid cap relation: max_visual_nodes=19 exceeds crowd_cap=18
+WeaponUltimatePresentationRuntime: visual-node budget rejected: material budget rejected: budget.unique_materials_actual: probe/manifest_only carries 2 over its declared 1
+WeaponUltimatePresentationRuntime: visual-node budget rejected: material budget rejected: budget.max_unique_materials: probe/scene_meta declares 0
+WeaponUltimatePresentationRuntime: visual-node budget rejected: material budget rejected: budget.max_unique_materials: probe/missing declares <null>
+Victim impact sweep (60 fps steps, pool cap 24, degrade above 38 victims):
+  victims= 1 created= 1 peak_active= 1 recycled=0 stagger=3 degraded=false
+  victims= 8 created= 5 peak_active= 5 recycled=0 stagger=6 degraded=false
+  victims=24 created=15 peak_active=15 recycled=0 stagger=6 degraded=false
+  victims=38 created=24 peak_active=24 recycled=0 stagger=6 degraded=false
+  victims=48 created=24 peak_active=24 recycled=0 stagger=6 degraded=true
+  degradation: threshold=38 full_peak_at_threshold=24 full_peak_at_39=25 degraded_peak_at_48=24
+Weapon ultimate presentation budget contract passed (explicit Soldier decisions and fail-closed diagnostics).

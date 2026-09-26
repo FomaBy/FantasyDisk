@@ -252,12 +252,15 @@ func _apply_visual() -> void:
 	if animated_body == null:
 		return
 	var configured := FullFrameAnimationRegistry.configure_entity_visual(self, "ally", ally_visual_id, "AnimatedBody", "Body")
-	if configured == null or configured.sprite_frames == null or not configured.sprite_frames.has_animation("move") or not configured.sprite_frames.has_animation("attack"):
+	if configured == null or configured.sprite_frames == null or not FullFrameAnimationRegistry.has_state(configured, "move") or not FullFrameAnimationRegistry.has_state(configured, "attack"):
 		animated_body.visible = false
 		animated_body.stop()
 		body.visible = true
 		return
-	animated_body.flip_h = false if FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body) else _last_facing_right
+	# FAN-2519: направленные контракты (8 направлений / горизонтальные ряды) не
+	# зеркалятся; память ракурса теперь живёт в реестре.
+	var uses_directional_contract := FullFrameAnimationRegistry.uses_explicit_eight_directions(animated_body) or FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body)
+	animated_body.flip_h = false if uses_directional_contract else _last_facing_right
 	FullFrameAnimationRegistry.play_state(animated_body, "move", Vector2.LEFT)
 
 
@@ -434,11 +437,20 @@ func _update_visual_animation() -> void:
 
 	if absf(velocity.x) > 1.0:
 		_last_facing_right = velocity.x > 0.0
-	if FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
+	# FAN-2519: направленные контракты (8 направлений / горизонтальные ряды)
+	# получают реальный вектор движения — резолв и память последнего ракурса
+	# централизованы в реестре; вертикаль для горизонтальных рядов сама
+	# коллапсирует в последний горизонтальный ракурс. Легаси-паки (flip) не
+	# трогаем: им по-прежнему достаточно знака X.
+	if FullFrameAnimationRegistry.uses_explicit_eight_directions(animated_body) or FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body):
 		animated_body.flip_h = false
-	else:
-		animated_body.flip_h = _last_facing_right
+		if _attack_anim_time > 0.0:
+			FullFrameAnimationRegistry.play_state(animated_body, "attack", velocity)
+			return
+		FullFrameAnimationRegistry.play_state(animated_body, "move", velocity)
+		return
 
+	animated_body.flip_h = _last_facing_right
 	if _attack_anim_time > 0.0:
 		FullFrameAnimationRegistry.play_state(animated_body, "attack", Vector2.RIGHT if _last_facing_right else Vector2.LEFT)
 		return
@@ -479,10 +491,10 @@ func _play_attack_animation(direction: Vector2 = Vector2.ZERO) -> void:
 		return
 	if absf(direction.x) > 0.01:
 		_last_facing_right = direction.x > 0.0
-	var visual_direction := direction
-	if FullFrameAnimationRegistry.uses_explicit_horizontal_directions(animated_body) and absf(direction.x) <= 0.01:
-		visual_direction = Vector2.RIGHT if _last_facing_right else Vector2.LEFT
-	if FullFrameAnimationRegistry.play_state(animated_body, "attack", visual_direction):
+	# FAN-2519: направленным контрактам передаём реальный вектор удара —
+	# 8-направленные паки играют фактический ракурс (в т.ч. вертикальный),
+	# горизонтальные коллапсируют в память последнего горизонта в реестре.
+	if FullFrameAnimationRegistry.play_state(animated_body, "attack", direction):
 		_attack_anim_time = _active_full_frame_animation_duration(animated_body, 0.44)
 	else:
 		_attack_anim_time = 0.44
@@ -548,19 +560,28 @@ func _play_full_frame_death() -> bool:
 	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
 	if animated_body == null or not animated_body.visible or animated_body.sprite_frames == null:
 		return false
-	if not animated_body.sprite_frames.has_animation("death"):
+	# FAN-2519: наличие death-строки резолвим через реестр (8-направленные паки
+	# держат только `death_<suffix>`); нулевое направление берёт последний
+	# запомненный ракурс из памяти реестра.
+	if not FullFrameAnimationRegistry.has_state(animated_body, "death"):
 		return false
-	var direction := Vector2.RIGHT if _last_facing_right else Vector2.LEFT
-	return FullFrameAnimationRegistry.play_state(animated_body, "death", direction)
+	return FullFrameAnimationRegistry.play_state(animated_body, "death", Vector2.ZERO)
 
 
 func _full_frame_death_duration() -> float:
 	var animated_body := get_node_or_null("AnimatedBody") as AnimatedSprite2D
-	if animated_body == null or animated_body.sprite_frames == null or not animated_body.sprite_frames.has_animation("death"):
+	if animated_body == null or animated_body.sprite_frames == null:
 		return FULL_FRAME_DEATH_DURATION_FALLBACK
 	var frames := animated_body.sprite_frames
-	var frame_count := frames.get_frame_count("death")
-	var animation_speed := maxf(frames.get_animation_speed("death"), 1.0)
+	# FAN-2519: длительность — по фактической резолвнутой строке (направленные
+	# death-ряды 8-направленных паков), не по жесткому имени "death".
+	var death_row := str(animated_body.animation)
+	if not frames.has_animation(death_row):
+		death_row = "death"
+	if not frames.has_animation(death_row):
+		return FULL_FRAME_DEATH_DURATION_FALLBACK
+	var frame_count := frames.get_frame_count(death_row)
+	var animation_speed := maxf(frames.get_animation_speed(death_row), 1.0)
 	return clampf(float(frame_count) / animation_speed, 0.25, 1.2)
 
 

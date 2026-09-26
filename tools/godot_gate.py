@@ -47,6 +47,11 @@ SCRIPT_LOAD_FAILURE_PATTERNS = (
     "Failed loading resource",
 )
 IMPORT_CACHE_MISSING_MESSAGE = "godot_gate: import cache missing, running headless import first"
+PLAYER_IMPORT_PROBE = "res://tests/import_cache_player_load_test.gd"
+PLAYER_TEXTURE_IMPORTS = (
+    "assets/sprites/characters/berserk_unarmed.png",
+    "assets/sprites/characters/berserk_walk_sheet_v2.png",
+)
 MACHINE_RUN_TOKENS = 64
 
 
@@ -88,6 +93,22 @@ def _resolve_godot() -> str:
     return ""
 
 
+def _assert_requested_build(godot: str) -> None:
+    """Reject an explicitly pinned engine before it can rewrite sidecars."""
+    expected = os.getenv("GODOT_BUILD_ID", "").strip()
+    if not expected:
+        return
+    try:
+        actual = subprocess.check_output([godot, "--version"], text=True).strip().splitlines()[-1]
+    except (OSError, subprocess.CalledProcessError, IndexError) as exc:
+        raise RuntimeError(f"cannot verify GODOT_BUILD_ID={expected!r}: {exc}") from exc
+    if actual != expected:
+        raise RuntimeError(
+            f"Godot build mismatch: expected GODOT_BUILD_ID={expected!r}, got {actual!r}; "
+            "install the pinned build or unset GODOT_BUILD_ID for an unpinned local run"
+        )
+
+
 def _project_path(args: Sequence[str]) -> str:
     for index, arg in enumerate(args):
         if arg == "--path" and index + 1 < len(args):
@@ -105,22 +126,42 @@ def _needs_import_cache(args: Sequence[str], *, require_script: bool = True) -> 
     class_cache = os.path.join(project_path, ".godot", "global_script_class_cache.cfg")
     if not os.path.isdir(imported_dir) or not os.path.exists(class_cache):
         return True
-    try:
-        next(os.scandir(imported_dir)).name
-    except (StopIteration, FileNotFoundError, NotADirectoryError):
+    tracked_sources = [
+        source for source in PLAYER_TEXTURE_IMPORTS if Path(project_path, source).is_file()
+    ]
+    if tracked_sources and not any(Path(imported_dir).iterdir()):
+        # An empty imported/ only signals a stale cache for a project that
+        # actually owns importable assets; a fixture with none is legitimate.
         return True
+    for source in tracked_sources:
+        sidecar = Path(project_path, f"{source}.import")
+        try:
+            match = re.search(r'^path="res://(.godot/imported/[^\"]+\.ctex)"$', sidecar.read_text(encoding="utf-8"), re.MULTILINE)
+        except OSError:
+            return True
+        if match is None or not Path(project_path, match.group(1)).is_file():
+            return True
     return False
 
 
 def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False) -> int:
-    if not _needs_import_cache(args, require_script=not force):
-        return 0
     project_path = _project_path(args)
-    sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
-    # The import pre-pass is intentionally diagnostic-tolerant: existing green
-    # suites can emit unrelated import/resource warnings while warming the
-    # cache. Only the requested executable run below is a certifying call site.
-    return _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+    needs_import = _needs_import_cache(args, require_script=not force)
+    if needs_import:
+        sys.stderr.write(f"{IMPORT_CACHE_MISSING_MESSAGE}\n")
+        # The import pre-pass is intentionally diagnostic-tolerant: existing green
+        # suites can emit unrelated import/resource warnings while warming the
+        # cache. The Player probe below is the certifying call site.
+        code = _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+        if code != 0 or _needs_import_cache(args, require_script=False):
+            return code or 1
+    probe_path = os.path.join(project_path, PLAYER_IMPORT_PROBE.removeprefix("res://"))
+    if (needs_import or force) and os.path.isfile(probe_path):
+        return _run_godot(
+            [godot, "--headless", "--path", project_path, "--script", PLAYER_IMPORT_PROBE],
+            fail_on_fatal_output=True,
+        )
+    return 0
 
 
 def _write_live_output(chunk: bytes) -> None:
@@ -344,6 +385,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             "to an executable path\n"
         )
         return 127
+    try:
+        _assert_requested_build(godot)
+    except RuntimeError as exc:
+        sys.stderr.write(f"godot_gate: {exc}\n")
+        return 2
 
     deadline = time.monotonic() + max_wait
     exclusive = os.getenv("FSD_GODOT_EXCLUSIVE", "") == "1"

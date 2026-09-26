@@ -1,0 +1,12 @@
+{
+  "animation": "idle_west",
+  "case": 1,
+  "flip": true,
+  "frame": 0,
+  "scale": [
+    1.0,
+    1.0
+  ],
+  "sprite_sha": "687a4a7e60ccf0d737c99bd9913a34c69f5f3192ad4606a3f1071c8d2e356b61",
+  "texture": "res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres::Atlas_4"
+}

@@ -4,6 +4,7 @@ const CONFIG := preload("res://scripts/encounters/encounter_config.gd")
 const CONTEXT := preload("res://scripts/encounters/encounter_context.gd")
 const DIRECTOR := preload("res://scripts/encounters/encounter_beat_director.gd")
 const ADAPTER := preload("res://scripts/encounters/encounter_adapter.gd")
+const COMBAT_DIRECTOR := preload("res://scripts/combat_director.gd")
 const ROUTE := preload("res://scripts/route_map_screen.gd")
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
 
@@ -22,6 +23,11 @@ class FakeCombat extends RefCounted:
 		return int(plan.get("total_count", 0))
 
 
+class FakeProgression extends RefCounted:
+	func stage_scale(_stage: int) -> float:
+		return 1.0
+
+
 class FakeGame extends Node2D:
 	var current_node_seed := 4242
 	var current_combat_type := "battle"
@@ -33,7 +39,10 @@ class FakeGame extends Node2D:
 	var hud_layer: CanvasLayer = null
 	var ARENA_CENTER := Vector2(960, 540)
 	var ENEMY_SPAWN_WEIGHTS := {ENEMY: 1.0, SHOOTER: 1.0, BRUISER: 1.0}
-	var WAVE_SETTINGS := {"max_active_cap": 12}
+	var WAVE_SETTINGS := {"max_active_cap": 12, "base_active_cap": 8, "active_cap_per_stage": 0, "active_cap_per_wave_step": 0}
+	var PROGRESSION_DATA := FakeProgression.new()
+	var spawn_wave_index := 0
+	var route_stage := 0
 	var ACT_COUNT := 2
 	var ACT_SCALING_STAGE_OFFSET := 8
 	var stage := 3
@@ -58,6 +67,7 @@ func _initialize() -> void:
 	CONFIG.set_enabled_override(true)
 	CONFIG._set_catalog_for_tests(_spawn_catalog())
 	await _check_plan_parity()
+	await _check_full_capacity_guard()
 	await _check_quota_contract()
 	CONFIG.clear_enabled_override()
 	CONFIG._reset_cache_for_tests()
@@ -162,6 +172,30 @@ func _check_plan_parity() -> void:
 	combat = null
 	game.queue_free()
 	await process_frame
+	await process_frame
+
+
+func _check_full_capacity_guard() -> void:
+	var game := FakeGame.new()
+	root.add_child(game)
+	var combat := COMBAT_DIRECTOR.new(game)
+	combat._encounters.begin(game, combat)
+	var plan: Dictionary = combat._encounters.spawn_plan_projection()
+	_expect(not plan.is_empty(), "prepared normal battle must retain its canonical plan")
+	var preparation_resolutions := combat._encounters.debug_scene_resolution_count()
+	_expect(preparation_resolutions == int(plan.get("entries", []).size()),
+		"cold encounter preparation must resolve each plan scene once")
+	for _index in range(8):
+		var enemy := FakeEnemy.new()
+		enemy.add_to_group("enemies")
+		game.add_child(enemy)
+	await process_frame
+	_expect(combat.spawn_encounter_plan(plan) == 0,
+		"a full normal-wave cap must preserve the exact zero-spawn quota")
+	_expect(combat._encounters.debug_scene_resolution_count() == preparation_resolutions,
+		"a full-cap wave must not resolve any scene after preparation")
+	combat._encounters.shutdown(true)
+	game.queue_free()
 	await process_frame
 
 

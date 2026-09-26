@@ -8,6 +8,7 @@ extends RefCounted
 const Manifest := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_manifest.gd")
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const Timeline := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_timeline.gd")
+const DirectionContract := preload("res://scripts/ultimates/presentation/ultimate_visual_direction_contract.gd")
 
 
 class SceneHandle extends RefCounted:
@@ -26,6 +27,9 @@ var _scene: Node = null
 var _timeline: Timeline = null
 var _headless_mode := -1
 var _last_budget_diagnostic := ""
+## Declared end of the presentation (`timing.cancel`), the bound of a drain.
+var _cancel_seconds := INF
+var _draining := false
 
 
 func _init(headless_mode := -1) -> void:
@@ -41,6 +45,9 @@ func begin(host: Node, registry, profile: Dictionary) -> bool:
 	var runtime = manifest.get("runtime", {})
 	if not runtime is Dictionary:
 		return false
+	var timing = manifest.get("timing", {})
+	_cancel_seconds = float((timing as Dictionary).get("cancel", INF)) if timing is Dictionary else INF
+	_draining = false
 	var scene_path := str((runtime as Dictionary).get("scene_path", ""))
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		return false
@@ -65,7 +72,8 @@ func begin(host: Node, registry, profile: Dictionary) -> bool:
 	_timeline.begin({"scene": SceneHandle.new(_scene)})
 	if _scene.has_method("begin"):
 		_begin_scene(registry)
-	if not _within_declared_budget(runtime as Dictionary):
+	var ultimate_key := Schema.profile_key(str(profile.get("class_id", "")), str(profile.get("weapon_id", "")))
+	if not _within_declared_budget(runtime as Dictionary, ultimate_key):
 		finish("cancel")
 		return false
 	return true
@@ -81,6 +89,27 @@ func set_paused(value: bool) -> void:
 func advance(delta: float) -> void:
 	if _timeline != null:
 		_timeline.advance(delta)
+	if _scene != null and is_instance_valid(_scene) and _scene.has_method("advance"):
+		_scene.call("advance", delta)
+
+
+## Delivers one executor beat (`event_id` plus its payload) to the live
+## authored presentation. The timeline records the beat; a scene that opts into
+## beat-driven visuals may expose `present(event_id, payload)`. Returning true
+## means the beat was accepted by a live presentation and the controller must
+## not draw anything over it.
+func present_beat(event_id: String, payload: Dictionary) -> bool:
+	if _timeline == null:
+		return false
+	_timeline.record_beat(event_id, payload)
+	if _scene != null and is_instance_valid(_scene) and _scene.has_method("present"):
+		_scene.call("present", event_id, payload)
+	return true
+
+
+## Beats recorded by the current (or just finished) timeline, in arrival order.
+func recorded_beats() -> Array[Dictionary]:
+	return _timeline.recorded_beats() if _timeline != null else []
 
 
 func finish(reason: String) -> void:
@@ -90,10 +119,35 @@ func finish(reason: String) -> void:
 		_timeline.finish(reason)
 	_timeline = null
 	_scene = null
+	_draining = false
 
 
 func is_active() -> bool:
 	return _timeline != null
+
+
+## FAN-3941: natural gameplay completion may leave the presentation draining
+## to its declared cancel instead of releasing it at once. Returns false when
+## there is nothing to drain — no live timeline, a headless no-op timeline, no
+## finite declared cancel, or a cancel already passed (a long-lived executor
+## that outlived its presentation) — so the caller finishes immediately, as
+## before. Drain end is detected from the timeline's own clock, because
+## `advance` never self-finishes and `is_active` only tests presence.
+func begin_drain() -> bool:
+	if _timeline == null or str(_timeline.snapshot().get("state", "")) != Timeline.ACTIVE_STATE:
+		return false
+	if not is_finite(_cancel_seconds) or _timeline.elapsed_seconds() >= _cancel_seconds:
+		return false
+	_draining = true
+	return true
+
+
+func is_draining() -> bool:
+	return _draining and _timeline != null
+
+
+func drain_complete() -> bool:
+	return is_draining() and _timeline.elapsed_seconds() >= _cancel_seconds
 
 
 ## Last fail-closed visual-budget decision, suitable for activation diagnostics.
@@ -118,11 +172,14 @@ func _begin_scene(registry) -> void:
 			else:
 				_scene.call("begin", registry, {})
 		else:
-			_scene.call("begin", {})
+			if args is Array and (args as Array).size() >= 2:
+				_scene.call("begin", {}, _headless_mode)
+			else:
+				_scene.call("begin", {})
 		return
 
 
-func _within_declared_budget(runtime: Dictionary) -> bool:
+func _within_declared_budget(runtime: Dictionary, key: String) -> bool:
 	if _scene == null or not is_instance_valid(_scene):
 		return _reject_budget("scene is unavailable")
 	var drawn := _drawing_node_count(_scene)
@@ -140,6 +197,11 @@ func _within_declared_budget(runtime: Dictionary) -> bool:
 		return _reject_budget("drawn visual nodes %d exceed max_visual_nodes cap %d" % [drawn, max_visual_nodes])
 	if drawn > crowd_cap:
 		return _reject_budget("drawn visual nodes %d exceed crowd_cap %d" % [drawn, crowd_cap])
+	var material_errors := DirectionContract.scene_material_violations(
+		_scene, key, Schema.PRESENTATION_V2_MIGRATION_ALLOWLIST, runtime
+	)
+	if not material_errors.is_empty():
+		return _reject_budget("material budget rejected: %s" % "; ".join(material_errors))
 	_last_budget_diagnostic = ""
 	return true
 

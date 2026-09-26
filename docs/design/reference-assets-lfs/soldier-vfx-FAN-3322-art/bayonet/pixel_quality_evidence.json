@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "issue": "FAN-3860",
+  "class_id": "soldier",
+  "weapon_id": "soldier_bayonet",
+  "object_id": "174d2ac0-ee64-4e30-9ff5-be7a95a54c18",
+  "animation_group_id": "810e43bb-b9dc-4485-9721-31b612c8a7e6",
+  "generator_route": "PixelLab MCP via tools/pixellab_generate_pack.py",
+  "visual_review": {
+    "contact_sheet": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_contact_sheet.png",
+    "silhouette": "clear, centered and weapon-specific in every frame",
+    "movement": "cyan ghost charge trails build along three levelled bayonets; a crossed-bayonet pin flares on the impact beat, then a short rally spark fades",
+    "clipping": "none observed; alpha does not touch any canvas edge",
+    "stray_pixels": "none observed in contact-sheet inspection; detached sparks/trails are intentional release accents",
+    "opaque_background": "none; all four corners are transparent and edge rows are empty",
+    "seams": "none observed",
+    "static_duplicates": "none; all 9 decoded pixel hashes are unique and adjacent frames differ"
+  },
+  "checks": {
+    "all_frames_rgba_256": true,
+    "all_frames_have_transparent_background": true,
+    "all_frames_have_no_edge_visible_pixels": true,
+    "all_frames_have_16px_safe_gutter": true,
+    "all_frames_nonempty": true,
+    "all_adjacent_frames_change_pixels": true,
+    "all_frame_pixels_unique": true,
+    "source_runtime_byte_parity": true,
+    "runtime_import_sidecars_present": true
+  },
+  "frame_count": 9,
+  "frame_rate_fps": 3.0,
+  "frames": [
+    {
+      "index": 0,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f00.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f00.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f00.png",
+      "alpha_bbox_gt_8": [
+        49,
+        56,
+        210,
+        193
+      ],
+      "minimum_gutter_px": 46,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 12686,
+      "source_pixel_sha256": "bdcad13b5f6ab9ad2d6358ac19f96f1facde2fff16aeda1a6f5af7b3848a21f7",
+      "runtime_pixel_sha256": "bdcad13b5f6ab9ad2d6358ac19f96f1facde2fff16aeda1a6f5af7b3848a21f7"
+    },
+    {
+      "index": 1,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f01.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f01.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f01.png",
+      "alpha_bbox_gt_8": [
+        52,
+        51,
+        213,
+        202
+      ],
+      "minimum_gutter_px": 43,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 14267,
+      "source_pixel_sha256": "5049d456415280d64ed1fa75654de7a84540b592a050b0d451987780a26a6818",
+      "runtime_pixel_sha256": "5049d456415280d64ed1fa75654de7a84540b592a050b0d451987780a26a6818"
+    },
+    {
+      "index": 2,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f02.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f02.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f02.png",
+      "alpha_bbox_gt_8": [
+        50,
+        51,
+        211,
+        202
+      ],
+      "minimum_gutter_px": 45,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9786,
+      "source_pixel_sha256": "9419b423edb5b837d63c41aae6eb769ba70778949c3d0750609ac418e0822975",
+      "runtime_pixel_sha256": "9419b423edb5b837d63c41aae6eb769ba70778949c3d0750609ac418e0822975"
+    },
+    {
+      "index": 3,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f03.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f03.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f03.png",
+      "alpha_bbox_gt_8": [
+        50,
+        64,
+        208,
+        193
+      ],
+      "minimum_gutter_px": 48,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 8943,
+      "source_pixel_sha256": "00ba7d705f239bf8c479ff325928621ee7e58ee9dcb6f695921d5e8f181036f8",
+      "runtime_pixel_sha256": "00ba7d705f239bf8c479ff325928621ee7e58ee9dcb6f695921d5e8f181036f8"
+    },
+    {
+      "index": 4,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f04.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f04.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f04.png",
+      "alpha_bbox_gt_8": [
+        47,
+        64,
+        202,
+        193
+      ],
+      "minimum_gutter_px": 47,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 10259,
+      "source_pixel_sha256": "9461fba7b860a0f2c97fe489da5dd3e952f8ee31cdb327908c85e73491a18a83",
+      "runtime_pixel_sha256": "9461fba7b860a0f2c97fe489da5dd3e952f8ee31cdb327908c85e73491a18a83"
+    },
+    {
+      "index": 5,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f05.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f05.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f05.png",
+      "alpha_bbox_gt_8": [
+        47,
+        64,
+        202,
+        192
+      ],
+      "minimum_gutter_px": 47,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 11692,
+      "source_pixel_sha256": "dd8ced26d295daa4869a866d12de1793a722b8bdddc5d701acb6dea0877b2fc7",
+      "runtime_pixel_sha256": "dd8ced26d295daa4869a866d12de1793a722b8bdddc5d701acb6dea0877b2fc7"
+    },
+    {
+      "index": 6,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f06.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f06.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f06.png",
+      "alpha_bbox_gt_8": [
+        48,
+        64,
+        205,
+        192
+      ],
+      "minimum_gutter_px": 48,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 11199,
+      "source_pixel_sha256": "2400c35bf66d28f44613657d10ffd60f8f131c25339a07809cc1703a835b0e17",
+      "runtime_pixel_sha256": "2400c35bf66d28f44613657d10ffd60f8f131c25339a07809cc1703a835b0e17"
+    },
+    {
+      "index": 7,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f07.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f07.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f07.png",
+      "alpha_bbox_gt_8": [
+        49,
+        65,
+        211,
+        193
+      ],
+      "minimum_gutter_px": 45,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 10696,
+      "source_pixel_sha256": "1a331b0374c000491b1dae9f7ee68ac817ed20a9f1833f6cce8e980fdb09f9b9",
+      "runtime_pixel_sha256": "1a331b0374c000491b1dae9f7ee68ac817ed20a9f1833f6cce8e980fdb09f9b9"
+    },
+    {
+      "index": 8,
+      "file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/bayonet_f08.png",
+      "raw_file": "docs/design/reference-assets-lfs/soldier-vfx-FAN-3322-art/bayonet/raw/bayonet_f08.png",
+      "runtime_file": "assets/sprites/effects/soldier/bayonet/bayonet_f08.png",
+      "alpha_bbox_gt_8": [
+        49,
+        64,
+        210,
+        193
+      ],
+      "minimum_gutter_px": 46,
+      "edge_visible_pixels": 0,
+      "visible_pixels_alpha_gt_8": 9784,
+      "source_pixel_sha256": "be47673c2a20a1d6e70b48f6636aa07e3a412915f3b8cbcda7500380bf96d0d4",
+      "runtime_pixel_sha256": "be47673c2a20a1d6e70b48f6636aa07e3a412915f3b8cbcda7500380bf96d0d4"
+    }
+  ],
+  "decision": "pass"
+}

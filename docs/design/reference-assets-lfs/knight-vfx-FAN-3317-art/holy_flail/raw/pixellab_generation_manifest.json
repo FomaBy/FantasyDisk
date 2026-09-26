@@ -1,0 +1,95 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-01T18:29:24Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "05d4354b-d4a4-4d37-af06-25b3da2bedc4",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered holy knight flail ultimate VFX prop, radiant silver chain with a heavy morning-star flail head, ivory gold and cobalt holy gems, a circular sacred halo and three distinct chain links, dark fantasy D&D pixel art, top-down isolated weapon effect, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same centered holy knight flail with the radiant silver chain, heavy morning-star head, ivory gold cobalt gems and circular sacred halo with stable proportions and palette; animate an expanding seven-step orbital spiral: chain uncoils from the center, flail head sweeps clockwise through a wide arc, halo rings expand outward, blue-white holy sparks trace the path, the last frame closes the circle with a bright counter pulse, then settle to the clean centered flail pose; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "39b9d39e-ca0c-4df3-9e99-00c8862a9d3b",
+    "canonical_tag": "knight_holy_flail_expanding_spiral"
+  },
+  "frames": [
+    {
+      "file": "holy_flail_f00.png",
+      "bytes": 41019,
+      "url_kind": "template",
+      "encoded_sha256": "473161379ca9a0d712d8933459396934bbd54772659fa127a03acbe8295249ec",
+      "pixel_sha256": "4756e441bba509c9e3f0359f44ce809e887e67e53802087ccbed2e78c0fdd618"
+    },
+    {
+      "file": "holy_flail_f01.png",
+      "bytes": 41905,
+      "url_kind": "template",
+      "encoded_sha256": "4536dfb8f7768cd19ed63ab7390c13f856a1202151ce9bf98fadfd18aa016fe8",
+      "pixel_sha256": "a19627d3f44507b96eee20d1209b9b964227253961e24b1c7528fd53b76668c4"
+    },
+    {
+      "file": "holy_flail_f02.png",
+      "bytes": 43144,
+      "url_kind": "template",
+      "encoded_sha256": "41e6879128c3b540fc54c12ee4022916e47d45204c8fffa9d67011a047070d77",
+      "pixel_sha256": "d2d5ae2b570b8d025e69653ec8045df870bee40db14add063c65978c4fc5b437"
+    },
+    {
+      "file": "holy_flail_f03.png",
+      "bytes": 50137,
+      "url_kind": "template",
+      "encoded_sha256": "e63b2dc3830e791e6db38f7c06dfa80779a7caa759f407a87882ee4d0cd354e4",
+      "pixel_sha256": "ea68592249f60dd418b6e49e072997148a8ddd6732df953c5ad6e096d4a42973"
+    },
+    {
+      "file": "holy_flail_f04.png",
+      "bytes": 44292,
+      "url_kind": "template",
+      "encoded_sha256": "123f16dad7add0d28c91a13e884edc5efcbbdd4374119ca451fed9204189e5bc",
+      "pixel_sha256": "4a95aee80d8672b6d7c8c7db71cd747273b74a0a2b521e241720aa3b48f28dd4"
+    },
+    {
+      "file": "holy_flail_f05.png",
+      "bytes": 41408,
+      "url_kind": "template",
+      "encoded_sha256": "01f7d36aca23980a3799a881ebb7f569c2a7d44245e5ed1eabebc77368a170fd",
+      "pixel_sha256": "7778a3d16691c4a050cfac513ef172c2d7b33ac293160b7f083a029217b31eb4"
+    },
+    {
+      "file": "holy_flail_f06.png",
+      "bytes": 47064,
+      "url_kind": "template",
+      "encoded_sha256": "0c7d8a00448cab6c1418822bd7122362b32ddb58b41434ff916ae519e6e7fb00",
+      "pixel_sha256": "b2624c4d3773b9b1f26ac6333a71a0f26278acd78ad389bd6a8cda2d3ab9045f"
+    },
+    {
+      "file": "holy_flail_f07.png",
+      "bytes": 47134,
+      "url_kind": "template",
+      "encoded_sha256": "70bc4f2ff29f61f5fe302f0618b5b3dd7f25972e2e3bc880ccde4c9b58fdf4ad",
+      "pixel_sha256": "0170f49b9d425115bb056f980bd30b9a8fca0b32d19d684745237aa8e10d8c0e"
+    },
+    {
+      "file": "holy_flail_f08.png",
+      "bytes": 42525,
+      "url_kind": "template",
+      "encoded_sha256": "90026d84b399fe2ed14838785aaa655622f7a9722235e295b512ad976f6aa116",
+      "pixel_sha256": "b88de506924ecdef291ff64440ed8ef97ab61ca3895688660fd7d64416302d01"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "canonical_ultimate_key": "knight/holy_flail"
+}

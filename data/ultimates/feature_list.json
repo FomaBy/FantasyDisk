@@ -1,0 +1,823 @@
+{
+  "schema_version": 1,
+  "canonical_source": "data/ultimates/schema/v1/classes (identities), data/ultimates/classes (ready overlays)",
+  "contract": "docs/design/content/ultimate_feature_list_evidence.md",
+  "entries": [
+    {
+      "id": "berserk/sword",
+      "class_id": "berserk",
+      "weapon_key": "sword",
+      "behavior": "Алый Вихрь: Три призрачных клинка раскручиваются по расширяющейся орбите и сходятся в один крестовой удар по прицелу.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/berserk_live_test.gd"
+      ]
+    },
+    {
+      "id": "berserk/axe",
+      "class_id": "berserk",
+      "weapon_key": "axe",
+      "behavior": "Петля Палача: Гигантский топор улетает по прицелу до края арены, метит всех на пути и детонирует на обратном ходу, добивая раненых обычных врагов.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/berserk_live_test.gd"
+      ]
+    },
+    {
+      "id": "berserk/hammer",
+      "class_id": "berserk",
+      "weapon_key": "hammer",
+      "behavior": "Раскол Четырёх Сторон: Три такта подряд: удары по четырём сторонам, затем по диагоналям, затем центральный разлом, который сбивает с ног всех уцелевших.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/berserk_live_test.gd"
+      ]
+    },
+    {
+      "id": "soldier/soldier_rifle",
+      "class_id": "soldier",
+      "weapon_key": "soldier_rifle",
+      "behavior": "Приказ: Сплошной Огонь: Призрачная шеренга поднимает винтовки за боевым знаменем и тремя залпами простреливает полосу через всю арену, прикрывая отход дымом.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/soldier_runtime_test.gd"
+      ]
+    },
+    {
+      "id": "soldier/soldier_grenade",
+      "class_id": "soldier",
+      "weapon_key": "soldier_grenade",
+      "behavior": "Семь Секунд до Ада: Высокий бросок рассеивает семь тяжёлых гранат вокруг точки прицела; общий фитиль отсчитывает семь тактов, и цепь детонирует снаружи внутрь в огненный столб.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/soldier_runtime_test.gd"
+      ]
+    },
+    {
+      "id": "soldier/soldier_bayonet",
+      "class_id": "soldier",
+      "weapon_key": "soldier_bayonet",
+      "behavior": "Последняя Атака: Три волны призрачной пехоты идут в штыковую по прицельному коридору и отходят на салют, пока герой держит короткую фронтальную защиту.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/soldier_runtime_test.gd"
+      ]
+    },
+    {
+      "id": "thief/thief_coin_pouch",
+      "class_id": "thief",
+      "weapon_key": "thief_coin_pouch",
+      "behavior": "Джекпот Короля: Тринадцать монет прыгают по разным целям, слабея с каждым скачком, и возвращаются одним взрывом; каждое третье попадание приносит золото.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/thief_live_test.gd"
+      ]
+    },
+    {
+      "id": "thief/thief_shadow_cloak",
+      "class_id": "thief",
+      "weapon_key": "thief_shadow_cloak",
+      "behavior": "Безмолвный Приговор: До восьми самых живучих целей получают метку смерти, и тени бьют их по очереди, усиливая каждый следующий удар.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/thief_live_test.gd"
+      ]
+    },
+    {
+      "id": "thief/thief_smoke_bomb",
+      "class_id": "thief",
+      "weapon_key": "thief_smoke_bomb",
+      "behavior": "Идеальное Ограбление: Дымовой купол на четыре секунды резко поднимает уклонение, метит ближайших врагов ложными целями и обрушивает на них накопленное давление на выходе.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/thief_live_test.gd"
+      ]
+    },
+    {
+      "id": "elementalist/elementalist_orb_ring",
+      "class_id": "elementalist",
+      "weapon_key": "elementalist_orb_ring",
+      "behavior": "Великий Конклав: Четыре стихийные печати по очереди бьют огнём, льдом, ветром и разрядом, а затем сходятся в сверхновую, сила которой растёт от накопленных меток.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/elementalist_live_test.gd"
+      ]
+    },
+    {
+      "id": "elementalist/elementalist_prism_focus",
+      "class_id": "elementalist",
+      "weapon_key": "elementalist_prism_focus",
+      "behavior": "Призматический Суд: Шесть решётчатых росчерков поворачиваются над точкой прицела и завершаются радужным разломом, который бьёт и замедляет всю арену.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/elementalist_live_test.gd"
+      ]
+    },
+    {
+      "id": "elementalist/elementalist_meteor_core",
+      "class_id": "elementalist",
+      "weapon_key": "elementalist_meteor_core",
+      "behavior": "Падение Звезды: Руна предупреждает о падении, метеор выжигает точку удара и оставляет гравитационно-огненный кратер с серией пульсаций.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/elementalist_live_test.gd"
+      ]
+    },
+    {
+      "id": "sniper/sniper_deadeye_rifle",
+      "class_id": "sniper",
+      "weapon_key": "sniper_deadeye_rifle",
+      "behavior": "Выстрел Мертвого Глаза: Один прицельный выстрел вдоль рельса: самая живучая цель на линии получает полуторный урон в голову, остальные — тем меньше, чем глубже стоят.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/sniper_live_test.gd"
+      ]
+    },
+    {
+      "id": "sniper/sniper_spotter_scope",
+      "class_id": "sniper",
+      "weapon_key": "sniper_spotter_scope",
+      "behavior": "Прицел Наводчика: Девять небесных захватов распределяются по самым опасным целям в зоне поражения, и каждый вызывает свой артиллерийский снаряд.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/sniper_live_test.gd"
+      ]
+    },
+    {
+      "id": "sniper/sniper_shatter_rounds",
+      "class_id": "sniper",
+      "weapon_key": "sniper_shatter_rounds",
+      "behavior": "Осколочные Патроны: Пять рикошетных траекторий уходят по разным целям и дважды отскакивают к ближайшим нетронутым, осыпая их осколками.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/sniper_live_test.gd"
+      ]
+    },
+    {
+      "id": "priest/priest_reliquary",
+      "class_id": "priest",
+      "weapon_key": "priest_reliquary",
+      "behavior": "Суд Светлой Святыни: Открытый реликварий растит три круга освящения: они бьют, метят святыней и превращают снятое здоровье в лечение, а избыток — во временный щит.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/priest_live_test.gd"
+      ]
+    },
+    {
+      "id": "priest/priest_censer",
+      "class_id": "priest",
+      "weapon_key": "priest_censer",
+      "behavior": "Обет Непоколебимости: Орбита гигантской кадильницы держит сильное временное поглощение и возвращает часть принятого урона одним святым ударом.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/priest_live_test.gd"
+      ]
+    },
+    {
+      "id": "priest/priest_chime",
+      "class_id": "priest",
+      "weapon_key": "priest_chime",
+      "behavior": "Три Колокола Рассвета: Первый колокол сбивает обычных врагов, второй пускает святую цепь по шести телам, третий лечит от снятого ею здоровья и открывает окно спасения от смерти.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/priest_live_test.gd"
+      ]
+    },
+    {
+      "id": "biologist/biologist_spore_lens",
+      "class_id": "biologist",
+      "weapon_key": "biologist_spore_lens",
+      "behavior": "Мировой Мицелий: Контактное прорастание укореняет и заражает ближних, две волны разносят заражение дальше, а гибель заражённых раскрывает до трёх цветений.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/biologist_live_test.gd"
+      ]
+    },
+    {
+      "id": "biologist/biologist_sample_injector",
+      "class_id": "biologist",
+      "weapon_key": "biologist_sample_injector",
+      "behavior": "Идеальный Образец: Прицельная линия извлекает самую живучую цель и берёт образец на десять секунд: три импульса анализа возвращаются к ней с усиленным по её архетипу уроном.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/biologist_live_test.gd"
+      ]
+    },
+    {
+      "id": "biologist/biologist_symbiote_seed",
+      "class_id": "biologist",
+      "weapon_key": "biologist_symbiote_seed",
+      "behavior": "Матка Симбионта: В точке прицела разворачивается собственный кокон: он стягивает и укореняет цели, выпускает шесть личинок и завершается взрывом вылупления.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/biologist_live_test.gd"
+      ]
+    },
+    {
+      "id": "robot/robot_magnetic_anchor",
+      "class_id": "robot",
+      "weapon_key": "robot_magnetic_anchor",
+      "behavior": "Сингулярный Якорь: Прицельный гравитационный колодец стягивает обычных врагов и держит их обездвиженными до имплозии, которая срывается в ЭМИ-кольцо.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/robot_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "robot/robot_hydraulic_press",
+      "class_id": "robot",
+      "weapon_key": "robot_hydraulic_press",
+      "behavior": "Протокол Сжатия: Три встречных сжатия сдавливают прицельный коридор к оси, а гидравлический сброс добивает всё, что в нём осталось.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/robot_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "robot/robot_reactor_core",
+      "class_id": "robot",
+      "weapon_key": "robot_reactor_core",
+      "behavior": "Красная Зона: Восемь сопел разгоняются с каждой волной и вычищают лучи вокруг героя под временным поглощением, заканчиваясь добела раскалённым выбросом.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/robot_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "engineer/engineer_sentry_wrench",
+      "class_id": "engineer",
+      "weapon_key": "engineer_sentry_wrench",
+      "behavior": "Гнездо Часовых: Шесть временных турелей занимают шестиугольник и восемью синхронными залпами простреливают все три встречные хорды.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "engineer/engineer_repair_drone",
+      "class_id": "engineer",
+      "weapon_key": "engineer_repair_drone",
+      "behavior": "Рой Ремонтников: Двенадцать микродронов кружат вокруг героя: шесть волн таранят ближайших врагов, чинят героя и его устройства и открывают финальный щит.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "engineer/engineer_pressure_mines",
+      "class_id": "engineer",
+      "weapon_key": "engineer_pressure_mines",
+      "behavior": "Минное Поле: Шестнадцать временных мин ложатся кольцом; сработавшая мина поднимает двух соседей, а остальные добивают поле снаружи внутрь.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/engineer_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "dark_mage/dark_book",
+      "class_id": "dark_mage",
+      "weapon_key": "dark_book",
+      "behavior": "Зеркало Бездны: До двенадцати целей получают исходный взрыв и отражённый — в зеркальной точке; смертельное попадание раскрывает один взрыв смерти.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "dark_mage/cursed_skull",
+      "class_id": "dark_mage",
+      "weapon_key": "cursed_skull",
+      "behavior": "Корона Проклятых: До четырнадцати целей по всему экрану получают метку, режущую их урон; четыре импульса проклятия, перенос метки с погибших и общий сбор урожая.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "dark_mage/dark_wand",
+      "class_id": "dark_mage",
+      "weapon_key": "dark_wand",
+      "behavior": "Нить Исчезновения: Прицельный рельс метит до десяти целей, и все метки схлопываются разом — каждая новая цель усиливает общий обвал.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "guitarist/electric_guitar",
+      "class_id": "guitarist",
+      "weapon_key": "electric_guitar",
+      "behavior": "Последний Аккорд: Пять прицельных риффов расходятся веером, а перпендикулярный финальный аккорд бьёт по коридору и оглушает обычных врагов, задетых риффом.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "guitarist/bass_guitar",
+      "class_id": "guitarist",
+      "weapon_key": "bass_guitar",
+      "behavior": "Сабвуфер Преисподней: Четыре концентрические волны стягивают, сжимают, подбрасывают и наконец выбрасывают толпу.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "guitarist/sound_amp",
+      "class_id": "guitarist",
+      "weapon_key": "sound_amp",
+      "behavior": "Стена Звука: Четыре усилителя очерчивают квадратное поле: импульсы обратной связи бьют и замедляют всех внутри, а перегрузка вышвыривает их наружу.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/guitarist_ultimate_live_test.gd"
+      ]
+    },
+    {
+      "id": "assassin/chakrams",
+      "class_id": "assassin",
+      "weapon_key": "chakrams",
+      "behavior": "Восемь Лун: Восемь чакрамов уходят по восьми направлениям и возвращаются по дуге; на обратном пути они бьют только помеченных и добивают раненых обычных врагов.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/assassin_live_test.gd"
+      ]
+    },
+    {
+      "id": "assassin/shadow_daggers",
+      "class_id": "assassin",
+      "weapon_key": "shadow_daggers",
+      "behavior": "Мгновение до Смерти: До семи самых живучих целей получают метку, после чего идёт серия ударов в спину, а финальное раскрытие разряжает все метки одним кадром.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/assassin_live_test.gd"
+      ]
+    },
+    {
+      "id": "assassin/venom_wire",
+      "class_id": "assassin",
+      "weapon_key": "venom_wire",
+      "behavior": "Чёрная Паутина: Шесть якорей растягивают паутину из рёбер и хорд: три режущих импульса стягивают обычных врагов, травят и замедляют, а токсиновый взрыв сжигает накопленные стаки.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/assassin_live_test.gd"
+      ]
+    },
+    {
+      "id": "ranger/moon_crossbow",
+      "class_id": "ranger",
+      "weapon_key": "moon_crossbow",
+      "behavior": "Лунная Охота: Лунная метка ложится на самую тяжёлую цель, пять волн болтов бьют по ней и делятся частью урона с четырьмя соседями; гибель метки передаёт охоту дальше.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/ranger_live_test.gd"
+      ]
+    },
+    {
+      "id": "ranger/storm_longbow",
+      "class_id": "ranger",
+      "weapon_key": "storm_longbow",
+      "behavior": "Глаз Бури: Шесть грозовых тактов проходят прицельный коридор от хвоста к острию: ближняя к фронту цель получает полный удар, остальные — всё меньше, и всех сбивает с оси.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/ranger_live_test.gd"
+      ]
+    },
+    {
+      "id": "ranger/hunter_trap",
+      "class_id": "ranger",
+      "weapon_key": "hunter_trap",
+      "behavior": "Великая Западня: Три призрачных кольца сжимаются к точке прицела, а цепная сеть накрывает весь капкан: центральная цель получает полный укус, остальные — свою долю.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/ranger_live_test.gd"
+      ]
+    },
+    {
+      "id": "doctor/restore_potion",
+      "class_id": "doctor",
+      "weapon_key": "restore_potion",
+      "behavior": "Эликсир Жизни и Смерти: Прицельный двойной сосуд бьёт по внешней зоне и превращает нанесённый урон в лечение, а его избыток — во временный щит.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/doctor_live_test.gd"
+      ]
+    },
+    {
+      "id": "doctor/plague_syringe",
+      "class_id": "doctor",
+      "weapon_key": "plague_syringe",
+      "behavior": "Чёрная Эпидемия: Самый живучий враг становится нулевым пациентом: пять волн разносят заразу без повторного витка и завершаются финалом чумной маски.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/doctor_live_test.gd"
+      ]
+    },
+    {
+      "id": "doctor/bone_saw",
+      "class_id": "doctor",
+      "weapon_key": "bone_saw",
+      "behavior": "Экстренная Операция: Шесть ближних оборотов пилы срезают здоровье вокруг героя, обращая снятое в вытяжку, а накопленную жизненность — в щит-шов.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/doctor_live_test.gd"
+      ]
+    },
+    {
+      "id": "chemist/blast_powder",
+      "class_id": "chemist",
+      "weapon_key": "blast_powder",
+      "behavior": "Философский Взрыв: Пять зарядов складывают пентаграмму, кристаллизуют всех под ней, стягивают внутрь и превращают в один трансмутирующий взрыв.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd"
+      ]
+    },
+    {
+      "id": "chemist/acid_flask",
+      "class_id": "chemist",
+      "weapon_key": "acid_flask",
+      "behavior": "Царь-Колба: Прицельная колба разливает кислотное озеро: оно растёт до полного радиуса, растворяет всё внутри и копит заряд кислоты.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd"
+      ]
+    },
+    {
+      "id": "chemist/homunculus_vial",
+      "class_id": "chemist",
+      "weapon_key": "homunculus_vial",
+      "behavior": "Совершенный Гомункул: Постоянная пара призывов сливается во временного аватара, который бьёт за двоих, а к концу каста пара возвращается в прежнем виде.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd"
+      ]
+    },
+    {
+      "id": "knight/long_spear",
+      "class_id": "knight",
+      "weapon_key": "long_spear",
+      "behavior": "Стена Копий: Прицельный коридор фаланги: три упорядоченных ряда пробивают линию и пришпиливают обычных врагов, не сдвигая элиту и боссов.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/knight_trio_integration_test.gd"
+      ]
+    },
+    {
+      "id": "knight/tower_shield",
+      "class_id": "knight",
+      "weapon_key": "tower_shield",
+      "behavior": "Непроходимый Рубеж: Фронтальная защита копит предотвращённый урон в счётчике и разряжает его одной широкой контратакой.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/knight_trio_integration_test.gd"
+      ]
+    },
+    {
+      "id": "knight/holy_flail",
+      "class_id": "knight",
+      "weapon_key": "holy_flail",
+      "behavior": "Небесная Спираль: Семь витков расширяющейся спирали стягивают толпу и завершаются одним выбросом наружу.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/knight_trio_integration_test.gd"
+      ]
+    },
+    {
+      "id": "druid/summon_amulet",
+      "class_id": "druid",
+      "weapon_key": "summon_amulet",
+      "behavior": "Дикая Охота: Восемь призрачных зверей срываются по сторонам света и проводят шесть волн охоты по приоритетным целям, каждый удар с ограниченным расплеском.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/druid_live_test.gd"
+      ]
+    },
+    {
+      "id": "druid/briar_staff",
+      "class_id": "druid",
+      "weapon_key": "briar_staff",
+      "behavior": "Лес за Одно Дыхание: Пять семян растят единую решётку с читаемыми проходами: она укореняет обычных врагов, замедляет стойких и завершается двумя пронзающими импульсами и терновым венцом.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/druid_live_test.gd"
+      ]
+    },
+    {
+      "id": "druid/raven_totem",
+      "class_id": "druid",
+      "weapon_key": "raven_totem",
+      "behavior": "Ночь Тысячи Крыльев: Тотем метит стаю врагов, снижая их скорость и меткость, проводит четыре захода по три цели и заканчивается одним общим схлопыванием.",
+      "state": "active",
+      "verification": [
+        "python3",
+        "tools/godot_gate.py",
+        "--headless",
+        "--path",
+        ".",
+        "--script",
+        "res://tests/ultimates/mechanics/druid_live_test.gd"
+      ]
+    }
+  ]
+}

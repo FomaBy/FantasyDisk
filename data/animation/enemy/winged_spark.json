@@ -1,0 +1,14 @@
+{
+	"provenance": "FAN-2619: dedicated 8-direction pack replacing the single authored horizontal view + flip. idle_<dir> carries the hover-flap loop (a flying actor has no separate \"hover\" state name in the resolver).",
+	"frames": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",
+	"scale": {
+		"x": 0.32,
+		"y": 0.32
+	},
+	"position": {
+		"x": 0.0,
+		"y": -42.0
+	},
+	"source_faces_left": true,
+	"explicit_eight_directions": true
+}

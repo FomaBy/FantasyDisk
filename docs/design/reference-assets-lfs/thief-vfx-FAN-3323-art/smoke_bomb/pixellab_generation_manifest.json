@@ -1,0 +1,101 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-09-02T20:32:58Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "2e8def6e-0640-41e7-8f89-d860b6599c2d",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered Thief ultimate smoke bomb: a large round black iron smoke-bomb sphere wrapped with two crossed braided rope bands, a short burning fuse with a tiny warm ember, and three soft grey-blue smoke wisps curling from the fuse, top-down D&D dark fantasy pixel art, isolated VFX prop on transparent background, fill roughly 65 to 75 percent of the square while keeping the entire silhouette visible, crisp thief-specific silhouette, no character, no text, no letters, no symbols, no pull ring, no pin, no modern military grenade, no rectangular canister, no border, no background",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same single round black iron rope-wrapped smoke bomb, crossed rope bands and short burning fuse centered with stable outline, proportions, palette and identity in every frame; animate a readable ultimate concealment release: the fuse ember flares, grey-blue smoke pours from the burning fuse and expands into layered curling wisps around the bomb, a broad soft smoke dome blooms at the impact beat, then the dome collapses into three drifting wisps while the round bomb remains clearly readable; measurable expanding and fading motion with distinct silhouettes in every frame, no static duplicates, no clipping, no stray pixels, transparent background, no new objects, no text, no letters, no pull ring, no pin, no modern grenade",
+      "frame_count": 8
+    },
+    "animation_group_id": "5a24cca2-2d98-49d7-9746-917bb2aeef5c",
+    "canonical_asset_key": "thief/smoke_bomb"
+  },
+  "frames": [
+    {
+      "file": "smoke_bomb_f00.png",
+      "bytes": 11418,
+      "url_kind": "template",
+      "encoded_sha256": "91578f747dacd73c0e3be9c1b6dfaa09789e4cc5d128e37fd45cbc4b34a3b009",
+      "pixel_sha256": "a03b0262d126fd376c61296a718d42bd72e8a9e6f9a615b5f198435660438737"
+    },
+    {
+      "file": "smoke_bomb_f01.png",
+      "bytes": 12137,
+      "url_kind": "template",
+      "encoded_sha256": "ef967930dcefd82517f9c4de9ea77fa53bb3f4a62934fa07991f8aea7900c689",
+      "pixel_sha256": "401ef24798e448a67fead6897c9a62478be94be125da2228e8c5adb534f0ef22"
+    },
+    {
+      "file": "smoke_bomb_f02.png",
+      "bytes": 11700,
+      "url_kind": "template",
+      "encoded_sha256": "d0736b64ce573a35869327d374880ced78997276933d43da733e918881998c45",
+      "pixel_sha256": "1d056c3c0dc56a8fdb48aa579f07e563db0d08b50e2d53b4c4dca2353268aa0f"
+    },
+    {
+      "file": "smoke_bomb_f03.png",
+      "bytes": 13177,
+      "url_kind": "template",
+      "encoded_sha256": "7248fd7978297aa02761bfa5f3b41aad04d6173c8245f3dea012cedb1ffa6faa",
+      "pixel_sha256": "7d27ee60a41d171c7dcaf3d6f471efe716f3335539c486db33eb176dcf76c05e"
+    },
+    {
+      "file": "smoke_bomb_f04.png",
+      "bytes": 15389,
+      "url_kind": "template",
+      "encoded_sha256": "375b917817169adfea4460fd770885585bed18d155891bb64ca6b6f0647cb719",
+      "pixel_sha256": "04a08e4f92c93f2530263db83ad829ee5168b13e0a8eb3f2e75035331307626f"
+    },
+    {
+      "file": "smoke_bomb_f05.png",
+      "bytes": 17020,
+      "url_kind": "template",
+      "encoded_sha256": "45a62455b5cc4829077fd236c0d1a10b7a70539dc0c888b4efe7d0af01c6fbf2",
+      "pixel_sha256": "7d1fa8702d54e1adc7b8ba02e12b6170bc5b466394628e317082f6861c6d314d"
+    },
+    {
+      "file": "smoke_bomb_f06.png",
+      "bytes": 16961,
+      "url_kind": "template",
+      "encoded_sha256": "6549feab6d8159d69f73cdae87858574864146ad14cb411b0dbf8188683d5ed4",
+      "pixel_sha256": "db56f486e97a833e7ecc1e447b89bd882639b395bbf3610e03d6250fa077a8b4"
+    },
+    {
+      "file": "smoke_bomb_f07.png",
+      "bytes": 16406,
+      "url_kind": "template",
+      "encoded_sha256": "a2901ddd5ce58b884e9ebbd1fcfd826a1786a5c916f68dfad150f653e10e47f1",
+      "pixel_sha256": "28da076d366b3c9873d0f599a55014b41c94a84467368b9ff28b793f7ccf491f"
+    },
+    {
+      "file": "smoke_bomb_f08.png",
+      "bytes": 10558,
+      "url_kind": "template",
+      "encoded_sha256": "3047f6d58d60abf957bd7af52025c39b28924852a016339f43d067bee9eae65d",
+      "pixel_sha256": "0066d6b6250357dfa2b231ff275ea9422b5c8659c3a71a4c7b5a751e0aaf423c"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)",
+  "source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb/raw",
+  "accepted_source_dir": "docs/design/reference-assets-lfs/thief-vfx-FAN-3323-art/smoke_bomb",
+  "postprocess": {
+    "method": "raw PixelLab 256x256 frames preserved under raw/; accepted/runtime frames are nearest-neighbor 224x224 inset at (16,16) on a transparent 256x256 canvas",
+    "source_runtime_byte_parity": true,
+    "accepted_safe_gutter_px": 16
+  }
+}

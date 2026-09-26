@@ -8,7 +8,7 @@ its scene, timers, transient ledgers, modifiers, and leased controls.
 | Weapon ID | Identity | Bounded outcome | Boss/control rail |
 | --- | --- | --- | --- |
 | `long_spear` | aimed phalanx corridor | three ordered pierce rows and normal-only pin | 9% cast cap; epic and boss receive no pin or push |
-| `tower_shield` | frontal guard and stored counter | measured eligible prevention fills one 80-point ledger; one 135° counter releases it | 7% cast cap; epic push/duration are 25%/50%, bosses receive no counter control |
+| `tower_shield` | frontal guard and stored counter | measured eligible prevention fills one 80-point ledger; one 135° counter releases it to every eligible enemy in its arc | 7% cast cap; epic push/duration are 25%/50%, bosses receive no counter control |
 | `holy_flail` | expanding pull-launch spiral | seven ordered turns, then one outward launch | 7% cast cap; epic controls are reduced and bosses never move |
 
 ## Tower Shield guard contract
@@ -21,8 +21,8 @@ substitution, duplicate IDs, replay, a spent counter, or a finished activation
 all fail closed in the shared owner-resource contract.
 
 At 5.6 seconds the leaf consumes its resource exactly once. The counter uses
-the accepted shield geometry: a 195px, 135° forward arc, at most four targets,
-and a 55% stored-damage conversion. Normal enemies receive the 230px push and
+the accepted shield geometry: a 195px, 135° forward arc with no target-count
+cap, and a 55% stored-damage conversion. Normal enemies receive the 230px push and
 0.85-second slow; epic targets receive 25% push and 50% duration; bosses can
 take the bounded player-owned counter damage but receive neither displacement
 nor a status. The activation-owned scene reuses the approved

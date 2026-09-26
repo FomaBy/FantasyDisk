@@ -1,0 +1,94 @@
+{
+  "tool": "tools/pixellab_generate_pack.py",
+  "tool_version": "1.0.0",
+  "generated_at": "2026-08-28T23:01:46Z",
+  "encoder": {
+    "library": "Pillow",
+    "library_version": "11.3.0",
+    "builder_version": "1.0.0"
+  },
+  "object": {
+    "pixel_lab_object_id": "767c8ae0-535d-4b64-87fc-bdf6ce4a01d2",
+    "create_tool": "create_1_direction_object",
+    "create_params": {
+      "description": "one centered infernal bass guitar subwoofer core with a dark iron speaker cone, concentric cyan violet and ember-orange compression rings, heavy rune-like sound wave ridges, dark fantasy D&D pixel art, top-down isolated ultimate VFX prop, crisp readable silhouette, transparent background, no hands, no character, no text, no extra props",
+      "size": 256,
+      "view": "top-down"
+    },
+    "animate_tool": "animate_object",
+    "animate_params": {
+      "mode": "v3",
+      "animation_description": "keep the same centered bass subwoofer core and concentric ring structure with stable proportions and palette; animate the innermost cone throbbing, cyan and violet compression rings pulling inward, a heavy orange subwoofer wave expanding outward in successive radii, then settling with a deep bass recoil; every frame has clear measurable motion, no duplicate frames, no clipping, no stray pixels, no opaque background, no new objects, no text",
+      "frame_count": 8
+    },
+    "pixel_lab_animation_group_id": "d3a0adcd-9c29-4cb8-9176-324e7238826f",
+    "canonical_tag": "guitarist_bass_guitar_hell_subwoofer"
+  },
+  "frames": [
+    {
+      "file": "bass_guitar_f00.png",
+      "bytes": 51474,
+      "url_kind": "template",
+      "encoded_sha256": "ddc173cfef70dba324fbea6f72429bdb0614a2b6100d93046cc914cede287048",
+      "pixel_sha256": "d4349331245dc5f4458eba7d487122b9f7837d97fa1d5882c4a56db2c097d01e"
+    },
+    {
+      "file": "bass_guitar_f01.png",
+      "bytes": 55598,
+      "url_kind": "template",
+      "encoded_sha256": "06bbf1698fbf9e0fa914fa8598f48874a594343ba2d00c2b94510995152569c7",
+      "pixel_sha256": "ff9647b2c44e8f048b987471ed6dcd16179e8e0a3680fe0cf94e5e168aa0d57d"
+    },
+    {
+      "file": "bass_guitar_f02.png",
+      "bytes": 57897,
+      "url_kind": "template",
+      "encoded_sha256": "6263e1536674b1df09ccdc6c141ea0df24f830a40ad3bd187e382bdb0f82b535",
+      "pixel_sha256": "08c3b5bd9eb6c6b2ce4c338df679c5ebde3f055c5b982ce140cabf1ce25ddcc3"
+    },
+    {
+      "file": "bass_guitar_f03.png",
+      "bytes": 59106,
+      "url_kind": "template",
+      "encoded_sha256": "3e839c7baf088f7443c8680ff25cfd1a72d5a03c41bac68728423a0811bff62c",
+      "pixel_sha256": "6097bbb6c98a0674d6ae71d3ca855699bcdb3984b1a34f9822700be4fa2e42a0"
+    },
+    {
+      "file": "bass_guitar_f04.png",
+      "bytes": 55179,
+      "url_kind": "template",
+      "encoded_sha256": "920c1288bad35bc810ac4b45bea95845977f443a63b93af78132c8020e5d2dd8",
+      "pixel_sha256": "d25893584072512b88253b82d11cdafa6eea5c0f235d67c56bf70b3bd8f53018"
+    },
+    {
+      "file": "bass_guitar_f05.png",
+      "bytes": 57575,
+      "url_kind": "template",
+      "encoded_sha256": "a6e58dae9f6ee12191e9f5d74c7b24f66ff988f730c9fe6e861e872eb79a3527",
+      "pixel_sha256": "5ee0cc73e6df70f1f4c3749b86e2d93b9528a875a281098f354c67d756ca7112"
+    },
+    {
+      "file": "bass_guitar_f06.png",
+      "bytes": 58844,
+      "url_kind": "template",
+      "encoded_sha256": "57a54c4cbdd90f53cb3b5623a700511408c672a80502504453e4af53a678b33e",
+      "pixel_sha256": "c2fd7e79936734d5c74d9904c9805bab3c242f21a128996224531fedaee5d899"
+    },
+    {
+      "file": "bass_guitar_f07.png",
+      "bytes": 53432,
+      "url_kind": "template",
+      "encoded_sha256": "38ba857177baeaacc5044265e198ec6e9d6ebfd9e1ea801fa9b5571e4269d058",
+      "pixel_sha256": "5d8dee8306b3a638c6d728ad833fc87aed33112c08214a44a142de540b9343f6"
+    },
+    {
+      "file": "bass_guitar_f08.png",
+      "bytes": 50713,
+      "url_kind": "template",
+      "encoded_sha256": "72544237a9161cef97573baf17860114bab7b96cb55266169015f4715d8f6825",
+      "pixel_sha256": "e9bc4d97c9c7a5913c0c9e2fbb5b5d9bdc314bc8bee94936925950b2b33a990c"
+    }
+  ],
+  "frame_count": 9,
+  "auth": "PIXELLAB_BEARER_TOKEN env (never committed)"
+}

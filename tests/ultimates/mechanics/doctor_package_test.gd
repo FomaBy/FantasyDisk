@@ -35,6 +35,11 @@ func _initialize() -> void:
 			var constants := (executor as GDScript).get_script_constant_map()
 			_check(str(constants.get("PROFILE_ID", "")) == "weapon_ultimate.profile.doctor.%s" % weapon_id,
 				"%s PROFILE_ID must match the frozen declaration" % weapon_id)
+			if weapon_id == "restore_potion":
+				var params := (profile.get("executor", {}) as Dictionary).get("params", {}) as Dictionary
+				var contract: Dictionary = (executor as GDScript).parameter_contract()
+				_check(not params.has("target_cap") and not contract.has("target_cap"),
+					"Life and Death must not carry a count-shaped target cap")
 	_test_fail_closed(registry)
 	_report()
 

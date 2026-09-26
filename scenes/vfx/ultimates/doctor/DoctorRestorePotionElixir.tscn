@@ -1,7 +1,13 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd" id="1_script"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_spriteframes.tres" id="2_cast_flash"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/doctor/restore_potion/poison_pool/poison_pool_spriteframes.tres" id="3_poison_pool"]
+[ext_resource type="SpriteFrames" path="res://assets/sprites/effects/doctor/restore_potion/victim_impact/victim_impact_spriteframes.tres" id="4_victim_impact"]
 
 [node name="DoctorRestorePotionElixir" type="Node2D"]
 script = ExtResource("1_script")
 weapon_id = "restore_potion"
+cast_frames = ExtResource("2_cast_flash")
+signature_frames = ExtResource("3_poison_pool")
+impact_frames = ExtResource("4_victim_impact")

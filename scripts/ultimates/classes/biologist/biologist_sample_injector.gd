@@ -1,8 +1,17 @@
 extends Node2D
 
+## Doubles as the root script of the authored presentation scene
+## (BiologistSampleInjectorPerfectSample.tscn): the static half executes the
+## mechanics, the effect half runs extraction and analysis pulses, and the
+## presentation instance receives beat payloads while the scene is the live
+## channel and plays the shared per-victim impact for the enemies each
+## damaging beat actually struck.
+
 const Library := preload("res://scripts/ultimates/executors/ultimate_executor_library.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const Activation := preload("res://scripts/ultimates/controller/ultimate_activation.gd")
+const ImpactPlayer := preload("res://scripts/ultimates/presentation/victim_impact_player.gd")
+const VICTIM_FRAMES := preload("res://assets/sprites/effects/biologist/sample_injector/sample_injector_spriteframes.tres")
 
 const PROFILE_ID := "weapon_ultimate.profile.biologist.biologist_sample_injector"
 const EXECUTOR_ID := "weapon_ultimate.executor.biologist.biologist_sample_injector"
@@ -15,23 +24,22 @@ var primary_target_for_tests: Node = null
 var _activation = null
 var _corridor_targets: Array = []
 var _leased_statuses: Array[Dictionary] = []
+var _impacts: Node2D = null
+var _impacts_started := false
 
 
 static func parameter_contract() -> Dictionary:
 	return {
 		"max_range": {"type": "number", "minimum": 0.01},
 		"half_width": {"type": "number", "minimum": 0.0},
-		"crowd_cap": {"type": "integer", "minimum": 1},
 		"release_delay": {"type": "number", "minimum": 0.0},
 		"sample_window": {"type": "number", "minimum": 0.1},
 		"analysis_pulses": {"type": "integer", "minimum": 1},
 		"analysis_first_delay": {"type": "number", "minimum": 0.01},
 		"analysis_interval": {"type": "number", "minimum": 0.01},
-		"analysis_radius": {"type": "number", "minimum": 0.0},
-		"analysis_target_cap": {"type": "integer", "minimum": 1},
 		"extraction_damage": {"type": "number", "minimum": 0.0},
 		"analysis_damage": {"type": "number", "minimum": 0.0},
-		"tissue_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+		"tissue_damage_ratio": {"type": "number", "minimum": 0.0, "maximum": 2.0},
 		"swarm_bonus": {"type": "number", "minimum": 1.0},
 		"ranged_bonus": {"type": "number", "minimum": 1.0},
 		"durable_bonus": {"type": "number", "minimum": 1.0},
@@ -50,7 +58,7 @@ static func execute(activation) -> float:
 		"direction": "aim",
 		"length": max_range,
 		"half_width": activation.param_float("half_width", 64.0),
-		"limit": activation.param_int("crowd_cap", 16),
+		"limit": 0,
 	}):
 		return 0.0
 	var targets = activation.primitive_value("targets", [])
@@ -62,7 +70,8 @@ static func execute(activation) -> float:
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
-	effect.call("configure", activation, targets as Array, primary)
+	var all_targets: Array = activation.select_targets(activation.origin(), INF, 0, "nearest")
+	effect.call("configure", activation, all_targets, primary)
 	var tween: Tween = activation.track_tween()
 	if tween == null:
 		return 0.0
@@ -148,6 +157,11 @@ func extract() -> void:
 		false,
 		{"ultimate_mechanic": "sample_extraction", "archetype_bonus": _sample_bonus()}
 	)
+	_activation.present(EXECUTOR_ID + ".extract", {
+		"shape": "beam", "from": global_position,
+		"to": (primary_target_for_tests as Node2D).global_position,
+		"victims": [primary_target_for_tests],
+	})
 
 
 func analysis_pulse(pulse: int) -> void:
@@ -164,15 +178,10 @@ func analysis_pulse(pulse: int) -> void:
 		false,
 		{"ultimate_mechanic": "analysis_pulse", "analysis_pulse": pulse}
 	)
-	var nearby: Array = _activation.select_targets(
-		(primary_target_for_tests as Node2D).global_position,
-		_activation.param_float("analysis_radius", 125.0),
-		_activation.param_int("analysis_target_cap", 4),
-		"nearest"
-	)
-	for raw_target in nearby:
+	var victims: Array = [primary_target_for_tests]
+	for raw_target in _corridor_targets:
 		var target := raw_target as Node2D
-		if target == null or target == primary_target_for_tests or not _corridor_targets.has(target):
+		if target == null or not is_instance_valid(target) or target == primary_target_for_tests:
 			continue
 		_deal(
 			target,
@@ -181,6 +190,13 @@ func analysis_pulse(pulse: int) -> void:
 			true,
 			{"ultimate_mechanic": "analysis_tissue", "analysis_pulse": pulse}
 		)
+		victims.append(target)
+	_activation.present(EXECUTOR_ID + ".analysis:%d" % pulse, {
+		"shape": "ring_pulse",
+		"position": (primary_target_for_tests as Node2D).global_position,
+		"radius": 240.0,
+		"victims": victims,
+	})
 
 
 func _sample_bonus() -> float:
@@ -200,11 +216,36 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 	return ultimate_damage_sink.call(target, amount, feedback, event_id, secondary)
 
 
+func present(_event_id: String, payload: Dictionary) -> void:
+	_play_impacts(payload.get("victims"))
+
+
+func finish(_reason: String) -> void:
+	if _impacts != null and is_instance_valid(_impacts):
+		_impacts.finish()
+
+
+func _play_impacts(raw_victims: Variant) -> void:
+	if not raw_victims is Array or (raw_victims as Array).is_empty():
+		return
+	if _impacts == null or not is_instance_valid(_impacts):
+		_impacts = ImpactPlayer.new()
+		add_child(_impacts)
+		_impacts_started = false
+	if _impacts_started:
+		_impacts.enqueue(raw_victims as Array, global_position)
+	else:
+		_impacts.play(VICTIM_FRAMES, raw_victims as Array, global_position)
+		_impacts_started = true
+
+
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
 		_remove_leased_status(lease)
 	_leased_statuses.clear()
 	_activation = null
+	_impacts = null
+	_impacts_started = false
 
 
 func _remove_leased_status(lease: Dictionary) -> void:

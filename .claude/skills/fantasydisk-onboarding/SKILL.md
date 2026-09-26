@@ -45,7 +45,7 @@ context before editing, and mirror status locally if a task `.md` exists.
 
 - UI/layout/frames: `fantasydisk-ui-director`.
 - Raster assets/icons/sprites/VFX: `fantasydisk-asset-generator`.
-- Animation/rigs: `fantasydisk-animation-director`.
+- Animation/rigs: `fantasydisk-pixellab-animation-integrator`.
 - Class/weapon balance: `fantasydisk-class-balance-director`.
 - Release: `fantasydisk-release-director`.
 

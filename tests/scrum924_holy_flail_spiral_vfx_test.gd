@@ -144,8 +144,10 @@ func _test_isolated_vfx_geometry() -> bool:
 			return _fail("Spiral VFX step index drifted from damage step %d." % step_index)
 		if int(contract.get("pixel_lab_frame_index", -1)) != step_index:
 			return _fail("PixelLab frame must advance with each damage step.")
-		if int(contract.get("chain_sample_count", 0)) < 24:
-			return _fail("Spiral chain trail needs enough samples for a readable curl.")
+		# FAN-2981: no Line2D/Polygon2D zone markup may survive in the spiral VFX.
+		for child in effect.get_children():
+			if child is Line2D or child is Polygon2D:
+				return _fail("Holy Flail spiral VFX must stay free of zone markup nodes.")
 		var front := effect.get_meta("front_point", Vector2.ZERO) as Vector2
 		if absf(front.length() - radius) > 0.05:
 			return _fail("Flail head/front must sit on the live damage radius.")
