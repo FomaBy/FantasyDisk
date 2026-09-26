@@ -1,0 +1,9 @@
+## cleanup 2026-09-26T03:45:56Z
+removed: <workdir>/install_target exists_now=no
+removed: <workdir>/baseline_030 exists_now=no
+removed: <workdir>/copytest exists_now=no
+removed: %USERPROFILE%/AppData/Roaming/FantasyDisk-FAN3964-test exists_now=no
+removed: %USERPROFILE%/AppData/Roaming/FantasyDisk-FAN3964-test030 exists_now=no
+leftover before removal: install_target/FantasyDisk contained override.cfg (test-only file placed by this task) and Uninstall.exe (NSIS uninstaller run with _?= cannot delete itself; expected)
+C free=80999145472
+## cleanup2 2026-09-26T03:51:54Z: install_target and test user dir removed again after the keyboard smoke; exists: no / no

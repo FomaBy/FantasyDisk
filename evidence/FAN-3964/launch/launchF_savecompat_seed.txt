@@ -1,0 +1,4 @@
+seeded test user dir with 530 files from the 0.3.0 preimage copy at 2026-09-26T03:41:16Z
+0089f4254c15d129fc84f55a85b250458304e592c463d58fc74f3824d69e9633 *%APPDATA%/FantasyDisk-FAN3964-test/fantasydisk_autosave.cfg
+147d84a6a77728a5bae3ede79c44222aaed6fbf842f521935e324656e7093b34 *%APPDATA%/FantasyDisk-FAN3964-test/fantasydisk_meta.cfg
+8456c95d442f398bcd5cd0102ddad872b30a2efa5264431af31f0afe98113ab0 *%APPDATA%/FantasyDisk-FAN3964-test/settings.cfg

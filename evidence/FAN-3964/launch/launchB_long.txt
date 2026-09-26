@@ -1,0 +1,55 @@
+## launchB_long start 2026-09-26T03:28:08.381Z
+exe sha256: ce3bc7ff2ed4bd1cf5eaf599d5155a8b3c91e369cd8690a834793151e062fda0
+override.cfg next to exe: True
+test userdata before: exists=True files=5
+args: 
+pid=192176 started=2026-09-26T03:28:11.3034472Z
+  t=5s hwnd=0 title='' responding=True cpu_s=5.4 ws_MiB=27.7 private_MiB=131.6 threads=36 2026-09-26T03:28:18.115Z
+  t=10s hwnd=525942 title='FantasyDisk' responding=False cpu_s=15.4 ws_MiB=76.1 private_MiB=255 threads=40 2026-09-26T03:28:28.230Z
+  screenshot launchB_long_15s.png rect=(-8,-31)-(2568,1435) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:28:34.087Z
+  t=20s hwnd=525942 title='FantasyDisk' responding=False cpu_s=25.8 ws_MiB=83.7 private_MiB=544.6 threads=40 2026-09-26T03:28:39.172Z
+  t=30s hwnd=525942 title='FantasyDisk' responding=False cpu_s=35.6 ws_MiB=82.4 private_MiB=834.9 threads=39 2026-09-26T03:28:49.334Z
+  t=40s hwnd=525942 title='FantasyDisk' responding=False cpu_s=45.5 ws_MiB=116.3 private_MiB=584.8 threads=39 2026-09-26T03:28:59.655Z
+  screenshot launchB_long_45s.png rect=(-8,-31)-(2568,1435) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:29:05.008Z
+  t=50s hwnd=525942 title='FantasyDisk' responding=False cpu_s=55.6 ws_MiB=73.8 private_MiB=677.1 threads=39 2026-09-26T03:29:10.094Z
+  t=60s hwnd=525942 title='FantasyDisk' responding=False cpu_s=65.4 ws_MiB=114 private_MiB=618.2 threads=35 2026-09-26T03:29:20.252Z
+  t=70s hwnd=525942 title='FantasyDisk' responding=False cpu_s=75.3 ws_MiB=65 private_MiB=547.3 threads=35 2026-09-26T03:29:30.418Z
+  t=80s hwnd=525942 title='FantasyDisk' responding=False cpu_s=85 ws_MiB=92 private_MiB=594.6 threads=35 2026-09-26T03:29:40.577Z
+  t=90s hwnd=525942 title='FantasyDisk' responding=False cpu_s=94.7 ws_MiB=85.7 private_MiB=649.7 threads=35 2026-09-26T03:29:50.802Z
+  screenshot launchB_long_90s.png rect=(-8,-31)-(2568,1435) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:29:50.974Z
+  t=100s hwnd=525942 title='FantasyDisk' responding=False cpu_s=104.4 ws_MiB=82.6 private_MiB=718.3 threads=35 2026-09-26T03:30:01.174Z
+  t=110s hwnd=525942 title='FantasyDisk' responding=False cpu_s=113.9 ws_MiB=121.6 private_MiB=613.5 threads=35 2026-09-26T03:30:11.363Z
+  t=120s hwnd=525942 title='FantasyDisk' responding=False cpu_s=123.7 ws_MiB=66.2 private_MiB=612.8 threads=34 2026-09-26T03:30:21.762Z
+  t=130s hwnd=525942 title='FantasyDisk' responding=False cpu_s=133.4 ws_MiB=70.3 private_MiB=617.7 threads=31 2026-09-26T03:30:31.926Z
+  t=140s hwnd=525942 title='FantasyDisk' responding=False cpu_s=142.9 ws_MiB=71.3 private_MiB=590.4 threads=31 2026-09-26T03:30:42.093Z
+  t=150s hwnd=525942 title='FantasyDisk' responding=False cpu_s=153 ws_MiB=82.9 private_MiB=428.9 threads=32 2026-09-26T03:30:52.245Z
+  screenshot launchB_long_150s.png rect=(-8,-31)-(2568,1435) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:30:52.927Z
+  t=160s hwnd=525942 title='FantasyDisk' responding=True cpu_s=163.2 ws_MiB=49.7 private_MiB=475.2 threads=32 2026-09-26T03:31:03.112Z
+  t=170s hwnd=525942 title='FantasyDisk' responding=True cpu_s=172.1 ws_MiB=47.9 private_MiB=475.2 threads=32 2026-09-26T03:31:13.305Z
+  screenshot launchB_long_178s.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:31:21.633Z
+  t=180s hwnd=525942 title='FantasyDisk' responding=True cpu_s=182 ws_MiB=41.5 private_MiB=475.2 threads=32 2026-09-26T03:31:23.665Z
+at 180s: ws_MiB=41.5 private_MiB=475.2 peak_ws_MiB=139.8 threads=32 responding=True
+closing main window (WM_CLOSE) 2026-09-26T03:31:23.676Z
+exit_code= ended=2026-09-26T03:31:24.0017769Z wall_s=192.7
+### stdout (179 bytes) first 40 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+### stderr (0 bytes) first 40 lines
+### test userdata after
+  \settings.cfg bytes=867 mtime=2026-09-26T03:30:53.6074152Z
+  \logs\godot.log bytes=176 mtime=2026-09-26T03:31:23.9015773Z
+  \logs\godot2026-09-26T06.28.13.log bytes=0 mtime=2026-09-26T03:28:13.5100111Z
+  \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=39082 mtime=2026-09-26T03:30:57.0172883Z
+  \shader_cache\CopyShaderGLES3\22f340391aafadebc18a19d2815383942c5a57fefcbf846c4f5f18af8383fff3\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=118055 mtime=2026-09-26T03:24:00.8250192Z
+  \shader_cache\FeedShaderGLES3\59ff0c462e1299f7a3a0052262462ca18433285cedac213b45c096db68d3b5c8\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=8261 mtime=2026-09-26T03:24:00.9974422Z
+  \shader_cache\PostShaderGLES3\3a09fbc03f543734010ca29cbe005cff074e177b64d577ae026c5312b55da2bf\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=13656 mtime=2026-09-26T03:24:00.9705314Z
+  \shader_cache\SceneShaderGLES3\18ce09491870c45969df1c16e79a40766e5900e09e1dc79ab9a1601baa71920b\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=800909 mtime=2026-09-26T03:24:05.8283833Z
+### godot.log (176 bytes) first 60 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+### real userdata integrity
+real userdata files now=530 before=530 changed_or_new=0
+real userdata dir mtime: 2026-09-25T19:30:40.3406034Z
+## launchB_long end 2026-09-26T03:31:25.905Z

@@ -1,0 +1,112 @@
+## launchH_keyboard_smoke start 2026-09-26T03:50:10.975Z
+exe sha256: ce3bc7ff2ed4bd1cf5eaf599d5155a8b3c91e369cd8690a834793151e062fda0
+exe: install_target\FantasyDisk  override.cfg next to exe: True  user dir: %USERPROFILE%\AppData\Roaming\FantasyDisk-FAN3964-test
+test userdata before: exists=True files=7
+args: --print-fps
+pid=202524 started=2026-09-26T03:50:11.8581869Z
+  first stdout growth beyond engine header at t=1s 2026-09-26T03:50:14.043Z
+  t=5s hwnd=1902198 title='FantasyDisk' responding=False cpu_s=9 ws_MiB=577 private_MiB=616.7 threads=40 2026-09-26T03:50:23.152Z
+  first responding main window at t=10s cpu_s=13.4 2026-09-26T03:50:28.232Z
+  t=10s hwnd=1902198 title='FantasyDisk' responding=True cpu_s=13.4 ws_MiB=516.3 private_MiB=677.8 threads=40 2026-09-26T03:50:28.234Z
+  keyboard smoke: AppActivate(pid)=True 2026-09-26T03:50:33.333Z
+  sent {ENTER} at 2026-09-26T03:50:34.152Z, waiting 5s
+  screenshot launchH_keyboard_smoke_key1_ENTER.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:50:39.408Z
+  sent {RIGHT} at 2026-09-26T03:50:39.421Z, waiting 3s
+  screenshot launchH_keyboard_smoke_key2_RIGHT.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:50:42.600Z
+  sent {RIGHT} at 2026-09-26T03:50:42.601Z, waiting 3s
+  screenshot launchH_keyboard_smoke_key3_RIGHT.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:50:45.774Z
+  sent {RIGHT} at 2026-09-26T03:50:45.776Z, waiting 3s
+  screenshot launchH_keyboard_smoke_key4_RIGHT.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:50:48.953Z
+  sent {ESC} at 2026-09-26T03:50:48.954Z, waiting 3s
+  screenshot launchH_keyboard_smoke_key5_ESC.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:50:52.154Z
+  t=20s hwnd=1902198 title='FantasyDisk' responding=True cpu_s=41.4 ws_MiB=366.5 private_MiB=532.6 threads=39 2026-09-26T03:50:57.219Z
+  t=30s hwnd=1902198 title='FantasyDisk' responding=True cpu_s=51.2 ws_MiB=337 private_MiB=532.6 threads=39 2026-09-26T03:51:07.362Z
+  t=40s hwnd=1902198 title='FantasyDisk' responding=True cpu_s=61 ws_MiB=320.5 private_MiB=532.4 threads=35 2026-09-26T03:51:17.498Z
+  t=50s hwnd=1902198 title='FantasyDisk' responding=True cpu_s=70.8 ws_MiB=289.1 private_MiB=532.4 threads=35 2026-09-26T03:51:27.670Z
+at 55s: ws_MiB=264.8 private_MiB=532.4 peak_ws_MiB=597.9 threads=35 responding=True
+closing main window (WM_CLOSE) 2026-09-26T03:51:32.805Z
+first_responding_s=10 first_stdout_growth_s=1
+exit_code= ended=2026-09-26T03:51:33.0459702Z wall_s=81.19
+### stdout (2221 bytes) first 6 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+Project FPS: 4006 (0.24 mspf)
+Project FPS: 4110 (0.24 mspf)
+fps_lines=63 avg=3995.1 min=2076 max=4491 low1pct=2076 median=4347
+### stderr (0 bytes) first 40 lines
+### test userdata after
+  \settings.cfg bytes=867 mtime=2026-09-26T03:50:27.6425309Z
+  \logs\godot.log bytes=2154 mtime=2026-09-26T03:51:32.9335572Z
+  \logs\godot2026-09-26T06.50.13.log bytes=1404 mtime=2026-09-26T03:50:13.1683326Z
+  \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=54504 mtime=2026-09-26T03:50:34.4283533Z
+  \shader_cache\CopyShaderGLES3\22f340391aafadebc18a19d2815383942c5a57fefcbf846c4f5f18af8383fff3\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=118055 mtime=2026-09-26T03:48:33.3000455Z
+  \shader_cache\FeedShaderGLES3\59ff0c462e1299f7a3a0052262462ca18433285cedac213b45c096db68d3b5c8\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=8261 mtime=2026-09-26T03:48:33.3030360Z
+  \shader_cache\PostShaderGLES3\3a09fbc03f543734010ca29cbe005cff074e177b64d577ae026c5312b55da2bf\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=13656 mtime=2026-09-26T03:48:33.3030360Z
+  \shader_cache\SceneShaderGLES3\18ce09491870c45969df1c16e79a40766e5900e09e1dc79ab9a1601baa71920b\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=800909 mtime=2026-09-26T03:48:33.3159926Z
+### godot.log (2154 bytes) first 60 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+Project FPS: 4006 (0.24 mspf)
+Project FPS: 4110 (0.24 mspf)
+Project FPS: 4237 (0.23 mspf)
+Project FPS: 4227 (0.23 mspf)
+Project FPS: 4101 (0.24 mspf)
+Project FPS: 2076 (0.48 mspf)
+Project FPS: 2590 (0.38 mspf)
+Project FPS: 2997 (0.33 mspf)
+Project FPS: 2967 (0.33 mspf)
+Project FPS: 2968 (0.33 mspf)
+Project FPS: 2861 (0.34 mspf)
+Project FPS: 2940 (0.34 mspf)
+Project FPS: 2957 (0.33 mspf)
+Project FPS: 2919 (0.34 mspf)
+Project FPS: 2963 (0.33 mspf)
+Project FPS: 2959 (0.33 mspf)
+Project FPS: 2983 (0.33 mspf)
+Project FPS: 2911 (0.34 mspf)
+Project FPS: 2995 (0.33 mspf)
+Project FPS: 2908 (0.34 mspf)
+Project FPS: 4253 (0.23 mspf)
+Project FPS: 4357 (0.22 mspf)
+Project FPS: 4388 (0.22 mspf)
+Project FPS: 4419 (0.22 mspf)
+Project FPS: 4388 (0.22 mspf)
+Project FPS: 4471 (0.22 mspf)
+Project FPS: 4429 (0.22 mspf)
+Project FPS: 4467 (0.22 mspf)
+Project FPS: 4491 (0.22 mspf)
+Project FPS: 4282 (0.23 mspf)
+Project FPS: 4407 (0.22 mspf)
+Project FPS: 4417 (0.22 mspf)
+Project FPS: 4464 (0.22 mspf)
+Project FPS: 4424 (0.22 mspf)
+Project FPS: 4319 (0.23 mspf)
+Project FPS: 4243 (0.23 mspf)
+Project FPS: 4452 (0.22 mspf)
+Project FPS: 4452 (0.22 mspf)
+Project FPS: 4323 (0.23 mspf)
+Project FPS: 4388 (0.22 mspf)
+Project FPS: 4358 (0.22 mspf)
+Project FPS: 4475 (0.22 mspf)
+Project FPS: 4414 (0.22 mspf)
+Project FPS: 4406 (0.22 mspf)
+Project FPS: 4347 (0.23 mspf)
+Project FPS: 4417 (0.22 mspf)
+Project FPS: 4409 (0.22 mspf)
+Project FPS: 4154 (0.24 mspf)
+Project FPS: 4300 (0.23 mspf)
+Project FPS: 4352 (0.22 mspf)
+Project FPS: 4334 (0.23 mspf)
+Project FPS: 4351 (0.22 mspf)
+Project FPS: 4404 (0.22 mspf)
+Project FPS: 4404 (0.22 mspf)
+Project FPS: 4432 (0.22 mspf)
+Project FPS: 4035 (0.24 mspf)
+### real userdata integrity
+real userdata files now=530 before=530 changed_or_new=0
+real userdata dir mtime: 2026-09-25T19:30:40.3406034Z
+## launchH_keyboard_smoke end 2026-09-26T03:51:34.850Z

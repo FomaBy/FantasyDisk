@@ -1,0 +1,30 @@
+## install2_reinstall start 2026-09-26T03:42:24.657Z
+setup sha256 (immediately before run): 375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed bytes=535974634
+command: Start-Process -FilePath "<workdir>\pkg\FantasyDisk-0.3.1-windows-setup.exe" -ArgumentList '/S','/D=<workdir>\install_target\FantasyDisk' -Verb RunAs -Wait -PassThru
+installer pid=200544 exit_code=0 started=2026-09-26T03:42:25.1958217Z ended=2026-09-26T03:42:33.4976784Z duration_s=8.3
+### target contents
+  \install_target\FantasyDisk\FantasyDisk.exe bytes=850651688 mtime=2026-09-26T02:13:10.0000000Z sha256=ce3bc7ff2ed4bd1cf5eaf599d5155a8b3c91e369cd8690a834793151e062fda0
+  \install_target\FantasyDisk\override.cfg bytes=148 mtime=2026-09-26T03:23:36.0202547Z sha256=a881fdcedd28ed5bfb1ff939c97a72b4cab9f7181e48390f17e851f12535575d
+  \install_target\FantasyDisk\Uninstall.exe bytes=39936 mtime=2026-09-26T03:42:32.1199377Z sha256=99e2ccd0996c91a76e6455cc01aa3d538e938df429fa71e513ad42839dd064b2
+exe version: FileVersion=0.3.1.0 ProductVersion=0.3.1 ProductName=FantasyDisk Company=FantasyDisk Description=FantasyDisk - 2D top-down loot-action survival roguelite
+### registry
+
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+    DisplayName    REG_SZ    FantasyDisk
+    DisplayVersion    REG_SZ    0.3.1
+    Publisher    REG_SZ    FantasyDisk
+    UninstallString    REG_SZ    <workdir>\install_target\FantasyDisk\\Uninstall.exe
+    InstallLocation    REG_SZ    <workdir>\install_target\FantasyDisk
+
+HKLM 64-bit view key present: False
+### shortcuts
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk -> <workdir>\install_target\FantasyDisk\FantasyDisk.exe bytes=1938 mtime=2026-09-26T03:42:32.5765980Z
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\Uninstall.lnk -> <workdir>\install_target\FantasyDisk\Uninstall.exe bytes=1928 mtime=2026-09-26T03:42:32.5791012Z
+  <Desktop>\FantasyDisk.lnk -> <workdir>\install_target\FantasyDisk\FantasyDisk.exe bytes=1908 mtime=2026-09-26T03:42:32.5810912Z
+  absent: C:\ProgramData\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk
+  absent: <PublicProfile>\Desktop\FantasyDisk.lnk
+### protected state re-hash
+c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87  C:\Program Files\FantasyDisk\FantasyDisk.exe
+b00f7398ca6fc65e3cb5275741f9545fa5852c935c8fec0bd0c2c80f0fbf2f81  C:\Program Files\FantasyDisk\Uninstall.exe
+C free=78762168320
+## install2_reinstall end 2026-09-26T03:42:41.883Z

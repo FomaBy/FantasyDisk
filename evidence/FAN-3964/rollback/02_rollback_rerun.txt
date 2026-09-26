@@ -1,0 +1,26 @@
+## rollback (rerun after variable-collision bug in first attempt) start 2026-09-26T03:44:53.698Z
+state before: key exists=False sm FantasyDisk.lnk=False sm Uninstall.lnk=True desktop lnk=False
+command: reg.exe import <preimage .reg> (elevated)
+reg import exit_code=0
+
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+    DisplayName    REG_SZ    FantasyDisk
+    DisplayVersion    REG_SZ    0.3.0
+    Publisher    REG_SZ    FantasyDisk
+    UninstallString    REG_SZ    C:\Program Files\\FantasyDisk\\Uninstall.exe
+    InstallLocation    REG_SZ    C:\Program Files\\FantasyDisk
+
+note: the pre-existing Start Menu Uninstall.lnk (629 bytes, target C:\Program Files\FantasyDisk\Uninstall.exe) had no byte copy in the preimage; it was recreated with the same target in the first attempt
+### rollback verification
+expected hashes loaded: 4
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk sha256=477de086f5515998ccfdc60ab4e65de5baaf1ec2068fe2e60ba16902c9cd9975 preimage=477de086f5515998ccfdc60ab4e65de5baaf1ec2068fe2e60ba16902c9cd9975 match=True
+  <Desktop>\FantasyDisk.lnk sha256=2303910369813aa687ba758945b81d48c0c32ac09a4e9523c8284d2d09f070db preimage=2303910369813aa687ba758945b81d48c0c32ac09a4e9523c8284d2d09f070db match=True
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk -> C:\Program Files\FantasyDisk\FantasyDisk.exe bytes=639
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\Uninstall.lnk -> C:\Program Files\FantasyDisk\Uninstall.exe bytes=1038
+  <Desktop>\FantasyDisk.lnk -> C:\Program Files\FantasyDisk\FantasyDisk.exe bytes=609
+  C:\Program Files\FantasyDisk\FantasyDisk.exe sha256=c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87 match=True
+  C:\Program Files\FantasyDisk\Uninstall.exe sha256=b00f7398ca6fc65e3cb5275741f9545fa5852c935c8fec0bd0c2c80f0fbf2f81 match=True
+  registry DisplayVersion=0.3.0 InstallLocation=C:\Program Files\\FantasyDisk UninstallString=C:\Program Files\\FantasyDisk\\Uninstall.exe
+  registry matches preimage: False
+  HKLM 64-bit view key present (must stay absent as before): False
+## rollback end 2026-09-26T03:44:55.415Z

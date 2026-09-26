@@ -1,0 +1,4 @@
+## real userdata integrity vs preimage copy (after_launchA) 2026-09-26T03:26:06Z
+real_files=530 copy_files=530 different=0 new=0 missing=0
+newest mtime in real: 2026-09-25T19:30:54.6559536Z
+result: IDENTICAL

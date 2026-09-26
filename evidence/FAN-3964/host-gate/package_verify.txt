@@ -1,0 +1,19 @@
+2026-09-26T03:15:49Z verify parts start
+FantasyDisk-0.3.1-windows-setup.exe.part-aa bytes=50000000 sha256=59ad8b62eb15a87c504952781cafb9c1eb1acd3469c8daa9f9fe7cbff4f8afdb match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ab bytes=50000000 sha256=d193adcf11c2e005ae84a52cbf03957de38323312156ff14aacae7cfb7d17289 match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ac bytes=50000000 sha256=ce95d5ca07b018cf932cf5a2f8ba2069eb737c10925324df99d2633e7f321f48 match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ad bytes=50000000 sha256=9c2f626a277a53da62411d0554c00753505eb18e5456d31a983a61c29b6a7f40 match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ae bytes=50000000 sha256=59d6ccbdd86a36771f9a6fe8521f4bb6e57a96473eb2dd0510abbe6cdc1ab45c match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-af bytes=50000000 sha256=8776e5d84ae54b876739310823b9e0a3987198e5e53b05958f48f32ed38c743c match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ag bytes=50000000 sha256=5535c2c58821db323936bbe7f146a661cd0c3c9a0b3b36a21c6bd429bf54ffe9 match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ah bytes=50000000 sha256=efb07b702d5874ab37e75f049d4d6a78b76749f51d2893c5b52b97181c6cd0ac match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ai bytes=50000000 sha256=ce24ad4ba9308c91b5f912cbf561e1103bcc839059d2a0c53c53ad1a19bc3e00 match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-aj bytes=50000000 sha256=b7bb0063685e73143746f7af5147b365bec1473b9c2a145ac889483fc2cb844b match=True
+FantasyDisk-0.3.1-windows-setup.exe.part-ak bytes=35974634 sha256=4adfad6cec5696e3eaedc84b64cc65451adebad2abef33223c98b4a82290618e match=True
+2026-09-26T03:15:50Z parts_all_match True
+2026-09-26T03:15:50Z concatenated order ['FantasyDisk-0.3.1-windows-setup.exe.part-aa', 'FantasyDisk-0.3.1-windows-setup.exe.part-ab', 'FantasyDisk-0.3.1-windows-setup.exe.part-ac', 'FantasyDisk-0.3.1-windows-setup.exe.part-ad', 'FantasyDisk-0.3.1-windows-setup.exe.part-ae', 'FantasyDisk-0.3.1-windows-setup.exe.part-af', 'FantasyDisk-0.3.1-windows-setup.exe.part-ag', 'FantasyDisk-0.3.1-windows-setup.exe.part-ah', 'FantasyDisk-0.3.1-windows-setup.exe.part-ai', 'FantasyDisk-0.3.1-windows-setup.exe.part-aj', 'FantasyDisk-0.3.1-windows-setup.exe.part-ak']
+FantasyDisk-0.3.1-windows-setup.exe bytes=535974634 sha256=375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed
+whole_match True
+SHA256SUMS.txt bytes=196 sha256=a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206 match=True
+update-manifest.json bytes=793 sha256=a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6 match=True
+2026-09-26T03:15:51Z verify end

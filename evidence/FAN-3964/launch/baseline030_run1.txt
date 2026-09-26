@@ -1,0 +1,103 @@
+## baseline030_run1 start 2026-09-26T03:36:37.058Z
+exe sha256: c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87
+exe: baseline_030  override.cfg next to exe: True  user dir: %USERPROFILE%\AppData\Roaming\FantasyDisk-FAN3964-test030
+test userdata before: exists=False files=0
+args: --print-fps
+pid=197012 started=2026-09-26T03:36:39.8226520Z
+  first stdout growth beyond engine header at t=1s 2026-09-26T03:36:41.679Z
+  first responding main window at t=1s cpu_s=3 2026-09-26T03:36:43.686Z
+  t=5s hwnd=852604 title='FantasyDisk' responding=True cpu_s=7.4 ws_MiB=308 private_MiB=406.7 threads=41 2026-09-26T03:36:47.752Z
+  t=10s hwnd=852604 title='FantasyDisk' responding=True cpu_s=12.2 ws_MiB=304.3 private_MiB=403.1 threads=41 2026-09-26T03:36:52.835Z
+  t=20s hwnd=852604 title='FantasyDisk' responding=True cpu_s=21.8 ws_MiB=300.3 private_MiB=403.1 threads=41 2026-09-26T03:37:02.972Z
+  screenshot baseline030_run1_20s.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:37:03.213Z
+  t=30s hwnd=852604 title='FantasyDisk' responding=True cpu_s=31.8 ws_MiB=270.2 private_MiB=403.1 threads=40 2026-09-26T03:37:13.350Z
+  t=40s hwnd=852604 title='FantasyDisk' responding=True cpu_s=41.6 ws_MiB=234.7 private_MiB=403.1 threads=40 2026-09-26T03:37:23.505Z
+  t=50s hwnd=852604 title='FantasyDisk' responding=True cpu_s=51.4 ws_MiB=234.7 private_MiB=403.1 threads=40 2026-09-26T03:37:33.671Z
+  t=60s hwnd=852604 title='FantasyDisk' responding=True cpu_s=61.2 ws_MiB=213.3 private_MiB=402.9 threads=36 2026-09-26T03:37:43.816Z
+  screenshot baseline030_run1_60s.png rect=(-2568,-61)-(8,1418) title='FantasyDisk' visible=True foreground=True 2026-09-26T03:37:44.010Z
+at 61s: ws_MiB=208.4 private_MiB=402.9 peak_ws_MiB=308 threads=36 responding=True
+closing main window (WM_CLOSE) 2026-09-26T03:37:45.040Z
+first_responding_s=1 first_stdout_growth_s=1
+exit_code= ended=2026-09-26T03:37:45.2345711Z wall_s=65.41
+### stdout (2097 bytes) first 6 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+Project FPS: 4055 (0.24 mspf)
+Project FPS: 3593 (0.27 mspf)
+fps_lines=59 avg=4288.1 min=3593 max=4444 low1pct=3593 median=4338
+### stderr (0 bytes) first 40 lines
+### test userdata after
+  \settings.cfg bytes=800 mtime=2026-09-26T03:36:43.6987540Z
+  \logs\godot.log bytes=2034 mtime=2026-09-26T03:37:45.1246834Z
+  \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=39082 mtime=2026-09-26T03:36:43.8830453Z
+  \shader_cache\CopyShaderGLES3\22f340391aafadebc18a19d2815383942c5a57fefcbf846c4f5f18af8383fff3\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=118055 mtime=2026-09-26T03:36:41.3932040Z
+  \shader_cache\FeedShaderGLES3\59ff0c462e1299f7a3a0052262462ca18433285cedac213b45c096db68d3b5c8\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=8261 mtime=2026-09-26T03:36:41.3981874Z
+  \shader_cache\PostShaderGLES3\3a09fbc03f543734010ca29cbe005cff074e177b64d577ae026c5312b55da2bf\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=13656 mtime=2026-09-26T03:36:41.3961933Z
+  \shader_cache\SceneShaderGLES3\18ce09491870c45969df1c16e79a40766e5900e09e1dc79ab9a1601baa71920b\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=800909 mtime=2026-09-26T03:36:41.4121407Z
+### godot.log (2034 bytes) first 60 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+Project FPS: 4055 (0.24 mspf)
+Project FPS: 3593 (0.27 mspf)
+Project FPS: 3995 (0.25 mspf)
+Project FPS: 4104 (0.24 mspf)
+Project FPS: 4165 (0.24 mspf)
+Project FPS: 4013 (0.24 mspf)
+Project FPS: 4138 (0.24 mspf)
+Project FPS: 4167 (0.23 mspf)
+Project FPS: 4037 (0.24 mspf)
+Project FPS: 4195 (0.23 mspf)
+Project FPS: 4204 (0.23 mspf)
+Project FPS: 4011 (0.24 mspf)
+Project FPS: 4319 (0.23 mspf)
+Project FPS: 4290 (0.23 mspf)
+Project FPS: 4361 (0.22 mspf)
+Project FPS: 4434 (0.22 mspf)
+Project FPS: 4328 (0.23 mspf)
+Project FPS: 4290 (0.23 mspf)
+Project FPS: 4418 (0.22 mspf)
+Project FPS: 4268 (0.23 mspf)
+Project FPS: 4301 (0.23 mspf)
+Project FPS: 4353 (0.22 mspf)
+Project FPS: 4346 (0.23 mspf)
+Project FPS: 4405 (0.22 mspf)
+Project FPS: 4350 (0.22 mspf)
+Project FPS: 4381 (0.22 mspf)
+Project FPS: 4381 (0.22 mspf)
+Project FPS: 4444 (0.22 mspf)
+Project FPS: 4340 (0.23 mspf)
+Project FPS: 4330 (0.23 mspf)
+Project FPS: 4407 (0.22 mspf)
+Project FPS: 4314 (0.23 mspf)
+Project FPS: 4331 (0.23 mspf)
+Project FPS: 4434 (0.22 mspf)
+Project FPS: 4431 (0.22 mspf)
+Project FPS: 4311 (0.23 mspf)
+Project FPS: 4397 (0.22 mspf)
+Project FPS: 4338 (0.23 mspf)
+Project FPS: 4372 (0.22 mspf)
+Project FPS: 4322 (0.23 mspf)
+Project FPS: 4178 (0.23 mspf)
+Project FPS: 4198 (0.23 mspf)
+Project FPS: 4239 (0.23 mspf)
+Project FPS: 4217 (0.23 mspf)
+Project FPS: 4218 (0.23 mspf)
+Project FPS: 4358 (0.22 mspf)
+Project FPS: 4417 (0.22 mspf)
+Project FPS: 4383 (0.22 mspf)
+Project FPS: 4358 (0.22 mspf)
+Project FPS: 4391 (0.22 mspf)
+Project FPS: 4350 (0.22 mspf)
+Project FPS: 4378 (0.22 mspf)
+Project FPS: 4380 (0.22 mspf)
+Project FPS: 4255 (0.23 mspf)
+Project FPS: 4410 (0.22 mspf)
+Project FPS: 4385 (0.22 mspf)
+### real userdata integrity
+real userdata files now=530 before=530 changed_or_new=0
+real userdata dir mtime: 2026-09-25T19:30:40.3406034Z
+## baseline030_run1 end 2026-09-26T03:37:47.057Z

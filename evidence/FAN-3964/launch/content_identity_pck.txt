@@ -1,0 +1,31 @@
+## content identity 2026-09-26T03:23:03Z exe=install_target/FantasyDisk/FantasyDisk.exe
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching '': 47137
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'data/ultimates/classes/': 85
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'scenes/vfx/ultimates/': 102
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'scripts/ultimates/classes/': 138
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'scenes/': 196
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'scripts/': 572
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'assets/': 22340
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'data/': 156
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 47137; matching 'project.binary': 1
+ultimate profile jsons (non-presentation): 51
+class dirs: 17
+class list: assassin berserk biologist chemist dark_mage doctor druid elementalist engineer guitarist knight priest ranger robot sniper soldier thief 
+per-class profile counts:
+      3 assassin
+      3 berserk
+      3 biologist
+      3 chemist
+      3 dark_mage
+      3 doctor
+      3 druid
+      3 elementalist
+      3 engineer
+      3 guitarist
+      3 knight
+      3 priest
+      3 ranger
+      3 robot
+      3 sniper
+      3 soldier
+      3 thief
