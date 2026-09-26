@@ -1,0 +1,18 @@
+2026-09-26T21:01:10Z verify parts start
+FantasyDisk-0.3.2-windows-setup.exe.part-aa bytes=50000000 sha256=4b628de68e0cf4dac84af4a5ff0e5b65a00146b868f8e5b90de9588383bbe02e match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ab bytes=50000000 sha256=1658c9a56522a5046daee054e80ef76ec6fb8bdb663f4328a67f2865429a11a9 match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ac bytes=50000000 sha256=9a729bcd58d4dcbfb4ce6a84e7d8f96c1fbb7db7efcde6f57fc74ffa38266b96 match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ad bytes=50000000 sha256=ddf65f26ef1c7b602d91ebd66e738806db94e34481251b6b0d2527d273090d89 match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ae bytes=50000000 sha256=2543f8ae767be1b54256b6a981a1d4dbf03a9140f2cfb6e9eb57ceb902ba66e9 match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-af bytes=50000000 sha256=2b1c64f0a71e40ed8916c02a57556974833b39511c3c39085ada3f36f08562dd match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ag bytes=50000000 sha256=ba26d56d32e6365d39e652fe77578a9c458c860dbaa6dae5d4a1572ba000eb4c match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ah bytes=50000000 sha256=be856184504190575279717aafdea2067b1476a156a10269b7e638e60bcc729b match=True
+FantasyDisk-0.3.2-windows-setup.exe.part-ai bytes=39647264 sha256=886f9c03ebada1b420ec36bacf39e1eed5329ff217bdd9ab80393d46eff33084 match=True
+2026-09-26T21:01:11Z parts_all_match True
+2026-09-26T21:01:11Z concatenated order ['FantasyDisk-0.3.2-windows-setup.exe.part-aa', 'FantasyDisk-0.3.2-windows-setup.exe.part-ab', 'FantasyDisk-0.3.2-windows-setup.exe.part-ac', 'FantasyDisk-0.3.2-windows-setup.exe.part-ad', 'FantasyDisk-0.3.2-windows-setup.exe.part-ae', 'FantasyDisk-0.3.2-windows-setup.exe.part-af', 'FantasyDisk-0.3.2-windows-setup.exe.part-ag', 'FantasyDisk-0.3.2-windows-setup.exe.part-ah', 'FantasyDisk-0.3.2-windows-setup.exe.part-ai']
+FantasyDisk-0.3.2-windows-setup.exe bytes=439647264 sha256=8b7b3e7d1ce3ce6d935e50ff7b16962606772d416e5957e4847eceb305c8131f
+whole_match True
+SHA256SUMS.txt bytes=196 sha256=00d198dc8809868aae742d2cab575ff2314cc4e6fb7ff9e04d0bb72d000160e6 match=True
+update-manifest.json bytes=793 sha256=1bbb0c9bea4720d338683f4a1099862c97ce52c79266c415ca75d777a74f623f match=True
+2026-09-26T21:01:11Z verify end
+PARTS.sha256 sha256: 48a5997b7cffba008031253be52192ac140ad289358b8a26232673a59388b56d (pin 48a5997b7cffba008031253be52192ac140ad289358b8a26232673a59388b56d)

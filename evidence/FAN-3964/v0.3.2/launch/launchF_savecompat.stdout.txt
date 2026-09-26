@@ -1,0 +1,22 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+Project FPS: 313 (3.19 mspf)
+Project FPS: 297 (3.36 mspf)
+Project FPS: 244 (4.09 mspf)
+Project FPS: 229 (4.36 mspf)
+Project FPS: 337 (2.96 mspf)
+Project FPS: 293 (3.41 mspf)
+Project FPS: 239 (4.18 mspf)
+Project FPS: 257 (3.89 mspf)
+Project FPS: 328 (3.04 mspf)
+Project FPS: 459 (2.17 mspf)
+Project FPS: 538 (1.85 mspf)
+Project FPS: 403 (2.48 mspf)
+Project FPS: 349 (2.86 mspf)
+Project FPS: 328 (3.04 mspf)
+Project FPS: 342 (2.92 mspf)
+Project FPS: 376 (2.65 mspf)
+Project FPS: 389 (2.57 mspf)
+Project FPS: 236 (4.23 mspf)

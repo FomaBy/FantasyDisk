@@ -1,0 +1,10 @@
+## cleanup 2026-09-26T21:22:26Z
+removed: ./install_target exists_now=no
+removed: ./baseline_030 exists_now=no
+removed: ./install_target_upgrade exists_now=no
+removed: %USERPROFILE%/AppData/Roaming/FantasyDisk-FAN3964-test exists_now=no
+removed: %USERPROFILE%/AppData/Roaming/FantasyDisk-FAN3964-test030 exists_now=no
+C free=45009666048
+FantasyDisk processes: 0
+## cleanup2 2026-09-26T21:23:52Z: install_target removed again; exists=no; FantasyDisk processes: 0
+C free after pkg cleanup=45884944384

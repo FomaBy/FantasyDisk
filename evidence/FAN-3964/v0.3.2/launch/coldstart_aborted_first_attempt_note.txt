@@ -1,0 +1,2 @@
+leftover check done
+note: first coldstart attempt (21:07-21:17Z) had a file-sharing bug in its stdout reader, so each run waited 300 s; two runs recorded first_responding 2.7 s / 2.7 s; series aborted and rerun with the fixed reader

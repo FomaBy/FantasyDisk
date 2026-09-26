@@ -1,0 +1,1 @@
+keyboard smoke: NOT EXECUTED at 2026-09-26T21:22:07Z: last input 0.2 s ago, a person is playing another game (WH40KRT) in the foreground; OS-level keystrokes would be unsafe (rule from the preservation plan: idle >= 120 s required)

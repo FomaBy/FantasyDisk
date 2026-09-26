@@ -1,0 +1,15 @@
+## verbose trace analysis 2026-09-26T21:20:15Z
+verbose stdout lines: 1032
+first Project FPS at line: 1023
+ctex loads before first FPS line: 264
+spriteframes loads before first FPS line: 2
+total .ctex mentions whole run: 264
+before first frame by folder: elites=42 enemies=116 bosses=22 allies=43 characters=192 ui=0
+whole run by folder: elites=42 enemies=116 bosses=22 allies=43
+58:Loading resource: res://scripts/main.gdc remapped: res://scripts/main.gdc
+222:Completed load for: 'res://scripts/main.gd' remapped 'res://scripts/main.gdc' at thread -1
+884:Completed load for: 'res://scenes/Main.tscn' remapped 'res://.godot/exported/133200997/export-4a24720ee5e787dbe30abc634fa3679d-Main.scn' at thread -1
+error/warn lines: 3
+Loading resource: res://assets/audio/sfx/sfx_ui_error.ogg remapped: res://assets/audio/sfx/sfx_ui_error.ogg
+Loading resource: res://.godot/imported/sfx_ui_error.ogg-909f2797d20721033647fb56cbd1e503.oggvorbisstr remapped: res://.godot/imported/sfx_ui_error.ogg-909f2797d20721033647fb56cbd1e503.oggvorbisstr
+Completed load for: 'res://assets/audio/sfx/sfx_ui_error.ogg' remapped 'res://assets/audio/sfx/sfx_ui_error.ogg' at thread -1

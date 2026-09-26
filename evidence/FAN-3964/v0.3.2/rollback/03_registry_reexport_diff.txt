@@ -1,0 +1,6 @@
+REG FILES BYTE-IDENTICAL 2026-09-26T21:22:25Z
+Uninstall.lnk now: db365c5867c2233e8bda76d35b6ce24ccfb0020defdfc3f8179cfa1ad62e465b
+Uninstall.lnk preimage: db365c5867c2233e8bda76d35b6ce24ccfb0020defdfc3f8179cfa1ad62e465b
+REG FILES BYTE-IDENTICAL after uninstall2 rollback 2026-09-26T21:23:51Z
+db365c5867c2233e8bda76d35b6ce24ccfb0020defdfc3f8179cfa1ad62e465b  Uninstall.lnk
+477de086f5515998ccfdc60ab4e65de5baaf1ec2068fe2e60ba16902c9cd9975  FantasyDisk.lnk

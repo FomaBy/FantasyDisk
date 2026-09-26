@@ -1,0 +1,4 @@
+2026-09-26T21:00:09Z idle_seconds=0 foreground_process=chrome (title redacted)
+2026-09-26T21:00:09Z sessions: ЏЋ‹њ‡Ћ‚Ђ’…‹њ ‘…ЂЌ‘ ID ‘’Ђ’“‘ Ѓ…‡„…‰‘’‚. ‚ђ…Њџ ‚•Ћ„Ђ ><user> console 1 ЂЄвЁў­® ®вбгвбвўгҐв 26.09.2026 23:55
+2026-09-26T21:00:09Z screen locked (LogonUI present): False
+2026-09-26T21:00:09Z user-facing apps running: chrome,Discord,Telegram

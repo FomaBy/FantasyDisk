@@ -1,0 +1,19 @@
+## update-manifest consistency 2026-09-26T21:04:11Z
+  [PASS] schema_version==1 1
+  [PASS] version format 0.3.2
+  [PASS] version==0.3.2 (project.godot config/version at tag) 
+  [PASS] minimum_supported_version format 0.2.2
+  [PASS] minimum_supported<=version 
+  [PASS] release_url https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.2
+  [PASS] windows.name FantasyDisk-0.3.2-windows-setup.exe
+  [PASS] windows.url trusted download path https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.2/FantasyDisk-0.3.2-windows-setup.exe
+  [PASS] windows.size == reassembled installer bytes 439647264 vs 439647264
+  [PASS] windows.sha256 == reassembled installer sha256 8b7b3e7d1ce3ce6d935e50ff7b16962606772d416e5957e4847eceb305c8131f vs 8b7b3e7d1ce3ce6d935e50ff7b16962606772d416e5957e4847eceb305c8131f
+  [PASS] windows.size <= 1 GiB download limit 
+  [PASS] SHA256SUMS windows entry == manifest 8b7b3e7d1ce3ce6d935e50ff7b16962606772d416e5957e4847eceb305c8131f
+  [PASS] SHA256SUMS macos entry == manifest d981f7f2b8a27f1fd564ca10d36c135d1211f61af8caa96080c67adfe761eab5
+  [PASS] macos.name FantasyDisk-0.3.2-macos.dmg
+  [PASS] macos.url trusted 
+  note: the macOS DMG bytes are not on this host; only name/URL/hash-list agreement is checked here.
+  note: the installed client checks .../releases/latest/download/update-manifest.json on startup; the checked version is unpublished, so the live check cannot see this manifest yet.
+RESULT PASS

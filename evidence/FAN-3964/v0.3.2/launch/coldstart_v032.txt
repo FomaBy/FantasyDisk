@@ -1,0 +1,9 @@
+## coldstart series cold_v032 exe=install_target\FantasyDisk runs=5 args=--print-fps start 2026-09-26T21:17:59.944Z
+exe sha256: 7faca322bfee2628af1ab15eaa4c14e1c4e548c7836416d32b99e3aed3d931c7 bytes=540725856
+  run 1: pid=45416 first_fps_line_s=5.9 first_responding_s=2.9 peak_ws_MiB=363.4 private_MiB_at_hold=451.9 exit_code= stderr_bytes=0 2026-09-26T21:18:09.658Z
+  run 2: pid=47052 first_fps_line_s=5.9 first_responding_s=3.1 peak_ws_MiB=361.6 private_MiB_at_hold=453.8 exit_code= stderr_bytes=0 2026-09-26T21:18:20.805Z
+  run 3: pid=11868 first_fps_line_s=5.9 first_responding_s=3.2 peak_ws_MiB=358.9 private_MiB_at_hold=455.9 exit_code= stderr_bytes=0 2026-09-26T21:18:31.972Z
+  run 4: pid=46552 first_fps_line_s=5.8 first_responding_s=3 peak_ws_MiB=365.2 private_MiB_at_hold=455.8 exit_code= stderr_bytes=0 2026-09-26T21:18:42.994Z
+  run 5: pid=44456 first_fps_line_s=5.9 first_responding_s=3.1 peak_ws_MiB=362.7 private_MiB_at_hold=456.6 exit_code= stderr_bytes=0 2026-09-26T21:18:54.117Z
+summary cold_v032: first_fps_line_s=[5,9, 5,9, 5,9, 5,8, 5,9] median=5.9; minus_1s_method_median=4.9; first_responding_s=[2,9, 3,1, 3,2, 3, 3,1] median=3.1
+## coldstart series cold_v032 end 2026-09-26T21:18:56.146Z

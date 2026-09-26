@@ -1,0 +1,4 @@
+## coldstart series cold_v032 exe=install_target\FantasyDisk runs=5 args=--print-fps start 2026-09-26T21:07:10.139Z
+exe sha256: 7faca322bfee2628af1ab15eaa4c14e1c4e548c7836416d32b99e3aed3d931c7 bytes=540725856
+  run 1: pid=29664 first_fps_line_s=-1 first_responding_s=2.7 peak_ws_MiB=363.7 private_MiB_at_hold=435.4 exit_code= stderr_bytes=0 2026-09-26T21:12:13.951Z
+  run 2: pid=38000 first_fps_line_s=-1 first_responding_s=2.7 peak_ws_MiB=364.5 private_MiB_at_hold=435.2 exit_code= stderr_bytes=0 2026-09-26T21:17:19.187Z

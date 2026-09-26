@@ -1,0 +1,7 @@
+## coldstart series cold_v030 exe=baseline_030 runs=3 args=--print-fps start 2026-09-26T21:18:56.351Z
+exe sha256: c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87 bytes=484761120
+  run 1: pid=5868 first_fps_line_s=5.8 first_responding_s=2.9 peak_ws_MiB=319.8 private_MiB_at_hold=407.8 exit_code= stderr_bytes=0 2026-09-26T21:19:10.308Z
+  run 2: pid=45136 first_fps_line_s=5.9 first_responding_s=2.9 peak_ws_MiB=310.6 private_MiB_at_hold=414 exit_code= stderr_bytes=0 2026-09-26T21:19:21.336Z
+  run 3: pid=43576 first_fps_line_s=5.8 first_responding_s=3 peak_ws_MiB=308.6 private_MiB_at_hold=412.3 exit_code= stderr_bytes=0 2026-09-26T21:19:32.353Z
+summary cold_v030: first_fps_line_s=[5,8, 5,9, 5,8] median=5.8; minus_1s_method_median=4.8; first_responding_s=[2,9, 2,9, 3] median=2.9
+## coldstart series cold_v030 end 2026-09-26T21:19:34.374Z

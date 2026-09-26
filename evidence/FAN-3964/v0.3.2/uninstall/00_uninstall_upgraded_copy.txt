@@ -1,0 +1,8 @@
+## uninstall of upgraded copy start 2026-09-26T21:20:16.935Z
+uninstaller pid=42564 exit_code=0 2026-09-26T21:20:18.063Z
+remaining in target: Uninstall.exe
+HKLM WOW6432 key exists: False
+start menu folder exists: False
+desktop lnk exists: False
+c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87  C:\Program Files\FantasyDisk\FantasyDisk.exe
+b00f7398ca6fc65e3cb5275741f9545fa5852c935c8fec0bd0c2c80f0fbf2f81  C:\Program Files\FantasyDisk\Uninstall.exe

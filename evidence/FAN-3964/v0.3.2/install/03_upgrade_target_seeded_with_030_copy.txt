@@ -1,0 +1,2 @@
+c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87 *install_target_upgrade/FantasyDisk/FantasyDisk.exe
+b00f7398ca6fc65e3cb5275741f9545fa5852c935c8fec0bd0c2c80f0fbf2f81 *install_target_upgrade/FantasyDisk/Uninstall.exe

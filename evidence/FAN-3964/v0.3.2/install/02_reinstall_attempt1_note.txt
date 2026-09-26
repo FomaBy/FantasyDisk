@@ -1,0 +1,1 @@
+first reinstall attempt at 21:21Z produced an empty log (the launch that followed used the install #1 files); the cycle was redone below with logging

@@ -1,0 +1,28 @@
+## content identity 2026-09-26T21:04:08Z exe=install_target/FantasyDisk/FantasyDisk.exe sha256=7faca322bfee2628af1ab15eaa4c14e1c4e548c7836416d32b99e3aed3d931c7
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching '': 45648
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'data/ultimates/classes/': 85
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'scenes/vfx/ultimates/': 102
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'scripts/ultimates/classes/': 138
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'scenes/': 196
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'scripts/': 572
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'assets/': 22340
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'data/': 156
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'evidence/': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'skills/': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'docs/': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'tools/': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'tests/': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'releases/': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'before_berserk': 0
+# pck_offset 109050880; pack_format 4; engine 4.7.0; packed files 45648; matching 'after_berserk': 0
+ultimate profile jsons (non-presentation): 51
+class dirs: 17
+top-level prefixes in pck:
+  22381 .godot
+  22340 assets
+    572 scripts
+    196 scenes
+    156 data
+      1 project.binary
+      1 icon.svg.import
+      1 icon.svg
