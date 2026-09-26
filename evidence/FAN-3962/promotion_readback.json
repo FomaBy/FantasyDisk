@@ -1,0 +1,91 @@
+{
+  "issue": "FAN-3962",
+  "stage": "protected_promotion",
+  "readback_at_utc": "2026-09-26T01:33:32Z",
+  "promoter_agent_id": "5c006dd4-45c3-4dd0-b1bb-d5e4a0d7e1f9",
+  "host": "macOS",
+  "pins": {
+    "source_dev_sha": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "source_tree_sha": "3e02df83290741b21d4de37c4fa03e356e20c591",
+    "base_main_sha": "02f358149d08b3cbe895ca87847452836d1e3c70",
+    "base_main_tree_sha": "0c887fb3c3c6f551da149f923d2a21b649edea34"
+  },
+  "pre_write_readback_utc": "2026-09-26T01:32:14Z",
+  "pre_write_readback": {
+    "refs/heads/dev": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "refs/heads/main": "02f358149d08b3cbe895ca87847452836d1e3c70",
+    "refs/tags/v0.3.1": null
+  },
+  "push": {
+    "command": "git push --atomic origin 1ec3d0dfb8b9a150fef742c088401c6a453e1a2b:refs/heads/main refs/tags/v0.3.1",
+    "exit_code": 0,
+    "completed_utc": "2026-09-26T01:32:18Z",
+    "force": false
+  },
+  "post_write_ls_remote": {
+    "refs/heads/dev": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "refs/heads/main": "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+    "refs/tags/v0.3.1": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "refs/tags/v0.3.1^{}": "448a0cc12f02eb05bc16becc69fde365021a9a17"
+  },
+  "result_main": {
+    "sha": "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+    "tree": "3e02df83290741b21d4de37c4fa03e356e20c591",
+    "parents": [
+      "02f358149d08b3cbe895ca87847452836d1e3c70",
+      "448a0cc12f02eb05bc16becc69fde365021a9a17"
+    ],
+    "message": "release: FantasyDisk v0.3.1 (merge dev)",
+    "author": {
+      "name": "Claude (FantasyDisk agent)",
+      "email": "fomamoney@gmail.com",
+      "date": "2026-09-26T01:31:53Z"
+    },
+    "committer": {
+      "name": "Claude (FantasyDisk agent)",
+      "email": "fomamoney@gmail.com",
+      "date": "2026-09-26T01:31:53Z"
+    }
+  },
+  "source_dev": {
+    "sha": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "tree": "3e02df83290741b21d4de37c4fa03e356e20c591"
+  },
+  "tag_v0_3_1": {
+    "object_sha": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "tag": "v0.3.1",
+    "message": "FantasyDisk v0.3.1\n",
+    "tagger": {
+      "name": "Claude (FantasyDisk agent)",
+      "email": "fomamoney@gmail.com",
+      "date": "2026-09-26T01:31:53Z"
+    },
+    "target": {
+      "sha": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+      "type": "commit",
+      "url": "https://api.github.com/repos/FomaBy/FantasyDisk/git/commits/448a0cc12f02eb05bc16becc69fde365021a9a17"
+    }
+  },
+  "checks": {
+    "result_main_tree_equals_source_tree": true,
+    "result_main_parents_exact": true,
+    "tag_annotated": true,
+    "tag_targets_source_dev": true,
+    "remote_dev_unchanged": true,
+    "fan3905_candidate_8115041d_is_ancestor_of_source": false,
+    "fan3905_paths_absent": [
+      "docs/process/crash_logger.md",
+      "scripts/crash_logger.gd",
+      "tests/crash_logger_test.gd",
+      "changelog.d/FAN-3905.md"
+    ],
+    "project_godot_crashlogger_autoload": false,
+    "disposable_merge_probe_tree": "3e02df83290741b21d4de37c4fa03e356e20c591"
+  },
+  "precedent_v0_3_0": {
+    "tag_object": "d7e516cde235adf347d511e922ab19667bf82f65",
+    "tag_target": "fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb",
+    "main_merge": "02f358149d08b3cbe895ca87847452836d1e3c70",
+    "shared_tree": "0c887fb3c3c6f551da149f923d2a21b649edea34"
+  }
+}
