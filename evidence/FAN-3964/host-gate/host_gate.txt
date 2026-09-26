@@ -1,0 +1,130 @@
+## host gate start 2026-09-26T03:10:35Z
+### identity
+whoami: <user>
+is_admin_elevated: False
+session_id: 1 user_interactive: True
+uac_enabled(EnableLUA): 1 ConsentPromptBehaviorAdmin: 0
+admin_group_member(token groups): False
+os: Microsoft Windows NT 10.0.22000.0 machine: FOMAPC
+### disks 2026-09-26T03:10:36Z
+C: fmt=NTFS free=87610155008 total=499389530112 ready=True
+D: fmt=NTFS free=309044523008 total=1000186310656 ready=True
+workdir: <workdir>
+### godot 2026-09-26T03:10:36Z
+godot: %USERPROFILE%\Downloads\Godot_v4.7-stable_win64.exe\Godot_v4.7-stable_win64.exe bytes=178485256 product=4.7.stable.official file=4.7
+### processes 2026-09-26T03:10:36Z
+process_count: 430
+  pid=20596 name=multica path=%USERPROFILE%\AppData\Local\Programs\@multicadesktop\resources\app.asar.unpacked\resources\bin\multica.exe
+  pid=48876 name=steam path=C:\Steam\steam.exe
+  pid=24224 name=SteamService path=
+### existing install 2026-09-26T03:10:36Z
+  C:\Program Files\FantasyDisk\FantasyDisk.exe bytes=484761120 mtime=2026-08-15T23:29:38.0000000Z
+  C:\Program Files\FantasyDisk\Uninstall.exe bytes=39938 mtime=2026-09-25T19:27:01.1919746Z
+### godot user data 2026-09-26T03:10:36Z
+  (per-file listing of the whole Godot user-data tree omitted from the public copy: it enumerates other games. FantasyDisk game data lives in %APPDATA%/Godot/app_userdata/FantasyDisk; see preimage/userdata_listing_before.txt)
+### registry 2026-09-26T03:10:39Z
+  HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+     DisplayName =  
+     DisplayVersion =  
+     Publisher =  
+     UninstallString =  
+     InstallLocation =  
+     DisplayName=DisplayName
+     DisplayVersion=DisplayVersion
+     Publisher=Publisher
+     UninstallString=UninstallString
+     InstallLocation=InstallLocation
+  HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{2B41E132-07DF-4925-A3D3-F2D1765CCDFE}
+     ModifyPath =  
+     NoRepair =  
+     UninstallString =  
+     LogFile =  
+     InstallLocation =  
+     ProductGuid =  
+     InstallSource =  
+     DisplayName =  
+     Publisher =  
+     URLInfoAbout =  
+     RegOwner =  
+     DisplayIcon =  
+     InstallDate =  
+     Language =  
+     DisplayVersion =  
+     Version =  
+     MajorVersion =  
+     MinorVersion =  
+     LogMode =  
+     ModifyPath=ModifyPath
+     NoRepair=NoRepair
+     UninstallString=UninstallString
+     LogFile=LogFile
+     InstallLocation=InstallLocation
+     ProductGuid=ProductGuid
+     InstallSource=InstallSource
+     DisplayName=DisplayName
+     Publisher=Publisher
+     URLInfoAbout=URLInfoAbout
+     RegOwner=RegOwner
+     DisplayIcon=DisplayIcon
+     InstallDate=InstallDate
+     Language=Language
+     DisplayVersion=DisplayVersion
+     Version=Version
+     MajorVersion=MajorVersion
+     MinorVersion=MinorVersion
+     LogMode=LogMode
+  HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\tof_launcher
+     GameInstallPath =  
+     UninstallString =  
+     DisplayName =  
+     Publisher =  
+     DisplayIcon =  
+     GameInstallPath=GameInstallPath
+     UninstallString=UninstallString
+     DisplayName=DisplayName
+     Publisher=Publisher
+     DisplayIcon=DisplayIcon
+  absent: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+  present: HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+
+
+DisplayName     : FantasyDisk
+DisplayVersion  : 0.3.0
+Publisher       : FantasyDisk
+UninstallString : C:\Program Files\\FantasyDisk\\Uninstall.exe
+InstallLocation : C:\Program Files\\FantasyDisk
+PSPath          : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\Current
+                  Version\Uninstall\FantasyDisk
+PSParentPath    : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\Current
+                  Version\Uninstall
+PSChildName     : FantasyDisk
+PSDrive         : HKLM
+PSProvider      : Microsoft.PowerShell.Core\Registry
+
+
+
+
+  absent: HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+  absent: HKLM:\SOFTWARE\FantasyDisk
+  absent: HKCU:\SOFTWARE\FantasyDisk
+### shortcuts 2026-09-26T03:10:39Z
+  C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Tower of Fantasy bytes=1
+  C:\ProgramData\Microsoft\Windows\Start Menu\Programs\SQUARE ENIX\FINAL FANTASY XIV ONLINE bytes=1
+  C:\ProgramData\Microsoft\Windows\Start Menu\Programs\SQUARE ENIX\FINAL FANTASY XIV ONLINE\FINAL FANTASY XIV System Information.lnk bytes=943
+  C:\ProgramData\Microsoft\Windows\Start Menu\Programs\SQUARE ENIX\FINAL FANTASY XIV ONLINE\FINAL FANTASY XIV.lnk bytes=917
+  C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Tower of Fantasy\Tower of Fantasy.lnk bytes=1854
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk bytes=1
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk bytes=639
+  <Desktop>\FantasyDisk-0.2.0.exe bytes=444490632
+  <Desktop>\FantasyDisk.lnk bytes=609
+  <Desktop> Ў®зЁ© бв®«\Usefull items\FINAL FANTASY XIV Online.url bytes=201
+### handle tools 2026-09-26T03:10:39Z
+  handle.exe => absent on PATH
+  handle64.exe => absent on PATH
+  openfiles.exe => C:\Windows\system32\openfiles.exe
+  signtool.exe => absent on PATH
+### exclusive-open lock probe on existing install 2026-09-26T03:10:39Z
+  free: C:\Program Files\FantasyDisk\FantasyDisk.exe
+  free: C:\Program Files\FantasyDisk\Uninstall.exe
+## host gate end 2026-09-26T03:10:39Z
+# sanitizer: 20755 line(s) omitted from the public copy (user feedback-report entries / unrelated process rows)

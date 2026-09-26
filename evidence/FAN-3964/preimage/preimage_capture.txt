@@ -1,0 +1,29 @@
+## preimage capture start 2026-09-26T03:18:22Z
+reg export exit=0
+
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+    DisplayName    REG_SZ    FantasyDisk
+    DisplayVersion    REG_SZ    0.3.0
+    Publisher    REG_SZ    FantasyDisk
+    UninstallString    REG_SZ    C:\Program Files\\FantasyDisk\\Uninstall.exe
+    InstallLocation    REG_SZ    C:\Program Files\\FantasyDisk
+
+HKLM 64-bit view key present: False
+desktop folder is OneDrive-redirected: True
+startmenu Uninstall.lnk present: True
+  SM: FantasyDisk.lnk bytes=639
+  SM: Uninstall.lnk bytes=629
+userdata files copied: 530 of 530
+### hashes
+477de086f5515998ccfdc60ab4e65de5baaf1ec2068fe2e60ba16902c9cd9975  <workdir>\evidence\FAN-3964\preimage\lnk\startmenu_FantasyDisk.lnk  bytes=639
+2303910369813aa687ba758945b81d48c0c32ac09a4e9523c8284d2d09f070db  <workdir>\evidence\FAN-3964\preimage\lnk\desktop_FantasyDisk.lnk  bytes=609
+c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87  C:\Program Files\FantasyDisk\FantasyDisk.exe  bytes=484761120
+b00f7398ca6fc65e3cb5275741f9545fa5852c935c8fec0bd0c2c80f0fbf2f81  C:\Program Files\FantasyDisk\Uninstall.exe  bytes=39938
+exe version: 
+FileVersion ProductVersion ProductName CompanyName
+----------- -------------- ----------- -----------
+0.3.0.0     0.3.0          FantasyDisk FantasyDisk
+
+
+
+## preimage capture end 2026-09-26T03:18:31Z

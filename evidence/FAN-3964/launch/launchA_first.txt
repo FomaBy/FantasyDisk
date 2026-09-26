@@ -1,0 +1,50 @@
+## launchA_first start 2026-09-26T03:23:49.030Z
+exe sha256: ce3bc7ff2ed4bd1cf5eaf599d5155a8b3c91e369cd8690a834793151e062fda0
+override.cfg next to exe: True
+test userdata before: exists=False files=0
+args: 
+pid=189800 started=2026-09-26T03:23:52.2956648Z
+  at 5s: hwnd=1378554 title='' ws_MiB=36.2
+at 60s: ws_MiB=90.3 private_MiB=642.4 peak_ws_MiB=110.9 threads=36 responding=False
+closing main window (WM_CLOSE) 2026-09-26T03:24:55.220Z
+did not exit within 20s after WM_CLOSE; taking screenshot then Stop-Process -Id 189800 (own child)
+  screenshot launchA_first_after_close.png rect=(-8,-31)-(2568,1435) title='FantasyDisk' visible=True foreground=False 2026-09-26T03:25:16.785Z
+stopped 2026-09-26T03:25:17.149Z
+exit_code= ended=2026-09-26T03:25:17.1491551Z wall_s=84.85
+### stdout (179 bytes) first 40 lines
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 596.49 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4070 Ti SUPER
+
+### stderr (0 bytes) first 40 lines
+### test userdata after
+  \logs\godot.log bytes=0 mtime=2026-09-26T03:23:54.7980842Z
+  \shader_cache\CopyShaderGLES3\22f340391aafadebc18a19d2815383942c5a57fefcbf846c4f5f18af8383fff3\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=118055 mtime=2026-09-26T03:24:00.8250192Z
+  \shader_cache\FeedShaderGLES3\59ff0c462e1299f7a3a0052262462ca18433285cedac213b45c096db68d3b5c8\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=8261 mtime=2026-09-26T03:24:00.9974422Z
+  \shader_cache\PostShaderGLES3\3a09fbc03f543734010ca29cbe005cff074e177b64d577ae026c5312b55da2bf\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=13656 mtime=2026-09-26T03:24:00.9705314Z
+  \shader_cache\SceneShaderGLES3\18ce09491870c45969df1c16e79a40766e5900e09e1dc79ab9a1601baa71920b\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache bytes=800909 mtime=2026-09-26T03:24:05.8283833Z
+### godot.log (0 bytes) first 60 lines
+### real userdata integrity
+  CHANGED/NEW: \logs\godot.log
+  CHANGED/NEW: \logs\godot2026-08-16T18.34.09.log
+  CHANGED/NEW: \logs\godot2026-08-16T18.34.42.log
+  CHANGED/NEW: \logs\godot2026-08-18T18.36.05.log
+  CHANGED/NEW: \logs\godot2026-09-25T22.27.08.log
+  CHANGED/NEW: \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\1ac14c137d0fa850199b9746f9c6b4021afd0a7e.cache
+  CHANGED/NEW: \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\69fdbe5059b1f5f61a21b6eff215fd0aa945e1de.cache
+  CHANGED/NEW: \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\CanvasShaderGLES3\84d9728d216e83d0d483a587b8dbd8617d45f480ef46eba4e8fcfd81d6ab3f94\9e863ff5ec2d2dfc6b9a0019fb7b413e7705ddcb.cache
+  CHANGED/NEW: \shader_cache\CanvasShaderRD\9bdc1125c86af67021aafde8760184618f2961034b221ad5dbe673034858b1f3\c2f7efc3419efdd79fabd056897820a83f2ac2c9.vulkan.cache
+  CHANGED/NEW: \shader_cache\CopyShaderGLES3\22f340391aafadebc18a19d2815383942c5a57fefcbf846c4f5f18af8383fff3\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\CopyShaderGLES3\d2d6050807274e36375e54f690b177b0704ff99e67f13cbf133e86539fb0f374\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\FeedShaderGLES3\59ff0c462e1299f7a3a0052262462ca18433285cedac213b45c096db68d3b5c8\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\GiShaderRD\d0db97061545374c4aad77fca934cb9bd70afea09ec5692aab7313678fd68fca\8305c75c1294a9f00656f0f14344bb8bedcfe4e7.vulkan.cache
+  CHANGED/NEW: \shader_cache\PostShaderGLES3\3a09fbc03f543734010ca29cbe005cff074e177b64d577ae026c5312b55da2bf\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\PostShaderGLES3\b832e98b6aea4238c83f5a049755ca6023fa92c86f58541e4dc47d6b720b4106\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\SceneShaderGLES3\18ce09491870c45969df1c16e79a40766e5900e09e1dc79ab9a1601baa71920b\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \shader_cache\SceneShaderGLES3\28f8f3cddc8693827879859affba73d29b28ccb4066783437e1d15730d3a80d7\6bb7c9a2fd1c4a8fa77cb96555b9b4a720209981.cache
+  CHANGED/NEW: \vulkan\pipelines.forward_plus.nvidia_geforce_rtx_4070_ti_super.cache
+  CHANGED/NEW: \vulkan\pipelines.forward_plus.nvidia_geforce_rtx_4070_ti_super.editor.cache
+real userdata files now=530 before=59 changed_or_new=471
+real userdata dir mtime: 2026-09-25T19:30:40.3406034Z
+## launchA_first end 2026-09-26T03:25:21.068Z
+# sanitizer: 451 line(s) omitted from the public copy (user feedback-report entries / unrelated process rows)

@@ -1,0 +1,38 @@
+## uninstall start 2026-09-26T03:51:49.610Z
+processes named FantasyDisk before: 0
+uninstaller sha256: 99e2ccd0996c91a76e6455cc01aa3d538e938df429fa71e513ad42839dd064b2
+command: Start-Process "<workdir>\install_target\FantasyDisk\Uninstall.exe" -ArgumentList '/S','_?=<workdir>\install_target\FantasyDisk' -Verb RunAs -Wait -PassThru
+uninstaller pid=195648 exit_code=0 duration_s=1.1 ended=2026-09-26T03:51:50.7920290Z
+### post-uninstall state
+target dir exists: True
+  remaining: override.cfg bytes=148
+  remaining: Uninstall.exe bytes=39936
+HKLM WOW6432 key exists: False
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk exists: False
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\Uninstall.lnk exists: False
+  <Desktop>\FantasyDisk.lnk exists: False
+start menu folder exists: False
+## uninstall end 2026-09-26T03:51:50.854Z
+## rollback start 2026-09-26T03:51:50.854Z
+command: reg.exe import "<workdir>\evidence\FAN-3964\preimage\hklm_wow6432_uninstall_FantasyDisk_before.reg" (elevated)
+reg import exit_code=0
+
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\FantasyDisk
+    DisplayName    REG_SZ    FantasyDisk
+    DisplayVersion    REG_SZ    0.3.0
+    Publisher    REG_SZ    FantasyDisk
+    UninstallString    REG_SZ    C:\Program Files\\FantasyDisk\\Uninstall.exe
+    InstallLocation    REG_SZ    C:\Program Files\\FantasyDisk
+
+restored shortcuts; note: the pre-existing %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\Uninstall.lnk (629 bytes, 0.3.0 uninstaller target) was deleted by the NSIS uninstaller and had no byte copy in the preimage; recreating it below from the recorded target
+### rollback verification
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk sha256=477de086f5515998ccfdc60ab4e65de5baaf1ec2068fe2e60ba16902c9cd9975 preimage=477de086f5515998ccfdc60ab4e65de5baaf1ec2068fe2e60ba16902c9cd9975 match=True
+  <Desktop>\FantasyDisk.lnk sha256=2303910369813aa687ba758945b81d48c0c32ac09a4e9523c8284d2d09f070db preimage=2303910369813aa687ba758945b81d48c0c32ac09a4e9523c8284d2d09f070db match=True
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\FantasyDisk.lnk -> C:\Program Files\FantasyDisk\FantasyDisk.exe
+  %USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\FantasyDisk\Uninstall.lnk -> C:\Program Files\FantasyDisk\Uninstall.exe
+  <Desktop>\FantasyDisk.lnk -> C:\Program Files\FantasyDisk\FantasyDisk.exe
+  C:\Program Files\FantasyDisk\FantasyDisk.exe sha256=c9937dbb1f586e8cbefe887c1d31b76c6a171b23e8bb5268cc8ee51fb7c9ac87 match=True
+  C:\Program Files\FantasyDisk\Uninstall.exe sha256=b00f7398ca6fc65e3cb5275741f9545fa5852c935c8fec0bd0c2c80f0fbf2f81 match=True
+  registry DisplayVersion=0.3.0 InstallLocation=C:\Program Files\\FantasyDisk UninstallString=C:\Program Files\\FantasyDisk\\Uninstall.exe
+  registry matches preimage: False
+## rollback end 2026-09-26T03:51:52.448Z
