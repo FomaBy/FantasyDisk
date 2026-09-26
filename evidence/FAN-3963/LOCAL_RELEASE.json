@@ -1,0 +1,46 @@
+{
+  "godot_project_path": "godot-project/project.godot",
+  "macos_app": "/Applications/FantasyDisk.app",
+  "macos_app_required": true,
+  "macos_channel": "signed",
+  "package_inventory": {
+    "CHANGELOG-0.3.1.md": {
+      "sha256": "399dceb48a0d76644eaaa4110b9ffd46223862aee4fafc01f3c8588b0901e09c",
+      "size": 5504
+    },
+    "FantasyDisk-0.3.1-macos.dmg": {
+      "sha256": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a",
+      "size": 559696549
+    },
+    "FantasyDisk-0.3.1-windows-setup.exe": {
+      "sha256": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+      "size": 535974634
+    },
+    "SHA256SUMS.txt": {
+      "sha256": "a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206",
+      "size": 196
+    },
+    "fantasydisk_031_announcement.png": {
+      "sha256": "d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e",
+      "size": 95993
+    },
+    "update-manifest.json": {
+      "sha256": "a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6",
+      "size": 793
+    }
+  },
+  "package_sha256": {
+    "CHANGELOG-0.3.1.md": "399dceb48a0d76644eaaa4110b9ffd46223862aee4fafc01f3c8588b0901e09c",
+    "FantasyDisk-0.3.1-macos.dmg": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a",
+    "FantasyDisk-0.3.1-windows-setup.exe": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+    "SHA256SUMS.txt": "a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206",
+    "fantasydisk_031_announcement.png": "d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e",
+    "update-manifest.json": "a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6"
+  },
+  "project_path": "project/project.godot",
+  "schema": 1,
+  "source_tree_sha256": "e3654c97597f81c15601bb41800488a88d7e89e3ee03f751e672f0f54ff0d545",
+  "tag": "v0.3.1",
+  "tag_commit": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+  "version": "0.3.1"
+}

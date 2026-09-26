@@ -1,0 +1,10 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+Duplicate-artifact guard passed (57967 files scanned).
+Ready weapon ultimate fixtures passed (chemist/blast_powder weapon_profile: delayed impact 0.20s, lifecycle 0.60s, immediate same-frame, 2 malformed refusals).
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (./servers/rendering/dummy/storage/texture_storage.h:110)
+   GDScript backtrace (most recent call first):
+       [0] _try_capture_weapon_select_screenshot (res://tests/runtime_smoke_test.gd:7944)
+       [1] _test_weapon_select_clean_layout (res://tests/runtime_smoke_test.gd:7919)
+Runtime smoke test passed.

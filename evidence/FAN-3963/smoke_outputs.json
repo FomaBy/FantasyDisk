@@ -1,0 +1,99 @@
+[
+  {
+    "name": "import_prepass",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --ensure-import-cache",
+    "exit_code": 0,
+    "duration_seconds": 119.7,
+    "log": "build/FAN-3963/import_prepass.log",
+    "log_size": 5557913,
+    "log_sha256": "7d89bab3714df15b551f8761bcaea34890a5b66d7a981b46f7e76a954016db4c"
+  },
+  {
+    "name": "runtime_smoke_test",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 122.11,
+    "log": "build/FAN-3963/runtime_smoke_test.log",
+    "log_size": 646,
+    "log_sha256": "9d9196d636e81d8d43c78f67a42f97ccd89b515f123cc31fb5a929404432ed76",
+    "pass_marker": "Runtime smoke test passed.",
+    "marker_found": true,
+    "script_error_lines": 0,
+    "error_lines": [
+      "ERROR: Parameter \"t\" is null."
+    ],
+    "passed": true
+  },
+  {
+    "name": "runtime_smoke_ui_test",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 9.67,
+    "log": "build/FAN-3963/runtime_smoke_ui_test.log",
+    "log_size": 435,
+    "log_sha256": "bbf5a4e9a866c088f51ec60f0e83887aeb0503a1645f37fda64964bc46863801",
+    "pass_marker": "Runtime UI smoke suite passed.",
+    "marker_found": true,
+    "script_error_lines": 0,
+    "error_lines": [
+      "ERROR: Parameter \"t\" is null."
+    ],
+    "passed": true
+  },
+  {
+    "name": "runtime_smoke_combat_test",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_combat_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 7.25,
+    "log": "build/FAN-3963/runtime_smoke_combat_test.log",
+    "log_size": 106,
+    "log_sha256": "ac7c3ae62170ddd7ba78aee9f89bc9b17cff4f2eea139c3173dbff780cbf05df",
+    "pass_marker": "Runtime combat smoke suite passed.",
+    "marker_found": true,
+    "script_error_lines": 0,
+    "error_lines": [],
+    "passed": true
+  },
+  {
+    "name": "runtime_smoke_progression_economy_test",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_progression_economy_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 9.15,
+    "log": "build/FAN-3963/runtime_smoke_progression_economy_test.log",
+    "log_size": 195,
+    "log_sha256": "a58765f1b5e2ec91ec49d52d8cdec4ed141ba69372c879724485c948f077525c",
+    "pass_marker": "Runtime progression/economy smoke suite passed.",
+    "marker_found": true,
+    "script_error_lines": 0,
+    "error_lines": [],
+    "passed": true
+  },
+  {
+    "name": "runtime_smoke_weapon_mechanics_test",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_weapon_mechanics_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 94.43,
+    "log": "build/FAN-3963/runtime_smoke_weapon_mechanics_test.log",
+    "log_size": 276,
+    "log_sha256": "41840ab8352b9975946baefc2b28ac942a4167d35f21207bbe710675fe6ce45a",
+    "pass_marker": "Runtime weapon mechanics smoke suite passed.",
+    "marker_found": true,
+    "script_error_lines": 0,
+    "error_lines": [],
+    "passed": true
+  },
+  {
+    "name": "runtime_smoke_boss_elite_test",
+    "command": "/Library/Developer/CommandLineTools/usr/bin/python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 13.22,
+    "log": "build/FAN-3963/runtime_smoke_boss_elite_test.log",
+    "log_size": 110,
+    "log_sha256": "749db6a124aa2c06fde384879afedc1e70fd7dcae4f19ec90fb9c7b4f77339dc",
+    "pass_marker": "Runtime boss/elite smoke suite passed.",
+    "marker_found": true,
+    "script_error_lines": 0,
+    "error_lines": [],
+    "passed": true
+  }
+]

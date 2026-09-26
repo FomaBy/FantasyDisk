@@ -1,0 +1,235 @@
+{
+  "schema": 1,
+  "issue": "FAN-3963",
+  "version": "0.3.1",
+  "source_pins": {
+    "tag": "v0.3.1",
+    "tag_object_sha": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "tag_target_commit": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "tag_target_tree": "3e02df83290741b21d4de37c4fa03e356e20c591",
+    "remote_tag": {
+      "refs/tags/v0.3.1": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+      "refs/tags/v0.3.1^{}": "448a0cc12f02eb05bc16becc69fde365021a9a17"
+    },
+    "origin_main": "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+    "origin_dev": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "build_checkout_head": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "build_checkout_tree": "3e02df83290741b21d4de37c4fa03e356e20c591"
+  },
+  "build": {
+    "command": "FANTASYDISK_MACOS_CHANNEL=signed MACOS_NOTARY_PROFILE=FantasyDiskRelease MACOS_SIGN_IDENTITY=<local, redacted> tools/build_release.sh 0.3.1",
+    "launcher": "build/FAN-3963/run_build.sh (identity resolved locally from the owner-selected Developer ID Application certificate fingerprint)",
+    "prebuild_notarytool_history": "pre-build notarytool history exit=0",
+    "build_started_utc": "2026-09-26T02:04:31Z",
+    "build_finished_utc": "2026-09-26T02:17:01Z",
+    "build_exit": "0",
+    "godot": "4.7.stable.official.5b4e0cb0f",
+    "makensis": "v3.12",
+    "macos": "26.5.1",
+    "full_build_log": {
+      "sha256": "b72a74f250815240589d0287087b7df91e4804a318e7c552ce4a51ae876ceded",
+      "size": 14578549,
+      "note": "full raw log (Godot export progress included) attached to the Multica handoff comment as build_release.raw.log.gz; evidence/FAN-3963/build_release.log is the same log with progress lines removed and ANSI stripped"
+    },
+    "attempt1": {
+      "exit": 1,
+      "cause": "Multica workdir-lifecycle cow_checkout post-checkout hook (core.hooksPath in the shared bare repo config) rejects worktrees outside the Multica workspace allowlist; git worktree add returned 1 at the /tmp build worktree step before any build action",
+      "resolution": "core.hooksPath overridden only in the build process environment via GIT_CONFIG_COUNT/GIT_CONFIG_KEY_0/GIT_CONFIG_VALUE_0 pointing at an empty directory; shared repo config, tools/build_release.sh and source bytes unchanged",
+      "log": "evidence/FAN-3963/build_attempt1_hook_rejection.log"
+    }
+  },
+  "retained_release_dir": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1",
+  "package_inventory": {
+    "CHANGELOG-0.3.1.md": {
+      "size": 5504,
+      "sha256": "399dceb48a0d76644eaaa4110b9ffd46223862aee4fafc01f3c8588b0901e09c"
+    },
+    "FantasyDisk-0.3.1-macos.dmg": {
+      "size": 559696549,
+      "sha256": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a"
+    },
+    "FantasyDisk-0.3.1-windows-setup.exe": {
+      "size": 535974634,
+      "sha256": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed"
+    },
+    "LOCAL_RELEASE.json": {
+      "size": 1948,
+      "sha256": "a39d705dcb1f49e0cd3626b47c7894eeef5b2a9412c86eebc054787d615f060f"
+    },
+    "SHA256SUMS.txt": {
+      "size": 196,
+      "sha256": "a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206"
+    },
+    "fantasydisk_031_announcement.png": {
+      "size": 95993,
+      "sha256": "d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e"
+    },
+    "update-manifest.json": {
+      "size": 793,
+      "sha256": "a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6"
+    }
+  },
+  "cross_checks": {
+    "sha256sums_match_fresh": true,
+    "sha256sums_names": [
+      "FantasyDisk-0.3.1-macos.dmg",
+      "FantasyDisk-0.3.1-windows-setup.exe"
+    ],
+    "local_release_inventory_match_fresh": true,
+    "local_release_inventory_names": [
+      "CHANGELOG-0.3.1.md",
+      "FantasyDisk-0.3.1-macos.dmg",
+      "FantasyDisk-0.3.1-windows-setup.exe",
+      "SHA256SUMS.txt",
+      "fantasydisk_031_announcement.png",
+      "update-manifest.json"
+    ],
+    "update_manifest_entries": [
+      {
+        "name": "FantasyDisk-0.3.1-macos.dmg",
+        "sha256_ok": true,
+        "size_ok": true,
+        "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1/FantasyDisk-0.3.1-macos.dmg"
+      },
+      {
+        "name": "FantasyDisk-0.3.1-windows-setup.exe",
+        "sha256_ok": true,
+        "size_ok": true,
+        "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1/FantasyDisk-0.3.1-windows-setup.exe"
+      }
+    ],
+    "update_manifest_all_ok": true,
+    "local_release_tag": "v0.3.1",
+    "local_release_tag_commit": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "local_release_macos_channel": "signed",
+    "local_release_source_tree_sha256": "e3654c97597f81c15601bb41800488a88d7e89e3ee03f751e672f0f54ff0d545",
+    "project_snapshot_present": true,
+    "godot_project_present": true,
+    "current_project_target": "v0.3.1/godot-project"
+  },
+  "trust_channel": {
+    "channel": "signed",
+    "notarization_accepted_lines": [
+      "Apple notarization accepted FantasyDisk.app",
+      "Apple notarization accepted FantasyDisk DMG"
+    ],
+    "spctl_lines": [
+      "/tmp/fantasydisk-build-jCP2ch/src/build/macos-stage/FantasyDisk.app: accepted",
+      "source=Notarized Developer ID",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/FantasyDisk-0.3.1-macos.dmg: accepted",
+      "source=Notarized Developer ID",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/secret-scan-dmg/FantasyDisk.app: accepted",
+      "source=Notarized Developer ID"
+    ],
+    "stapler_lines": [
+      "The staple and validate action worked!",
+      "The validate action worked!",
+      "The staple and validate action worked!",
+      "The validate action worked!",
+      "The validate action worked!"
+    ],
+    "codesign_verify_lines": [
+      "/tmp/fantasydisk-build-jCP2ch/src/build/macos-stage/FantasyDisk.app: valid on disk",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/macos-stage/FantasyDisk.app: valid on disk",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/FantasyDisk-0.3.1-macos.dmg: valid on disk",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/FantasyDisk-0.3.1-macos.dmg: satisfies its Designated Requirement",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/FantasyDisk-0.3.1-macos.dmg: valid on disk",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/FantasyDisk-0.3.1-macos.dmg: satisfies its Designated Requirement",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/secret-scan-dmg/FantasyDisk.app: valid on disk",
+      "/tmp/fantasydisk-build-jCP2ch/src/build/secret-scan-dmg/FantasyDisk.app: satisfies its Designated Requirement"
+    ],
+    "nsis_crc_line": [
+      "==> Верификация NSIS CRC (точный алгоритм exehead: crc32 файла с байта 512 до поля CRC)",
+      "NSIS CRC OK (firstheader @ 38912, crc @ 535974630)"
+    ],
+    "secret_scan_error": []
+  },
+  "local_release_manifest": {
+    "godot_project_path": "godot-project/project.godot",
+    "macos_app": "/Applications/FantasyDisk.app",
+    "macos_app_required": true,
+    "macos_channel": "signed",
+    "package_inventory": {
+      "CHANGELOG-0.3.1.md": {
+        "sha256": "399dceb48a0d76644eaaa4110b9ffd46223862aee4fafc01f3c8588b0901e09c",
+        "size": 5504
+      },
+      "FantasyDisk-0.3.1-macos.dmg": {
+        "sha256": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a",
+        "size": 559696549
+      },
+      "FantasyDisk-0.3.1-windows-setup.exe": {
+        "sha256": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+        "size": 535974634
+      },
+      "SHA256SUMS.txt": {
+        "sha256": "a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206",
+        "size": 196
+      },
+      "fantasydisk_031_announcement.png": {
+        "sha256": "d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e",
+        "size": 95993
+      },
+      "update-manifest.json": {
+        "sha256": "a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6",
+        "size": 793
+      }
+    },
+    "package_sha256": {
+      "CHANGELOG-0.3.1.md": "399dceb48a0d76644eaaa4110b9ffd46223862aee4fafc01f3c8588b0901e09c",
+      "FantasyDisk-0.3.1-macos.dmg": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a",
+      "FantasyDisk-0.3.1-windows-setup.exe": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+      "SHA256SUMS.txt": "a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206",
+      "fantasydisk_031_announcement.png": "d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e",
+      "update-manifest.json": "a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6"
+    },
+    "project_path": "project/project.godot",
+    "schema": 1,
+    "source_tree_sha256": "e3654c97597f81c15601bb41800488a88d7e89e3ee03f751e672f0f54ff0d545",
+    "tag": "v0.3.1",
+    "tag_commit": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "version": "0.3.1"
+  },
+  "update_manifest": {
+    "assets": {
+      "macos": {
+        "name": "FantasyDisk-0.3.1-macos.dmg",
+        "sha256": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a",
+        "size": 559696549,
+        "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1/FantasyDisk-0.3.1-macos.dmg"
+      },
+      "windows": {
+        "name": "FantasyDisk-0.3.1-windows-setup.exe",
+        "sha256": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+        "size": 535974634,
+        "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1/FantasyDisk-0.3.1-windows-setup.exe"
+      }
+    },
+    "minimum_supported_version": "0.2.2",
+    "release_url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.1",
+    "schema_version": 1,
+    "version": "0.3.1"
+  },
+  "pre_build_gates": {
+    "import_prepass_log_sha256": "7d89bab3714df15b551f8761bcaea34890a5b66d7a981b46f7e76a954016db4c",
+    "import_prepass_log_size": 5557913,
+    "smoke_outputs": "evidence/FAN-3963/smoke_outputs.json",
+    "static_quality_report": "evidence/FAN-3963/static_quality_report.json"
+  },
+  "notary_history_status_only": [
+    "2026-09-26T02:10:24.050Z Accepted FantasyDisk-0.3.1-macos.dmg c53c4809-ed8e-43f2-a1e3-94f52f929c87",
+    "2026-09-26T02:07:44.987Z Accepted FantasyDisk-0.3.1-macos-notary.zip 01bbeed2-ada9-485b-8b63-fddd1a462a86"
+  ],
+  "local_release_verify": {
+    "status": "verified",
+    "version": "0.3.1",
+    "local_release": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1",
+    "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+    "macos_app": "/Applications/FantasyDisk.app",
+    "tag_commit": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "candidate": null,
+    "macos_channel": "signed"
+  }
+}
