@@ -801,21 +801,27 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 	var source_sha := str((manifest.get("source", {}) as Dictionary).get("commit_sha", ""))
 	var old_ru := _source_file_text(source_sha, "data/ultimates/text/ru.json")
 	var current_ru := FileAccess.get_file_as_string("res://data/ultimates/text/ru.json")
-	_expect(_is_capture_inert_ru_text(source_sha, current_ru),
+	## Build the allowed edits from the capture source itself so the positive
+	## cases hold for any source, including one captured on the current tree.
+	var corrected_ru := JSON.parse_string(old_ru) as Dictionary
+	var corrected_profiles := corrected_ru["profiles"] as Dictionary
+	var corrected_key := str(corrected_profiles.keys()[0])
+	(corrected_profiles[corrected_key] as Dictionary)["description"] += " Уточнение."
+	_expect(_is_capture_inert_ru_text(source_sha, JSON.stringify(corrected_ru, "", false)),
 		"description-only Russian text correction must leave capture applicable", errors)
 	var changed_title := JSON.parse_string(current_ru) as Dictionary
 	var changed_profiles := changed_title["profiles"] as Dictionary
 	var first_key := str(changed_profiles.keys()[0])
 	(changed_profiles[first_key] as Dictionary)["title"] += " changed"
-	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(changed_title)),
+	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(changed_title, "", false)),
 		"a changed ultimate title must stale the capture", errors)
 	var removed_profile := JSON.parse_string(current_ru) as Dictionary
 	(removed_profile["profiles"] as Dictionary).erase(first_key)
-	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(removed_profile)),
+	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(removed_profile, "", false)),
 		"a missing ultimate profile must stale the capture", errors)
 	var empty_description := JSON.parse_string(current_ru) as Dictionary
 	((empty_description["profiles"] as Dictionary)[first_key] as Dictionary)["description"] = ""
-	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(empty_description)),
+	_expect(not _is_capture_inert_ru_text(source_sha, JSON.stringify(empty_description, "", false)),
 		"an empty ultimate description must stale the capture", errors)
 	_check_ru_text_visibility(old_ru, current_ru, errors)
 	_expect(not _is_evidence_only_path("scripts/ultimates/presentation/contact_sheet_beats_contract.gd", source_sha),
@@ -843,7 +849,12 @@ func _check_negative_probes(manifest: Dictionary, profile: Dictionary, class_man
 		"an unexpected project setting must make the capture stale", errors)
 	var old_notes := _source_file_text(source_sha, "scripts/patch_notes_data.gd")
 	var current_notes := FileAccess.get_file_as_string("res://scripts/patch_notes_data.gd")
-	_expect(_is_release_only_content("scripts/patch_notes_data.gd", old_notes, current_notes),
+	const NOTES_MARKER := "const PATCH_NOTES := [\n"
+	var notes_split := old_notes.find(NOTES_MARKER) + NOTES_MARKER.length()
+	var added_notes := old_notes.substr(0, notes_split) \
+		+ "\t{\n\t\t\"version\": \"9.9.9\",\n\t\t\"date\": \"2099-01-01\",\n\t\t\"highlights\": [\n" \
+		+ "\t\t\t\"Проверочный пункт.\",\n\t\t],\n\t},\n" + old_notes.substr(notes_split)
+	_expect(_is_release_only_content("scripts/patch_notes_data.gd", old_notes, added_notes),
 		"a leading text-only patch notes entry must leave the capture applicable", errors)
 	_expect(not _is_release_only_content("scripts/patch_notes_data.gd", old_notes,
 		current_notes + "\nfunc unexpected_runtime_change() -> void:\n\tpass\n"),
