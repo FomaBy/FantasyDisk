@@ -1,0 +1,1014 @@
+START 1790420598.125
+1790420598.193 WorkerThreadPool: 14 threads, 4 max low-priority.
+1790420598.202 Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+1790420598.203 TextServer: Added interface "Dummy"
+1790420598.207 TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+1790420598.216 SDL: Init OK!
+1790420598.216 Accessibility: AccessKit driver loaded.
+1790420598.246 Accessibility: window 0 adapter created.
+1790420598.278 Requested V-Sync mode: Enabled - FPS will likely be capped to the monitor refresh rate.
+1790420598.278 Using "default" pen tablet driver...
+1790420598.295 OpenGL debugging not supported!
+1790420598.297 Shader 'CanvasSdfShaderGLES3' SHA256: 3512852e41ba008a92732aad9615671bbdea3bcea580bef66e7a181c76dc4b96
+1790420598.298 Shader 'SkeletonShaderGLES3' SHA256: 1295f178f70fa3630add94029c0cad2616025c0746a770498f062c1f2be08c55
+1790420598.298 Shader 'ParticlesShaderGLES3' SHA256: a3a730049a6bc2183bd54db9599970aef618fbe66eca6a01dbeae87a8eb6e3c2
+1790420598.298 Shader 'ParticlesCopyShaderGLES3' SHA256: a3e4d587dbbd99979ff2a3f0674a99feecc7aa3328b0ee2758abc822a0c76a66
+1790420598.298 Shader 'CopyShaderGLES3' SHA256: 306b0ec8d85496192007a427866801633b5e2c7db5162924cff630b675dbd8a3
+1790420598.305 Shader 'CubemapFilterShaderGLES3' SHA256: 1e287c8055a9203ce10778374180ef940a44df978aed5c09b1c694e6d8a1f387
+1790420598.305 Shader 'GlowShaderGLES3' SHA256: 163bfda31c95cc864ef60f4c5423e7d94322c74495319a45d16dcd95bf1b04a3
+1790420598.305 Shader 'PostShaderGLES3' SHA256: ceab187baf6acdb08960834eb5d50c5aa8c9d7f932dc3c0d6fa22e5e76cb0502
+1790420598.307 Shader 'FeedShaderGLES3' SHA256: 1c3ac1925d1195069fefd0ee2ef69ff9c62ed6311768958a29e05882850157dc
+1790420598.308 Shader 'CanvasShaderGLES3' SHA256: 88701d71c7252add1e9a6a0fd38c761f386b298d20cd8b70dc2d7ef7046f8a52
+1790420598.308 Shader 'CanvasOcclusionShaderGLES3' SHA256: dc68bd5e1ad52c0c6ef5531199a313c7a66bd90507f6e868ebfef74f75993c4c
+1790420598.309 Shader 'SceneShaderGLES3' SHA256: f35cf81e28aea607724b7e340263bdf70d7249960cf7628792c97c811e9f3e3a
+1790420598.375 Shader 'SkyShaderGLES3' SHA256: 1a48830c0b7116238133743ab27b3f6bb1974cbdd73f72230805c510a2689a65
+1790420598.375 Shader 'TexBlitShaderGLES3' SHA256: fe03050725dd7601a853e8fe64c2123c6dfcf9984c5f23acc0f45e24444358b3
+1790420598.375 OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+1790420598.460 CoreAudio: detected 2 channels
+1790420598.460 CoreAudio: output sampling rate: 48000 Hz
+1790420598.460 CoreAudio: output audio buffer frames: 512 calculated latency: 10ms
+1790420598.497
+1790420598.508 TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+1790420598.539 CORE API HASH: 3472268009
+1790420598.539 EDITOR API HASH: 2212757246
+1790420598.539 SceneTreeFTI: traversal method DEFAULT
+1790420598.540 Loading resource: res://scripts/audio_manager.gd remapped: res://scripts/audio_manager.gd
+1790420598.546 Completed load for: 'res://scripts/audio_manager.gd' remapped 'res://scripts/audio_manager.gd' at thread -1
+1790420598.546 Loading resource: res://scripts/input_device_manager.gd remapped: res://scripts/input_device_manager.gd
+1790420598.557 Completed load for: 'res://scripts/input_device_manager.gd' remapped 'res://scripts/input_device_manager.gd' at thread -1
+1790420598.608 Loaded system CA certificates
+1790420598.608 Loading resource: res://scenes/Main.tscn remapped: res://scenes/Main.tscn
+1790420598.609 Loading resource: res://scripts/main.gd remapped: res://scripts/main.gd
+1790420598.622 Loading resource: res://scenes/PauseStatsMenu.tscn remapped: res://scenes/PauseStatsMenu.tscn
+1790420598.622 Loading resource: res://scripts/pause_stats_menu.gd remapped: res://scripts/pause_stats_menu.gd
+1790420598.754 Completed load for: 'res://scripts/pause_stats_menu.gd' remapped 'res://scripts/pause_stats_menu.gd' at thread -1
+1790420598.754 Completed load for: 'res://scenes/PauseStatsMenu.tscn' remapped 'res://scenes/PauseStatsMenu.tscn' at thread -1
+1790420598.754 Loading resource: res://scenes/LevelUpToast.tscn remapped: res://scenes/LevelUpToast.tscn
+1790420598.754 Loading resource: res://scripts/level_up_toast.gd remapped: res://scripts/level_up_toast.gd
+1790420598.756 Loading resource: res://assets/sprites/effects/impact_ring.png remapped: res://assets/sprites/effects/impact_ring.png
+1790420598.756 Loading resource: res://.godot/imported/impact_ring.png-a54df12d7e61566b4c510f57101330b0.ctex remapped: res://.godot/imported/impact_ring.png-a54df12d7e61566b4c510f57101330b0.ctex
+1790420598.757 Completed load for: 'res://assets/sprites/effects/impact_ring.png' remapped 'res://assets/sprites/effects/impact_ring.png' at thread -1
+1790420598.757 Loading resource: res://assets/sprites/effects/impact_flash.png remapped: res://assets/sprites/effects/impact_flash.png
+1790420598.757 Loading resource: res://.godot/imported/impact_flash.png-76283bc01d174972976856c035b9c7b4.ctex remapped: res://.godot/imported/impact_flash.png-76283bc01d174972976856c035b9c7b4.ctex
+1790420598.758 Completed load for: 'res://assets/sprites/effects/impact_flash.png' remapped 'res://assets/sprites/effects/impact_flash.png' at thread -1
+1790420598.758 Loading resource: res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png remapped: res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png
+1790420598.758 Loading resource: res://.godot/imported/ui_frame_2k_lut_toast.png-e1b5e88cee9264e02af20b0b7421ae19.ctex remapped: res://.godot/imported/ui_frame_2k_lut_toast.png-e1b5e88cee9264e02af20b0b7421ae19.ctex
+1790420598.759 Completed load for: 'res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png' remapped 'res://assets/sprites/ui/frames/overhaul_2k/ui_frame_2k_lut_toast.png' at thread -1
+1790420598.761 Completed load for: 'res://scripts/level_up_toast.gd' remapped 'res://scripts/level_up_toast.gd' at thread -1
+1790420598.761 Completed load for: 'res://scenes/LevelUpToast.tscn' remapped 'res://scenes/LevelUpToast.tscn' at thread -1
+1790420598.761 Loading resource: res://scenes/LevelUpEffect.tscn remapped: res://scenes/LevelUpEffect.tscn
+1790420598.761 Loading resource: res://scripts/level_up_effect.gd remapped: res://scripts/level_up_effect.gd
+1790420598.762 Completed load for: 'res://scripts/level_up_effect.gd' remapped 'res://scripts/level_up_effect.gd' at thread -1
+1790420598.762 Completed load for: 'res://scenes/LevelUpEffect.tscn' remapped 'res://scenes/LevelUpEffect.tscn' at thread -1
+1790420599.018 Loading resource: res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn remapped: res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn
+1790420599.019 Loading resource: res://scripts/ui/ultimate_hud/ultimate_hud_widget.gd remapped: res://scripts/ui/ultimate_hud/ultimate_hud_widget.gd
+1790420599.026 Completed load for: 'res://scripts/ui/ultimate_hud/ultimate_hud_widget.gd' remapped 'res://scripts/ui/ultimate_hud/ultimate_hud_widget.gd' at thread -1
+1790420599.026 Completed load for: 'res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn' remapped 'res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn' at thread -1
+1790420599.134 Loading resource: res://assets/sprites/effects/slash_arc.png remapped: res://assets/sprites/effects/slash_arc.png
+1790420599.135 Loading resource: res://.godot/imported/slash_arc.png-2b78b6d2dd94592afcb8d0f90c8b659a.ctex remapped: res://.godot/imported/slash_arc.png-2b78b6d2dd94592afcb8d0f90c8b659a.ctex
+1790420599.135 Completed load for: 'res://assets/sprites/effects/slash_arc.png' remapped 'res://assets/sprites/effects/slash_arc.png' at thread -1
+1790420599.136 Loading resource: res://assets/sprites/effects/beam_strip.png remapped: res://assets/sprites/effects/beam_strip.png
+1790420599.136 Loading resource: res://.godot/imported/beam_strip.png-84a8dca0997afa57d740d80f5cb98cd3.ctex remapped: res://.godot/imported/beam_strip.png-84a8dca0997afa57d740d80f5cb98cd3.ctex
+1790420599.136 Completed load for: 'res://assets/sprites/effects/beam_strip.png' remapped 'res://assets/sprites/effects/beam_strip.png' at thread -1
+1790420599.136 Loading resource: res://assets/sprites/effects/sound_wave.png remapped: res://assets/sprites/effects/sound_wave.png
+1790420599.136 Loading resource: res://.godot/imported/sound_wave.png-c683ecba51c335842644620af68a1ff4.ctex remapped: res://.godot/imported/sound_wave.png-c683ecba51c335842644620af68a1ff4.ctex
+1790420599.137 Completed load for: 'res://assets/sprites/effects/sound_wave.png' remapped 'res://assets/sprites/effects/sound_wave.png' at thread -1
+1790420599.137 Loading resource: res://assets/sprites/effects/void_orb.png remapped: res://assets/sprites/effects/void_orb.png
+1790420599.137 Loading resource: res://.godot/imported/void_orb.png-fdde12e8f75a24d5c999b3f8660c46fa.ctex remapped: res://.godot/imported/void_orb.png-fdde12e8f75a24d5c999b3f8660c46fa.ctex
+1790420599.137 Completed load for: 'res://assets/sprites/effects/void_orb.png' remapped 'res://assets/sprites/effects/void_orb.png' at thread -1
+1790420599.137 Loading resource: res://assets/sprites/effects/music_note.png remapped: res://assets/sprites/effects/music_note.png
+1790420599.137 Loading resource: res://.godot/imported/music_note.png-897f634e25216701f37d258cb97fd2dd.ctex remapped: res://.godot/imported/music_note.png-897f634e25216701f37d258cb97fd2dd.ctex
+1790420599.137 Completed load for: 'res://assets/sprites/effects/music_note.png' remapped 'res://assets/sprites/effects/music_note.png' at thread -1
+1790420599.137 Loading resource: res://assets/sprites/weapons/cursed_skull.png remapped: res://assets/sprites/weapons/cursed_skull.png
+1790420599.137 Loading resource: res://.godot/imported/cursed_skull.png-3954a95577d99a357ff4b14912a6a963.ctex remapped: res://.godot/imported/cursed_skull.png-3954a95577d99a357ff4b14912a6a963.ctex
+1790420599.138 Completed load for: 'res://assets/sprites/weapons/cursed_skull.png' remapped 'res://assets/sprites/weapons/cursed_skull.png' at thread -1
+1790420599.138 Loading resource: res://assets/sprites/effects/dust_puff_0.png remapped: res://assets/sprites/effects/dust_puff_0.png
+1790420599.138 Loading resource: res://.godot/imported/dust_puff_0.png-b7c90a1a3d8dd5026fcfe05364dc5d10.ctex remapped: res://.godot/imported/dust_puff_0.png-b7c90a1a3d8dd5026fcfe05364dc5d10.ctex
+1790420599.138 Completed load for: 'res://assets/sprites/effects/dust_puff_0.png' remapped 'res://assets/sprites/effects/dust_puff_0.png' at thread -1
+1790420599.138 Loading resource: res://assets/sprites/effects/dust_puff_1.png remapped: res://assets/sprites/effects/dust_puff_1.png
+1790420599.139 Loading resource: res://.godot/imported/dust_puff_1.png-03b42419c18e2a87439015cd9e1aad7f.ctex remapped: res://.godot/imported/dust_puff_1.png-03b42419c18e2a87439015cd9e1aad7f.ctex
+1790420599.139 Completed load for: 'res://assets/sprites/effects/dust_puff_1.png' remapped 'res://assets/sprites/effects/dust_puff_1.png' at thread -1
+1790420599.139 Loading resource: res://assets/sprites/effects/dust_puff_2.png remapped: res://assets/sprites/effects/dust_puff_2.png
+1790420599.139 Loading resource: res://.godot/imported/dust_puff_2.png-c1b61ae342218584e7018ef86f74ac01.ctex remapped: res://.godot/imported/dust_puff_2.png-c1b61ae342218584e7018ef86f74ac01.ctex
+1790420599.139 Completed load for: 'res://assets/sprites/effects/dust_puff_2.png' remapped 'res://assets/sprites/effects/dust_puff_2.png' at thread -1
+1790420599.355 Loading resource: res://scenes/BossBoneArchon.tscn remapped: res://scenes/BossBoneArchon.tscn
+1790420599.355 Loading resource: res://scripts/boss.gd remapped: res://scripts/boss.gd
+1790420599.372 Loading resource: res://scenes/EnemyProjectile.tscn remapped: res://scenes/EnemyProjectile.tscn
+1790420599.373 Loading resource: res://scripts/enemy_projectile.gd remapped: res://scripts/enemy_projectile.gd
+1790420599.375 Completed load for: 'res://scripts/enemy_projectile.gd' remapped 'res://scripts/enemy_projectile.gd' at thread -1
+1790420599.375 Loading resource: res://assets/sprites/projectiles/enemy_projectile_magic_64.png remapped: res://assets/sprites/projectiles/enemy_projectile_magic_64.png
+1790420599.375 Loading resource: res://.godot/imported/enemy_projectile_magic_64.png-e1073cd987c051160c91184e86dd859c.ctex remapped: res://.godot/imported/enemy_projectile_magic_64.png-e1073cd987c051160c91184e86dd859c.ctex
+1790420599.375 Completed load for: 'res://assets/sprites/projectiles/enemy_projectile_magic_64.png' remapped 'res://assets/sprites/projectiles/enemy_projectile_magic_64.png' at thread -1
+1790420599.375 Completed load for: 'res://scenes/EnemyProjectile.tscn' remapped 'res://scenes/EnemyProjectile.tscn' at thread -1
+1790420599.375 Loading resource: res://assets/sprites/effects/elite_telegraph_circle.png remapped: res://assets/sprites/effects/elite_telegraph_circle.png
+1790420599.375 Loading resource: res://.godot/imported/elite_telegraph_circle.png-4bdb32f13a490f5ed583b49bed7cf9fc.ctex remapped: res://.godot/imported/elite_telegraph_circle.png-4bdb32f13a490f5ed583b49bed7cf9fc.ctex
+1790420599.379 Completed load for: 'res://assets/sprites/effects/elite_telegraph_circle.png' remapped 'res://assets/sprites/effects/elite_telegraph_circle.png' at thread -1
+1790420599.379 Loading resource: res://assets/sprites/effects/poison_pool.png remapped: res://assets/sprites/effects/poison_pool.png
+1790420599.379 Loading resource: res://.godot/imported/poison_pool.png-c7a4f6024f5823e2d68cf735960f2f12.ctex remapped: res://.godot/imported/poison_pool.png-c7a4f6024f5823e2d68cf735960f2f12.ctex
+1790420599.380 Completed load for: 'res://assets/sprites/effects/poison_pool.png' remapped 'res://assets/sprites/effects/poison_pool.png' at thread -1
+1790420599.380 Loading resource: res://assets/sprites/effects/elite_shockwave_ring.png remapped: res://assets/sprites/effects/elite_shockwave_ring.png
+1790420599.380 Loading resource: res://.godot/imported/elite_shockwave_ring.png-f3f86899d959461071a927a2206fd010.ctex remapped: res://.godot/imported/elite_shockwave_ring.png-f3f86899d959461071a927a2206fd010.ctex
+1790420599.382 Completed load for: 'res://assets/sprites/effects/elite_shockwave_ring.png' remapped 'res://assets/sprites/effects/elite_shockwave_ring.png' at thread -1
+1790420599.383 Loading resource: res://assets/sprites/effects/elite_shadow_trail.png remapped: res://assets/sprites/effects/elite_shadow_trail.png
+1790420599.383 Loading resource: res://.godot/imported/elite_shadow_trail.png-519036521ae831a80b52240559aee49f.ctex remapped: res://.godot/imported/elite_shadow_trail.png-519036521ae831a80b52240559aee49f.ctex
+1790420599.383 Completed load for: 'res://assets/sprites/effects/elite_shadow_trail.png' remapped 'res://assets/sprites/effects/elite_shadow_trail.png' at thread -1
+1790420599.383 Loading resource: res://assets/sprites/effects/elite_poison_lob.png remapped: res://assets/sprites/effects/elite_poison_lob.png
+1790420599.383 Loading resource: res://.godot/imported/elite_poison_lob.png-4777d5f95023981829be8c15f7b0cfd9.ctex remapped: res://.godot/imported/elite_poison_lob.png-4777d5f95023981829be8c15f7b0cfd9.ctex
+1790420599.383 Completed load for: 'res://assets/sprites/effects/elite_poison_lob.png' remapped 'res://assets/sprites/effects/elite_poison_lob.png' at thread -1
+1790420599.383 Loading resource: res://assets/sprites/effects/elite_crystal_shard.png remapped: res://assets/sprites/effects/elite_crystal_shard.png
+1790420599.384 Loading resource: res://.godot/imported/elite_crystal_shard.png-69fa2bb711e3ce46a6c8b08972b42b6d.ctex remapped: res://.godot/imported/elite_crystal_shard.png-69fa2bb711e3ce46a6c8b08972b42b6d.ctex
+1790420599.384 Completed load for: 'res://assets/sprites/effects/elite_crystal_shard.png' remapped 'res://assets/sprites/effects/elite_crystal_shard.png' at thread -1
+1790420599.384 Loading resource: res://assets/sprites/effects/enemy_shadow_blink_mark.png remapped: res://assets/sprites/effects/enemy_shadow_blink_mark.png
+1790420599.384 Loading resource: res://.godot/imported/enemy_shadow_blink_mark.png-9058ff7dbc116bf9eeb0326f6551626f.ctex remapped: res://.godot/imported/enemy_shadow_blink_mark.png-9058ff7dbc116bf9eeb0326f6551626f.ctex
+1790420599.386 Completed load for: 'res://assets/sprites/effects/enemy_shadow_blink_mark.png' remapped 'res://assets/sprites/effects/enemy_shadow_blink_mark.png' at thread -1
+1790420599.386 Loading resource: res://assets/sprites/effects/enemy_shard_fan_burst.png remapped: res://assets/sprites/effects/enemy_shard_fan_burst.png
+1790420599.386 Loading resource: res://.godot/imported/enemy_shard_fan_burst.png-06476ce079e51aa2c2a8812883241c98.ctex remapped: res://.godot/imported/enemy_shard_fan_burst.png-06476ce079e51aa2c2a8812883241c98.ctex
+1790420599.389 Completed load for: 'res://assets/sprites/effects/enemy_shard_fan_burst.png' remapped 'res://assets/sprites/effects/enemy_shard_fan_burst.png' at thread -1
+1790420599.390 Loading resource: res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png remapped: res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png
+1790420599.390 Loading resource: res://.godot/imported/secret_ascension_boss_ring_telegraph.png-7f72dbdaf4c7795edb3e15f2221a2d20.ctex remapped: res://.godot/imported/secret_ascension_boss_ring_telegraph.png-7f72dbdaf4c7795edb3e15f2221a2d20.ctex
+1790420599.393 Completed load for: 'res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png' remapped 'res://assets/sprites/effects/secret_ascension_boss_ring_telegraph.png' at thread -1
+1790420599.393 Loading resource: res://assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png remapped: res://assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png
+1790420599.393 Loading resource: res://.godot/imported/secret_ascension_boss_rupture_telegraph.png-cc23e62af7b469557f70a8ef5a756dab.ctex remapped: res://.godot/imported/secret_ascension_boss_rupture_telegraph.png-cc23e62af7b469557f70a8ef5a756dab.ctex
+1790420599.395 Completed load for: 'res://assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png' remapped 'res://assets/sprites/effects/secret_ascension_boss_rupture_telegraph.png' at thread -1
+1790420599.395 Loading resource: res://assets/sprites/effects/secret_ascension_boss_cone_telegraph.png remapped: res://assets/sprites/effects/secret_ascension_boss_cone_telegraph.png
+1790420599.395 Loading resource: res://.godot/imported/secret_ascension_boss_cone_telegraph.png-3b434afdb0656b5cedf489d2f03c4618.ctex remapped: res://.godot/imported/secret_ascension_boss_cone_telegraph.png-3b434afdb0656b5cedf489d2f03c4618.ctex
+1790420599.400 Completed load for: 'res://assets/sprites/effects/secret_ascension_boss_cone_telegraph.png' remapped 'res://assets/sprites/effects/secret_ascension_boss_cone_telegraph.png' at thread -1
+1790420599.400 Loading resource: res://assets/sprites/effects/secret_ascension_boss_beam_telegraph.png remapped: res://assets/sprites/effects/secret_ascension_boss_beam_telegraph.png
+1790420599.400 Loading resource: res://.godot/imported/secret_ascension_boss_beam_telegraph.png-3c47ebb8ff68356a09d69e4d578b5307.ctex remapped: res://.godot/imported/secret_ascension_boss_beam_telegraph.png-3c47ebb8ff68356a09d69e4d578b5307.ctex
+1790420599.401 Completed load for: 'res://assets/sprites/effects/secret_ascension_boss_beam_telegraph.png' remapped 'res://assets/sprites/effects/secret_ascension_boss_beam_telegraph.png' at thread -1
+1790420599.449 Loading resource: res://assets/sprites/effects/hazard_zone.png remapped: res://assets/sprites/effects/hazard_zone.png
+1790420599.449 Loading resource: res://.godot/imported/hazard_zone.png-8a91f087e605ba06b5b00c137ea8d9a8.ctex remapped: res://.godot/imported/hazard_zone.png-8a91f087e605ba06b5b00c137ea8d9a8.ctex
+1790420599.450 Completed load for: 'res://assets/sprites/effects/hazard_zone.png' remapped 'res://assets/sprites/effects/hazard_zone.png' at thread -1
+1790420599.450 Loading resource: res://assets/sprites/effects/boss_gravity_well_zone.png remapped: res://assets/sprites/effects/boss_gravity_well_zone.png
+1790420599.450 Loading resource: res://.godot/imported/boss_gravity_well_zone.png-38c7e0f554c292c1f9a952069ff7cadf.ctex remapped: res://.godot/imported/boss_gravity_well_zone.png-38c7e0f554c292c1f9a952069ff7cadf.ctex
+1790420599.454 Completed load for: 'res://assets/sprites/effects/boss_gravity_well_zone.png' remapped 'res://assets/sprites/effects/boss_gravity_well_zone.png' at thread -1
+1790420599.454 Loading resource: res://assets/sprites/effects/boss_vampiric_bite_zone.png remapped: res://assets/sprites/effects/boss_vampiric_bite_zone.png
+1790420599.454 Loading resource: res://.godot/imported/boss_vampiric_bite_zone.png-2ae6c5f39270dd074ecab3dffa116272.ctex remapped: res://.godot/imported/boss_vampiric_bite_zone.png-2ae6c5f39270dd074ecab3dffa116272.ctex
+1790420599.457 Completed load for: 'res://assets/sprites/effects/boss_vampiric_bite_zone.png' remapped 'res://assets/sprites/effects/boss_vampiric_bite_zone.png' at thread -1
+1790420599.457 Loading resource: res://assets/sprites/effects/boss_rift_zone.png remapped: res://assets/sprites/effects/boss_rift_zone.png
+1790420599.457 Loading resource: res://.godot/imported/boss_rift_zone.png-ae3eeb0021a75eadbcb22011bfb9c25f.ctex remapped: res://.godot/imported/boss_rift_zone.png-ae3eeb0021a75eadbcb22011bfb9c25f.ctex
+1790420599.460 Completed load for: 'res://assets/sprites/effects/boss_rift_zone.png' remapped 'res://assets/sprites/effects/boss_rift_zone.png' at thread -1
+1790420599.460 Loading resource: res://assets/sprites/effects/boss_brood_web_zone.png remapped: res://assets/sprites/effects/boss_brood_web_zone.png
+1790420599.460 Loading resource: res://.godot/imported/boss_brood_web_zone.png-92c406ece366d137cb687a13c614c20d.ctex remapped: res://.godot/imported/boss_brood_web_zone.png-92c406ece366d137cb687a13c614c20d.ctex
+1790420599.463 Completed load for: 'res://assets/sprites/effects/boss_brood_web_zone.png' remapped 'res://assets/sprites/effects/boss_brood_web_zone.png' at thread -1
+1790420599.463 Loading resource: res://assets/sprites/effects/boss_ash_ember_zone.png remapped: res://assets/sprites/effects/boss_ash_ember_zone.png
+1790420599.463 Loading resource: res://.godot/imported/boss_ash_ember_zone.png-7081a2e896fd44787ff73748b50bf250.ctex remapped: res://.godot/imported/boss_ash_ember_zone.png-7081a2e896fd44787ff73748b50bf250.ctex
+1790420599.466 Completed load for: 'res://assets/sprites/effects/boss_ash_ember_zone.png' remapped 'res://assets/sprites/effects/boss_ash_ember_zone.png' at thread -1
+1790420599.466 Loading resource: res://assets/sprites/effects/boss_molten_armor_pulse.png remapped: res://assets/sprites/effects/boss_molten_armor_pulse.png
+1790420599.466 Loading resource: res://.godot/imported/boss_molten_armor_pulse.png-3e2f5196ec8a7c777f97dfad7658fb92.ctex remapped: res://.godot/imported/boss_molten_armor_pulse.png-3e2f5196ec8a7c777f97dfad7658fb92.ctex
+1790420599.469 Completed load for: 'res://assets/sprites/effects/boss_molten_armor_pulse.png' remapped 'res://assets/sprites/effects/boss_molten_armor_pulse.png' at thread -1
+1790420599.469 Loading resource: res://assets/sprites/effects/boss_bone_prison_zone.png remapped: res://assets/sprites/effects/boss_bone_prison_zone.png
+1790420599.469 Loading resource: res://.godot/imported/boss_bone_prison_zone.png-8d4fd69a5363364808d013bfccbca9d2.ctex remapped: res://.godot/imported/boss_bone_prison_zone.png-8d4fd69a5363364808d013bfccbca9d2.ctex
+1790420599.472 Completed load for: 'res://assets/sprites/effects/boss_bone_prison_zone.png' remapped 'res://assets/sprites/effects/boss_bone_prison_zone.png' at thread -1
+1790420599.472 Loading resource: res://assets/sprites/effects/enemy_summon_portal.png remapped: res://assets/sprites/effects/enemy_summon_portal.png
+1790420599.472 Loading resource: res://.godot/imported/enemy_summon_portal.png-1f7dc8d755629fca2ab18f02e9af891f.ctex remapped: res://.godot/imported/enemy_summon_portal.png-1f7dc8d755629fca2ab18f02e9af891f.ctex
+1790420599.476 Completed load for: 'res://assets/sprites/effects/enemy_summon_portal.png' remapped 'res://assets/sprites/effects/enemy_summon_portal.png' at thread -1
+1790420599.476 Loading resource: res://assets/sprites/effects/enemy_shield_block_front.png remapped: res://assets/sprites/effects/enemy_shield_block_front.png
+1790420599.476 Loading resource: res://.godot/imported/enemy_shield_block_front.png-f0ce74dea949cc00e69fe8c1191457db.ctex remapped: res://.godot/imported/enemy_shield_block_front.png-f0ce74dea949cc00e69fe8c1191457db.ctex
+1790420599.477 Completed load for: 'res://assets/sprites/effects/enemy_shield_block_front.png' remapped 'res://assets/sprites/effects/enemy_shield_block_front.png' at thread -1
+1790420599.477 Loading resource: res://assets/sprites/effects/enemy_reflect_thorns_aura.png remapped: res://assets/sprites/effects/enemy_reflect_thorns_aura.png
+1790420599.477 Loading resource: res://.godot/imported/enemy_reflect_thorns_aura.png-7c4bddb3b9d9a9468eea38d8582ebb47.ctex remapped: res://.godot/imported/enemy_reflect_thorns_aura.png-7c4bddb3b9d9a9468eea38d8582ebb47.ctex
+1790420599.480 Completed load for: 'res://assets/sprites/effects/enemy_reflect_thorns_aura.png' remapped 'res://assets/sprites/effects/enemy_reflect_thorns_aura.png' at thread -1
+1790420599.480 Loading resource: res://assets/sprites/effects/enemy_command_aura_pulse.png remapped: res://assets/sprites/effects/enemy_command_aura_pulse.png
+1790420599.480 Loading resource: res://.godot/imported/enemy_command_aura_pulse.png-ee9015454c11ba5c14ba07dd064c3bb3.ctex remapped: res://.godot/imported/enemy_command_aura_pulse.png-ee9015454c11ba5c14ba07dd064c3bb3.ctex
+1790420599.484 Completed load for: 'res://assets/sprites/effects/enemy_command_aura_pulse.png' remapped 'res://assets/sprites/effects/enemy_command_aura_pulse.png' at thread -1
+1790420599.505 Completed load for: 'res://scripts/boss.gd' remapped 'res://scripts/boss.gd' at thread -1
+1790420599.505 Loading resource: res://assets/sprites/bosses/boss_bone_archon.png remapped: res://assets/sprites/bosses/boss_bone_archon.png
+1790420599.505 Loading resource: res://.godot/imported/boss_bone_archon.png-80db945580903e546fff2cbc35917ad8.ctex remapped: res://.godot/imported/boss_bone_archon.png-80db945580903e546fff2cbc35917ad8.ctex
+1790420599.508 Completed load for: 'res://assets/sprites/bosses/boss_bone_archon.png' remapped 'res://assets/sprites/bosses/boss_bone_archon.png' at thread -1
+1790420599.508 Loading resource: res://scenes/EnemyBiter.tscn remapped: res://scenes/EnemyBiter.tscn
+1790420599.508 Loading resource: res://assets/sprites/enemies/enemy_small_biter.png remapped: res://assets/sprites/enemies/enemy_small_biter.png
+1790420599.508 Loading resource: res://.godot/imported/enemy_small_biter.png-63add0f2ef360ffedbeb464d5c969fb7.ctex remapped: res://.godot/imported/enemy_small_biter.png-63add0f2ef360ffedbeb464d5c969fb7.ctex
+1790420599.509 Completed load for: 'res://assets/sprites/enemies/enemy_small_biter.png' remapped 'res://assets/sprites/enemies/enemy_small_biter.png' at thread -1
+1790420599.509 Completed load for: 'res://scenes/EnemyBiter.tscn' remapped 'res://scenes/EnemyBiter.tscn' at thread -1
+1790420599.509 Completed load for: 'res://scenes/BossBoneArchon.tscn' remapped 'res://scenes/BossBoneArchon.tscn' at thread -1
+1790420599.509 Loading resource: res://scenes/BossBroodMother.tscn remapped: res://scenes/BossBroodMother.tscn
+1790420599.509 Loading resource: res://assets/sprites/bosses/boss_brood_mother.png remapped: res://assets/sprites/bosses/boss_brood_mother.png
+1790420599.509 Loading resource: res://.godot/imported/boss_brood_mother.png-882f13417ce967bef4c9be811f52ab21.ctex remapped: res://.godot/imported/boss_brood_mother.png-882f13417ce967bef4c9be811f52ab21.ctex
+1790420599.512 Completed load for: 'res://assets/sprites/bosses/boss_brood_mother.png' remapped 'res://assets/sprites/bosses/boss_brood_mother.png' at thread -1
+1790420599.512 Completed load for: 'res://scenes/BossBroodMother.tscn' remapped 'res://scenes/BossBroodMother.tscn' at thread -1
+1790420599.512 Loading resource: res://scenes/BossAshenColossus.tscn remapped: res://scenes/BossAshenColossus.tscn
+1790420599.512 Loading resource: res://assets/sprites/bosses/boss_ashen_colossus.png remapped: res://assets/sprites/bosses/boss_ashen_colossus.png
+1790420599.512 Loading resource: res://.godot/imported/boss_ashen_colossus.png-2fc23d13835f58ca13b56abbe351fe11.ctex remapped: res://.godot/imported/boss_ashen_colossus.png-2fc23d13835f58ca13b56abbe351fe11.ctex
+1790420599.515 Completed load for: 'res://assets/sprites/bosses/boss_ashen_colossus.png' remapped 'res://assets/sprites/bosses/boss_ashen_colossus.png' at thread -1
+1790420599.515 Completed load for: 'res://scenes/BossAshenColossus.tscn' remapped 'res://scenes/BossAshenColossus.tscn' at thread -1
+1790420599.515 Loading resource: res://scenes/BossSecretAscension.tscn remapped: res://scenes/BossSecretAscension.tscn
+1790420599.515 Loading resource: res://assets/sprites/bosses/boss_disk_devourer.png remapped: res://assets/sprites/bosses/boss_disk_devourer.png
+1790420599.515 Loading resource: res://.godot/imported/boss_disk_devourer.png-245777028c80c8f47136ee35cd616d38.ctex remapped: res://.godot/imported/boss_disk_devourer.png-245777028c80c8f47136ee35cd616d38.ctex
+1790420599.519 Completed load for: 'res://assets/sprites/bosses/boss_disk_devourer.png' remapped 'res://assets/sprites/bosses/boss_disk_devourer.png' at thread -1
+1790420599.519 Completed load for: 'res://scenes/BossSecretAscension.tscn' remapped 'res://scenes/BossSecretAscension.tscn' at thread -1
+1790420599.519 Loading resource: res://scenes/BossBloodthornLion.tscn remapped: res://scenes/BossBloodthornLion.tscn
+1790420599.519 Loading resource: res://assets/sprites/bosses/boss_bloodthorn_lion.png remapped: res://assets/sprites/bosses/boss_bloodthorn_lion.png
+1790420599.519 Loading resource: res://.godot/imported/boss_bloodthorn_lion.png-8628a6beebc4bab4471e8c6f91d1d675.ctex remapped: res://.godot/imported/boss_bloodthorn_lion.png-8628a6beebc4bab4471e8c6f91d1d675.ctex
+1790420599.520 Completed load for: 'res://assets/sprites/bosses/boss_bloodthorn_lion.png' remapped 'res://assets/sprites/bosses/boss_bloodthorn_lion.png' at thread -1
+1790420599.520 Completed load for: 'res://scenes/BossBloodthornLion.tscn' remapped 'res://scenes/BossBloodthornLion.tscn' at thread -1
+1790420599.609 Completed load for: 'res://scripts/main.gd' remapped 'res://scripts/main.gd' at thread -1
+1790420599.609 Loading resource: res://scenes/Player.tscn remapped: res://scenes/Player.tscn
+1790420599.609 Loading resource: res://scripts/player.gd remapped: res://scripts/player.gd
+1790420599.629 Loading resource: res://assets/sprites/characters/berserk_unarmed.png remapped: res://assets/sprites/characters/berserk_unarmed.png
+1790420599.629 Loading resource: res://.godot/imported/berserk_unarmed.png-7cf695e4bd0eb0a956515b9bd840ef39.ctex remapped: res://.godot/imported/berserk_unarmed.png-7cf695e4bd0eb0a956515b9bd840ef39.ctex
+1790420599.631 Completed load for: 'res://assets/sprites/characters/berserk_unarmed.png' remapped 'res://assets/sprites/characters/berserk_unarmed.png' at thread -1
+1790420599.631 Loading resource: res://assets/sprites/characters/berserk_walk_sheet_v2.png remapped: res://assets/sprites/characters/berserk_walk_sheet_v2.png
+1790420599.631 Loading resource: res://.godot/imported/berserk_walk_sheet_v2.png-75b0fb850d0a8e474cd033ee18847c7f.ctex remapped: res://.godot/imported/berserk_walk_sheet_v2.png-75b0fb850d0a8e474cd033ee18847c7f.ctex
+1790420599.642 Completed load for: 'res://assets/sprites/characters/berserk_walk_sheet_v2.png' remapped 'res://assets/sprites/characters/berserk_walk_sheet_v2.png' at thread -1
+1790420599.651 Loading resource: res://scenes/characters/DarkMageSkeletonRig.tscn remapped: res://scenes/characters/DarkMageSkeletonRig.tscn
+1790420599.652 Loading resource: res://scripts/skeleton_player_rig_2d.gd remapped: res://scripts/skeleton_player_rig_2d.gd
+1790420599.657 Completed load for: 'res://scripts/skeleton_player_rig_2d.gd' remapped 'res://scripts/skeleton_player_rig_2d.gd' at thread -1
+1790420599.657 Completed load for: 'res://scenes/characters/DarkMageSkeletonRig.tscn' remapped 'res://scenes/characters/DarkMageSkeletonRig.tscn' at thread -1
+1790420599.657 Loading resource: res://scenes/characters/KnightSkeletonRig.tscn remapped: res://scenes/characters/KnightSkeletonRig.tscn
+1790420599.658 Completed load for: 'res://scenes/characters/KnightSkeletonRig.tscn' remapped 'res://scenes/characters/KnightSkeletonRig.tscn' at thread -1
+1790420599.658 Loading resource: res://assets/sprites/characters/dark_mage.png remapped: res://assets/sprites/characters/dark_mage.png
+1790420599.658 Loading resource: res://.godot/imported/dark_mage.png-349f4098c977df6b38a114a1fecc827f.ctex remapped: res://.godot/imported/dark_mage.png-349f4098c977df6b38a114a1fecc827f.ctex
+1790420599.660 Completed load for: 'res://assets/sprites/characters/dark_mage.png' remapped 'res://assets/sprites/characters/dark_mage.png' at thread -1
+1790420599.660 Loading resource: res://assets/sprites/characters/guitarist.png remapped: res://assets/sprites/characters/guitarist.png
+1790420599.660 Loading resource: res://.godot/imported/guitarist.png-b9b973fff28ace8238e02c3fbf25510c.ctex remapped: res://.godot/imported/guitarist.png-b9b973fff28ace8238e02c3fbf25510c.ctex
+1790420599.662 Completed load for: 'res://assets/sprites/characters/guitarist.png' remapped 'res://assets/sprites/characters/guitarist.png' at thread -1
+1790420599.662 Loading resource: res://assets/sprites/characters/assassin.png remapped: res://assets/sprites/characters/assassin.png
+1790420599.662 Loading resource: res://.godot/imported/assassin.png-047c19856eaca62645b5008b0b81ab97.ctex remapped: res://.godot/imported/assassin.png-047c19856eaca62645b5008b0b81ab97.ctex
+1790420599.664 Completed load for: 'res://assets/sprites/characters/assassin.png' remapped 'res://assets/sprites/characters/assassin.png' at thread -1
+1790420599.664 Loading resource: res://assets/sprites/characters/ranger.png remapped: res://assets/sprites/characters/ranger.png
+1790420599.664 Loading resource: res://.godot/imported/ranger.png-b486fe2626e1b167446d198c08a4b9aa.ctex remapped: res://.godot/imported/ranger.png-b486fe2626e1b167446d198c08a4b9aa.ctex
+1790420599.666 Completed load for: 'res://assets/sprites/characters/ranger.png' remapped 'res://assets/sprites/characters/ranger.png' at thread -1
+1790420599.666 Loading resource: res://assets/sprites/characters/doctor.png remapped: res://assets/sprites/characters/doctor.png
+1790420599.666 Loading resource: res://.godot/imported/doctor.png-392630ecfec927cf7ec73dd54874ae34.ctex remapped: res://.godot/imported/doctor.png-392630ecfec927cf7ec73dd54874ae34.ctex
+1790420599.668 Completed load for: 'res://assets/sprites/characters/doctor.png' remapped 'res://assets/sprites/characters/doctor.png' at thread -1
+1790420599.668 Loading resource: res://assets/sprites/characters/chemist.png remapped: res://assets/sprites/characters/chemist.png
+1790420599.668 Loading resource: res://.godot/imported/chemist.png-19ab094c4d872603968fa6459767cbab.ctex remapped: res://.godot/imported/chemist.png-19ab094c4d872603968fa6459767cbab.ctex
+1790420599.670 Completed load for: 'res://assets/sprites/characters/chemist.png' remapped 'res://assets/sprites/characters/chemist.png' at thread -1
+1790420599.670 Loading resource: res://assets/sprites/characters/knight.png remapped: res://assets/sprites/characters/knight.png
+1790420599.670 Loading resource: res://.godot/imported/knight.png-ea809066987fe1d26f74bedbdc1109a1.ctex remapped: res://.godot/imported/knight.png-ea809066987fe1d26f74bedbdc1109a1.ctex
+1790420599.672 Completed load for: 'res://assets/sprites/characters/knight.png' remapped 'res://assets/sprites/characters/knight.png' at thread -1
+1790420599.672 Loading resource: res://assets/sprites/characters/robot.png remapped: res://assets/sprites/characters/robot.png
+1790420599.672 Loading resource: res://.godot/imported/robot.png-f49d4094f4b79b5839a1a71b62cd90ea.ctex remapped: res://.godot/imported/robot.png-f49d4094f4b79b5839a1a71b62cd90ea.ctex
+1790420599.675 Completed load for: 'res://assets/sprites/characters/robot.png' remapped 'res://assets/sprites/characters/robot.png' at thread -1
+1790420599.675 Loading resource: res://assets/sprites/characters/druid.png remapped: res://assets/sprites/characters/druid.png
+1790420599.675 Loading resource: res://.godot/imported/druid.png-9a41ff0c5ca0d1113a0d8bca3b1cf787.ctex remapped: res://.godot/imported/druid.png-9a41ff0c5ca0d1113a0d8bca3b1cf787.ctex
+1790420599.677 Completed load for: 'res://assets/sprites/characters/druid.png' remapped 'res://assets/sprites/characters/druid.png' at thread -1
+1790420599.687 Loading resource: res://scenes/AllyMinion.tscn remapped: res://scenes/AllyMinion.tscn
+1790420599.688 Loading resource: res://scripts/ally_minion.gd remapped: res://scripts/ally_minion.gd
+1790420599.699 Completed load for: 'res://scripts/ally_minion.gd' remapped 'res://scripts/ally_minion.gd' at thread -1
+1790420599.699 Loading resource: res://assets/sprites/allies/ally_druid_beast.png remapped: res://assets/sprites/allies/ally_druid_beast.png
+1790420599.699 Loading resource: res://.godot/imported/ally_druid_beast.png-cd36af8f76ee6572d5b952dccf875e74.ctex remapped: res://.godot/imported/ally_druid_beast.png-cd36af8f76ee6572d5b952dccf875e74.ctex
+1790420599.700 Completed load for: 'res://assets/sprites/allies/ally_druid_beast.png' remapped 'res://assets/sprites/allies/ally_druid_beast.png' at thread -1
+1790420599.700 Loading resource: res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres remapped: res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres
+1790420599.700 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png
+1790420599.701 Loading resource: res://.godot/imported/ally_druid_wolf_attack_00.png-f7f8a29b02b77641dfecc9894070820d.ctex remapped: res://.godot/imported/ally_druid_wolf_attack_00.png-f7f8a29b02b77641dfecc9894070820d.ctex
+1790420599.701 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png' at thread -1
+1790420599.701 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png
+1790420599.701 Loading resource: res://.godot/imported/ally_druid_wolf_attack_01.png-5908158381f784f6446833b56b3918fb.ctex remapped: res://.godot/imported/ally_druid_wolf_attack_01.png-5908158381f784f6446833b56b3918fb.ctex
+1790420599.702 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png' at thread -1
+1790420599.702 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png
+1790420599.702 Loading resource: res://.godot/imported/ally_druid_wolf_attack_02.png-f02dbd64e2eb8fe634253e6b23791747.ctex remapped: res://.godot/imported/ally_druid_wolf_attack_02.png-f02dbd64e2eb8fe634253e6b23791747.ctex
+1790420599.702 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png' at thread -1
+1790420599.702 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png
+1790420599.703 Loading resource: res://.godot/imported/ally_druid_wolf_attack_03.png-b5ae01d89454cf09d91d9a513c3b89b4.ctex remapped: res://.godot/imported/ally_druid_wolf_attack_03.png-b5ae01d89454cf09d91d9a513c3b89b4.ctex
+1790420599.703 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png' at thread -1
+1790420599.703 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png
+1790420599.703 Loading resource: res://.godot/imported/ally_druid_wolf_attack_04.png-d5d45fdf9f87b3d9fbdb0856b2aca72a.ctex remapped: res://.godot/imported/ally_druid_wolf_attack_04.png-d5d45fdf9f87b3d9fbdb0856b2aca72a.ctex
+1790420599.704 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png' at thread -1
+1790420599.704 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png
+1790420599.704 Loading resource: res://.godot/imported/ally_druid_wolf_attack_05.png-c73a07f79bbc1a98c2fc3e69ca2fcfc9.ctex remapped: res://.godot/imported/ally_druid_wolf_attack_05.png-c73a07f79bbc1a98c2fc3e69ca2fcfc9.ctex
+1790420599.705 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png' at thread -1
+1790420599.705 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png
+1790420599.705 Loading resource: res://.godot/imported/ally_druid_wolf_death_00.png-430412e2c36a5ac833b051b874ec230c.ctex remapped: res://.godot/imported/ally_druid_wolf_death_00.png-430412e2c36a5ac833b051b874ec230c.ctex
+1790420599.705 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png' at thread -1
+1790420599.705 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png
+1790420599.705 Loading resource: res://.godot/imported/ally_druid_wolf_death_01.png-8ac7d282b53430fae1ef262d89657faa.ctex remapped: res://.godot/imported/ally_druid_wolf_death_01.png-8ac7d282b53430fae1ef262d89657faa.ctex
+1790420599.706 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png' at thread -1
+1790420599.706 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png
+1790420599.706 Loading resource: res://.godot/imported/ally_druid_wolf_death_02.png-9c54a1cf01e5b4b5f149f7f2b1a6d34f.ctex remapped: res://.godot/imported/ally_druid_wolf_death_02.png-9c54a1cf01e5b4b5f149f7f2b1a6d34f.ctex
+1790420599.707 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png' at thread -1
+1790420599.707 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png
+1790420599.707 Loading resource: res://.godot/imported/ally_druid_wolf_death_03.png-ead6392fa777063702cef52fad8c7c54.ctex remapped: res://.godot/imported/ally_druid_wolf_death_03.png-ead6392fa777063702cef52fad8c7c54.ctex
+1790420599.707 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png' at thread -1
+1790420599.707 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png
+1790420599.707 Loading resource: res://.godot/imported/ally_druid_wolf_death_04.png-ba3a57d38d3f515fc9de4ff604154d3c.ctex remapped: res://.godot/imported/ally_druid_wolf_death_04.png-ba3a57d38d3f515fc9de4ff604154d3c.ctex
+1790420599.708 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png' at thread -1
+1790420599.708 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png
+1790420599.708 Loading resource: res://.godot/imported/ally_druid_wolf_death_05.png-08213bb6f7ae03f6f1ebd687e096e239.ctex remapped: res://.godot/imported/ally_druid_wolf_death_05.png-08213bb6f7ae03f6f1ebd687e096e239.ctex
+1790420599.708 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png' at thread -1
+1790420599.708 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png
+1790420599.708 Loading resource: res://.godot/imported/ally_druid_wolf_move_00.png-2d86718a845e7e12530574958eace03c.ctex remapped: res://.godot/imported/ally_druid_wolf_move_00.png-2d86718a845e7e12530574958eace03c.ctex
+1790420599.709 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png' at thread -1
+1790420599.709 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png
+1790420599.709 Loading resource: res://.godot/imported/ally_druid_wolf_move_01.png-188751ec472ada9d5d4fdd8ce2161948.ctex remapped: res://.godot/imported/ally_druid_wolf_move_01.png-188751ec472ada9d5d4fdd8ce2161948.ctex
+1790420599.710 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png' at thread -1
+1790420599.710 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png
+1790420599.710 Loading resource: res://.godot/imported/ally_druid_wolf_move_02.png-bd387770d998822967f0b0f6c44cc7f3.ctex remapped: res://.godot/imported/ally_druid_wolf_move_02.png-bd387770d998822967f0b0f6c44cc7f3.ctex
+1790420599.710 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png' at thread -1
+1790420599.710 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png
+1790420599.710 Loading resource: res://.godot/imported/ally_druid_wolf_move_03.png-6435511abc0e5ed4df4e28daed305260.ctex remapped: res://.godot/imported/ally_druid_wolf_move_03.png-6435511abc0e5ed4df4e28daed305260.ctex
+1790420599.711 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png' at thread -1
+1790420599.711 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png
+1790420599.711 Loading resource: res://.godot/imported/ally_druid_wolf_move_04.png-f819838c81b38ef173af3d37483b31a4.ctex remapped: res://.godot/imported/ally_druid_wolf_move_04.png-f819838c81b38ef173af3d37483b31a4.ctex
+1790420599.712 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png' at thread -1
+1790420599.712 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png
+1790420599.712 Loading resource: res://.godot/imported/ally_druid_wolf_move_05.png-b7c425585d09c8490ceca7cf0f46b49f.ctex remapped: res://.godot/imported/ally_druid_wolf_move_05.png-b7c425585d09c8490ceca7cf0f46b49f.ctex
+1790420599.713 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png' at thread -1
+1790420599.713 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png
+1790420599.713 Loading resource: res://.godot/imported/ally_druid_wolf_move_06.png-2caf33d3149e64a49ec72405c4be8c8e.ctex remapped: res://.godot/imported/ally_druid_wolf_move_06.png-2caf33d3149e64a49ec72405c4be8c8e.ctex
+1790420599.713 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png' at thread -1
+1790420599.713 Loading resource: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png remapped: res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png
+1790420599.713 Loading resource: res://.godot/imported/ally_druid_wolf_move_07.png-6fb3a256f825bc506d609e14ddbd2152.ctex remapped: res://.godot/imported/ally_druid_wolf_move_07.png-6fb3a256f825bc506d609e14ddbd2152.ctex
+1790420599.714 Completed load for: 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png' remapped 'res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png' at thread -1
+1790420599.714 Completed load for: 'res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres' remapped 'res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres' at thread -1
+1790420599.714 Completed load for: 'res://scenes/AllyMinion.tscn' remapped 'res://scenes/AllyMinion.tscn' at thread -1
+1790420599.720 Loading resource: res://assets/sprites/characters/cutout/assassin_arm_l.png remapped: res://assets/sprites/characters/cutout/assassin_arm_l.png
+1790420599.720 Loading resource: res://.godot/imported/assassin_arm_l.png-3b8a19a0f2ce67e7a8aa5e8ea6aa2926.ctex remapped: res://.godot/imported/assassin_arm_l.png-3b8a19a0f2ce67e7a8aa5e8ea6aa2926.ctex
+1790420599.721 Completed load for: 'res://assets/sprites/characters/cutout/assassin_arm_l.png' remapped 'res://assets/sprites/characters/cutout/assassin_arm_l.png' at thread -1
+1790420599.721 Loading resource: res://assets/sprites/characters/cutout/assassin_arm_r.png remapped: res://assets/sprites/characters/cutout/assassin_arm_r.png
+1790420599.721 Loading resource: res://.godot/imported/assassin_arm_r.png-d0eba58f50c7f925c3e4ec72ce035340.ctex remapped: res://.godot/imported/assassin_arm_r.png-d0eba58f50c7f925c3e4ec72ce035340.ctex
+1790420599.721 Completed load for: 'res://assets/sprites/characters/cutout/assassin_arm_r.png' remapped 'res://assets/sprites/characters/cutout/assassin_arm_r.png' at thread -1
+1790420599.721 Loading resource: res://assets/sprites/characters/cutout/assassin_leg_l.png remapped: res://assets/sprites/characters/cutout/assassin_leg_l.png
+1790420599.721 Loading resource: res://.godot/imported/assassin_leg_l.png-99303a34461b8765760545f19d59aa86.ctex remapped: res://.godot/imported/assassin_leg_l.png-99303a34461b8765760545f19d59aa86.ctex
+1790420599.721 Completed load for: 'res://assets/sprites/characters/cutout/assassin_leg_l.png' remapped 'res://assets/sprites/characters/cutout/assassin_leg_l.png' at thread -1
+1790420599.722 Loading resource: res://assets/sprites/characters/cutout/assassin_leg_r.png remapped: res://assets/sprites/characters/cutout/assassin_leg_r.png
+1790420599.722 Loading resource: res://.godot/imported/assassin_leg_r.png-eadd071fed51138eb756d261280a19ab.ctex remapped: res://.godot/imported/assassin_leg_r.png-eadd071fed51138eb756d261280a19ab.ctex
+1790420599.722 Completed load for: 'res://assets/sprites/characters/cutout/assassin_leg_r.png' remapped 'res://assets/sprites/characters/cutout/assassin_leg_r.png' at thread -1
+1790420599.722 Loading resource: res://assets/sprites/characters/cutout/assassin_torso.png remapped: res://assets/sprites/characters/cutout/assassin_torso.png
+1790420599.722 Loading resource: res://.godot/imported/assassin_torso.png-dd15c68be88b6f13929cad98ea8507eb.ctex remapped: res://.godot/imported/assassin_torso.png-dd15c68be88b6f13929cad98ea8507eb.ctex
+1790420599.723 Completed load for: 'res://assets/sprites/characters/cutout/assassin_torso.png' remapped 'res://assets/sprites/characters/cutout/assassin_torso.png' at thread -1
+1790420599.724 Loading resource: res://assets/sprites/characters/cutout/ranger_arm_l.png remapped: res://assets/sprites/characters/cutout/ranger_arm_l.png
+1790420599.724 Loading resource: res://.godot/imported/ranger_arm_l.png-fb95dbf362dbcb8f3bd6416cf3d76697.ctex remapped: res://.godot/imported/ranger_arm_l.png-fb95dbf362dbcb8f3bd6416cf3d76697.ctex
+1790420599.724 Completed load for: 'res://assets/sprites/characters/cutout/ranger_arm_l.png' remapped 'res://assets/sprites/characters/cutout/ranger_arm_l.png' at thread -1
+1790420599.724 Loading resource: res://assets/sprites/characters/cutout/ranger_arm_r.png remapped: res://assets/sprites/characters/cutout/ranger_arm_r.png
+1790420599.724 Loading resource: res://.godot/imported/ranger_arm_r.png-f25c3c9ccdbeb3bc765469034cfd7933.ctex remapped: res://.godot/imported/ranger_arm_r.png-f25c3c9ccdbeb3bc765469034cfd7933.ctex
+1790420599.724 Completed load for: 'res://assets/sprites/characters/cutout/ranger_arm_r.png' remapped 'res://assets/sprites/characters/cutout/ranger_arm_r.png' at thread -1
+1790420599.725 Loading resource: res://assets/sprites/characters/cutout/ranger_leg_l.png remapped: res://assets/sprites/characters/cutout/ranger_leg_l.png
+1790420599.725 Loading resource: res://.godot/imported/ranger_leg_l.png-977ef6ab072aadd74c0b06aa3a388c03.ctex remapped: res://.godot/imported/ranger_leg_l.png-977ef6ab072aadd74c0b06aa3a388c03.ctex
+1790420599.725 Completed load for: 'res://assets/sprites/characters/cutout/ranger_leg_l.png' remapped 'res://assets/sprites/characters/cutout/ranger_leg_l.png' at thread -1
+1790420599.725 Loading resource: res://assets/sprites/characters/cutout/ranger_leg_r.png remapped: res://assets/sprites/characters/cutout/ranger_leg_r.png
+1790420599.725 Loading resource: res://.godot/imported/ranger_leg_r.png-17af0a76f291a702d05f503352611090.ctex remapped: res://.godot/imported/ranger_leg_r.png-17af0a76f291a702d05f503352611090.ctex
+1790420599.726 Completed load for: 'res://assets/sprites/characters/cutout/ranger_leg_r.png' remapped 'res://assets/sprites/characters/cutout/ranger_leg_r.png' at thread -1
+1790420599.726 Loading resource: res://assets/sprites/characters/cutout/ranger_torso.png remapped: res://assets/sprites/characters/cutout/ranger_torso.png
+1790420599.726 Loading resource: res://.godot/imported/ranger_torso.png-10107a8185f4fc62dad5eed4ca96321c.ctex remapped: res://.godot/imported/ranger_torso.png-10107a8185f4fc62dad5eed4ca96321c.ctex
+1790420599.727 Completed load for: 'res://assets/sprites/characters/cutout/ranger_torso.png' remapped 'res://assets/sprites/characters/cutout/ranger_torso.png' at thread -1
+1790420599.727 Loading resource: res://assets/sprites/characters/cutout/doctor_arm_l.png remapped: res://assets/sprites/characters/cutout/doctor_arm_l.png
+1790420599.727 Loading resource: res://.godot/imported/doctor_arm_l.png-2b1c3ad05df7689d0a4c397e4e8d8169.ctex remapped: res://.godot/imported/doctor_arm_l.png-2b1c3ad05df7689d0a4c397e4e8d8169.ctex
+1790420599.728 Completed load for: 'res://assets/sprites/characters/cutout/doctor_arm_l.png' remapped 'res://assets/sprites/characters/cutout/doctor_arm_l.png' at thread -1
+1790420599.728 Loading resource: res://assets/sprites/characters/cutout/doctor_arm_r.png remapped: res://assets/sprites/characters/cutout/doctor_arm_r.png
+1790420599.728 Loading resource: res://.godot/imported/doctor_arm_r.png-0a485ef919935b475eee534fc0ffdf5f.ctex remapped: res://.godot/imported/doctor_arm_r.png-0a485ef919935b475eee534fc0ffdf5f.ctex
+1790420599.728 Completed load for: 'res://assets/sprites/characters/cutout/doctor_arm_r.png' remapped 'res://assets/sprites/characters/cutout/doctor_arm_r.png' at thread -1
+1790420599.728 Loading resource: res://assets/sprites/characters/cutout/doctor_leg_l.png remapped: res://assets/sprites/characters/cutout/doctor_leg_l.png
+1790420599.728 Loading resource: res://.godot/imported/doctor_leg_l.png-c544ba2bb1fc420618144baef443e808.ctex remapped: res://.godot/imported/doctor_leg_l.png-c544ba2bb1fc420618144baef443e808.ctex
+1790420599.728 Completed load for: 'res://assets/sprites/characters/cutout/doctor_leg_l.png' remapped 'res://assets/sprites/characters/cutout/doctor_leg_l.png' at thread -1
+1790420599.729 Loading resource: res://assets/sprites/characters/cutout/doctor_leg_r.png remapped: res://assets/sprites/characters/cutout/doctor_leg_r.png
+1790420599.729 Loading resource: res://.godot/imported/doctor_leg_r.png-3ebae6524592ceceaf2bb02e163bef85.ctex remapped: res://.godot/imported/doctor_leg_r.png-3ebae6524592ceceaf2bb02e163bef85.ctex
+1790420599.729 Completed load for: 'res://assets/sprites/characters/cutout/doctor_leg_r.png' remapped 'res://assets/sprites/characters/cutout/doctor_leg_r.png' at thread -1
+1790420599.729 Loading resource: res://assets/sprites/characters/cutout/doctor_torso.png remapped: res://assets/sprites/characters/cutout/doctor_torso.png
+1790420599.729 Loading resource: res://.godot/imported/doctor_torso.png-5c58653ce6518ef17e855ed604df5eac.ctex remapped: res://.godot/imported/doctor_torso.png-5c58653ce6518ef17e855ed604df5eac.ctex
+1790420599.731 Completed load for: 'res://assets/sprites/characters/cutout/doctor_torso.png' remapped 'res://assets/sprites/characters/cutout/doctor_torso.png' at thread -1
+1790420599.731 Loading resource: res://assets/sprites/characters/cutout/chemist_arm_l.png remapped: res://assets/sprites/characters/cutout/chemist_arm_l.png
+1790420599.731 Loading resource: res://.godot/imported/chemist_arm_l.png-2b924ba48b3daa386ba687b1d5f20edb.ctex remapped: res://.godot/imported/chemist_arm_l.png-2b924ba48b3daa386ba687b1d5f20edb.ctex
+1790420599.731 Completed load for: 'res://assets/sprites/characters/cutout/chemist_arm_l.png' remapped 'res://assets/sprites/characters/cutout/chemist_arm_l.png' at thread -1
+1790420599.731 Loading resource: res://assets/sprites/characters/cutout/chemist_arm_r.png remapped: res://assets/sprites/characters/cutout/chemist_arm_r.png
+1790420599.731 Loading resource: res://.godot/imported/chemist_arm_r.png-2ccb7fbc7ec0b4f84b624c98ed489a70.ctex remapped: res://.godot/imported/chemist_arm_r.png-2ccb7fbc7ec0b4f84b624c98ed489a70.ctex
+1790420599.731 Completed load for: 'res://assets/sprites/characters/cutout/chemist_arm_r.png' remapped 'res://assets/sprites/characters/cutout/chemist_arm_r.png' at thread -1
+1790420599.731 Loading resource: res://assets/sprites/characters/cutout/chemist_leg_l.png remapped: res://assets/sprites/characters/cutout/chemist_leg_l.png
+1790420599.731 Loading resource: res://.godot/imported/chemist_leg_l.png-d372aa2b6d243e9d612b965c1f56150d.ctex remapped: res://.godot/imported/chemist_leg_l.png-d372aa2b6d243e9d612b965c1f56150d.ctex
+1790420599.732 Completed load for: 'res://assets/sprites/characters/cutout/chemist_leg_l.png' remapped 'res://assets/sprites/characters/cutout/chemist_leg_l.png' at thread -1
+1790420599.732 Loading resource: res://assets/sprites/characters/cutout/chemist_leg_r.png remapped: res://assets/sprites/characters/cutout/chemist_leg_r.png
+1790420599.732 Loading resource: res://.godot/imported/chemist_leg_r.png-8c7caad43ffd6b980725255f01927c59.ctex remapped: res://.godot/imported/chemist_leg_r.png-8c7caad43ffd6b980725255f01927c59.ctex
+1790420599.732 Completed load for: 'res://assets/sprites/characters/cutout/chemist_leg_r.png' remapped 'res://assets/sprites/characters/cutout/chemist_leg_r.png' at thread -1
+1790420599.732 Loading resource: res://assets/sprites/characters/cutout/chemist_torso.png remapped: res://assets/sprites/characters/cutout/chemist_torso.png
+1790420599.732 Loading resource: res://.godot/imported/chemist_torso.png-c1138956f6888a429214c182cd489b8e.ctex remapped: res://.godot/imported/chemist_torso.png-c1138956f6888a429214c182cd489b8e.ctex
+1790420599.734 Completed load for: 'res://assets/sprites/characters/cutout/chemist_torso.png' remapped 'res://assets/sprites/characters/cutout/chemist_torso.png' at thread -1
+1790420599.734 Loading resource: res://assets/sprites/characters/cutout/knight_arm_l.png remapped: res://assets/sprites/characters/cutout/knight_arm_l.png
+1790420599.734 Loading resource: res://.godot/imported/knight_arm_l.png-781a1ef2661d6384a197172077058585.ctex remapped: res://.godot/imported/knight_arm_l.png-781a1ef2661d6384a197172077058585.ctex
+1790420599.734 Completed load for: 'res://assets/sprites/characters/cutout/knight_arm_l.png' remapped 'res://assets/sprites/characters/cutout/knight_arm_l.png' at thread -1
+1790420599.734 Loading resource: res://assets/sprites/characters/cutout/knight_arm_r.png remapped: res://assets/sprites/characters/cutout/knight_arm_r.png
+1790420599.734 Loading resource: res://.godot/imported/knight_arm_r.png-2bce1a03cc63f3a00ed087ade1e1f4d2.ctex remapped: res://.godot/imported/knight_arm_r.png-2bce1a03cc63f3a00ed087ade1e1f4d2.ctex
+1790420599.735 Completed load for: 'res://assets/sprites/characters/cutout/knight_arm_r.png' remapped 'res://assets/sprites/characters/cutout/knight_arm_r.png' at thread -1
+1790420599.735 Loading resource: res://assets/sprites/characters/cutout/knight_leg_l.png remapped: res://assets/sprites/characters/cutout/knight_leg_l.png
+1790420599.735 Loading resource: res://.godot/imported/knight_leg_l.png-ac2fc3bd7a1a69a766870e1941e3a46f.ctex remapped: res://.godot/imported/knight_leg_l.png-ac2fc3bd7a1a69a766870e1941e3a46f.ctex
+1790420599.735 Completed load for: 'res://assets/sprites/characters/cutout/knight_leg_l.png' remapped 'res://assets/sprites/characters/cutout/knight_leg_l.png' at thread -1
+1790420599.735 Loading resource: res://assets/sprites/characters/cutout/knight_leg_r.png remapped: res://assets/sprites/characters/cutout/knight_leg_r.png
+1790420599.735 Loading resource: res://.godot/imported/knight_leg_r.png-1fcdbfd24b79e9f53d9094fc0c713973.ctex remapped: res://.godot/imported/knight_leg_r.png-1fcdbfd24b79e9f53d9094fc0c713973.ctex
+1790420599.736 Completed load for: 'res://assets/sprites/characters/cutout/knight_leg_r.png' remapped 'res://assets/sprites/characters/cutout/knight_leg_r.png' at thread -1
+1790420599.736 Loading resource: res://assets/sprites/characters/cutout/knight_torso.png remapped: res://assets/sprites/characters/cutout/knight_torso.png
+1790420599.736 Loading resource: res://.godot/imported/knight_torso.png-7b7ba9bf09df28b4c9abaf7835335aa1.ctex remapped: res://.godot/imported/knight_torso.png-7b7ba9bf09df28b4c9abaf7835335aa1.ctex
+1790420599.737 Completed load for: 'res://assets/sprites/characters/cutout/knight_torso.png' remapped 'res://assets/sprites/characters/cutout/knight_torso.png' at thread -1
+1790420599.737 Loading resource: res://assets/sprites/characters/cutout/druid_arm_l.png remapped: res://assets/sprites/characters/cutout/druid_arm_l.png
+1790420599.737 Loading resource: res://.godot/imported/druid_arm_l.png-df2766e63ab7145b97ae402799aa2fbe.ctex remapped: res://.godot/imported/druid_arm_l.png-df2766e63ab7145b97ae402799aa2fbe.ctex
+1790420599.738 Completed load for: 'res://assets/sprites/characters/cutout/druid_arm_l.png' remapped 'res://assets/sprites/characters/cutout/druid_arm_l.png' at thread -1
+1790420599.738 Loading resource: res://assets/sprites/characters/cutout/druid_arm_r.png remapped: res://assets/sprites/characters/cutout/druid_arm_r.png
+1790420599.738 Loading resource: res://.godot/imported/druid_arm_r.png-587ca210bd3cb743e11368ee81db73c2.ctex remapped: res://.godot/imported/druid_arm_r.png-587ca210bd3cb743e11368ee81db73c2.ctex
+1790420599.738 Completed load for: 'res://assets/sprites/characters/cutout/druid_arm_r.png' remapped 'res://assets/sprites/characters/cutout/druid_arm_r.png' at thread -1
+1790420599.738 Loading resource: res://assets/sprites/characters/cutout/druid_leg_l.png remapped: res://assets/sprites/characters/cutout/druid_leg_l.png
+1790420599.738 Loading resource: res://.godot/imported/druid_leg_l.png-ab204845ee4db1c7cd219d6aa535b96f.ctex remapped: res://.godot/imported/druid_leg_l.png-ab204845ee4db1c7cd219d6aa535b96f.ctex
+1790420599.739 Completed load for: 'res://assets/sprites/characters/cutout/druid_leg_l.png' remapped 'res://assets/sprites/characters/cutout/druid_leg_l.png' at thread -1
+1790420599.739 Loading resource: res://assets/sprites/characters/cutout/druid_leg_r.png remapped: res://assets/sprites/characters/cutout/druid_leg_r.png
+1790420599.739 Loading resource: res://.godot/imported/druid_leg_r.png-d8a42100461a2fce2a5f73f0904c96f3.ctex remapped: res://.godot/imported/druid_leg_r.png-d8a42100461a2fce2a5f73f0904c96f3.ctex
+1790420599.739 Completed load for: 'res://assets/sprites/characters/cutout/druid_leg_r.png' remapped 'res://assets/sprites/characters/cutout/druid_leg_r.png' at thread -1
+1790420599.739 Loading resource: res://assets/sprites/characters/cutout/druid_torso.png remapped: res://assets/sprites/characters/cutout/druid_torso.png
+1790420599.739 Loading resource: res://.godot/imported/druid_torso.png-afdbc2102a860858ceb61fe4257ecc14.ctex remapped: res://.godot/imported/druid_torso.png-afdbc2102a860858ceb61fe4257ecc14.ctex
+1790420599.741 Completed load for: 'res://assets/sprites/characters/cutout/druid_torso.png' remapped 'res://assets/sprites/characters/cutout/druid_torso.png' at thread -1
+1790420599.741 Loading resource: res://assets/sprites/characters/cutout/berserk_arm_l.png remapped: res://assets/sprites/characters/cutout/berserk_arm_l.png
+1790420599.741 Loading resource: res://.godot/imported/berserk_arm_l.png-dfb54565fe6bff1e949f74d4898ea085.ctex remapped: res://.godot/imported/berserk_arm_l.png-dfb54565fe6bff1e949f74d4898ea085.ctex
+1790420599.741 Completed load for: 'res://assets/sprites/characters/cutout/berserk_arm_l.png' remapped 'res://assets/sprites/characters/cutout/berserk_arm_l.png' at thread -1
+1790420599.742 Loading resource: res://assets/sprites/characters/cutout/berserk_arm_r.png remapped: res://assets/sprites/characters/cutout/berserk_arm_r.png
+1790420599.742 Loading resource: res://.godot/imported/berserk_arm_r.png-6f5fccb349238e02da8e40edde5b040d.ctex remapped: res://.godot/imported/berserk_arm_r.png-6f5fccb349238e02da8e40edde5b040d.ctex
+1790420599.742 Completed load for: 'res://assets/sprites/characters/cutout/berserk_arm_r.png' remapped 'res://assets/sprites/characters/cutout/berserk_arm_r.png' at thread -1
+1790420599.742 Loading resource: res://assets/sprites/characters/cutout/berserk_leg_l.png remapped: res://assets/sprites/characters/cutout/berserk_leg_l.png
+1790420599.742 Loading resource: res://.godot/imported/berserk_leg_l.png-549452252cddd00388185190d4e614e9.ctex remapped: res://.godot/imported/berserk_leg_l.png-549452252cddd00388185190d4e614e9.ctex
+1790420599.742 Completed load for: 'res://assets/sprites/characters/cutout/berserk_leg_l.png' remapped 'res://assets/sprites/characters/cutout/berserk_leg_l.png' at thread -1
+1790420599.742 Loading resource: res://assets/sprites/characters/cutout/berserk_leg_r.png remapped: res://assets/sprites/characters/cutout/berserk_leg_r.png
+1790420599.742 Loading resource: res://.godot/imported/berserk_leg_r.png-279c589cfc42e1adea1fef673db0ce12.ctex remapped: res://.godot/imported/berserk_leg_r.png-279c589cfc42e1adea1fef673db0ce12.ctex
+1790420599.743 Completed load for: 'res://assets/sprites/characters/cutout/berserk_leg_r.png' remapped 'res://assets/sprites/characters/cutout/berserk_leg_r.png' at thread -1
+1790420599.743 Loading resource: res://assets/sprites/characters/cutout/berserk_torso.png remapped: res://assets/sprites/characters/cutout/berserk_torso.png
+1790420599.743 Loading resource: res://.godot/imported/berserk_torso.png-6fd789a95f144bba0e6b2adc96ee62a0.ctex remapped: res://.godot/imported/berserk_torso.png-6fd789a95f144bba0e6b2adc96ee62a0.ctex
+1790420599.745 Completed load for: 'res://assets/sprites/characters/cutout/berserk_torso.png' remapped 'res://assets/sprites/characters/cutout/berserk_torso.png' at thread -1
+1790420599.745 Loading resource: res://assets/sprites/characters/cutout/soldier_arm_l.png remapped: res://assets/sprites/characters/cutout/soldier_arm_l.png
+1790420599.745 Loading resource: res://.godot/imported/soldier_arm_l.png-025662b63908d349d78928752e1d171c.ctex remapped: res://.godot/imported/soldier_arm_l.png-025662b63908d349d78928752e1d171c.ctex
+1790420599.745 Completed load for: 'res://assets/sprites/characters/cutout/soldier_arm_l.png' remapped 'res://assets/sprites/characters/cutout/soldier_arm_l.png' at thread -1
+1790420599.745 Loading resource: res://assets/sprites/characters/cutout/soldier_arm_r.png remapped: res://assets/sprites/characters/cutout/soldier_arm_r.png
+1790420599.745 Loading resource: res://.godot/imported/soldier_arm_r.png-fa111b35fad619e35f512f2949496af1.ctex remapped: res://.godot/imported/soldier_arm_r.png-fa111b35fad619e35f512f2949496af1.ctex
+1790420599.746 Completed load for: 'res://assets/sprites/characters/cutout/soldier_arm_r.png' remapped 'res://assets/sprites/characters/cutout/soldier_arm_r.png' at thread -1
+1790420599.746 Loading resource: res://assets/sprites/characters/cutout/soldier_leg_l.png remapped: res://assets/sprites/characters/cutout/soldier_leg_l.png
+1790420599.746 Loading resource: res://.godot/imported/soldier_leg_l.png-c490bee097420d0b3cf063933b2931c1.ctex remapped: res://.godot/imported/soldier_leg_l.png-c490bee097420d0b3cf063933b2931c1.ctex
+1790420599.746 Completed load for: 'res://assets/sprites/characters/cutout/soldier_leg_l.png' remapped 'res://assets/sprites/characters/cutout/soldier_leg_l.png' at thread -1
+1790420599.746 Loading resource: res://assets/sprites/characters/cutout/soldier_leg_r.png remapped: res://assets/sprites/characters/cutout/soldier_leg_r.png
+1790420599.746 Loading resource: res://.godot/imported/soldier_leg_r.png-c4b890c1a4cd99ef377fe49b6f38d10b.ctex remapped: res://.godot/imported/soldier_leg_r.png-c4b890c1a4cd99ef377fe49b6f38d10b.ctex
+1790420599.746 Completed load for: 'res://assets/sprites/characters/cutout/soldier_leg_r.png' remapped 'res://assets/sprites/characters/cutout/soldier_leg_r.png' at thread -1
+1790420599.747 Loading resource: res://assets/sprites/characters/cutout/soldier_torso.png remapped: res://assets/sprites/characters/cutout/soldier_torso.png
+1790420599.747 Loading resource: res://.godot/imported/soldier_torso.png-07bd0f7a055f5b6603426bd88ce5ca62.ctex remapped: res://.godot/imported/soldier_torso.png-07bd0f7a055f5b6603426bd88ce5ca62.ctex
+1790420599.748 Completed load for: 'res://assets/sprites/characters/cutout/soldier_torso.png' remapped 'res://assets/sprites/characters/cutout/soldier_torso.png' at thread -1
+1790420599.748 Loading resource: res://assets/sprites/characters/cutout/thief_arm_l.png remapped: res://assets/sprites/characters/cutout/thief_arm_l.png
+1790420599.748 Loading resource: res://.godot/imported/thief_arm_l.png-8d6569ce30fbc37fbea4e2d7cca4191a.ctex remapped: res://.godot/imported/thief_arm_l.png-8d6569ce30fbc37fbea4e2d7cca4191a.ctex
+1790420599.748 Completed load for: 'res://assets/sprites/characters/cutout/thief_arm_l.png' remapped 'res://assets/sprites/characters/cutout/thief_arm_l.png' at thread -1
+1790420599.748 Loading resource: res://assets/sprites/characters/cutout/thief_arm_r.png remapped: res://assets/sprites/characters/cutout/thief_arm_r.png
+1790420599.748 Loading resource: res://.godot/imported/thief_arm_r.png-a51e563d38aa710f71f18ee262ea8b27.ctex remapped: res://.godot/imported/thief_arm_r.png-a51e563d38aa710f71f18ee262ea8b27.ctex
+1790420599.749 Completed load for: 'res://assets/sprites/characters/cutout/thief_arm_r.png' remapped 'res://assets/sprites/characters/cutout/thief_arm_r.png' at thread -1
+1790420599.749 Loading resource: res://assets/sprites/characters/cutout/thief_leg_l.png remapped: res://assets/sprites/characters/cutout/thief_leg_l.png
+1790420599.749 Loading resource: res://.godot/imported/thief_leg_l.png-3db038b6af12c1d50c321af5603f83d7.ctex remapped: res://.godot/imported/thief_leg_l.png-3db038b6af12c1d50c321af5603f83d7.ctex
+1790420599.749 Completed load for: 'res://assets/sprites/characters/cutout/thief_leg_l.png' remapped 'res://assets/sprites/characters/cutout/thief_leg_l.png' at thread -1
+1790420599.749 Loading resource: res://assets/sprites/characters/cutout/thief_leg_r.png remapped: res://assets/sprites/characters/cutout/thief_leg_r.png
+1790420599.749 Loading resource: res://.godot/imported/thief_leg_r.png-2d71a310275c5d60ea866e281d9b7020.ctex remapped: res://.godot/imported/thief_leg_r.png-2d71a310275c5d60ea866e281d9b7020.ctex
+1790420599.749 Completed load for: 'res://assets/sprites/characters/cutout/thief_leg_r.png' remapped 'res://assets/sprites/characters/cutout/thief_leg_r.png' at thread -1
+1790420599.750 Loading resource: res://assets/sprites/characters/cutout/thief_torso.png remapped: res://assets/sprites/characters/cutout/thief_torso.png
+1790420599.750 Loading resource: res://.godot/imported/thief_torso.png-2e95212348d7c789d65f64e5beb2481a.ctex remapped: res://.godot/imported/thief_torso.png-2e95212348d7c789d65f64e5beb2481a.ctex
+1790420599.751 Completed load for: 'res://assets/sprites/characters/cutout/thief_torso.png' remapped 'res://assets/sprites/characters/cutout/thief_torso.png' at thread -1
+1790420599.751 Loading resource: res://assets/sprites/characters/cutout/elementalist_arm_l.png remapped: res://assets/sprites/characters/cutout/elementalist_arm_l.png
+1790420599.751 Loading resource: res://.godot/imported/elementalist_arm_l.png-108528be0719f0a882e86924aaf45c34.ctex remapped: res://.godot/imported/elementalist_arm_l.png-108528be0719f0a882e86924aaf45c34.ctex
+1790420599.751 Completed load for: 'res://assets/sprites/characters/cutout/elementalist_arm_l.png' remapped 'res://assets/sprites/characters/cutout/elementalist_arm_l.png' at thread -1
+1790420599.751 Loading resource: res://assets/sprites/characters/cutout/elementalist_arm_r.png remapped: res://assets/sprites/characters/cutout/elementalist_arm_r.png
+1790420599.751 Loading resource: res://.godot/imported/elementalist_arm_r.png-828ff88677a456b0f0cc4ecdaba0f495.ctex remapped: res://.godot/imported/elementalist_arm_r.png-828ff88677a456b0f0cc4ecdaba0f495.ctex
+1790420599.752 Completed load for: 'res://assets/sprites/characters/cutout/elementalist_arm_r.png' remapped 'res://assets/sprites/characters/cutout/elementalist_arm_r.png' at thread -1
+1790420599.752 Loading resource: res://assets/sprites/characters/cutout/elementalist_leg_l.png remapped: res://assets/sprites/characters/cutout/elementalist_leg_l.png
+1790420599.752 Loading resource: res://.godot/imported/elementalist_leg_l.png-2cc2245823566ea7bb77a04d5db99e0b.ctex remapped: res://.godot/imported/elementalist_leg_l.png-2cc2245823566ea7bb77a04d5db99e0b.ctex
+1790420599.752 Completed load for: 'res://assets/sprites/characters/cutout/elementalist_leg_l.png' remapped 'res://assets/sprites/characters/cutout/elementalist_leg_l.png' at thread -1
+1790420599.752 Loading resource: res://assets/sprites/characters/cutout/elementalist_leg_r.png remapped: res://assets/sprites/characters/cutout/elementalist_leg_r.png
+1790420599.752 Loading resource: res://.godot/imported/elementalist_leg_r.png-00457845df96196a012873584756c75a.ctex remapped: res://.godot/imported/elementalist_leg_r.png-00457845df96196a012873584756c75a.ctex
+1790420599.753 Completed load for: 'res://assets/sprites/characters/cutout/elementalist_leg_r.png' remapped 'res://assets/sprites/characters/cutout/elementalist_leg_r.png' at thread -1
+1790420599.753 Loading resource: res://assets/sprites/characters/cutout/elementalist_torso.png remapped: res://assets/sprites/characters/cutout/elementalist_torso.png
+1790420599.753 Loading resource: res://.godot/imported/elementalist_torso.png-06dc31b3857ef285eac652bdf637fa6e.ctex remapped: res://.godot/imported/elementalist_torso.png-06dc31b3857ef285eac652bdf637fa6e.ctex
+1790420599.754 Completed load for: 'res://assets/sprites/characters/cutout/elementalist_torso.png' remapped 'res://assets/sprites/characters/cutout/elementalist_torso.png' at thread -1
+1790420599.754 Loading resource: res://assets/sprites/characters/cutout/sniper_arm_l.png remapped: res://assets/sprites/characters/cutout/sniper_arm_l.png
+1790420599.754 Loading resource: res://.godot/imported/sniper_arm_l.png-58a78edcac9bca1b62ef276e545079ce.ctex remapped: res://.godot/imported/sniper_arm_l.png-58a78edcac9bca1b62ef276e545079ce.ctex
+1790420599.755 Completed load for: 'res://assets/sprites/characters/cutout/sniper_arm_l.png' remapped 'res://assets/sprites/characters/cutout/sniper_arm_l.png' at thread -1
+1790420599.755 Loading resource: res://assets/sprites/characters/cutout/sniper_arm_r.png remapped: res://assets/sprites/characters/cutout/sniper_arm_r.png
+1790420599.755 Loading resource: res://.godot/imported/sniper_arm_r.png-433599256e6482ae452289cee31abc57.ctex remapped: res://.godot/imported/sniper_arm_r.png-433599256e6482ae452289cee31abc57.ctex
+1790420599.755 Completed load for: 'res://assets/sprites/characters/cutout/sniper_arm_r.png' remapped 'res://assets/sprites/characters/cutout/sniper_arm_r.png' at thread -1
+1790420599.755 Loading resource: res://assets/sprites/characters/cutout/sniper_leg_l.png remapped: res://assets/sprites/characters/cutout/sniper_leg_l.png
+1790420599.755 Loading resource: res://.godot/imported/sniper_leg_l.png-dceaa1f2f852e76f6df74e0f0cdf0623.ctex remapped: res://.godot/imported/sniper_leg_l.png-dceaa1f2f852e76f6df74e0f0cdf0623.ctex
+1790420599.755 Completed load for: 'res://assets/sprites/characters/cutout/sniper_leg_l.png' remapped 'res://assets/sprites/characters/cutout/sniper_leg_l.png' at thread -1
+1790420599.755 Loading resource: res://assets/sprites/characters/cutout/sniper_leg_r.png remapped: res://assets/sprites/characters/cutout/sniper_leg_r.png
+1790420599.756 Loading resource: res://.godot/imported/sniper_leg_r.png-d8186916e95b478251b0a3f514f89c19.ctex remapped: res://.godot/imported/sniper_leg_r.png-d8186916e95b478251b0a3f514f89c19.ctex
+1790420599.756 Completed load for: 'res://assets/sprites/characters/cutout/sniper_leg_r.png' remapped 'res://assets/sprites/characters/cutout/sniper_leg_r.png' at thread -1
+1790420599.756 Loading resource: res://assets/sprites/characters/cutout/sniper_torso.png remapped: res://assets/sprites/characters/cutout/sniper_torso.png
+1790420599.756 Loading resource: res://.godot/imported/sniper_torso.png-e6db9fd1ca1eb6fe19adb39bdd4516fa.ctex remapped: res://.godot/imported/sniper_torso.png-e6db9fd1ca1eb6fe19adb39bdd4516fa.ctex
+1790420599.757 Completed load for: 'res://assets/sprites/characters/cutout/sniper_torso.png' remapped 'res://assets/sprites/characters/cutout/sniper_torso.png' at thread -1
+1790420599.757 Loading resource: res://assets/sprites/characters/cutout/priest_arm_l.png remapped: res://assets/sprites/characters/cutout/priest_arm_l.png
+1790420599.757 Loading resource: res://.godot/imported/priest_arm_l.png-701c2e5a71ad1c59b592096ac382be96.ctex remapped: res://.godot/imported/priest_arm_l.png-701c2e5a71ad1c59b592096ac382be96.ctex
+1790420599.758 Completed load for: 'res://assets/sprites/characters/cutout/priest_arm_l.png' remapped 'res://assets/sprites/characters/cutout/priest_arm_l.png' at thread -1
+1790420599.758 Loading resource: res://assets/sprites/characters/cutout/priest_arm_r.png remapped: res://assets/sprites/characters/cutout/priest_arm_r.png
+1790420599.758 Loading resource: res://.godot/imported/priest_arm_r.png-dc823e4922a76a2021dd8fca1bc65e9a.ctex remapped: res://.godot/imported/priest_arm_r.png-dc823e4922a76a2021dd8fca1bc65e9a.ctex
+1790420599.758 Completed load for: 'res://assets/sprites/characters/cutout/priest_arm_r.png' remapped 'res://assets/sprites/characters/cutout/priest_arm_r.png' at thread -1
+1790420599.758 Loading resource: res://assets/sprites/characters/cutout/priest_leg_l.png remapped: res://assets/sprites/characters/cutout/priest_leg_l.png
+1790420599.758 Loading resource: res://.godot/imported/priest_leg_l.png-14db2ff92d2f3977f8edc6226a43f81e.ctex remapped: res://.godot/imported/priest_leg_l.png-14db2ff92d2f3977f8edc6226a43f81e.ctex
+1790420599.759 Completed load for: 'res://assets/sprites/characters/cutout/priest_leg_l.png' remapped 'res://assets/sprites/characters/cutout/priest_leg_l.png' at thread -1
+1790420599.759 Loading resource: res://assets/sprites/characters/cutout/priest_leg_r.png remapped: res://assets/sprites/characters/cutout/priest_leg_r.png
+1790420599.759 Loading resource: res://.godot/imported/priest_leg_r.png-6b69ef4dbbbd18a4418a264a2d3e47e6.ctex remapped: res://.godot/imported/priest_leg_r.png-6b69ef4dbbbd18a4418a264a2d3e47e6.ctex
+1790420599.759 Completed load for: 'res://assets/sprites/characters/cutout/priest_leg_r.png' remapped 'res://assets/sprites/characters/cutout/priest_leg_r.png' at thread -1
+1790420599.759 Loading resource: res://assets/sprites/characters/cutout/priest_torso.png remapped: res://assets/sprites/characters/cutout/priest_torso.png
+1790420599.759 Loading resource: res://.godot/imported/priest_torso.png-d10bfe7ca4c32737caf41c1274038193.ctex remapped: res://.godot/imported/priest_torso.png-d10bfe7ca4c32737caf41c1274038193.ctex
+1790420599.761 Completed load for: 'res://assets/sprites/characters/cutout/priest_torso.png' remapped 'res://assets/sprites/characters/cutout/priest_torso.png' at thread -1
+1790420599.761 Loading resource: res://assets/sprites/characters/cutout/biologist_arm_l.png remapped: res://assets/sprites/characters/cutout/biologist_arm_l.png
+1790420599.761 Loading resource: res://.godot/imported/biologist_arm_l.png-ceba3a0b3f35cc72346bbfa10ab40586.ctex remapped: res://.godot/imported/biologist_arm_l.png-ceba3a0b3f35cc72346bbfa10ab40586.ctex
+1790420599.761 Completed load for: 'res://assets/sprites/characters/cutout/biologist_arm_l.png' remapped 'res://assets/sprites/characters/cutout/biologist_arm_l.png' at thread -1
+1790420599.761 Loading resource: res://assets/sprites/characters/cutout/biologist_arm_r.png remapped: res://assets/sprites/characters/cutout/biologist_arm_r.png
+1790420599.761 Loading resource: res://.godot/imported/biologist_arm_r.png-50dde93a8ecb5d7ae287a52188811225.ctex remapped: res://.godot/imported/biologist_arm_r.png-50dde93a8ecb5d7ae287a52188811225.ctex
+1790420599.762 Completed load for: 'res://assets/sprites/characters/cutout/biologist_arm_r.png' remapped 'res://assets/sprites/characters/cutout/biologist_arm_r.png' at thread -1
+1790420599.762 Loading resource: res://assets/sprites/characters/cutout/biologist_leg_l.png remapped: res://assets/sprites/characters/cutout/biologist_leg_l.png
+1790420599.762 Loading resource: res://.godot/imported/biologist_leg_l.png-1e3063d1ec5a9e46f0f8716683d9aac4.ctex remapped: res://.godot/imported/biologist_leg_l.png-1e3063d1ec5a9e46f0f8716683d9aac4.ctex
+1790420599.762 Completed load for: 'res://assets/sprites/characters/cutout/biologist_leg_l.png' remapped 'res://assets/sprites/characters/cutout/biologist_leg_l.png' at thread -1
+1790420599.762 Loading resource: res://assets/sprites/characters/cutout/biologist_leg_r.png remapped: res://assets/sprites/characters/cutout/biologist_leg_r.png
+1790420599.762 Loading resource: res://.godot/imported/biologist_leg_r.png-d3fb3951f4f33388cc77a8bffabd25d0.ctex remapped: res://.godot/imported/biologist_leg_r.png-d3fb3951f4f33388cc77a8bffabd25d0.ctex
+1790420599.763 Completed load for: 'res://assets/sprites/characters/cutout/biologist_leg_r.png' remapped 'res://assets/sprites/characters/cutout/biologist_leg_r.png' at thread -1
+1790420599.763 Loading resource: res://assets/sprites/characters/cutout/biologist_torso.png remapped: res://assets/sprites/characters/cutout/biologist_torso.png
+1790420599.763 Loading resource: res://.godot/imported/biologist_torso.png-5109f691e34f07c7054b866ab7cc889d.ctex remapped: res://.godot/imported/biologist_torso.png-5109f691e34f07c7054b866ab7cc889d.ctex
+1790420599.764 Completed load for: 'res://assets/sprites/characters/cutout/biologist_torso.png' remapped 'res://assets/sprites/characters/cutout/biologist_torso.png' at thread -1
+1790420599.764 Loading resource: res://assets/sprites/characters/cutout/robot_arm_l.png remapped: res://assets/sprites/characters/cutout/robot_arm_l.png
+1790420599.764 Loading resource: res://.godot/imported/robot_arm_l.png-ab0e056a3f027ae4e0d6dceea8c31fe5.ctex remapped: res://.godot/imported/robot_arm_l.png-ab0e056a3f027ae4e0d6dceea8c31fe5.ctex
+1790420599.765 Completed load for: 'res://assets/sprites/characters/cutout/robot_arm_l.png' remapped 'res://assets/sprites/characters/cutout/robot_arm_l.png' at thread -1
+1790420599.765 Loading resource: res://assets/sprites/characters/cutout/robot_arm_r.png remapped: res://assets/sprites/characters/cutout/robot_arm_r.png
+1790420599.765 Loading resource: res://.godot/imported/robot_arm_r.png-f1eaafff30220b3bf691588360366ca3.ctex remapped: res://.godot/imported/robot_arm_r.png-f1eaafff30220b3bf691588360366ca3.ctex
+1790420599.766 Completed load for: 'res://assets/sprites/characters/cutout/robot_arm_r.png' remapped 'res://assets/sprites/characters/cutout/robot_arm_r.png' at thread -1
+1790420599.766 Loading resource: res://assets/sprites/characters/cutout/robot_leg_l.png remapped: res://assets/sprites/characters/cutout/robot_leg_l.png
+1790420599.766 Loading resource: res://.godot/imported/robot_leg_l.png-49020bc1cb4b1de52716981222064793.ctex remapped: res://.godot/imported/robot_leg_l.png-49020bc1cb4b1de52716981222064793.ctex
+1790420599.766 Completed load for: 'res://assets/sprites/characters/cutout/robot_leg_l.png' remapped 'res://assets/sprites/characters/cutout/robot_leg_l.png' at thread -1
+1790420599.766 Loading resource: res://assets/sprites/characters/cutout/robot_leg_r.png remapped: res://assets/sprites/characters/cutout/robot_leg_r.png
+1790420599.766 Loading resource: res://.godot/imported/robot_leg_r.png-1627e1c6a42d59fe328ddf4d33012646.ctex remapped: res://.godot/imported/robot_leg_r.png-1627e1c6a42d59fe328ddf4d33012646.ctex
+1790420599.767 Completed load for: 'res://assets/sprites/characters/cutout/robot_leg_r.png' remapped 'res://assets/sprites/characters/cutout/robot_leg_r.png' at thread -1
+1790420599.767 Loading resource: res://assets/sprites/characters/cutout/robot_torso.png remapped: res://assets/sprites/characters/cutout/robot_torso.png
+1790420599.767 Loading resource: res://.godot/imported/robot_torso.png-371dc141e3ef82031a4ded546dd77cd1.ctex remapped: res://.godot/imported/robot_torso.png-371dc141e3ef82031a4ded546dd77cd1.ctex
+1790420599.768 Completed load for: 'res://assets/sprites/characters/cutout/robot_torso.png' remapped 'res://assets/sprites/characters/cutout/robot_torso.png' at thread -1
+1790420599.768 Loading resource: res://assets/sprites/characters/cutout/engineer_arm_l.png remapped: res://assets/sprites/characters/cutout/engineer_arm_l.png
+1790420599.768 Loading resource: res://.godot/imported/engineer_arm_l.png-92d7453f6e033b234887ac6005695e4a.ctex remapped: res://.godot/imported/engineer_arm_l.png-92d7453f6e033b234887ac6005695e4a.ctex
+1790420599.769 Completed load for: 'res://assets/sprites/characters/cutout/engineer_arm_l.png' remapped 'res://assets/sprites/characters/cutout/engineer_arm_l.png' at thread -1
+1790420599.769 Loading resource: res://assets/sprites/characters/cutout/engineer_arm_r.png remapped: res://assets/sprites/characters/cutout/engineer_arm_r.png
+1790420599.769 Loading resource: res://.godot/imported/engineer_arm_r.png-4d068ce506bb3499f0cb0d91b8575d6f.ctex remapped: res://.godot/imported/engineer_arm_r.png-4d068ce506bb3499f0cb0d91b8575d6f.ctex
+1790420599.769 Completed load for: 'res://assets/sprites/characters/cutout/engineer_arm_r.png' remapped 'res://assets/sprites/characters/cutout/engineer_arm_r.png' at thread -1
+1790420599.770 Loading resource: res://assets/sprites/characters/cutout/engineer_leg_l.png remapped: res://assets/sprites/characters/cutout/engineer_leg_l.png
+1790420599.770 Loading resource: res://.godot/imported/engineer_leg_l.png-e185c2a553324b6161be121917716920.ctex remapped: res://.godot/imported/engineer_leg_l.png-e185c2a553324b6161be121917716920.ctex
+1790420599.770 Completed load for: 'res://assets/sprites/characters/cutout/engineer_leg_l.png' remapped 'res://assets/sprites/characters/cutout/engineer_leg_l.png' at thread -1
+1790420599.770 Loading resource: res://assets/sprites/characters/cutout/engineer_leg_r.png remapped: res://assets/sprites/characters/cutout/engineer_leg_r.png
+1790420599.770 Loading resource: res://.godot/imported/engineer_leg_r.png-373385f062c9377f0e8f9bfd9010b425.ctex remapped: res://.godot/imported/engineer_leg_r.png-373385f062c9377f0e8f9bfd9010b425.ctex
+1790420599.770 Completed load for: 'res://assets/sprites/characters/cutout/engineer_leg_r.png' remapped 'res://assets/sprites/characters/cutout/engineer_leg_r.png' at thread -1
+1790420599.770 Loading resource: res://assets/sprites/characters/cutout/engineer_torso.png remapped: res://assets/sprites/characters/cutout/engineer_torso.png
+1790420599.770 Loading resource: res://.godot/imported/engineer_torso.png-84f811794f3ac4907ec20ba77c797587.ctex remapped: res://.godot/imported/engineer_torso.png-84f811794f3ac4907ec20ba77c797587.ctex
+1790420599.772 Completed load for: 'res://assets/sprites/characters/cutout/engineer_torso.png' remapped 'res://assets/sprites/characters/cutout/engineer_torso.png' at thread -1
+1790420599.772 Loading resource: res://assets/sprites/characters/cutout/dark_mage_arm_l.png remapped: res://assets/sprites/characters/cutout/dark_mage_arm_l.png
+1790420599.772 Loading resource: res://.godot/imported/dark_mage_arm_l.png-1d3c26a65527ce43f957d9be430d17d8.ctex remapped: res://.godot/imported/dark_mage_arm_l.png-1d3c26a65527ce43f957d9be430d17d8.ctex
+1790420599.772 Completed load for: 'res://assets/sprites/characters/cutout/dark_mage_arm_l.png' remapped 'res://assets/sprites/characters/cutout/dark_mage_arm_l.png' at thread -1
+1790420599.773 Loading resource: res://assets/sprites/characters/cutout/dark_mage_arm_r.png remapped: res://assets/sprites/characters/cutout/dark_mage_arm_r.png
+1790420599.773 Loading resource: res://.godot/imported/dark_mage_arm_r.png-a0e1badb84a55d757157135fa4847ccd.ctex remapped: res://.godot/imported/dark_mage_arm_r.png-a0e1badb84a55d757157135fa4847ccd.ctex
+1790420599.773 Completed load for: 'res://assets/sprites/characters/cutout/dark_mage_arm_r.png' remapped 'res://assets/sprites/characters/cutout/dark_mage_arm_r.png' at thread -1
+1790420599.773 Loading resource: res://assets/sprites/characters/cutout/dark_mage_leg_l.png remapped: res://assets/sprites/characters/cutout/dark_mage_leg_l.png
+1790420599.773 Loading resource: res://.godot/imported/dark_mage_leg_l.png-220a6887f0b180ca97b84ce8b1ccf46b.ctex remapped: res://.godot/imported/dark_mage_leg_l.png-220a6887f0b180ca97b84ce8b1ccf46b.ctex
+1790420599.774 Completed load for: 'res://assets/sprites/characters/cutout/dark_mage_leg_l.png' remapped 'res://assets/sprites/characters/cutout/dark_mage_leg_l.png' at thread -1
+1790420599.774 Loading resource: res://assets/sprites/characters/cutout/dark_mage_leg_r.png remapped: res://assets/sprites/characters/cutout/dark_mage_leg_r.png
+1790420599.774 Loading resource: res://.godot/imported/dark_mage_leg_r.png-2ac5fab31e598fb05cef6e49c8228e49.ctex remapped: res://.godot/imported/dark_mage_leg_r.png-2ac5fab31e598fb05cef6e49c8228e49.ctex
+1790420599.774 Completed load for: 'res://assets/sprites/characters/cutout/dark_mage_leg_r.png' remapped 'res://assets/sprites/characters/cutout/dark_mage_leg_r.png' at thread -1
+1790420599.774 Loading resource: res://assets/sprites/characters/cutout/dark_mage_torso.png remapped: res://assets/sprites/characters/cutout/dark_mage_torso.png
+1790420599.774 Loading resource: res://.godot/imported/dark_mage_torso.png-61b94d260d8bbb1dca76217896f7a0e2.ctex remapped: res://.godot/imported/dark_mage_torso.png-61b94d260d8bbb1dca76217896f7a0e2.ctex
+1790420599.776 Completed load for: 'res://assets/sprites/characters/cutout/dark_mage_torso.png' remapped 'res://assets/sprites/characters/cutout/dark_mage_torso.png' at thread -1
+1790420599.776 Loading resource: res://assets/sprites/characters/cutout/guitarist_arm_l.png remapped: res://assets/sprites/characters/cutout/guitarist_arm_l.png
+1790420599.776 Loading resource: res://.godot/imported/guitarist_arm_l.png-eef92909ed5a56252f6ed7a06ae601f1.ctex remapped: res://.godot/imported/guitarist_arm_l.png-eef92909ed5a56252f6ed7a06ae601f1.ctex
+1790420599.776 Completed load for: 'res://assets/sprites/characters/cutout/guitarist_arm_l.png' remapped 'res://assets/sprites/characters/cutout/guitarist_arm_l.png' at thread -1
+1790420599.777 Loading resource: res://assets/sprites/characters/cutout/guitarist_arm_r.png remapped: res://assets/sprites/characters/cutout/guitarist_arm_r.png
+1790420599.777 Loading resource: res://.godot/imported/guitarist_arm_r.png-96c184e8610e81bc81f3c5492276ca7f.ctex remapped: res://.godot/imported/guitarist_arm_r.png-96c184e8610e81bc81f3c5492276ca7f.ctex
+1790420599.777 Completed load for: 'res://assets/sprites/characters/cutout/guitarist_arm_r.png' remapped 'res://assets/sprites/characters/cutout/guitarist_arm_r.png' at thread -1
+1790420599.777 Loading resource: res://assets/sprites/characters/cutout/guitarist_leg_l.png remapped: res://assets/sprites/characters/cutout/guitarist_leg_l.png
+1790420599.777 Loading resource: res://.godot/imported/guitarist_leg_l.png-d43d8c196112dc739988bc9c9f182b41.ctex remapped: res://.godot/imported/guitarist_leg_l.png-d43d8c196112dc739988bc9c9f182b41.ctex
+1790420599.777 Completed load for: 'res://assets/sprites/characters/cutout/guitarist_leg_l.png' remapped 'res://assets/sprites/characters/cutout/guitarist_leg_l.png' at thread -1
+1790420599.778 Loading resource: res://assets/sprites/characters/cutout/guitarist_leg_r.png remapped: res://assets/sprites/characters/cutout/guitarist_leg_r.png
+1790420599.778 Loading resource: res://.godot/imported/guitarist_leg_r.png-bd81507d46188063a16883d41d6dc981.ctex remapped: res://.godot/imported/guitarist_leg_r.png-bd81507d46188063a16883d41d6dc981.ctex
+1790420599.778 Completed load for: 'res://assets/sprites/characters/cutout/guitarist_leg_r.png' remapped 'res://assets/sprites/characters/cutout/guitarist_leg_r.png' at thread -1
+1790420599.778 Loading resource: res://assets/sprites/characters/cutout/guitarist_torso.png remapped: res://assets/sprites/characters/cutout/guitarist_torso.png
+1790420599.778 Loading resource: res://.godot/imported/guitarist_torso.png-47f3e62bc57afac341bbeabd7e804047.ctex remapped: res://.godot/imported/guitarist_torso.png-47f3e62bc57afac341bbeabd7e804047.ctex
+1790420599.780 Completed load for: 'res://assets/sprites/characters/cutout/guitarist_torso.png' remapped 'res://assets/sprites/characters/cutout/guitarist_torso.png' at thread -1
+1790420599.780 Loading resource: res://assets/sprites/enemies/cutout/rift_cutter_arm_l.png remapped: res://assets/sprites/enemies/cutout/rift_cutter_arm_l.png
+1790420599.780 Loading resource: res://.godot/imported/rift_cutter_arm_l.png-91033983417858b7fdb4990baa0f90e6.ctex remapped: res://.godot/imported/rift_cutter_arm_l.png-91033983417858b7fdb4990baa0f90e6.ctex
+1790420599.780 Completed load for: 'res://assets/sprites/enemies/cutout/rift_cutter_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/rift_cutter_arm_l.png' at thread -1
+1790420599.780 Loading resource: res://assets/sprites/enemies/cutout/rift_cutter_arm_r.png remapped: res://assets/sprites/enemies/cutout/rift_cutter_arm_r.png
+1790420599.780 Loading resource: res://.godot/imported/rift_cutter_arm_r.png-755dd1c1f370f072715ce86732dfd108.ctex remapped: res://.godot/imported/rift_cutter_arm_r.png-755dd1c1f370f072715ce86732dfd108.ctex
+1790420599.780 Completed load for: 'res://assets/sprites/enemies/cutout/rift_cutter_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/rift_cutter_arm_r.png' at thread -1
+1790420599.780 Loading resource: res://assets/sprites/enemies/cutout/rift_cutter_leg_l.png remapped: res://assets/sprites/enemies/cutout/rift_cutter_leg_l.png
+1790420599.780 Loading resource: res://.godot/imported/rift_cutter_leg_l.png-3a01a5f456fd323e036cb61dec8b963e.ctex remapped: res://.godot/imported/rift_cutter_leg_l.png-3a01a5f456fd323e036cb61dec8b963e.ctex
+1790420599.781 Completed load for: 'res://assets/sprites/enemies/cutout/rift_cutter_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/rift_cutter_leg_l.png' at thread -1
+1790420599.781 Loading resource: res://assets/sprites/enemies/cutout/rift_cutter_leg_r.png remapped: res://assets/sprites/enemies/cutout/rift_cutter_leg_r.png
+1790420599.781 Loading resource: res://.godot/imported/rift_cutter_leg_r.png-88a269ffdb58487334a30dbc186aa665.ctex remapped: res://.godot/imported/rift_cutter_leg_r.png-88a269ffdb58487334a30dbc186aa665.ctex
+1790420599.781 Completed load for: 'res://assets/sprites/enemies/cutout/rift_cutter_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/rift_cutter_leg_r.png' at thread -1
+1790420599.781 Loading resource: res://assets/sprites/enemies/cutout/rift_cutter_torso.png remapped: res://assets/sprites/enemies/cutout/rift_cutter_torso.png
+1790420599.781 Loading resource: res://.godot/imported/rift_cutter_torso.png-1b84b14e7a43927d60921e7a3f602408.ctex remapped: res://.godot/imported/rift_cutter_torso.png-1b84b14e7a43927d60921e7a3f602408.ctex
+1790420599.781 Completed load for: 'res://assets/sprites/enemies/cutout/rift_cutter_torso.png' remapped 'res://assets/sprites/enemies/cutout/rift_cutter_torso.png' at thread -1
+1790420599.782 Loading resource: res://assets/sprites/enemies/cutout/ash_marksman_weapon.png remapped: res://assets/sprites/enemies/cutout/ash_marksman_weapon.png
+1790420599.782 Loading resource: res://.godot/imported/ash_marksman_weapon.png-d6a9f25fc9a95f8b3ecc8a78c278a725.ctex remapped: res://.godot/imported/ash_marksman_weapon.png-d6a9f25fc9a95f8b3ecc8a78c278a725.ctex
+1790420599.782 Completed load for: 'res://assets/sprites/enemies/cutout/ash_marksman_weapon.png' remapped 'res://assets/sprites/enemies/cutout/ash_marksman_weapon.png' at thread -1
+1790420599.782 Loading resource: res://assets/sprites/enemies/cutout/ash_marksman_leg_l.png remapped: res://assets/sprites/enemies/cutout/ash_marksman_leg_l.png
+1790420599.782 Loading resource: res://.godot/imported/ash_marksman_leg_l.png-99038df6f55274a8e63e78953631f48c.ctex remapped: res://.godot/imported/ash_marksman_leg_l.png-99038df6f55274a8e63e78953631f48c.ctex
+1790420599.782 Completed load for: 'res://assets/sprites/enemies/cutout/ash_marksman_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/ash_marksman_leg_l.png' at thread -1
+1790420599.782 Loading resource: res://assets/sprites/enemies/cutout/ash_marksman_leg_r.png remapped: res://assets/sprites/enemies/cutout/ash_marksman_leg_r.png
+1790420599.782 Loading resource: res://.godot/imported/ash_marksman_leg_r.png-fe4cd101dcc83745293b8d860774b8b8.ctex remapped: res://.godot/imported/ash_marksman_leg_r.png-fe4cd101dcc83745293b8d860774b8b8.ctex
+1790420599.782 Completed load for: 'res://assets/sprites/enemies/cutout/ash_marksman_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/ash_marksman_leg_r.png' at thread -1
+1790420599.782 Loading resource: res://assets/sprites/enemies/cutout/ash_marksman_torso.png remapped: res://assets/sprites/enemies/cutout/ash_marksman_torso.png
+1790420599.783 Loading resource: res://.godot/imported/ash_marksman_torso.png-22d91a226eb567f45bd943ee702610e7.ctex remapped: res://.godot/imported/ash_marksman_torso.png-22d91a226eb567f45bd943ee702610e7.ctex
+1790420599.783 Completed load for: 'res://assets/sprites/enemies/cutout/ash_marksman_torso.png' remapped 'res://assets/sprites/enemies/cutout/ash_marksman_torso.png' at thread -1
+1790420599.783 Loading resource: res://assets/sprites/enemies/cutout/spark_runner_arm_l.png remapped: res://assets/sprites/enemies/cutout/spark_runner_arm_l.png
+1790420599.783 Loading resource: res://.godot/imported/spark_runner_arm_l.png-4da1a19cacab7ea7902dcdae1a577f39.ctex remapped: res://.godot/imported/spark_runner_arm_l.png-4da1a19cacab7ea7902dcdae1a577f39.ctex
+1790420599.783 Completed load for: 'res://assets/sprites/enemies/cutout/spark_runner_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/spark_runner_arm_l.png' at thread -1
+1790420599.783 Loading resource: res://assets/sprites/enemies/cutout/spark_runner_arm_r.png remapped: res://assets/sprites/enemies/cutout/spark_runner_arm_r.png
+1790420599.783 Loading resource: res://.godot/imported/spark_runner_arm_r.png-60c7e300594ea9e925736fb5e7b52968.ctex remapped: res://.godot/imported/spark_runner_arm_r.png-60c7e300594ea9e925736fb5e7b52968.ctex
+1790420599.783 Completed load for: 'res://assets/sprites/enemies/cutout/spark_runner_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/spark_runner_arm_r.png' at thread -1
+1790420599.784 Loading resource: res://assets/sprites/enemies/cutout/spark_runner_leg_l.png remapped: res://assets/sprites/enemies/cutout/spark_runner_leg_l.png
+1790420599.784 Loading resource: res://.godot/imported/spark_runner_leg_l.png-4ae47c351748a6b0ea8b04351c56651f.ctex remapped: res://.godot/imported/spark_runner_leg_l.png-4ae47c351748a6b0ea8b04351c56651f.ctex
+1790420599.784 Completed load for: 'res://assets/sprites/enemies/cutout/spark_runner_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/spark_runner_leg_l.png' at thread -1
+1790420599.784 Loading resource: res://assets/sprites/enemies/cutout/spark_runner_tail.png remapped: res://assets/sprites/enemies/cutout/spark_runner_tail.png
+1790420599.784 Loading resource: res://.godot/imported/spark_runner_tail.png-9f0f2699fb8d843b3c868f67d27b853d.ctex remapped: res://.godot/imported/spark_runner_tail.png-9f0f2699fb8d843b3c868f67d27b853d.ctex
+1790420599.784 Completed load for: 'res://assets/sprites/enemies/cutout/spark_runner_tail.png' remapped 'res://assets/sprites/enemies/cutout/spark_runner_tail.png' at thread -1
+1790420599.784 Loading resource: res://assets/sprites/enemies/cutout/spark_runner_torso.png remapped: res://assets/sprites/enemies/cutout/spark_runner_torso.png
+1790420599.784 Loading resource: res://.godot/imported/spark_runner_torso.png-ac326683bf6f49742344968216f4aaf7.ctex remapped: res://.godot/imported/spark_runner_torso.png-ac326683bf6f49742344968216f4aaf7.ctex
+1790420599.784 Completed load for: 'res://assets/sprites/enemies/cutout/spark_runner_torso.png' remapped 'res://assets/sprites/enemies/cutout/spark_runner_torso.png' at thread -1
+1790420599.785 Loading resource: res://assets/sprites/enemies/cutout/stone_bruiser_arm_l.png remapped: res://assets/sprites/enemies/cutout/stone_bruiser_arm_l.png
+1790420599.785 Loading resource: res://.godot/imported/stone_bruiser_arm_l.png-23cc62770a1018fc665c84a3b802bf74.ctex remapped: res://.godot/imported/stone_bruiser_arm_l.png-23cc62770a1018fc665c84a3b802bf74.ctex
+1790420599.785 Completed load for: 'res://assets/sprites/enemies/cutout/stone_bruiser_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/stone_bruiser_arm_l.png' at thread -1
+1790420599.785 Loading resource: res://assets/sprites/enemies/cutout/stone_bruiser_arm_r.png remapped: res://assets/sprites/enemies/cutout/stone_bruiser_arm_r.png
+1790420599.785 Loading resource: res://.godot/imported/stone_bruiser_arm_r.png-d87c4f19e92486fa5ad2dcd13ed6eb12.ctex remapped: res://.godot/imported/stone_bruiser_arm_r.png-d87c4f19e92486fa5ad2dcd13ed6eb12.ctex
+1790420599.785 Completed load for: 'res://assets/sprites/enemies/cutout/stone_bruiser_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/stone_bruiser_arm_r.png' at thread -1
+1790420599.785 Loading resource: res://assets/sprites/enemies/cutout/stone_bruiser_leg_l.png remapped: res://assets/sprites/enemies/cutout/stone_bruiser_leg_l.png
+1790420599.785 Loading resource: res://.godot/imported/stone_bruiser_leg_l.png-e907237458fe25416d50f4b6947ce357.ctex remapped: res://.godot/imported/stone_bruiser_leg_l.png-e907237458fe25416d50f4b6947ce357.ctex
+1790420599.785 Completed load for: 'res://assets/sprites/enemies/cutout/stone_bruiser_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/stone_bruiser_leg_l.png' at thread -1
+1790420599.786 Loading resource: res://assets/sprites/enemies/cutout/stone_bruiser_leg_r.png remapped: res://assets/sprites/enemies/cutout/stone_bruiser_leg_r.png
+1790420599.786 Loading resource: res://.godot/imported/stone_bruiser_leg_r.png-5bf06ba2d26aa8c93e5e55cc66970f13.ctex remapped: res://.godot/imported/stone_bruiser_leg_r.png-5bf06ba2d26aa8c93e5e55cc66970f13.ctex
+1790420599.786 Completed load for: 'res://assets/sprites/enemies/cutout/stone_bruiser_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/stone_bruiser_leg_r.png' at thread -1
+1790420599.786 Loading resource: res://assets/sprites/enemies/cutout/stone_bruiser_torso.png remapped: res://assets/sprites/enemies/cutout/stone_bruiser_torso.png
+1790420599.786 Loading resource: res://.godot/imported/stone_bruiser_torso.png-abdf2d95db9d7fdb8661acd2e623b24f.ctex remapped: res://.godot/imported/stone_bruiser_torso.png-abdf2d95db9d7fdb8661acd2e623b24f.ctex
+1790420599.786 Completed load for: 'res://assets/sprites/enemies/cutout/stone_bruiser_torso.png' remapped 'res://assets/sprites/enemies/cutout/stone_bruiser_torso.png' at thread -1
+1790420599.786 Loading resource: res://assets/sprites/enemies/cutout/bone_caller_arm_l.png remapped: res://assets/sprites/enemies/cutout/bone_caller_arm_l.png
+1790420599.786 Loading resource: res://.godot/imported/bone_caller_arm_l.png-adf7d5734995c5b5549b65d9690df32e.ctex remapped: res://.godot/imported/bone_caller_arm_l.png-adf7d5734995c5b5549b65d9690df32e.ctex
+1790420599.787 Completed load for: 'res://assets/sprites/enemies/cutout/bone_caller_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/bone_caller_arm_l.png' at thread -1
+1790420599.787 Loading resource: res://assets/sprites/enemies/cutout/bone_caller_arm_r.png remapped: res://assets/sprites/enemies/cutout/bone_caller_arm_r.png
+1790420599.787 Loading resource: res://.godot/imported/bone_caller_arm_r.png-c2b9c23f0609aaa7136d4c4848682012.ctex remapped: res://.godot/imported/bone_caller_arm_r.png-c2b9c23f0609aaa7136d4c4848682012.ctex
+1790420599.787 Completed load for: 'res://assets/sprites/enemies/cutout/bone_caller_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/bone_caller_arm_r.png' at thread -1
+1790420599.787 Loading resource: res://assets/sprites/enemies/cutout/bone_caller_torso.png remapped: res://assets/sprites/enemies/cutout/bone_caller_torso.png
+1790420599.787 Loading resource: res://.godot/imported/bone_caller_torso.png-64b868f62abb63b951ccee6bdf736054.ctex remapped: res://.godot/imported/bone_caller_torso.png-64b868f62abb63b951ccee6bdf736054.ctex
+1790420599.788 Completed load for: 'res://assets/sprites/enemies/cutout/bone_caller_torso.png' remapped 'res://assets/sprites/enemies/cutout/bone_caller_torso.png' at thread -1
+1790420599.788 Loading resource: res://assets/sprites/enemies/cutout/void_mage_arm_l.png remapped: res://assets/sprites/enemies/cutout/void_mage_arm_l.png
+1790420599.788 Loading resource: res://.godot/imported/void_mage_arm_l.png-6333522026b63f364946eed3f8c95a62.ctex remapped: res://.godot/imported/void_mage_arm_l.png-6333522026b63f364946eed3f8c95a62.ctex
+1790420599.788 Completed load for: 'res://assets/sprites/enemies/cutout/void_mage_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/void_mage_arm_l.png' at thread -1
+1790420599.788 Loading resource: res://assets/sprites/enemies/cutout/void_mage_arm_r.png remapped: res://assets/sprites/enemies/cutout/void_mage_arm_r.png
+1790420599.788 Loading resource: res://.godot/imported/void_mage_arm_r.png-7f08ff9ba18f9ee1c7b9f62f62b4d765.ctex remapped: res://.godot/imported/void_mage_arm_r.png-7f08ff9ba18f9ee1c7b9f62f62b4d765.ctex
+1790420599.788 Completed load for: 'res://assets/sprites/enemies/cutout/void_mage_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/void_mage_arm_r.png' at thread -1
+1790420599.788 Loading resource: res://assets/sprites/enemies/cutout/void_mage_torso.png remapped: res://assets/sprites/enemies/cutout/void_mage_torso.png
+1790420599.788 Loading resource: res://.godot/imported/void_mage_torso.png-3f9ab8524966120f48cb802ca23221df.ctex remapped: res://.godot/imported/void_mage_torso.png-3f9ab8524966120f48cb802ca23221df.ctex
+1790420599.789 Completed load for: 'res://assets/sprites/enemies/cutout/void_mage_torso.png' remapped 'res://assets/sprites/enemies/cutout/void_mage_torso.png' at thread -1
+1790420599.789 Loading resource: res://assets/sprites/enemies/cutout/venom_spitter_leg_l.png remapped: res://assets/sprites/enemies/cutout/venom_spitter_leg_l.png
+1790420599.789 Loading resource: res://.godot/imported/venom_spitter_leg_l.png-2448fe7c80295e73d4e46732f51dac00.ctex remapped: res://.godot/imported/venom_spitter_leg_l.png-2448fe7c80295e73d4e46732f51dac00.ctex
+1790420599.789 Completed load for: 'res://assets/sprites/enemies/cutout/venom_spitter_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/venom_spitter_leg_l.png' at thread -1
+1790420599.789 Loading resource: res://assets/sprites/enemies/cutout/venom_spitter_leg_r.png remapped: res://assets/sprites/enemies/cutout/venom_spitter_leg_r.png
+1790420599.789 Loading resource: res://.godot/imported/venom_spitter_leg_r.png-c0eaadeac498ff4c9e95332c79ed8f82.ctex remapped: res://.godot/imported/venom_spitter_leg_r.png-c0eaadeac498ff4c9e95332c79ed8f82.ctex
+1790420599.789 Completed load for: 'res://assets/sprites/enemies/cutout/venom_spitter_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/venom_spitter_leg_r.png' at thread -1
+1790420599.789 Loading resource: res://assets/sprites/enemies/cutout/venom_spitter_torso.png remapped: res://assets/sprites/enemies/cutout/venom_spitter_torso.png
+1790420599.789 Loading resource: res://.godot/imported/venom_spitter_torso.png-0d28ba759eeaaa277ce4c04417467420.ctex remapped: res://.godot/imported/venom_spitter_torso.png-0d28ba759eeaaa277ce4c04417467420.ctex
+1790420599.790 Completed load for: 'res://assets/sprites/enemies/cutout/venom_spitter_torso.png' remapped 'res://assets/sprites/enemies/cutout/venom_spitter_torso.png' at thread -1
+1790420599.790 Loading resource: res://assets/sprites/enemies/cutout/rift_shieldbearer_shield.png remapped: res://assets/sprites/enemies/cutout/rift_shieldbearer_shield.png
+1790420599.790 Loading resource: res://.godot/imported/rift_shieldbearer_shield.png-d251e7589d57cc83d69e8d732540972b.ctex remapped: res://.godot/imported/rift_shieldbearer_shield.png-d251e7589d57cc83d69e8d732540972b.ctex
+1790420599.790 Completed load for: 'res://assets/sprites/enemies/cutout/rift_shieldbearer_shield.png' remapped 'res://assets/sprites/enemies/cutout/rift_shieldbearer_shield.png' at thread -1
+1790420599.790 Loading resource: res://assets/sprites/enemies/cutout/rift_shieldbearer_arm_l.png remapped: res://assets/sprites/enemies/cutout/rift_shieldbearer_arm_l.png
+1790420599.790 Loading resource: res://.godot/imported/rift_shieldbearer_arm_l.png-0f829f18b48342dd60467a3391d66316.ctex remapped: res://.godot/imported/rift_shieldbearer_arm_l.png-0f829f18b48342dd60467a3391d66316.ctex
+1790420599.790 Completed load for: 'res://assets/sprites/enemies/cutout/rift_shieldbearer_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/rift_shieldbearer_arm_l.png' at thread -1
+1790420599.791 Loading resource: res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_l.png remapped: res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_l.png
+1790420599.791 Loading resource: res://.godot/imported/rift_shieldbearer_leg_l.png-c9d950ca101aca64f09ec4773cc732e9.ctex remapped: res://.godot/imported/rift_shieldbearer_leg_l.png-c9d950ca101aca64f09ec4773cc732e9.ctex
+1790420599.791 Completed load for: 'res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_l.png' at thread -1
+1790420599.791 Loading resource: res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_r.png remapped: res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_r.png
+1790420599.791 Loading resource: res://.godot/imported/rift_shieldbearer_leg_r.png-2ffd9534ac5e38ff1788d538e4f49e79.ctex remapped: res://.godot/imported/rift_shieldbearer_leg_r.png-2ffd9534ac5e38ff1788d538e4f49e79.ctex
+1790420599.791 Completed load for: 'res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/rift_shieldbearer_leg_r.png' at thread -1
+1790420599.791 Loading resource: res://assets/sprites/enemies/cutout/rift_shieldbearer_torso.png remapped: res://assets/sprites/enemies/cutout/rift_shieldbearer_torso.png
+1790420599.791 Loading resource: res://.godot/imported/rift_shieldbearer_torso.png-784fa40b8d2005c25b3eb140a2c07d0b.ctex remapped: res://.godot/imported/rift_shieldbearer_torso.png-784fa40b8d2005c25b3eb140a2c07d0b.ctex
+1790420599.791 Completed load for: 'res://assets/sprites/enemies/cutout/rift_shieldbearer_torso.png' remapped 'res://assets/sprites/enemies/cutout/rift_shieldbearer_torso.png' at thread -1
+1790420599.792 Loading resource: res://assets/sprites/enemies/cutout/small_biter_arm_l.png remapped: res://assets/sprites/enemies/cutout/small_biter_arm_l.png
+1790420599.792 Loading resource: res://.godot/imported/small_biter_arm_l.png-4ad9233ea3abb319d70f487dd135a224.ctex remapped: res://.godot/imported/small_biter_arm_l.png-4ad9233ea3abb319d70f487dd135a224.ctex
+1790420599.792 Completed load for: 'res://assets/sprites/enemies/cutout/small_biter_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/small_biter_arm_l.png' at thread -1
+1790420599.792 Loading resource: res://assets/sprites/enemies/cutout/small_biter_arm_r.png remapped: res://assets/sprites/enemies/cutout/small_biter_arm_r.png
+1790420599.792 Loading resource: res://.godot/imported/small_biter_arm_r.png-ad059a9df25d0b30ab54151eea609117.ctex remapped: res://.godot/imported/small_biter_arm_r.png-ad059a9df25d0b30ab54151eea609117.ctex
+1790420599.792 Completed load for: 'res://assets/sprites/enemies/cutout/small_biter_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/small_biter_arm_r.png' at thread -1
+1790420599.792 Loading resource: res://assets/sprites/enemies/cutout/small_biter_leg_r.png remapped: res://assets/sprites/enemies/cutout/small_biter_leg_r.png
+1790420599.792 Loading resource: res://.godot/imported/small_biter_leg_r.png-4de05e44c3e9dd24f9016b7b1f8ed2d6.ctex remapped: res://.godot/imported/small_biter_leg_r.png-4de05e44c3e9dd24f9016b7b1f8ed2d6.ctex
+1790420599.792 Completed load for: 'res://assets/sprites/enemies/cutout/small_biter_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/small_biter_leg_r.png' at thread -1
+1790420599.792 Loading resource: res://assets/sprites/enemies/cutout/small_biter_torso.png remapped: res://assets/sprites/enemies/cutout/small_biter_torso.png
+1790420599.792 Loading resource: res://.godot/imported/small_biter_torso.png-28319961178ac90787422e6822bf806f.ctex remapped: res://.godot/imported/small_biter_torso.png-28319961178ac90787422e6822bf806f.ctex
+1790420599.793 Completed load for: 'res://assets/sprites/enemies/cutout/small_biter_torso.png' remapped 'res://assets/sprites/enemies/cutout/small_biter_torso.png' at thread -1
+1790420599.793 Loading resource: res://assets/sprites/enemies/cutout/bone_shaman_arm_l.png remapped: res://assets/sprites/enemies/cutout/bone_shaman_arm_l.png
+1790420599.793 Loading resource: res://.godot/imported/bone_shaman_arm_l.png-7be7f76ceac9b1be971ea45592ba22fd.ctex remapped: res://.godot/imported/bone_shaman_arm_l.png-7be7f76ceac9b1be971ea45592ba22fd.ctex
+1790420599.793 Completed load for: 'res://assets/sprites/enemies/cutout/bone_shaman_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/bone_shaman_arm_l.png' at thread -1
+1790420599.793 Loading resource: res://assets/sprites/enemies/cutout/bone_shaman_arm_r.png remapped: res://assets/sprites/enemies/cutout/bone_shaman_arm_r.png
+1790420599.793 Loading resource: res://.godot/imported/bone_shaman_arm_r.png-08f1937f00aceb52648f3de8c5aed231.ctex remapped: res://.godot/imported/bone_shaman_arm_r.png-08f1937f00aceb52648f3de8c5aed231.ctex
+1790420599.793 Completed load for: 'res://assets/sprites/enemies/cutout/bone_shaman_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/bone_shaman_arm_r.png' at thread -1
+1790420599.794 Loading resource: res://assets/sprites/enemies/cutout/bone_shaman_torso.png remapped: res://assets/sprites/enemies/cutout/bone_shaman_torso.png
+1790420599.794 Loading resource: res://.godot/imported/bone_shaman_torso.png-f0d4128e46e4c3a5be70d1aea57ee9b9.ctex remapped: res://.godot/imported/bone_shaman_torso.png-f0d4128e46e4c3a5be70d1aea57ee9b9.ctex
+1790420599.794 Completed load for: 'res://assets/sprites/enemies/cutout/bone_shaman_torso.png' remapped 'res://assets/sprites/enemies/cutout/bone_shaman_torso.png' at thread -1
+1790420599.794 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_wing_l.png remapped: res://assets/sprites/enemies/cutout/winged_spark_wing_l.png
+1790420599.794 Loading resource: res://.godot/imported/winged_spark_wing_l.png-b36832fe62ea7460235792e7524bffe5.ctex remapped: res://.godot/imported/winged_spark_wing_l.png-b36832fe62ea7460235792e7524bffe5.ctex
+1790420599.794 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_wing_l.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_wing_l.png' at thread -1
+1790420599.795 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_wing_r.png remapped: res://assets/sprites/enemies/cutout/winged_spark_wing_r.png
+1790420599.795 Loading resource: res://.godot/imported/winged_spark_wing_r.png-d87a96f1ebbcffbd69d1b363551d89c8.ctex remapped: res://.godot/imported/winged_spark_wing_r.png-d87a96f1ebbcffbd69d1b363551d89c8.ctex
+1790420599.795 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_wing_r.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_wing_r.png' at thread -1
+1790420599.795 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_arm_l.png remapped: res://assets/sprites/enemies/cutout/winged_spark_arm_l.png
+1790420599.795 Loading resource: res://.godot/imported/winged_spark_arm_l.png-899483b6d80b34f0fd6b8eef14a04ac0.ctex remapped: res://.godot/imported/winged_spark_arm_l.png-899483b6d80b34f0fd6b8eef14a04ac0.ctex
+1790420599.795 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_arm_l.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_arm_l.png' at thread -1
+1790420599.795 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_arm_r.png remapped: res://assets/sprites/enemies/cutout/winged_spark_arm_r.png
+1790420599.795 Loading resource: res://.godot/imported/winged_spark_arm_r.png-7081d3d4db5478874ca866fece1af6bf.ctex remapped: res://.godot/imported/winged_spark_arm_r.png-7081d3d4db5478874ca866fece1af6bf.ctex
+1790420599.795 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_arm_r.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_arm_r.png' at thread -1
+1790420599.795 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_leg_l.png remapped: res://assets/sprites/enemies/cutout/winged_spark_leg_l.png
+1790420599.795 Loading resource: res://.godot/imported/winged_spark_leg_l.png-f92c8fbeed03177a67895853ac924129.ctex remapped: res://.godot/imported/winged_spark_leg_l.png-f92c8fbeed03177a67895853ac924129.ctex
+1790420599.795 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_leg_l.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_leg_l.png' at thread -1
+1790420599.796 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_leg_r.png remapped: res://assets/sprites/enemies/cutout/winged_spark_leg_r.png
+1790420599.796 Loading resource: res://.godot/imported/winged_spark_leg_r.png-df85a7c5b92055ae6776f53d4f04f42e.ctex remapped: res://.godot/imported/winged_spark_leg_r.png-df85a7c5b92055ae6776f53d4f04f42e.ctex
+1790420599.796 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_leg_r.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_leg_r.png' at thread -1
+1790420599.796 Loading resource: res://assets/sprites/enemies/cutout/winged_spark_torso.png remapped: res://assets/sprites/enemies/cutout/winged_spark_torso.png
+1790420599.796 Loading resource: res://.godot/imported/winged_spark_torso.png-570493d62443987823af0541633dadfd.ctex remapped: res://.godot/imported/winged_spark_torso.png-570493d62443987823af0541633dadfd.ctex
+1790420599.796 Completed load for: 'res://assets/sprites/enemies/cutout/winged_spark_torso.png' remapped 'res://assets/sprites/enemies/cutout/winged_spark_torso.png' at thread -1
+1790420599.796 Loading resource: res://assets/sprites/elites/cutout/iron_bastion_shield.png remapped: res://assets/sprites/elites/cutout/iron_bastion_shield.png
+1790420599.796 Loading resource: res://.godot/imported/iron_bastion_shield.png-52709e7096b675eefbed44f53740221e.ctex remapped: res://.godot/imported/iron_bastion_shield.png-52709e7096b675eefbed44f53740221e.ctex
+1790420599.797 Completed load for: 'res://assets/sprites/elites/cutout/iron_bastion_shield.png' remapped 'res://assets/sprites/elites/cutout/iron_bastion_shield.png' at thread -1
+1790420599.797 Loading resource: res://assets/sprites/elites/cutout/iron_bastion_arm_r.png remapped: res://assets/sprites/elites/cutout/iron_bastion_arm_r.png
+1790420599.797 Loading resource: res://.godot/imported/iron_bastion_arm_r.png-6409e3d8b9baf866ed8ccefe3b6139a6.ctex remapped: res://.godot/imported/iron_bastion_arm_r.png-6409e3d8b9baf866ed8ccefe3b6139a6.ctex
+1790420599.798 Completed load for: 'res://assets/sprites/elites/cutout/iron_bastion_arm_r.png' remapped 'res://assets/sprites/elites/cutout/iron_bastion_arm_r.png' at thread -1
+1790420599.799 Loading resource: res://assets/sprites/elites/cutout/iron_bastion_leg_r.png remapped: res://assets/sprites/elites/cutout/iron_bastion_leg_r.png
+1790420599.799 Loading resource: res://.godot/imported/iron_bastion_leg_r.png-103a3ac28adec2064a48392da597b558.ctex remapped: res://.godot/imported/iron_bastion_leg_r.png-103a3ac28adec2064a48392da597b558.ctex
+1790420599.799 Completed load for: 'res://assets/sprites/elites/cutout/iron_bastion_leg_r.png' remapped 'res://assets/sprites/elites/cutout/iron_bastion_leg_r.png' at thread -1
+1790420599.799 Loading resource: res://assets/sprites/elites/cutout/iron_bastion_torso.png remapped: res://assets/sprites/elites/cutout/iron_bastion_torso.png
+1790420599.799 Loading resource: res://.godot/imported/iron_bastion_torso.png-25e9752fee5fef9ab52685cad2c1a475.ctex remapped: res://.godot/imported/iron_bastion_torso.png-25e9752fee5fef9ab52685cad2c1a475.ctex
+1790420599.802 Completed load for: 'res://assets/sprites/elites/cutout/iron_bastion_torso.png' remapped 'res://assets/sprites/elites/cutout/iron_bastion_torso.png' at thread -1
+1790420599.802 Loading resource: res://assets/sprites/elites/cutout/night_stalker_arm_l.png remapped: res://assets/sprites/elites/cutout/night_stalker_arm_l.png
+1790420599.802 Loading resource: res://.godot/imported/night_stalker_arm_l.png-ed0c3a0092c47060a6977b5aab83d65e.ctex remapped: res://.godot/imported/night_stalker_arm_l.png-ed0c3a0092c47060a6977b5aab83d65e.ctex
+1790420599.802 Completed load for: 'res://assets/sprites/elites/cutout/night_stalker_arm_l.png' remapped 'res://assets/sprites/elites/cutout/night_stalker_arm_l.png' at thread -1
+1790420599.803 Loading resource: res://assets/sprites/elites/cutout/night_stalker_arm_r.png remapped: res://assets/sprites/elites/cutout/night_stalker_arm_r.png
+1790420599.803 Loading resource: res://.godot/imported/night_stalker_arm_r.png-bc1636640fed0e29bfa171f47448dba4.ctex remapped: res://.godot/imported/night_stalker_arm_r.png-bc1636640fed0e29bfa171f47448dba4.ctex
+1790420599.803 Completed load for: 'res://assets/sprites/elites/cutout/night_stalker_arm_r.png' remapped 'res://assets/sprites/elites/cutout/night_stalker_arm_r.png' at thread -1
+1790420599.803 Loading resource: res://assets/sprites/elites/cutout/night_stalker_leg_l.png remapped: res://assets/sprites/elites/cutout/night_stalker_leg_l.png
+1790420599.804 Loading resource: res://.godot/imported/night_stalker_leg_l.png-9b2fc5f043716a28f14f5f52cc0e96fa.ctex remapped: res://.godot/imported/night_stalker_leg_l.png-9b2fc5f043716a28f14f5f52cc0e96fa.ctex
+1790420599.804 Completed load for: 'res://assets/sprites/elites/cutout/night_stalker_leg_l.png' remapped 'res://assets/sprites/elites/cutout/night_stalker_leg_l.png' at thread -1
+1790420599.804 Loading resource: res://assets/sprites/elites/cutout/night_stalker_leg_r.png remapped: res://assets/sprites/elites/cutout/night_stalker_leg_r.png
+1790420599.804 Loading resource: res://.godot/imported/night_stalker_leg_r.png-ff7b4d04ddfc3965bbe18ce693df5aa1.ctex remapped: res://.godot/imported/night_stalker_leg_r.png-ff7b4d04ddfc3965bbe18ce693df5aa1.ctex
+1790420599.804 Completed load for: 'res://assets/sprites/elites/cutout/night_stalker_leg_r.png' remapped 'res://assets/sprites/elites/cutout/night_stalker_leg_r.png' at thread -1
+1790420599.805 Loading resource: res://assets/sprites/elites/cutout/night_stalker_torso.png remapped: res://assets/sprites/elites/cutout/night_stalker_torso.png
+1790420599.805 Loading resource: res://.godot/imported/night_stalker_torso.png-45a8346417440ff2b1e48f517c756eae.ctex remapped: res://.godot/imported/night_stalker_torso.png-45a8346417440ff2b1e48f517c756eae.ctex
+1790420599.807 Completed load for: 'res://assets/sprites/elites/cutout/night_stalker_torso.png' remapped 'res://assets/sprites/elites/cutout/night_stalker_torso.png' at thread -1
+1790420599.807 Loading resource: res://assets/sprites/elites/cutout/plague_prophet_arm_l.png remapped: res://assets/sprites/elites/cutout/plague_prophet_arm_l.png
+1790420599.807 Loading resource: res://.godot/imported/plague_prophet_arm_l.png-664e322b8994e6bbd8f2bd3921d1c3ee.ctex remapped: res://.godot/imported/plague_prophet_arm_l.png-664e322b8994e6bbd8f2bd3921d1c3ee.ctex
+1790420599.808 Completed load for: 'res://assets/sprites/elites/cutout/plague_prophet_arm_l.png' remapped 'res://assets/sprites/elites/cutout/plague_prophet_arm_l.png' at thread -1
+1790420599.808 Loading resource: res://assets/sprites/elites/cutout/plague_prophet_arm_r.png remapped: res://assets/sprites/elites/cutout/plague_prophet_arm_r.png
+1790420599.808 Loading resource: res://.godot/imported/plague_prophet_arm_r.png-4909e2bc2a1c84b6da41a7f2d0eba98d.ctex remapped: res://.godot/imported/plague_prophet_arm_r.png-4909e2bc2a1c84b6da41a7f2d0eba98d.ctex
+1790420599.809 Completed load for: 'res://assets/sprites/elites/cutout/plague_prophet_arm_r.png' remapped 'res://assets/sprites/elites/cutout/plague_prophet_arm_r.png' at thread -1
+1790420599.809 Loading resource: res://assets/sprites/elites/cutout/plague_prophet_torso.png remapped: res://assets/sprites/elites/cutout/plague_prophet_torso.png
+1790420599.809 Loading resource: res://.godot/imported/plague_prophet_torso.png-544e9ae19efc0900c53354c3008dad6f.ctex remapped: res://.godot/imported/plague_prophet_torso.png-544e9ae19efc0900c53354c3008dad6f.ctex
+1790420599.812 Completed load for: 'res://assets/sprites/elites/cutout/plague_prophet_torso.png' remapped 'res://assets/sprites/elites/cutout/plague_prophet_torso.png' at thread -1
+1790420599.812 Loading resource: res://assets/sprites/elites/cutout/shard_marshal_arm_l.png remapped: res://assets/sprites/elites/cutout/shard_marshal_arm_l.png
+1790420599.812 Loading resource: res://.godot/imported/shard_marshal_arm_l.png-cb449f32846e6b51028090e35f716794.ctex remapped: res://.godot/imported/shard_marshal_arm_l.png-cb449f32846e6b51028090e35f716794.ctex
+1790420599.813 Completed load for: 'res://assets/sprites/elites/cutout/shard_marshal_arm_l.png' remapped 'res://assets/sprites/elites/cutout/shard_marshal_arm_l.png' at thread -1
+1790420599.813 Loading resource: res://assets/sprites/elites/cutout/shard_marshal_arm_r.png remapped: res://assets/sprites/elites/cutout/shard_marshal_arm_r.png
+1790420599.813 Loading resource: res://.godot/imported/shard_marshal_arm_r.png-cbd393bd388969d4057f60a129c9016a.ctex remapped: res://.godot/imported/shard_marshal_arm_r.png-cbd393bd388969d4057f60a129c9016a.ctex
+1790420599.814 Completed load for: 'res://assets/sprites/elites/cutout/shard_marshal_arm_r.png' remapped 'res://assets/sprites/elites/cutout/shard_marshal_arm_r.png' at thread -1
+1790420599.814 Loading resource: res://assets/sprites/elites/cutout/shard_marshal_leg_l.png remapped: res://assets/sprites/elites/cutout/shard_marshal_leg_l.png
+1790420599.814 Loading resource: res://.godot/imported/shard_marshal_leg_l.png-9283a5e649ba06425045e856b9cd7aa7.ctex remapped: res://.godot/imported/shard_marshal_leg_l.png-9283a5e649ba06425045e856b9cd7aa7.ctex
+1790420599.814 Completed load for: 'res://assets/sprites/elites/cutout/shard_marshal_leg_l.png' remapped 'res://assets/sprites/elites/cutout/shard_marshal_leg_l.png' at thread -1
+1790420599.814 Loading resource: res://assets/sprites/elites/cutout/shard_marshal_leg_r.png remapped: res://assets/sprites/elites/cutout/shard_marshal_leg_r.png
+1790420599.814 Loading resource: res://.godot/imported/shard_marshal_leg_r.png-f6ce2820608c9533d985f8ac855db5e8.ctex remapped: res://.godot/imported/shard_marshal_leg_r.png-f6ce2820608c9533d985f8ac855db5e8.ctex
+1790420599.815 Completed load for: 'res://assets/sprites/elites/cutout/shard_marshal_leg_r.png' remapped 'res://assets/sprites/elites/cutout/shard_marshal_leg_r.png' at thread -1
+1790420599.815 Loading resource: res://assets/sprites/elites/cutout/shard_marshal_torso.png remapped: res://assets/sprites/elites/cutout/shard_marshal_torso.png
+1790420599.815 Loading resource: res://.godot/imported/shard_marshal_torso.png-5d9d881e860d42493e25d61b03a6fd5f.ctex remapped: res://.godot/imported/shard_marshal_torso.png-5d9d881e860d42493e25d61b03a6fd5f.ctex
+1790420599.818 Completed load for: 'res://assets/sprites/elites/cutout/shard_marshal_torso.png' remapped 'res://assets/sprites/elites/cutout/shard_marshal_torso.png' at thread -1
+1790420599.818 Loading resource: res://assets/sprites/bosses/cutout/rift_warden_arm_l.png remapped: res://assets/sprites/bosses/cutout/rift_warden_arm_l.png
+1790420599.818 Loading resource: res://.godot/imported/rift_warden_arm_l.png-e169bdf70e2e5c87a6371b7f392c864a.ctex remapped: res://.godot/imported/rift_warden_arm_l.png-e169bdf70e2e5c87a6371b7f392c864a.ctex
+1790420599.818 Completed load for: 'res://assets/sprites/bosses/cutout/rift_warden_arm_l.png' remapped 'res://assets/sprites/bosses/cutout/rift_warden_arm_l.png' at thread -1
+1790420599.818 Loading resource: res://assets/sprites/bosses/cutout/rift_warden_arm_r.png remapped: res://assets/sprites/bosses/cutout/rift_warden_arm_r.png
+1790420599.818 Loading resource: res://.godot/imported/rift_warden_arm_r.png-60e21c9583cb1e83c715ea8d4c4e98c3.ctex remapped: res://.godot/imported/rift_warden_arm_r.png-60e21c9583cb1e83c715ea8d4c4e98c3.ctex
+1790420599.819 Completed load for: 'res://assets/sprites/bosses/cutout/rift_warden_arm_r.png' remapped 'res://assets/sprites/bosses/cutout/rift_warden_arm_r.png' at thread -1
+1790420599.819 Loading resource: res://assets/sprites/bosses/cutout/rift_warden_vortex.png remapped: res://assets/sprites/bosses/cutout/rift_warden_vortex.png
+1790420599.819 Loading resource: res://.godot/imported/rift_warden_vortex.png-60e130cefeb46096ca1c7b74c1c74edb.ctex remapped: res://.godot/imported/rift_warden_vortex.png-60e130cefeb46096ca1c7b74c1c74edb.ctex
+1790420599.820 Completed load for: 'res://assets/sprites/bosses/cutout/rift_warden_vortex.png' remapped 'res://assets/sprites/bosses/cutout/rift_warden_vortex.png' at thread -1
+1790420599.820 Loading resource: res://assets/sprites/bosses/cutout/rift_warden_torso.png remapped: res://assets/sprites/bosses/cutout/rift_warden_torso.png
+1790420599.820 Loading resource: res://.godot/imported/rift_warden_torso.png-9db45e5622813726517cc8019f6ef6d1.ctex remapped: res://.godot/imported/rift_warden_torso.png-9db45e5622813726517cc8019f6ef6d1.ctex
+1790420599.823 Completed load for: 'res://assets/sprites/bosses/cutout/rift_warden_torso.png' remapped 'res://assets/sprites/bosses/cutout/rift_warden_torso.png' at thread -1
+1790420599.823 Loading resource: res://assets/sprites/bosses/cutout/disk_devourer_torso.png remapped: res://assets/sprites/bosses/cutout/disk_devourer_torso.png
+1790420599.823 Loading resource: res://.godot/imported/disk_devourer_torso.png-cf073f0f0366972d984c69bcdac115e3.ctex remapped: res://.godot/imported/disk_devourer_torso.png-cf073f0f0366972d984c69bcdac115e3.ctex
+1790420599.826 Completed load for: 'res://assets/sprites/bosses/cutout/disk_devourer_torso.png' remapped 'res://assets/sprites/bosses/cutout/disk_devourer_torso.png' at thread -1
+1790420599.908 Completed load for: 'res://scripts/player.gd' remapped 'res://scripts/player.gd' at thread -1
+1790420599.908 Completed load for: 'res://scenes/Player.tscn' remapped 'res://scenes/Player.tscn' at thread -1
+1790420599.908 Loading resource: res://scenes/Enemy.tscn remapped: res://scenes/Enemy.tscn
+1790420599.908 Loading resource: res://assets/sprites/enemies/enemy_melee.png remapped: res://assets/sprites/enemies/enemy_melee.png
+1790420599.908 Loading resource: res://.godot/imported/enemy_melee.png-8f3aa2e72ec3c92bf63e1cef2f52247b.ctex remapped: res://.godot/imported/enemy_melee.png-8f3aa2e72ec3c92bf63e1cef2f52247b.ctex
+1790420599.909 Completed load for: 'res://assets/sprites/enemies/enemy_melee.png' remapped 'res://assets/sprites/enemies/enemy_melee.png' at thread -1
+1790420599.909 Completed load for: 'res://scenes/Enemy.tscn' remapped 'res://scenes/Enemy.tscn' at thread -1
+1790420599.909 Loading resource: res://scenes/EnemyShooter.tscn remapped: res://scenes/EnemyShooter.tscn
+1790420599.909 Loading resource: res://assets/sprites/enemies/enemy_ranged.png remapped: res://assets/sprites/enemies/enemy_ranged.png
+1790420599.909 Loading resource: res://.godot/imported/enemy_ranged.png-092e1f857972e56d45b052e55c59f8ac.ctex remapped: res://.godot/imported/enemy_ranged.png-092e1f857972e56d45b052e55c59f8ac.ctex
+1790420599.910 Completed load for: 'res://assets/sprites/enemies/enemy_ranged.png' remapped 'res://assets/sprites/enemies/enemy_ranged.png' at thread -1
+1790420599.910 Completed load for: 'res://scenes/EnemyShooter.tscn' remapped 'res://scenes/EnemyShooter.tscn' at thread -1
+1790420599.910 Loading resource: res://scenes/EnemyBruiser.tscn remapped: res://scenes/EnemyBruiser.tscn
+1790420599.910 Loading resource: res://assets/sprites/enemies/enemy_bruiser_slow.png remapped: res://assets/sprites/enemies/enemy_bruiser_slow.png
+1790420599.910 Loading resource: res://.godot/imported/enemy_bruiser_slow.png-ba51496702407da058f14038bac2630d.ctex remapped: res://.godot/imported/enemy_bruiser_slow.png-ba51496702407da058f14038bac2630d.ctex
+1790420599.911 Completed load for: 'res://assets/sprites/enemies/enemy_bruiser_slow.png' remapped 'res://assets/sprites/enemies/enemy_bruiser_slow.png' at thread -1
+1790420599.911 Completed load for: 'res://scenes/EnemyBruiser.tscn' remapped 'res://scenes/EnemyBruiser.tscn' at thread -1
+1790420599.911 Loading resource: res://scenes/EnemyRunner.tscn remapped: res://scenes/EnemyRunner.tscn
+1790420599.911 Loading resource: res://assets/sprites/enemies/enemy_suicide_runner.png remapped: res://assets/sprites/enemies/enemy_suicide_runner.png
+1790420599.911 Loading resource: res://.godot/imported/enemy_suicide_runner.png-bc0148d0c0a95688d95c36cb4d96a372.ctex remapped: res://.godot/imported/enemy_suicide_runner.png-bc0148d0c0a95688d95c36cb4d96a372.ctex
+1790420599.911 Completed load for: 'res://assets/sprites/enemies/enemy_suicide_runner.png' remapped 'res://assets/sprites/enemies/enemy_suicide_runner.png' at thread -1
+1790420599.911 Completed load for: 'res://scenes/EnemyRunner.tscn' remapped 'res://scenes/EnemyRunner.tscn' at thread -1
+1790420599.911 Loading resource: res://scenes/BossWarden.tscn remapped: res://scenes/BossWarden.tscn
+1790420599.912 Loading resource: res://assets/sprites/bosses/boss_rift_warden.png remapped: res://assets/sprites/bosses/boss_rift_warden.png
+1790420599.912 Loading resource: res://.godot/imported/boss_rift_warden.png-fcb50695143fceaa32144470d1498893.ctex remapped: res://.godot/imported/boss_rift_warden.png-fcb50695143fceaa32144470d1498893.ctex
+1790420599.915 Completed load for: 'res://assets/sprites/bosses/boss_rift_warden.png' remapped 'res://assets/sprites/bosses/boss_rift_warden.png' at thread -1
+1790420599.915 Completed load for: 'res://scenes/BossWarden.tscn' remapped 'res://scenes/BossWarden.tscn' at thread -1
+1790420599.915 Loading resource: res://scenes/EnemySummoner.tscn remapped: res://scenes/EnemySummoner.tscn
+1790420599.915 Loading resource: res://assets/sprites/enemies/enemy_summoner.png remapped: res://assets/sprites/enemies/enemy_summoner.png
+1790420599.915 Loading resource: res://.godot/imported/enemy_summoner.png-32f081225b8ba5b5ffebed09177cc5ec.ctex remapped: res://.godot/imported/enemy_summoner.png-32f081225b8ba5b5ffebed09177cc5ec.ctex
+1790420599.916 Completed load for: 'res://assets/sprites/enemies/enemy_summoner.png' remapped 'res://assets/sprites/enemies/enemy_summoner.png' at thread -1
+1790420599.916 Completed load for: 'res://scenes/EnemySummoner.tscn' remapped 'res://scenes/EnemySummoner.tscn' at thread -1
+1790420599.916 Loading resource: res://scenes/Pickup.tscn remapped: res://scenes/Pickup.tscn
+1790420599.916 Loading resource: res://scripts/pickup.gd remapped: res://scripts/pickup.gd
+1790420599.916 Loading resource: res://assets/sprites/ui/hud/hud_money.png remapped: res://assets/sprites/ui/hud/hud_money.png
+1790420599.916 Loading resource: res://.godot/imported/hud_money.png-19efce8bcf60351553ff0665f7d4e4c0.ctex remapped: res://.godot/imported/hud_money.png-19efce8bcf60351553ff0665f7d4e4c0.ctex
+1790420599.916 Completed load for: 'res://assets/sprites/ui/hud/hud_money.png' remapped 'res://assets/sprites/ui/hud/hud_money.png' at thread -1
+1790420599.916 Loading resource: res://assets/sprites/ui/hud/hud_xp.png remapped: res://assets/sprites/ui/hud/hud_xp.png
+1790420599.916 Loading resource: res://.godot/imported/hud_xp.png-73d7eaf69bbc81b314a31224707bbd1d.ctex remapped: res://.godot/imported/hud_xp.png-73d7eaf69bbc81b314a31224707bbd1d.ctex
+1790420599.917 Completed load for: 'res://assets/sprites/ui/hud/hud_xp.png' remapped 'res://assets/sprites/ui/hud/hud_xp.png' at thread -1
+1790420599.917 Completed load for: 'res://scripts/pickup.gd' remapped 'res://scripts/pickup.gd' at thread -1
+1790420599.917 Completed load for: 'res://scenes/Pickup.tscn' remapped 'res://scenes/Pickup.tscn' at thread -1
+1790420599.917 Loading resource: res://scenes/EnemyMage.tscn remapped: res://scenes/EnemyMage.tscn
+1790420599.917 Loading resource: res://assets/sprites/enemies/enemy_void_mage.png remapped: res://assets/sprites/enemies/enemy_void_mage.png
+1790420599.917 Loading resource: res://.godot/imported/enemy_void_mage.png-4dd590b49bdad2b293824b9fcfe4f23f.ctex remapped: res://.godot/imported/enemy_void_mage.png-4dd590b49bdad2b293824b9fcfe4f23f.ctex
+1790420599.918 Completed load for: 'res://assets/sprites/enemies/enemy_void_mage.png' remapped 'res://assets/sprites/enemies/enemy_void_mage.png' at thread -1
+1790420599.918 Completed load for: 'res://scenes/EnemyMage.tscn' remapped 'res://scenes/EnemyMage.tscn' at thread -1
+1790420599.918 Loading resource: res://scenes/EnemySpitter.tscn remapped: res://scenes/EnemySpitter.tscn
+1790420599.918 Loading resource: res://assets/sprites/enemies/enemy_venom_spitter.png remapped: res://assets/sprites/enemies/enemy_venom_spitter.png
+1790420599.918 Loading resource: res://.godot/imported/enemy_venom_spitter.png-0ceb7697b171dca38a20df3eb5802755.ctex remapped: res://.godot/imported/enemy_venom_spitter.png-0ceb7697b171dca38a20df3eb5802755.ctex
+1790420599.918 Completed load for: 'res://assets/sprites/enemies/enemy_venom_spitter.png' remapped 'res://assets/sprites/enemies/enemy_venom_spitter.png' at thread -1
+1790420599.919 Completed load for: 'res://scenes/EnemySpitter.tscn' remapped 'res://scenes/EnemySpitter.tscn' at thread -1
+1790420599.919 Loading resource: res://scenes/EnemyShield.tscn remapped: res://scenes/EnemyShield.tscn
+1790420599.919 Loading resource: res://assets/sprites/enemies/enemy_rift_shieldbearer.png remapped: res://assets/sprites/enemies/enemy_rift_shieldbearer.png
+1790420599.919 Loading resource: res://.godot/imported/enemy_rift_shieldbearer.png-0478415a10a2ff36ece38ae81cc288b3.ctex remapped: res://.godot/imported/enemy_rift_shieldbearer.png-0478415a10a2ff36ece38ae81cc288b3.ctex
+1790420599.919 Completed load for: 'res://assets/sprites/enemies/enemy_rift_shieldbearer.png' remapped 'res://assets/sprites/enemies/enemy_rift_shieldbearer.png' at thread -1
+1790420599.919 Completed load for: 'res://scenes/EnemyShield.tscn' remapped 'res://scenes/EnemyShield.tscn' at thread -1
+1790420599.919 Loading resource: res://scenes/EnemyBoneShaman.tscn remapped: res://scenes/EnemyBoneShaman.tscn
+1790420599.919 Loading resource: res://assets/sprites/enemies/enemy_bone_shaman.png remapped: res://assets/sprites/enemies/enemy_bone_shaman.png
+1790420599.919 Loading resource: res://.godot/imported/enemy_bone_shaman.png-84e0ccc43486d5b79ce42ae71fd23646.ctex remapped: res://.godot/imported/enemy_bone_shaman.png-84e0ccc43486d5b79ce42ae71fd23646.ctex
+1790420599.920 Completed load for: 'res://assets/sprites/enemies/enemy_bone_shaman.png' remapped 'res://assets/sprites/enemies/enemy_bone_shaman.png' at thread -1
+1790420599.920 Completed load for: 'res://scenes/EnemyBoneShaman.tscn' remapped 'res://scenes/EnemyBoneShaman.tscn' at thread -1
+1790420599.920 Loading resource: res://scenes/EnemyFlyingRunner.tscn remapped: res://scenes/EnemyFlyingRunner.tscn
+1790420599.920 Loading resource: res://assets/sprites/enemies/enemy_winged_spark.png remapped: res://assets/sprites/enemies/enemy_winged_spark.png
+1790420599.920 Loading resource: res://.godot/imported/enemy_winged_spark.png-07ed0a3d5f2a99515b67e0bd260049e3.ctex remapped: res://.godot/imported/enemy_winged_spark.png-07ed0a3d5f2a99515b67e0bd260049e3.ctex
+1790420599.921 Completed load for: 'res://assets/sprites/enemies/enemy_winged_spark.png' remapped 'res://assets/sprites/enemies/enemy_winged_spark.png' at thread -1
+1790420599.921 Completed load for: 'res://scenes/EnemyFlyingRunner.tscn' remapped 'res://scenes/EnemyFlyingRunner.tscn' at thread -1
+1790420599.921 Loading resource: res://scenes/BossDiskDevourer.tscn remapped: res://scenes/BossDiskDevourer.tscn
+1790420599.921 Completed load for: 'res://scenes/BossDiskDevourer.tscn' remapped 'res://scenes/BossDiskDevourer.tscn' at thread -1
+1790420599.921 Loading resource: res://scenes/EliteArmored.tscn remapped: res://scenes/EliteArmored.tscn
+1790420599.921 Loading resource: res://assets/sprites/elites/iron_bastion.png remapped: res://assets/sprites/elites/iron_bastion.png
+1790420599.921 Loading resource: res://.godot/imported/iron_bastion.png-5d4e534ea888381b6daba68ef8530a9e.ctex remapped: res://.godot/imported/iron_bastion.png-5d4e534ea888381b6daba68ef8530a9e.ctex
+1790420599.925 Completed load for: 'res://assets/sprites/elites/iron_bastion.png' remapped 'res://assets/sprites/elites/iron_bastion.png' at thread -1
+1790420599.925 Completed load for: 'res://scenes/EliteArmored.tscn' remapped 'res://scenes/EliteArmored.tscn' at thread -1
+1790420599.925 Loading resource: res://scenes/EliteStalker.tscn remapped: res://scenes/EliteStalker.tscn
+1790420599.925 Loading resource: res://assets/sprites/elites/night_stalker.png remapped: res://assets/sprites/elites/night_stalker.png
+1790420599.925 Loading resource: res://.godot/imported/night_stalker.png-c31b99f452193a9e8cbef585f49953bd.ctex remapped: res://.godot/imported/night_stalker.png-c31b99f452193a9e8cbef585f49953bd.ctex
+1790420599.928 Completed load for: 'res://assets/sprites/elites/night_stalker.png' remapped 'res://assets/sprites/elites/night_stalker.png' at thread -1
+1790420599.928 Completed load for: 'res://scenes/EliteStalker.tscn' remapped 'res://scenes/EliteStalker.tscn' at thread -1
+1790420599.929 Loading resource: res://scenes/ElitePoisoned.tscn remapped: res://scenes/ElitePoisoned.tscn
+1790420599.929 Loading resource: res://assets/sprites/elites/plague_prophet.png remapped: res://assets/sprites/elites/plague_prophet.png
+1790420599.929 Loading resource: res://.godot/imported/plague_prophet.png-348761a314216caf42d77ba9b1871608.ctex remapped: res://.godot/imported/plague_prophet.png-348761a314216caf42d77ba9b1871608.ctex
+1790420599.932 Completed load for: 'res://assets/sprites/elites/plague_prophet.png' remapped 'res://assets/sprites/elites/plague_prophet.png' at thread -1
+1790420599.932 Completed load for: 'res://scenes/ElitePoisoned.tscn' remapped 'res://scenes/ElitePoisoned.tscn' at thread -1
+1790420599.932 Loading resource: res://scenes/EliteCommander.tscn remapped: res://scenes/EliteCommander.tscn
+1790420599.932 Loading resource: res://assets/sprites/elites/shard_marshal.png remapped: res://assets/sprites/elites/shard_marshal.png
+1790420599.932 Loading resource: res://.godot/imported/shard_marshal.png-e4e93a140abbcf0630d6a17af69ad9f9.ctex remapped: res://.godot/imported/shard_marshal.png-e4e93a140abbcf0630d6a17af69ad9f9.ctex
+1790420599.936 Completed load for: 'res://assets/sprites/elites/shard_marshal.png' remapped 'res://assets/sprites/elites/shard_marshal.png' at thread -1
+1790420599.936 Completed load for: 'res://scenes/EliteCommander.tscn' remapped 'res://scenes/EliteCommander.tscn' at thread -1
+1790420599.936 Completed load for: 'res://scenes/Main.tscn' remapped 'res://scenes/Main.tscn' at thread -1
+1790420599.977 Loading resource: res://assets/audio/sfx/sfx_hit.ogg remapped: res://assets/audio/sfx/sfx_hit.ogg
+1790420599.977 Loading resource: res://.godot/imported/sfx_hit.ogg-823dd7677723ca0ac087b05ebe1c331f.oggvorbisstr remapped: res://.godot/imported/sfx_hit.ogg-823dd7677723ca0ac087b05ebe1c331f.oggvorbisstr
+1790420599.977 Completed load for: 'res://assets/audio/sfx/sfx_hit.ogg' remapped 'res://assets/audio/sfx/sfx_hit.ogg' at thread -1
+1790420599.977 Loading resource: res://assets/audio/sfx/sfx_hit_magic.ogg remapped: res://assets/audio/sfx/sfx_hit_magic.ogg
+1790420599.977 Loading resource: res://.godot/imported/sfx_hit_magic.ogg-eb4e1aeb23b4001b0ab4463512b39dd7.oggvorbisstr remapped: res://.godot/imported/sfx_hit_magic.ogg-eb4e1aeb23b4001b0ab4463512b39dd7.oggvorbisstr
+1790420599.977 Completed load for: 'res://assets/audio/sfx/sfx_hit_magic.ogg' remapped 'res://assets/audio/sfx/sfx_hit_magic.ogg' at thread -1
+1790420599.977 Loading resource: res://assets/audio/sfx/sfx_hit_dot.ogg remapped: res://assets/audio/sfx/sfx_hit_dot.ogg
+1790420599.977 Loading resource: res://.godot/imported/sfx_hit_dot.ogg-3b93cd6317c9465c248a3a679fbbfc5a.oggvorbisstr remapped: res://.godot/imported/sfx_hit_dot.ogg-3b93cd6317c9465c248a3a679fbbfc5a.oggvorbisstr
+1790420599.977 Completed load for: 'res://assets/audio/sfx/sfx_hit_dot.ogg' remapped 'res://assets/audio/sfx/sfx_hit_dot.ogg' at thread -1
+1790420599.977 Loading resource: res://assets/audio/sfx/sfx_player_hit.ogg remapped: res://assets/audio/sfx/sfx_player_hit.ogg
+1790420599.977 Loading resource: res://.godot/imported/sfx_player_hit.ogg-bc7457ca0c4f2461cd40ed2f397b670c.oggvorbisstr remapped: res://.godot/imported/sfx_player_hit.ogg-bc7457ca0c4f2461cd40ed2f397b670c.oggvorbisstr
+1790420599.978 Completed load for: 'res://assets/audio/sfx/sfx_player_hit.ogg' remapped 'res://assets/audio/sfx/sfx_player_hit.ogg' at thread -1
+1790420599.978 Loading resource: res://assets/audio/sfx/sfx_dodge.ogg remapped: res://assets/audio/sfx/sfx_dodge.ogg
+1790420599.978 Loading resource: res://.godot/imported/sfx_dodge.ogg-67e271e168d24cb4ee6ff4d3591487cc.oggvorbisstr remapped: res://.godot/imported/sfx_dodge.ogg-67e271e168d24cb4ee6ff4d3591487cc.oggvorbisstr
+1790420599.978 Completed load for: 'res://assets/audio/sfx/sfx_dodge.ogg' remapped 'res://assets/audio/sfx/sfx_dodge.ogg' at thread -1
+1790420599.978 Loading resource: res://assets/audio/sfx/sfx_pickup_xp.ogg remapped: res://assets/audio/sfx/sfx_pickup_xp.ogg
+1790420599.978 Loading resource: res://.godot/imported/sfx_pickup_xp.ogg-d61203b2e86c445716a13740bed0cf4f.oggvorbisstr remapped: res://.godot/imported/sfx_pickup_xp.ogg-d61203b2e86c445716a13740bed0cf4f.oggvorbisstr
+1790420599.978 Completed load for: 'res://assets/audio/sfx/sfx_pickup_xp.ogg' remapped 'res://assets/audio/sfx/sfx_pickup_xp.ogg' at thread -1
+1790420599.978 Loading resource: res://assets/audio/sfx/sfx_pickup_money.ogg remapped: res://assets/audio/sfx/sfx_pickup_money.ogg
+1790420599.978 Loading resource: res://.godot/imported/sfx_pickup_money.ogg-f5d0d1e85fd0374f19d8680258b2e5ac.oggvorbisstr remapped: res://.godot/imported/sfx_pickup_money.ogg-f5d0d1e85fd0374f19d8680258b2e5ac.oggvorbisstr
+1790420599.978 Completed load for: 'res://assets/audio/sfx/sfx_pickup_money.ogg' remapped 'res://assets/audio/sfx/sfx_pickup_money.ogg' at thread -1
+1790420599.978 Loading resource: res://assets/audio/sfx/sfx_level_up.ogg remapped: res://assets/audio/sfx/sfx_level_up.ogg
+1790420599.978 Loading resource: res://.godot/imported/sfx_level_up.ogg-334d4555227a3cf6691c1e2f0eed9e82.oggvorbisstr remapped: res://.godot/imported/sfx_level_up.ogg-334d4555227a3cf6691c1e2f0eed9e82.oggvorbisstr
+1790420599.978 Completed load for: 'res://assets/audio/sfx/sfx_level_up.ogg' remapped 'res://assets/audio/sfx/sfx_level_up.ogg' at thread -1
+1790420599.978 Loading resource: res://assets/audio/sfx/sfx_purchase.ogg remapped: res://assets/audio/sfx/sfx_purchase.ogg
+1790420599.978 Loading resource: res://.godot/imported/sfx_purchase.ogg-215b35d62d80c4026cb1d0c79a61af58.oggvorbisstr remapped: res://.godot/imported/sfx_purchase.ogg-215b35d62d80c4026cb1d0c79a61af58.oggvorbisstr
+1790420599.978 Completed load for: 'res://assets/audio/sfx/sfx_purchase.ogg' remapped 'res://assets/audio/sfx/sfx_purchase.ogg' at thread -1
+1790420599.978 Loading resource: res://assets/audio/sfx/sfx_ui_click.ogg remapped: res://assets/audio/sfx/sfx_ui_click.ogg
+1790420599.978 Loading resource: res://.godot/imported/sfx_ui_click.ogg-410b51fd6355b441b0f79cca5281bdda.oggvorbisstr remapped: res://.godot/imported/sfx_ui_click.ogg-410b51fd6355b441b0f79cca5281bdda.oggvorbisstr
+1790420599.979 Completed load for: 'res://assets/audio/sfx/sfx_ui_click.ogg' remapped 'res://assets/audio/sfx/sfx_ui_click.ogg' at thread -1
+1790420599.979 Loading resource: res://assets/audio/sfx/sfx_ui_back.ogg remapped: res://assets/audio/sfx/sfx_ui_back.ogg
+1790420599.979 Loading resource: res://.godot/imported/sfx_ui_back.ogg-4f129d72427775ae3cb3131abce143a8.oggvorbisstr remapped: res://.godot/imported/sfx_ui_back.ogg-4f129d72427775ae3cb3131abce143a8.oggvorbisstr
+1790420599.979 Completed load for: 'res://assets/audio/sfx/sfx_ui_back.ogg' remapped 'res://assets/audio/sfx/sfx_ui_back.ogg' at thread -1
+1790420599.979 Loading resource: res://assets/audio/sfx/sfx_ui_error.ogg remapped: res://assets/audio/sfx/sfx_ui_error.ogg
+1790420599.979 Loading resource: res://.godot/imported/sfx_ui_error.ogg-909f2797d20721033647fb56cbd1e503.oggvorbisstr remapped: res://.godot/imported/sfx_ui_error.ogg-909f2797d20721033647fb56cbd1e503.oggvorbisstr
+1790420599.979 Completed load for: 'res://assets/audio/sfx/sfx_ui_error.ogg' remapped 'res://assets/audio/sfx/sfx_ui_error.ogg' at thread -1
+1790420599.979 Loading resource: res://assets/audio/sfx/sfx_artifact_reveal.ogg remapped: res://assets/audio/sfx/sfx_artifact_reveal.ogg
+1790420599.979 Loading resource: res://.godot/imported/sfx_artifact_reveal.ogg-ad025120ff573c5bfc9f4daf71b0af5d.oggvorbisstr remapped: res://.godot/imported/sfx_artifact_reveal.ogg-ad025120ff573c5bfc9f4daf71b0af5d.oggvorbisstr
+1790420599.979 Completed load for: 'res://assets/audio/sfx/sfx_artifact_reveal.ogg' remapped 'res://assets/audio/sfx/sfx_artifact_reveal.ogg' at thread -1
+1790420599.979 Loading resource: res://assets/audio/sfx/sfx_boss_phase.ogg remapped: res://assets/audio/sfx/sfx_boss_phase.ogg
+1790420599.979 Loading resource: res://.godot/imported/sfx_boss_phase.ogg-a7cb13798c9bada72bf2b27143e013fb.oggvorbisstr remapped: res://.godot/imported/sfx_boss_phase.ogg-a7cb13798c9bada72bf2b27143e013fb.oggvorbisstr
+1790420599.979 Completed load for: 'res://assets/audio/sfx/sfx_boss_phase.ogg' remapped 'res://assets/audio/sfx/sfx_boss_phase.ogg' at thread -1
+1790420599.979 Loading resource: res://assets/audio/sfx/sfx_low_hp_pulse.ogg remapped: res://assets/audio/sfx/sfx_low_hp_pulse.ogg
+1790420599.979 Loading resource: res://.godot/imported/sfx_low_hp_pulse.ogg-fc5258df455c80005a4ab5cf46be08e5.oggvorbisstr remapped: res://.godot/imported/sfx_low_hp_pulse.ogg-fc5258df455c80005a4ab5cf46be08e5.oggvorbisstr
+1790420599.980 Completed load for: 'res://assets/audio/sfx/sfx_low_hp_pulse.ogg' remapped 'res://assets/audio/sfx/sfx_low_hp_pulse.ogg' at thread -1
+1790420599.980 Loading resource: res://assets/audio/music/music_menu_tavern_warm.ogg remapped: res://assets/audio/music/music_menu_tavern_warm.ogg
+1790420599.980 Loading resource: res://.godot/imported/music_menu_tavern_warm.ogg-ec3ab6213c1aa86a9792336cf34518f4.oggvorbisstr remapped: res://.godot/imported/music_menu_tavern_warm.ogg-ec3ab6213c1aa86a9792336cf34518f4.oggvorbisstr
+1790420599.983 Completed load for: 'res://assets/audio/music/music_menu_tavern_warm.ogg' remapped 'res://assets/audio/music/music_menu_tavern_warm.ogg' at thread -1
+1790420599.983 Loading resource: res://assets/audio/music/music_route_map_bard_journey.ogg remapped: res://assets/audio/music/music_route_map_bard_journey.ogg
+1790420599.983 Loading resource: res://.godot/imported/music_route_map_bard_journey.ogg-927a72df39eda3ac915f93fefcb908c2.oggvorbisstr remapped: res://.godot/imported/music_route_map_bard_journey.ogg-927a72df39eda3ac915f93fefcb908c2.oggvorbisstr
+1790420599.986 Completed load for: 'res://assets/audio/music/music_route_map_bard_journey.ogg' remapped 'res://assets/audio/music/music_route_map_bard_journey.ogg' at thread -1
+1790420599.986 Loading resource: res://assets/audio/music/music_shop_campfire_inn.ogg remapped: res://assets/audio/music/music_shop_campfire_inn.ogg
+1790420599.986 Loading resource: res://.godot/imported/music_shop_campfire_inn.ogg-c33f5e5156d47dd2eb258342373ccb11.oggvorbisstr remapped: res://.godot/imported/music_shop_campfire_inn.ogg-c33f5e5156d47dd2eb258342373ccb11.oggvorbisstr
+1790420599.988 Completed load for: 'res://assets/audio/music/music_shop_campfire_inn.ogg' remapped 'res://assets/audio/music/music_shop_campfire_inn.ogg' at thread -1
+1790420599.988 Loading resource: res://assets/audio/music/music_combat_bardic_skirmish_a.ogg remapped: res://assets/audio/music/music_combat_bardic_skirmish_a.ogg
+1790420599.988 Loading resource: res://.godot/imported/music_combat_bardic_skirmish_a.ogg-b5610e47f6a30a7c1f0c41c97a4263d8.oggvorbisstr remapped: res://.godot/imported/music_combat_bardic_skirmish_a.ogg-b5610e47f6a30a7c1f0c41c97a4263d8.oggvorbisstr
+1790420599.990 Completed load for: 'res://assets/audio/music/music_combat_bardic_skirmish_a.ogg' remapped 'res://assets/audio/music/music_combat_bardic_skirmish_a.ogg' at thread -1
+1790420599.990 Loading resource: res://assets/audio/music/music_combat_bardic_skirmish_b.ogg remapped: res://assets/audio/music/music_combat_bardic_skirmish_b.ogg
+1790420599.990 Loading resource: res://.godot/imported/music_combat_bardic_skirmish_b.ogg-cf748ac1bc3f8718213566f0e6072730.oggvorbisstr remapped: res://.godot/imported/music_combat_bardic_skirmish_b.ogg-cf748ac1bc3f8718213566f0e6072730.oggvorbisstr
+1790420599.993 Completed load for: 'res://assets/audio/music/music_combat_bardic_skirmish_b.ogg' remapped 'res://assets/audio/music/music_combat_bardic_skirmish_b.ogg' at thread -1
+1790420599.993 Loading resource: res://assets/audio/music/music_combat_ruined_courtyard.ogg remapped: res://assets/audio/music/music_combat_ruined_courtyard.ogg
+1790420599.993 Loading resource: res://.godot/imported/music_combat_ruined_courtyard.ogg-bad93892db1e8bca971cf416b277f668.oggvorbisstr remapped: res://.godot/imported/music_combat_ruined_courtyard.ogg-bad93892db1e8bca971cf416b277f668.oggvorbisstr
+1790420599.995 Completed load for: 'res://assets/audio/music/music_combat_ruined_courtyard.ogg' remapped 'res://assets/audio/music/music_combat_ruined_courtyard.ogg' at thread -1
+1790420599.995 Loading resource: res://assets/audio/music/music_combat_fey_marsh.ogg remapped: res://assets/audio/music/music_combat_fey_marsh.ogg
+1790420599.995 Loading resource: res://.godot/imported/music_combat_fey_marsh.ogg-211d18c35f85329621f20a9a97a3594a.oggvorbisstr remapped: res://.godot/imported/music_combat_fey_marsh.ogg-211d18c35f85329621f20a9a97a3594a.oggvorbisstr
+1790420599.998 Completed load for: 'res://assets/audio/music/music_combat_fey_marsh.ogg' remapped 'res://assets/audio/music/music_combat_fey_marsh.ogg' at thread -1
+1790420599.998 Loading resource: res://assets/audio/music/music_elite_duel_300.ogg remapped: res://assets/audio/music/music_elite_duel_300.ogg
+1790420599.998 Loading resource: res://.godot/imported/music_elite_duel_300.ogg-504bc9719b7400b4483c405f0ca9627d.oggvorbisstr remapped: res://.godot/imported/music_elite_duel_300.ogg-504bc9719b7400b4483c405f0ca9627d.oggvorbisstr
+1790420600.001 Completed load for: 'res://assets/audio/music/music_elite_duel_300.ogg' remapped 'res://assets/audio/music/music_elite_duel_300.ogg' at thread -1
+1790420600.001 Loading resource: res://assets/audio/music/music_boss_battle_300.ogg remapped: res://assets/audio/music/music_boss_battle_300.ogg
+1790420600.001 Loading resource: res://.godot/imported/music_boss_battle_300.ogg-6e3a8584699aa04e63b7f8fbc78f3f24.oggvorbisstr remapped: res://.godot/imported/music_boss_battle_300.ogg-6e3a8584699aa04e63b7f8fbc78f3f24.oggvorbisstr
+1790420600.005 Completed load for: 'res://assets/audio/music/music_boss_battle_300.ogg' remapped 'res://assets/audio/music/music_boss_battle_300.ogg' at thread -1
+1790420600.005 Loading resource: res://assets/audio/music/music_final_boss_crescendo_300.ogg remapped: res://assets/audio/music/music_final_boss_crescendo_300.ogg
+1790420600.005 Loading resource: res://.godot/imported/music_final_boss_crescendo_300.ogg-57cc873a7e6b473938c5ad54a3659d46.oggvorbisstr remapped: res://.godot/imported/music_final_boss_crescendo_300.ogg-57cc873a7e6b473938c5ad54a3659d46.oggvorbisstr
+1790420600.010 Completed load for: 'res://assets/audio/music/music_final_boss_crescendo_300.ogg' remapped 'res://assets/audio/music/music_final_boss_crescendo_300.ogg' at thread -1
+1790420600.010 Loading resource: res://assets/audio/music/music_sting_victory.ogg remapped: res://assets/audio/music/music_sting_victory.ogg
+1790420600.010 Loading resource: res://.godot/imported/music_sting_victory.ogg-f6aad9b0d12c0676f2448bb025343de4.oggvorbisstr remapped: res://.godot/imported/music_sting_victory.ogg-f6aad9b0d12c0676f2448bb025343de4.oggvorbisstr
+1790420600.010 Completed load for: 'res://assets/audio/music/music_sting_victory.ogg' remapped 'res://assets/audio/music/music_sting_victory.ogg' at thread -1
+1790420600.010 Loading resource: res://assets/audio/music/music_sting_victory_epic.ogg remapped: res://assets/audio/music/music_sting_victory_epic.ogg
+1790420600.010 Loading resource: res://.godot/imported/music_sting_victory_epic.ogg-1deeca87139200d052cf0a1cbbf6c1bb.oggvorbisstr remapped: res://.godot/imported/music_sting_victory_epic.ogg-1deeca87139200d052cf0a1cbbf6c1bb.oggvorbisstr
+1790420600.010 Completed load for: 'res://assets/audio/music/music_sting_victory_epic.ogg' remapped 'res://assets/audio/music/music_sting_victory_epic.ogg' at thread -1
+1790420600.010 Loading resource: res://assets/audio/music/music_sting_defeat.ogg remapped: res://assets/audio/music/music_sting_defeat.ogg
+1790420600.010 Loading resource: res://.godot/imported/music_sting_defeat.ogg-3e21cf7b1ce52fe01af3d9ee5fe829fa.oggvorbisstr remapped: res://.godot/imported/music_sting_defeat.ogg-3e21cf7b1ce52fe01af3d9ee5fe829fa.oggvorbisstr
+1790420600.010 Completed load for: 'res://assets/audio/music/music_sting_defeat.ogg' remapped 'res://assets/audio/music/music_sting_defeat.ogg' at thread -1
+1790420600.054 Loading resource: res://assets/sprites/ui/cursor/game_cursor.png remapped: res://assets/sprites/ui/cursor/game_cursor.png
+1790420600.054 Loading resource: res://.godot/imported/game_cursor.png-a0723d5f00ffab286eb55700f480a316.ctex remapped: res://.godot/imported/game_cursor.png-a0723d5f00ffab286eb55700f480a316.ctex
+1790420600.054 Completed load for: 'res://assets/sprites/ui/cursor/game_cursor.png' remapped 'res://assets/sprites/ui/cursor/game_cursor.png' at thread -1
+1790420600.055 Loading resource: res://assets/sprites/ui/cursor/game_cursor_hover.png remapped: res://assets/sprites/ui/cursor/game_cursor_hover.png
+1790420600.055 Loading resource: res://.godot/imported/game_cursor_hover.png-2f7e8bff298089678db887e694cf071b.ctex remapped: res://.godot/imported/game_cursor_hover.png-2f7e8bff298089678db887e694cf071b.ctex
+1790420600.055 Completed load for: 'res://assets/sprites/ui/cursor/game_cursor_hover.png' remapped 'res://assets/sprites/ui/cursor/game_cursor_hover.png' at thread -1
+1790420600.055 Loading resource: res://assets/sprites/ui/cursor/game_cursor_attack.png remapped: res://assets/sprites/ui/cursor/game_cursor_attack.png
+1790420600.055 Loading resource: res://.godot/imported/game_cursor_attack.png-00707883099ec4275de24d8d502c70b5.ctex remapped: res://.godot/imported/game_cursor_attack.png-00707883099ec4275de24d8d502c70b5.ctex
+1790420600.055 Completed load for: 'res://assets/sprites/ui/cursor/game_cursor_attack.png' remapped 'res://assets/sprites/ui/cursor/game_cursor_attack.png' at thread -1
+1790420600.061 Loading resource: res://assets/backgrounds/main_menu_epic_battle_v3.png remapped: res://assets/backgrounds/main_menu_epic_battle_v3.png
+1790420600.061 Loading resource: res://.godot/imported/main_menu_epic_battle_v3.png-40fe05472cb2c274f4c2c07a994bfc83.ctex remapped: res://.godot/imported/main_menu_epic_battle_v3.png-40fe05472cb2c274f4c2c07a994bfc83.ctex
+1790420600.109 Completed load for: 'res://assets/backgrounds/main_menu_epic_battle_v3.png' remapped 'res://assets/backgrounds/main_menu_epic_battle_v3.png' at thread -1
+1790420600.109 Loading resource: res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png remapped: res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png
+1790420600.109 Loading resource: res://.godot/imported/main_menu_title_fantasy_disk.png-1325bd5df90938575642f13d752c4034.ctex remapped: res://.godot/imported/main_menu_title_fantasy_disk.png-1325bd5df90938575642f13d752c4034.ctex
+1790420600.119 Completed load for: 'res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png' remapped 'res://assets/sprites/ui/menu_title/main_menu_title_fantasy_disk.png' at thread -1
+1790420600.119 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_normal.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_normal.png
+1790420600.119 Loading resource: res://.godot/imported/ui_btn_text_unique_standard_420x104_normal.png-a521624ce24e32df92a0d5ab2c83f97e.ctex remapped: res://.godot/imported/ui_btn_text_unique_standard_420x104_normal.png-a521624ce24e32df92a0d5ab2c83f97e.ctex
+1790420600.120 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_normal.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_normal.png' at thread -1
+1790420600.120 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_hover.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_hover.png
+1790420600.120 Loading resource: res://.godot/imported/ui_btn_text_unique_standard_420x104_hover.png-182074f095b458d3fc805e66644148b3.ctex remapped: res://.godot/imported/ui_btn_text_unique_standard_420x104_hover.png-182074f095b458d3fc805e66644148b3.ctex
+1790420600.121 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_hover.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_hover.png' at thread -1
+1790420600.121 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_pressed.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_pressed.png
+1790420600.121 Loading resource: res://.godot/imported/ui_btn_text_unique_standard_420x104_pressed.png-5d9c3c874dc932c4845eb711a5a642e4.ctex remapped: res://.godot/imported/ui_btn_text_unique_standard_420x104_pressed.png-5d9c3c874dc932c4845eb711a5a642e4.ctex
+1790420600.121 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_pressed.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_pressed.png' at thread -1
+1790420600.122 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_disabled.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_disabled.png
+1790420600.122 Loading resource: res://.godot/imported/ui_btn_text_unique_standard_420x104_disabled.png-70333830ff12cd0c3645bee1d8b50d51.ctex remapped: res://.godot/imported/ui_btn_text_unique_standard_420x104_disabled.png-70333830ff12cd0c3645bee1d8b50d51.ctex
+1790420600.122 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_disabled.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_disabled.png' at thread -1
+1790420600.122 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_focus.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_focus.png
+1790420600.122 Loading resource: res://.godot/imported/ui_btn_text_unique_standard_420x104_focus.png-88fc4add4cca07a0d5960e65f26cf7b9.ctex remapped: res://.godot/imported/ui_btn_text_unique_standard_420x104_focus.png-88fc4add4cca07a0d5960e65f26cf7b9.ctex
+1790420600.123 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_focus.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_standard_420x104_focus.png' at thread -1
+1790420600.126 Loading resource: res://assets/sprites/ui/icons/codex/ui_badge_codex_unread.png remapped: res://assets/sprites/ui/icons/codex/ui_badge_codex_unread.png
+1790420600.126 Loading resource: res://.godot/imported/ui_badge_codex_unread.png-4928e3b71864e7896493a7055d79f917.ctex remapped: res://.godot/imported/ui_badge_codex_unread.png-4928e3b71864e7896493a7055d79f917.ctex
+1790420600.126 Completed load for: 'res://assets/sprites/ui/icons/codex/ui_badge_codex_unread.png' remapped 'res://assets/sprites/ui/icons/codex/ui_badge_codex_unread.png' at thread -1
+1790420600.128 Loading resource: res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png remapped: res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png
+1790420600.128 Loading resource: res://.godot/imported/ui_icon_gratitude.png-da7a6c0f92684e52d9ebe0c149ae101d.ctex remapped: res://.godot/imported/ui_icon_gratitude.png-da7a6c0f92684e52d9ebe0c149ae101d.ctex
+1790420600.129 Completed load for: 'res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png' remapped 'res://assets/sprites/ui/icons/credits/ui_icon_gratitude.png' at thread -1
+1790420600.129 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_normal.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_normal.png
+1790420600.129 Loading resource: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_normal.png-7e3f770429ed8ce7863e1c9c45a3ce0d.ctex remapped: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_normal.png-7e3f770429ed8ce7863e1c9c45a3ce0d.ctex
+1790420600.130 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_normal.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_normal.png' at thread -1
+1790420600.130 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_hover.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_hover.png
+1790420600.130 Loading resource: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_hover.png-7145cf2b94ab6f8b5a274b134737a089.ctex remapped: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_hover.png-7145cf2b94ab6f8b5a274b134737a089.ctex
+1790420600.131 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_hover.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_hover.png' at thread -1
+1790420600.131 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_pressed.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_pressed.png
+1790420600.131 Loading resource: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_pressed.png-0f833d4f8557f30d44028db0de86ee83.ctex remapped: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_pressed.png-0f833d4f8557f30d44028db0de86ee83.ctex
+1790420600.131 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_pressed.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_pressed.png' at thread -1
+1790420600.132 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_disabled.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_disabled.png
+1790420600.132 Loading resource: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_disabled.png-f340c57ca418b54805320f5f16bcd9ec.ctex remapped: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_disabled.png-f340c57ca418b54805320f5f16bcd9ec.ctex
+1790420600.132 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_disabled.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_disabled.png' at thread -1
+1790420600.132 Loading resource: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_focus.png remapped: res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_focus.png
+1790420600.132 Loading resource: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_focus.png-141e10af7c2ee69f2efc143a9b4ee3a2.ctex remapped: res://.godot/imported/ui_btn_text_unique_main_menu_380x104_focus.png-141e10af7c2ee69f2efc143a9b4ee3a2.ctex
+1790420600.133 Completed load for: 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_focus.png' remapped 'res://assets/sprites/ui/frames/text_buttons_unique/ui_btn_text_unique_main_menu_380x104_focus.png' at thread -1
+1790420600.135 Loading resource: res://assets/sprites/ui/meta40/frame_border.png remapped: res://assets/sprites/ui/meta40/frame_border.png
+1790420600.135 Loading resource: res://.godot/imported/frame_border.png-772ab565d699396900eda607ab462386.ctex remapped: res://.godot/imported/frame_border.png-772ab565d699396900eda607ab462386.ctex
+1790420600.154 Completed load for: 'res://assets/sprites/ui/meta40/frame_border.png' remapped 'res://assets/sprites/ui/meta40/frame_border.png' at thread -1
+1790420602.197 Project FPS: 119 (8.40 mspf)
+1790420603.197 Project FPS: 118 (8.47 mspf)
+1790420604.197 Project FPS: 118 (8.47 mspf)
+1790420605.204 Project FPS: 121 (8.26 mspf)
+1790420605.297 XR: Clearing primary interface
+1790420605.297 XR: Removed interface "Native mobile"
+1790420605.297 XR: Removed interface "OpenXR"
+1790420605.297 Accessibility: window 0 adapter destroyed.
+END 1790420605.311

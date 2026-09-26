@@ -1,0 +1,23 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility vsync=1 prefetch=true
+
+| phase | actor | frames | sprite_frames_for (ms) | frame delta during load (ms) |
+|---|---|---|---|---|
+| A first use (sync) | enemy/small_biter | 184 | 47.5 | 69.7 |
+| A first use (sync) | enemy/rift_cutter | 306 | 94.8 | 107.6 |
+| A first use (sync) | enemy/ash_marksman | 184 | 74.1 | 88.9 |
+| A first use (sync) | elite/iron_bastion | 344 | 136.8 | 153.5 |
+| A first use (sync) | boss/rift_warden | 448 | 142.8 | 144.9 |
+
+phase A texture memory: 28 MiB -> 1692 MiB for 5 packs
+phase A texture memory after release: 28 MiB
+
+phase B prefetch: 13 packs resident in 805 ms over 68 frames; frame delta mean 11.8 ms, p95 21.2 ms, max 31.6 ms; texture memory 3783 MiB; static memory 64 MiB
+
+| B after prefetch | enemy/small_biter | 184 | 0.013 | 16.5 |
+| B after prefetch | enemy/rift_cutter | 306 | 0.008 | 16.6 |
+| B after prefetch | enemy/ash_marksman | 184 | 0.007 | 11.0 |
+| B after prefetch | elite/iron_bastion | 344 | 0.004 | 22.3 |
+| B after prefetch | boss/rift_warden | 448 | 0.004 | 16.7 |

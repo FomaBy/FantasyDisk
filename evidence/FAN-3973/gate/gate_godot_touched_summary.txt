@@ -1,0 +1,174 @@
+GODOT warming import cache via semaphore gate
+PASS  Godot import cache pre-pass
+GODOT running 85 test(s) via semaphore gate
+GODOT 1/85 tests/achievements_smoke_test.gd
+PASS  achievements_smoke_test
+GODOT 2/85 tests/animation_smoke_test.gd
+PASS  animation_smoke_test
+GODOT 3/85 tests/actors/ash_marksman_smoke_test.gd
+PASS  ash_marksman_smoke_test
+GODOT 4/85 tests/actors/ashen_colossus_smoke_test.gd
+PASS  ashen_colossus_smoke_test
+GODOT 5/85 tests/attack_vfx_smoke_test.gd
+PASS  attack_vfx_smoke_test
+GODOT 6/85 tests/audio_manager_smoke_test.gd
+PASS  audio_manager_smoke_test
+GODOT 7/85 tests/actors/bloodthorn_lion_smoke_test.gd
+PASS  bloodthorn_lion_smoke_test
+GODOT 8/85 tests/actors/bone_archon_smoke_test.gd
+PASS  bone_archon_smoke_test
+GODOT 9/85 tests/actors/bone_caller_smoke_test.gd
+PASS  bone_caller_smoke_test
+GODOT 10/85 tests/actors/bone_shaman_smoke_test.gd
+PASS  bone_shaman_smoke_test
+GODOT 11/85 tests/actors/brood_mother_smoke_test.gd
+PASS  brood_mother_smoke_test
+GODOT 12/85 tests/codex_data_smoke_test.gd
+PASS  codex_data_smoke_test
+GODOT 13/85 tests/dev_console_smoke_test.gd
+PASS  dev_console_smoke_test
+GODOT 14/85 tests/actors/disk_devourer_smoke_test.gd
+PASS  disk_devourer_smoke_test
+GODOT 15/85 tests/actors/druid_beast_smoke_test.gd
+PASS  druid_beast_smoke_test
+GODOT 16/85 tests/actors/druid_ghost_bear_smoke_test.gd
+PASS  druid_ghost_bear_smoke_test
+GODOT 17/85 tests/actors/druid_ghost_lion_smoke_test.gd
+PASS  druid_ghost_lion_smoke_test
+GODOT 18/85 tests/actors/druid_ghost_panther_smoke_test.gd
+PASS  druid_ghost_panther_smoke_test
+GODOT 19/85 tests/actors/druid_ghost_stag_smoke_test.gd
+PASS  druid_ghost_stag_smoke_test
+GODOT 20/85 tests/actors/druid_ghost_wolf_smoke_test.gd
+PASS  druid_ghost_wolf_smoke_test
+GODOT 21/85 tests/enemy_health_bar_smoke_test.gd
+PASS  enemy_health_bar_smoke_test
+GODOT 22/85 tests/enemy_projectile_smoke_test.gd
+PASS  enemy_projectile_smoke_test
+GODOT 23/85 tests/event_data_smoke_test.gd
+PASS  event_data_smoke_test
+GODOT 24/85 tests/full_frame_atlas_parity_test.gd
+PASS  full_frame_atlas_parity_test
+GODOT 25/85 tests/full_frame_eight_direction_contract_test.gd
+PASS  full_frame_eight_direction_contract_test
+GODOT 26/85 tests/full_frame_registry_integrity_test.gd
+PASS  full_frame_registry_integrity_test
+GODOT 27/85 tests/full_frame_registry_lazy_load_test.gd
+PASS  full_frame_registry_lazy_load_test
+GODOT 28/85 tests/full_frame_registry_shard_validation_test.gd
+PASS  full_frame_registry_shard_validation_test
+GODOT 29/85 tests/full_frame_row_scale_invariant_test.gd
+PASS  full_frame_row_scale_invariant_test
+GODOT 30/85 tests/game_settings_smoke_test.gd
+PASS  game_settings_smoke_test
+GODOT 31/85 tests/gamepad_full_flow_smoke_test.gd
+PASS  gamepad_full_flow_smoke_test
+GODOT 32/85 tests/gamepad_menu_focus_test.gd
+PASS  gamepad_menu_focus_test
+GODOT 33/85 tests/global_damage_balance_smoke_test.gd
+PASS  global_damage_balance_smoke_test
+GODOT 34/85 tests/global_survivability_balance_smoke_test.gd
+PASS  global_survivability_balance_smoke_test
+GODOT 35/85 tests/glossary_smoke_test.gd
+PASS  glossary_smoke_test
+GODOT 36/85 tests/hazard_vfx_smoke_test.gd
+PASS  hazard_vfx_smoke_test
+GODOT 37/85 tests/actors/iron_bastion_smoke_test.gd
+PASS  iron_bastion_smoke_test
+GODOT 38/85 tests/level_up_toast_smoke_test.gd
+PASS  level_up_toast_smoke_test
+GODOT 39/85 tests/main_menu_title_no_overlap_test.gd
+PASS  main_menu_title_no_overlap_test
+GODOT 40/85 tests/meta40_atlas_screen_smoke_test.gd
+PASS  meta40_atlas_screen_smoke_test
+GODOT 41/85 tests/meta_keystone_behavioral_smoke_test.gd
+PASS  meta_keystone_behavioral_smoke_test
+GODOT 42/85 tests/meta_progression_smoke_test.gd
+PASS  meta_progression_smoke_test
+GODOT 43/85 tests/meta_skill_tree_smoke_test.gd
+PASS  meta_skill_tree_smoke_test
+GODOT 44/85 tests/actors/mini_bone_warden_smoke_test.gd
+PASS  mini_bone_warden_smoke_test
+GODOT 45/85 tests/actors/mini_plague_bellringer_smoke_test.gd
+PASS  mini_plague_bellringer_smoke_test
+GODOT 46/85 tests/actors/mini_plague_berserker_smoke_test.gd
+PASS  mini_plague_berserker_smoke_test
+GODOT 47/85 tests/actors/mini_rot_hound_smoke_test.gd
+PASS  mini_rot_hound_smoke_test
+GODOT 48/85 tests/actors/mini_scavenger_reaper_smoke_test.gd
+PASS  mini_scavenger_reaper_smoke_test
+GODOT 49/85 tests/actors/mini_shadow_devourer_smoke_test.gd
+PASS  mini_shadow_devourer_smoke_test
+GODOT 50/85 tests/actors/mini_siege_rammer_smoke_test.gd
+PASS  mini_siege_rammer_smoke_test
+GODOT 51/85 tests/actors/mini_spark_wight_smoke_test.gd
+PASS  mini_spark_wight_smoke_test
+GODOT 52/85 tests/actors/mini_swarm_sniper_smoke_test.gd
+PASS  mini_swarm_sniper_smoke_test
+GODOT 53/85 tests/actors/mini_void_phantom_smoke_test.gd
+PASS  mini_void_phantom_smoke_test
+GODOT 54/85 tests/actors/night_stalker_smoke_test.gd
+PASS  night_stalker_smoke_test
+GODOT 55/85 tests/patch_notes_data_smoke_test.gd
+PASS  patch_notes_data_smoke_test
+GODOT 56/85 tests/patch_notes_smoke_test.gd
+PASS  patch_notes_smoke_test
+GODOT 57/85 tests/actors/plague_prophet_smoke_test.gd
+PASS  plague_prophet_smoke_test
+GODOT 58/85 tests/projectile_smoke_test.gd
+PASS  projectile_smoke_test
+GODOT 59/85 tests/actors/rift_cutter_smoke_test.gd
+PASS  rift_cutter_smoke_test
+GODOT 60/85 tests/actors/rift_shieldbearer_smoke_test.gd
+PASS  rift_shieldbearer_smoke_test
+GODOT 61/85 tests/actors/rift_warden_smoke_test.gd
+PASS  rift_warden_smoke_test
+GODOT 62/85 tests/route_chest_artifact_test.gd
+PASS  route_chest_artifact_test
+GODOT 63/85 tests/route_elite_invariant_test.gd
+PASS  route_elite_invariant_test
+GODOT 64/85 tests/route_generation_reachability_test.gd
+PASS  route_generation_reachability_test
+GODOT 65/85 tests/route_node_preview_test.gd
+PASS  route_node_preview_test
+GODOT 66/85 tests/route_node_threat_badge_test.gd
+PASS  route_node_threat_badge_test
+GODOT 67/85 tests/runtime_smoke_test.gd
+PASS  runtime_smoke_test
+GODOT 68/85 tests/scrum1059_main_menu_single_column_test.gd
+PASS  scrum1059_main_menu_single_column_test
+GODOT 69/85 tests/scrum1079_route_map_horizontal_test.gd
+PASS  scrum1079_route_map_horizontal_test
+GODOT 70/85 tests/scrum1086_route_map_header_text_fit_test.gd
+PASS  scrum1086_route_map_header_text_fit_test
+GODOT 71/85 tests/scrum1089_route_map_full_fit_hud_test.gd
+PASS  scrum1089_route_map_full_fit_hud_test
+GODOT 72/85 tests/scrum1093_main_menu_version_corner_test.gd
+PASS  scrum1093_main_menu_version_corner_test
+GODOT 73/85 tests/scrum981_route_map_gold_shell_test.gd
+PASS  scrum981_route_map_gold_shell_test
+GODOT 74/85 tests/actors/shard_marshal_smoke_test.gd
+PASS  shard_marshal_smoke_test
+GODOT 75/85 tests/skeletal_rig_rest_det_smoke_test.gd
+PASS  skeletal_rig_rest_det_smoke_test
+GODOT 76/85 tests/sliced_rig_manifest_smoke_test.gd
+PASS  sliced_rig_manifest_smoke_test
+GODOT 77/85 tests/actors/small_biter_smoke_test.gd
+PASS  small_biter_smoke_test
+GODOT 78/85 tests/actors/spark_runner_smoke_test.gd
+PASS  spark_runner_smoke_test
+GODOT 79/85 tests/stat_formulas_smoke_test.gd
+PASS  stat_formulas_smoke_test
+GODOT 80/85 tests/actors/stone_bruiser_smoke_test.gd
+PASS  stone_bruiser_smoke_test
+GODOT 81/85 tests/ui_icon_registry_smoke_test.gd
+PASS  ui_icon_registry_smoke_test
+GODOT 82/85 tests/actors/venom_spitter_smoke_test.gd
+PASS  venom_spitter_smoke_test
+GODOT 83/85 tests/actors/void_mage_smoke_test.gd
+PASS  void_mage_smoke_test
+GODOT 84/85 tests/weapon_orbit_smoke_test.gd
+PASS  weapon_orbit_smoke_test
+GODOT 85/85 tests/actors/winged_spark_smoke_test.gd
+PASS  winged_spark_smoke_test
+QUALITY PARTIAL_PASS: 1 static, 85 Godot; report=build/fan3973/gate_godot_touched.json
