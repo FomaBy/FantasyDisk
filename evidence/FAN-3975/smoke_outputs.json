@@ -1,0 +1,127 @@
+[
+  {
+    "name": "runtime_smoke_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 197.89,
+    "log": "build/FAN-3975/runtime_smoke_test.log",
+    "pass_lines": [
+      "Duplicate-artifact guard passed (57183 files scanned).",
+      "Ready weapon ultimate fixtures passed (chemist/blast_powder weapon_profile: delayed impact 0.20s, lifecycle 0.60s, immediate same-frame, 2 malformed refusals).",
+      "Runtime smoke test passed."
+    ],
+    "diagnostics": [
+      "ERROR: Parameter \"t\" is null."
+    ],
+    "raw_log_sha256": "90f24cfebecb8a1c3c5cabdaf1b07e516eff059cccc18e42c8daf173b969e0a0",
+    "raw_log_size_bytes": 5484753
+  },
+  {
+    "name": "runtime_smoke_ui_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_ui_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 6.48,
+    "log": "build/FAN-3975/runtime_smoke_ui_test.log",
+    "pass_lines": [
+      "Runtime UI smoke suite passed."
+    ],
+    "diagnostics": [
+      "ERROR: Parameter \"t\" is null."
+    ],
+    "raw_log_sha256": "bbf5a4e9a866c088f51ec60f0e83887aeb0503a1645f37fda64964bc46863801",
+    "raw_log_size_bytes": 435
+  },
+  {
+    "name": "runtime_smoke_combat_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_combat_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 5.0,
+    "log": "build/FAN-3975/runtime_smoke_combat_test.log",
+    "pass_lines": [
+      "Runtime combat smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "ac7c3ae62170ddd7ba78aee9f89bc9b17cff4f2eea139c3173dbff780cbf05df",
+    "raw_log_size_bytes": 106
+  },
+  {
+    "name": "runtime_smoke_progression_economy_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_progression_economy_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 6.56,
+    "log": "build/FAN-3975/runtime_smoke_progression_economy_test.log",
+    "pass_lines": [
+      "Event risk/reward EV invariant passed (4 events, all EV(risk) >= EV(safe)).",
+      "Runtime progression/economy smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "a58765f1b5e2ec91ec49d52d8cdec4ed141ba69372c879724485c948f077525c",
+    "raw_log_size_bytes": 195
+  },
+  {
+    "name": "runtime_smoke_weapon_mechanics_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_weapon_mechanics_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 91.9,
+    "log": "build/FAN-3975/runtime_smoke_weapon_mechanics_test.log",
+    "pass_lines": [
+      "Ready weapon ultimate fixtures passed (chemist/blast_powder weapon_profile: delayed impact 0.20s, lifecycle 0.60s, immediate same-frame, 2 malformed refusals).",
+      "Runtime weapon mechanics smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "41840ab8352b9975946baefc2b28ac942a4167d35f21207bbe710675fe6ce45a",
+    "raw_log_size_bytes": 276
+  },
+  {
+    "name": "runtime_smoke_boss_elite_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/runtime_smoke_boss_elite_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 9.43,
+    "log": "build/FAN-3975/runtime_smoke_boss_elite_test.log",
+    "pass_lines": [
+      "Runtime boss/elite smoke suite passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "749db6a124aa2c06fde384879afedc1e70fd7dcae4f19ec90fb9c7b4f77339dc",
+    "raw_log_size_bytes": 110
+  },
+  {
+    "name": "combat_target_query_cache_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/combat_target_query_cache_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 0.35,
+    "log": "build/FAN-3975/combat_target_query_cache_test.log",
+    "pass_lines": [
+      "CombatTargetQuery cache test passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "100da29f2cd4f39be10977288996135cbb44057b49af183b163db77da8130117",
+    "raw_log_size_bytes": 108
+  },
+  {
+    "name": "ultimates/presentation/weapon_ultimate_contact_sheet_beats_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_contact_sheet_beats_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 0.61,
+    "log": "build/FAN-3975/weapon_ultimate_contact_sheet_beats_test.log",
+    "pass_lines": [
+      "Weapon ultimate contact-sheet beats contract passed."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "0f28e310751020e8e7a462ac4cd97123d65931d9358fd665dbf71eaa509625bd",
+    "raw_log_size_bytes": 386
+  },
+  {
+    "name": "ultimates/presentation/weapon_ultimate_timing_distinctness_test",
+    "command": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/weapon_ultimate_timing_distinctness_test.gd",
+    "exit_code": 0,
+    "duration_seconds": 0.34,
+    "log": "build/FAN-3975/weapon_ultimate_timing_distinctness_test.log",
+    "pass_lines": [
+      "Weapon ultimate timing distinctness passed at the 0.10s threshold."
+    ],
+    "diagnostics": [],
+    "raw_log_sha256": "5fbd18dfa34b24a72d1f537b0a43d3e3a00255bd065e50caef8c782a0d5dfedc",
+    "raw_log_size_bytes": 1695
+  }
+]

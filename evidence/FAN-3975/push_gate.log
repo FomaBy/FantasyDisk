@@ -1,0 +1,23 @@
+pre_write_readback_utc=2026-09-26T18:43:17Z
+36340c473772781edafffb61ff1d8cc7caa42024	refs/heads/dev
+1ec3d0dfb8b9a150fef742c088401c6a453e1a2b	refs/heads/main
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/v0.3.1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/v0.3.1^{}
+local: M=67b24d499082c7f15943253c5e857cd4b2e6892d tree=1a361d628d8a4160a6f44993f2ed954c50593341 parents=1ec3d0dfb8b9a150fef742c088401c6a453e1a2b 36340c473772781edafffb61ff1d8cc7caa42024 tag=90279733311632aec88a70317e18afc67518e6d2 target=36340c473772781edafffb61ff1d8cc7caa42024
+gate ok; dry run:
+To https://github.com/FomaBy/FantasyDisk.git
+   1ec3d0dfb..67b24d499  67b24d499082c7f15943253c5e857cd4b2e6892d -> main
+ * [new tag]             v0.3.2 -> v0.3.2
+dry_run_rc=0
+push_start_utc=2026-09-26T18:43:18Z
+To https://github.com/FomaBy/FantasyDisk.git
+   1ec3d0dfb..67b24d499  67b24d499082c7f15943253c5e857cd4b2e6892d -> main
+ * [new tag]             v0.3.2 -> v0.3.2
+push_rc=0 push_end_utc=2026-09-26T18:43:22Z
+post_write_readback:
+36340c473772781edafffb61ff1d8cc7caa42024	refs/heads/dev
+67b24d499082c7f15943253c5e857cd4b2e6892d	refs/heads/main
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/v0.3.1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/v0.3.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}

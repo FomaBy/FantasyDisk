@@ -1,0 +1,118 @@
+{
+  "issue": "FAN-3975",
+  "stage": "protected_promotion",
+  "release_version": "0.3.2",
+  "readback_at_utc": "2026-09-26T18:45:08Z",
+  "promoter_agent_id": "1cba3f6b-908a-4ba0-9baa-a849880b5682",
+  "host": "macOS (MacBook, Apple M4 Pro, Godot 4.7.stable.official)",
+  "pins": {
+    "source_dev_sha": "36340c473772781edafffb61ff1d8cc7caa42024",
+    "source_tree_sha": "1a361d628d8a4160a6f44993f2ed954c50593341",
+    "base_main_sha": "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+    "base_main_tree_sha": "3e02df83290741b21d4de37c4fa03e356e20c591",
+    "fan3974_qa_run_id": "01a0de91-db10-7645-9397-40269decca89",
+    "fan3974_qa_reviewer_id": "d7bc8435-0d2d-44f8-b77a-bd9723a3880e",
+    "fan3974_qa_verdict": "PASSED",
+    "fan3974_integration_run_id": "01a0dec5-a111-76f2-a89f-d8e081a97517"
+  },
+  "pre_write_readback_utc": "2026-09-26T18:43:17Z",
+  "pre_write_readback": {
+    "refs/heads/dev": "36340c473772781edafffb61ff1d8cc7caa42024",
+    "refs/heads/main": "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+    "refs/tags/v0.3.1": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "refs/tags/v0.3.1^{}": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "refs/tags/v0.3.2": null
+  },
+  "push": {
+    "command": "git push --atomic origin 67b24d499082c7f15943253c5e857cd4b2e6892d:refs/heads/main refs/tags/v0.3.2",
+    "dry_run_exit_code": 0,
+    "exit_code": 0,
+    "started_utc": "2026-09-26T18:43:18Z",
+    "completed_utc": "2026-09-26T18:43:22Z",
+    "force": false
+  },
+  "post_write_ls_remote": {
+    "refs/heads/dev": "36340c473772781edafffb61ff1d8cc7caa42024",
+    "refs/heads/main": "67b24d499082c7f15943253c5e857cd4b2e6892d",
+    "refs/tags/v0.3.1": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "refs/tags/v0.3.1^{}": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "refs/tags/v0.3.2": "90279733311632aec88a70317e18afc67518e6d2",
+    "refs/tags/v0.3.2^{}": "36340c473772781edafffb61ff1d8cc7caa42024"
+  },
+  "result_main": {
+    "sha": "67b24d499082c7f15943253c5e857cd4b2e6892d",
+    "tree": "1a361d628d8a4160a6f44993f2ed954c50593341",
+    "parents": [
+      "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+      "36340c473772781edafffb61ff1d8cc7caa42024"
+    ],
+    "message": "release: FantasyDisk v0.3.2 (merge dev)",
+    "author": {
+      "name": "Sergey Fomin",
+      "email": "fomamoney@gmail.com",
+      "date": "2026-09-26T18:42:50Z"
+    },
+    "committer": {
+      "name": "Sergey Fomin",
+      "email": "fomamoney@gmail.com",
+      "date": "2026-09-26T18:42:50Z"
+    }
+  },
+  "source_dev": {
+    "sha": "36340c473772781edafffb61ff1d8cc7caa42024",
+    "tree": "1a361d628d8a4160a6f44993f2ed954c50593341"
+  },
+  "tag_v0_3_2": {
+    "object_sha": "90279733311632aec88a70317e18afc67518e6d2",
+    "tag": "v0.3.2",
+    "message": "FantasyDisk v0.3.2\n",
+    "tagger": {
+      "name": "Sergey Fomin",
+      "email": "fomamoney@gmail.com",
+      "date": "2026-09-26T18:42:50Z"
+    },
+    "target": {
+      "sha": "36340c473772781edafffb61ff1d8cc7caa42024",
+      "type": "commit",
+      "url": "https://api.github.com/repos/FomaBy/FantasyDisk/git/commits/36340c473772781edafffb61ff1d8cc7caa42024"
+    }
+  },
+  "tag_v0_3_1_unchanged": {
+    "object_sha": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "target": "448a0cc12f02eb05bc16becc69fde365021a9a17"
+  },
+  "checks": {
+    "result_main_tree_equals_source_tree": true,
+    "result_main_parents_exact": true,
+    "tag_annotated": true,
+    "tag_targets_source_dev": true,
+    "remote_dev_unchanged": true,
+    "v0_3_1_unchanged": true,
+    "v0_3_2_absent_before_write": true,
+    "disposable_merge_probe_tree": "1a361d628d8a4160a6f44993f2ed954c50593341",
+    "full_gate": {
+      "status": "passed",
+      "certifying": true,
+      "static": "16/16",
+      "godot": "559/559",
+      "python_tests": 802,
+      "duration_seconds": 2509.748,
+      "git_sha": "36340c473772781edafffb61ff1d8cc7caa42024",
+      "report_sha256": "704e90569c66f091da1e413dfe3f02df9cdd01f0264248a758ded8b8a05bb23a"
+    },
+    "core_smoke_suites_exit_0": 6,
+    "supplementary_suites_exit_0": 3,
+    "base_smoke_log_sha256": "90f24cfebecb8a1c3c5cabdaf1b07e516eff059cccc18e42c8daf173b969e0a0",
+    "release_version_mapping_0_3_2": "0.3.2\t1.3.20\t0.3.2\t0.3.2.0",
+    "release_scope_guard_0_3_2": "release scope OK: 0.3.2, 0 entries",
+    "export_presets_exclusions_unittest": "5 tests OK",
+    "poster_sha256": "7a890effc71460cda7769902c4adb7f8da217ccf4f7f2a935ed7d30e580c0867",
+    "poster_source_sha256": "6283bd9afbc0c14b777a16ffaa9c767f4dd0db50fb14bc144f7d13312e6c1892"
+  },
+  "precedent_v0_3_1": {
+    "tag_object": "676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71",
+    "tag_target": "448a0cc12f02eb05bc16becc69fde365021a9a17",
+    "main_merge": "1ec3d0dfb8b9a150fef742c088401c6a453e1a2b",
+    "shared_tree": "3e02df83290741b21d4de37c4fa03e356e20c591"
+  }
+}
