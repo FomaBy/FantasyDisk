@@ -579,6 +579,7 @@ func request_game_quit() -> void:
 
 
 func _release_runtime_texture_refs() -> void:
+	FullFrameAnimationRegistry.release_prefetched()  # FAN-3973: no threaded pack load may outlive the tree
 	Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 	Input.set_custom_mouse_cursor(null, Input.CURSOR_POINTING_HAND)
 	Input.set_custom_mouse_cursor(null, Input.CURSOR_CROSS)
