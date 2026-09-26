@@ -1,0 +1,44 @@
+{
+  "container": "FantasyDisk.exe",
+  "container_size": 540725856,
+  "pck_start": 109050880,
+  "pck_size": 431674964,
+  "pack_format": 4,
+  "engine": "4.7.0",
+  "flags": 2,
+  "file_count": 45648,
+  "payload_bytes": 425346216,
+  "top_level": {
+    ".godot": {
+      "files": 22381,
+      "bytes": 401237674
+    },
+    "assets": {
+      "files": 22340,
+      "bytes": 20520188
+    },
+    "data": {
+      "files": 156,
+      "bytes": 602450
+    },
+    "<root>": {
+      "files": 3,
+      "bytes": 5338
+    },
+    "scenes": {
+      "files": 196,
+      "bytes": 271897
+    },
+    "scripts": {
+      "files": 572,
+      "bytes": 2708669
+    }
+  },
+  "root_files": [
+    "res://icon.svg",
+    "res://icon.svg.import",
+    "res://project.binary"
+  ],
+  "forbidden_count": 0,
+  "forbidden_sample": []
+}

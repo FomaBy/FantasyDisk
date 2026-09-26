@@ -1,0 +1,183 @@
+{
+  "pck_exclusion": {
+    "tool": "evidence/FAN-3976/list_pck.py (FAN-3973 list_pck_paths.py rule set; embedded-PCK trailer support for the Windows exe)",
+    "macos_installed_app_pck": {
+      "container": "FantasyDisk.pck",
+      "container_size": 431674964,
+      "pck_start": 0,
+      "pck_size": 431674964,
+      "pack_format": 4,
+      "engine": "4.7.0",
+      "flags": 2,
+      "file_count": 45648,
+      "payload_bytes": 425346216,
+      "top_level": {
+        ".godot": {
+          "files": 22381,
+          "bytes": 401237674
+        },
+        "assets": {
+          "files": 22340,
+          "bytes": 20520188
+        },
+        "data": {
+          "files": 156,
+          "bytes": 602450
+        },
+        "<root>": {
+          "files": 3,
+          "bytes": 5338
+        },
+        "scenes": {
+          "files": 196,
+          "bytes": 271897
+        },
+        "scripts": {
+          "files": 572,
+          "bytes": 2708669
+        }
+      },
+      "root_files": [
+        "res://icon.svg",
+        "res://icon.svg.import",
+        "res://project.binary"
+      ],
+      "forbidden_count": 0,
+      "forbidden_sample": []
+    },
+    "windows_exe_embedded_pck": {
+      "container": "FantasyDisk.exe",
+      "container_size": 540725856,
+      "pck_start": 109050880,
+      "pck_size": 431674964,
+      "pack_format": 4,
+      "engine": "4.7.0",
+      "flags": 2,
+      "file_count": 45648,
+      "payload_bytes": 425346216,
+      "top_level": {
+        ".godot": {
+          "files": 22381,
+          "bytes": 401237674
+        },
+        "assets": {
+          "files": 22340,
+          "bytes": 20520188
+        },
+        "data": {
+          "files": 156,
+          "bytes": 602450
+        },
+        "<root>": {
+          "files": 3,
+          "bytes": 5338
+        },
+        "scenes": {
+          "files": 196,
+          "bytes": 271897
+        },
+        "scripts": {
+          "files": 572,
+          "bytes": 2708669
+        }
+      },
+      "root_files": [
+        "res://icon.svg",
+        "res://icon.svg.import",
+        "res://project.binary"
+      ],
+      "forbidden_count": 0,
+      "forbidden_sample": []
+    },
+    "macos_windows_file_tables_identical": true,
+    "forbidden_paths_0.3.2": {
+      "macos": 0,
+      "windows": 0
+    },
+    "forbidden_paths_0.3.1_for_comparison": {
+      "installed_app_pck": 1237,
+      "windows_exe": 1237,
+      "note": "0.3.1 shipped evidence/ (1233 files, 308,689,852 bytes), skills/ (2) and two stray root .import files; FAN-3973 fix removes them"
+    },
+    "installed_app_equals_dmg_app": true
+  },
+  "sizes_vs_0_3_1": {
+    "windows_exe_inside_setup": {
+      "0.3.2": 540725856,
+      "0.3.1": 850651688,
+      "delta": -309925832,
+      "0.3.2_sha256": "7faca322bfee2628af1ab15eaa4c14e1c4e548c7836416d32b99e3aed3d931c7",
+      "0.3.1_sha256": "ce3bc7ff2ed4bd1cf5eaf599d5155a8b3c91e369cd8690a834793151e062fda0",
+      "extraction": "7z e <setup.exe> FantasyDisk.exe (NSIS zlib archive; read-only extraction from the retained installers)"
+    },
+    "windows_setup_exe": {
+      "0.3.2": 439647264,
+      "0.3.1": 535974634,
+      "delta": -96327370
+    },
+    "macos_dmg": {
+      "0.3.2": 464183243,
+      "0.3.1": 559696549,
+      "delta": -95513306
+    },
+    "macos_pck_file": {
+      "0.3.2": 431674964,
+      "0.3.2_sha256": "143b39e01f2253241f8c31e861047a913b05c8cd1450e7752b122898e2e2085d"
+    },
+    "pck_payload_bytes": {
+      "0.3.2": 425346216,
+      "0.3.1": 735045521,
+      "delta": -309699305
+    },
+    "pck_file_count": {
+      "0.3.2": 45648,
+      "0.3.1": 47137,
+      "delta": -1489
+    }
+  },
+  "macos_cold_start": {
+    "method": "FAN-3973 measure_cold_start.sh method applied to the built app binaries (evidence/FAN-3976/measure_cold_start_app.sh): --print-fps --verbose --quit-after 600, first 'Project FPS' line minus 1 s; 5 back-to-back launches per build; both builds launched with an isolated HOME (build/FAN-3976/isolated_home) so the 0.3.0 reference never touches the owner's real user data; summary by evidence/FAN-3973/analyze_cold_start.py",
+    "builds": {
+      "v0.3.2_app": "/Applications/FantasyDisk.app (installed by local_release.py from the retained 0.3.2 DMG; bundle equals the DMG app file-for-file)",
+      "v0.3.0_app": "FantasyDisk.app copied from the retained v0.3.0 DMG (read-only mount)"
+    },
+    "runs": {
+      "v0.3.0_app": [
+        5.53,
+        5.59,
+        5.6,
+        5.49,
+        5.56
+      ],
+      "v0.3.2_app": [
+        5.68,
+        5.74,
+        5.72,
+        5.68,
+        5.7
+      ]
+    },
+    "median_first_frame_s": {
+      "v0.3.0_app": 5.56,
+      "v0.3.2_app": 5.7
+    },
+    "actor_spriteframes_before_first_frame_max": 1,
+    "reference_fan3973_editor_method_medians_s": {
+      "v0.3.0": 3.08,
+      "v0.3.1": 8.09,
+      "candidate": 3.08
+    },
+    "reference_fan3964_windows_0_3_1_median_s": 17.4
+  },
+  "source_snapshot": {
+    "retained_project_vs_git_archive_v0.3.2": "diff -rq --exclude=.godot: 0 differences; file list equals git ls-tree v0.3.2",
+    "changelog_section_equals_tag": true,
+    "poster_sha256_equals_tag": "7a890effc71460cda7769902c4adb7f8da217ccf4f7f2a935ed7d30e580c0867"
+  },
+  "prior_releases_untouched": {
+    "v0.3.1_LOCAL_RELEASE.json_sha256": "a39d705dcb1f49e0cd3626b47c7894eeef5b2a9412c86eebc054787d615f060f",
+    "v0.3.0_LOCAL_RELEASE.json_sha256": "8e938ab43d7f668041d94cf70e69c1a3a0beb9e217108289c820ddea43ce5b0c",
+    "v0.3.1_setup_sha256": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+    "v0.3.1_dmg_sha256": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a"
+  }
+}
