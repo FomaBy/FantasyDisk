@@ -1104,7 +1104,11 @@ func _enemy_archetype_name(path: String) -> String:
 # background while the player chooses (see FullFrameAnimationRegistry
 # prefetch). The regular enemy pool spawns in every node type, a node elite
 # is deterministic per node seed, the boss id is fixed per act. Random
-# mini-elites and class summons stay lazy (rare, small packs).
+# mini-elites and class summons stay lazy (rare, small packs). Node types
+# match `_open_route_node` (`elite_battle` from generated routes, `elite`
+# alias for old saves; QA d7bc8435 caught the first candidate matching only
+# the alias). The boss id is read from the node as-is: a read-only roster
+# lookup must not touch run state the way `resolve_final_act_boss_id` does.
 func _prefetch_full_frame_roster() -> void:
 	FullFrameAnimationRegistry.queue_prefetch_kind("enemy")
 	if game.route_stage < 0 or game.route_stage >= game.route_nodes.size():
@@ -1112,11 +1116,11 @@ func _prefetch_full_frame_roster() -> void:
 	for route_node_variant in game.route_nodes[game.route_stage]:
 		var route_node: Dictionary = route_node_variant
 		match str(route_node.get("type", "")):
-			"elite":
+			"elite_battle", "elite":
 				var node_seed := int(route_node.get("seed", game.fallback_node_seed(route_node)))
 				FullFrameAnimationRegistry.queue_prefetch_for_scene("elite", game.node_elite_scene(node_seed), "elite_behavior")
 			"boss":
-				FullFrameAnimationRegistry.queue_prefetch("boss", game.resolve_final_act_boss_id(str(route_node.get("boss_id", "rift_warden"))))
+				FullFrameAnimationRegistry.queue_prefetch("boss", str(route_node.get("boss_id", "rift_warden")))
 
 
 func _elite_archetype_name(scene: PackedScene) -> String:

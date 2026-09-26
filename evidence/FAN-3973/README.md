@@ -35,8 +35,9 @@ Both export presets also shipped `evidence/**` (1,233 files, ~294 MiB),
   `tests/full_frame_registry_integrity_test.gd` still type-checks the whole
   catalog (41 entries).
 - Bounded background prefetch: the route map (`_show_battle_map`) queues the
-  regular enemy pool plus the selectable row's node elite (deterministic per
-  node seed) and boss; one threaded request runs at a time; completed packs
+  regular enemy pool plus the selectable row's node elite (`elite_battle`
+  nodes, deterministic per node seed) and the node's `boss_id`; one threaded
+  request runs at a time; completed packs
   stay resident for the run and are released when the main menu is shown
   (`main_menu.gd`) and on exit (`main.gd` `_release_runtime_texture_refs`,
   which also collects an in-flight request so no threaded load outlives the
@@ -46,7 +47,43 @@ Both export presets also shipped `evidence/**` (1,233 files, ~294 MiB),
   `before_berserk_648p.png`, `after_berserk_648p.png`. `evidence/.gdignore`
   and `skills/.gdignore` keep the editor from importing those trees.
 - Tests: `tests/full_frame_registry_lazy_load_test.gd`,
-  `tests/test_export_presets_exclusions.py`.
+  `tests/route_map_full_frame_prefetch_test.gd` (rework, drives the real
+  route-map hook on a generated route), `tests/test_export_presets_exclusions.py`.
+
+## Rework after QA FAILED (candidate 01d7d5106, reviewer d7bc8435)
+
+Finding: `_prefetch_full_frame_roster` matched node type `elite` while
+generated routes carry `elite_battle` (`_open_route_node` accepts both), so
+no elite pack was ever prefetched and an elite fight still loaded its pack
+synchronously inside the node click (151 ms load, 268 ms click measured by
+the reviewer through `_activate_route_node`).
+
+Changes: match `"elite_battle", "elite"`; read the boss node's `boss_id`
+directly instead of `resolve_final_act_boss_id` (which resets
+`secret_boss_active` — a roster lookup must not touch run state). New suite
+`tests/route_map_full_frame_prefetch_test.gd` generates a route (seeded),
+shows the map on the first `elite_battle` row and asserts the pack of
+`node_elite_scene(seed)`'s elite is queued/in flight/resident, that the
+boss row queues the node's boss without resetting `secret_boss_active`, and
+that every row queues the enemy pool. Mutation check: with the old
+`"elite":` match the suite fails
+(`row 4 has elite_battle node 'Elite 1: Crowned Threat' (elite shard_marshal) but its pack … was not queued`).
+
+Re-measurement (`elite_click_probe.gd`, windowed, `--verbose`, wall-time
+stamps; log `elite_click/candidate_elite_click.log`): route map shown on
+row 4 (`shard_marshal`), the elite pack is loaded on loader thread 11 at
++0.79 s and resident at map frame 93 (~0.8 s); after a 1.5 s wait the
+click (`_activate_route_node` → elite combat) takes **128.2 ms** with no
+SpriteFrames load inside it (the reviewer's prefetched-boss reference was
+122 ms; the first candidate's elite click was 268 ms, v0.3.1 282 ms plus a
+267 ms frame). Longest of the first 120 combat frames: 15.7 ms; the spawned
+elite has a live full-frame body; 7 enemies alive.
+
+Texture memory (`RENDER_TEXTURE_MEM_USED`, input for the FAN-3964 Windows
+review): main menu 173 MiB; route map with 11 enemy packs + the row's elite
+resident 3,530 MiB; peak during the elite fight 3,623 MiB. A boss row adds
+one boss pack (~300–450 MiB); a row with several distinct elites adds one
+pack per distinct elite (up to the four node elites, ~250–370 frames each).
 
 ## AC3 — cold start to first frame (perf checklist M4, P1)
 
@@ -171,3 +208,17 @@ main menu/exit release, the presets and tests).
 - `list_pck_paths.py`, `list_pack_res.gd`, `exported_pack_probe.gd`,
   `export/` — AC4.
 - `gate/` — AC6 reports.
+
+## Rework gates (candidate 2)
+
+- `python3 tools/quality_static_guard.py --changed-ref origin/dev`: passed.
+- `python3 tools/quality_gate.py --profile changed --changed-ref origin/dev
+  --skip-static smoke_test full_frame route_ main_menu gamepad_menu`: 86
+  suites (the 85 above plus `route_map_full_frame_prefetch_test`), 86 PASS
+  (`gate/gate_godot_rework_summary.txt`, `gate/gate_godot_rework.json`). The
+  first attempt of this run had one failure, `dev_console_smoke_test`
+  ("SCRUM-845(d): враг не двигается при открытой консоли"), a timing
+  assertion in the dev-console suite that passed solo and in the full
+  re-run; it does not touch the changed code paths.
+- `python3 tools/quality_gate.py --static-only --changed-ref origin/dev` on
+  the final tree: see the card comment for the exact result.
