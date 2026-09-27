@@ -1,1566 +1,2266 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_east.png" id="1_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_east.png" id="2_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south.png" id="3_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_west.png" id="4_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_west.png" id="5_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_west.png" id="6_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north.png" id="7_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_east.png" id="8_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_00.png" id="9_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_01.png" id="10_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_02.png" id="11_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_03.png" id="12_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_04.png" id="13_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_05.png" id="14_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_00.png" id="15_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_01.png" id="16_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_02.png" id="17_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_03.png" id="18_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_04.png" id="19_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_05.png" id="20_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_00.png" id="21_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_01.png" id="22_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_02.png" id="23_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_03.png" id="24_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_04.png" id="25_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_05.png" id="26_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_00.png" id="27_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_01.png" id="28_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_02.png" id="29_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_03.png" id="30_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_04.png" id="31_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_05.png" id="32_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_00.png" id="33_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_01.png" id="34_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_02.png" id="35_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_03.png" id="36_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_04.png" id="37_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_05.png" id="38_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_00.png" id="39_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_01.png" id="40_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_02.png" id="41_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_03.png" id="42_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_04.png" id="43_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_05.png" id="44_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_00.png" id="45_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_01.png" id="46_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_02.png" id="47_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_03.png" id="48_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_04.png" id="49_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_05.png" id="50_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_00.png" id="51_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_01.png" id="52_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_02.png" id="53_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_03.png" id="54_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_04.png" id="55_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_05.png" id="56_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_00.png" id="57_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_01.png" id="58_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_02.png" id="59_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_03.png" id="60_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_04.png" id="61_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_05.png" id="62_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_06.png" id="63_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_00.png" id="64_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_01.png" id="65_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_02.png" id="66_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_03.png" id="67_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_04.png" id="68_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_05.png" id="69_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_06.png" id="70_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_00.png" id="71_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_01.png" id="72_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_02.png" id="73_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_03.png" id="74_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_04.png" id="75_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_05.png" id="76_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_06.png" id="77_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_00.png" id="78_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_01.png" id="79_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_02.png" id="80_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_03.png" id="81_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_04.png" id="82_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_05.png" id="83_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_06.png" id="84_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_00.png" id="85_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_01.png" id="86_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_02.png" id="87_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_03.png" id="88_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_04.png" id="89_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_05.png" id="90_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_06.png" id="91_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_00.png" id="92_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_01.png" id="93_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_02.png" id="94_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_03.png" id="95_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_04.png" id="96_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_05.png" id="97_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_06.png" id="98_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_00.png" id="99_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_01.png" id="100_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_02.png" id="101_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_03.png" id="102_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_04.png" id="103_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_05.png" id="104_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_06.png" id="105_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_00.png" id="106_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_01.png" id="107_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_02.png" id="108_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_03.png" id="109_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_04.png" id="110_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_05.png" id="111_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_06.png" id="112_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_00.png" id="113_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_01.png" id="114_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_02.png" id="115_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_03.png" id="116_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_04.png" id="117_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_00.png" id="118_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_01.png" id="119_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_02.png" id="120_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_03.png" id="121_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_04.png" id="122_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_00.png" id="123_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_01.png" id="124_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_02.png" id="125_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_03.png" id="126_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_04.png" id="127_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_00.png" id="128_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_01.png" id="129_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_02.png" id="130_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_03.png" id="131_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_04.png" id="132_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_00.png" id="133_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_01.png" id="134_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_02.png" id="135_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_03.png" id="136_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_04.png" id="137_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_00.png" id="138_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_01.png" id="139_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_02.png" id="140_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_03.png" id="141_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_04.png" id="142_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_00.png" id="143_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_01.png" id="144_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_02.png" id="145_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_03.png" id="146_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_04.png" id="147_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_00.png" id="148_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_01.png" id="149_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_02.png" id="150_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_03.png" id="151_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_04.png" id="152_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_00.png" id="153_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_01.png" id="154_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_02.png" id="155_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_03.png" id="156_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_04.png" id="157_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_05.png" id="158_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_06.png" id="159_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_00.png" id="160_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_01.png" id="161_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_02.png" id="162_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_03.png" id="163_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_04.png" id="164_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_05.png" id="165_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_06.png" id="166_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_00.png" id="167_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_01.png" id="168_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_02.png" id="169_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_03.png" id="170_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_04.png" id="171_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_05.png" id="172_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_06.png" id="173_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_00.png" id="174_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_01.png" id="175_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_02.png" id="176_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_03.png" id="177_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_04.png" id="178_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_05.png" id="179_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_06.png" id="180_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_00.png" id="181_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_01.png" id="182_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_02.png" id="183_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_03.png" id="184_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_04.png" id="185_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_05.png" id="186_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_06.png" id="187_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_00.png" id="188_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_01.png" id="189_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_02.png" id="190_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_03.png" id="191_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_04.png" id="192_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_05.png" id="193_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_06.png" id="194_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_00.png" id="195_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_01.png" id="196_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_02.png" id="197_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_03.png" id="198_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_04.png" id="199_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_05.png" id="200_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_06.png" id="201_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_00.png" id="202_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_01.png" id="203_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_02.png" id="204_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_03.png" id="205_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_04.png" id="206_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_05.png" id="207_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_06.png" id="208_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_00.png" id="209_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_01.png" id="210_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_02.png" id="211_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_03.png" id="212_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_04.png" id="213_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_05.png" id="214_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_06.png" id="215_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_00.png" id="216_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_01.png" id="217_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_02.png" id="218_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_03.png" id="219_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_04.png" id="220_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_05.png" id="221_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_06.png" id="222_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_00.png" id="223_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_01.png" id="224_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_02.png" id="225_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_03.png" id="226_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_04.png" id="227_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_05.png" id="228_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_06.png" id="229_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_00.png" id="230_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_01.png" id="231_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_02.png" id="232_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_03.png" id="233_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_04.png" id="234_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_05.png" id="235_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_06.png" id="236_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_00.png" id="237_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_01.png" id="238_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_02.png" id="239_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_03.png" id="240_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_04.png" id="241_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_05.png" id="242_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_06.png" id="243_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_00.png" id="244_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_01.png" id="245_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_02.png" id="246_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_03.png" id="247_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_04.png" id="248_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_05.png" id="249_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_06.png" id="250_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_00.png" id="251_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_01.png" id="252_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_02.png" id="253_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_03.png" id="254_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_04.png" id="255_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_05.png" id="256_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_06.png" id="257_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_00.png" id="258_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_01.png" id="259_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_02.png" id="260_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_03.png" id="261_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_04.png" id="262_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_05.png" id="263_mrh"]
-[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_06.png" id="264_mrh"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound_trim_0.png" id="page_0"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound_trim_1.png" id="page_1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound_trim_2.png" id="page_2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/elites/full_frame/mini_rot_hound_trim_3.png" id="page_3"]
+
+[sub_resource type="AtlasTexture" id="Trim_0"]
+atlas = ExtResource("page_0")
+region = Rect2(1071, 250, 335, 247)
+margin = Rect2(89, 234, 177, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_1"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 748, 271, 247)
+margin = Rect2(121, 234, 241, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_2"]
+atlas = ExtResource("page_0")
+region = Rect2(966, 997, 114, 247)
+margin = Rect2(199, 234, 398, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_3"]
+atlas = ExtResource("page_0")
+region = Rect2(542, 748, 252, 247)
+margin = Rect2(130, 234, 260, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_4"]
+atlas = ExtResource("page_0")
+region = Rect2(720, 250, 349, 247)
+margin = Rect2(81, 234, 163, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_5"]
+atlas = ExtResource("page_0")
+region = Rect2(1550, 748, 247, 247)
+margin = Rect2(133, 234, 265, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_6"]
+atlas = ExtResource("page_0")
+region = Rect2(1306, 997, 110, 247)
+margin = Rect2(201, 234, 402, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_7"]
+atlas = ExtResource("page_0")
+region = Rect2(796, 748, 251, 247)
+margin = Rect2(131, 234, 261, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_8"]
+atlas = ExtResource("page_0")
+region = Rect2(851, 1, 399, 247)
+margin = Rect2(57, 234, 113, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_9"]
+atlas = ExtResource("page_0")
+region = Rect2(1608, 1731, 404, 241)
+margin = Rect2(54, 240, 108, 271)
+
+[sub_resource type="AtlasTexture" id="Trim_10"]
+atlas = ExtResource("page_0")
+region = Rect2(402, 1735, 399, 241)
+margin = Rect2(57, 240, 113, 271)
+
+[sub_resource type="AtlasTexture" id="Trim_11"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 1423, 393, 230)
+margin = Rect2(59, 251, 119, 282)
+
+[sub_resource type="AtlasTexture" id="Trim_12"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 718, 393, 235)
+margin = Rect2(59, 246, 119, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_13"]
+atlas = ExtResource("page_1")
+region = Rect2(396, 1423, 393, 230)
+margin = Rect2(59, 251, 119, 282)
+
+[sub_resource type="AtlasTexture" id="Trim_14"]
+atlas = ExtResource("page_0")
+region = Rect2(1743, 250, 292, 247)
+margin = Rect2(110, 234, 220, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_15"]
+atlas = ExtResource("page_1")
+region = Rect2(947, 480, 287, 237)
+margin = Rect2(113, 244, 225, 275)
+
+[sub_resource type="AtlasTexture" id="Trim_16"]
+atlas = ExtResource("page_2")
+region = Rect2(551, 911, 287, 222)
+margin = Rect2(113, 259, 225, 290)
+
+[sub_resource type="AtlasTexture" id="Trim_17"]
+atlas = ExtResource("page_0")
+region = Rect2(1314, 1490, 292, 242)
+margin = Rect2(110, 239, 220, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_18"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 231, 292, 227)
+margin = Rect2(110, 254, 220, 285)
+
+[sub_resource type="AtlasTexture" id="Trim_19"]
+atlas = ExtResource("page_2")
+region = Rect2(267, 1793, 297, 212)
+margin = Rect2(107, 269, 215, 300)
+
+[sub_resource type="AtlasTexture" id="Trim_20"]
+atlas = ExtResource("page_0")
+region = Rect2(1194, 997, 110, 247)
+margin = Rect2(201, 234, 402, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_21"]
+atlas = ExtResource("page_0")
+region = Rect2(1418, 997, 106, 247)
+margin = Rect2(203, 234, 406, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_22"]
+atlas = ExtResource("page_1")
+region = Rect2(316, 955, 106, 233)
+margin = Rect2(203, 248, 406, 279)
+
+[sub_resource type="AtlasTexture" id="Trim_23"]
+atlas = ExtResource("page_0")
+region = Rect2(1082, 997, 110, 247)
+margin = Rect2(201, 234, 402, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_24"]
+atlas = ExtResource("page_0")
+region = Rect2(1101, 1491, 110, 242)
+margin = Rect2(201, 239, 402, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_25"]
+atlas = ExtResource("page_1")
+region = Rect2(1208, 955, 106, 228)
+margin = Rect2(203, 253, 406, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_26"]
+atlas = ExtResource("page_1")
+region = Rect2(1457, 1189, 278, 232)
+margin = Rect2(117, 249, 234, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_27"]
+atlas = ExtResource("page_2")
+region = Rect2(295, 231, 278, 227)
+margin = Rect2(117, 254, 234, 285)
+
+[sub_resource type="AtlasTexture" id="Trim_28"]
+atlas = ExtResource("page_2")
+region = Rect2(832, 1794, 278, 211)
+margin = Rect2(117, 270, 234, 301)
+
+[sub_resource type="AtlasTexture" id="Trim_29"]
+atlas = ExtResource("page_0")
+region = Rect2(1494, 499, 278, 247)
+margin = Rect2(117, 234, 234, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_30"]
+atlas = ExtResource("page_1")
+region = Rect2(1520, 480, 278, 237)
+margin = Rect2(117, 244, 234, 275)
+
+[sub_resource type="AtlasTexture" id="Trim_31"]
+atlas = ExtResource("page_2")
+region = Rect2(1345, 1357, 283, 221)
+margin = Rect2(115, 260, 229, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_32"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1735, 399, 241)
+margin = Rect2(57, 240, 113, 271)
+
+[sub_resource type="AtlasTexture" id="Trim_33"]
+atlas = ExtResource("page_1")
+region = Rect2(407, 481, 393, 235)
+margin = Rect2(59, 246, 119, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_34"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 481, 404, 235)
+margin = Rect2(54, 246, 108, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_35"]
+atlas = ExtResource("page_0")
+region = Rect2(1252, 1, 399, 247)
+margin = Rect2(57, 234, 113, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_36"]
+atlas = ExtResource("page_0")
+region = Rect2(445, 1, 404, 247)
+margin = Rect2(54, 234, 108, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_37"]
+atlas = ExtResource("page_0")
+region = Rect2(1653, 1, 393, 247)
+margin = Rect2(59, 234, 119, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_38"]
+atlas = ExtResource("page_1")
+region = Rect2(1737, 1189, 277, 232)
+margin = Rect2(117, 249, 235, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_39"]
+atlas = ExtResource("page_1")
+region = Rect2(1236, 480, 282, 237)
+margin = Rect2(115, 244, 230, 275)
+
+[sub_resource type="AtlasTexture" id="Trim_40"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1491, 277, 242)
+margin = Rect2(117, 239, 235, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_41"]
+atlas = ExtResource("page_0")
+region = Rect2(280, 1491, 277, 242)
+margin = Rect2(117, 239, 235, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_42"]
+atlas = ExtResource("page_0")
+region = Rect2(1774, 499, 272, 247)
+margin = Rect2(120, 234, 240, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_43"]
+atlas = ExtResource("page_0")
+region = Rect2(559, 1491, 277, 242)
+margin = Rect2(117, 239, 235, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_44"]
+atlas = ExtResource("page_0")
+region = Rect2(1491, 1734, 102, 235)
+margin = Rect2(205, 246, 410, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_45"]
+atlas = ExtResource("page_0")
+region = Rect2(1630, 997, 102, 247)
+margin = Rect2(205, 234, 410, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_46"]
+atlas = ExtResource("page_0")
+region = Rect2(1526, 997, 102, 247)
+margin = Rect2(205, 234, 410, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_47"]
+atlas = ExtResource("page_0")
+region = Rect2(1213, 1491, 98, 235)
+margin = Rect2(207, 246, 414, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_48"]
+atlas = ExtResource("page_0")
+region = Rect2(1106, 1246, 102, 243)
+margin = Rect2(205, 238, 410, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_49"]
+atlas = ExtResource("page_0")
+region = Rect2(1210, 1246, 102, 243)
+margin = Rect2(205, 238, 410, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_50"]
+atlas = ExtResource("page_1")
+region = Rect2(813, 1, 261, 238)
+margin = Rect2(125, 243, 251, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_51"]
+atlas = ExtResource("page_1")
+region = Rect2(1339, 1, 261, 238)
+margin = Rect2(125, 243, 251, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_52"]
+atlas = ExtResource("page_0")
+region = Rect2(274, 748, 266, 247)
+margin = Rect2(123, 234, 246, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_53"]
+atlas = ExtResource("page_1")
+region = Rect2(1737, 954, 261, 233)
+margin = Rect2(125, 248, 251, 279)
+
+[sub_resource type="AtlasTexture" id="Trim_54"]
+atlas = ExtResource("page_2")
+region = Rect2(1077, 1, 256, 228)
+margin = Rect2(128, 253, 256, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_55"]
+atlas = ExtResource("page_0")
+region = Rect2(838, 1491, 261, 242)
+margin = Rect2(125, 239, 251, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_56"]
+atlas = ExtResource("page_1")
+region = Rect2(196, 1, 322, 238)
+margin = Rect2(95, 243, 190, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_57"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 499, 322, 247)
+margin = Rect2(95, 234, 190, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_58"]
+atlas = ExtResource("page_0")
+region = Rect2(1658, 1487, 313, 242)
+margin = Rect2(99, 239, 199, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_59"]
+atlas = ExtResource("page_2")
+region = Rect2(1630, 1357, 332, 219)
+margin = Rect2(90, 262, 180, 293)
+
+[sub_resource type="AtlasTexture" id="Trim_60"]
+atlas = ExtResource("page_3")
+region = Rect2(1441, 1, 374, 200)
+margin = Rect2(69, 281, 138, 312)
+
+[sub_resource type="AtlasTexture" id="Trim_61"]
+atlas = ExtResource("page_2")
+region = Rect2(1630, 1578, 360, 214)
+margin = Rect2(76, 267, 152, 298)
+
+[sub_resource type="AtlasTexture" id="Trim_62"]
+atlas = ExtResource("page_2")
+region = Rect2(529, 686, 322, 223)
+margin = Rect2(95, 258, 190, 289)
+
+[sub_resource type="AtlasTexture" id="Trim_63"]
+atlas = ExtResource("page_0")
+region = Rect2(1301, 748, 247, 247)
+margin = Rect2(133, 234, 265, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_64"]
+atlas = ExtResource("page_1")
+region = Rect2(454, 241, 247, 238)
+margin = Rect2(133, 243, 265, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_65"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 1, 285, 228)
+margin = Rect2(113, 253, 227, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_66"]
+atlas = ExtResource("page_1")
+region = Rect2(1086, 1655, 308, 228)
+margin = Rect2(102, 253, 204, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_67"]
+atlas = ExtResource("page_2")
+region = Rect2(298, 1358, 304, 219)
+margin = Rect2(104, 262, 208, 293)
+
+[sub_resource type="AtlasTexture" id="Trim_68"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 687, 275, 223)
+margin = Rect2(119, 258, 237, 289)
+
+[sub_resource type="AtlasTexture" id="Trim_69"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 242, 114, 234)
+margin = Rect2(199, 247, 398, 278)
+
+[sub_resource type="AtlasTexture" id="Trim_70"]
+atlas = ExtResource("page_1")
+region = Rect2(1907, 1423, 114, 226)
+margin = Rect2(199, 255, 398, 286)
+
+[sub_resource type="AtlasTexture" id="Trim_71"]
+atlas = ExtResource("page_3")
+region = Rect2(765, 1, 114, 204)
+margin = Rect2(199, 277, 398, 308)
+
+[sub_resource type="AtlasTexture" id="Trim_72"]
+atlas = ExtResource("page_2")
+region = Rect2(1809, 1794, 114, 208)
+margin = Rect2(199, 273, 398, 304)
+
+[sub_resource type="AtlasTexture" id="Trim_73"]
+atlas = ExtResource("page_2")
+region = Rect2(1925, 1794, 114, 208)
+margin = Rect2(199, 273, 398, 304)
+
+[sub_resource type="AtlasTexture" id="Trim_74"]
+atlas = ExtResource("page_3")
+region = Rect2(1817, 1, 114, 200)
+margin = Rect2(199, 281, 398, 312)
+
+[sub_resource type="AtlasTexture" id="Trim_75"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 997, 242, 247)
+margin = Rect2(135, 234, 270, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_76"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 955, 313, 233)
+margin = Rect2(99, 248, 199, 279)
+
+[sub_resource type="AtlasTexture" id="Trim_77"]
+atlas = ExtResource("page_1")
+region = Rect2(766, 1655, 318, 228)
+margin = Rect2(97, 253, 194, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_78"]
+atlas = ExtResource("page_2")
+region = Rect2(556, 1, 261, 228)
+margin = Rect2(125, 253, 251, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_79"]
+atlas = ExtResource("page_1")
+region = Rect2(1397, 719, 365, 233)
+margin = Rect2(73, 248, 147, 279)
+
+[sub_resource type="AtlasTexture" id="Trim_80"]
+atlas = ExtResource("page_2")
+region = Rect2(288, 1, 266, 228)
+margin = Rect2(123, 253, 246, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_81"]
+atlas = ExtResource("page_0")
+region = Rect2(364, 250, 354, 247)
+margin = Rect2(79, 234, 158, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_82"]
+atlas = ExtResource("page_1")
+region = Rect2(1313, 241, 349, 237)
+margin = Rect2(81, 244, 163, 275)
+
+[sub_resource type="AtlasTexture" id="Trim_83"]
+atlas = ExtResource("page_1")
+region = Rect2(424, 955, 426, 232)
+margin = Rect2(43, 249, 86, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_84"]
+atlas = ExtResource("page_2")
+region = Rect2(1620, 1134, 354, 221)
+margin = Rect2(79, 260, 158, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_85"]
+atlas = ExtResource("page_2")
+region = Rect2(989, 1135, 354, 221)
+margin = Rect2(79, 260, 158, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_86"]
+atlas = ExtResource("page_1")
+region = Rect2(852, 955, 354, 232)
+margin = Rect2(79, 249, 158, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_87"]
+atlas = ExtResource("page_1")
+region = Rect2(1148, 719, 247, 234)
+margin = Rect2(133, 247, 265, 278)
+
+[sub_resource type="AtlasTexture" id="Trim_88"]
+atlas = ExtResource("page_2")
+region = Rect2(1363, 911, 255, 222)
+margin = Rect2(129, 259, 257, 290)
+
+[sub_resource type="AtlasTexture" id="Trim_89"]
+atlas = ExtResource("page_2")
+region = Rect2(853, 231, 277, 226)
+margin = Rect2(117, 255, 235, 286)
+
+[sub_resource type="AtlasTexture" id="Trim_90"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 1, 281, 209)
+margin = Rect2(115, 272, 231, 303)
+
+[sub_resource type="AtlasTexture" id="Trim_91"]
+atlas = ExtResource("page_2")
+region = Rect2(604, 1578, 277, 213)
+margin = Rect2(117, 268, 235, 299)
+
+[sub_resource type="AtlasTexture" id="Trim_92"]
+atlas = ExtResource("page_2")
+region = Rect2(1132, 231, 272, 226)
+margin = Rect2(120, 255, 240, 286)
+
+[sub_resource type="AtlasTexture" id="Trim_93"]
+atlas = ExtResource("page_0")
+region = Rect2(715, 997, 127, 247)
+margin = Rect2(193, 234, 385, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_94"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 1, 193, 239)
+margin = Rect2(159, 242, 319, 273)
+
+[sub_resource type="AtlasTexture" id="Trim_95"]
+atlas = ExtResource("page_2")
+region = Rect2(853, 459, 239, 226)
+margin = Rect2(137, 255, 273, 286)
+
+[sub_resource type="AtlasTexture" id="Trim_96"]
+atlas = ExtResource("page_2")
+region = Rect2(1377, 1794, 243, 210)
+margin = Rect2(135, 271, 269, 302)
+
+[sub_resource type="AtlasTexture" id="Trim_97"]
+atlas = ExtResource("page_2")
+region = Rect2(278, 687, 243, 218)
+margin = Rect2(135, 263, 269, 294)
+
+[sub_resource type="AtlasTexture" id="Trim_98"]
+atlas = ExtResource("page_1")
+region = Rect2(1396, 1655, 164, 226)
+margin = Rect2(174, 255, 348, 286)
+
+[sub_resource type="AtlasTexture" id="Trim_99"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1246, 251, 243)
+margin = Rect2(131, 238, 261, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_100"]
+atlas = ExtResource("page_1")
+region = Rect2(196, 241, 256, 238)
+margin = Rect2(128, 243, 256, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_101"]
+atlas = ExtResource("page_1")
+region = Rect2(1332, 1423, 260, 230)
+margin = Rect2(126, 251, 252, 282)
+
+[sub_resource type="AtlasTexture" id="Trim_102"]
+atlas = ExtResource("page_2")
+region = Rect2(267, 460, 260, 225)
+margin = Rect2(126, 256, 252, 287)
+
+[sub_resource type="AtlasTexture" id="Trim_103"]
+atlas = ExtResource("page_1")
+region = Rect2(791, 1423, 273, 230)
+margin = Rect2(119, 251, 239, 282)
+
+[sub_resource type="AtlasTexture" id="Trim_104"]
+atlas = ExtResource("page_1")
+region = Rect2(886, 719, 260, 234)
+margin = Rect2(126, 247, 252, 278)
+
+[sub_resource type="AtlasTexture" id="Trim_105"]
+atlas = ExtResource("page_1")
+region = Rect2(1120, 1189, 335, 232)
+margin = Rect2(89, 249, 177, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_106"]
+atlas = ExtResource("page_2")
+region = Rect2(1441, 686, 335, 223)
+margin = Rect2(89, 258, 177, 289)
+
+[sub_resource type="AtlasTexture" id="Trim_107"]
+atlas = ExtResource("page_2")
+region = Rect2(604, 1358, 340, 218)
+margin = Rect2(86, 263, 172, 294)
+
+[sub_resource type="AtlasTexture" id="Trim_108"]
+atlas = ExtResource("page_2")
+region = Rect2(1094, 686, 345, 223)
+margin = Rect2(83, 258, 167, 289)
+
+[sub_resource type="AtlasTexture" id="Trim_109"]
+atlas = ExtResource("page_1")
+region = Rect2(1076, 1, 261, 238)
+margin = Rect2(125, 243, 251, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_110"]
+atlas = ExtResource("page_0")
+region = Rect2(1408, 250, 333, 247)
+margin = Rect2(89, 234, 179, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_111"]
+atlas = ExtResource("page_1")
+region = Rect2(1397, 954, 338, 233)
+margin = Rect2(87, 248, 174, 279)
+
+[sub_resource type="AtlasTexture" id="Trim_112"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 1655, 265, 229)
+margin = Rect2(123, 252, 247, 283)
+
+[sub_resource type="AtlasTexture" id="Trim_113"]
+atlas = ExtResource("page_1")
+region = Rect2(268, 1655, 252, 229)
+margin = Rect2(130, 252, 260, 283)
+
+[sub_resource type="AtlasTexture" id="Trim_114"]
+atlas = ExtResource("page_0")
+region = Rect2(992, 1246, 112, 243)
+margin = Rect2(200, 238, 400, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_115"]
+atlas = ExtResource("page_1")
+region = Rect2(802, 481, 112, 234)
+margin = Rect2(200, 247, 400, 278)
+
+[sub_resource type="AtlasTexture" id="Trim_116"]
+atlas = ExtResource("page_0")
+region = Rect2(870, 1246, 120, 243)
+margin = Rect2(196, 238, 392, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_117"]
+atlas = ExtResource("page_0")
+region = Rect2(748, 1246, 120, 243)
+margin = Rect2(196, 238, 392, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_118"]
+atlas = ExtResource("page_0")
+region = Rect2(844, 997, 120, 247)
+margin = Rect2(196, 234, 392, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_119"]
+atlas = ExtResource("page_1")
+region = Rect2(703, 241, 242, 238)
+margin = Rect2(135, 243, 270, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_120"]
+atlas = ExtResource("page_1")
+region = Rect2(1594, 1423, 311, 229)
+margin = Rect2(101, 252, 201, 283)
+
+[sub_resource type="AtlasTexture" id="Trim_121"]
+atlas = ExtResource("page_1")
+region = Rect2(1594, 1654, 306, 229)
+margin = Rect2(103, 252, 206, 283)
+
+[sub_resource type="AtlasTexture" id="Trim_122"]
+atlas = ExtResource("page_0")
+region = Rect2(325, 499, 311, 247)
+margin = Rect2(101, 234, 201, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_123"]
+atlas = ExtResource("page_1")
+region = Rect2(522, 1655, 242, 229)
+margin = Rect2(135, 252, 270, 283)
+
+[sub_resource type="AtlasTexture" id="Trim_124"]
+atlas = ExtResource("page_0")
+region = Rect2(1314, 1246, 342, 242)
+margin = Rect2(85, 239, 170, 270)
+
+[sub_resource type="AtlasTexture" id="Trim_125"]
+atlas = ExtResource("page_1")
+region = Rect2(776, 1189, 342, 232)
+margin = Rect2(85, 249, 170, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_126"]
+atlas = ExtResource("page_2")
+region = Rect2(1589, 230, 417, 227)
+margin = Rect2(47, 254, 95, 285)
+
+[sub_resource type="AtlasTexture" id="Trim_127"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1, 442, 247)
+margin = Rect2(35, 234, 70, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_128"]
+atlas = ExtResource("page_2")
+region = Rect2(1589, 1, 457, 227)
+margin = Rect2(27, 254, 55, 285)
+
+[sub_resource type="AtlasTexture" id="Trim_129"]
+atlas = ExtResource("page_1")
+region = Rect2(1800, 717, 235, 235)
+margin = Rect2(139, 246, 277, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_130"]
+atlas = ExtResource("page_0")
+region = Rect2(482, 997, 231, 247)
+margin = Rect2(141, 234, 281, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_131"]
+atlas = ExtResource("page_1")
+region = Rect2(1800, 480, 239, 235)
+margin = Rect2(137, 246, 273, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_132"]
+atlas = ExtResource("page_2")
+region = Rect2(1112, 1794, 263, 211)
+margin = Rect2(125, 270, 249, 301)
+
+[sub_resource type="AtlasTexture" id="Trim_133"]
+atlas = ExtResource("page_3")
+region = Rect2(1441, 203, 267, 199)
+margin = Rect2(123, 282, 245, 313)
+
+[sub_resource type="AtlasTexture" id="Trim_134"]
+atlas = ExtResource("page_2")
+region = Rect2(1345, 1135, 135, 218)
+margin = Rect2(189, 263, 377, 294)
+
+[sub_resource type="AtlasTexture" id="Trim_135"]
+atlas = ExtResource("page_2")
+region = Rect2(1622, 1794, 185, 210)
+margin = Rect2(163, 271, 327, 302)
+
+[sub_resource type="AtlasTexture" id="Trim_136"]
+atlas = ExtResource("page_2")
+region = Rect2(853, 687, 230, 218)
+margin = Rect2(141, 263, 282, 294)
+
+[sub_resource type="AtlasTexture" id="Trim_137"]
+atlas = ExtResource("page_2")
+region = Rect2(840, 911, 264, 222)
+margin = Rect2(124, 259, 248, 290)
+
+[sub_resource type="AtlasTexture" id="Trim_138"]
+atlas = ExtResource("page_1")
+region = Rect2(1602, 1, 260, 238)
+margin = Rect2(126, 243, 252, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_139"]
+atlas = ExtResource("page_2")
+region = Rect2(1671, 459, 264, 225)
+margin = Rect2(124, 256, 248, 287)
+
+[sub_resource type="AtlasTexture" id="Trim_140"]
+atlas = ExtResource("page_2")
+region = Rect2(946, 1576, 269, 216)
+margin = Rect2(121, 265, 243, 296)
+
+[sub_resource type="AtlasTexture" id="Trim_141"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 1577, 264, 216)
+margin = Rect2(124, 265, 248, 296)
+
+[sub_resource type="AtlasTexture" id="Trim_142"]
+atlas = ExtResource("page_1")
+region = Rect2(1664, 241, 345, 237)
+margin = Rect2(83, 244, 167, 275)
+
+[sub_resource type="AtlasTexture" id="Trim_143"]
+atlas = ExtResource("page_1")
+region = Rect2(424, 1189, 350, 232)
+margin = Rect2(81, 249, 162, 280)
+
+[sub_resource type="AtlasTexture" id="Trim_144"]
+atlas = ExtResource("page_3")
+region = Rect2(1355, 594, 370, 174)
+margin = Rect2(71, 307, 142, 338)
+
+[sub_resource type="AtlasTexture" id="Trim_145"]
+atlas = ExtResource("page_3")
+region = Rect2(679, 766, 423, 169)
+margin = Rect2(45, 312, 89, 343)
+
+[sub_resource type="AtlasTexture" id="Trim_146"]
+atlas = ExtResource("page_3")
+region = Rect2(1547, 770, 428, 139)
+margin = Rect2(42, 342, 84, 373)
+
+[sub_resource type="AtlasTexture" id="Trim_147"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 935, 428, 129)
+margin = Rect2(42, 352, 84, 383)
+
+[sub_resource type="AtlasTexture" id="Trim_148"]
+atlas = ExtResource("page_2")
+region = Rect2(278, 911, 271, 223)
+margin = Rect2(121, 258, 241, 289)
+
+[sub_resource type="AtlasTexture" id="Trim_149"]
+atlas = ExtResource("page_2")
+region = Rect2(819, 1, 256, 228)
+margin = Rect2(128, 253, 256, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_150"]
+atlas = ExtResource("page_3")
+region = Rect2(720, 403, 318, 190)
+margin = Rect2(97, 291, 194, 322)
+
+[sub_resource type="AtlasTexture" id="Trim_151"]
+atlas = ExtResource("page_3")
+region = Rect2(1547, 911, 384, 134)
+margin = Rect2(64, 347, 128, 378)
+
+[sub_resource type="AtlasTexture" id="Trim_152"]
+atlas = ExtResource("page_3")
+region = Rect2(667, 937, 384, 129)
+margin = Rect2(64, 352, 128, 383)
+
+[sub_resource type="AtlasTexture" id="Trim_153"]
+atlas = ExtResource("page_3")
+region = Rect2(1053, 1047, 379, 129)
+margin = Rect2(67, 352, 133, 383)
+
+[sub_resource type="AtlasTexture" id="Trim_154"]
+atlas = ExtResource("page_1")
+region = Rect2(1864, 1, 114, 234)
+margin = Rect2(199, 247, 398, 278)
+
+[sub_resource type="AtlasTexture" id="Trim_155"]
+atlas = ExtResource("page_2")
+region = Rect2(1406, 231, 131, 221)
+margin = Rect2(191, 260, 381, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_156"]
+atlas = ExtResource("page_3")
+region = Rect2(1727, 594, 170, 174)
+margin = Rect2(171, 307, 342, 338)
+
+[sub_resource type="AtlasTexture" id="Trim_157"]
+atlas = ExtResource("page_1")
+region = Rect2(1463, 1885, 226, 148)
+margin = Rect2(143, 333, 286, 364)
+
+[sub_resource type="AtlasTexture" id="Trim_158"]
+atlas = ExtResource("page_3")
+region = Rect2(1204, 1178, 307, 114)
+margin = Rect2(103, 367, 205, 398)
+
+[sub_resource type="AtlasTexture" id="Trim_159"]
+atlas = ExtResource("page_3")
+region = Rect2(625, 1068, 303, 122)
+margin = Rect2(105, 359, 209, 390)
+
+[sub_resource type="AtlasTexture" id="Trim_160"]
+atlas = ExtResource("page_2")
+region = Rect2(1335, 1, 252, 228)
+margin = Rect2(130, 253, 260, 284)
+
+[sub_resource type="AtlasTexture" id="Trim_161"]
+atlas = ExtResource("page_2")
+region = Rect2(1778, 686, 256, 223)
+margin = Rect2(128, 258, 256, 289)
+
+[sub_resource type="AtlasTexture" id="Trim_162"]
+atlas = ExtResource("page_3")
+region = Rect2(1040, 588, 313, 176)
+margin = Rect2(99, 305, 199, 336)
+
+[sub_resource type="AtlasTexture" id="Trim_163"]
+atlas = ExtResource("page_1")
+region = Rect2(318, 1886, 346, 143)
+margin = Rect2(83, 338, 166, 369)
+
+[sub_resource type="AtlasTexture" id="Trim_164"]
+atlas = ExtResource("page_3")
+region = Rect2(679, 595, 341, 139)
+margin = Rect2(85, 342, 171, 373)
+
+[sub_resource type="AtlasTexture" id="Trim_165"]
+atlas = ExtResource("page_3")
+region = Rect2(1434, 1047, 351, 129)
+margin = Rect2(81, 352, 161, 383)
+
+[sub_resource type="AtlasTexture" id="Trim_166"]
+atlas = ExtResource("page_1")
+region = Rect2(947, 241, 364, 237)
+margin = Rect2(74, 244, 148, 275)
+
+[sub_resource type="AtlasTexture" id="Trim_167"]
+atlas = ExtResource("page_2")
+region = Rect2(1620, 911, 370, 221)
+margin = Rect2(71, 260, 142, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_168"]
+atlas = ExtResource("page_3")
+region = Rect2(284, 1, 385, 206)
+margin = Rect2(63, 275, 127, 306)
+
+[sub_resource type="AtlasTexture" id="Trim_169"]
+atlas = ExtResource("page_2")
+region = Rect2(551, 1135, 436, 221)
+margin = Rect2(38, 260, 76, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_170"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 768, 436, 165)
+margin = Rect2(38, 316, 76, 347)
+
+[sub_resource type="AtlasTexture" id="Trim_171"]
+atlas = ExtResource("page_3")
+region = Rect2(1104, 770, 441, 140)
+margin = Rect2(35, 341, 71, 372)
+
+[sub_resource type="AtlasTexture" id="Trim_172"]
+atlas = ExtResource("page_2")
+region = Rect2(1106, 911, 255, 222)
+margin = Rect2(129, 259, 257, 290)
+
+[sub_resource type="AtlasTexture" id="Trim_173"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 212, 268, 192)
+margin = Rect2(122, 289, 244, 320)
+
+[sub_resource type="AtlasTexture" id="Trim_174"]
+atlas = ExtResource("page_1")
+region = Rect2(766, 1885, 281, 158)
+margin = Rect2(115, 323, 231, 354)
+
+[sub_resource type="AtlasTexture" id="Trim_175"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 1886, 315, 146)
+margin = Rect2(99, 335, 197, 366)
+
+[sub_resource type="AtlasTexture" id="Trim_176"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 1066, 310, 125)
+margin = Rect2(101, 356, 202, 387)
+
+[sub_resource type="AtlasTexture" id="Trim_177"]
+atlas = ExtResource("page_3")
+region = Rect2(313, 1066, 310, 125)
+margin = Rect2(101, 356, 202, 387)
+
+[sub_resource type="AtlasTexture" id="Trim_178"]
+atlas = ExtResource("page_0")
+region = Rect2(1044, 1735, 127, 235)
+margin = Rect2(193, 246, 385, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_179"]
+atlas = ExtResource("page_1")
+region = Rect2(270, 1190, 139, 226)
+margin = Rect2(187, 255, 373, 286)
+
+[sub_resource type="AtlasTexture" id="Trim_180"]
+atlas = ExtResource("page_3")
+region = Rect2(1710, 403, 168, 189)
+margin = Rect2(172, 292, 344, 323)
+
+[sub_resource type="AtlasTexture" id="Trim_181"]
+atlas = ExtResource("page_3")
+region = Rect2(1787, 1047, 243, 118)
+margin = Rect2(135, 363, 269, 394)
+
+[sub_resource type="AtlasTexture" id="Trim_182"]
+atlas = ExtResource("page_3")
+region = Rect2(1787, 1167, 255, 114)
+margin = Rect2(129, 367, 257, 398)
+
+[sub_resource type="AtlasTexture" id="Trim_183"]
+atlas = ExtResource("page_3")
+region = Rect2(930, 1178, 272, 122)
+margin = Rect2(120, 359, 240, 390)
+
+[sub_resource type="AtlasTexture" id="Trim_184"]
+atlas = ExtResource("page_1")
+region = Rect2(1066, 1423, 264, 230)
+margin = Rect2(124, 251, 248, 282)
+
+[sub_resource type="AtlasTexture" id="Trim_185"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 460, 264, 225)
+margin = Rect2(124, 256, 248, 287)
+
+[sub_resource type="AtlasTexture" id="Trim_186"]
+atlas = ExtResource("page_2")
+region = Rect2(566, 1793, 264, 212)
+margin = Rect2(124, 269, 248, 300)
+
+[sub_resource type="AtlasTexture" id="Trim_187"]
+atlas = ExtResource("page_3")
+region = Rect2(284, 209, 282, 194)
+margin = Rect2(115, 287, 230, 318)
+
+[sub_resource type="AtlasTexture" id="Trim_188"]
+atlas = ExtResource("page_3")
+region = Rect2(1104, 912, 300, 133)
+margin = Rect2(106, 348, 212, 379)
+
+[sub_resource type="AtlasTexture" id="Trim_189"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 1193, 308, 111)
+margin = Rect2(102, 370, 204, 401)
+
+[sub_resource type="AtlasTexture" id="Trim_190"]
+atlas = ExtResource("page_1")
+region = Rect2(1256, 1885, 205, 151)
+margin = Rect2(153, 330, 307, 361)
+
+[sub_resource type="AtlasTexture" id="Trim_191"]
+atlas = ExtResource("page_1")
+region = Rect2(1049, 1885, 205, 157)
+margin = Rect2(153, 324, 307, 355)
+
+[sub_resource type="AtlasTexture" id="Trim_192"]
+atlas = ExtResource("page_1")
+region = Rect2(1691, 1885, 205, 148)
+margin = Rect2(153, 333, 307, 364)
+
+[sub_resource type="AtlasTexture" id="Trim_193"]
+atlas = ExtResource("page_3")
+region = Rect2(1165, 1, 274, 202)
+margin = Rect2(119, 279, 238, 310)
+
+[sub_resource type="AtlasTexture" id="Trim_194"]
+atlas = ExtResource("page_0")
+region = Rect2(1212, 499, 280, 247)
+margin = Rect2(116, 234, 232, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_195"]
+atlas = ExtResource("page_3")
+region = Rect2(439, 902, 226, 130)
+margin = Rect2(143, 351, 286, 382)
+
+[sub_resource type="AtlasTexture" id="Trim_196"]
+atlas = ExtResource("page_3")
+region = Rect2(439, 767, 217, 133)
+margin = Rect2(147, 348, 295, 379)
+
+[sub_resource type="AtlasTexture" id="Trim_197"]
+atlas = ExtResource("page_3")
+region = Rect2(271, 405, 202, 184)
+margin = Rect2(155, 297, 310, 328)
+
+[sub_resource type="AtlasTexture" id="Trim_198"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 588, 202, 177)
+margin = Rect2(155, 304, 310, 335)
+
+[sub_resource type="AtlasTexture" id="Trim_199"]
+atlas = ExtResource("page_3")
+region = Rect2(1373, 404, 244, 188)
+margin = Rect2(134, 293, 268, 324)
+
+[sub_resource type="AtlasTexture" id="Trim_200"]
+atlas = ExtResource("page_3")
+region = Rect2(1710, 203, 247, 198)
+margin = Rect2(133, 283, 265, 314)
+
+[sub_resource type="AtlasTexture" id="Trim_201"]
+atlas = ExtResource("page_0")
+region = Rect2(638, 499, 286, 247)
+margin = Rect2(113, 234, 226, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_202"]
+atlas = ExtResource("page_3")
+region = Rect2(1, 406, 254, 180)
+margin = Rect2(129, 301, 258, 332)
+
+[sub_resource type="AtlasTexture" id="Trim_203"]
+atlas = ExtResource("page_3")
+region = Rect2(475, 588, 202, 177)
+margin = Rect2(155, 304, 310, 335)
+
+[sub_resource type="AtlasTexture" id="Trim_204"]
+atlas = ExtResource("page_1")
+region = Rect2(1907, 1651, 103, 224)
+margin = Rect2(205, 257, 409, 288)
+
+[sub_resource type="AtlasTexture" id="Trim_205"]
+atlas = ExtResource("page_2")
+region = Rect2(1937, 459, 103, 216)
+margin = Rect2(205, 265, 409, 296)
+
+[sub_resource type="AtlasTexture" id="Trim_206"]
+atlas = ExtResource("page_3")
+region = Rect2(1880, 403, 161, 189)
+margin = Rect2(175, 292, 351, 323)
+
+[sub_resource type="AtlasTexture" id="Trim_207"]
+atlas = ExtResource("page_2")
+region = Rect2(529, 460, 231, 224)
+margin = Rect2(141, 257, 281, 288)
+
+[sub_resource type="AtlasTexture" id="Trim_208"]
+atlas = ExtResource("page_0")
+region = Rect2(245, 997, 235, 247)
+margin = Rect2(139, 234, 277, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_209"]
+atlas = ExtResource("page_3")
+region = Rect2(568, 209, 150, 193)
+margin = Rect2(181, 288, 362, 319)
+
+[sub_resource type="AtlasTexture" id="Trim_210"]
+atlas = ExtResource("page_2")
+region = Rect2(1482, 1135, 119, 212)
+margin = Rect2(197, 269, 393, 300)
+
+[sub_resource type="AtlasTexture" id="Trim_211"]
+atlas = ExtResource("page_2")
+region = Rect2(298, 1136, 218, 214)
+margin = Rect2(147, 267, 294, 298)
+
+[sub_resource type="AtlasTexture" id="Trim_212"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 1795, 227, 206)
+margin = Rect2(143, 275, 285, 306)
+
+[sub_resource type="AtlasTexture" id="Trim_213"]
+atlas = ExtResource("page_0")
+region = Rect2(1213, 1734, 276, 239)
+margin = Rect2(118, 242, 236, 273)
+
+[sub_resource type="AtlasTexture" id="Trim_214"]
+atlas = ExtResource("page_2")
+region = Rect2(575, 231, 276, 227)
+margin = Rect2(118, 254, 236, 285)
+
+[sub_resource type="AtlasTexture" id="Trim_215"]
+atlas = ExtResource("page_1")
+region = Rect2(1, 1190, 267, 231)
+margin = Rect2(123, 250, 245, 281)
+
+[sub_resource type="AtlasTexture" id="Trim_216"]
+atlas = ExtResource("page_0")
+region = Rect2(926, 499, 284, 247)
+margin = Rect2(114, 234, 228, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_217"]
+atlas = ExtResource("page_3")
+region = Rect2(1165, 205, 206, 198)
+margin = Rect2(153, 283, 306, 314)
+
+[sub_resource type="AtlasTexture" id="Trim_218"]
+atlas = ExtResource("page_2")
+region = Rect2(267, 1579, 300, 212)
+margin = Rect2(106, 269, 212, 300)
+
+[sub_resource type="AtlasTexture" id="Trim_219"]
+atlas = ExtResource("page_2")
+region = Rect2(946, 1358, 348, 216)
+margin = Rect2(82, 265, 164, 296)
+
+[sub_resource type="AtlasTexture" id="Trim_220"]
+atlas = ExtResource("page_2")
+region = Rect2(1217, 1580, 356, 212)
+margin = Rect2(78, 269, 156, 300)
+
+[sub_resource type="AtlasTexture" id="Trim_221"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 250, 361, 247)
+margin = Rect2(75, 234, 151, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_222"]
+atlas = ExtResource("page_3")
+region = Rect2(765, 207, 334, 194)
+margin = Rect2(89, 287, 178, 318)
+
+[sub_resource type="AtlasTexture" id="Trim_223"]
+atlas = ExtResource("page_3")
+region = Rect2(881, 1, 282, 203)
+margin = Rect2(115, 278, 230, 309)
+
+[sub_resource type="AtlasTexture" id="Trim_224"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 1359, 286, 216)
+margin = Rect2(113, 265, 226, 296)
+
+[sub_resource type="AtlasTexture" id="Trim_225"]
+atlas = ExtResource("page_0")
+region = Rect2(503, 1246, 243, 243)
+margin = Rect2(135, 238, 269, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_226"]
+atlas = ExtResource("page_1")
+region = Rect2(649, 718, 235, 235)
+margin = Rect2(139, 246, 277, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_227"]
+atlas = ExtResource("page_0")
+region = Rect2(803, 1735, 239, 239)
+margin = Rect2(137, 242, 273, 273)
+
+[sub_resource type="AtlasTexture" id="Trim_228"]
+atlas = ExtResource("page_0")
+region = Rect2(254, 1246, 247, 243)
+margin = Rect2(133, 238, 265, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_229"]
+atlas = ExtResource("page_1")
+region = Rect2(396, 718, 251, 235)
+margin = Rect2(131, 246, 261, 277)
+
+[sub_resource type="AtlasTexture" id="Trim_230"]
+atlas = ExtResource("page_0")
+region = Rect2(1734, 997, 293, 243)
+margin = Rect2(109, 238, 219, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_231"]
+atlas = ExtResource("page_0")
+region = Rect2(1799, 748, 243, 247)
+margin = Rect2(135, 234, 269, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_232"]
+atlas = ExtResource("page_3")
+region = Rect2(671, 1, 92, 206)
+margin = Rect2(210, 275, 420, 306)
+
+[sub_resource type="AtlasTexture" id="Trim_233"]
+atlas = ExtResource("page_3")
+region = Rect2(1933, 1, 99, 178)
+margin = Rect2(207, 303, 413, 334)
+
+[sub_resource type="AtlasTexture" id="Trim_234"]
+atlas = ExtResource("page_3")
+region = Rect2(475, 405, 206, 181)
+margin = Rect2(153, 300, 306, 331)
+
+[sub_resource type="AtlasTexture" id="Trim_235"]
+atlas = ExtResource("page_3")
+region = Rect2(205, 591, 157, 175)
+margin = Rect2(177, 306, 355, 337)
+
+[sub_resource type="AtlasTexture" id="Trim_236"]
+atlas = ExtResource("page_3")
+region = Rect2(1175, 405, 161, 175)
+margin = Rect2(175, 306, 351, 337)
+
+[sub_resource type="AtlasTexture" id="Trim_237"]
+atlas = ExtResource("page_0")
+region = Rect2(1049, 748, 250, 247)
+margin = Rect2(131, 234, 262, 265)
+
+[sub_resource type="AtlasTexture" id="Trim_238"]
+atlas = ExtResource("page_3")
+region = Rect2(1040, 405, 133, 181)
+margin = Rect2(189, 300, 379, 331)
+
+[sub_resource type="AtlasTexture" id="Trim_239"]
+atlas = ExtResource("page_0")
+region = Rect2(1734, 1242, 256, 243)
+margin = Rect2(128, 238, 256, 269)
+
+[sub_resource type="AtlasTexture" id="Trim_240"]
+atlas = ExtResource("page_1")
+region = Rect2(520, 1, 291, 238)
+margin = Rect2(111, 243, 221, 274)
+
+[sub_resource type="AtlasTexture" id="Trim_241"]
+atlas = ExtResource("page_2")
+region = Rect2(1094, 459, 300, 225)
+margin = Rect2(106, 256, 212, 287)
+
+[sub_resource type="AtlasTexture" id="Trim_242"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 912, 269, 221)
+margin = Rect2(121, 260, 243, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_243"]
+atlas = ExtResource("page_2")
+region = Rect2(1, 1136, 295, 221)
+margin = Rect2(109, 260, 217, 291)
+
+[sub_resource type="AtlasTexture" id="Trim_244"]
+atlas = ExtResource("page_2")
+region = Rect2(1396, 459, 273, 225)
+margin = Rect2(119, 256, 239, 287)
 
 [resource]
-animations = [
-{
+animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_mrh")
+"texture": SubResource("Trim_0")
 }],
 "loop": true,
 "name": &"idle_east",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_mrh")
+"texture": SubResource("Trim_1")
 }],
 "loop": true,
 "name": &"idle_south_east",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_mrh")
+"texture": SubResource("Trim_2")
 }],
 "loop": true,
 "name": &"idle_south",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_mrh")
+"texture": SubResource("Trim_3")
 }],
 "loop": true,
 "name": &"idle_south_west",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_mrh")
+"texture": SubResource("Trim_4")
 }],
 "loop": true,
 "name": &"idle_west",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_mrh")
+"texture": SubResource("Trim_5")
 }],
 "loop": true,
 "name": &"idle_north_west",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_mrh")
+"texture": SubResource("Trim_6")
 }],
 "loop": true,
 "name": &"idle_north",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_mrh")
+"texture": SubResource("Trim_7")
 }],
 "loop": true,
 "name": &"idle_north_east",
 "speed": 1.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("9_mrh")
-},
-{
+"texture": SubResource("Trim_8")
+}, {
 "duration": 1.0,
-"texture": ExtResource("10_mrh")
-},
-{
+"texture": SubResource("Trim_9")
+}, {
 "duration": 1.0,
-"texture": ExtResource("11_mrh")
-},
-{
+"texture": SubResource("Trim_10")
+}, {
 "duration": 1.0,
-"texture": ExtResource("12_mrh")
-},
-{
+"texture": SubResource("Trim_11")
+}, {
 "duration": 1.0,
-"texture": ExtResource("13_mrh")
-},
-{
+"texture": SubResource("Trim_12")
+}, {
 "duration": 1.0,
-"texture": ExtResource("14_mrh")
+"texture": SubResource("Trim_13")
 }],
 "loop": true,
 "name": &"move_east",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("15_mrh")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("16_mrh")
-},
-{
+"texture": SubResource("Trim_15")
+}, {
 "duration": 1.0,
-"texture": ExtResource("17_mrh")
-},
-{
+"texture": SubResource("Trim_16")
+}, {
 "duration": 1.0,
-"texture": ExtResource("18_mrh")
-},
-{
+"texture": SubResource("Trim_17")
+}, {
 "duration": 1.0,
-"texture": ExtResource("19_mrh")
-},
-{
+"texture": SubResource("Trim_18")
+}, {
 "duration": 1.0,
-"texture": ExtResource("20_mrh")
+"texture": SubResource("Trim_19")
 }],
 "loop": true,
 "name": &"move_south_east",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("21_mrh")
-},
-{
+"texture": SubResource("Trim_20")
+}, {
 "duration": 1.0,
-"texture": ExtResource("22_mrh")
-},
-{
+"texture": SubResource("Trim_21")
+}, {
 "duration": 1.0,
-"texture": ExtResource("23_mrh")
-},
-{
+"texture": SubResource("Trim_22")
+}, {
 "duration": 1.0,
-"texture": ExtResource("24_mrh")
-},
-{
+"texture": SubResource("Trim_23")
+}, {
 "duration": 1.0,
-"texture": ExtResource("25_mrh")
-},
-{
+"texture": SubResource("Trim_24")
+}, {
 "duration": 1.0,
-"texture": ExtResource("26_mrh")
+"texture": SubResource("Trim_25")
 }],
 "loop": true,
 "name": &"move_south",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("27_mrh")
-},
-{
+"texture": SubResource("Trim_26")
+}, {
 "duration": 1.0,
-"texture": ExtResource("28_mrh")
-},
-{
+"texture": SubResource("Trim_27")
+}, {
 "duration": 1.0,
-"texture": ExtResource("29_mrh")
-},
-{
+"texture": SubResource("Trim_28")
+}, {
 "duration": 1.0,
-"texture": ExtResource("30_mrh")
-},
-{
+"texture": SubResource("Trim_29")
+}, {
 "duration": 1.0,
-"texture": ExtResource("31_mrh")
-},
-{
+"texture": SubResource("Trim_30")
+}, {
 "duration": 1.0,
-"texture": ExtResource("32_mrh")
+"texture": SubResource("Trim_31")
 }],
 "loop": true,
 "name": &"move_south_west",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("33_mrh")
-},
-{
+"texture": SubResource("Trim_32")
+}, {
 "duration": 1.0,
-"texture": ExtResource("34_mrh")
-},
-{
+"texture": SubResource("Trim_33")
+}, {
 "duration": 1.0,
-"texture": ExtResource("35_mrh")
-},
-{
+"texture": SubResource("Trim_34")
+}, {
 "duration": 1.0,
-"texture": ExtResource("36_mrh")
-},
-{
+"texture": SubResource("Trim_35")
+}, {
 "duration": 1.0,
-"texture": ExtResource("37_mrh")
-},
-{
+"texture": SubResource("Trim_36")
+}, {
 "duration": 1.0,
-"texture": ExtResource("38_mrh")
+"texture": SubResource("Trim_37")
 }],
 "loop": true,
 "name": &"move_west",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("39_mrh")
-},
-{
+"texture": SubResource("Trim_38")
+}, {
 "duration": 1.0,
-"texture": ExtResource("40_mrh")
-},
-{
+"texture": SubResource("Trim_39")
+}, {
 "duration": 1.0,
-"texture": ExtResource("41_mrh")
-},
-{
+"texture": SubResource("Trim_40")
+}, {
 "duration": 1.0,
-"texture": ExtResource("42_mrh")
-},
-{
+"texture": SubResource("Trim_41")
+}, {
 "duration": 1.0,
-"texture": ExtResource("43_mrh")
-},
-{
+"texture": SubResource("Trim_42")
+}, {
 "duration": 1.0,
-"texture": ExtResource("44_mrh")
+"texture": SubResource("Trim_43")
 }],
 "loop": true,
 "name": &"move_north_west",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("45_mrh")
-},
-{
+"texture": SubResource("Trim_44")
+}, {
 "duration": 1.0,
-"texture": ExtResource("46_mrh")
-},
-{
+"texture": SubResource("Trim_45")
+}, {
 "duration": 1.0,
-"texture": ExtResource("47_mrh")
-},
-{
+"texture": SubResource("Trim_46")
+}, {
 "duration": 1.0,
-"texture": ExtResource("48_mrh")
-},
-{
+"texture": SubResource("Trim_47")
+}, {
 "duration": 1.0,
-"texture": ExtResource("49_mrh")
-},
-{
+"texture": SubResource("Trim_48")
+}, {
 "duration": 1.0,
-"texture": ExtResource("50_mrh")
+"texture": SubResource("Trim_49")
 }],
 "loop": true,
 "name": &"move_north",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("51_mrh")
-},
-{
+"texture": SubResource("Trim_50")
+}, {
 "duration": 1.0,
-"texture": ExtResource("52_mrh")
-},
-{
+"texture": SubResource("Trim_51")
+}, {
 "duration": 1.0,
-"texture": ExtResource("53_mrh")
-},
-{
+"texture": SubResource("Trim_52")
+}, {
 "duration": 1.0,
-"texture": ExtResource("54_mrh")
-},
-{
+"texture": SubResource("Trim_53")
+}, {
 "duration": 1.0,
-"texture": ExtResource("55_mrh")
-},
-{
+"texture": SubResource("Trim_54")
+}, {
 "duration": 1.0,
-"texture": ExtResource("56_mrh")
+"texture": SubResource("Trim_55")
 }],
 "loop": true,
 "name": &"move_north_east",
 "speed": 9.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("57_mrh")
-},
-{
+"texture": SubResource("Trim_56")
+}, {
 "duration": 1.0,
-"texture": ExtResource("58_mrh")
-},
-{
+"texture": SubResource("Trim_57")
+}, {
 "duration": 1.0,
-"texture": ExtResource("59_mrh")
-},
-{
+"texture": SubResource("Trim_58")
+}, {
 "duration": 1.0,
-"texture": ExtResource("60_mrh")
-},
-{
+"texture": SubResource("Trim_59")
+}, {
 "duration": 1.0,
-"texture": ExtResource("61_mrh")
-},
-{
+"texture": SubResource("Trim_60")
+}, {
 "duration": 1.0,
-"texture": ExtResource("62_mrh")
-},
-{
+"texture": SubResource("Trim_61")
+}, {
 "duration": 1.0,
-"texture": ExtResource("63_mrh")
+"texture": SubResource("Trim_62")
 }],
 "loop": false,
 "name": &"attack_east",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("64_mrh")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("65_mrh")
-},
-{
+"texture": SubResource("Trim_63")
+}, {
 "duration": 1.0,
-"texture": ExtResource("66_mrh")
-},
-{
+"texture": SubResource("Trim_64")
+}, {
 "duration": 1.0,
-"texture": ExtResource("67_mrh")
-},
-{
+"texture": SubResource("Trim_65")
+}, {
 "duration": 1.0,
-"texture": ExtResource("68_mrh")
-},
-{
+"texture": SubResource("Trim_66")
+}, {
 "duration": 1.0,
-"texture": ExtResource("69_mrh")
-},
-{
+"texture": SubResource("Trim_67")
+}, {
 "duration": 1.0,
-"texture": ExtResource("70_mrh")
+"texture": SubResource("Trim_68")
 }],
 "loop": false,
 "name": &"attack_south_east",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("71_mrh")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("72_mrh")
-},
-{
+"texture": SubResource("Trim_69")
+}, {
 "duration": 1.0,
-"texture": ExtResource("73_mrh")
-},
-{
+"texture": SubResource("Trim_70")
+}, {
 "duration": 1.0,
-"texture": ExtResource("74_mrh")
-},
-{
+"texture": SubResource("Trim_71")
+}, {
 "duration": 1.0,
-"texture": ExtResource("75_mrh")
-},
-{
+"texture": SubResource("Trim_72")
+}, {
 "duration": 1.0,
-"texture": ExtResource("76_mrh")
-},
-{
+"texture": SubResource("Trim_73")
+}, {
 "duration": 1.0,
-"texture": ExtResource("77_mrh")
+"texture": SubResource("Trim_74")
 }],
 "loop": false,
 "name": &"attack_south",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("78_mrh")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("79_mrh")
-},
-{
+"texture": SubResource("Trim_75")
+}, {
 "duration": 1.0,
-"texture": ExtResource("80_mrh")
-},
-{
+"texture": SubResource("Trim_76")
+}, {
 "duration": 1.0,
-"texture": ExtResource("81_mrh")
-},
-{
+"texture": SubResource("Trim_77")
+}, {
 "duration": 1.0,
-"texture": ExtResource("82_mrh")
-},
-{
+"texture": SubResource("Trim_78")
+}, {
 "duration": 1.0,
-"texture": ExtResource("83_mrh")
-},
-{
+"texture": SubResource("Trim_79")
+}, {
 "duration": 1.0,
-"texture": ExtResource("84_mrh")
+"texture": SubResource("Trim_80")
 }],
 "loop": false,
 "name": &"attack_south_west",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("85_mrh")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("86_mrh")
-},
-{
+"texture": SubResource("Trim_81")
+}, {
 "duration": 1.0,
-"texture": ExtResource("87_mrh")
-},
-{
+"texture": SubResource("Trim_82")
+}, {
 "duration": 1.0,
-"texture": ExtResource("88_mrh")
-},
-{
+"texture": SubResource("Trim_83")
+}, {
 "duration": 1.0,
-"texture": ExtResource("89_mrh")
-},
-{
+"texture": SubResource("Trim_84")
+}, {
 "duration": 1.0,
-"texture": ExtResource("90_mrh")
-},
-{
+"texture": SubResource("Trim_85")
+}, {
 "duration": 1.0,
-"texture": ExtResource("91_mrh")
+"texture": SubResource("Trim_86")
 }],
 "loop": false,
 "name": &"attack_west",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("92_mrh")
-},
-{
+"texture": SubResource("Trim_5")
+}, {
 "duration": 1.0,
-"texture": ExtResource("93_mrh")
-},
-{
+"texture": SubResource("Trim_87")
+}, {
 "duration": 1.0,
-"texture": ExtResource("94_mrh")
-},
-{
+"texture": SubResource("Trim_88")
+}, {
 "duration": 1.0,
-"texture": ExtResource("95_mrh")
-},
-{
+"texture": SubResource("Trim_89")
+}, {
 "duration": 1.0,
-"texture": ExtResource("96_mrh")
-},
-{
+"texture": SubResource("Trim_90")
+}, {
 "duration": 1.0,
-"texture": ExtResource("97_mrh")
-},
-{
+"texture": SubResource("Trim_91")
+}, {
 "duration": 1.0,
-"texture": ExtResource("98_mrh")
+"texture": SubResource("Trim_92")
 }],
 "loop": false,
 "name": &"attack_north_west",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("99_mrh")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("100_mrh")
-},
-{
+"texture": SubResource("Trim_93")
+}, {
 "duration": 1.0,
-"texture": ExtResource("101_mrh")
-},
-{
+"texture": SubResource("Trim_94")
+}, {
 "duration": 1.0,
-"texture": ExtResource("102_mrh")
-},
-{
+"texture": SubResource("Trim_95")
+}, {
 "duration": 1.0,
-"texture": ExtResource("103_mrh")
-},
-{
+"texture": SubResource("Trim_96")
+}, {
 "duration": 1.0,
-"texture": ExtResource("104_mrh")
-},
-{
+"texture": SubResource("Trim_97")
+}, {
 "duration": 1.0,
-"texture": ExtResource("105_mrh")
+"texture": SubResource("Trim_98")
 }],
 "loop": false,
 "name": &"attack_north",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("106_mrh")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("107_mrh")
-},
-{
+"texture": SubResource("Trim_99")
+}, {
 "duration": 1.0,
-"texture": ExtResource("108_mrh")
-},
-{
+"texture": SubResource("Trim_100")
+}, {
 "duration": 1.0,
-"texture": ExtResource("109_mrh")
-},
-{
+"texture": SubResource("Trim_101")
+}, {
 "duration": 1.0,
-"texture": ExtResource("110_mrh")
-},
-{
+"texture": SubResource("Trim_102")
+}, {
 "duration": 1.0,
-"texture": ExtResource("111_mrh")
-},
-{
+"texture": SubResource("Trim_103")
+}, {
 "duration": 1.0,
-"texture": ExtResource("112_mrh")
+"texture": SubResource("Trim_104")
 }],
 "loop": false,
 "name": &"attack_north_east",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("113_mrh")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("114_mrh")
-},
-{
+"texture": SubResource("Trim_105")
+}, {
 "duration": 1.0,
-"texture": ExtResource("115_mrh")
-},
-{
+"texture": SubResource("Trim_106")
+}, {
 "duration": 1.0,
-"texture": ExtResource("116_mrh")
-},
-{
+"texture": SubResource("Trim_107")
+}, {
 "duration": 1.0,
-"texture": ExtResource("117_mrh")
+"texture": SubResource("Trim_108")
 }],
 "loop": false,
 "name": &"hit_east",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("118_mrh")
-},
-{
+"texture": SubResource("Trim_109")
+}, {
 "duration": 1.0,
-"texture": ExtResource("119_mrh")
-},
-{
+"texture": SubResource("Trim_110")
+}, {
 "duration": 1.0,
-"texture": ExtResource("120_mrh")
-},
-{
+"texture": SubResource("Trim_111")
+}, {
 "duration": 1.0,
-"texture": ExtResource("121_mrh")
-},
-{
+"texture": SubResource("Trim_112")
+}, {
 "duration": 1.0,
-"texture": ExtResource("122_mrh")
+"texture": SubResource("Trim_113")
 }],
 "loop": false,
 "name": &"hit_south_east",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("123_mrh")
-},
-{
+"texture": SubResource("Trim_114")
+}, {
 "duration": 1.0,
-"texture": ExtResource("124_mrh")
-},
-{
+"texture": SubResource("Trim_115")
+}, {
 "duration": 1.0,
-"texture": ExtResource("125_mrh")
-},
-{
+"texture": SubResource("Trim_116")
+}, {
 "duration": 1.0,
-"texture": ExtResource("126_mrh")
-},
-{
+"texture": SubResource("Trim_117")
+}, {
 "duration": 1.0,
-"texture": ExtResource("127_mrh")
+"texture": SubResource("Trim_118")
 }],
 "loop": false,
 "name": &"hit_south",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("128_mrh")
-},
-{
+"texture": SubResource("Trim_119")
+}, {
 "duration": 1.0,
-"texture": ExtResource("129_mrh")
-},
-{
+"texture": SubResource("Trim_120")
+}, {
 "duration": 1.0,
-"texture": ExtResource("130_mrh")
-},
-{
+"texture": SubResource("Trim_121")
+}, {
 "duration": 1.0,
-"texture": ExtResource("131_mrh")
-},
-{
+"texture": SubResource("Trim_122")
+}, {
 "duration": 1.0,
-"texture": ExtResource("132_mrh")
+"texture": SubResource("Trim_123")
 }],
 "loop": false,
 "name": &"hit_south_west",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("133_mrh")
-},
-{
+"texture": SubResource("Trim_124")
+}, {
 "duration": 1.0,
-"texture": ExtResource("134_mrh")
-},
-{
+"texture": SubResource("Trim_125")
+}, {
 "duration": 1.0,
-"texture": ExtResource("135_mrh")
-},
-{
+"texture": SubResource("Trim_126")
+}, {
 "duration": 1.0,
-"texture": ExtResource("136_mrh")
-},
-{
+"texture": SubResource("Trim_127")
+}, {
 "duration": 1.0,
-"texture": ExtResource("137_mrh")
+"texture": SubResource("Trim_128")
 }],
 "loop": false,
 "name": &"hit_west",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("138_mrh")
-},
-{
+"texture": SubResource("Trim_129")
+}, {
 "duration": 1.0,
-"texture": ExtResource("139_mrh")
-},
-{
+"texture": SubResource("Trim_130")
+}, {
 "duration": 1.0,
-"texture": ExtResource("140_mrh")
-},
-{
+"texture": SubResource("Trim_131")
+}, {
 "duration": 1.0,
-"texture": ExtResource("141_mrh")
-},
-{
+"texture": SubResource("Trim_132")
+}, {
 "duration": 1.0,
-"texture": ExtResource("142_mrh")
+"texture": SubResource("Trim_133")
 }],
 "loop": false,
 "name": &"hit_north_west",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("143_mrh")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("144_mrh")
-},
-{
+"texture": SubResource("Trim_134")
+}, {
 "duration": 1.0,
-"texture": ExtResource("145_mrh")
-},
-{
+"texture": SubResource("Trim_135")
+}, {
 "duration": 1.0,
-"texture": ExtResource("146_mrh")
-},
-{
+"texture": SubResource("Trim_136")
+}, {
 "duration": 1.0,
-"texture": ExtResource("147_mrh")
+"texture": SubResource("Trim_137")
 }],
 "loop": false,
 "name": &"hit_north",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("148_mrh")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("149_mrh")
-},
-{
+"texture": SubResource("Trim_138")
+}, {
 "duration": 1.0,
-"texture": ExtResource("150_mrh")
-},
-{
+"texture": SubResource("Trim_139")
+}, {
 "duration": 1.0,
-"texture": ExtResource("151_mrh")
-},
-{
+"texture": SubResource("Trim_140")
+}, {
 "duration": 1.0,
-"texture": ExtResource("152_mrh")
+"texture": SubResource("Trim_141")
 }],
 "loop": false,
 "name": &"hit_north_east",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("153_mrh")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("154_mrh")
-},
-{
+"texture": SubResource("Trim_142")
+}, {
 "duration": 1.0,
-"texture": ExtResource("155_mrh")
-},
-{
+"texture": SubResource("Trim_143")
+}, {
 "duration": 1.0,
-"texture": ExtResource("156_mrh")
-},
-{
+"texture": SubResource("Trim_144")
+}, {
 "duration": 1.0,
-"texture": ExtResource("157_mrh")
-},
-{
+"texture": SubResource("Trim_145")
+}, {
 "duration": 1.0,
-"texture": ExtResource("158_mrh")
-},
-{
+"texture": SubResource("Trim_146")
+}, {
 "duration": 1.0,
-"texture": ExtResource("159_mrh")
+"texture": SubResource("Trim_147")
 }],
 "loop": false,
 "name": &"death_east",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("160_mrh")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("161_mrh")
-},
-{
+"texture": SubResource("Trim_148")
+}, {
 "duration": 1.0,
-"texture": ExtResource("162_mrh")
-},
-{
+"texture": SubResource("Trim_149")
+}, {
 "duration": 1.0,
-"texture": ExtResource("163_mrh")
-},
-{
+"texture": SubResource("Trim_150")
+}, {
 "duration": 1.0,
-"texture": ExtResource("164_mrh")
-},
-{
+"texture": SubResource("Trim_151")
+}, {
 "duration": 1.0,
-"texture": ExtResource("165_mrh")
-},
-{
+"texture": SubResource("Trim_152")
+}, {
 "duration": 1.0,
-"texture": ExtResource("166_mrh")
+"texture": SubResource("Trim_153")
 }],
 "loop": false,
 "name": &"death_south_east",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("167_mrh")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("168_mrh")
-},
-{
+"texture": SubResource("Trim_154")
+}, {
 "duration": 1.0,
-"texture": ExtResource("169_mrh")
-},
-{
+"texture": SubResource("Trim_155")
+}, {
 "duration": 1.0,
-"texture": ExtResource("170_mrh")
-},
-{
+"texture": SubResource("Trim_156")
+}, {
 "duration": 1.0,
-"texture": ExtResource("171_mrh")
-},
-{
+"texture": SubResource("Trim_157")
+}, {
 "duration": 1.0,
-"texture": ExtResource("172_mrh")
-},
-{
+"texture": SubResource("Trim_158")
+}, {
 "duration": 1.0,
-"texture": ExtResource("173_mrh")
+"texture": SubResource("Trim_159")
 }],
 "loop": false,
 "name": &"death_south",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("174_mrh")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("175_mrh")
-},
-{
+"texture": SubResource("Trim_160")
+}, {
 "duration": 1.0,
-"texture": ExtResource("176_mrh")
-},
-{
+"texture": SubResource("Trim_161")
+}, {
 "duration": 1.0,
-"texture": ExtResource("177_mrh")
-},
-{
+"texture": SubResource("Trim_162")
+}, {
 "duration": 1.0,
-"texture": ExtResource("178_mrh")
-},
-{
+"texture": SubResource("Trim_163")
+}, {
 "duration": 1.0,
-"texture": ExtResource("179_mrh")
-},
-{
+"texture": SubResource("Trim_164")
+}, {
 "duration": 1.0,
-"texture": ExtResource("180_mrh")
+"texture": SubResource("Trim_165")
 }],
 "loop": false,
 "name": &"death_south_west",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("181_mrh")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("182_mrh")
-},
-{
+"texture": SubResource("Trim_166")
+}, {
 "duration": 1.0,
-"texture": ExtResource("183_mrh")
-},
-{
+"texture": SubResource("Trim_167")
+}, {
 "duration": 1.0,
-"texture": ExtResource("184_mrh")
-},
-{
+"texture": SubResource("Trim_168")
+}, {
 "duration": 1.0,
-"texture": ExtResource("185_mrh")
-},
-{
+"texture": SubResource("Trim_169")
+}, {
 "duration": 1.0,
-"texture": ExtResource("186_mrh")
-},
-{
+"texture": SubResource("Trim_170")
+}, {
 "duration": 1.0,
-"texture": ExtResource("187_mrh")
+"texture": SubResource("Trim_171")
 }],
 "loop": false,
 "name": &"death_west",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("188_mrh")
-},
-{
+"texture": SubResource("Trim_5")
+}, {
 "duration": 1.0,
-"texture": ExtResource("189_mrh")
-},
-{
+"texture": SubResource("Trim_172")
+}, {
 "duration": 1.0,
-"texture": ExtResource("190_mrh")
-},
-{
+"texture": SubResource("Trim_173")
+}, {
 "duration": 1.0,
-"texture": ExtResource("191_mrh")
-},
-{
+"texture": SubResource("Trim_174")
+}, {
 "duration": 1.0,
-"texture": ExtResource("192_mrh")
-},
-{
+"texture": SubResource("Trim_175")
+}, {
 "duration": 1.0,
-"texture": ExtResource("193_mrh")
-},
-{
+"texture": SubResource("Trim_176")
+}, {
 "duration": 1.0,
-"texture": ExtResource("194_mrh")
+"texture": SubResource("Trim_177")
 }],
 "loop": false,
 "name": &"death_north_west",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("195_mrh")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("196_mrh")
-},
-{
+"texture": SubResource("Trim_178")
+}, {
 "duration": 1.0,
-"texture": ExtResource("197_mrh")
-},
-{
+"texture": SubResource("Trim_179")
+}, {
 "duration": 1.0,
-"texture": ExtResource("198_mrh")
-},
-{
+"texture": SubResource("Trim_180")
+}, {
 "duration": 1.0,
-"texture": ExtResource("199_mrh")
-},
-{
+"texture": SubResource("Trim_181")
+}, {
 "duration": 1.0,
-"texture": ExtResource("200_mrh")
-},
-{
+"texture": SubResource("Trim_182")
+}, {
 "duration": 1.0,
-"texture": ExtResource("201_mrh")
+"texture": SubResource("Trim_183")
 }],
 "loop": false,
 "name": &"death_north",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("202_mrh")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("203_mrh")
-},
-{
+"texture": SubResource("Trim_184")
+}, {
 "duration": 1.0,
-"texture": ExtResource("204_mrh")
-},
-{
+"texture": SubResource("Trim_185")
+}, {
 "duration": 1.0,
-"texture": ExtResource("205_mrh")
-},
-{
+"texture": SubResource("Trim_186")
+}, {
 "duration": 1.0,
-"texture": ExtResource("206_mrh")
-},
-{
+"texture": SubResource("Trim_187")
+}, {
 "duration": 1.0,
-"texture": ExtResource("207_mrh")
-},
-{
+"texture": SubResource("Trim_188")
+}, {
 "duration": 1.0,
-"texture": ExtResource("208_mrh")
+"texture": SubResource("Trim_189")
 }],
 "loop": false,
 "name": &"death_north_east",
 "speed": 10.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("209_mrh")
-},
-{
+"texture": SubResource("Trim_190")
+}, {
 "duration": 1.0,
-"texture": ExtResource("210_mrh")
-},
-{
+"texture": SubResource("Trim_191")
+}, {
 "duration": 1.0,
-"texture": ExtResource("211_mrh")
-},
-{
+"texture": SubResource("Trim_192")
+}, {
 "duration": 1.0,
-"texture": ExtResource("212_mrh")
-},
-{
+"texture": SubResource("Trim_193")
+}, {
 "duration": 1.0,
-"texture": ExtResource("213_mrh")
-},
-{
+"texture": SubResource("Trim_194")
+}, {
 "duration": 1.0,
-"texture": ExtResource("214_mrh")
-},
-{
+"texture": SubResource("Trim_195")
+}, {
 "duration": 1.0,
-"texture": ExtResource("215_mrh")
+"texture": SubResource("Trim_196")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_east",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("216_mrh")
-},
-{
+"texture": SubResource("Trim_197")
+}, {
 "duration": 1.0,
-"texture": ExtResource("217_mrh")
-},
-{
+"texture": SubResource("Trim_198")
+}, {
 "duration": 1.0,
-"texture": ExtResource("218_mrh")
-},
-{
+"texture": SubResource("Trim_199")
+}, {
 "duration": 1.0,
-"texture": ExtResource("219_mrh")
-},
-{
+"texture": SubResource("Trim_200")
+}, {
 "duration": 1.0,
-"texture": ExtResource("220_mrh")
-},
-{
+"texture": SubResource("Trim_201")
+}, {
 "duration": 1.0,
-"texture": ExtResource("221_mrh")
-},
-{
+"texture": SubResource("Trim_202")
+}, {
 "duration": 1.0,
-"texture": ExtResource("222_mrh")
+"texture": SubResource("Trim_203")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_south_east",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("223_mrh")
-},
-{
+"texture": SubResource("Trim_204")
+}, {
 "duration": 1.0,
-"texture": ExtResource("224_mrh")
-},
-{
+"texture": SubResource("Trim_205")
+}, {
 "duration": 1.0,
-"texture": ExtResource("225_mrh")
-},
-{
+"texture": SubResource("Trim_206")
+}, {
 "duration": 1.0,
-"texture": ExtResource("226_mrh")
-},
-{
+"texture": SubResource("Trim_207")
+}, {
 "duration": 1.0,
-"texture": ExtResource("227_mrh")
-},
-{
+"texture": SubResource("Trim_208")
+}, {
 "duration": 1.0,
-"texture": ExtResource("228_mrh")
-},
-{
+"texture": SubResource("Trim_209")
+}, {
 "duration": 1.0,
-"texture": ExtResource("229_mrh")
+"texture": SubResource("Trim_210")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_south",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("230_mrh")
-},
-{
+"texture": SubResource("Trim_211")
+}, {
 "duration": 1.0,
-"texture": ExtResource("231_mrh")
-},
-{
+"texture": SubResource("Trim_212")
+}, {
 "duration": 1.0,
-"texture": ExtResource("232_mrh")
-},
-{
+"texture": SubResource("Trim_213")
+}, {
 "duration": 1.0,
-"texture": ExtResource("233_mrh")
-},
-{
+"texture": SubResource("Trim_214")
+}, {
 "duration": 1.0,
-"texture": ExtResource("234_mrh")
-},
-{
+"texture": SubResource("Trim_215")
+}, {
 "duration": 1.0,
-"texture": ExtResource("235_mrh")
-},
-{
+"texture": SubResource("Trim_216")
+}, {
 "duration": 1.0,
-"texture": ExtResource("236_mrh")
+"texture": SubResource("Trim_217")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_south_west",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("237_mrh")
-},
-{
+"texture": SubResource("Trim_218")
+}, {
 "duration": 1.0,
-"texture": ExtResource("238_mrh")
-},
-{
+"texture": SubResource("Trim_219")
+}, {
 "duration": 1.0,
-"texture": ExtResource("239_mrh")
-},
-{
+"texture": SubResource("Trim_220")
+}, {
 "duration": 1.0,
-"texture": ExtResource("240_mrh")
-},
-{
+"texture": SubResource("Trim_221")
+}, {
 "duration": 1.0,
-"texture": ExtResource("241_mrh")
-},
-{
+"texture": SubResource("Trim_222")
+}, {
 "duration": 1.0,
-"texture": ExtResource("242_mrh")
-},
-{
+"texture": SubResource("Trim_223")
+}, {
 "duration": 1.0,
-"texture": ExtResource("243_mrh")
+"texture": SubResource("Trim_224")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_west",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("244_mrh")
-},
-{
+"texture": SubResource("Trim_225")
+}, {
 "duration": 1.0,
-"texture": ExtResource("245_mrh")
-},
-{
+"texture": SubResource("Trim_226")
+}, {
 "duration": 1.0,
-"texture": ExtResource("246_mrh")
-},
-{
+"texture": SubResource("Trim_227")
+}, {
 "duration": 1.0,
-"texture": ExtResource("247_mrh")
-},
-{
+"texture": SubResource("Trim_228")
+}, {
 "duration": 1.0,
-"texture": ExtResource("248_mrh")
-},
-{
+"texture": SubResource("Trim_229")
+}, {
 "duration": 1.0,
-"texture": ExtResource("249_mrh")
-},
-{
+"texture": SubResource("Trim_230")
+}, {
 "duration": 1.0,
-"texture": ExtResource("250_mrh")
+"texture": SubResource("Trim_231")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_north_west",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("251_mrh")
-},
-{
+"texture": SubResource("Trim_232")
+}, {
 "duration": 1.0,
-"texture": ExtResource("252_mrh")
-},
-{
+"texture": SubResource("Trim_233")
+}, {
 "duration": 1.0,
-"texture": ExtResource("253_mrh")
-},
-{
+"texture": SubResource("Trim_234")
+}, {
 "duration": 1.0,
-"texture": ExtResource("254_mrh")
-},
-{
+"texture": SubResource("Trim_235")
+}, {
 "duration": 1.0,
-"texture": ExtResource("255_mrh")
-},
-{
+"texture": SubResource("Trim_236")
+}, {
 "duration": 1.0,
-"texture": ExtResource("256_mrh")
-},
-{
+"texture": SubResource("Trim_237")
+}, {
 "duration": 1.0,
-"texture": ExtResource("257_mrh")
+"texture": SubResource("Trim_238")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_north",
 "speed": 12.0
-},
-{
+}, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("258_mrh")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("259_mrh")
-},
-{
+"texture": SubResource("Trim_239")
+}, {
 "duration": 1.0,
-"texture": ExtResource("260_mrh")
-},
-{
+"texture": SubResource("Trim_240")
+}, {
 "duration": 1.0,
-"texture": ExtResource("261_mrh")
-},
-{
+"texture": SubResource("Trim_241")
+}, {
 "duration": 1.0,
-"texture": ExtResource("262_mrh")
-},
-{
+"texture": SubResource("Trim_242")
+}, {
 "duration": 1.0,
-"texture": ExtResource("263_mrh")
-},
-{
+"texture": SubResource("Trim_243")
+}, {
 "duration": 1.0,
-"texture": ExtResource("264_mrh")
+"texture": SubResource("Trim_244")
 }],
 "loop": false,
 "name": &"skill_shadow_strike_north_east",
 "speed": 12.0
-}
-]
+}]

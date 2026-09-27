@@ -1,0 +1,7460 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "rift_cutter",
+ "tres": "res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 306,
+ "unique_frames": 224,
+ "source_rgba_bytes": 234881024,
+ "page_rgba_bytes": 27590656,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter_trim_0.png",
+   "width": 2048,
+   "height": 2048,
+   "sha256": "70b2e2ebc937f656ac30a72a6bacf199e7dc909f1eea91cb543460930567f0b4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter_trim_1.png",
+   "width": 2048,
+   "height": 1320,
+   "sha256": "17857581c6ffbdca7f3b701523df3cdf51de26efb0ba63a205b900a3685e6d80"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_00.png",
+   "sha256": "016c34c13216b4df84975824b52b5743c97d9c44bfc8edf653358e9eebb6f539"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_01.png",
+   "sha256": "0245e49bf03569432577f3c787148f9e5cf395d7aede84d1b790b39d96c84206"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_02.png",
+   "sha256": "331d192e72ab6c78d753ace886d895c282a4912919fca4ed770dcf975e0b2f0b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_03.png",
+   "sha256": "1c03d03f5cf038e64f651eef0652a2d925ccd06cc9e2960990a449db0001a21c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_04.png",
+   "sha256": "929d0f95d366b653af13b72818bf9249d2c5dfe5a433462768fdf88c47997dd4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_05.png",
+   "sha256": "5d0c13145d4731ecf358f51aa114f26687d589e1dacde61717f1381f990be923"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_00.png",
+   "sha256": "e3677270796099332ad06df94a8d110b70c699eb11d0ac00144ad75617690996"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_01.png",
+   "sha256": "27d5331ce7d15be965495759d167d4d7e73828499540b22b7fe6abeab0c00d0b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_02.png",
+   "sha256": "5e77eb1e5f8740a3105ac1ba51cd4a3c4f931220bfd9a1e78c785038ad9f4eed"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_03.png",
+   "sha256": "f62d8116eb9f9e1674788318977857f98ee75292994a583af51806b5ef6e7240"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_04.png",
+   "sha256": "15ea40fab8f96c13c3200b1e7fd1117d22278354b5fff80bba8118bc027dc897"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_05.png",
+   "sha256": "985a5a542273959a5ca76c76555f0a81650b74ade1bce316fcffc3c9d1fae11a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_00.png",
+   "sha256": "d5bd3581de5b3d5763b4bcd4a64b7d8ce92eb4c465bfcdbb3ac4ee2a77e42863"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_01.png",
+   "sha256": "942beef3ba3533f439f41949af2154a155e30ebe8c443b0cf5c8722257e14dc0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_02.png",
+   "sha256": "966dba0ada3d617d3c63789742dc54da19640db3601afa4f139e80ea2c4d3c90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_03.png",
+   "sha256": "90713b2a15e1bb23cbc33c0db7a377dbfa7c538abf914df93b9c61bf7d63b14b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_04.png",
+   "sha256": "8c579b2060898d1212db01b5d326e4838bb4ecf68dbd2537919ba70c26fefa97"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_05.png",
+   "sha256": "9c49f3e0f765a151fc49e972839aff838b5c9be7576924539366436b4ec2f33d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_00.png",
+   "sha256": "4ecee0ecf912759f9662a55a20ada49cae6a121257d560adb0e12fe0af036961"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_01.png",
+   "sha256": "04f0b9444b4775147b0245f7cd0164357944d1ba41f5a333f199d6a416771778"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_02.png",
+   "sha256": "d2755edd083d4c402fd815be876ca86b55431fe9c48f1650d950c53932a3e327"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_03.png",
+   "sha256": "0271943d3e383f0df2d5e367fe6a5e09930e3591986844bd75916065f593363a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_04.png",
+   "sha256": "58fcb17ae4881edc8cf1624035d3f178e821e2c624394646a6131a1667f1cc33"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_05.png",
+   "sha256": "d89eef1c83156206e6ac4e0cf473d12ef4440021aa70463f972a6da5abef6b56"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png",
+   "sha256": "9886364f2c4839bf6b86d0d5da00b74b292f5386be3b9fe7b6eeff4c7fac6b58"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png",
+   "sha256": "66aeeb2263df552e6a451ae32595a73521c70e627ce596a11af6e68062ecdc17"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png",
+   "sha256": "5bd7d0b87915189edbfc5c330dc10431b04f89da0744b8266f3c5119fc5f6857"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png",
+   "sha256": "333ad8a28d11f6567c5057f20f72402ee118cadc155b72cfc15c19fe90412e2f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png",
+   "sha256": "301b8a9f60bc5cc4c99bc912413ce460c414e09548a7d64ec0de0a595c2d90b2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png",
+   "sha256": "23b893fb0050f56ccf0a1fbbc468ad074bb2ed8c1a4ec54d5e8349a71c711731"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_00.png",
+   "sha256": "635573b6cd2317890b164433e2ba08db9904b8102229d57764ca66a1bd7b436b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_01.png",
+   "sha256": "7ef3ded54c4cc840b62fcaa86d86e04f8c286781e7d7e7cb9cdd5cfa6d877b5e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_02.png",
+   "sha256": "a8080528a23870361b24b131ef229b22525238d71537477e942fc6c9779a64a0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_03.png",
+   "sha256": "9cda6f3a908731d1aaccf7a5cca253380fbc1f5218278dcd4aea05b2b8e12389"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_04.png",
+   "sha256": "7a35ab1cd4078709084cfaf6a20b8b7672089bfed02745104da5ad23a042b435"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_05.png",
+   "sha256": "6031c376f9f77214a4b6a9f23fbbe97a045b4fff93ca01e744001e599a8a2be4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_00.png",
+   "sha256": "c31fbb138f4353bfa188feaf8382c97730ebba2679191f900775350adf46de49"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_01.png",
+   "sha256": "e7f87ed71bb96a8ff1f3bff0c24f27262131a2b4f26860ac5949bf3aca85803b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_02.png",
+   "sha256": "343c3865a49a197d8246783f11012bb7407af79b276ed87e9172a462f5244c50"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_03.png",
+   "sha256": "63496d037824ef2ae7bd4b45d797caa4b4f972b19e79a8fb5ba753ba5f343b78"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_04.png",
+   "sha256": "df0d1f8d3a46d8e0795eb03281d3b4fb23e971980b8f8c03f6fbd1e3cd8f9879"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_05.png",
+   "sha256": "5c9a9af64e7daafb5e34e32be8abf18765e172f3fa865ac061d99495f717610c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_00.png",
+   "sha256": "f1e47678b6d3e6f2e32798a362a5c940b6483ac60e33591ddead05f7be9964e7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_01.png",
+   "sha256": "d7f80cf812331a6e12aa1848b450937b0af98c929a9089b0292e103592eab9cc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_02.png",
+   "sha256": "a7cb2d8d35a2f72e7e77510110e05f30ceb19579aa5d83e3929a0a48a409ee04"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_03.png",
+   "sha256": "9a47cb6c8ca63852b484407d7750e969dce21a226731ea0400805b94bfd2155d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_04.png",
+   "sha256": "2f1b8a9bbc4464e7665491cd1d240c3e821a41b4ba6194d84286ff125279bc5d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_05.png",
+   "sha256": "cb83e749c6e9febec75c95b56dd7938e6ff68a9f15580a0a28dd9b7654f0ae22"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_00.png",
+   "sha256": "61d133f354169bb3fb4b14097cc688b755dc70f94283ded847c8af58a7540489"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_01.png",
+   "sha256": "0f72bd6d676f2e389d9dd36bba04a5848affe6fe5876c949c7f12894c2c655c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_02.png",
+   "sha256": "629a91cd0c2aaefc916e660f76933ddb958cf61053fc1fb459d72804571a5b97"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_03.png",
+   "sha256": "724be2f004f0a39257183c9041485388a63d5a6f555c79f3f5f7fbdaf1a198c8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_04.png",
+   "sha256": "15563ee7715538506570d0d59f7642f7d218af7750caac9f03966d84762a9b71"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_05.png",
+   "sha256": "23e7c28285d32dc7fb0f345b19c173a6806adad50f11c7def3eb8961f1d00abf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_00.png",
+   "sha256": "fbd1105fcd1f6d2354c0bf55a66f51295ada223650b3c999f84937593b2d37be"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_01.png",
+   "sha256": "dd6b66d6e4e4d7e7aa5269c8121e40720d9293f0586cc7dc514ddc5a0005d9d4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_02.png",
+   "sha256": "3a32073368d6741c1587c99751050a0cb49d3be112df429745933a58034a5808"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_03.png",
+   "sha256": "edf402f085c33dac9f9209a1847b3f323df6a7463e218a7753efc98ab7f31850"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_04.png",
+   "sha256": "04de6e738a3fd6bb0695389ff4881ba3834a8387ce633c681066387a708cf748"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_05.png",
+   "sha256": "f57afa0c34ddedf22d6355a6f683aabad8a41e7b7b04e9d60e1be40a3dccbe07"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_00.png",
+   "sha256": "ef923703265bc8b081d61d89c517f96084a50fe1f6159d82c2ca58ba31c38b26"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_01.png",
+   "sha256": "c40588e63309cd801e009c67897280e215c015812612e92724d7d93ba236b107"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_02.png",
+   "sha256": "23a37ab385f49628c9ae0777363cd5991b0f0b622883b6fee778b36e0d57754d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_03.png",
+   "sha256": "7ae9761cbb51f3b753a14075746b88746dceb61c795372ee692e4e416d39ff5d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_04.png",
+   "sha256": "2778d2b1c249d2b3057f56aad7652122e9b49ac0455b0362ccab3a9b018a60ec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_05.png",
+   "sha256": "1b58e641e84c8074f34fcb9a87b3e481df58e70305d2b7935a1e2ae2c501f38d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_00.png",
+   "sha256": "17950914b48bb9283db8ed3ddd950620a223205254fec5ed30e89b5bc9464c6d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_01.png",
+   "sha256": "e8b25dd34e187e2221736ae365b006fe678a176b4cb277900bea48284a670d49"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_02.png",
+   "sha256": "0b75b3bab8017f7c8ef439882097a0dcc891710915ce5118b9ea87991b3c1efa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_03.png",
+   "sha256": "b5ffcd0334df9ed61809acdc3940a17e19ba5ebd29ba131b04b45364c6473e7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_04.png",
+   "sha256": "0f35211f0c30e1b8c944d963af443c279deae2f6f9c1e8607f9f127cbd70007c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_05.png",
+   "sha256": "932095db34bdb1d4ba1b87fe3839754a390fc942744bf9c99913d12965e9d87a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_00.png",
+   "sha256": "11536c491cd3ec89b2bd57bac71b9c132c5226663996a05ac72f060d1f555a43"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_01.png",
+   "sha256": "2db0c203958ef1286fc4c9d2b53c0a5037320a052ce0756a6a9d5a8eec6db1dc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_02.png",
+   "sha256": "3c8fc3015c4fd3d2a81a17e2d5a0e7b390d2141605521f03c9d0a7d49e337102"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_03.png",
+   "sha256": "01981572cee91bcb46d9dcc5f687165426df3762f5d445d2c75a126c85167bb3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_04.png",
+   "sha256": "29fbd7363c1a217ba8372ec8e8a17b5443c1745fdfd11c5c34de768383053d07"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_05.png",
+   "sha256": "b50ebb6eb03d988825ca37889a0710ca76e89fb8d1089265d5b1c43f89a44b16"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_00.png",
+   "sha256": "05a64d25b6c8f8c403d0b504eccce8e2dcbf5007597679f5df6b94b34cca3ac0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_01.png",
+   "sha256": "f36c7f9ef34068ccf3f6eea8b86af6729e50c3e0cf01b9f9a6d58e54b78c2c34"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_02.png",
+   "sha256": "af0c46aa3fecc6077e0e6f92b927846eb2b0f6906bc16ef4998862ee8813113c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_03.png",
+   "sha256": "7c6d579591cec6934bed6637c747d9e26da4e8669075a8ad2f6334b1d17c12e8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_04.png",
+   "sha256": "d9c4d0e70203a645a2e7861109411c6189c25d58b55456049c0757914ccada04"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_05.png",
+   "sha256": "0ad0e170408c020a722d545be5f6e9149cce0d7318c2f43577b65252be64609e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_00.png",
+   "sha256": "1d92145c34664017f8d0587bae6877fe8f7f3f954f9e95f45f7a55fbe161a465"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_01.png",
+   "sha256": "73ce11b26c221b47181251d1aaf31ad5bb4c62ce42e32762c6c1f1b873e27afe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_02.png",
+   "sha256": "4515a8ba214d0bb2ecf98df67b9e1bd524d14e8b64cebc053878b2df10873edc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_03.png",
+   "sha256": "ee7451a56b0e18d6c5e6ff3dd25ab53f91d6abe08006ef01c5dfb2410ba0e27b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_04.png",
+   "sha256": "db926f894173c4ad3efbb99377991da18a829dfe746cb0cf8e0c4d6cd21603d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_05.png",
+   "sha256": "7ec402dee25b451b31febc2160887d167a6a9e5affaa39fee91caeb4b1e3cad9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_00.png",
+   "sha256": "a24e6e4a4265a6e02caa3cb4f54c65e6f9dbd72399c4c176cfb5c8ba87f380df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_01.png",
+   "sha256": "9a366fe6a24f3efec853d6d8ba5c9405080ccb3c7d84e79673fe7c0857381494"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_02.png",
+   "sha256": "eebaa890091e00e3b173f38ce3db59a1e2376043ef756b95427791dacac963ef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_03.png",
+   "sha256": "671b4d139b8099b8081d52c72a48fa1db7ce2f74b973624b382fe008984b51e0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_04.png",
+   "sha256": "83cb9398e9749521b28aa4e9b3be9838eed98fbb16d4356f5a6cb6c4721c773c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_05.png",
+   "sha256": "802757e6b2b6688722777ecb4bac21de7b46dbae7ff78ec4a7fc0cfa76416e92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_00.png",
+   "sha256": "1f0f8c12e21459b094c9aca87604ea1ec0ab5e6b5288ae7054e2331d580bd6fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_01.png",
+   "sha256": "f3de7ac3b49e349dc52b62ac64c14c80e4a3fefafe4e8e0eb3a06558c85276c6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_02.png",
+   "sha256": "0eb6d1dc8c8837153a0ed3e8f4c31d3e9aa8c5558030ad75a7235888dc829a4c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_03.png",
+   "sha256": "871662209e605d7677701858fc7ed289b0021cb33896c0d2565e21883124c398"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_04.png",
+   "sha256": "5bea402d054d42a15f7ff4b72a75a517ed76b33e6247a1b63948d2e1c38a5d1a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_05.png",
+   "sha256": "e26f2f4879790b8e17e10233f531a0a8976c04b9ddb3fe1b6a2a9604d1b6db40"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_00.png",
+   "sha256": "40a789e5b4d1c828a3affffcd8788bcc87b3e4266bbf465d1bc7261ed736686a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_01.png",
+   "sha256": "20885dd30069988de27559f927f8678a6f70bfc647e775bcf9534eb733d13672"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_02.png",
+   "sha256": "d1cb37c88c2beba5da0d177aeecab39fd84aa97d24430ec214337438debaaa1c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_03.png",
+   "sha256": "def509231c963b0ac6ed847d2d2dab43b342fb1730daf5db10240eb9686206c3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_04.png",
+   "sha256": "7a18ce841b84ad2ba26c319108380c5d8cb0164c8c0b37e62c3aa8b0df6144f4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_05.png",
+   "sha256": "35f05a7d0c31146d65c59d714098c50c00f3d7a1704f0d2d9ed1cd764108885d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_00.png",
+   "sha256": "fa512938094bd08910489ec789725022d51dc6dff1a3785bf259174bba2df4af"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_01.png",
+   "sha256": "9593be2ffd01d729312234ea379380c580150b936e5af4e9cf159397733833af"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_02.png",
+   "sha256": "a67bf521e44ef6f0b9ead172cdbd74212efbd2bae549c7844db1182d53ceab18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_03.png",
+   "sha256": "42b93cbcdb148991aa9769b48121e8e7b80552550da1b493f1a4c1c1e194479e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_04.png",
+   "sha256": "00a339f0bf30341dc2f0a36006bf50e8b1e9970c85d5b1336d463b365013f85f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_05.png",
+   "sha256": "6ed9e3087a3db62e658b2ba3c6c69d6a84c05a3d4b090df1f848ca32a14c21da"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_00.png",
+   "sha256": "54f2f240da03a391c59e6abf3af7e231b2ed0ca307caea67c78ad609a0ef55f9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_01.png",
+   "sha256": "dcc63e2a76f13068e4773b4702bbd1b501f9ad2649fcb071dcd5867b49bc6483"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_02.png",
+   "sha256": "67b699a7533bfb5cfb73b7834c343ea76f0058c9fbd8fe99f04e08d365152905"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_03.png",
+   "sha256": "1a850baf97eae9176a619101fae5286973184521c2d14a6ebe30bd4715a14cc6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_04.png",
+   "sha256": "d70d4837aed00d133020801e43c3b4e22b7dff27158a8e6c2936d01e460d4f0d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_05.png",
+   "sha256": "6946c5f992fb38b907b7e072e794ff5b238cca4beb6841f8d832644334824755"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_00.png",
+   "sha256": "8152037a61c4af9e1996580eb7b0a6205734d36678e764d049590915847b820b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_01.png",
+   "sha256": "742ce5228c10788452e72a8037be7ebbdc216f5b0d638242bffa49ef7f834d12"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_02.png",
+   "sha256": "e3bd882ad2d5e26d9f46b426d9ef5980d2e68ae1a2ed9f68d6bcde12209c36fa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_03.png",
+   "sha256": "213bfea7e01fa29f34b984a570eb4a2d988a79a062adcaed9bac2aa69868d06a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_04.png",
+   "sha256": "444c7a92be4bd00c935541c8252d77aebc9bb9a6c82dbe11077577de6984eb24"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_05.png",
+   "sha256": "b2546b47c88933ceeca922eba209adf6cc37358bbfcce357dc8a9110bbd4e6af"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_00.png",
+   "sha256": "5bc464f097d413413acb324dcf518a5b8111a237840cd1c9b7477228c824242b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_01.png",
+   "sha256": "6e5ac0d71bb6f37b18214d7dfb5c46d3ca0d865ead95106b97164fb5d0636315"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_02.png",
+   "sha256": "05a5dcecdad5ca25a4d4cde25e21cf48d7ddc7c43155477034e5a636b2609bea"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_03.png",
+   "sha256": "c225743dcbca592451f15cb1174445b74cbf4767d0d7800c58ddc5c03597d66a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_04.png",
+   "sha256": "212f21967b5013c073ed84e00660d04b706926636314dbf72b1fdff14e20bed3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_05.png",
+   "sha256": "e99479dc316a9017681b18d971007e9e3c3900b22313345787f061008983cc08"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_00.png",
+   "sha256": "6ec13194a7eef178a82246ae7624401ba7e54b91c6cf6ae22da2f7234df8c4d4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_01.png",
+   "sha256": "f80c11bf67cf9f4ab8e0028936871f1f1d065be170e367ff83db75529e4a8ff7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_02.png",
+   "sha256": "614c604ed00e19f1a9425f6854eb319773ebbb17a7868e31f47056c834768acb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_03.png",
+   "sha256": "d6190aac02ae89240fbe15012f9129a8094a6751e5ca879ce87734d0fd4a9f60"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_04.png",
+   "sha256": "885267f275809a4ddfd3a3ceb21322d2536a078376c8f2e5a2d2ead6e276af3e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_05.png",
+   "sha256": "3fc32ca8249b20ae5b7c737ff5303de46fe356466d03e287a4a245a976aecb44"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_00.png",
+   "sha256": "85c4feba46f8be5844b0e89513ebe6cd6686e16408c18193c5719d70cdf64f76"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_01.png",
+   "sha256": "080d2d0a2ebb0dc4acc3ed24602896826be6b8757f1e8ff7dc255c9b61e433ec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_02.png",
+   "sha256": "be35c2426a1a6f6a1f92b17c13e944a2feb99503f7763800c9fbff7791dee2b5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_03.png",
+   "sha256": "445d791de94bd3082ccb93e53edc567e52939f659225819d93b5dbf475408ffe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_04.png",
+   "sha256": "982ef80c69622194b20f396e968a1a98059926ef63a73a575d195d84dd645eda"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_05.png",
+   "sha256": "e8fe28579cbe25eb58e9f2f47df878ecb7d112401e03a16ded51404c799a1b1d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_00.png",
+   "sha256": "a2b62bb4d7df0af05cacbb5369c4a6eff4fe8262a02e592a557647a2c5441da0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_01.png",
+   "sha256": "6af03fa0bbc1c9fba3fb625c5614c6b3217a104b3d56f92bdf593e934e9b3580"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_02.png",
+   "sha256": "c5ff1bed17fea3bed274c3e5f601469595b2eb33e984177a87c30312735832ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_03.png",
+   "sha256": "572e0507e595040c56ca00276025e97a39901b4c1ba858353a747061195a7829"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_00.png",
+   "sha256": "13514c3a5aeababb011e46ed3ceb99e980985803a83c6048bea3e6e322bb1de1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_01.png",
+   "sha256": "b9ee84fae151e2f94bca23f22ed7959dedf28583babf2e875f387b9ef0a01940"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_02.png",
+   "sha256": "1c3be604efb8acd882e70f12f5fcda8dc93f829191798a15f86f5806f7a03f49"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_03.png",
+   "sha256": "f64aeff819f76ae4edd3d547c323d6b1740dd1a45432b5a6cc9ffe3b5bfe3fef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_00.png",
+   "sha256": "6c7b340782609861e8ea9bad9cd1793475a538799c920db09868a9bff37f22f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_01.png",
+   "sha256": "12de565759a74c0cf12c1e7041194fb6cb0cb505571d93472d83daa6eb708068"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_02.png",
+   "sha256": "f7e400bb183d2b4a39c770ecf9c5c877c81a0a27b0cc80911efe7d7eac2d6fdf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_03.png",
+   "sha256": "ad406a382dd7b9ecf9eddc2db907dd9137cf0e53c5ff9e578aebae40e0af0ce8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_00.png",
+   "sha256": "aee4ed2d0da5f787028ee4f3d59eb23179d7523221108a0f922120ae27d68e2e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_01.png",
+   "sha256": "3eac2d4b4685ff4bdf1d4b2086527a760371cc0af6dc9e5e19cf3b1f0d0ce1c9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_02.png",
+   "sha256": "9438328c6b410cce4fdf2a640104c66dc9e4a710b8697626d601d9f5d6dc5663"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_03.png",
+   "sha256": "2c73c7623f72b22d8affeb71bdc9e4b0d0e7a95ab332206131fd8877328f1a9b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_00.png",
+   "sha256": "c8762fbd8f69e3beda5817dbbf0aac97e2eb8a771118d8a678f1c7a9a9e72af4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_01.png",
+   "sha256": "d78ca1725f086d32ed5f1449e275cee14ac1b865d31b78a675c9c658565062d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_02.png",
+   "sha256": "01537ce80f2ba4d7c8dc315f3b7009b2601db8df93845929f1e1293ae5b03c22"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_03.png",
+   "sha256": "6a49afda6c3b3a582a15f8769a1196d208c6844a0d24ded48f5c9fef424fec01"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_00.png",
+   "sha256": "c0770a97c3a5890c204e6059e3d3ae5d53da9d8bf61ee23bfdd44d2a60e8e251"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_01.png",
+   "sha256": "18cb8012b7bf8e9057948eb0f4155b726da4fce53a38d630e665705e4bc37ae5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_02.png",
+   "sha256": "22b959beade845247f7a28bafac3be81cfb848a0cd18884950febe2c29ebcd8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_03.png",
+   "sha256": "05430df63fe0418fff6e0a1b5e8875e92d0b4c5fb0a5fc2d7ccb333a9e2f0c47"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_00.png",
+   "sha256": "ea839663c7bd09d508f5463f75ec9a0432a4cff75a3be335653f88e4100370ac"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_01.png",
+   "sha256": "3738446c0957dc06e1776677fbf1c741f852557a00fd2df882ba20912c21cff4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_02.png",
+   "sha256": "feaf6efeb47f3aa2d2d7920c70e3cdf653d24494c2bfc8a792504f9f946e2107"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_03.png",
+   "sha256": "b45c6bbd547db9e5461832830ef7eca0c3de8b1fbc8a2a3fd5771b055f097f1c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_00.png",
+   "sha256": "489f9d764ca2985d5198480d926f3dc14101983adc9e9bbcdf9d4a5dbe0ab393"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_01.png",
+   "sha256": "74b2994989f4760bde68b81bda6084346231ba3e955a99370dcd78d434d96dd8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_02.png",
+   "sha256": "0c19f0f2927c4ba07df5207f183142dcd47b3ff6bc81058ced729462554c9fb7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_03.png",
+   "sha256": "dc3b5bb02a32516d3ea6e681628aa5307baeda51214b367d00606dda81b6988e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_00.png",
+   "sha256": "5af37a467fe6a10d47be0603711175ecfee0b919bd9309552e02acc01a38f17c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_01.png",
+   "sha256": "718a647d492dd2899c2622d78295e1209d7151443f79785f0f5a7e6edd5675ec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_02.png",
+   "sha256": "0545d004c695cf6883bf89d13790a6b33c566f36a71a002122d26f853e09947a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_03.png",
+   "sha256": "0ec9bae7a5fb3b04b5508b492b7ff90b02ced145fc7fe9bc1efc42e15a068984"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_04.png",
+   "sha256": "c29cf0123786b0818f539157f6b93e5a603c839c47b6d4752a96bb3c70266f27"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_05.png",
+   "sha256": "423e999cd87a75f9c90154a99bd84bc6c48040a7c1ff9c320c74acd93f4f5467"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_00.png",
+   "sha256": "3925063aa7a5bc056a6d76ca2560632ca4bc4c36cf2dac290c1101ecf4b2257f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_01.png",
+   "sha256": "ca43e0b37a1de4fac02e7449ee59ecd6fc38265ba679d1dc74ecedd1339c68c8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_02.png",
+   "sha256": "137e27588ff5d88adb69fc48bfb14d7c3d99fafbb4cf941c533c3c70fdb098e9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_03.png",
+   "sha256": "b69c444e6584d59ffd728ee0c90e2e2fc19f1d8188455c99ba50444b2164d0c4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_04.png",
+   "sha256": "458c61e963a3457606515b83586a562aaa24530a463b92d2e40f9818970e18e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_05.png",
+   "sha256": "368f759f182ae0a066f61f3bc26495bd1f8625df274d9a01fccbb3f17d36f262"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_00.png",
+   "sha256": "3e13f0df46a70ce30eeee39235648999acaa32f7cb5d8062518238a39f00ddcb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_01.png",
+   "sha256": "7f10eff02b2863bab2519821e36780fec41645e8a84e8358f19cbe08681c70e7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_02.png",
+   "sha256": "08affe5543814c5679aab1b7b62787a1975b2f3249324db922ea91c27c5afd4c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_03.png",
+   "sha256": "f6a68a47a939d1bb5c6d62164f0c2e794a3ecb0a4f5d8edf5a94993ee300c41c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_04.png",
+   "sha256": "4b6d1815dc59a319de4aad11af8fead340340e65730145e9528980316aebdcef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_05.png",
+   "sha256": "2d0ff81dc77328c927b6e94d51f6666b57aba8c0380412965771acfd267380d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_00.png",
+   "sha256": "43b30a5a074faebf98700ebdc3510d309c7e71556c5a2da95e33d2651601a7df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_01.png",
+   "sha256": "6b5d376aebce1ccf7b0792f872a547533b73028e27764ed8033e4d9e70e1116a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_02.png",
+   "sha256": "2c3e7c4ea78856acb570415c7b853857f65d094bc1715daa6e41d8f718377407"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_03.png",
+   "sha256": "8409a60592f6ae6f6bde30da52f0b8a9f100d2fae49ae8126262485f4d744cc5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_04.png",
+   "sha256": "8e12d03aef8bbc8cfdd2770c6b3b49e7f07b06c72225671e63687948977efb48"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_05.png",
+   "sha256": "fa541a6d7ac43f6f23fed5ddcc569fcb0c182b12c3ce6af9f069c532eba0395e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_00.png",
+   "sha256": "44b3ddde6e3c6283d6593fc7745f7115efce270c90840236c5cefb775bee7be5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_01.png",
+   "sha256": "934956be736ae5c4acf55b50893a535e72878163b50ca7a28a017af2108a2beb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_02.png",
+   "sha256": "8272b5379f90760a864f58ee065528ba7be3d768b796e9497a5db292858d42f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_03.png",
+   "sha256": "4c503170d03adb61aad37b3cfb2f670a199a5a370eef693209dfbb267473fc1f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_04.png",
+   "sha256": "2437c211f44f0530c670885c66a840d724e0da23a550858033c543ec50ed882c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_05.png",
+   "sha256": "5bf6e140cd3359084011d45b4c1f3effd9b04d9e88d74cbcf088fb56109e8834"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_00.png",
+   "sha256": "083d2da5b679e204a2a9d7525a78386f048c78602f3bad4a7875ec824cc12c69"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_01.png",
+   "sha256": "c4d4df9f176955632d0a058639d1cfac97bb677f71dfbb00e58d1860ce91ebc1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_02.png",
+   "sha256": "c4404c8bbaa3c2f73534f9e282d15f491eacb1c3674323abe4f88157c766ec40"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_03.png",
+   "sha256": "db28439e672932fc2ab1e384fd0355ebc1aca5561f313b419b237d23f56012d6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_04.png",
+   "sha256": "3cbf1f4552998919a6a29aed715050f9f99b316afab39850222d5f93d6688e1c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_05.png",
+   "sha256": "26e8dca9f0331dca84e66b993340abd4439b55a3f988b93418c006d791c39f5f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_00.png",
+   "sha256": "4b77d830ca26c5217ce6f772af6822a2be421e66dd34e4f98d5f49a3b04e23d4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_01.png",
+   "sha256": "af5ea87b90f0dd923e22e9d1a840bc868578633623e12134556b87e47a5cf761"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_02.png",
+   "sha256": "e25440e7e8da96cb12d20e0ba383b989a4c387185504b106df4cc9da5a5400b8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_03.png",
+   "sha256": "f05b11537436fac5540daaa674c54fb35d5d59a8e8a9968e1d348d291eb7881c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_04.png",
+   "sha256": "9190bb6b7fb5adeafa13b8461d384934e11171d7536a9a0b7c46a5307b31e78b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_05.png",
+   "sha256": "74eb340a6dedc829a16efd689794a78e63f0951992c695bea8110dc0dd16a2cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_00.png",
+   "sha256": "05040e66ffe86a32f38a32d45213ff8986046beee89731ddcfebf0e99876ccdc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_01.png",
+   "sha256": "db9479fbf0f712bc7e99742a4a940931a1d9fc60e0db1c0f2d346b01b19cd44b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_02.png",
+   "sha256": "37fa57b4074d0fefa722f0e7b75abdd9d57e78d38fcbcd31ec94395ca8031196"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_03.png",
+   "sha256": "e330ed9671e5d66d55587ef4cfbe4bc80045c47958d83e007e10f241eae94614"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_04.png",
+   "sha256": "f9d7b58f35674ba0d2e93b8f41d9b85a1085718915468fae276adaac1d7ec45f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_05.png",
+   "sha256": "92af8a5c6108b5a51acba8e8ccd434b710a2435a141dbc66c7700789969f3973"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    222,
+    194
+   ],
+   "margin": [
+    145,
+    287,
+    290,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    225,
+    1,
+    222,
+    194
+   ],
+   "margin": [
+    145,
+    287,
+    290,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    449,
+    1,
+    222,
+    194
+   ],
+   "margin": [
+    145,
+    287,
+    290,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    673,
+    1,
+    215,
+    194
+   ],
+   "margin": [
+    149,
+    287,
+    297,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    890,
+    1,
+    215,
+    194
+   ],
+   "margin": [
+    149,
+    287,
+    297,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1107,
+    1,
+    210,
+    194
+   ],
+   "margin": [
+    151,
+    287,
+    302,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1319,
+    1,
+    207,
+    194
+   ],
+   "margin": [
+    153,
+    287,
+    305,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1528,
+    1,
+    203,
+    194
+   ],
+   "margin": [
+    155,
+    287,
+    309,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1733,
+    1,
+    197,
+    194
+   ],
+   "margin": [
+    157,
+    287,
+    315,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1932,
+    1,
+    115,
+    194
+   ],
+   "margin": [
+    199,
+    287,
+    397,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    197,
+    194,
+    194
+   ],
+   "margin": [
+    159,
+    287,
+    318,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    197,
+    197,
+    188,
+    194
+   ],
+   "margin": [
+    162,
+    287,
+    324,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    387,
+    197,
+    182,
+    194
+   ],
+   "margin": [
+    165,
+    287,
+    330,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    571,
+    197,
+    181,
+    194
+   ],
+   "margin": [
+    165,
+    287,
+    331,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    754,
+    197,
+    179,
+    194
+   ],
+   "margin": [
+    167,
+    287,
+    333,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    935,
+    197,
+    178,
+    194
+   ],
+   "margin": [
+    167,
+    287,
+    334,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1115,
+    197,
+    172,
+    194
+   ],
+   "margin": [
+    170,
+    287,
+    340,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1289,
+    197,
+    171,
+    194
+   ],
+   "margin": [
+    171,
+    287,
+    341,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1462,
+    197,
+    169,
+    194
+   ],
+   "margin": [
+    171,
+    287,
+    343,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1633,
+    197,
+    168,
+    194
+   ],
+   "margin": [
+    172,
+    287,
+    344,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1803,
+    197,
+    166,
+    194
+   ],
+   "margin": [
+    173,
+    287,
+    346,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1971,
+    197,
+    76,
+    194
+   ],
+   "margin": [
+    218,
+    287,
+    436,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    393,
+    165,
+    194
+   ],
+   "margin": [
+    173,
+    287,
+    347,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    168,
+    393,
+    164,
+    194
+   ],
+   "margin": [
+    174,
+    287,
+    348,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    334,
+    393,
+    164,
+    194
+   ],
+   "margin": [
+    174,
+    287,
+    348,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    500,
+    393,
+    164,
+    194
+   ],
+   "margin": [
+    174,
+    287,
+    348,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    666,
+    393,
+    164,
+    194
+   ],
+   "margin": [
+    174,
+    287,
+    348,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    832,
+    393,
+    164,
+    194
+   ],
+   "margin": [
+    174,
+    287,
+    348,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    998,
+    393,
+    163,
+    194
+   ],
+   "margin": [
+    175,
+    287,
+    349,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1163,
+    393,
+    163,
+    194
+   ],
+   "margin": [
+    175,
+    287,
+    349,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1328,
+    393,
+    159,
+    194
+   ],
+   "margin": [
+    177,
+    287,
+    353,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1489,
+    393,
+    159,
+    194
+   ],
+   "margin": [
+    177,
+    287,
+    353,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1650,
+    393,
+    154,
+    194
+   ],
+   "margin": [
+    179,
+    287,
+    358,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1806,
+    393,
+    153,
+    194
+   ],
+   "margin": [
+    179,
+    287,
+    359,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1961,
+    393,
+    85,
+    194
+   ],
+   "margin": [
+    213,
+    287,
+    427,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    589,
+    151,
+    194
+   ],
+   "margin": [
+    181,
+    287,
+    361,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    154,
+    589,
+    151,
+    194
+   ],
+   "margin": [
+    181,
+    287,
+    361,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    307,
+    589,
+    144,
+    194
+   ],
+   "margin": [
+    184,
+    287,
+    368,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    453,
+    589,
+    126,
+    194
+   ],
+   "margin": [
+    193,
+    287,
+    386,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    581,
+    589,
+    117,
+    194
+   ],
+   "margin": [
+    197,
+    287,
+    395,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    700,
+    589,
+    117,
+    194
+   ],
+   "margin": [
+    197,
+    287,
+    395,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    819,
+    589,
+    116,
+    194
+   ],
+   "margin": [
+    198,
+    287,
+    396,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    937,
+    589,
+    108,
+    194
+   ],
+   "margin": [
+    202,
+    287,
+    404,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1047,
+    589,
+    106,
+    194
+   ],
+   "margin": [
+    203,
+    287,
+    406,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1155,
+    589,
+    106,
+    194
+   ],
+   "margin": [
+    203,
+    287,
+    406,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1263,
+    589,
+    106,
+    194
+   ],
+   "margin": [
+    203,
+    287,
+    406,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1371,
+    589,
+    106,
+    194
+   ],
+   "margin": [
+    203,
+    287,
+    406,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1479,
+    589,
+    103,
+    194
+   ],
+   "margin": [
+    205,
+    287,
+    409,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1584,
+    589,
+    103,
+    194
+   ],
+   "margin": [
+    205,
+    287,
+    409,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1689,
+    589,
+    101,
+    194
+   ],
+   "margin": [
+    205,
+    287,
+    411,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1792,
+    589,
+    100,
+    194
+   ],
+   "margin": [
+    206,
+    287,
+    412,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1894,
+    589,
+    96,
+    194
+   ],
+   "margin": [
+    208,
+    287,
+    416,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    785,
+    93,
+    194
+   ],
+   "margin": [
+    209,
+    287,
+    419,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    96,
+    785,
+    90,
+    194
+   ],
+   "margin": [
+    211,
+    287,
+    422,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    188,
+    785,
+    85,
+    194
+   ],
+   "margin": [
+    213,
+    287,
+    427,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    275,
+    785,
+    85,
+    194
+   ],
+   "margin": [
+    213,
+    287,
+    427,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    362,
+    785,
+    84,
+    194
+   ],
+   "margin": [
+    214,
+    287,
+    428,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    448,
+    785,
+    84,
+    194
+   ],
+   "margin": [
+    214,
+    287,
+    428,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    534,
+    785,
+    82,
+    194
+   ],
+   "margin": [
+    215,
+    287,
+    430,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    618,
+    785,
+    82,
+    194
+   ],
+   "margin": [
+    215,
+    287,
+    430,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    702,
+    785,
+    82,
+    194
+   ],
+   "margin": [
+    215,
+    287,
+    430,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    786,
+    785,
+    82,
+    194
+   ],
+   "margin": [
+    215,
+    287,
+    430,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    870,
+    785,
+    80,
+    194
+   ],
+   "margin": [
+    216,
+    287,
+    432,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    952,
+    785,
+    80,
+    194
+   ],
+   "margin": [
+    216,
+    287,
+    432,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1034,
+    785,
+    78,
+    194
+   ],
+   "margin": [
+    217,
+    287,
+    434,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1114,
+    785,
+    77,
+    194
+   ],
+   "margin": [
+    217,
+    287,
+    435,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1193,
+    785,
+    77,
+    194
+   ],
+   "margin": [
+    217,
+    287,
+    435,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1272,
+    785,
+    76,
+    194
+   ],
+   "margin": [
+    218,
+    287,
+    436,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1350,
+    785,
+    75,
+    194
+   ],
+   "margin": [
+    219,
+    287,
+    437,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1427,
+    785,
+    74,
+    194
+   ],
+   "margin": [
+    219,
+    287,
+    438,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1503,
+    785,
+    218,
+    191
+   ],
+   "margin": [
+    147,
+    290,
+    294,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1723,
+    785,
+    215,
+    191
+   ],
+   "margin": [
+    149,
+    290,
+    297,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1940,
+    785,
+    96,
+    190
+   ],
+   "margin": [
+    208,
+    291,
+    416,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1503,
+    978,
+    207,
+    191
+   ],
+   "margin": [
+    153,
+    290,
+    305,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1712,
+    978,
+    200,
+    191
+   ],
+   "margin": [
+    156,
+    290,
+    312,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1914,
+    978,
+    122,
+    191
+   ],
+   "margin": [
+    195,
+    290,
+    390,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    981,
+    197,
+    191
+   ],
+   "margin": [
+    157,
+    290,
+    315,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    200,
+    981,
+    197,
+    191
+   ],
+   "margin": [
+    157,
+    290,
+    315,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    399,
+    981,
+    197,
+    191
+   ],
+   "margin": [
+    157,
+    290,
+    315,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    598,
+    981,
+    197,
+    191
+   ],
+   "margin": [
+    157,
+    290,
+    315,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    797,
+    981,
+    197,
+    191
+   ],
+   "margin": [
+    157,
+    290,
+    315,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    996,
+    981,
+    194,
+    191
+   ],
+   "margin": [
+    159,
+    290,
+    318,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1192,
+    981,
+    188,
+    191
+   ],
+   "margin": [
+    162,
+    290,
+    324,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1382,
+    981,
+    106,
+    188
+   ],
+   "margin": [
+    203,
+    293,
+    406,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1382,
+    1171,
+    184,
+    191
+   ],
+   "margin": [
+    164,
+    290,
+    328,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1568,
+    1171,
+    181,
+    191
+   ],
+   "margin": [
+    165,
+    290,
+    331,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1751,
+    1171,
+    178,
+    191
+   ],
+   "margin": [
+    167,
+    290,
+    334,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1931,
+    1171,
+    96,
+    190
+   ],
+   "margin": [
+    208,
+    291,
+    416,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1174,
+    174,
+    191
+   ],
+   "margin": [
+    169,
+    290,
+    338,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    177,
+    1174,
+    167,
+    191
+   ],
+   "margin": [
+    173,
+    290,
+    345,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    346,
+    1174,
+    167,
+    191
+   ],
+   "margin": [
+    173,
+    290,
+    345,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    515,
+    1174,
+    166,
+    191
+   ],
+   "margin": [
+    173,
+    290,
+    346,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    683,
+    1174,
+    163,
+    191
+   ],
+   "margin": [
+    175,
+    290,
+    349,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    848,
+    1174,
+    163,
+    191
+   ],
+   "margin": [
+    175,
+    290,
+    349,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1013,
+    1174,
+    158,
+    191
+   ],
+   "margin": [
+    177,
+    290,
+    354,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1173,
+    1174,
+    153,
+    191
+   ],
+   "margin": [
+    179,
+    290,
+    359,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1959,
+    1363,
+    83,
+    190
+   ],
+   "margin": [
+    215,
+    291,
+    429,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1328,
+    1364,
+    144,
+    191
+   ],
+   "margin": [
+    184,
+    290,
+    368,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1474,
+    1364,
+    140,
+    191
+   ],
+   "margin": [
+    186,
+    290,
+    372,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1616,
+    1364,
+    117,
+    191
+   ],
+   "margin": [
+    197,
+    290,
+    395,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1735,
+    1364,
+    222,
+    190
+   ],
+   "margin": [
+    145,
+    291,
+    290,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1367,
+    164,
+    190
+   ],
+   "margin": [
+    174,
+    291,
+    348,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    167,
+    1367,
+    164,
+    190
+   ],
+   "margin": [
+    174,
+    291,
+    348,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    333,
+    1367,
+    147,
+    190
+   ],
+   "margin": [
+    183,
+    291,
+    365,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    482,
+    1367,
+    130,
+    190
+   ],
+   "margin": [
+    191,
+    291,
+    382,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    614,
+    1367,
+    126,
+    190
+   ],
+   "margin": [
+    193,
+    291,
+    386,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    742,
+    1367,
+    117,
+    190
+   ],
+   "margin": [
+    197,
+    291,
+    395,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    861,
+    1367,
+    117,
+    190
+   ],
+   "margin": [
+    197,
+    291,
+    395,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    980,
+    1367,
+    117,
+    190
+   ],
+   "margin": [
+    197,
+    291,
+    395,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1099,
+    1367,
+    96,
+    190
+   ],
+   "margin": [
+    208,
+    291,
+    416,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1197,
+    1367,
+    94,
+    190
+   ],
+   "margin": [
+    209,
+    291,
+    418,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1735,
+    1556,
+    93,
+    190
+   ],
+   "margin": [
+    209,
+    291,
+    419,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1830,
+    1556,
+    93,
+    190
+   ],
+   "margin": [
+    209,
+    291,
+    419,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1925,
+    1556,
+    92,
+    190
+   ],
+   "margin": [
+    210,
+    291,
+    420,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1293,
+    1557,
+    90,
+    190
+   ],
+   "margin": [
+    211,
+    291,
+    422,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1385,
+    1557,
+    80,
+    190
+   ],
+   "margin": [
+    216,
+    291,
+    432,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1467,
+    1557,
+    74,
+    190
+   ],
+   "margin": [
+    219,
+    291,
+    438,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1543,
+    1557,
+    74,
+    190
+   ],
+   "margin": [
+    219,
+    291,
+    438,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1619,
+    1557,
+    74,
+    190
+   ],
+   "margin": [
+    219,
+    291,
+    438,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1559,
+    71,
+    190
+   ],
+   "margin": [
+    221,
+    291,
+    441,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    74,
+    1559,
+    188,
+    188
+   ],
+   "margin": [
+    162,
+    293,
+    324,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    264,
+    1559,
+    185,
+    188
+   ],
+   "margin": [
+    163,
+    293,
+    327,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    451,
+    1559,
+    185,
+    188
+   ],
+   "margin": [
+    163,
+    293,
+    327,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    638,
+    1559,
+    175,
+    188
+   ],
+   "margin": [
+    169,
+    293,
+    337,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    815,
+    1559,
+    167,
+    188
+   ],
+   "margin": [
+    173,
+    293,
+    345,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    984,
+    1559,
+    159,
+    188
+   ],
+   "margin": [
+    177,
+    293,
+    353,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1145,
+    1559,
+    137,
+    188
+   ],
+   "margin": [
+    187,
+    293,
+    375,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1695,
+    1748,
+    157,
+    188
+   ],
+   "margin": [
+    177,
+    293,
+    355,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1854,
+    1748,
+    156,
+    188
+   ],
+   "margin": [
+    178,
+    293,
+    356,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    74,
+    1749,
+    151,
+    188
+   ],
+   "margin": [
+    181,
+    293,
+    361,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    227,
+    1749,
+    197,
+    187
+   ],
+   "margin": [
+    157,
+    294,
+    315,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    426,
+    1749,
+    197,
+    187
+   ],
+   "margin": [
+    157,
+    294,
+    315,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    625,
+    1749,
+    197,
+    187
+   ],
+   "margin": [
+    157,
+    294,
+    315,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    824,
+    1749,
+    194,
+    187
+   ],
+   "margin": [
+    159,
+    294,
+    318,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1020,
+    1749,
+    184,
+    187
+   ],
+   "margin": [
+    164,
+    294,
+    328,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1206,
+    1749,
+    126,
+    187
+   ],
+   "margin": [
+    193,
+    294,
+    386,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1334,
+    1749,
+    96,
+    187
+   ],
+   "margin": [
+    208,
+    294,
+    416,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1432,
+    1749,
+    96,
+    187
+   ],
+   "margin": [
+    208,
+    294,
+    416,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1530,
+    1749,
+    93,
+    187
+   ],
+   "margin": [
+    209,
+    294,
+    419,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    227,
+    1938,
+    217,
+    109
+   ],
+   "margin": [
+    147,
+    372,
+    295,
+    403
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    446,
+    1938,
+    210,
+    108
+   ],
+   "margin": [
+    151,
+    373,
+    302,
+    404
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    658,
+    1938,
+    210,
+    106
+   ],
+   "margin": [
+    151,
+    375,
+    302,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    870,
+    1938,
+    203,
+    106
+   ],
+   "margin": [
+    155,
+    375,
+    309,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1075,
+    1938,
+    200,
+    106
+   ],
+   "margin": [
+    156,
+    375,
+    312,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1277,
+    1938,
+    216,
+    88
+   ],
+   "margin": [
+    148,
+    393,
+    296,
+    424
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    89,
+    187
+   ],
+   "margin": [
+    211,
+    294,
+    423,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    92,
+    1,
+    84,
+    187
+   ],
+   "margin": [
+    214,
+    294,
+    428,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    178,
+    1,
+    84,
+    187
+   ],
+   "margin": [
+    214,
+    294,
+    428,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    264,
+    1,
+    80,
+    187
+   ],
+   "margin": [
+    216,
+    294,
+    432,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    346,
+    1,
+    117,
+    186
+   ],
+   "margin": [
+    197,
+    295,
+    395,
+    326
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    465,
+    1,
+    88,
+    186
+   ],
+   "margin": [
+    212,
+    295,
+    424,
+    326
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    555,
+    1,
+    194,
+    185
+   ],
+   "margin": [
+    159,
+    296,
+    318,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    751,
+    1,
+    179,
+    185
+   ],
+   "margin": [
+    167,
+    296,
+    333,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    932,
+    1,
+    169,
+    185
+   ],
+   "margin": [
+    171,
+    296,
+    343,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1103,
+    1,
+    163,
+    185
+   ],
+   "margin": [
+    175,
+    296,
+    349,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1268,
+    1,
+    160,
+    185
+   ],
+   "margin": [
+    176,
+    296,
+    352,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1430,
+    1,
+    154,
+    185
+   ],
+   "margin": [
+    179,
+    296,
+    358,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1586,
+    1,
+    130,
+    185
+   ],
+   "margin": [
+    191,
+    296,
+    382,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1718,
+    1,
+    207,
+    184
+   ],
+   "margin": [
+    153,
+    297,
+    305,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1718,
+    187,
+    197,
+    184
+   ],
+   "margin": [
+    157,
+    297,
+    315,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1917,
+    187,
+    130,
+    170
+   ],
+   "margin": [
+    191,
+    311,
+    382,
+    342
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    555,
+    188,
+    184,
+    184
+   ],
+   "margin": [
+    164,
+    297,
+    328,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    741,
+    188,
+    181,
+    184
+   ],
+   "margin": [
+    165,
+    297,
+    331,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    924,
+    188,
+    197,
+    182
+   ],
+   "margin": [
+    157,
+    299,
+    315,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1123,
+    188,
+    185,
+    182
+   ],
+   "margin": [
+    163,
+    299,
+    327,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1310,
+    188,
+    185,
+    182
+   ],
+   "margin": [
+    163,
+    299,
+    327,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1497,
+    188,
+    164,
+    182
+   ],
+   "margin": [
+    174,
+    299,
+    348,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    346,
+    189,
+    191,
+    181
+   ],
+   "margin": [
+    161,
+    300,
+    321,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    190,
+    210,
+    181
+   ],
+   "margin": [
+    151,
+    300,
+    302,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    213,
+    372,
+    188,
+    181
+   ],
+   "margin": [
+    162,
+    300,
+    324,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    924,
+    372,
+    178,
+    181
+   ],
+   "margin": [
+    167,
+    300,
+    334,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1104,
+    372,
+    175,
+    181
+   ],
+   "margin": [
+    169,
+    300,
+    337,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1281,
+    372,
+    203,
+    179
+   ],
+   "margin": [
+    155,
+    302,
+    309,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1486,
+    372,
+    197,
+    179
+   ],
+   "margin": [
+    157,
+    302,
+    315,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    373,
+    182,
+    179
+   ],
+   "margin": [
+    165,
+    302,
+    330,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1685,
+    373,
+    175,
+    179
+   ],
+   "margin": [
+    169,
+    302,
+    337,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1862,
+    373,
+    173,
+    179
+   ],
+   "margin": [
+    169,
+    302,
+    339,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    403,
+    374,
+    164,
+    179
+   ],
+   "margin": [
+    174,
+    302,
+    348,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    569,
+    374,
+    151,
+    179
+   ],
+   "margin": [
+    181,
+    302,
+    361,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    722,
+    374,
+    187,
+    178
+   ],
+   "margin": [
+    163,
+    303,
+    325,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1281,
+    553,
+    178,
+    178
+   ],
+   "margin": [
+    167,
+    303,
+    334,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1461,
+    553,
+    168,
+    178
+   ],
+   "margin": [
+    172,
+    303,
+    344,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    554,
+    157,
+    176
+   ],
+   "margin": [
+    177,
+    305,
+    355,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    722,
+    554,
+    200,
+    175
+   ],
+   "margin": [
+    156,
+    306,
+    312,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1631,
+    554,
+    188,
+    175
+   ],
+   "margin": [
+    162,
+    306,
+    324,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1821,
+    554,
+    157,
+    175
+   ],
+   "margin": [
+    177,
+    306,
+    355,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    160,
+    555,
+    156,
+    175
+   ],
+   "margin": [
+    178,
+    306,
+    356,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    318,
+    555,
+    154,
+    175
+   ],
+   "margin": [
+    179,
+    306,
+    358,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    474,
+    555,
+    150,
+    175
+   ],
+   "margin": [
+    181,
+    306,
+    362,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    924,
+    555,
+    141,
+    175
+   ],
+   "margin": [
+    185,
+    306,
+    371,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1067,
+    555,
+    158,
+    174
+   ],
+   "margin": [
+    177,
+    307,
+    354,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    626,
+    731,
+    179,
+    173
+   ],
+   "margin": [
+    167,
+    308,
+    333,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1067,
+    731,
+    139,
+    173
+   ],
+   "margin": [
+    187,
+    308,
+    373,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1631,
+    731,
+    175,
+    172
+   ],
+   "margin": [
+    169,
+    309,
+    337,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1808,
+    731,
+    169,
+    172
+   ],
+   "margin": [
+    171,
+    309,
+    343,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    732,
+    185,
+    169
+   ],
+   "margin": [
+    163,
+    312,
+    327,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    188,
+    732,
+    179,
+    169
+   ],
+   "margin": [
+    167,
+    312,
+    333,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    369,
+    732,
+    187,
+    168
+   ],
+   "margin": [
+    163,
+    313,
+    325,
+    344
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    807,
+    732,
+    173,
+    167
+   ],
+   "margin": [
+    169,
+    314,
+    339,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1208,
+    733,
+    182,
+    166
+   ],
+   "margin": [
+    165,
+    315,
+    330,
+    346
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1392,
+    733,
+    181,
+    165
+   ],
+   "margin": [
+    165,
+    316,
+    331,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1392,
+    900,
+    197,
+    164
+   ],
+   "margin": [
+    157,
+    317,
+    315,
+    348
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    807,
+    901,
+    137,
+    163
+   ],
+   "margin": [
+    187,
+    318,
+    375,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1208,
+    901,
+    181,
+    162
+   ],
+   "margin": [
+    165,
+    319,
+    331,
+    350
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    369,
+    902,
+    175,
+    162
+   ],
+   "margin": [
+    169,
+    319,
+    337,
+    350
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    903,
+    203,
+    160
+   ],
+   "margin": [
+    155,
+    321,
+    309,
+    352
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    206,
+    903,
+    154,
+    157
+   ],
+   "margin": [
+    179,
+    324,
+    358,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1591,
+    905,
+    165,
+    158
+   ],
+   "margin": [
+    173,
+    323,
+    347,
+    354
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1758,
+    905,
+    163,
+    157
+   ],
+   "margin": [
+    175,
+    324,
+    349,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    546,
+    906,
+    181,
+    156
+   ],
+   "margin": [
+    165,
+    325,
+    331,
+    356
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    946,
+    906,
+    181,
+    152
+   ],
+   "margin": [
+    165,
+    329,
+    331,
+    360
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    946,
+    1060,
+    201,
+    145
+   ],
+   "margin": [
+    155,
+    336,
+    311,
+    367
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    546,
+    1064,
+    191,
+    140
+   ],
+   "margin": [
+    161,
+    341,
+    321,
+    372
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1758,
+    1064,
+    175,
+    140
+   ],
+   "margin": [
+    169,
+    341,
+    337,
+    372
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1065,
+    200,
+    137
+   ],
+   "margin": [
+    156,
+    344,
+    312,
+    375
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1149,
+    1065,
+    188,
+    136
+   ],
+   "margin": [
+    162,
+    345,
+    324,
+    376
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    203,
+    1066,
+    197,
+    135
+   ],
+   "margin": [
+    157,
+    346,
+    315,
+    377
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    739,
+    1066,
+    181,
+    133
+   ],
+   "margin": [
+    165,
+    348,
+    331,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1339,
+    1066,
+    197,
+    126
+   ],
+   "margin": [
+    157,
+    355,
+    315,
+    386
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1538,
+    1066,
+    200,
+    117
+   ],
+   "margin": [
+    156,
+    364,
+    312,
+    395
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1538,
+    1185,
+    200,
+    117
+   ],
+   "margin": [
+    156,
+    364,
+    312,
+    395
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    203,
+    1203,
+    214,
+    116
+   ],
+   "margin": [
+    149,
+    365,
+    298,
+    396
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1149,
+    1203,
+    227,
+    113
+   ],
+   "margin": [
+    143,
+    368,
+    285,
+    399
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    419,
+    1206,
+    207,
+    113
+   ],
+   "margin": [
+    153,
+    368,
+    305,
+    399
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 4.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_hit_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_death_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_attack_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/rift_cutter/rift_cutter_idle_south_00.png"
+}

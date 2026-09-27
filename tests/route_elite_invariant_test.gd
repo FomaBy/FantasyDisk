@@ -125,6 +125,7 @@ func _initialize() -> void:
 				main.route._route_node_activating = false  # латч сбрасывает _show_battle_map; в тесте руками
 				main.route._activate_route_node(row, branch, route_node)
 				await process_frame
+				await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the roster
 				var combat_report := _assert_elite_combat(main, route_node)
 				if combat_report != "":
 					_fail("SCRUM-994: seed=%d row=%d branch=%d: %s" % [activation_seed, row, branch, combat_report])
@@ -148,6 +149,7 @@ func _initialize() -> void:
 	main.current_act = 1
 	main.route._open_route_node({"type": "elite", "name": "Legacy Elite", "row": 3, "branch": 0, "seed": 987654})
 	await process_frame
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the roster
 	if not bool(main.combat_active) or str(main.current_combat_type) != "elite" or bool(main.boss_combat_active):
 		_fail("SCRUM-994: узел с legacy-типом 'elite' не стартовал элитный бой (combat_active=%s, type=%s)." % [str(main.combat_active), str(main.current_combat_type)])
 		return

@@ -1,0 +1,24 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.2: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase route_map_first_show: 8 s, avg 116 FPS, 1% low 96, worst second 96, >50 ms 0, >100 ms 0, longest 25.1 ms, peak texture 3082 MiB
+phase p2_48_enemies: 60 s, avg 111 FPS, 1% low 61, worst second 61, >50 ms 12, >100 ms 12, longest 497.5 ms, peak texture 4710 MiB
+phase route_map_after_p2: 3 s, avg 117 FPS, 1% low 112, worst second 112, >50 ms 1, >100 ms 0, longest 90.0 ms, peak texture 3125 MiB
+phase elite_night_stalker: 20 s, avg 118 FPS, 1% low 114, worst second 114, >50 ms 0, >100 ms 0, longest 22.8 ms, peak texture 3707 MiB
+phase route_map_after_elite: 3 s, avg 120 FPS, 1% low 118, worst second 118, >50 ms 0, >100 ms 0, longest 30.7 ms, peak texture 3142 MiB
+phase boss_act1_rift_warden: 20 s, avg 118 FPS, 1% low 116, worst second 116, >50 ms 0, >100 ms 0, longest 22.3 ms, peak texture 3639 MiB
+phase route_map_after_boss1: 3 s, avg 120 FPS, 1% low 119, worst second 119, >50 ms 0, >100 ms 0, longest 17.3 ms, peak texture 3179 MiB
+phase boss_act2_disk_devourer: 20 s, avg 116 FPS, 1% low 113, worst second 113, >50 ms 0, >100 ms 0, longest 27.3 ms, peak texture 3691 MiB
+
+| build | phase | seconds | avg FPS | 1%% low FPS | worst second FPS | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB |
+|---|---|---|---|---|---|---|---|---|---|
+| v0.3.2 | route_map_first_show | 8 | 116 | 96 | 96 | 0 | 0 | 25.1 | 3082 |
+| v0.3.2 | p2_48_enemies | 60 | 111 | 61 | 61 | 12 | 12 | 497.5 | 4710 |
+| v0.3.2 | route_map_after_p2 | 3 | 117 | 112 | 112 | 1 | 0 | 90.0 | 3125 |
+| v0.3.2 | elite_night_stalker | 20 | 118 | 114 | 114 | 0 | 0 | 22.8 | 3707 |
+| v0.3.2 | route_map_after_elite | 3 | 120 | 118 | 118 | 0 | 0 | 30.7 | 3142 |
+| v0.3.2 | boss_act1_rift_warden | 20 | 118 | 116 | 116 | 0 | 0 | 22.3 | 3639 |
+| v0.3.2 | route_map_after_boss1 | 3 | 120 | 119 | 119 | 0 | 0 | 17.3 | 3179 |
+| v0.3.2 | boss_act2_disk_devourer | 20 | 116 | 113 | 113 | 0 | 0 | 27.3 | 3691 |
+v0.3.2: menu texture 28 MiB -> after run 312 MiB; act-1 peak 4710 MiB; P2 click frame 138.8 ms, roster wait 0 ms; elite roster wait 269 ms

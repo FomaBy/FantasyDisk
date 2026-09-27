@@ -1,0 +1,341 @@
+{
+  "label": "candidate",
+  "rows": [
+    {
+      "frame_ms": 33.76,
+      "frames": 184,
+      "load_ms": 18.075,
+      "pack": "enemy/ash_marksman",
+      "texture_mib": 39.414421081543,
+      "textures": 2
+    },
+    {
+      "frame_ms": 19.876,
+      "frames": 184,
+      "load_ms": 16.699,
+      "pack": "enemy/bone_caller",
+      "texture_mib": 40.3293380737305,
+      "textures": 2
+    },
+    {
+      "frame_ms": 22.908,
+      "frames": 184,
+      "load_ms": 17.666,
+      "pack": "enemy/bone_shaman",
+      "texture_mib": 44.172290802002,
+      "textures": 3
+    },
+    {
+      "frame_ms": 24.27,
+      "frames": 306,
+      "load_ms": 17.977,
+      "pack": "enemy/rift_cutter",
+      "texture_mib": 35.0829162597656,
+      "textures": 2
+    },
+    {
+      "frame_ms": 20.667,
+      "frames": 184,
+      "load_ms": 14.92,
+      "pack": "enemy/rift_shieldbearer",
+      "texture_mib": 32.2114334106445,
+      "textures": 2
+    },
+    {
+      "frame_ms": 29.14,
+      "frames": 184,
+      "load_ms": 20.754,
+      "pack": "enemy/small_biter",
+      "texture_mib": 57.4202156066895,
+      "textures": 3
+    },
+    {
+      "frame_ms": 36.26,
+      "frames": 208,
+      "load_ms": 22.989,
+      "pack": "enemy/spark_runner",
+      "texture_mib": 38.8935775756836,
+      "textures": 2
+    },
+    {
+      "frame_ms": 18.931,
+      "frames": 216,
+      "load_ms": 12.442,
+      "pack": "enemy/stone_bruiser",
+      "texture_mib": 32.560302734375,
+      "textures": 2
+    },
+    {
+      "frame_ms": 41.936,
+      "frames": 184,
+      "load_ms": 24.733,
+      "pack": "enemy/venom_spitter",
+      "texture_mib": 79.6579437255859,
+      "textures": 4
+    },
+    {
+      "frame_ms": 29.351,
+      "frames": 184,
+      "load_ms": 18.854,
+      "pack": "enemy/void_mage",
+      "texture_mib": 46.239673614502,
+      "textures": 3
+    },
+    {
+      "frame_ms": 42.322,
+      "frames": 224,
+      "load_ms": 25.239,
+      "pack": "enemy/winged_spark",
+      "texture_mib": 66.8237762451172,
+      "textures": 4
+    },
+    {
+      "frame_ms": 46.875,
+      "frames": 344,
+      "load_ms": 31.216,
+      "pack": "elite/iron_bastion",
+      "texture_mib": 86.7676200866699,
+      "textures": 5
+    },
+    {
+      "frame_ms": 32.399,
+      "frames": 488,
+      "load_ms": 28.361,
+      "pack": "elite/mini_bone_warden",
+      "texture_mib": 65.4195709228516,
+      "textures": 4
+    },
+    {
+      "frame_ms": 37.118,
+      "frames": 488,
+      "load_ms": 25.818,
+      "pack": "elite/mini_plague_bellringer",
+      "texture_mib": 56.0407752990723,
+      "textures": 3
+    },
+    {
+      "frame_ms": 24.064,
+      "frames": 424,
+      "load_ms": 17.279,
+      "pack": "elite/mini_plague_berserker",
+      "texture_mib": 33.158576965332,
+      "textures": 2
+    },
+    {
+      "frame_ms": 39.621,
+      "frames": 264,
+      "load_ms": 25.305,
+      "pack": "elite/mini_rot_hound",
+      "texture_mib": 76.3652038574219,
+      "textures": 4
+    },
+    {
+      "frame_ms": 40.144,
+      "frames": 488,
+      "load_ms": 26.881,
+      "pack": "elite/mini_scavenger_reaper",
+      "texture_mib": 60.9901008605957,
+      "textures": 3
+    },
+    {
+      "frame_ms": 48.132,
+      "frames": 488,
+      "load_ms": 45.662,
+      "pack": "elite/mini_shadow_devourer",
+      "texture_mib": 69.6958465576172,
+      "textures": 4
+    },
+    {
+      "frame_ms": 45.793,
+      "frames": 488,
+      "load_ms": 31.877,
+      "pack": "elite/mini_siege_rammer",
+      "texture_mib": 71.8310699462891,
+      "textures": 4
+    },
+    {
+      "frame_ms": 29.073,
+      "frames": 488,
+      "load_ms": 24.94,
+      "pack": "elite/mini_spark_wight",
+      "texture_mib": 53.6714820861816,
+      "textures": 3
+    },
+    {
+      "frame_ms": 36.604,
+      "frames": 488,
+      "load_ms": 25.418,
+      "pack": "elite/mini_swarm_sniper",
+      "texture_mib": 60.5660285949707,
+      "textures": 3
+    },
+    {
+      "frame_ms": 45.852,
+      "frames": 488,
+      "load_ms": 40.027,
+      "pack": "elite/mini_void_phantom",
+      "texture_mib": 60.2592658996582,
+      "textures": 3
+    },
+    {
+      "frame_ms": 56.568,
+      "frames": 368,
+      "load_ms": 50.624,
+      "pack": "elite/night_stalker",
+      "texture_mib": 108.933906555176,
+      "textures": 6
+    },
+    {
+      "frame_ms": 22.393,
+      "frames": 248,
+      "load_ms": 15.499,
+      "pack": "elite/plague_prophet",
+      "texture_mib": 39.0829010009766,
+      "textures": 2
+    },
+    {
+      "frame_ms": 37.864,
+      "frames": 504,
+      "load_ms": 25.221,
+      "pack": "elite/shard_marshal",
+      "texture_mib": 58.702808380127,
+      "textures": 3
+    },
+    {
+      "frame_ms": 54.292,
+      "frames": 448,
+      "load_ms": 51.283,
+      "pack": "boss/ashen_colossus",
+      "texture_mib": 56.1206016540527,
+      "textures": 3
+    },
+    {
+      "frame_ms": 63.84,
+      "frames": 448,
+      "load_ms": 60.168,
+      "pack": "boss/bloodthorn_lion",
+      "texture_mib": 84.9681205749512,
+      "textures": 5
+    },
+    {
+      "frame_ms": 54.437,
+      "frames": 448,
+      "load_ms": 45.862,
+      "pack": "boss/bone_archon",
+      "texture_mib": 60.7142219543457,
+      "textures": 3
+    },
+    {
+      "frame_ms": 71.567,
+      "frames": 448,
+      "load_ms": 63.36,
+      "pack": "boss/brood_mother",
+      "texture_mib": 75.8789901733398,
+      "textures": 4
+    },
+    {
+      "frame_ms": 53.409,
+      "frames": 328,
+      "load_ms": 40.229,
+      "pack": "boss/disk_devourer",
+      "texture_mib": 89.6157875061035,
+      "textures": 5
+    },
+    {
+      "frame_ms": 52.498,
+      "frames": 448,
+      "load_ms": 39.213,
+      "pack": "boss/rift_warden",
+      "texture_mib": 61.4334297180176,
+      "textures": 3
+    },
+    {
+      "frame_ms": 24.58,
+      "frames": 26,
+      "load_ms": 10.014,
+      "pack": "ally/druid_beast",
+      "texture_mib": 5.13839340209961,
+      "textures": 1
+    },
+    {
+      "frame_ms": 17.678,
+      "frames": 153,
+      "load_ms": 11.699,
+      "pack": "ally/druid_ghost_bear",
+      "texture_mib": 17.2904014587402,
+      "textures": 1
+    },
+    {
+      "frame_ms": 20.46,
+      "frames": 153,
+      "load_ms": 12.029,
+      "pack": "ally/druid_ghost_lion",
+      "texture_mib": 14.9998893737793,
+      "textures": 1
+    },
+    {
+      "frame_ms": 25.687,
+      "frames": 153,
+      "load_ms": 10.609,
+      "pack": "ally/druid_ghost_panther",
+      "texture_mib": 12.5485649108887,
+      "textures": 1
+    },
+    {
+      "frame_ms": 18.406,
+      "frames": 153,
+      "load_ms": 13.556,
+      "pack": "ally/druid_ghost_stag",
+      "texture_mib": 20.5192527770996,
+      "textures": 1
+    },
+    {
+      "frame_ms": 26.571,
+      "frames": 153,
+      "load_ms": 12.596,
+      "pack": "ally/druid_ghost_wolf",
+      "texture_mib": 15.9160270690918,
+      "textures": 1
+    },
+    {
+      "frame_ms": 20.5,
+      "frames": 26,
+      "load_ms": 9.289,
+      "pack": "ally/druid_pack_spirit",
+      "texture_mib": 4.37481307983398,
+      "textures": 1
+    },
+    {
+      "frame_ms": 15.294,
+      "frames": 26,
+      "load_ms": 8.421,
+      "pack": "ally/homunculus",
+      "texture_mib": 4.40899276733398,
+      "textures": 1
+    },
+    {
+      "frame_ms": 20.632,
+      "frames": 206,
+      "load_ms": 15.909,
+      "pack": "ally/homunculus_tank",
+      "texture_mib": 31.3781967163086,
+      "textures": 2
+    },
+    {
+      "frame_ms": 12.3,
+      "frames": 26,
+      "load_ms": 5.867,
+      "pack": "ally/leadership_echo",
+      "texture_mib": 3.31187057495117,
+      "textures": 1
+    },
+    {
+      "frame_ms": 147.263,
+      "frames": 912,
+      "load_ms": 138.038,
+      "pack": "boss/secret_ascension_boss",
+      "texture_mib": 287.085792541504,
+      "textures": 14
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 extends RefCounted
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 # Non-executable scenario runner. The quality gate discovers every script that
 # extends a test, so executable leaves keep that inheritance while this helper
@@ -45,6 +46,7 @@ func _create_combat_fixture() -> Dictionary:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "axe")
 	main.call("_start_combat")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await _suite.create_timer(1.0).timeout
 
 	var player: Node = main.get("current_player")

@@ -236,6 +236,25 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   `boss` entity IDs. It may create `FullFrameBody` (enemies/bosses) or reuse
   `AnimatedBody` (allies) when registry frames exist, while preserving existing
   cutout/static fallback when frames are missing.
+- FAN-3977 (0.3.2 release blocker): every full-frame actor pack (41 registry
+  shards + the secret boss) ships as lossless **trim atlases** built by
+  `tools/build_full_frame_trim_atlases.py`: each frame is trimmed to its
+  alpha bbox (+1 px), unique frames are packed into ≤ 2048² lossless pages,
+  and the SpriteFrames references an `AtlasTexture` per frame whose
+  `margin` restores the 512/256 canvas offset and logical size, so scale,
+  position, flip and `get_size()` consumers are unchanged (8,988 MiB →
+  1,695 MiB of RGBA; `tests/full_frame_trim_atlas_parity_test.gd` proves
+  source-pixel identity and render parity). The retained per-frame PNGs stay
+  as art sources and are excluded from the export presets. Residency: the
+  route map warms the **core roster** (all enemies, every mini-elite kind,
+  the selected class's allies — `scripts/full_frame_encounter_roster.gd`),
+  `CombatDirector._finalize_combat_start` waits for the encounter roster
+  (node elite / boss added, unusable packs released via `retain_only`) before
+  anything spawns, and while a fight is active the registry's combat guard
+  never loads a pack on the main thread (miss → static/rig fallback, one
+  warning, background queue, deferred swap, counted by
+  `synchronous_combat_load_count`; `tests/full_frame_combat_residency_test.gd`).
+
 - SCRUM-363 integrated the first SCRUM-352 enemy pilot: `rift_cutter` now has
   padded full-frame SpriteFrames at
   `assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres` with

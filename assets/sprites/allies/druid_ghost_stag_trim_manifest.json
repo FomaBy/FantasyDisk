@@ -1,0 +1,3239 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "druid_ghost_stag",
+ "tres": "res://assets/sprites/allies/ally_druid_ghost_stag_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 153,
+ "unique_frames": 88,
+ "source_rgba_bytes": 27262976,
+ "page_rgba_bytes": 16138240,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag_trim_0.png",
+   "width": 2048,
+   "height": 1970,
+   "sha256": "27900e1545af0538d71cfefd12be4d137aac71eb3f3692906c10ced811862920"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_00.png",
+   "sha256": "29b1a5369331e58fdaea8cfd32bb94e50e21c6c03d4dfa8a6fe72b137af5c089"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_01.png",
+   "sha256": "4ab6fd078a8f646eab3b94b4571b571ca533e54462520d099836dbaf47ecc8a7"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_02.png",
+   "sha256": "4683eeea604ebeb39115d62722cb8bc09cdbafbba1efca3f0f8d6817e8e3c25b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_03.png",
+   "sha256": "f7254c0df40f64b8645d8b78e37f8e7e2bd12a2e362d22af336c5c1cc50396b3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_04.png",
+   "sha256": "93ead671f58b38c67efa46a0143c6b585bb1b73d1792f3dd82396ba66de45e47"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_05.png",
+   "sha256": "02309dcf5ac5735a53bae3fb3ef3a56724f0eaf7679b30f3d70dcee0cd7c39ca"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_00.png",
+   "sha256": "1ddf17c004e02cba6ca9f42c31376da7bb94f029bd5894f9afec697495e05116"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_01.png",
+   "sha256": "3f2e8955936e33a0e66d2e8546603321a531974d77e351f9e36b3e93a280f0db"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_02.png",
+   "sha256": "6a112dbe8a179803ef1c3781a81b875588e64000434e3fa66bf89858e82115f7"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_03.png",
+   "sha256": "e72b2d392cad5f9d87725f34e01270dc3e88b322f03a1f137ae333aac7f1a7cb"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_04.png",
+   "sha256": "bf1735baea0211915f1588f4e713ba94e4619c2f17a977f777479f9d48fe8d1b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_05.png",
+   "sha256": "780f62d1be5126003805e49e3a5cbd363fba13028ae9e22f40871824bdec13ac"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_00.png",
+   "sha256": "67dbdaf3a36b47401d2d1388dc496296fa373793909e58c4ef931b2d705894c8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_01.png",
+   "sha256": "1180c29cbba45da98a57a90fc318336aa9b6a67e5444f5f75a61a28a6c98b958"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_02.png",
+   "sha256": "86eec6fa4c938568cc154eea387d27f949db04504e421c9513a47f22219fbdd3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_03.png",
+   "sha256": "6f366f508b1650a5f277d1cd99cff8b196e35a16364a60ddca11082fdff3d986"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_04.png",
+   "sha256": "00fb7a1bb1416dbccdb29f72093ff338ef61602954b9b18f1c93c72c44a01e2c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_05.png",
+   "sha256": "a34c1337b4ca90d5d9713cb32c29943a9b2b5e709a490a9a822ea53ce1bcc1a0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_00.png",
+   "sha256": "d91a34aebdf012314a3631cd91fc3c1582613e0be92411ff8af871e5935ea268"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_01.png",
+   "sha256": "32f1a385e68cfd7c2aa8bdd554ccd6f691664e01f82c42cd3276d4fbf63b6393"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_02.png",
+   "sha256": "8868808de54adcbb83ebcf961180be4e3285587fb87096ae04cd5917d3fc89ab"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_03.png",
+   "sha256": "d65f338335559a6bda34e3af76feef52dbf4c48b55a5f8edf2b151bd67194d4e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_04.png",
+   "sha256": "c49f4d0d720cec812bf89ad543571d8702ed629abea7c00004a02a069c3b2186"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_05.png",
+   "sha256": "f760282c5742ef2e2b10d76e1c158cf677824524187b6b936e136eb061a08b12"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_00.png",
+   "sha256": "2aea18af17db5b345cc0cf9e9ba7b3e1ed686daed5f73024d4b84f2cdfd68326"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_01.png",
+   "sha256": "cc71afbb330da82d28261dd4e636aa20e516b37caeab474a2bc10c3288c3a1a9"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_02.png",
+   "sha256": "c30b47417850a1ae87e408b08bde330e4027727a0939a47a6930d584bbe14b65"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_03.png",
+   "sha256": "d38d913165d9fd8a1bf18985c0e9a5df22f4c622d4df44093ebb35f2f3eace50"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_04.png",
+   "sha256": "9b059636c06c3982126969190cd100b21e804a72e53fb37a13a05ab19a97cbaa"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_05.png",
+   "sha256": "925b6131037c5db194441d1b5abce22dbd8a8b24784712148148456daef12c36"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_00.png",
+   "sha256": "a062f1f4c237e5d08d2d53ac306035ceb261a2edafcef268a1599b5107027cf3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_01.png",
+   "sha256": "161109b8455849affd9e4d75bb1ccd5093edb58f2e61540b2dcdb41924c99b42"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_02.png",
+   "sha256": "91383523ea852bfd7fd9369e5856a5d6da2b04fe8d899ba19b960fb9fe5ae595"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_03.png",
+   "sha256": "13627f7343ebae4ae981075d941967df998858adba87c2a30febd238f40c218f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_04.png",
+   "sha256": "bd6c63536d025b72fd1e122a03535a1b45ae84bf5ce2e650940f957ad088633f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_05.png",
+   "sha256": "66c02114d67df35926e9a64f97fc9048b89800521b2008035e967c4b772e3e6c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_00.png",
+   "sha256": "abcba4e9ffe7a9c05e47634983a057565208ea3a126795491b536288e0f23bae"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_01.png",
+   "sha256": "396bcfe723f6304e90a60038373e5ed03822ab197f261fca21f6a020e6cf0162"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_02.png",
+   "sha256": "1e12efd1abf9b9184e9f2b324603dfafb34e106908875b979a3d174b6e7a82ff"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_03.png",
+   "sha256": "b104be5742f91d81f28d3b477991630ad50e55342276c7e64938e3eae71fcf71"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_04.png",
+   "sha256": "6c7c243be68d74e1012ed23bc24ea603dba8f4a232d91e5c00dee9c88188bef3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_05.png",
+   "sha256": "36eb6d18d31c388f43b809c4ecf9403e5acaefc0450d855bde52e2e22581c788"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_00.png",
+   "sha256": "8a1d8028dfda023c09da496b8eb651d01e1bc25330a617c04385b140e132d9f0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_01.png",
+   "sha256": "575d449b70d95973000841b0313fe209f46fa29fc5cbd21aae6b23487aa7d7cb"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_02.png",
+   "sha256": "7c18664d677d86480ce3fa3b140ecc6bf8aab73624c0883e44d43d172d0534a1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_03.png",
+   "sha256": "0b5541f0ca2f1141b84dcbda0d853300d5d7bb6b6aca3edc8d909e53769bac0c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_04.png",
+   "sha256": "bc6fb562fe075843389ca7bff9276133bcd2eb51ec9479f765beedb8c1caaa18"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_05.png",
+   "sha256": "38835a69c99206f4c359fcc2c3bc8663cf5408493867d99ccb175078d96e0f2e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_east_00.png",
+   "sha256": "29b1a5369331e58fdaea8cfd32bb94e50e21c6c03d4dfa8a6fe72b137af5c089"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_00.png",
+   "sha256": "1ddf17c004e02cba6ca9f42c31376da7bb94f029bd5894f9afec697495e05116"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_east_00.png",
+   "sha256": "67dbdaf3a36b47401d2d1388dc496296fa373793909e58c4ef931b2d705894c8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_west_00.png",
+   "sha256": "d91a34aebdf012314a3631cd91fc3c1582613e0be92411ff8af871e5935ea268"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_00.png",
+   "sha256": "2aea18af17db5b345cc0cf9e9ba7b3e1ed686daed5f73024d4b84f2cdfd68326"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_east_00.png",
+   "sha256": "a062f1f4c237e5d08d2d53ac306035ceb261a2edafcef268a1599b5107027cf3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_west_00.png",
+   "sha256": "abcba4e9ffe7a9c05e47634983a057565208ea3a126795491b536288e0f23bae"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_west_00.png",
+   "sha256": "8a1d8028dfda023c09da496b8eb651d01e1bc25330a617c04385b140e132d9f0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_00.png",
+   "sha256": "29b1a5369331e58fdaea8cfd32bb94e50e21c6c03d4dfa8a6fe72b137af5c089"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_01.png",
+   "sha256": "cfbb0b6b72f7b1421286ccd6f318ff89851ad2f303bc9be91c75488d8b027e92"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_02.png",
+   "sha256": "9b1ab83204622d9c282ac0515803c676c15142182b1492f9dae3d6204f93756d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_03.png",
+   "sha256": "08554f609d36e66e8ca2de7720d396b73b7153f49dd910296fec8887d333df86"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_04.png",
+   "sha256": "2862322eb68396d4a2541065056e21342fc46f6c53a276894273e2b81f163e85"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_05.png",
+   "sha256": "91ae4cbd93378f422e2fd50a9f01cf5717b5086152b70b279c7bbb1a92ecab63"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_00.png",
+   "sha256": "1ddf17c004e02cba6ca9f42c31376da7bb94f029bd5894f9afec697495e05116"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_01.png",
+   "sha256": "161496c692e8dcbe0cb36aa0327f24d09d312debfd712588e55bc135cf88500b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_02.png",
+   "sha256": "83255d01c60fd877b65b798a568d34308086675cd02bd0a1f4eff70d66f4a4c8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_03.png",
+   "sha256": "dde414126089426d763d283f557bca6cae05d36cf584b9d6d0a53a9474bb1862"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_04.png",
+   "sha256": "bccb060b38d00a0279fe0a52a1247e3ca19cfafda4dc99b5fb349024f15e532a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_05.png",
+   "sha256": "2eb91baf64f211a76093c02d27b8b8b4fd6d1ebe8ce71d850d0c2e43b1404df3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_00.png",
+   "sha256": "67dbdaf3a36b47401d2d1388dc496296fa373793909e58c4ef931b2d705894c8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_01.png",
+   "sha256": "68ce926e70798a81988e07760ecbc5a8ce4444f6395efacbd99331997bac53c4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_02.png",
+   "sha256": "3ed1439f453e04699246cbadec409ccbddac517b2639684703ad69137bfabab8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_03.png",
+   "sha256": "f0a0aafb3d165a23b09723fd40ffd69484fc794e44173abaeab9d94caa2b75f4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_04.png",
+   "sha256": "99904a87982883c92af31fcddd0a3f37a5f8408428849836bed48eba3f1cf31e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_05.png",
+   "sha256": "590dc7dbc9607e2e874d92af660c5cd868ac33c08051923a0b7682ce5821b963"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_00.png",
+   "sha256": "d91a34aebdf012314a3631cd91fc3c1582613e0be92411ff8af871e5935ea268"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_01.png",
+   "sha256": "8430f60a71fb16d05d78a6e911ffea251f4269c7a512aba7c2be1ffcf7b653f8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_02.png",
+   "sha256": "e18a171d27df3c76b6d8ee0da4d3d3f5d79aa11ea3646bd450c810aa80023c46"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_03.png",
+   "sha256": "0dff82704dcbd6c60a8cd607135fe0059d452b33c1cf33e6c9e3f02799537796"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_04.png",
+   "sha256": "3897a0dd66e6456be90545d0bb2a6269a037e6617861737b8db409a02aa41991"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_05.png",
+   "sha256": "b6f3cfac4799eb83edb6a5d6c60a2bb9e51f38ca3b055981308d141fce53e590"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_00.png",
+   "sha256": "2aea18af17db5b345cc0cf9e9ba7b3e1ed686daed5f73024d4b84f2cdfd68326"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_01.png",
+   "sha256": "707047cee16631f3056cc4029092e70a1489684e44e034a45100eccf29da5d3b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_02.png",
+   "sha256": "7102b52b179eac1577352783bfdba3c1d052c3c93fe23b153fc7e22d1f7f7b8e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_03.png",
+   "sha256": "983e2b6198353d1631279dd20ddd6927580ba4fb8bf666b7c09e903193485cc4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_04.png",
+   "sha256": "c7a8588ace31e616b3c7829191f292a909aeab2fae5a257671df43d0214e2d63"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_05.png",
+   "sha256": "afb9071c8a828b72525cd62ed549f883fde39314151a9e581141893cf34e6b9e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_00.png",
+   "sha256": "a062f1f4c237e5d08d2d53ac306035ceb261a2edafcef268a1599b5107027cf3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_01.png",
+   "sha256": "ee9816620e8eb8834120b254f77e293e3823b5b3423be7a75fcef0b5132accfe"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_02.png",
+   "sha256": "77ca30616a697b7423f3ee2efd241659d8c725a6d76585d80cac749e78995cae"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_03.png",
+   "sha256": "0eb417d9d5d7f77a2392fe93bcb1362778ef99b5a1aca97ccdb375133f97757f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_04.png",
+   "sha256": "58ac9c1d980c5759f2f1b719d5a24d1306cfc29659d9ccf7e8885eb8e7ed587f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_05.png",
+   "sha256": "cec4082d7f97064a2dfb46257af62e0090720225478bbd7fd8578b4e0915a5c7"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_00.png",
+   "sha256": "abcba4e9ffe7a9c05e47634983a057565208ea3a126795491b536288e0f23bae"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_01.png",
+   "sha256": "1c75e2b6210ef7906e6cd2fb2a8e5b744892125fe535755c040dc48efae8e33d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_02.png",
+   "sha256": "ba1a2b071f718c364c7e4b3e816443757ee64438630ca0ba8d6c33467a6ad230"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_03.png",
+   "sha256": "581bf5ff6c32e838d0107fc4c64e28075509f5a43b8d228d10099da5731193b0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_04.png",
+   "sha256": "c57b62f22aebcc949f301bfa5cd4ef09ed01317cf74bfea3aca6ff83133a479e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_05.png",
+   "sha256": "32cc4a0988fd344681444cbf3f9a5d6439bed05dd523b0a3c0233110d1124248"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_00.png",
+   "sha256": "8a1d8028dfda023c09da496b8eb651d01e1bc25330a617c04385b140e132d9f0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_01.png",
+   "sha256": "63b8ea31a0d63e41e7d2bef260ea61121f6177b288bdde69bd0ae888e3d3c602"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_02.png",
+   "sha256": "fb7e2fe87b30c163b741418ca2f7445da446d2d026cb911300202631202b7492"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_03.png",
+   "sha256": "79f23cc4ffc1acc281348750962bbadc24b27b640eb16e87a01fa8e19f61031f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_04.png",
+   "sha256": "a4df034893a9ffdfc9908eee860b6735168196576591d0a0c8646b1cbdf67605"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_05.png",
+   "sha256": "45175a217c15a55dd140d9b894ba22e7427817b670a066de713c3589bea2b6f1"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    193,
+    205
+   ],
+   "margin": [
+    31,
+    28,
+    63,
+    51
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    196,
+    1,
+    199,
+    204
+   ],
+   "margin": [
+    28,
+    29,
+    57,
+    52
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    397,
+    1,
+    198,
+    204
+   ],
+   "margin": [
+    29,
+    29,
+    58,
+    52
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    597,
+    1,
+    190,
+    204
+   ],
+   "margin": [
+    33,
+    29,
+    66,
+    52
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    789,
+    1,
+    186,
+    204
+   ],
+   "margin": [
+    35,
+    29,
+    70,
+    52
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    977,
+    1,
+    183,
+    204
+   ],
+   "margin": [
+    36,
+    29,
+    73,
+    52
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1162,
+    1,
+    204,
+    202
+   ],
+   "margin": [
+    26,
+    31,
+    52,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1368,
+    1,
+    199,
+    202
+   ],
+   "margin": [
+    28,
+    31,
+    57,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1569,
+    1,
+    196,
+    202
+   ],
+   "margin": [
+    30,
+    31,
+    60,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1767,
+    1,
+    196,
+    202
+   ],
+   "margin": [
+    30,
+    31,
+    60,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1162,
+    205,
+    196,
+    202
+   ],
+   "margin": [
+    30,
+    31,
+    60,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1360,
+    205,
+    196,
+    202
+   ],
+   "margin": [
+    30,
+    31,
+    60,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1558,
+    205,
+    183,
+    202
+   ],
+   "margin": [
+    36,
+    31,
+    73,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1743,
+    205,
+    201,
+    201
+   ],
+   "margin": [
+    27,
+    32,
+    55,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    196,
+    207,
+    198,
+    201
+   ],
+   "margin": [
+    29,
+    32,
+    58,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    396,
+    207,
+    195,
+    201
+   ],
+   "margin": [
+    30,
+    32,
+    61,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    593,
+    207,
+    193,
+    201
+   ],
+   "margin": [
+    31,
+    32,
+    63,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    788,
+    207,
+    193,
+    201
+   ],
+   "margin": [
+    31,
+    32,
+    63,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    208,
+    193,
+    201
+   ],
+   "margin": [
+    31,
+    32,
+    63,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1743,
+    408,
+    192,
+    201
+   ],
+   "margin": [
+    32,
+    32,
+    64,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    983,
+    409,
+    192,
+    201
+   ],
+   "margin": [
+    32,
+    32,
+    64,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1177,
+    409,
+    192,
+    201
+   ],
+   "margin": [
+    32,
+    32,
+    64,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1371,
+    409,
+    192,
+    201
+   ],
+   "margin": [
+    32,
+    32,
+    64,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    196,
+    410,
+    190,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    66,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    388,
+    410,
+    190,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    66,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    580,
+    410,
+    190,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    66,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    772,
+    410,
+    190,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    66,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    411,
+    190,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    66,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1565,
+    611,
+    190,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    66,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1757,
+    611,
+    189,
+    201
+   ],
+   "margin": [
+    33,
+    32,
+    67,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    964,
+    612,
+    198,
+    199
+   ],
+   "margin": [
+    29,
+    34,
+    58,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1164,
+    612,
+    198,
+    199
+   ],
+   "margin": [
+    29,
+    34,
+    58,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1364,
+    612,
+    195,
+    199
+   ],
+   "margin": [
+    30,
+    34,
+    61,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    193,
+    613,
+    190,
+    199
+   ],
+   "margin": [
+    33,
+    34,
+    66,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    385,
+    613,
+    187,
+    199
+   ],
+   "margin": [
+    34,
+    34,
+    69,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    574,
+    613,
+    202,
+    198
+   ],
+   "margin": [
+    27,
+    35,
+    54,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    778,
+    613,
+    184,
+    196
+   ],
+   "margin": [
+    36,
+    37,
+    72,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    614,
+    190,
+    198
+   ],
+   "margin": [
+    33,
+    35,
+    66,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    574,
+    813,
+    199,
+    198
+   ],
+   "margin": [
+    28,
+    35,
+    57,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    775,
+    813,
+    199,
+    198
+   ],
+   "margin": [
+    28,
+    35,
+    57,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    976,
+    813,
+    196,
+    198
+   ],
+   "margin": [
+    30,
+    35,
+    60,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1174,
+    813,
+    195,
+    198
+   ],
+   "margin": [
+    30,
+    35,
+    61,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1371,
+    813,
+    190,
+    198
+   ],
+   "margin": [
+    33,
+    35,
+    66,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    814,
+    193,
+    198
+   ],
+   "margin": [
+    31,
+    35,
+    63,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    196,
+    814,
+    187,
+    198
+   ],
+   "margin": [
+    34,
+    35,
+    69,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    385,
+    814,
+    186,
+    193
+   ],
+   "margin": [
+    35,
+    40,
+    70,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1563,
+    814,
+    198,
+    196
+   ],
+   "margin": [
+    29,
+    37,
+    58,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1763,
+    814,
+    196,
+    196
+   ],
+   "margin": [
+    30,
+    37,
+    60,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1563,
+    1012,
+    190,
+    196
+   ],
+   "margin": [
+    33,
+    37,
+    66,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1755,
+    1012,
+    190,
+    196
+   ],
+   "margin": [
+    33,
+    37,
+    66,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    385,
+    1013,
+    189,
+    196
+   ],
+   "margin": [
+    33,
+    37,
+    67,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    576,
+    1013,
+    202,
+    195
+   ],
+   "margin": [
+    27,
+    38,
+    54,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    780,
+    1013,
+    196,
+    195
+   ],
+   "margin": [
+    30,
+    38,
+    60,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    978,
+    1013,
+    196,
+    195
+   ],
+   "margin": [
+    30,
+    38,
+    60,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1176,
+    1013,
+    196,
+    195
+   ],
+   "margin": [
+    30,
+    38,
+    60,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1374,
+    1013,
+    186,
+    190
+   ],
+   "margin": [
+    35,
+    43,
+    70,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1014,
+    193,
+    195
+   ],
+   "margin": [
+    31,
+    38,
+    63,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    196,
+    1014,
+    187,
+    187
+   ],
+   "margin": [
+    34,
+    46,
+    69,
+    69
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    576,
+    1210,
+    193,
+    195
+   ],
+   "margin": [
+    31,
+    38,
+    63,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    771,
+    1210,
+    223,
+    193
+   ],
+   "margin": [
+    16,
+    40,
+    33,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    996,
+    1210,
+    217,
+    193
+   ],
+   "margin": [
+    19,
+    40,
+    39,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1215,
+    1210,
+    202,
+    193
+   ],
+   "margin": [
+    27,
+    40,
+    54,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1419,
+    1210,
+    199,
+    193
+   ],
+   "margin": [
+    28,
+    40,
+    57,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1620,
+    1210,
+    195,
+    193
+   ],
+   "margin": [
+    30,
+    40,
+    61,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1817,
+    1210,
+    192,
+    193
+   ],
+   "margin": [
+    32,
+    40,
+    64,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1211,
+    190,
+    193
+   ],
+   "margin": [
+    33,
+    40,
+    66,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    193,
+    1211,
+    190,
+    193
+   ],
+   "margin": [
+    33,
+    40,
+    66,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    385,
+    1211,
+    189,
+    193
+   ],
+   "margin": [
+    33,
+    40,
+    67,
+    63
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    771,
+    1405,
+    226,
+    192
+   ],
+   "margin": [
+    15,
+    41,
+    30,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    999,
+    1405,
+    207,
+    192
+   ],
+   "margin": [
+    24,
+    41,
+    49,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1208,
+    1405,
+    204,
+    192
+   ],
+   "margin": [
+    26,
+    41,
+    52,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1414,
+    1405,
+    202,
+    192
+   ],
+   "margin": [
+    27,
+    41,
+    54,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1618,
+    1405,
+    199,
+    192
+   ],
+   "margin": [
+    28,
+    41,
+    57,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1819,
+    1405,
+    198,
+    192
+   ],
+   "margin": [
+    29,
+    41,
+    58,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1406,
+    196,
+    192
+   ],
+   "margin": [
+    30,
+    41,
+    60,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    199,
+    1406,
+    190,
+    192
+   ],
+   "margin": [
+    33,
+    41,
+    66,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    391,
+    1407,
+    190,
+    192
+   ],
+   "margin": [
+    33,
+    41,
+    66,
+    64
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    583,
+    1599,
+    202,
+    190
+   ],
+   "margin": [
+    27,
+    43,
+    54,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    787,
+    1599,
+    198,
+    190
+   ],
+   "margin": [
+    29,
+    43,
+    58,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    987,
+    1599,
+    196,
+    190
+   ],
+   "margin": [
+    30,
+    43,
+    60,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1185,
+    1599,
+    190,
+    190
+   ],
+   "margin": [
+    33,
+    43,
+    66,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1377,
+    1599,
+    199,
+    187
+   ],
+   "margin": [
+    28,
+    46,
+    57,
+    69
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1578,
+    1599,
+    222,
+    184
+   ],
+   "margin": [
+    17,
+    49,
+    34,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1802,
+    1599,
+    210,
+    184
+   ],
+   "margin": [
+    23,
+    49,
+    46,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1600,
+    201,
+    184
+   ],
+   "margin": [
+    27,
+    49,
+    55,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    204,
+    1601,
+    192,
+    184
+   ],
+   "margin": [
+    32,
+    49,
+    64,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1578,
+    1785,
+    187,
+    184
+   ],
+   "margin": [
+    34,
+    49,
+    69,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1767,
+    1785,
+    213,
+    183
+   ],
+   "margin": [
+    21,
+    50,
+    43,
+    73
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_00.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "walk",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_left",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_right",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_left",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_right",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_00.png"
+}

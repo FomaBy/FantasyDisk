@@ -1,0 +1,3407 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "druid_ghost_bear",
+ "tres": "res://assets/sprites/allies/ally_druid_ghost_bear_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 153,
+ "unique_frames": 96,
+ "source_rgba_bytes": 27262976,
+ "page_rgba_bytes": 13598720,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear_trim_0.png",
+   "width": 2048,
+   "height": 1660,
+   "sha256": "974cf5d16ac85b82af015c55dcfdcbcd47f7a2db82957b17a685860d9459a150"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_00.png",
+   "sha256": "59a9b17e943cf89abb43f1eda663321e8d14353cfa233ac98c818d95669fbe4b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_01.png",
+   "sha256": "bda70466423a88ec715f02bb4842088e983f7cec6aebf0f6dade122ef6894485"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_02.png",
+   "sha256": "aebd6637095df171d08b03469586fc54e668fc01ac44ae441421958858cf5e96"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_03.png",
+   "sha256": "cc455a3e2dc61710f1adbd80b6fb55cd91f9591edaeb75e0e5b5a18edf0c9ac9"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_04.png",
+   "sha256": "453d7b15a22021fb8f0ea5a1fe6c5cb8c1daad864c4d5a1ab0e7b6910c133b1a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_05.png",
+   "sha256": "76cb033c2975e5a9f730dde656f647831c121fe3028d66dbf267edf46441dbae"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_00.png",
+   "sha256": "268be7e30922d301649f4a893f8261ba947c2dba0685413394c47c05891df2b6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_01.png",
+   "sha256": "35b612811a3dc1abdcbc379c263d4e049a216742e7b9893658d9674e1e56d59a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_02.png",
+   "sha256": "49fd50f4dc6f565ea69a9c21c593c27f5966df96e5f21eb592fbbe83c086c5ea"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_03.png",
+   "sha256": "0b3e39ed1af97db098bc8cc59e5e193162c43be04e6bd6d95ea0d1f2fc09a262"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_04.png",
+   "sha256": "d857b0daff2996e680157ebd87d6ed8bce27d8204f43eafa446f72290558b26f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_05.png",
+   "sha256": "9d57c315fc9525fea58d392681c54dd1be08f5a74f075703ad93ec1b8dfee24e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_00.png",
+   "sha256": "f8a087fc8497040da7de8417f05bdddd04b4dd6ae9add6fe01181bcc309ca9e4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_01.png",
+   "sha256": "46b6bcd1c3027fc12014a0c37e6221071e5ff4556a76923e278faa8c4c36563b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_02.png",
+   "sha256": "165e871f75007475381e48b8bf769de204a80144af75a431203fdda8267b42f3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_03.png",
+   "sha256": "2c02a63e75d1b6d7f47dfd62776c5135f7430abdd8c6f15b78105f80b7b015db"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_04.png",
+   "sha256": "801083f98837d2c5be5cde78fa947d96eeb126d8594582da192659a7106f841f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_05.png",
+   "sha256": "490cff461d0b273254ae21de282c94c84a0baab3d7649eb1fb3721a198c7cae2"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_00.png",
+   "sha256": "b3084c64070d241f220b2f0248ae0eff9931f21213ba5376a8506af03e5755af"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_01.png",
+   "sha256": "638d2bae45b07b26c29e5201e5f9a700c2cc44f83a5bd1ac3d0cd6a91933d530"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_02.png",
+   "sha256": "f6aeaa93af89eb53bcb14f00159ff98ff858b36051f432a1b8f2133ed7112143"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_03.png",
+   "sha256": "70be06ab718354ba382e05cc2199a434eb1250d99aa9d5d9051baf8859f4ed77"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_04.png",
+   "sha256": "6d61ccdae7ce0a8580d6ad93d7276580c3a896a7f5bffbe417135a8604ab0a46"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_05.png",
+   "sha256": "7ef8651c7a7c1993fb6fc57c3b0c0340ce852093ddda023bcf27ca62d6f1cab8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_00.png",
+   "sha256": "f24a28917fc2818c38ef920a047251fc089583b2c412358c47cd8f447ad8f674"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_01.png",
+   "sha256": "3dc495eb2c872bcfbd724ffebe2eaf09fc1e31f1c4b8f1ab4bd6f2fdab2d89ea"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_02.png",
+   "sha256": "151dbf9af8c0ea8b67f35c0927fc360da0bfee085e9ff782b7f254f8b5fc68f0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_03.png",
+   "sha256": "1a4334464dcf893311fc0c11b5458629a6e1fc8c7fbdc192c3a65ff084231512"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_04.png",
+   "sha256": "2b927f7a2f5b646ecebc29514f4bc05eabe5f3e6671fc45e2d668b3093290028"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_05.png",
+   "sha256": "274bd4b1c6bb020386e7b2e4ea7d9422ef39bb9e09bc72ca5d36e345163172ae"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_00.png",
+   "sha256": "122e5cd13bb543b25742068d4956ed017d944c6502e0944059b731dab8532254"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_01.png",
+   "sha256": "d0dc8053ee617f9a2adbaee8e61a1e1427996ec854969350f95ef3aeee998b17"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_02.png",
+   "sha256": "04c25d174ff1f5716d40bebc12bfeccc766b9de1102b4dd9d6755cc1fe689476"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_03.png",
+   "sha256": "40de679e0c918f81c504ef5c083fc283c13971257208373da81aa656ddc5700b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_04.png",
+   "sha256": "9a48d8bd1276bc428174a069891f44af058361f1423297723f618dc887dc6cf2"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_05.png",
+   "sha256": "446cdf988c4334846d0ee9fcb76a981a6fd17f7a0566b2752e30077d90b1ba14"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_00.png",
+   "sha256": "4ae8e1dbbd19e25f01856c1d17628bbad53437600b07c1d746da69c165a8ed1b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_01.png",
+   "sha256": "d712fec87eeebd6ac9f705f2374a866fd385c05ceef8f2f3d1370da7d4bfa3b8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_02.png",
+   "sha256": "bf3eb7ebfafb21226efd565ff8809eba529ed5fda498ec03f3974222be5b598b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_03.png",
+   "sha256": "e61991c83e91768d6088a95f49589958068d1b032b854937414620dd55ffd735"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_04.png",
+   "sha256": "0d363ea95c55694d0987407ea9398c2b83a15f6437fe82b2de583f3e364f4e67"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_05.png",
+   "sha256": "c5c324bbdb8492cccebfe8b298b6c429f8d3caa4e5501ec883438209dd9e9c82"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_00.png",
+   "sha256": "c981bd168025ee7027998c51a41177327f2c297e52c368ff8071af1a9942d8fd"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_01.png",
+   "sha256": "74a19fbc2972bca8692015c6edcd55f88425c2a87cdc788bcd3019a8ad327602"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_02.png",
+   "sha256": "52ec32c8085c73ebaa8a56fc0d4122e589288094a133c990dec42183b0394a23"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_03.png",
+   "sha256": "a757b9895e9286dea6cd278f23f719f121fa2027a6ac700dc4f70db7c5e2919f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_04.png",
+   "sha256": "eb73011776eba7fbe2de3c16a05f2af1eb75bef49cc1103aaa0e9df98cdfe702"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_05.png",
+   "sha256": "3bcf06e25be1d976188c7b50900ad40da48e2b2e0166d587058cbc2f87ce1c02"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_east_00.png",
+   "sha256": "2011b4f9571cb85ccaf071738ac683dccb9b6a0bee0b271713ca27937a92f597"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_00.png",
+   "sha256": "d68131e0e21aa6e24f286e8f0120e6aa36cefb9b3e5247940229e1ad11ab1aa5"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_east_00.png",
+   "sha256": "3d52f9ad2a67f3ee897c090528cb4bbf4108f940e51166ce295e2fd1bfdae84e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_west_00.png",
+   "sha256": "7f7f35e9c11a92fdb33139d7f5d3df48feedac1414e7743cf59d8aa6c1856a8b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_00.png",
+   "sha256": "7eabbb21a01ac222943f6621e59a1c4e0cf77da032a911d3bcf88c072088336e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_east_00.png",
+   "sha256": "f00d611f406a78ec998c696c5e1a6f879e91324e11335c1796e0017cfa6710fa"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_west_00.png",
+   "sha256": "add00d998ba1eeb74eac656f6559f6a1d5817ced6d9855bc60724a67d1efc155"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_west_00.png",
+   "sha256": "7c3352baae6e4952d940e1223cdcb61c691cd4cba7bf6171d720de339238e79c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_00.png",
+   "sha256": "59a9b17e943cf89abb43f1eda663321e8d14353cfa233ac98c818d95669fbe4b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_01.png",
+   "sha256": "e3126c627a2687cbc8727104fdf839431a5ab908e87e53e4e64a02c4bb9d3ad7"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_02.png",
+   "sha256": "1f2ddbd90c7761ff46e9cc8d11b449536f30b2024684e9a85a95432a79a373b5"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_03.png",
+   "sha256": "1b6c134f8fb2c4d567e879fe71d2c2fc2d4d1bcf9b279a146ee747682a5b693f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_04.png",
+   "sha256": "c709a47e7fdbd1ff3712659a9f578ad6cda3c6554e0ddb2bf8542016dc3a13e6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_05.png",
+   "sha256": "3afd6f756d9d29895c45f52e44252539ff18c94c6ef2568ec8d05979d732288e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_00.png",
+   "sha256": "268be7e30922d301649f4a893f8261ba947c2dba0685413394c47c05891df2b6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_01.png",
+   "sha256": "fc5d2c565204de4b4bd5ae0f5bab50700210552a95eeecc2444a0f8598a34e21"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_02.png",
+   "sha256": "67eca99badf5243170ad3a54aa348e6622437e0e014e78cff41cec9bff907fd1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_03.png",
+   "sha256": "37fa12fa90f46c733dd82892a2fe72e0fa61924f044d0c12b4ba592d1f78dcf9"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_04.png",
+   "sha256": "a4bf1b4114901c6c0d4e031ee375b66d2785fec9306caa3671c5911dc2542428"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_05.png",
+   "sha256": "93f00c7e34c94d43b5b9a2713ffe8a73d826e8151f02175cd06254742f55b5a8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_00.png",
+   "sha256": "f8a087fc8497040da7de8417f05bdddd04b4dd6ae9add6fe01181bcc309ca9e4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_01.png",
+   "sha256": "52f24187b14cf7bb5e566041cdc3c80d0766cc1dd5ea383519afc40c8da9fa29"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_02.png",
+   "sha256": "b18350595ad9d56bad3ce2d5330067366221543d403865dc87b9aeed9c32e353"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_03.png",
+   "sha256": "a085d9e3485ef79b37389460fd626731bb2b46e62ef53653cd4ae6ad4f370fd2"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_04.png",
+   "sha256": "3c5ae29fff7becc9ccfb4331a0e2fe1a029abedb9afbd7b853f3637879597979"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_05.png",
+   "sha256": "e1f1390bc4c9de11cdbc5b0c3202ff42b646dc927a4a96e020df6869ccba19fb"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_00.png",
+   "sha256": "b3084c64070d241f220b2f0248ae0eff9931f21213ba5376a8506af03e5755af"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_01.png",
+   "sha256": "a0c5249cafc2547a6fe0ded05bd836e120b06e1fce4703d883b4e3d9fc4b82a6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_02.png",
+   "sha256": "bb6da29fed2ae53d677a0716bc3c39f507c2bb6bfa94d73f51ee29776d65e425"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_03.png",
+   "sha256": "f91db899eefef39dbf32cd803fc6fcd34421511302eefc36ef54aea7eb95eb74"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_04.png",
+   "sha256": "eb8440e9c9b0de67c70d87ed38c8d7bd5b67fe85593cd55a3b30ffca9f062d34"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_05.png",
+   "sha256": "15000ec0735a46c922ce99bbea4974ebc8539413cd6dfefefdbeaeeb6fb4e13d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_00.png",
+   "sha256": "f24a28917fc2818c38ef920a047251fc089583b2c412358c47cd8f447ad8f674"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_01.png",
+   "sha256": "4a66a185bb8323450ddc3827a799888cd435ce8f40415c191257a74d9f2a4751"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_02.png",
+   "sha256": "e07cf3f7f1684536068f885e2be734c6e52097a3d03ed7ce9648417fb265bb6b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_03.png",
+   "sha256": "1ce395c6a259e6424369a77cb28d573c1adad06631d79cf930eb0b0bfdfb2d49"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_04.png",
+   "sha256": "47ffbeacc5a7d3ec1d75b4feecad346494d4f2f64d5b124c3afca1bcf9041bee"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_05.png",
+   "sha256": "279defc70ecaa74f2d2e491e4bab305df113470469264c8fa311094e3ed08699"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_00.png",
+   "sha256": "122e5cd13bb543b25742068d4956ed017d944c6502e0944059b731dab8532254"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_01.png",
+   "sha256": "c7dc8aa1bf009c5c7602486b2942673890c5c2b4616390972dd303ed22c5c3a8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_02.png",
+   "sha256": "32727e2063eabdec915133dba4ce58f9dee3f08e507c8a4244064304cfb3fe25"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_03.png",
+   "sha256": "e418c70ab7627894fb5bd607b2be00c7ee98e8481dfe61305918b2f759fa781f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_04.png",
+   "sha256": "09c1f0e8c43bec3872ca561da45471f0d5f8b877c6bdee510161109caa8be586"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_05.png",
+   "sha256": "987ac17f47f1ffffa359ccfd47f6d07b3cdcacaa9acccc3ad240974b3dcd98f6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_00.png",
+   "sha256": "4ae8e1dbbd19e25f01856c1d17628bbad53437600b07c1d746da69c165a8ed1b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_01.png",
+   "sha256": "77c2df0929f188f500984083534897639e4c3ebff5151264ba4df71cedabc3d3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_02.png",
+   "sha256": "89987185299c490a187725e8fcbe17e2188cd27bf4d999b26b9ba00a54b3e5c0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_03.png",
+   "sha256": "e0767cec13c109099d52fed9ce1909e20c0bd8ef5c51c53cafe2fa444752c6ac"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_04.png",
+   "sha256": "1ea0f3a8e18e2d1691d25daa3c0520a0a2ea16470c1bd8b66a801504cad68127"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_05.png",
+   "sha256": "999c41f20fb50a7419d4e938b0cc0d85965ccf43012e978f53150dbe5d7a2c54"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_00.png",
+   "sha256": "c981bd168025ee7027998c51a41177327f2c297e52c368ff8071af1a9942d8fd"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_01.png",
+   "sha256": "0cac07f1086187da0b09e985dc2750b27de60be3427ab70fe43b861a5c9a72dd"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_02.png",
+   "sha256": "e0a4926890e3d0105a1314877c229cfb27c0f3504931843733b91f4c2670b382"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_03.png",
+   "sha256": "6814afe8e4998feb1f1617a6af85b82fa9a28b95f8bda1d960d1c81d8a61a7de"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_04.png",
+   "sha256": "11dc93428ad854cd8d54b07434c21098f3a947a97dfba5e55335e87c66c89131"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_05.png",
+   "sha256": "90a5a888059502b337f21b55c4a164ec98d0aa470af40c166f81bb54d106d108"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    196,
+    210
+   ],
+   "margin": [
+    30,
+    23,
+    60,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    199,
+    1,
+    167,
+    203
+   ],
+   "margin": [
+    44,
+    30,
+    89,
+    53
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    368,
+    1,
+    177,
+    202
+   ],
+   "margin": [
+    39,
+    31,
+    79,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    547,
+    1,
+    148,
+    202
+   ],
+   "margin": [
+    54,
+    31,
+    108,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    697,
+    1,
+    151,
+    199
+   ],
+   "margin": [
+    52,
+    34,
+    105,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    850,
+    1,
+    141,
+    199
+   ],
+   "margin": [
+    57,
+    34,
+    115,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    993,
+    1,
+    133,
+    199
+   ],
+   "margin": [
+    61,
+    34,
+    123,
+    57
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1128,
+    1,
+    147,
+    198
+   ],
+   "margin": [
+    54,
+    35,
+    109,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1277,
+    1,
+    147,
+    198
+   ],
+   "margin": [
+    54,
+    35,
+    109,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1426,
+    1,
+    143,
+    198
+   ],
+   "margin": [
+    56,
+    35,
+    113,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1571,
+    1,
+    138,
+    198
+   ],
+   "margin": [
+    59,
+    35,
+    118,
+    58
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1711,
+    1,
+    191,
+    196
+   ],
+   "margin": [
+    32,
+    37,
+    65,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1904,
+    1,
+    136,
+    191
+   ],
+   "margin": [
+    60,
+    42,
+    120,
+    65
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1711,
+    199,
+    182,
+    196
+   ],
+   "margin": [
+    37,
+    37,
+    74,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1895,
+    199,
+    147,
+    196
+   ],
+   "margin": [
+    54,
+    37,
+    109,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1128,
+    201,
+    144,
+    196
+   ],
+   "margin": [
+    56,
+    37,
+    112,
+    60
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1274,
+    201,
+    206,
+    195
+   ],
+   "margin": [
+    25,
+    38,
+    50,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1482,
+    201,
+    176,
+    195
+   ],
+   "margin": [
+    40,
+    38,
+    80,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    697,
+    202,
+    155,
+    195
+   ],
+   "margin": [
+    50,
+    38,
+    101,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    854,
+    202,
+    148,
+    195
+   ],
+   "margin": [
+    54,
+    38,
+    108,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    368,
+    205,
+    182,
+    191
+   ],
+   "margin": [
+    37,
+    42,
+    74,
+    65
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    552,
+    205,
+    143,
+    189
+   ],
+   "margin": [
+    56,
+    44,
+    113,
+    67
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    199,
+    206,
+    158,
+    191
+   ],
+   "margin": [
+    49,
+    42,
+    98,
+    65
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    213,
+    154,
+    191
+   ],
+   "margin": [
+    51,
+    42,
+    102,
+    65
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1660,
+    397,
+    148,
+    191
+   ],
+   "margin": [
+    54,
+    42,
+    108,
+    65
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1810,
+    397,
+    144,
+    191
+   ],
+   "margin": [
+    56,
+    42,
+    112,
+    65
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    359,
+    398,
+    180,
+    189
+   ],
+   "margin": [
+    38,
+    44,
+    76,
+    67
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    541,
+    398,
+    144,
+    188
+   ],
+   "margin": [
+    56,
+    45,
+    112,
+    68
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1274,
+    398,
+    178,
+    189
+   ],
+   "margin": [
+    39,
+    44,
+    78,
+    67
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1454,
+    398,
+    174,
+    189
+   ],
+   "margin": [
+    41,
+    44,
+    82,
+    67
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    157,
+    399,
+    166,
+    189
+   ],
+   "margin": [
+    45,
+    44,
+    90,
+    67
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    687,
+    399,
+    143,
+    188
+   ],
+   "margin": [
+    56,
+    45,
+    113,
+    68
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    832,
+    399,
+    140,
+    188
+   ],
+   "margin": [
+    58,
+    45,
+    116,
+    68
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    974,
+    399,
+    138,
+    188
+   ],
+   "margin": [
+    59,
+    45,
+    118,
+    68
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1114,
+    399,
+    136,
+    188
+   ],
+   "margin": [
+    60,
+    45,
+    120,
+    68
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    406,
+    151,
+    187
+   ],
+   "margin": [
+    52,
+    46,
+    105,
+    69
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    325,
+    589,
+    192,
+    187
+   ],
+   "margin": [
+    32,
+    46,
+    64,
+    69
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    519,
+    589,
+    148,
+    187
+   ],
+   "margin": [
+    54,
+    46,
+    108,
+    69
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    669,
+    589,
+    166,
+    185
+   ],
+   "margin": [
+    45,
+    48,
+    90,
+    71
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    837,
+    589,
+    159,
+    185
+   ],
+   "margin": [
+    48,
+    48,
+    97,
+    71
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    998,
+    589,
+    145,
+    185
+   ],
+   "margin": [
+    55,
+    48,
+    111,
+    71
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1145,
+    589,
+    133,
+    185
+   ],
+   "margin": [
+    61,
+    48,
+    123,
+    71
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1280,
+    589,
+    187,
+    184
+   ],
+   "margin": [
+    34,
+    49,
+    69,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1469,
+    589,
+    177,
+    184
+   ],
+   "margin": [
+    39,
+    49,
+    79,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    154,
+    590,
+    169,
+    184
+   ],
+   "margin": [
+    43,
+    49,
+    87,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1648,
+    590,
+    158,
+    184
+   ],
+   "margin": [
+    49,
+    49,
+    98,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1808,
+    590,
+    155,
+    184
+   ],
+   "margin": [
+    50,
+    49,
+    101,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    595,
+    151,
+    184
+   ],
+   "margin": [
+    52,
+    49,
+    105,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1280,
+    775,
+    149,
+    184
+   ],
+   "margin": [
+    53,
+    49,
+    107,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1431,
+    775,
+    147,
+    184
+   ],
+   "margin": [
+    54,
+    49,
+    109,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    154,
+    776,
+    145,
+    184
+   ],
+   "margin": [
+    55,
+    49,
+    111,
+    72
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    669,
+    776,
+    180,
+    182
+   ],
+   "margin": [
+    38,
+    51,
+    76,
+    74
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    851,
+    776,
+    160,
+    182
+   ],
+   "margin": [
+    48,
+    51,
+    96,
+    74
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1013,
+    776,
+    154,
+    182
+   ],
+   "margin": [
+    51,
+    51,
+    102,
+    74
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1580,
+    776,
+    152,
+    182
+   ],
+   "margin": [
+    52,
+    51,
+    104,
+    74
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1734,
+    776,
+    144,
+    182
+   ],
+   "margin": [
+    56,
+    51,
+    112,
+    74
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1880,
+    776,
+    141,
+    182
+   ],
+   "margin": [
+    57,
+    51,
+    115,
+    74
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    301,
+    778,
+    156,
+    181
+   ],
+   "margin": [
+    50,
+    52,
+    100,
+    75
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    459,
+    778,
+    155,
+    181
+   ],
+   "margin": [
+    50,
+    52,
+    101,
+    75
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    781,
+    151,
+    181
+   ],
+   "margin": [
+    52,
+    52,
+    105,
+    75
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    616,
+    960,
+    149,
+    181
+   ],
+   "margin": [
+    53,
+    52,
+    107,
+    75
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    767,
+    960,
+    145,
+    181
+   ],
+   "margin": [
+    55,
+    52,
+    111,
+    75
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    914,
+    960,
+    144,
+    181
+   ],
+   "margin": [
+    56,
+    52,
+    112,
+    75
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1060,
+    960,
+    187,
+    180
+   ],
+   "margin": [
+    34,
+    53,
+    69,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1580,
+    960,
+    171,
+    180
+   ],
+   "margin": [
+    42,
+    53,
+    85,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1753,
+    960,
+    160,
+    180
+   ],
+   "margin": [
+    48,
+    53,
+    96,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    301,
+    961,
+    159,
+    180
+   ],
+   "margin": [
+    48,
+    53,
+    97,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    462,
+    961,
+    148,
+    180
+   ],
+   "margin": [
+    54,
+    53,
+    108,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1249,
+    961,
+    156,
+    180
+   ],
+   "margin": [
+    50,
+    53,
+    100,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1407,
+    961,
+    154,
+    180
+   ],
+   "margin": [
+    51,
+    53,
+    102,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    154,
+    962,
+    145,
+    180
+   ],
+   "margin": [
+    55,
+    53,
+    111,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    964,
+    145,
+    180
+   ],
+   "margin": [
+    55,
+    53,
+    111,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1060,
+    1142,
+    144,
+    180
+   ],
+   "margin": [
+    56,
+    53,
+    112,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1563,
+    1142,
+    144,
+    180
+   ],
+   "margin": [
+    56,
+    53,
+    112,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_00.png",
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1709,
+    1142,
+    143,
+    180
+   ],
+   "margin": [
+    56,
+    53,
+    113,
+    76
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1854,
+    1142,
+    165,
+    178
+   ],
+   "margin": [
+    45,
+    55,
+    91,
+    78
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    301,
+    1143,
+    213,
+    178
+   ],
+   "margin": [
+    21,
+    55,
+    43,
+    78
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    516,
+    1143,
+    144,
+    178
+   ],
+   "margin": [
+    56,
+    55,
+    112,
+    78
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    662,
+    1143,
+    143,
+    178
+   ],
+   "margin": [
+    56,
+    55,
+    113,
+    78
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    807,
+    1143,
+    136,
+    178
+   ],
+   "margin": [
+    60,
+    55,
+    120,
+    78
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1206,
+    1143,
+    171,
+    177
+   ],
+   "margin": [
+    42,
+    56,
+    85,
+    79
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1379,
+    1143,
+    167,
+    177
+   ],
+   "margin": [
+    44,
+    56,
+    89,
+    79
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1146,
+    154,
+    177
+   ],
+   "margin": [
+    51,
+    56,
+    102,
+    79
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1206,
+    1322,
+    156,
+    176
+   ],
+   "margin": [
+    50,
+    57,
+    100,
+    80
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1364,
+    1322,
+    177,
+    174
+   ],
+   "margin": [
+    39,
+    59,
+    79,
+    82
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1854,
+    1322,
+    144,
+    174
+   ],
+   "margin": [
+    56,
+    59,
+    112,
+    82
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    157,
+    1323,
+    196,
+    171
+   ],
+   "margin": [
+    30,
+    62,
+    60,
+    85
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    355,
+    1323,
+    160,
+    167
+   ],
+   "margin": [
+    48,
+    66,
+    96,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    517,
+    1323,
+    160,
+    167
+   ],
+   "margin": [
+    48,
+    66,
+    96,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    679,
+    1323,
+    160,
+    167
+   ],
+   "margin": [
+    48,
+    66,
+    96,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    841,
+    1323,
+    160,
+    167
+   ],
+   "margin": [
+    48,
+    66,
+    96,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1003,
+    1324,
+    158,
+    167
+   ],
+   "margin": [
+    49,
+    66,
+    98,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1543,
+    1324,
+    158,
+    167
+   ],
+   "margin": [
+    49,
+    66,
+    98,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    355,
+    1492,
+    156,
+    167
+   ],
+   "margin": [
+    50,
+    66,
+    100,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    513,
+    1492,
+    156,
+    167
+   ],
+   "margin": [
+    50,
+    66,
+    100,
+    89
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    671,
+    1492,
+    200,
+    165
+   ],
+   "margin": [
+    28,
+    68,
+    56,
+    91
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_00.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "walk",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_north_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_left",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_right",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_left",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_right",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_attack_south_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/druid_ghost_bear/runtime/druid_ghost_bear_idle_south_00.png"
+}

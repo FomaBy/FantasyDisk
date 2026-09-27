@@ -105,6 +105,12 @@ func set_visual_id(visual_id: String) -> void:
 	_apply_visual()
 
 
+# FAN-3977: deferred swap after a combat-guard miss — the registry calls this
+# when the ally's full-frame pack lands in the background.
+func refresh_full_frame_visual() -> void:
+	_apply_visual()
+
+
 func set_guard_formation_direction(direction: Vector2) -> void:
 	if direction.length_squared() > 0.001:
 		_guard_formation_direction = direction.normalized()

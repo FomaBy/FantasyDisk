@@ -1,0 +1,5840 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "void_mage",
+ "tres": "res://assets/sprites/enemies/full_frame/void_mage_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 184,
+ "unique_frames": 184,
+ "source_rgba_bytes": 192937984,
+ "page_rgba_bytes": 36372480,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_trim_0.png",
+   "width": 2048,
+   "height": 1987,
+   "sha256": "1434926631abbee5e405768f528893917dab14d06ed2c6ceabde8d8e9af32d48"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_trim_1.png",
+   "width": 2048,
+   "height": 2042,
+   "sha256": "eaf49dc449fb54af599c2034cbdf1e0e819e5d3edfa9f9a836b381a913dda26a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_trim_2.png",
+   "width": 2048,
+   "height": 411,
+   "sha256": "95faef9affaaad59e9ef6a8023141b8c203489797580c35b5dc06785b22e9534"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_00.png",
+   "sha256": "a55ca8108d8ba43efbc511c3a232052af3ed14f82fe173b00d189bc2701ad978"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_01.png",
+   "sha256": "c6636a1100231b6bc6a5ee5c732738e4460b1910194480deb56720a28c4595d9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_02.png",
+   "sha256": "e8446b90379204ac2c2acc23160e269ddf0809ea5462c2db95378da88953ac35"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_03.png",
+   "sha256": "b40a78836c329644fa2b267b8f6ada2c52e83c4965bf533f6225394567a0bfed"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_04.png",
+   "sha256": "ae8d27e80f655fd45541502d753dc4bd6bf5d8ff57bf13f9f4cb5ef045313966"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_05.png",
+   "sha256": "653d8f33208fed4740a07c54b016d875e20b160c17477d8764dacf68fe2586ac"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_00.png",
+   "sha256": "13bc9829b927b3df6d641e349bc51fb94ffb271492cb34a00a75e1d70c32dd27"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_01.png",
+   "sha256": "77a03ab4ebebec77f9a683a673985a0372e9d7e395d911614cb5be3c8dfa7a88"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_02.png",
+   "sha256": "68da71b1824aac6384c24950ebae1c25c396ab18fe5bbbf1ea79dd61e9d988db"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_03.png",
+   "sha256": "0d57a82b917b05c9c064bdaa1285bd1132584b1b1ad2f809a9ec60028d468871"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_04.png",
+   "sha256": "5afdb9f9c855d4bb976f46aff0797e6b1a8d5c6b25ee9f15441f3b6abeef94d4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_05.png",
+   "sha256": "194f9657ab485bd283e21ca0e956972ee90f1ea57ee65bada8c7cb3b7365d9e7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_00.png",
+   "sha256": "7016dbe31122e25a1a7d3a7177a8a0834091dd0d654f786e6245d6b82a4d35f0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_01.png",
+   "sha256": "a80100a77f1c3da0e5b522836304164e029993bc938f76d8906da5e235753b84"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_02.png",
+   "sha256": "3e4811347a5c104a54d810affe9d41e7b4b08f5e0fbe64c37c9bd2b476cf3eb1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_03.png",
+   "sha256": "22fd67355d9d4167f7fcd109e5ec36acc8696a159f6cfabe3ca27a7e94803686"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_04.png",
+   "sha256": "032072580c2000ec489ce8a058ad60eb2c0c4b9d35d32d62ef7045c8023eef66"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_05.png",
+   "sha256": "cdc1fd6c63d9ed774a0777b184e924120f7567167b6f9b4eadcb738c3ff35100"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_00.png",
+   "sha256": "3c792b39029fe7524d5c392ef8d0cd131fdcc4bc3baabdf6d1b0b9cee41a8920"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_01.png",
+   "sha256": "fa7c3add48ebb427f088215dd14e2c58808c9b0c2138d47dcb2bf407741f877d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_02.png",
+   "sha256": "da1ae4542c00f987ba329995ac62112b34df736791cc9c4d2c8123a685ddc300"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_03.png",
+   "sha256": "dbd9c3b0b1739cf8c1ad4b83af10188eb5088a9f2ffcf8537a69047d5e00bb05"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_04.png",
+   "sha256": "4198fd9013e760862f29a97efce965ace36680cd695876c0c6c56320a36179e1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_05.png",
+   "sha256": "7ed69b6fb1e7976d2368b1853a09a89b6664e831db920279f6eac2e83b40356c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_00.png",
+   "sha256": "ae1f1691f5aa6e8c70152613e3247a9d5839ab8799df829faf39fa8c38a80814"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_01.png",
+   "sha256": "19f2d6d813bc7c9696f241e0d9fcb18170c170a20f9210e24a82c8f14fde3397"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_02.png",
+   "sha256": "c76515fbee51be0a5dace88b0be0512f1e20b935e658d124b94ade852b4a7eb0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_03.png",
+   "sha256": "19e69d9f9cb771dbf39161eee9d3b42d7239ff2da3decd83c237c4ce9dd6f277"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_04.png",
+   "sha256": "21682d2dea4acddbf41f9d929a9b190e9c2d022ba570120203f42cceb44d3cee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_05.png",
+   "sha256": "ec06a2e46386de1b4716f238cbcc0198942ae20ac07cbd6533b7caab7b017341"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_00.png",
+   "sha256": "fde2a35e00c890f34661a0f54d4f7abfc0e6011f53b82769ddc6e14b5faca86b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_01.png",
+   "sha256": "c2ff7afb11fdcda366c91ed784b00ac5fbe2324f28d41e058ddffac1be23e6a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_02.png",
+   "sha256": "fa1e145f882e5ef0d1e10ac8288995e4b6c3db97b7ed34530c29bcabf9a31e1b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_03.png",
+   "sha256": "237cc5ce8681b32922480d0fd42600bcebb5a1ce257f26ba5c34e3fca5ea568d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_04.png",
+   "sha256": "42dbcae860e2692cfb4d61283dceb9b466883e298559dfa27f6a3b7ee59b9a64"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_05.png",
+   "sha256": "f14d17180d4dd4417246c93e5299f78c58dde0144b6ec9d160f7d65611d24125"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_00.png",
+   "sha256": "2fd3b841a6282bdefe3efda9319458c5443850ace11d59c6c04abd25753aa3d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_01.png",
+   "sha256": "9693c6710f3e08fce8291e2942e065b3358584da0e88f5dd037a9b8db8ce9fe5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_02.png",
+   "sha256": "b73c8a3312f0856676838f0e45b4e288689f9ce03bedc0b16d7faedeb403b4fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_03.png",
+   "sha256": "b6cc8e799d718ee65cc82b092e27296f91bc150c2205a8546991cd56e6fc6265"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_04.png",
+   "sha256": "ad1b1eb2e1941e8488be68918af101a750c6fa83a73cdbfdbd0a56a066d58a8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_05.png",
+   "sha256": "91df81e762f7442b9e985a3a4dd54bfd0db9172784925417e00fb065d451573d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_00.png",
+   "sha256": "c3c454761ed452b092032f681a7ef5ff94bdd4ac76f1d91c8673b63ed73d0c2f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_01.png",
+   "sha256": "48762e0910bc6436c67ac4b1500c64e94343f85bea3044eeef27263bbb9dc679"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_02.png",
+   "sha256": "51db11a46ef56142a608f1127fb677014599627f27591a9124e84e33ebf22225"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_03.png",
+   "sha256": "02288bb5b1851066264ca8c434a200a262e613a7d41d868dd9cdaa92e633c5d8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_04.png",
+   "sha256": "6a02ebd4d646cf8bea3abe39e11488cde081f7c7d97a552ae0daf904c4cdd937"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_05.png",
+   "sha256": "a8c362fa9042d4c8460c41a55dc63749ba29db0c50bd76d60f9eb59360337472"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_00.png",
+   "sha256": "b3257876378a501085ef760a6bd719adca654eaed1cb65380459b27604b3a4af"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_01.png",
+   "sha256": "68f569a0e4396b09bf4242105210b28b0054123ff851f16a50d3dea61a66d0ad"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_02.png",
+   "sha256": "538aa08f8700966793fcd7c6dbc4897b0f80ef028175272b664cd48e9f761da0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_03.png",
+   "sha256": "fa4a08b41e3c43bc1f0bb021d0e52b54c3d56b6fe0477866be4edd993ff89577"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_04.png",
+   "sha256": "353c673ff221e7823cd4e39b5f835154eb26c54b8ffb8809e6cd0b49ce4f850c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_05.png",
+   "sha256": "3eceff97f89536b94f9db5ff9965260fc982948d9cda8ce10627e5776d9c1258"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_00.png",
+   "sha256": "028115958b80fab3286e1b2cb94598e35343878b62f27e7918ddb9b93261c8ce"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_01.png",
+   "sha256": "a05e37db8e7d3baf89088e303aa5da616af03c51e9f682e9c10425cf7489a7e0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_02.png",
+   "sha256": "aa52c79fea4597dfe9c4d006ccbc38eb667608690316751129e8bd112b86794b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_03.png",
+   "sha256": "9c56f24825340ac5f4c323c489ad293e4f7d523c1e20b464d9647af23707dd67"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_04.png",
+   "sha256": "11b21b8566577d9cd4641f00632912006987da99dbe2781a0f564e2e740deeec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_05.png",
+   "sha256": "658f35f4dacb4571e4c646dd5ef7dbd25cefd8d1f56b51f267a7d3387df4c6b9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_00.png",
+   "sha256": "83910edc0d7d1812e6bfb1879c6172a08c847f0c263ec9ff6d2bb9c92f9eff19"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_01.png",
+   "sha256": "6e2794ab90385bd76242b0db194b2de76e40b2acb97ace8b9ea2d32875a547f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_02.png",
+   "sha256": "5b2013c3bab1271466f9f783497df4b554a7645880b0daa05830a20b941b9207"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_03.png",
+   "sha256": "01eea48cee5c6d5180a1109cf4b171313ee74f22394a10a9343ab2cdaf03d531"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_04.png",
+   "sha256": "4bb5768d9d05e26c098d7c52c601c7bdaa9419844da94b0508e454dbb03225fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_05.png",
+   "sha256": "4d606f72859ba26170598e2be69583ba807351a427f2cdcb23a057c5d2087b9e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_00.png",
+   "sha256": "50c8a94fe0777360bd86e846c4f10489924b2d522b2fd36fbf2102390408f1bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_01.png",
+   "sha256": "78376075d04ba58d13aa950c209494e572edf112bbff6f984f641231fc86a070"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_02.png",
+   "sha256": "573465c71a45a2488eb83fcf7049db5900a9c06ad8b6f6c6852c97fffb9fa083"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_03.png",
+   "sha256": "c43db9a230704cf5beebcc7e92e7ee041831b52009eb43cd87fb57d940238dd0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_04.png",
+   "sha256": "7e01b44b02509a269fe9a79f8cc98832ea94c4df948227024e28c017571e0b7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_05.png",
+   "sha256": "32a4fc6e7aaa9b405599ddd0db86d0396ed6edd058a72b4c75a8aae11e2132b9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_00.png",
+   "sha256": "d5439e2cad24472409897d128b066670a7fa39132f78dde29a8d90558d129673"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_01.png",
+   "sha256": "9891b426b98a5f5c2dae4ce61f9b09f2f0394b11bb66214b5ab550b6d9e0cdf6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_02.png",
+   "sha256": "f87ed2659e9693a3ea4c3ad3ff13e5c9c6195990e5916548571e25d24975c99b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_03.png",
+   "sha256": "e4572d0780d095d0ad1e8f3482518e8a7935a78def41a7aa76dc806baec6bfc5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_04.png",
+   "sha256": "910daf4717839b47ceb071ba019d9b615dc967a86709d4d12a084ef234731b6f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_05.png",
+   "sha256": "292878192620c2050c058fc182096d50ca1c56d77df7e7caaaf972a4a967488b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_00.png",
+   "sha256": "193302710330fa2a0875947b9044f047c39fc5e103c46976093f29c84fca3f16"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_01.png",
+   "sha256": "bf3a4dc9b19f47da85d8bc7c59af2c309e7268abf4a957e4cae138a686b65248"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_02.png",
+   "sha256": "66c36d0599cab65cf0c5893adca7a4f7b3174fbf65494731e6b6175cdbf72cca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_03.png",
+   "sha256": "351b8b749f715770faef268ffa743f64739ce2b5330e76a2202adc6bf6857588"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_04.png",
+   "sha256": "f4beaaaf70dc0a00e1dbd238bab6643d8cfa20e24112704ae0ac4df1c4d948be"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_05.png",
+   "sha256": "6a654dbdd99919ea0faeada3242c349fb9d285cea56ab341c84db8255ccbc841"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_00.png",
+   "sha256": "dddde9e05f7a2953de46ac8a03907b63f63a37ff98c96e2f521ba7d7a90225c3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_01.png",
+   "sha256": "3fed90d8e1aa473d6eed745ace44b896d6211a39e06c0c48cfbb90445603775b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_02.png",
+   "sha256": "fff0f9b954616720a63bca421183158d344c6d747b0c69d3d683436d1567a892"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_03.png",
+   "sha256": "8a48c3f42f367ad412140d736ccd091cf75b88fbaec364a7171dd468b02b6a92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_04.png",
+   "sha256": "5d438f4c36e24fe86500451907978b82183a621403dc8ea64024b44d13ba8ade"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_05.png",
+   "sha256": "23a2075792564f2ab70464837a487d8e92d8e6810b72c7aedf784ef389bb8a90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_00.png",
+   "sha256": "c01a774c21de0bdd738f94d29bf29b20847d4d3f9ac6b46d161181d1e3988e74"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_01.png",
+   "sha256": "1bf2d922553534efe40063a6de9accc6b2b8d2a0417efd4cc3164235014d01d6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_02.png",
+   "sha256": "7fdd71cfdebaf0af8bce7ca5f346d48d0a1a445532eef119b676546b5ba2ffb6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_03.png",
+   "sha256": "1cafbbe7db6ab9619b0145e380d1209b933b66115401fd8f41d8bed5bffd3c53"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_04.png",
+   "sha256": "5d5bc5ddf60c3daec1af3e62f562ce337aa70c9741d4c76a8a14f227bbe6b129"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_05.png",
+   "sha256": "afa6f32b28b12759f7639e70ccb90cc7cd1160c488f6893c24fcba667fe58bd8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_00.png",
+   "sha256": "eeccd9dd63d89228d37f1080b316e8cf2391b81ac5511997f0dae2789c2c7afd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_01.png",
+   "sha256": "d62f838fd5ca9be7a235e94d6fd7019433f195f0015add3cb68d45851937bba9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_02.png",
+   "sha256": "52b6fb7fb6b85bf4fea9c74ef608e11f231a5ac7d2b9dabde159853c4f340556"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_03.png",
+   "sha256": "7b7ad09eefcf4c40ae0493339e791fce740b4fa4f0fb2e9b933f9487293f681c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_00.png",
+   "sha256": "d25aeca1297b449e3099cdb131c3a3d24f34e22bedb8ee187922289a79cd870d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_01.png",
+   "sha256": "d2b40bcbc52faa5ba1b284659059b8a038649d1a7f9a279dfd04553651450e84"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_02.png",
+   "sha256": "4044f05ee7cc7b512a23f07d37cb2c36c20bcc33271084486c8012105517775e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_03.png",
+   "sha256": "fc501477fdbdc1c9bc348e78e23562ea8dd22cd657ca0c583e9326f994020c4d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_00.png",
+   "sha256": "a0b287fa4782e92a70bade5345bea95bd3cb87385d038618c233097e9bf9be0a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_01.png",
+   "sha256": "7274a5846ab9a73dfccbfa34e110eb9e501373dffca10893d36fd3d38f5fad24"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_02.png",
+   "sha256": "92deeed5d4524484f3e7b1068b2f186a17c40f6705cd8d6d0c33b69fb0c547a4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_03.png",
+   "sha256": "50ad0f40ad7f84a7d67d8c2a1e1557b2c8a862036f7cca9d6ac0b73d4570f2c4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_00.png",
+   "sha256": "3f59815ca502d227fb4b4c57b934c5ec885bb147676ac31b3fe25c23310f4693"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_01.png",
+   "sha256": "6741a9a79933da8b46d5ff34949dab92aac34add065f620ac947f603139ccc6a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_02.png",
+   "sha256": "18e04b3e2c138e06fee0e36bf2153d6f4b9a5e061852bbf87cd10f877e5f03ce"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_03.png",
+   "sha256": "cb499e3f12675739626bd35d3d821e9f6c79a1b6238579dc305a844604207117"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_00.png",
+   "sha256": "3922f96f8dc91bfcb4ccecd2ceac10c91e09bba24da05c609a7e1c44615b646d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_01.png",
+   "sha256": "be5695cc3e259d6d94a2e73703c4c978bb577032da93a261566796926f997ab0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_02.png",
+   "sha256": "1a155cdd51be67c26a95328ce7c1ae0ae21aadbcf2d8b9234746ff1844b67636"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_03.png",
+   "sha256": "e1bc522b2ba3faa4b1a4e25209ad6236921dad9997293b3f7a075e40eb652834"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_00.png",
+   "sha256": "e4aad142ab22f5db5f777c31d8d9405c5991ee2616d1239d3c1f47bc82d01110"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_01.png",
+   "sha256": "938a100699100538292522f562ace1d6a1fc9e55ad9816486eeaa7ec0c9c5c75"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_02.png",
+   "sha256": "bef8d10af4a8c2c420168796123f85629162a9501cc1c31bc5e4568a97e9e4b3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_03.png",
+   "sha256": "722906cb9d3cf08289ea73da43f0da6a75b63739b1e438173db15d9a68a291a5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_00.png",
+   "sha256": "62089c8b6a2126c3922d2a3764d7174bfd75ef7764574118d911a52cf9da6675"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_01.png",
+   "sha256": "dd9e3c17b05b438d0925733c439f5f918374f9ec99ec27547c14309348704b76"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_02.png",
+   "sha256": "75818a5737b6a340e6a7bfb83e81d96aab280064afa519cd4f464c708e506b4c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_03.png",
+   "sha256": "f43342ebfb7377ad64ee14032ab27fecec3497757b30dd1be64b373172a6a26d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_00.png",
+   "sha256": "869b403a0a8e8abd41907174bbda714ed4781563c42eb62890a733f83ef3d82f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_01.png",
+   "sha256": "efa6364d82ce44b5e9f88c0bb06d059de31b21c480879a1cfdced9369a1590e1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_02.png",
+   "sha256": "9fbb52835b61b91937da82643f28235e6bb7ca5e84d4ce32943138c66c868af7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_03.png",
+   "sha256": "189fe8c4be0d15e79596aa8ab1add4895015a63ff5d4489f8217903b19baf923"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_east.png",
+   "sha256": "2e3343d642f9f6bb956281603bca739d7769c02623a89c20f55dc6bd7e945c54"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north.png",
+   "sha256": "cba32dae183d27e65b9b26825b21e6222e30a0c50bf71325502c0f6e600a3e10"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_east.png",
+   "sha256": "7cab8c1037429602d14ca34f3a17bdd9d2e4bafed82d492fe09c6e2edcc968eb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_west.png",
+   "sha256": "497865fccd7da571a7aa442964c702255b244ddfdf92348da098c8ad03f1f5a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south.png",
+   "sha256": "b740d21b4984591690456cdf117a56ae29e17a76ab15b5de97a4af5ee2cfcc76"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_east.png",
+   "sha256": "3bf18859c25d01121c435e17455494333db7b4b80174587d8540273e03fe2798"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_west.png",
+   "sha256": "8199efaca292793acbaa9df0b3a95915e10021ce4b8c12e643749af0a41eb63b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_west.png",
+   "sha256": "b31009a999b42acfa55bece27e54c32fc65b7bca958156c693386a27c688200d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_00.png",
+   "sha256": "edefdf5dc5e2c41c88ca3106aa57a59fc9c5d152f0331aa92b5b2167b91cdd18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_01.png",
+   "sha256": "4c5425220dae0729513d747ce6ecbab4bbf0d0cdfebe0ed6bc9a98172daf9548"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_02.png",
+   "sha256": "5a30eccb3521971ff70bc73109e4f69f54f9433b7a3320c92f66b797199045be"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_03.png",
+   "sha256": "77f959ffc65ba1e73ec62a805c5a2b3580dddc21b65cb51c55441e8f1a62d2b6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_04.png",
+   "sha256": "c5e123219703ea8027b9a2e5d8986cee41cddb5f6f98962b6369059215a9c73a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_05.png",
+   "sha256": "880fd7ddd23ab202d8605fcc82e677df6c78f5753dc004dac760ec24bac0d3a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_00.png",
+   "sha256": "cc2d0f7fe108ff098f204dc3feb8fa90a11d9c9dac2334a306dfe99acb99d8d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_01.png",
+   "sha256": "e07790e6b8ffbbf0d7b150c334ee393c85b29ab7465fe036652b304426841807"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_02.png",
+   "sha256": "4755224393d3204a95aa72b8d1388e40301ce35d47d5b4e10d366a8e65842fdf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_03.png",
+   "sha256": "cd323aff95ffbe2b5518e278bd234ecd24039604915ac2e80266bcc3e30b8d84"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_04.png",
+   "sha256": "a46f5b511d2e336df619199d7bfd69ee7d2bba62fd2ffbc235a5559faa9a3d6e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_05.png",
+   "sha256": "fd6f4075f1bfff301754446f1f8d55e2e4dec4f853ebe5e1f6e50551ef63c256"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_00.png",
+   "sha256": "1b937f4ec815666fc3e4b1b6de0d6f1ab3d9ff4b08fce69dc03353f26ac0a5cc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_01.png",
+   "sha256": "7014d9d43e91a1a6cafb747568b1d72d31f01965b71982dad227e38f1bca2841"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_02.png",
+   "sha256": "d92fa12509bee0ce23b41c80d5565f2e94d6ab63e313921fdb45545cbf3b0cc4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_03.png",
+   "sha256": "1bf0e781b8ba25fa53bb1d11ff00817f8fe4f2a2f8a5d2d2ed0dc8c69557f3a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_04.png",
+   "sha256": "8453ca67340a7490bc8e5702890553dd945bea478b0ee958890dd5056609aa2b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_05.png",
+   "sha256": "8e5fde5a64af6cbbfc33af8578e2c6bdaeadbfae65acd3d344cb3a9a29eb62dd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_00.png",
+   "sha256": "db7194d49fcc8821e79fbf2d4caf5ea80565edff91639c007bfb1202caee3643"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_01.png",
+   "sha256": "6a7154233401118d4ba01aa028c68f3914ed78d2d336f14a9dd21a3459d284c2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_02.png",
+   "sha256": "127c889e828778f9b05e3edab919eb59050a45789578b803692d96dea2d3e437"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_03.png",
+   "sha256": "7563dd5bf0a3ffdd97d8cf208431470b634361be105f0a0c6ad3a98df1909216"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_04.png",
+   "sha256": "7e63ca5573f14fd0b1752bb2ca25dd3018cd5369d7590b3c3cb9eb279e473936"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_05.png",
+   "sha256": "6e06aa6cf11479889210dc0dc90273ecc5ecae22475014711f065353cded7d2b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_00.png",
+   "sha256": "fd1e66166b7eed7392ccac2e6ca672661767a1409ac40f3cd00801e193d0aa73"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_01.png",
+   "sha256": "88d283689ba3d7907113c33cfa0b7d73d6a40b701394dbf123a32fdea4b911f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_02.png",
+   "sha256": "444f5d0ca51ac539c4666309dd9d322ef17bed20e9219d6cfa0a32396907308b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_03.png",
+   "sha256": "ffb99f9201e953ba3ed69fa5a500c98e85df59544cd85b58390633c003af9f95"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_04.png",
+   "sha256": "0bb70ec08649ed363cc9b40297a38ecaf6eeb89a24462446ea6ab5f6bd4a84d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_05.png",
+   "sha256": "61f417dd281fbdee28aaa88596caafa18c7a21d0d6977193266f5a9373a26e86"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_00.png",
+   "sha256": "dca1d6391f4c88cc016c96b5972fba36cdf86e29824cc314a6ede70f672be813"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_01.png",
+   "sha256": "0c1b88eb7965cdd0cd91f6184732229ef87f41c0b70942ea53ba8b9f44075c6f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_02.png",
+   "sha256": "57ed2d347e6c7f0643252ba4dca5753cb8cb4a3d508c0827bc8b12f35df7263c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_03.png",
+   "sha256": "abfa967aec329172bfb35eb2f710d82e5ba69dfaecb65710bfeb0a9108cf6629"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_04.png",
+   "sha256": "50c6382198fc66bc78c36ca9f7993d1c2875329d3bde0d974e4d7a4025fd1894"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_05.png",
+   "sha256": "1f75b58a9e5ebb5df45b74eeace7a7ecd6a0cbb24637d24ef95c1c7dc82af70f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_00.png",
+   "sha256": "7f2808f135f718f7e98043c2f71890d3e64cb22051f6c1e54052c19d98d116ef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_01.png",
+   "sha256": "0d01109df66a15dc1a9c1769963ba08f288889fe33825deb4f5ea1bafb7e26c0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_02.png",
+   "sha256": "52af532f124c561de9cab74084dc40922098802d628be419eb4e25e032f522f9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_03.png",
+   "sha256": "98f608161480beeb750ba60909de07e934812cd31c82daff5309b08726c6f2fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_04.png",
+   "sha256": "902313774ed10b40d0a8336ed3949542e2f43a2b1478f0b0cd4d5450448bfb26"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_05.png",
+   "sha256": "7bbfb2ad56ce189c89c9928f9063b404ae8103215cf484239a8403749d8dc1cd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_00.png",
+   "sha256": "9610be8be9e4c30bcb628bd3c43cdf0b712af50e16453f563998b56e55bbe4dd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_01.png",
+   "sha256": "7ff4f3a951e74096b94264fd79490caaafb1bc9cba4ddb910dd3015ee87fde01"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_02.png",
+   "sha256": "5f93282c72e01009a85c1867e00f3bac83645ac8cdbc5ebdb6a81845261653bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_03.png",
+   "sha256": "41a079fb5a5389ce52178091b930cfd4321a80ebaf02925c3bd15a08e0d9765d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_04.png",
+   "sha256": "765d8f83f9b8df483fe61ea3d9cd3e5793a8c593bbc20e63d8261e61f4b662a2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_05.png",
+   "sha256": "4febc9717eddfae734f578cd30742f5632d34e59a519be340ae078896e3cfd93"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    257,
+    247
+   ],
+   "margin": [
+    127,
+    234,
+    255,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    260,
+    1,
+    238,
+    247
+   ],
+   "margin": [
+    137,
+    234,
+    274,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    500,
+    1,
+    237,
+    247
+   ],
+   "margin": [
+    137,
+    234,
+    275,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    739,
+    1,
+    229,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    283,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    970,
+    1,
+    227,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    285,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1199,
+    1,
+    227,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    285,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1428,
+    1,
+    225,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    287,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1655,
+    1,
+    223,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    289,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1880,
+    1,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    223,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    289,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    226,
+    250,
+    223,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    289,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    451,
+    250,
+    222,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    290,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    675,
+    250,
+    222,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    290,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    899,
+    250,
+    222,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    290,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1123,
+    250,
+    221,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    291,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1346,
+    250,
+    218,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    294,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1566,
+    250,
+    218,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    294,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1786,
+    250,
+    216,
+    247
+   ],
+   "margin": [
+    148,
+    234,
+    296,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    212,
+    247
+   ],
+   "margin": [
+    150,
+    234,
+    300,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    215,
+    499,
+    211,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    301,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    428,
+    499,
+    211,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    301,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    641,
+    499,
+    207,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    305,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    850,
+    499,
+    206,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    306,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1058,
+    499,
+    206,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    306,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1266,
+    499,
+    204,
+    247
+   ],
+   "margin": [
+    154,
+    234,
+    308,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1472,
+    499,
+    203,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    309,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1677,
+    499,
+    202,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    310,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1881,
+    499,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    202,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    310,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    205,
+    748,
+    199,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    313,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    406,
+    748,
+    199,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    313,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    607,
+    748,
+    198,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    314,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    807,
+    748,
+    197,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    315,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1006,
+    748,
+    188,
+    247
+   ],
+   "margin": [
+    162,
+    234,
+    324,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1196,
+    748,
+    187,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    325,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1385,
+    748,
+    187,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    325,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1574,
+    748,
+    176,
+    247
+   ],
+   "margin": [
+    168,
+    234,
+    336,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1752,
+    748,
+    175,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    337,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1929,
+    748,
+    112,
+    247
+   ],
+   "margin": [
+    200,
+    234,
+    400,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    175,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    337,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    178,
+    997,
+    170,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    342,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    350,
+    997,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    517,
+    997,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    684,
+    997,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    851,
+    997,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1018,
+    997,
+    164,
+    247
+   ],
+   "margin": [
+    174,
+    234,
+    348,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1184,
+    997,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1348,
+    997,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1512,
+    997,
+    157,
+    247
+   ],
+   "margin": [
+    177,
+    234,
+    355,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1671,
+    997,
+    157,
+    247
+   ],
+   "margin": [
+    177,
+    234,
+    355,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1830,
+    997,
+    146,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    366,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    143,
+    1246,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    285,
+    1246,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    427,
+    1246,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    569,
+    1246,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    711,
+    1246,
+    139,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    373,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    852,
+    1246,
+    139,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    373,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    993,
+    1246,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1132,
+    1246,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1271,
+    1246,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1410,
+    1246,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1549,
+    1246,
+    134,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    378,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1685,
+    1246,
+    132,
+    247
+   ],
+   "margin": [
+    190,
+    234,
+    380,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1819,
+    1246,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1951,
+    1246,
+    88,
+    247
+   ],
+   "margin": [
+    212,
+    234,
+    424,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1495,
+    127,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    385,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    130,
+    1495,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    256,
+    1495,
+    122,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    390,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    380,
+    1495,
+    122,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    390,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    504,
+    1495,
+    122,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    390,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    628,
+    1495,
+    167,
+    243
+   ],
+   "margin": [
+    173,
+    238,
+    345,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    797,
+    1495,
+    228,
+    242
+   ],
+   "margin": [
+    142,
+    239,
+    284,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1027,
+    1495,
+    227,
+    242
+   ],
+   "margin": [
+    143,
+    239,
+    285,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1256,
+    1495,
+    222,
+    242
+   ],
+   "margin": [
+    145,
+    239,
+    290,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1480,
+    1495,
+    211,
+    242
+   ],
+   "margin": [
+    151,
+    239,
+    301,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1693,
+    1495,
+    211,
+    242
+   ],
+   "margin": [
+    151,
+    239,
+    301,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1906,
+    1495,
+    140,
+    242
+   ],
+   "margin": [
+    186,
+    239,
+    372,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    797,
+    1739,
+    207,
+    242
+   ],
+   "margin": [
+    153,
+    239,
+    305,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1006,
+    1739,
+    206,
+    242
+   ],
+   "margin": [
+    153,
+    239,
+    306,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1214,
+    1739,
+    206,
+    242
+   ],
+   "margin": [
+    153,
+    239,
+    306,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1422,
+    1739,
+    182,
+    242
+   ],
+   "margin": [
+    165,
+    239,
+    330,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1606,
+    1739,
+    170,
+    242
+   ],
+   "margin": [
+    171,
+    239,
+    342,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1778,
+    1739,
+    169,
+    242
+   ],
+   "margin": [
+    171,
+    239,
+    343,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    628,
+    1740,
+    165,
+    242
+   ],
+   "margin": [
+    173,
+    239,
+    347,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1744,
+    162,
+    242
+   ],
+   "margin": [
+    175,
+    239,
+    350,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    165,
+    1744,
+    147,
+    242
+   ],
+   "margin": [
+    183,
+    239,
+    365,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    314,
+    1744,
+    147,
+    242
+   ],
+   "margin": [
+    183,
+    239,
+    365,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    463,
+    1744,
+    147,
+    242
+   ],
+   "margin": [
+    183,
+    239,
+    365,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    147,
+    242
+   ],
+   "margin": [
+    183,
+    239,
+    365,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    150,
+    1,
+    144,
+    242
+   ],
+   "margin": [
+    184,
+    239,
+    368,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    296,
+    1,
+    139,
+    242
+   ],
+   "margin": [
+    187,
+    239,
+    373,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    437,
+    1,
+    137,
+    242
+   ],
+   "margin": [
+    187,
+    239,
+    375,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    576,
+    1,
+    137,
+    242
+   ],
+   "margin": [
+    187,
+    239,
+    375,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    715,
+    1,
+    137,
+    242
+   ],
+   "margin": [
+    187,
+    239,
+    375,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    854,
+    1,
+    132,
+    242
+   ],
+   "margin": [
+    190,
+    239,
+    380,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    988,
+    1,
+    124,
+    242
+   ],
+   "margin": [
+    194,
+    239,
+    388,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1114,
+    1,
+    112,
+    242
+   ],
+   "margin": [
+    200,
+    239,
+    400,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1228,
+    1,
+    229,
+    238
+   ],
+   "margin": [
+    141,
+    243,
+    283,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1459,
+    1,
+    214,
+    238
+   ],
+   "margin": [
+    149,
+    243,
+    298,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1675,
+    1,
+    190,
+    238
+   ],
+   "margin": [
+    161,
+    243,
+    322,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1867,
+    1,
+    169,
+    237
+   ],
+   "margin": [
+    171,
+    244,
+    343,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1909,
+    240,
+    134,
+    233
+   ],
+   "margin": [
+    189,
+    248,
+    378,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1228,
+    241,
+    181,
+    238
+   ],
+   "margin": [
+    165,
+    243,
+    331,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1411,
+    241,
+    252,
+    237
+   ],
+   "margin": [
+    130,
+    244,
+    260,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1665,
+    241,
+    242,
+    237
+   ],
+   "margin": [
+    135,
+    244,
+    270,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    245,
+    242,
+    237
+   ],
+   "margin": [
+    135,
+    244,
+    270,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    245,
+    245,
+    227,
+    237
+   ],
+   "margin": [
+    143,
+    244,
+    285,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    474,
+    245,
+    222,
+    237
+   ],
+   "margin": [
+    145,
+    244,
+    290,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    698,
+    245,
+    217,
+    237
+   ],
+   "margin": [
+    147,
+    244,
+    295,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    917,
+    245,
+    206,
+    237
+   ],
+   "margin": [
+    153,
+    244,
+    306,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1411,
+    480,
+    202,
+    237
+   ],
+   "margin": [
+    155,
+    244,
+    310,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1615,
+    480,
+    201,
+    237
+   ],
+   "margin": [
+    155,
+    244,
+    311,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1818,
+    480,
+    194,
+    237
+   ],
+   "margin": [
+    159,
+    244,
+    318,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1125,
+    481,
+    193,
+    237
+   ],
+   "margin": [
+    159,
+    244,
+    319,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    484,
+    187,
+    237
+   ],
+   "margin": [
+    163,
+    244,
+    325,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    190,
+    484,
+    159,
+    237
+   ],
+   "margin": [
+    177,
+    244,
+    353,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    351,
+    484,
+    159,
+    237
+   ],
+   "margin": [
+    177,
+    244,
+    353,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    512,
+    484,
+    146,
+    237
+   ],
+   "margin": [
+    183,
+    244,
+    366,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    660,
+    484,
+    183,
+    236
+   ],
+   "margin": [
+    165,
+    245,
+    329,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    845,
+    484,
+    198,
+    234
+   ],
+   "margin": [
+    157,
+    247,
+    314,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1320,
+    719,
+    247,
+    233
+   ],
+   "margin": [
+    133,
+    248,
+    265,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1569,
+    719,
+    242,
+    233
+   ],
+   "margin": [
+    135,
+    248,
+    270,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1813,
+    719,
+    228,
+    233
+   ],
+   "margin": [
+    142,
+    248,
+    284,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    845,
+    720,
+    219,
+    233
+   ],
+   "margin": [
+    147,
+    248,
+    293,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1066,
+    720,
+    218,
+    233
+   ],
+   "margin": [
+    147,
+    248,
+    294,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    660,
+    722,
+    182,
+    232
+   ],
+   "margin": [
+    165,
+    249,
+    330,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    723,
+    185,
+    233
+   ],
+   "margin": [
+    163,
+    248,
+    327,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    188,
+    723,
+    232,
+    232
+   ],
+   "margin": [
+    140,
+    249,
+    280,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    422,
+    723,
+    221,
+    232
+   ],
+   "margin": [
+    145,
+    249,
+    291,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1286,
+    954,
+    216,
+    232
+   ],
+   "margin": [
+    148,
+    249,
+    296,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1504,
+    954,
+    172,
+    232
+   ],
+   "margin": [
+    170,
+    249,
+    340,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1678,
+    954,
+    164,
+    232
+   ],
+   "margin": [
+    174,
+    249,
+    348,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1844,
+    954,
+    201,
+    229
+   ],
+   "margin": [
+    155,
+    252,
+    311,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    844,
+    955,
+    224,
+    229
+   ],
+   "margin": [
+    144,
+    252,
+    288,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1070,
+    955,
+    211,
+    229
+   ],
+   "margin": [
+    151,
+    252,
+    301,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    645,
+    956,
+    131,
+    229
+   ],
+   "margin": [
+    191,
+    252,
+    381,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    188,
+    957,
+    180,
+    228
+   ],
+   "margin": [
+    166,
+    253,
+    332,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    370,
+    957,
+    175,
+    228
+   ],
+   "margin": [
+    169,
+    253,
+    337,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    958,
+    170,
+    228
+   ],
+   "margin": [
+    171,
+    253,
+    342,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1844,
+    1185,
+    196,
+    227
+   ],
+   "margin": [
+    158,
+    254,
+    316,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    778,
+    1186,
+    172,
+    227
+   ],
+   "margin": [
+    170,
+    254,
+    340,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    952,
+    1186,
+    152,
+    227
+   ],
+   "margin": [
+    180,
+    254,
+    360,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1106,
+    1186,
+    130,
+    227
+   ],
+   "margin": [
+    191,
+    254,
+    382,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    173,
+    1187,
+    183,
+    226
+   ],
+   "margin": [
+    165,
+    255,
+    329,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    358,
+    1187,
+    109,
+    225
+   ],
+   "margin": [
+    201,
+    256,
+    403,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    469,
+    1187,
+    233,
+    224
+   ],
+   "margin": [
+    139,
+    257,
+    279,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1188,
+    165,
+    223
+   ],
+   "margin": [
+    173,
+    258,
+    347,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1238,
+    1188,
+    211,
+    224
+   ],
+   "margin": [
+    151,
+    257,
+    301,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1451,
+    1188,
+    202,
+    224
+   ],
+   "margin": [
+    155,
+    257,
+    310,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1655,
+    1188,
+    154,
+    223
+   ],
+   "margin": [
+    179,
+    258,
+    358,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1413,
+    137,
+    222
+   ],
+   "margin": [
+    187,
+    259,
+    375,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    469,
+    1413,
+    197,
+    224
+   ],
+   "margin": [
+    157,
+    257,
+    315,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1238,
+    1414,
+    223,
+    223
+   ],
+   "margin": [
+    145,
+    258,
+    289,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1463,
+    1414,
+    232,
+    222
+   ],
+   "margin": [
+    140,
+    259,
+    280,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1697,
+    1414,
+    224,
+    220
+   ],
+   "margin": [
+    144,
+    261,
+    288,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    140,
+    1415,
+    185,
+    218
+   ],
+   "margin": [
+    163,
+    263,
+    327,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    668,
+    1415,
+    174,
+    218
+   ],
+   "margin": [
+    169,
+    263,
+    338,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    844,
+    1415,
+    277,
+    217
+   ],
+   "margin": [
+    117,
+    264,
+    235,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    844,
+    1634,
+    177,
+    217
+   ],
+   "margin": [
+    167,
+    264,
+    335,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1023,
+    1634,
+    172,
+    217
+   ],
+   "margin": [
+    170,
+    264,
+    340,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    140,
+    1635,
+    176,
+    216
+   ],
+   "margin": [
+    168,
+    265,
+    336,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1697,
+    1636,
+    187,
+    215
+   ],
+   "margin": [
+    163,
+    266,
+    325,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1886,
+    1636,
+    153,
+    211
+   ],
+   "margin": [
+    179,
+    270,
+    359,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1463,
+    1638,
+    213,
+    213
+   ],
+   "margin": [
+    149,
+    268,
+    299,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    318,
+    1639,
+    213,
+    213
+   ],
+   "margin": [
+    149,
+    268,
+    299,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    533,
+    1639,
+    185,
+    213
+   ],
+   "margin": [
+    163,
+    268,
+    327,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1197,
+    1639,
+    252,
+    212
+   ],
+   "margin": [
+    130,
+    269,
+    260,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1853,
+    162,
+    188
+   ],
+   "margin": [
+    175,
+    293,
+    350,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    720,
+    1853,
+    287,
+    176
+   ],
+   "margin": [
+    113,
+    305,
+    225,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1009,
+    1853,
+    202,
+    167
+   ],
+   "margin": [
+    155,
+    314,
+    310,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1213,
+    1853,
+    187,
+    162
+   ],
+   "margin": [
+    163,
+    319,
+    325,
+    350
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1,
+    222,
+    212
+   ],
+   "margin": [
+    145,
+    269,
+    290,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    225,
+    1,
+    172,
+    212
+   ],
+   "margin": [
+    170,
+    269,
+    340,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    399,
+    1,
+    196,
+    211
+   ],
+   "margin": [
+    158,
+    270,
+    316,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    597,
+    1,
+    162,
+    211
+   ],
+   "margin": [
+    175,
+    270,
+    350,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    761,
+    1,
+    172,
+    210
+   ],
+   "margin": [
+    170,
+    271,
+    340,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    935,
+    1,
+    213,
+    209
+   ],
+   "margin": [
+    149,
+    272,
+    299,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1150,
+    1,
+    199,
+    209
+   ],
+   "margin": [
+    157,
+    272,
+    313,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1351,
+    1,
+    242,
+    204
+   ],
+   "margin": [
+    135,
+    277,
+    270,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1595,
+    1,
+    242,
+    202
+   ],
+   "margin": [
+    135,
+    279,
+    270,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1839,
+    1,
+    153,
+    202
+   ],
+   "margin": [
+    179,
+    279,
+    359,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1595,
+    205,
+    237,
+    202
+   ],
+   "margin": [
+    137,
+    279,
+    275,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    935,
+    212,
+    251,
+    198
+   ],
+   "margin": [
+    131,
+    283,
+    261,
+    314
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/void_mage_8dir/void_mage_idle_east.png"
+}

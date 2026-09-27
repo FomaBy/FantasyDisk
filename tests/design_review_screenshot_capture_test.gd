@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const VIEWPORT_SIZES := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
@@ -143,11 +144,13 @@ func _open_screen(main: Node, screen_id: String) -> void:
 		"pause_menu":
 			_prepare_run_state(main)
 			main.call("_start_combat")
+			await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 			await process_frame
 			main.ui._show_pause_menu()
 		"pause_stats":
 			_prepare_run_state(main)
 			main.call("_start_combat")
+			await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 			await process_frame
 			main.ui._show_pause_menu()
 			await process_frame
@@ -161,6 +164,7 @@ func _open_screen(main: Node, screen_id: String) -> void:
 		"combat_hud":
 			_prepare_run_state(main)
 			main.call("_start_combat")
+			await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 		"feedback_dialog":
 			main.ui._show_main_menu()
 			await process_frame

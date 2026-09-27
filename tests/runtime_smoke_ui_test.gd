@@ -74,6 +74,7 @@ func _test_settings_return_origins(main_scene: PackedScene) -> void:
 	run_main.set("selected_weapon_id", "sword")
 	run_main.set("route_stage", 2)
 	run_main.call("_start_combat")
+	await CombatStartSupport.await_finalized(run_main)  # FAN-3977: spawns wait for the full-frame roster
 	var time_before_escape := float(run_main.get("round_time_left"))
 	var player_before_escape: Node2D = run_main.get("current_player") as Node2D
 	var player_position_before_escape := player_before_escape.global_position if player_before_escape != null else Vector2.ZERO
@@ -145,6 +146,7 @@ func _test_level_up_world_burst_without_badge(main_scene: PackedScene) -> void:
 	run_main.set("selected_character_id", "berserk")
 	run_main.set("selected_weapon_id", "sword")
 	run_main.call("_start_combat")
+	await CombatStartSupport.await_finalized(run_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	await process_frame
 	if run_main.get("current_player") == null:
@@ -188,6 +190,7 @@ func _test_level_up_toast_frame(main_scene: PackedScene) -> void:
 	run_main.set("selected_weapon_id", "sword")
 	run_main.set("pending_level_ups", 1)
 	run_main.call("_start_combat")
+	await CombatStartSupport.await_finalized(run_main)  # FAN-3977: spawns wait for the full-frame roster
 	run_main.ui._show_level_up_toast()
 	await process_frame
 	await process_frame

@@ -1,0 +1,5834 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "rift_shieldbearer",
+ "tres": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 184,
+ "unique_frames": 184,
+ "source_rgba_bytes": 192937984,
+ "page_rgba_bytes": 25337856,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_trim_0.png",
+   "width": 2048,
+   "height": 2046,
+   "sha256": "7c8e71e62281535641d85a8c5ea9df8c26dfc1d953bf56d505014c9775923f34"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_trim_1.png",
+   "width": 2048,
+   "height": 1047,
+   "sha256": "c02e6a32bd41a5b909cb24b59fa08f98fffedca62b3a8560a9d4cf12ee83f02e"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_00.png",
+   "sha256": "c057a95941bbbbe21c8f392c1596f23ffd0b1d9ca7dbbf00f6dab7ed5656ef48"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_01.png",
+   "sha256": "f138ea35a7cece13e638db596b7e94b65b8f45fce2dfd92404a0e3bc898564bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_02.png",
+   "sha256": "55ec74bf8123fcdf14079b5e6e213d36a1442e33eeea8d6396a1e593070e35ce"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_03.png",
+   "sha256": "102e1a2c806c287e8e0ed0d16308acb11dd0a0c9fcbf74bdbb634f86340a5ec7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_04.png",
+   "sha256": "bef178c9ba50fe34723ddab1cc832b2a782d10167c7f63683b5caade1b4fa1bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_05.png",
+   "sha256": "50fb59bd4fae79e90c525e7eb78f740208819fb8f960a401d3bc97b3a6965ce4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_00.png",
+   "sha256": "db73b40cce309781c4e755673a6c6ca70f76b91033e36bb075a3e40dcf5ab82b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_01.png",
+   "sha256": "f4c46da4d604bf262a3538613dde06023ef018b4c00b2ccd1381549f8e52a825"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_02.png",
+   "sha256": "681f649634698f25d0b6f0f0780ee35c22bd3abd639306c904c97798fbe26547"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_03.png",
+   "sha256": "5bdf3c98f9891ceb088183f6d0be0d241d40ce1622288a1abc3884209bcddfbb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_04.png",
+   "sha256": "3f11dbcfa1a7ac08834520f207bc9ca344d1572b716b3e8e442ab139a1865ee0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_05.png",
+   "sha256": "9fdd725ca4c4d9876a0626b749fc30eafd6af3965e02fe7853a14586982e2d09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_00.png",
+   "sha256": "faace8c997123b785071768becdf0a437c98c45b68dd17542e812deaca114847"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_01.png",
+   "sha256": "4a56723585627dc7cfd83a994f45ea63e2b3389d1341374f72b46a5d8657b0f0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_02.png",
+   "sha256": "9c6fa14c30d07ef9142dd142b102db8e06b46ca4d7c978d27a53c162bfab3a27"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_03.png",
+   "sha256": "9f0b90906d80890bcfb896f3311ff7b2e196cc65e898cdab3c47d73041fb97fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_04.png",
+   "sha256": "20ded1a0d04ae82d633a67d411906925783a0a19af8d353814b9169d1ea6a885"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_05.png",
+   "sha256": "08efc6c8af62885daa92b39ef25975825778e591b2dc6c8b7424e8a5bd871aa7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_00.png",
+   "sha256": "bfcd26a9f81305a67960da4e18d58ccdb43437c0189c4d5fdc0fd3df94543de4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_01.png",
+   "sha256": "51417554908d157e622a71edcf233a09c300e8e209a70850bb5183410e9979db"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_02.png",
+   "sha256": "acd774e2b41812ab8fce82f3ae97707750e3a528711792a246bae619183b04b7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_03.png",
+   "sha256": "3a5f2f2e47d06b95ff4d4eb630c6ce3cc8ad108b8ca7d3af0b7029c930466758"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_04.png",
+   "sha256": "87e5570b2163325db734f79284dd705513b3206bceb8aa2b70dcebedfdbe460b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_05.png",
+   "sha256": "6232210ccf3cf37ebea10344299b0f6d133042206215766918f236d3e0c1df2e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_00.png",
+   "sha256": "02da7065cc87a9e1342c3293e93a5329d6b40df3397cd0eba6732d879685b0e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_01.png",
+   "sha256": "27bf6376c748ef5e09675787a4804a5d9ed0c92f03991a3e777d6c415ee3c48b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_02.png",
+   "sha256": "c3b4b27ad6a0a3f77c1b3e3f79f2fe0b2d1dd9c90d6b3ba2b2fc9e6257599fc5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_03.png",
+   "sha256": "b6b1c5632a5227c00266bc50aa397921bbb7234d6266dce841b4814ae0b8b3d4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_04.png",
+   "sha256": "1798d2f831bb76cd65565eeae2ec6558bd27b8efcdad676aea55d3fa746b4f5f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_05.png",
+   "sha256": "92ca0fc5270b4b1f53b67784a21510463080858034795b9ff9c8d34cd72170b7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_00.png",
+   "sha256": "04345a6a4e292c74bd70504a11663222610a39ab7cbe4659881af5e3dcd2cd8e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_01.png",
+   "sha256": "07ba7b354146fbea9b89b4951ec33325dcfcb29d7f63cf7aeb758976795a1bab"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_02.png",
+   "sha256": "9eb8ae9ce9dd0d5138fdf1624fd5754fdeeb3b49403b0e370ffddb396191792c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_03.png",
+   "sha256": "875314f3d690de269b65b04d8fd3bc345aa36eec9f275128238a7644f06a7525"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_04.png",
+   "sha256": "cd0d6e5fa311e99dbab6b3c659e771c30309d5cbe1b57add208f1ecb1340b691"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_05.png",
+   "sha256": "ce81429032954f30bc6da54472f9362de4339edf9d57a4f86a2fb208d56741d9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_00.png",
+   "sha256": "7d17a30d1ebd9963b7c60021a6b76d536485a7f40ba02da5e5e4cae8d9567c7f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_01.png",
+   "sha256": "76e66f364c0f7ddff243ab1ca552be98a5898582ca2783e2ef21cb31c9bc3299"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_02.png",
+   "sha256": "2f2bc030700002ce8100eff80aba2cccd19beb2b19691c895594d61211c6ab56"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_03.png",
+   "sha256": "0591d0d2b5dcd0c8a47b74be3892e353dd05f4db1effa260a81fa493b16f5d53"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_04.png",
+   "sha256": "b9692ece0640ab0cf6235f3d15ab6071f2f497d32ea6f529f093888de9916ca5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_05.png",
+   "sha256": "42018f90077f0f6fe0bdb501280cd588129d72861e0c39bf982247963bd7d263"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_00.png",
+   "sha256": "69fe6a5ab2052199b42e00bb090477e2fd3782ed94086c05601febeb8bbfda88"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_01.png",
+   "sha256": "7b032963f89863273bc9cc4210d7c27761a0708263cef40f0611e557f2c29212"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_02.png",
+   "sha256": "80d907d5d091c4914cfa8512b01fca3962546edbf98b3d9cfe9b78aa2987bfa9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_03.png",
+   "sha256": "90f1030900e508dbcfaf31d2590e04a813ec8f236f068029a50fb2e2cd4a8860"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_04.png",
+   "sha256": "35048536306cc53b1d26b72454b15abf5a04160bab75ed3ac82de1b6b08d038c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_05.png",
+   "sha256": "132777f308c336bfce56f89acf0ddd807997f3e30fee53c6c556e416cc13ba45"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_00.png",
+   "sha256": "2146f88d7ebbb925398541398a598084ebb5b16a147ca1c0fc0d8413c06dd0e1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_01.png",
+   "sha256": "75c3a331998617dc17677715214aaf78f6951de371ab850246e63ff4eae03e43"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_02.png",
+   "sha256": "81526f21649f16a26fdaa97b46852ed4bc4c9962ebe321e43b33814d039ce7ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_03.png",
+   "sha256": "9a39f91899b6d66e5e03216bb0656e8923210fa070e8ad36a4270928cd9d667f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_04.png",
+   "sha256": "9baaaa0fb298f56e36367f6252aba69d7526ef2130d0306718de63ecddb4cd0f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_05.png",
+   "sha256": "ccc55b7e9fbca24280c4de698f659db71edf5e27ede0fe99749ab2f9f06042a7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_00.png",
+   "sha256": "8f8e6f82304e874b584692cb00df0c4103cbab98cdc2478c78bacb013f2f5cd2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_01.png",
+   "sha256": "7c4039fb56c7c12113e8c0f0c3544cee1ba3073e3fb1436517df438e4b0476e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_02.png",
+   "sha256": "f4a6556a9df2751f2d0c33229ff32900cc6d5598af83da609441a219e2a8b5d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_03.png",
+   "sha256": "29880570aaecf340c5445f68b300582c7804ef59a8a12b3221d3b6ea86ad179f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_04.png",
+   "sha256": "b0274cdcaf0d751e23240d8d778510d6de99ff4e0e4b3d811b831a7e4fd3ebc2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_05.png",
+   "sha256": "b3f3f9a18ac470296d4448c3dd06f21c39b6652c523a9d101ba1a40da136996c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_00.png",
+   "sha256": "03a9f664629b8586cce5f32003f08fdaef333dfb80e6ae6995a5167fd70662ff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_01.png",
+   "sha256": "72bbcd46e050639663b3f6415aebdafb66f07c11d7df924d245bbe465d89db94"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_02.png",
+   "sha256": "4d309dea266b552548d92b92173ce9998fd36c625c80031ea8cba7c1b24ff04b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_03.png",
+   "sha256": "e3ae64c92e2d8143f3edab8a6a7947de31b6948a8add66e0743f8f656acb604e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_04.png",
+   "sha256": "83bfb1b7fdc7d613c0f6e12ca20efd569281459900acaaacdfe48605c736d8ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_05.png",
+   "sha256": "b4a08b519c8c97835e3145ef55c62d1c7cf8a7d09990eab99ef6b53ce04166cd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_00.png",
+   "sha256": "2200f987e5222f2d0a4260f954c388526b6498dc6939799699c8d7101fcacb6a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_01.png",
+   "sha256": "cf283f16e8177b8371daac0298551c256899ef83e0e0c818281c9c544a99dbcc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_02.png",
+   "sha256": "aa86b1963ae7da79c97101f0b5c89284e1ebdf45916dd7d1b687a186b89bf17f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_03.png",
+   "sha256": "604d88ea2eefb1877ab694e97995305476b506d552e22a04d727a94ac16bd83d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_04.png",
+   "sha256": "8ae3fdb61d7b84d5b8a4382a89795b5a8b5b6a54d5eee1a23fca2d5b19e0d829"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_05.png",
+   "sha256": "43f6a2f21a7d2403b7a3f2a3dc477f3804f6bdd7e227fa73b22dd7dc9b305a53"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_00.png",
+   "sha256": "6bf14140e88be9508bed9a0d753bd234d7b8528130ac61392c9fbb6d1db8005b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_01.png",
+   "sha256": "e8741c402635bfb1c0244040ca36ffcdfcf888a2f37613da2f003445e6f74421"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_02.png",
+   "sha256": "3391d54e6c69d0ec562ce748711009330c3e5e7ae054763b98accb2288f0de90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_03.png",
+   "sha256": "cd94783f3e8f15b42ded1e8151b1026c451d5e1911bb2c8fada5ed19f52a03ef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_04.png",
+   "sha256": "1640627d11831cf0d6bc126b970c35d67beb8f63dfc29389fe09d552f41ab928"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_05.png",
+   "sha256": "3cd2fc20ee094511919f30beca76cf78b16063c0045ae9e937b71708b0a3baf6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_00.png",
+   "sha256": "b766db72b93e9d0a3cc2d13ea030d1ee6dcdfacbcbd83e48b5fd22b321ae1749"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_01.png",
+   "sha256": "abe51feac2b1425ad36f3cca7781fa0a0a666bb9f3a4f897a091eb24183e578e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_02.png",
+   "sha256": "9a023d19085a79248071f74c5007348605aa149ea333830c54524fff8706318c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_03.png",
+   "sha256": "1f863ff94905872bc7a5cfe4d36e65bfa3b28cfe2aaed7328c7410ed658bd262"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_04.png",
+   "sha256": "dffd9419a6955c40570c2e11023faef9cd8fe9a94fabf8c5c62e6fd37eccc577"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_05.png",
+   "sha256": "9104ea4281a891782934fd8b449b64fab5cc6276aa1da4c0a759a6dbce77136b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_00.png",
+   "sha256": "06525f380ff9268b058fe8d6d825611725a9b1c36012ee1ccdcebef500081f4b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_01.png",
+   "sha256": "d312c1eb70d4ac66e6feb092290e2682bb6de667f50adf480888418465fa5920"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_02.png",
+   "sha256": "1c85327f0b335fcd098a3d4404c214323d6981c44607b30ff177a8dc4ab6ac7f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_03.png",
+   "sha256": "7af14f7d45feaaac1931b5b53a595d496e64038a5d52b5cb8a2fc763b94ca4c3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_04.png",
+   "sha256": "5af3e13bd2111a4a557632324596a5df800bfdc64ac3e7f7a755716011230ff5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_05.png",
+   "sha256": "7fadaa7557f85ecf3c6195e79ed43f6bf67c9a40661009d7eccbc51e095c8691"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_00.png",
+   "sha256": "36340fbb6a063cc6c48224e14a4fcf8d02cea403c6eb0aa48a91998becc1020c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_01.png",
+   "sha256": "6bb95d2230fe62371664434c4a807f80cd50e76df4b48f76a2e710182e7b9622"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_02.png",
+   "sha256": "fa025d1d2fb63714c59bee7b77c17163b7fbc01407823ffd0b062a29ea95efba"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_03.png",
+   "sha256": "6e431061b221889260f9e443b076d219d38670e5f0c2ff2a199a804e6cb3a67f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_04.png",
+   "sha256": "a1477c9a5502d20b1343b09e5cf5f3aac3a5dc58d34b7abf6769bcb2c349a08b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_05.png",
+   "sha256": "2f12361b9ac26a8a41a9f6a9979605799b7a1e3815f88d29bad9d929970f088e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_00.png",
+   "sha256": "8adf5e9c7be80d9b3a3f99a4e393cc1b77ab7b25a3e92bfdf7f1cf5796d19969"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_01.png",
+   "sha256": "3f981b7c78fa36b431b2b5b4d0b4d6ca3cee9042e4d0c75a515d653d31b87055"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_02.png",
+   "sha256": "2b0937f6f5041ab05b38d11542833f1445561a1c19124dea7cc57ddc14d20f2b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_03.png",
+   "sha256": "f23d7df2813280fe332fb8dc146709a3fbf6182eee213c29ffd58b83ea7cad9e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_00.png",
+   "sha256": "1d4d6a7908d9890a9c278ca9d35d3d094b281ff6ddbfbcdbe7b0ccd24476775d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_01.png",
+   "sha256": "e510a8bdcd6b48ce0b1b696bb75ff4ef36623e7c95612910cd2ace6c19b7e9ae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_02.png",
+   "sha256": "503e2f335331754b44924470dcb89c793ce13ca339634224094c1f3fb752f92e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_03.png",
+   "sha256": "16f4944fc4c2a505c6c688af52d34b344e33637243dea004c900edbc526f3b5a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_00.png",
+   "sha256": "cfaf26a48c2a7f3a200e183fc525ddb787551afec8ca0a268afed135fa17224f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_01.png",
+   "sha256": "ac5669d416e92812b116f84cd681339e442022aff010e6ac33e5d68cbe6638d3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_02.png",
+   "sha256": "7284f1a44a6d6d85a00dfcda8ce4ff575b5d134c1159565dc91e21b69839ddea"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_03.png",
+   "sha256": "a367547e9497408310be1259b6be789f1314b19a531a8f79a41b82ecd6de9bd4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_00.png",
+   "sha256": "2bb549a5a7848128f1a1bbdd6ed55556983d344a2f25974315f57253c852ecb2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_01.png",
+   "sha256": "d56fdc3b56ec2a7570d5cb5fbd7f7fe365d2932e64f2ba1a773058d59636b9d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_02.png",
+   "sha256": "581e804c9e31ed1e8ba57de8d17ff0dbf93aa466f7ff4e2aade59493378e4bbc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_03.png",
+   "sha256": "04c72f36ed2bf20b49fb617acc79fd1c7192686961a10bfbf8a70cdd427b2b19"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_00.png",
+   "sha256": "3a9f3b33dbc5faa3806027ab6d3ea104c7f5f4f8c8e4d86f907d3b37756e165c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_01.png",
+   "sha256": "2996dfa3f005a1ce9f40aec58c93a8162af23e95cdef081a3bbe6be73659b030"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_02.png",
+   "sha256": "dafe2c91165398ced913d5009c755ae8aaab08e985ae247dba1f4344cb30a31b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_03.png",
+   "sha256": "54a495253d445c4a808f1cd2d7f79a535ac6c1011df58f126c884a9897fb4669"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_00.png",
+   "sha256": "37d2744054a7894b370fc0263f644d87cdf0eef5db5153780e3e427b16dc1580"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_01.png",
+   "sha256": "423b5a9a4de94d29b651e46f41189f3e4d9ea389c327daaa29ae0957cd713149"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_02.png",
+   "sha256": "e6e033855734df7fb07d4f48e1b4356a979de1202e0d9a04877b454665c568f6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_03.png",
+   "sha256": "dd3fbf8c12dd085f5d4fa912ed3c05a8ae7f80dffd647112f6776fea34bb8420"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_00.png",
+   "sha256": "6751f90a42692cb0fe0f698cf3c2a31480afc22ce9daa4b74db874c8e265a713"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_01.png",
+   "sha256": "e479d7ad3f19322efd5f851ac580e4aaacb9c2b84b894076fc2d840c1df188bf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_02.png",
+   "sha256": "82a223202bccbe121f90c784c71e779c85c7ce8868246afe584f80a1ac8e2780"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_03.png",
+   "sha256": "9e6abc0a821d8780e18c6472fb9a6ba20e19ad3273e1d48919ec03409292dccf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_00.png",
+   "sha256": "96d3a4ab8ba5640953dd6372eeccb8d4c3110094d05f7dcc707b49d13b6cdb8d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_01.png",
+   "sha256": "4dd951a644f9fc8d0df001ec065d3847d9e4e96f905824ef07427a1723c02de9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_02.png",
+   "sha256": "a755f2799940f6448106fcd26891ea164c5ed8f7f6afec52c63f1640fee0cfe1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_03.png",
+   "sha256": "3130937fe33108a48fbd49bd9c09d7b34980878162320e4b64c97ca67ec3c4e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_east.png",
+   "sha256": "38dd728d832943a31f3a18e1e4f75b9fc874cf5938b1640756d24b1aa203dc71"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north.png",
+   "sha256": "4b0513c5a73b04ee38524b9110399152baace1cc9336f0187d73082d9ec3a8cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north_east.png",
+   "sha256": "3b3bb18edde2bc0238201e43e2fa6a2cb6147f8c1b9da8a6a935b345a76cbea2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north_west.png",
+   "sha256": "d73614be7db7ba2e078aa267c51b748442bba9d2eb695d69e2d3dfe0d4d8fd0b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south.png",
+   "sha256": "207beb1d5754de0378905cfa5255af1e6ff01f798bfb141517dd80c61bb09695"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south_east.png",
+   "sha256": "78837c9a50172604fc9f1e24d06d9ed9660e1d755ec7783f7c5a4cb658757488"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south_west.png",
+   "sha256": "72611172f0f9361bce5455ed24be36d7b2a6ec09a6b6d5b62657f27803a45107"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_west.png",
+   "sha256": "2988fbd274506b11adee4bae2ed0dd3354e1eefb8a1dada4bccd6ad2f801d308"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_00.png",
+   "sha256": "5f0f378218393506f7062113b5238b3fabddfb7e61f147b105fe8c29f4f13ab4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_01.png",
+   "sha256": "c60ccfdcdb45d886601c13d8c25cfc5578722427a4250ea3eb26ee0391ae2621"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_02.png",
+   "sha256": "d0aa2b832d0baed27ec6b60126b93b61b8d63102562e028418ea3a319d262f0e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_03.png",
+   "sha256": "76bb94bbb6c60f894de5c93842a79213da005d38d24c058e6a1922f29a4eac82"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_04.png",
+   "sha256": "1f1b07208b23d0829692cf566eae4fcc82655aaf2e106478edc147a4116801df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_05.png",
+   "sha256": "f45e0136d89a8f09c5a30c1d7f9269890518db456d376bc471b8ee73501107a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_00.png",
+   "sha256": "bf21d65a550086a687318aacc9486cdcae3091f125a0e83b6c19234cf322c630"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_01.png",
+   "sha256": "71868f8dda26dc0a0a86d3b35de4b35a64a1735bb28464a7cb6a53a4d8ebfa7e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_02.png",
+   "sha256": "b575ae11170f8e5704413a72373d7f523ea7b75b24f73609a0cdba3e30f39154"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_03.png",
+   "sha256": "28195c401b8ec2a72704e90f1f2d6dba95bf32db3995e6f9ad220fccaa5cfe7e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_04.png",
+   "sha256": "69f93f4daa79a7532a47c6c8eb5a0ce04cab8c01fcbe87bc5feed7b775731ea6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_05.png",
+   "sha256": "ee169241881f5cd471354eaac06d9898fd0112e875c738d0f5c68acecb5a25f1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_00.png",
+   "sha256": "8ef5787b55c1a0ed130338420f149281f2666ea90d53da591148b3210342015a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_01.png",
+   "sha256": "e5f7bc78faf5ad02e00ae94df976fa4144f7f450cfcfb049b407986c0614a993"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_02.png",
+   "sha256": "79d3fc9736597d92ac9a19d046e6909e1bac050415ad2e2937846371d8491e0f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_03.png",
+   "sha256": "dda83ae53ce3e8891610db167e4fd59d9fd27c316e9aee803917109889724086"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_04.png",
+   "sha256": "527b68a7a9820d64e2bf047143ff0c3addfda94ab01ecb19458f9ba09b73df6b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_05.png",
+   "sha256": "4e7da7c51e204522cc6c91f6377cefb1ed0812fc7ef1225001ac0a396fdc3a5e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_00.png",
+   "sha256": "756a24a69fda3479277e8bb15cd0c4ec9b6102dec2406766e1f5588e61afade1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_01.png",
+   "sha256": "16695fcf7d4eeeee2e0bfb655a93da27611c7028412a69ac26aab0de44214711"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_02.png",
+   "sha256": "58f9ea84f6fa99f7e6f13a0f1a7e468ea0d4f95172f54da0664d9f20a1dfeec8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_03.png",
+   "sha256": "050d97f271519000cdb7b797b4c98f7944fe75e323f15412110e039b2132049b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_04.png",
+   "sha256": "eaf727b877afc34751fbfa03ff12685fc1b2999596fc6e84e79df3b362d000d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_05.png",
+   "sha256": "4f72cc8699cd91268e200502c8468748ac8538ca2fe79627fc2b907340500310"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_00.png",
+   "sha256": "170e171969f9ee255620e26ae13a1c598035823111ab6c98bf724b7d4af76e40"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_01.png",
+   "sha256": "1723381bbd4a9596dcee50e793b63f6fe4102727e27bb03d1bf252ea2daf7a9e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_02.png",
+   "sha256": "3d9eaec69f1451927f5947abb37ffb23f33555117ec5a4f70f7f2c1174b7b663"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_03.png",
+   "sha256": "f22ffd4634256801b686d1108dc831e7b1d41bbb4413fd987179d535da021e51"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_04.png",
+   "sha256": "45a9e1ad85a121f944fcbee64471f2dde5b6fdead3a57220f8c0b9b1f44d45ae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_05.png",
+   "sha256": "f070c2d6cbdfc63d43de0c0a30dcd63d98806553564c4051245f57fdd73f95d0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_00.png",
+   "sha256": "992b26a595c0ce235d3d5ee67c9b7fe9a1d7e37c6507a0cfd0e2717cf122eddd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_01.png",
+   "sha256": "39bfd42cccb06468b32b1746f90b6b30193ee767c7165ff88348689deb6e4d7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_02.png",
+   "sha256": "9a5b5a906db3d66c6a5cc009f10872cf9e2eef0d60a7ca230e2cded5852d5e3b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_03.png",
+   "sha256": "ee2c371e0bcf51cbaed755e58a06992851227cfdf57a1ec5fb2030dcbf7b6827"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_04.png",
+   "sha256": "174bcb6f55d8bfd294d9923a8eb7ff3b815270c02643811afc47f2b25157b5c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_05.png",
+   "sha256": "991f3d319734a19b0ce6900a43986176841b886f1ca5bf838f2823c7aa5fd47d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_00.png",
+   "sha256": "5fef7e617067eecf067cffd4c06c2d9e497cd523eb5d905721a4b41daf73c000"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_01.png",
+   "sha256": "cf6d113596803ddb1399286d0c9981419a8f11a6e12bad1b3cdac6cbf75583b7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_02.png",
+   "sha256": "919bb550de96f80fce71682a9cefba3186e113b513ed0f8c7f7ce908d07d0e19"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_03.png",
+   "sha256": "c73781445e715b83966155bf606bcd46ef87c4fb0ed48a975510df734d5e0ba9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_04.png",
+   "sha256": "5fe066899016e2809b3cb91cb3fd2755d789f06005e0e642452d04cf80c465dd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_05.png",
+   "sha256": "aeb99625f40f6c9151bd70646b70befd3bc74ebab2435b4c8eaed384cac95286"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_00.png",
+   "sha256": "5de357ce512e5699e7c78f8cf6cddaade487c89e7e03dab1fd3f7c052650f187"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_01.png",
+   "sha256": "77b7af666ce2afe8757d4c3370cca3115f842f38715228c68fae29a587a6b814"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_02.png",
+   "sha256": "e005fb12cca8c14186002453fcbf9c22713013623e2b7f5717a7eeeed5be67ed"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_03.png",
+   "sha256": "fd0ffb67d38c3479c40cd6f0f65d7886736cf14820c3d62ff1d3a4b816b33e2f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_04.png",
+   "sha256": "1a79ea47e62eff9fef75c775b902a73dd3dda08ae9a6fbe4e0798a6ff05e81bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_05.png",
+   "sha256": "56c5ddfbca5681b1a00c2c75d5dc20cebed2d1899298c2d2b607c04f65dffa3b"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    224,
+    247
+   ],
+   "margin": [
+    144,
+    234,
+    288,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    227,
+    1,
+    221,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    291,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    450,
+    1,
+    170,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    342,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    622,
+    1,
+    168,
+    247
+   ],
+   "margin": [
+    172,
+    234,
+    344,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    792,
+    1,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    961,
+    1,
+    164,
+    247
+   ],
+   "margin": [
+    174,
+    234,
+    348,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1127,
+    1,
+    149,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    363,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1278,
+    1,
+    149,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    363,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1429,
+    1,
+    145,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    367,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1576,
+    1,
+    145,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    367,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1723,
+    1,
+    144,
+    247
+   ],
+   "margin": [
+    184,
+    234,
+    368,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1869,
+    1,
+    143,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    369,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    143,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    369,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    146,
+    250,
+    143,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    369,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    291,
+    250,
+    141,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    371,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    434,
+    250,
+    139,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    373,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    575,
+    250,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    714,
+    250,
+    136,
+    247
+   ],
+   "margin": [
+    188,
+    234,
+    376,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    852,
+    250,
+    135,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    377,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    989,
+    250,
+    135,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    377,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1126,
+    250,
+    133,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    379,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1261,
+    250,
+    133,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    379,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1396,
+    250,
+    132,
+    247
+   ],
+   "margin": [
+    190,
+    234,
+    380,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1530,
+    250,
+    131,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    381,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1663,
+    250,
+    131,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    381,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1796,
+    250,
+    131,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    381,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    1929,
+    250,
+    112,
+    247
+   ],
+   "margin": [
+    200,
+    234,
+    400,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    129,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    383,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    132,
+    499,
+    127,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    385,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    261,
+    499,
+    126,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    386,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    389,
+    499,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    515,
+    499,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    641,
+    499,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    767,
+    499,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    893,
+    499,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1019,
+    499,
+    123,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    389,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1144,
+    499,
+    122,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    390,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1268,
+    499,
+    120,
+    247
+   ],
+   "margin": [
+    196,
+    234,
+    392,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1390,
+    499,
+    120,
+    247
+   ],
+   "margin": [
+    196,
+    234,
+    392,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1512,
+    499,
+    119,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    393,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1633,
+    499,
+    110,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    402,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1745,
+    499,
+    108,
+    247
+   ],
+   "margin": [
+    202,
+    234,
+    404,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1855,
+    499,
+    104,
+    247
+   ],
+   "margin": [
+    204,
+    234,
+    408,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1961,
+    499,
+    78,
+    247
+   ],
+   "margin": [
+    217,
+    234,
+    434,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    104,
+    247
+   ],
+   "margin": [
+    204,
+    234,
+    408,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    107,
+    748,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    211,
+    748,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    315,
+    748,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    419,
+    748,
+    92,
+    247
+   ],
+   "margin": [
+    210,
+    234,
+    420,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    513,
+    748,
+    77,
+    247
+   ],
+   "margin": [
+    217,
+    234,
+    435,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    592,
+    748,
+    59,
+    247
+   ],
+   "margin": [
+    227,
+    234,
+    453,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    653,
+    748,
+    228,
+    243
+   ],
+   "margin": [
+    142,
+    238,
+    284,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    883,
+    748,
+    168,
+    243
+   ],
+   "margin": [
+    172,
+    238,
+    344,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1053,
+    748,
+    168,
+    243
+   ],
+   "margin": [
+    172,
+    238,
+    344,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1223,
+    748,
+    157,
+    243
+   ],
+   "margin": [
+    177,
+    238,
+    355,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1382,
+    748,
+    156,
+    243
+   ],
+   "margin": [
+    178,
+    238,
+    356,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1540,
+    748,
+    137,
+    243
+   ],
+   "margin": [
+    187,
+    238,
+    375,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1679,
+    748,
+    137,
+    243
+   ],
+   "margin": [
+    187,
+    238,
+    375,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1818,
+    748,
+    129,
+    243
+   ],
+   "margin": [
+    191,
+    238,
+    383,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1949,
+    748,
+    98,
+    243
+   ],
+   "margin": [
+    207,
+    238,
+    414,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    653,
+    993,
+    129,
+    243
+   ],
+   "margin": [
+    191,
+    238,
+    383,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    784,
+    993,
+    127,
+    243
+   ],
+   "margin": [
+    193,
+    238,
+    385,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    913,
+    993,
+    124,
+    243
+   ],
+   "margin": [
+    194,
+    238,
+    388,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1039,
+    993,
+    124,
+    243
+   ],
+   "margin": [
+    194,
+    238,
+    388,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1165,
+    993,
+    124,
+    243
+   ],
+   "margin": [
+    194,
+    238,
+    388,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1291,
+    993,
+    122,
+    243
+   ],
+   "margin": [
+    195,
+    238,
+    390,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1415,
+    993,
+    122,
+    243
+   ],
+   "margin": [
+    195,
+    238,
+    390,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1539,
+    993,
+    120,
+    243
+   ],
+   "margin": [
+    196,
+    238,
+    392,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1661,
+    993,
+    120,
+    243
+   ],
+   "margin": [
+    196,
+    238,
+    392,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1783,
+    993,
+    116,
+    243
+   ],
+   "margin": [
+    198,
+    238,
+    396,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1901,
+    993,
+    112,
+    243
+   ],
+   "margin": [
+    200,
+    238,
+    400,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    112,
+    243
+   ],
+   "margin": [
+    200,
+    238,
+    400,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    115,
+    997,
+    106,
+    243
+   ],
+   "margin": [
+    203,
+    238,
+    406,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    223,
+    997,
+    102,
+    243
+   ],
+   "margin": [
+    205,
+    238,
+    410,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    327,
+    997,
+    102,
+    243
+   ],
+   "margin": [
+    205,
+    238,
+    410,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    431,
+    997,
+    100,
+    243
+   ],
+   "margin": [
+    206,
+    238,
+    412,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    533,
+    997,
+    96,
+    243
+   ],
+   "margin": [
+    208,
+    238,
+    416,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    631,
+    1238,
+    94,
+    243
+   ],
+   "margin": [
+    209,
+    238,
+    418,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    727,
+    1238,
+    78,
+    243
+   ],
+   "margin": [
+    217,
+    238,
+    434,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    807,
+    1238,
+    229,
+    240
+   ],
+   "margin": [
+    141,
+    241,
+    283,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1038,
+    1238,
+    216,
+    240
+   ],
+   "margin": [
+    148,
+    241,
+    296,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1256,
+    1238,
+    141,
+    240
+   ],
+   "margin": [
+    185,
+    241,
+    371,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1399,
+    1238,
+    135,
+    240
+   ],
+   "margin": [
+    189,
+    241,
+    377,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1536,
+    1238,
+    117,
+    240
+   ],
+   "margin": [
+    197,
+    241,
+    395,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1655,
+    1238,
+    194,
+    239
+   ],
+   "margin": [
+    159,
+    242,
+    318,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1851,
+    1238,
+    156,
+    239
+   ],
+   "margin": [
+    178,
+    242,
+    356,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1242,
+    147,
+    239
+   ],
+   "margin": [
+    183,
+    242,
+    365,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    150,
+    1242,
+    137,
+    239
+   ],
+   "margin": [
+    187,
+    242,
+    375,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    289,
+    1242,
+    135,
+    239
+   ],
+   "margin": [
+    189,
+    242,
+    377,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    426,
+    1242,
+    134,
+    239
+   ],
+   "margin": [
+    189,
+    242,
+    378,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1655,
+    1479,
+    127,
+    239
+   ],
+   "margin": [
+    193,
+    242,
+    385,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1784,
+    1479,
+    124,
+    239
+   ],
+   "margin": [
+    194,
+    242,
+    388,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1910,
+    1479,
+    120,
+    239
+   ],
+   "margin": [
+    196,
+    242,
+    392,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    807,
+    1480,
+    120,
+    239
+   ],
+   "margin": [
+    196,
+    242,
+    392,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    929,
+    1480,
+    120,
+    239
+   ],
+   "margin": [
+    196,
+    242,
+    392,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1051,
+    1480,
+    120,
+    239
+   ],
+   "margin": [
+    196,
+    242,
+    392,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1173,
+    1480,
+    116,
+    239
+   ],
+   "margin": [
+    198,
+    242,
+    396,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1291,
+    1480,
+    116,
+    239
+   ],
+   "margin": [
+    198,
+    242,
+    396,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1409,
+    1480,
+    116,
+    239
+   ],
+   "margin": [
+    198,
+    242,
+    396,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1527,
+    1480,
+    110,
+    239
+   ],
+   "margin": [
+    201,
+    242,
+    402,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1483,
+    108,
+    239
+   ],
+   "margin": [
+    202,
+    242,
+    404,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    111,
+    1483,
+    96,
+    239
+   ],
+   "margin": [
+    208,
+    242,
+    416,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    209,
+    1483,
+    161,
+    238
+   ],
+   "margin": [
+    175,
+    243,
+    351,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    372,
+    1483,
+    140,
+    238
+   ],
+   "margin": [
+    186,
+    243,
+    372,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    514,
+    1483,
+    175,
+    236
+   ],
+   "margin": [
+    169,
+    245,
+    337,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    691,
+    1483,
+    98,
+    236
+   ],
+   "margin": [
+    207,
+    245,
+    414,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1639,
+    1720,
+    220,
+    235
+   ],
+   "margin": [
+    146,
+    246,
+    292,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1861,
+    1720,
+    174,
+    235
+   ],
+   "margin": [
+    169,
+    246,
+    338,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    514,
+    1721,
+    165,
+    235
+   ],
+   "margin": [
+    173,
+    246,
+    347,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    681,
+    1721,
+    154,
+    235
+   ],
+   "margin": [
+    179,
+    246,
+    358,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    837,
+    1721,
+    92,
+    232
+   ],
+   "margin": [
+    210,
+    249,
+    420,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    931,
+    1721,
+    163,
+    231
+   ],
+   "margin": [
+    175,
+    250,
+    349,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1096,
+    1721,
+    155,
+    231
+   ],
+   "margin": [
+    179,
+    250,
+    357,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1253,
+    1721,
+    97,
+    229
+   ],
+   "margin": [
+    207,
+    252,
+    415,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1352,
+    1721,
+    193,
+    228
+   ],
+   "margin": [
+    159,
+    253,
+    319,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1547,
+    1721,
+    86,
+    214
+   ],
+   "margin": [
+    213,
+    267,
+    426,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    209,
+    1723,
+    153,
+    228
+   ],
+   "margin": [
+    179,
+    253,
+    359,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    364,
+    1723,
+    130,
+    228
+   ],
+   "margin": [
+    191,
+    253,
+    382,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1724,
+    105,
+    228
+   ],
+   "margin": [
+    203,
+    253,
+    407,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    108,
+    1724,
+    90,
+    199
+   ],
+   "margin": [
+    211,
+    282,
+    422,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1352,
+    1951,
+    280,
+    93
+   ],
+   "margin": [
+    116,
+    388,
+    232,
+    419
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    108,
+    1953,
+    221,
+    89
+   ],
+   "margin": [
+    145,
+    392,
+    291,
+    423
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    931,
+    1954,
+    259,
+    88
+   ],
+   "margin": [
+    127,
+    393,
+    253,
+    424
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1634,
+    1957,
+    247,
+    88
+   ],
+   "margin": [
+    133,
+    393,
+    265,
+    424
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    331,
+    1958,
+    232,
+    87
+   ],
+   "margin": [
+    140,
+    394,
+    280,
+    425
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    565,
+    1958,
+    272,
+    85
+   ],
+   "margin": [
+    120,
+    396,
+    240,
+    427
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    155,
+    227
+   ],
+   "margin": [
+    179,
+    254,
+    357,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    158,
+    1,
+    160,
+    226
+   ],
+   "margin": [
+    176,
+    255,
+    352,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    320,
+    1,
+    152,
+    226
+   ],
+   "margin": [
+    180,
+    255,
+    360,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    474,
+    1,
+    133,
+    226
+   ],
+   "margin": [
+    189,
+    255,
+    379,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    609,
+    1,
+    102,
+    225
+   ],
+   "margin": [
+    205,
+    256,
+    410,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    713,
+    1,
+    213,
+    224
+   ],
+   "margin": [
+    149,
+    257,
+    299,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    928,
+    1,
+    190,
+    224
+   ],
+   "margin": [
+    161,
+    257,
+    322,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1120,
+    1,
+    187,
+    224
+   ],
+   "margin": [
+    163,
+    257,
+    325,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1309,
+    1,
+    179,
+    224
+   ],
+   "margin": [
+    167,
+    257,
+    333,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1490,
+    1,
+    168,
+    224
+   ],
+   "margin": [
+    172,
+    257,
+    344,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1660,
+    1,
+    164,
+    224
+   ],
+   "margin": [
+    174,
+    257,
+    348,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1826,
+    1,
+    157,
+    224
+   ],
+   "margin": [
+    177,
+    257,
+    355,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    713,
+    227,
+    153,
+    224
+   ],
+   "margin": [
+    179,
+    257,
+    359,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    868,
+    227,
+    144,
+    224
+   ],
+   "margin": [
+    184,
+    257,
+    368,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1014,
+    227,
+    142,
+    224
+   ],
+   "margin": [
+    185,
+    257,
+    370,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1158,
+    227,
+    138,
+    224
+   ],
+   "margin": [
+    187,
+    257,
+    374,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1298,
+    227,
+    187,
+    221
+   ],
+   "margin": [
+    163,
+    260,
+    325,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1487,
+    227,
+    178,
+    221
+   ],
+   "margin": [
+    167,
+    260,
+    334,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1667,
+    227,
+    168,
+    221
+   ],
+   "margin": [
+    172,
+    260,
+    344,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1837,
+    227,
+    132,
+    221
+   ],
+   "margin": [
+    190,
+    260,
+    380,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    158,
+    229,
+    126,
+    221
+   ],
+   "margin": [
+    193,
+    260,
+    386,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    286,
+    229,
+    144,
+    220
+   ],
+   "margin": [
+    184,
+    261,
+    368,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    432,
+    229,
+    144,
+    220
+   ],
+   "margin": [
+    184,
+    261,
+    368,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    578,
+    229,
+    121,
+    220
+   ],
+   "margin": [
+    195,
+    261,
+    391,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    230,
+    151,
+    219
+   ],
+   "margin": [
+    181,
+    262,
+    361,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1298,
+    450,
+    159,
+    218
+   ],
+   "margin": [
+    177,
+    263,
+    353,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1459,
+    450,
+    118,
+    218
+   ],
+   "margin": [
+    197,
+    263,
+    394,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1579,
+    450,
+    101,
+    218
+   ],
+   "margin": [
+    205,
+    263,
+    411,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1682,
+    450,
+    198,
+    217
+   ],
+   "margin": [
+    157,
+    264,
+    314,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1882,
+    450,
+    136,
+    216
+   ],
+   "margin": [
+    188,
+    265,
+    376,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    286,
+    451,
+    187,
+    217
+   ],
+   "margin": [
+    163,
+    264,
+    325,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    475,
+    451,
+    179,
+    217
+   ],
+   "margin": [
+    167,
+    264,
+    333,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    452,
+    190,
+    216
+   ],
+   "margin": [
+    161,
+    265,
+    322,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    656,
+    453,
+    116,
+    216
+   ],
+   "margin": [
+    198,
+    265,
+    396,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    774,
+    453,
+    113,
+    216
+   ],
+   "margin": [
+    199,
+    265,
+    399,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    889,
+    453,
+    159,
+    213
+   ],
+   "margin": [
+    177,
+    268,
+    353,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1050,
+    453,
+    140,
+    213
+   ],
+   "margin": [
+    186,
+    268,
+    372,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    889,
+    668,
+    109,
+    213
+   ],
+   "margin": [
+    201,
+    268,
+    403,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1000,
+    668,
+    148,
+    210
+   ],
+   "margin": [
+    182,
+    271,
+    364,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    668,
+    141,
+    203
+   ],
+   "margin": [
+    185,
+    278,
+    371,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1901,
+    668,
+    123,
+    202
+   ],
+   "margin": [
+    195,
+    279,
+    389,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1682,
+    669,
+    217,
+    209
+   ],
+   "margin": [
+    147,
+    272,
+    295,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    670,
+    164,
+    205
+   ],
+   "margin": [
+    174,
+    276,
+    348,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    167,
+    670,
+    145,
+    199
+   ],
+   "margin": [
+    183,
+    282,
+    367,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    314,
+    670,
+    206,
+    198
+   ],
+   "margin": [
+    153,
+    283,
+    306,
+    314
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1293,
+    670,
+    206,
+    195
+   ],
+   "margin": [
+    153,
+    286,
+    306,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1501,
+    670,
+    135,
+    172
+   ],
+   "margin": [
+    189,
+    309,
+    377,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    522,
+    671,
+    210,
+    176
+   ],
+   "margin": [
+    151,
+    305,
+    302,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1501,
+    844,
+    168,
+    157
+   ],
+   "margin": [
+    172,
+    324,
+    344,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    522,
+    849,
+    219,
+    171
+   ],
+   "margin": [
+    147,
+    310,
+    293,
+    341
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1293,
+    867,
+    203,
+    101
+   ],
+   "margin": [
+    155,
+    380,
+    309,
+    411
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    167,
+    871,
+    255,
+    102
+   ],
+   "margin": [
+    129,
+    379,
+    257,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1000,
+    880,
+    259,
+    100
+   ],
+   "margin": [
+    127,
+    381,
+    253,
+    412
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1671,
+    880,
+    198,
+    100
+   ],
+   "margin": [
+    157,
+    381,
+    314,
+    412
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    743,
+    883,
+    237,
+    85
+   ],
+   "margin": [
+    137,
+    396,
+    275,
+    427
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1261,
+    970,
+    233,
+    56
+   ],
+   "margin": [
+    139,
+    425,
+    279,
+    456
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    975,
+    334,
+    68
+   ],
+   "margin": [
+    89,
+    413,
+    178,
+    444
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    743,
+    982,
+    284,
+    64
+   ],
+   "margin": [
+    114,
+    417,
+    228,
+    448
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/rift_shieldbearer_8dir/rift_shieldbearer_idle_east.png"
+}

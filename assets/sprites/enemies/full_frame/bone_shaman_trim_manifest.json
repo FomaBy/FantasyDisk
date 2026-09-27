@@ -1,0 +1,5819 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "bone_shaman",
+ "tres": "res://assets/sprites/enemies/full_frame/bone_shaman_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 184,
+ "unique_frames": 183,
+ "source_rgba_bytes": 192937984,
+ "page_rgba_bytes": 34742272,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman_trim_0.png",
+   "width": 2048,
+   "height": 1984,
+   "sha256": "409cc1f546c280f75596a52c1cf59932ada3bd1cfc8f677849465bdb240bcf10"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman_trim_1.png",
+   "width": 2048,
+   "height": 2045,
+   "sha256": "561dcdc972581917ffa8d67f0c8d956fa0f9ef7def59c8b102ccfa2f5329c962"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman_trim_2.png",
+   "width": 2048,
+   "height": 212,
+   "sha256": "197bf5a1998d4f581a9f28eba2f0abac44dbe6bcadb1b9bbea137273cfbb704f"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_00.png",
+   "sha256": "e56f13afac5615a5ea29cf804903c8a46d53bdf297efb4895f399039957de1e6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_01.png",
+   "sha256": "c0ad7ca48467f422ebc4f9ca2eec1a42db7a8f20e3a85424c3864ff9a3eec7b0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_02.png",
+   "sha256": "77f3328230b2d76ace35d25d5328afe613ff7bd033fc0f3fa69a2bad22da48a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_03.png",
+   "sha256": "c260780f033b20136effad7f9d26f724a38a1ebdc9688d05cc4051ba3ebb126e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_04.png",
+   "sha256": "c729734fe379375d66c8e1fded94dbf1519b5a76dc9e44a1984a97729ef67f65"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_05.png",
+   "sha256": "0041bef9b5eb87d9fa80c3edfb2225fc387bf5ca214e4d1f1dd8d8000b51e3ca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_00.png",
+   "sha256": "b9bcb48afe65b1dd1a76f8db13c049985410a390b30662295e0ce09d069a94c1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_01.png",
+   "sha256": "db9792ec5cecee769eed05d95ef77aab81cf40d3e590c72316a303a8c763c100"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_02.png",
+   "sha256": "65d48615a174108b3684938d1e6d77542be63ffed3ac0cc97f6a05f02f4374bf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_03.png",
+   "sha256": "d9161cfb22b61c33efe376dbb6d41a5951facd00e4dbd0a1587c6b154a877b4a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_04.png",
+   "sha256": "26afe80729b049a4c6947c2cd68189cf142a707d27cf2e91b004bfaf44068988"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_05.png",
+   "sha256": "e6bcb072bb7ab0d62d33d7115004aeef72f8c746d246a542a2d5b50539866e26"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_00.png",
+   "sha256": "12167c843fcb4d5777f77e97cb2a02ec8546f1aaa88da18fdd56fb14d23eaa40"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_01.png",
+   "sha256": "9ca149025450f83acf59177ae6f59edaf440b351819d720703426afe68cbafbb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_02.png",
+   "sha256": "59e36ac610a7cade6fe81bc09ed9092095319f5ae6bcb60941734a6876d7aca0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_03.png",
+   "sha256": "918a11652cb99f0c7d0eba7487aadc2dcf8c84f58adee2b3e392ec0bc85b8e83"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_04.png",
+   "sha256": "cc416f304caf1409c9b9fdad59930d7ddbba325eb34215a53bbd255ad80c39d5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_05.png",
+   "sha256": "66e34d760b3ac42127387ed273d837d0ec49d14bd3ec8bb2432f7b7522b15b15"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_00.png",
+   "sha256": "27be22744dab7ccd5ae7f447bd515c844e5a65ba488f63cf3f13e2f3f303c2f1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_01.png",
+   "sha256": "e3aee600989f02ac197121e9929792ee9ac483e26b77137e36fe8f7947a82b56"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_02.png",
+   "sha256": "0120f6522cf747194d923f3b14582289806afc3d35d06477c4df10d73d78aa08"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_03.png",
+   "sha256": "2043a2ea26a47740209213b49459ca0bfe731df23db2d68fb3be49405f18b10b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_04.png",
+   "sha256": "65c890415f2b1c565f33e5b2e9ead3f073a44d9573ff180370b5f752ac6b7d8b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_05.png",
+   "sha256": "0cabfbd08b14c060a680c18b0269a9c57fc024f74d991dd82e6caabc2b681197"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_00.png",
+   "sha256": "71513ee8a95d5d238baf6392c070151b2ebfdb28f3d7633abfda28f636abbbca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_01.png",
+   "sha256": "bb8397f4718d32255a29c591e7c04630e1359ad1e28ad30076330f4a37e02547"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_02.png",
+   "sha256": "c6dcc68bb2aacecece8bf59921f6dcbf74864fb7c67aff3a507181075e25a208"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_03.png",
+   "sha256": "a895f1b20d28fa9d276d80e0af42f43453a864fa9684eea4494ae09f73168393"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_04.png",
+   "sha256": "3e7e7ee6e2f79928397c5ccb2550a34fbf967de7e9a091ae531cddfb4e5b666d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_05.png",
+   "sha256": "129b0d1c3659be1f4902eacdcae7867c729340cc7598eff75e43981e85983085"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_00.png",
+   "sha256": "f22c9b9356afe6326c3509109a727a58eb86fa5f3a28d2a260c0edf71771ce12"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_01.png",
+   "sha256": "d71d51242953fd64bbd0837f7d2c511eaec25ba4d61968cf23d216f2576d135c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_02.png",
+   "sha256": "8598fdb28d935fdac3896f3089e8fec695cb1e3b63bc0b032a849c80d35de94c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_03.png",
+   "sha256": "c8382bbf13d8f00aedb462e5237b4aa95064da4ad4c552480cf61b328fcf61dc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_04.png",
+   "sha256": "43992e69e05138eab34ef78adc56a6f1a7395be599e6fdda7d9186e23b3f819b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_05.png",
+   "sha256": "cc633554451fe6803a334a6bf691a5fc90814f4b8f8b2e542f47145c77d30163"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_00.png",
+   "sha256": "185abba91ba59be43a9b5a5dabc138acdee1fea0216fb645eba01ac3a098a4e1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_01.png",
+   "sha256": "ed997c7b13b5c9ebc3a3db82b9cb0c118170fccc770e0675b064804de347216c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_02.png",
+   "sha256": "e9ef62ee5e99b119cd68583fb72d18a8c48d16c9680d398fca330ec17d982658"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_03.png",
+   "sha256": "0f2eb7980d2e2b8ba27c066c632af39236c74a5b29bb3f606cf2b64aabb376a1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_04.png",
+   "sha256": "ecc1bb3e40a994df4e4bea22ea51a1ab496a6b98eae6d7176e770a16cb8b2226"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_05.png",
+   "sha256": "e85a6307fc60611ce625b01ddc628a97538afe16471c6f9b8105e2d071215e47"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_00.png",
+   "sha256": "11e8209710b6b900e0349ee89e7c753dd500387d1c1fb7eab1126dcc025c989d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_01.png",
+   "sha256": "c64360aa790420f620a982089c4033a9f9b85c1362f679799e3b2f69a9ac3178"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_02.png",
+   "sha256": "39ddb8f5b3388de5a954bb486bd88e97b82a9c480ca09877db6e3888b656529a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_03.png",
+   "sha256": "f77c7f13c895b2650f9e86c9aaa1882ead361e0b287b414db0ccbac8fbca1be5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_04.png",
+   "sha256": "03cd8280881cd901172fdd6a1dac9b1dc332369afac6a3adf75d290d2a551b12"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_05.png",
+   "sha256": "218ac1ef78eb376f715ca5638a96b3fa01d9eb8fffc232144fad38e0f3b8c929"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_00.png",
+   "sha256": "fe351e158f968bb7d262681802a7174f8066a735e44b8319ca27f1afbfbc9f9f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_01.png",
+   "sha256": "7d5025c44ac78755820b217fa7403fb7bafe4b9226755a567ad273282d1b3a69"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_02.png",
+   "sha256": "39ad716e70bfc3b06552c9503eede8205efe66cd40f2a747be349350dc3c2b38"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_03.png",
+   "sha256": "67808279468d05a5e71932a5ad3a93bad6232557f8f4f293d2e15497e35c5bcf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_04.png",
+   "sha256": "c005acc2fdfe7b4e76c065d5a9fe1981ee2d6acc1f0534ef02c4df9d8a62d987"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_05.png",
+   "sha256": "6b367ee53a5fa9950dd7d464ccd443bbb00cd68cc4e466d6eea57bb6347de8d0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_00.png",
+   "sha256": "94152ade7d83965b3b1a2ec7db85e4f52f394344691d722703f049d352999d81"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_01.png",
+   "sha256": "0f55bd6b2841325e1324cb42e19e56206d30bf6db86b4cfbbf702b7575256c81"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_02.png",
+   "sha256": "98168309130512dd35dfaacf7f3de5164be87f89b7ccf2d520b0b70a34187a77"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_03.png",
+   "sha256": "4fad35db5bcb4970ca334ba47758003ee13fdbd996b6b642a0068a52602cc087"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_04.png",
+   "sha256": "de29d891ae29636aa9c82c54e4d7a0a4764021fbce9b6548aa542b07e5380684"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_05.png",
+   "sha256": "6a30e7c304abc5960cf07826cb2677a4b8b3ac318be25b4f0135d96567ce97a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_00.png",
+   "sha256": "41d683a008beaec610d49523d63c331e62a6cac0f9951c8140e41cff2cb68fca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_01.png",
+   "sha256": "98b19bf4a2529a5d67574f1610c3e4ce08ff0685813b95d4b49ce50d2bc7ea90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_02.png",
+   "sha256": "06134302f7d4d4ba099df23a15b2a0e5294fa89c0098fd05186df7f9a870cbef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_03.png",
+   "sha256": "eeb97cab44e91d99760337a8318c11405741741c6783e70145712bef66f55cf8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_04.png",
+   "sha256": "cd191bcab538bb7f44ecac32f44d3c1bc52d03a9e049c28be852bd46e3099069"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_05.png",
+   "sha256": "8d965738eb1fd9b0364cd17dc5e5d5a049885d8e046e0a5de57dd80e6e7a7dfd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_00.png",
+   "sha256": "98b04e4a9bfeb9a575500c695a091bd6fe8409bb20a890c9bd8e4116acd41ecf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_01.png",
+   "sha256": "6967915e5275d1f85cda2f9b36eb9bb93249599a62e30ba10ee7cd111665e112"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_02.png",
+   "sha256": "2f0be4f3aa8c87d46fd928d93f75f45118eb6dd3a6ddd01d83cb08fbc8722b31"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_03.png",
+   "sha256": "feb0d7f0135c7c76add0797bdcb2cc6e0df6ebae58eabf5242d559439a805ba9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_04.png",
+   "sha256": "9d2cf11bb439935a2a14f6e54eea5013128c06b361276821b82b7a70db72ed48"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_05.png",
+   "sha256": "9fa6fc91eec50359ddd78b4f4b59826e06e917e8c3be71c5fe417a0f533c5538"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_00.png",
+   "sha256": "6c9cc5b850dcf9c29583aaecbdbcfd051fc949f75537c6b6cd425ed8537b3911"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_01.png",
+   "sha256": "6d9c2f278b77a63c8c49ec92193c77fa95e867baf30b417d038db3a619311989"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_02.png",
+   "sha256": "2b5003df4f6f918855613c8608d9ad769bf408231497edebf7413554bfd1e882"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_03.png",
+   "sha256": "0e03f6a7f7fb5fd5ae4ff5aa1234919b4f37dfd563779f8e7afcc6474bfef343"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_04.png",
+   "sha256": "c0c5e919637bc74ec2a8f103b22eb6226922972a121ab430b450b7a5e554299b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_05.png",
+   "sha256": "19b4327aeaf4d4ac42181dd9aed3a8492094361172d77ec38f074b2015b63ed7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_00.png",
+   "sha256": "c43f8503a9f3fe20dc7ad0e2b171c07eeb77a9bd112eaa35cd2e6adacde72e82"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_01.png",
+   "sha256": "bb3ef092fc9c009cbafde136ad0fdf10dfe88a78a652eb474f0ca2dcc5bd0c1e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_02.png",
+   "sha256": "770194a0af695c1d8e286817550576368cd807637ea140ccffbcaa83ebff608e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_03.png",
+   "sha256": "1c173ed7702a9fd595c64eb2d638008b33214b0a19944a27504c6f98b3ab5043"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_04.png",
+   "sha256": "48860f7a4bd4bbdcbcfce0d2480f72013072843e6e62b364d4ff947954b0ea34"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_05.png",
+   "sha256": "a627cae073c43688d00ec15959fcd0cd1050f1ff56fc8b35e405127e7197f59f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_00.png",
+   "sha256": "9557e2f7168dc58e54e588728222a1f259d66725e0409a374384108fc3a45a4f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_01.png",
+   "sha256": "5532b9be14239639c53f1e7d458aa1d3d46e593cece353d9ef63588e5888160c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_02.png",
+   "sha256": "d66637c1090f9c7a9f8f4fa2c0d06bb180d4df3f549483f08afb7cc88ccc502c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_03.png",
+   "sha256": "fc31e6023eb07eb4bbf9da09b319d34c0552c3bb1d10fafbe246c9a7cf5837ae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_04.png",
+   "sha256": "dbeeb4d1641fc592ae7d79fcb4ca6be2c4467ebd008f45c536764b49efac24b2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_05.png",
+   "sha256": "bfc82b5e703a0d3401a4e28ef24ee9ce0867949397f6225051afb1d155e6f0fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_00.png",
+   "sha256": "807ea803e7b1c6b9be597e2f441458962dc2eaab3b6ebd6df468787fa4e3f1ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_01.png",
+   "sha256": "d5721e59f0bb53b1a9e4c6ee5178001ed46bfe623aa45dfaceb4431cfadcc29a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_02.png",
+   "sha256": "1e58804f8b40c4875d5f2d192ef7e53657f1995faba6276403cf242f229162ec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_03.png",
+   "sha256": "1d68147c55f2f5c7c74af952cda9395819be9873325068bfb9136c1a90c8b5c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_04.png",
+   "sha256": "d176c0e25860acc6765a9da3f5b6819daf2b92a43face50e7b7759e93d8df224"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_05.png",
+   "sha256": "706df16d04ed701a8787d265a1845a6e5b08c327e1c522133d6292c363141e14"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_00.png",
+   "sha256": "51822d63102d730b034a8bdd25ddf778efe488e955c8025c1bc9cb6b4c1663ce"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_01.png",
+   "sha256": "f9c276035d0bd2657135a15158e32f5b338f9b44d0ef44173d05f9cfeef03ac2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_02.png",
+   "sha256": "5f7a0179dbf61a6560794fcbed242f87549c8f58fefc8329bed6dbff9cc84ddd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_03.png",
+   "sha256": "2c1cf292908316378e562e0c5ee4171ea2408139b5a343fbb807111aa2f4a812"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_00.png",
+   "sha256": "b3e4a45aa817d70823c4a35ddd77ba7d5e1cd1865e72d5b845cd4923f0d11fbe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_01.png",
+   "sha256": "451fb5ccd8f89a5c1b33f337eb48c8e02758230918f78fcdff2d1642f5c0dda9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_02.png",
+   "sha256": "89d7844b722bb51c94eb12596592744d325282e6c46119e4764fd4986e4f2125"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_03.png",
+   "sha256": "f60cdd15c34a9ab888e388fa60c8918b12a48482996feaab9471cf171671ec89"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_00.png",
+   "sha256": "d9c035dbb7719e626d52ec35531d09d3c0ff4c4babfb7b6c1ac36b86087969c0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_01.png",
+   "sha256": "e3e76ecd2be77283b43fde3494981a9704116dc24ac9cfed182e48af2d9f968f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_02.png",
+   "sha256": "4bfaa30d326cde1978a99320cdabd0676e97ea39298631fe3906d399d52687ca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_03.png",
+   "sha256": "304bb41030253e52a1b5a9b3467b19061d03098e4792d63dc71409d8bd69a542"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_00.png",
+   "sha256": "5aa7a76b1fb18e1d5ce67f3bd78119c2240655357e8eebc53dbf9287743c126a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_01.png",
+   "sha256": "53ca0f28a9d280028e3874d86c7dde46a03346070739e632d84c5ced04cd6e04"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_02.png",
+   "sha256": "96dcbb1cb03f3d7fb503a1fcec4875b19786293a5ec026a62429b673babe8e9e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_03.png",
+   "sha256": "cf703272dac20d1c375b619df9d2e95d1d8d4947a778cd928005095543e5b9df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_00.png",
+   "sha256": "96864e8c72df1f7960e9ef92224cf3c97c1cd59ac926da620d9594f460c51dcc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_01.png",
+   "sha256": "1f4c44de57c6cf28eeab1efbe088764a9e551b76854d278186ba58c1be124449"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_02.png",
+   "sha256": "27d0a8eebfa5a386000edd4bb3b338c42ef044397b3bc5b98d1f328be527f1c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_03.png",
+   "sha256": "ba81fbf593fb2a233b301533eb9050858cf807bd333f691ffb7efd18f22c4e76"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_00.png",
+   "sha256": "93844eaad3562300aaecff8528fb72f84d2e8c48a22719a253420acf8b91229e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_01.png",
+   "sha256": "7e85ad9418ef5898dcd0a74aa179f71ae06487fae2267fed18fdc5665ef4d336"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_02.png",
+   "sha256": "8a377de055f173e566eae870f2f6b8343cce4e68e3e59b6ed25f01df14f14035"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_03.png",
+   "sha256": "8d6be1220e6fd9f7dd9d757a917a6e1097e1882f922a78e49a0d27022cbcad8d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_00.png",
+   "sha256": "924fa2cfa06d1b95c64cf5767c8df3bb8789268209bb9ad74173674313e34f17"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_01.png",
+   "sha256": "f794773d10d8bc6b1ac73d5b86ce3549f86b576e6a37182a96f5aa4bffc85f4a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_02.png",
+   "sha256": "0b3c57c982a778601b777fed50fb9ea20be93bb3bd8a120a0908163c7f38af1f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_03.png",
+   "sha256": "b5d60c9e3f02d6deb795227faeb3b34a0c6351719471cdd7b9ce635a58782a69"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_00.png",
+   "sha256": "494885ecb932a1a482a6ad67fe96da4440064a9afa7613ef5888c465dc1850d3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_01.png",
+   "sha256": "4f493543604ab654393befb697db018642a782c37e6c7aa14ba3fbd88b644aac"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_02.png",
+   "sha256": "1135d117b6f45e7598715a33cbd577807fb57713789f4ce88a4652f3380e1448"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_03.png",
+   "sha256": "b0bb7f055a8562df026104da847dea1b760b27618bf2750e31a95e541db06391"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_east.png",
+   "sha256": "da2a89a36509ff6b6f2cb89ce74f968912551c7f2cd5e576869e2f8dbeb22eb0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north.png",
+   "sha256": "b35990c3126ace7306488c1cf8ae25775e1b9e56fb91559977d5c163e3856194"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_east.png",
+   "sha256": "2eb7e1e0c8a1037c893ac29ce9132b7453581b2987a49b0705cb2cb71d5ef0c8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_west.png",
+   "sha256": "a58e345894faa788d05ca0cbec39140c67e64419972b31e085508e110d761a3b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south.png",
+   "sha256": "945daac246df89e8c6730432cd458848249d8340581f4ae909b271a37617957c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_east.png",
+   "sha256": "f4c27e4e9a6b5bcfad95115c9e5b17da27484d8e86eae3ae65c4ac81796421f0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_west.png",
+   "sha256": "35b921aa206a30e1ff35ab18b0d80df0dd57644ece6c5da4721727dca3b22add"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_west.png",
+   "sha256": "218ac1ef78eb376f715ca5638a96b3fa01d9eb8fffc232144fad38e0f3b8c929"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_00.png",
+   "sha256": "96bfcf9dc9c70334e0c29a02d292f5d0c2afe1face6e8302d644643ef1d99652"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_01.png",
+   "sha256": "80d5d238d37e8a6bb708f7e6e59400c9529002c913c95d6c8313493004db3d9c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_02.png",
+   "sha256": "8bd9d21190d803e1182216ae1d763a0121a49768eb4c93ded6a0e0118f945b90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_03.png",
+   "sha256": "55841fdc9eb7f89683e2e9ee8f0448324b55adced281c1020ce0189068297707"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_04.png",
+   "sha256": "4676e6da183bb1a08da77713635d1e69e58ec4e545c87b26486ca4b4f0735f45"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_05.png",
+   "sha256": "a35426d8fb6250a2eeb0c8498b5939ce77f237581b96a06f06e454a7b82a0950"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_00.png",
+   "sha256": "e80414b14db2ff4b49d1ac3505ef96185dfb10e28f8800f5f23d5d2cbac46f79"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_01.png",
+   "sha256": "b610534dcd7374060f5c3ef737abb0e3b3860584af57b5e5676b7e55a5354404"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_02.png",
+   "sha256": "1a3d132c4f2dcf176ec949c6b7f672aba2a37dcd7f71632a7db36a92812b8c93"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_03.png",
+   "sha256": "21a8f8bd43b5f94c0d5ed88192f24595f5aaaf29c242af734dee8946a386e883"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_04.png",
+   "sha256": "d5d5d22998ec83c90325b6a4a29e0481d6e7cf4c55c71c14f93bb6457f828c91"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_05.png",
+   "sha256": "ab748b5959a46c1351a4ee86d56da25b3a14ac882cdf86c83c90bbc25855dcc5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_00.png",
+   "sha256": "4d3ea2050bb1e2bf842dc951bed7f1ba777b0f09fc5ded2223fb967919f5315b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_01.png",
+   "sha256": "268cd07d4f6537012316204094a3ea61b999ed7a4da7113f137febc7202cd9f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_02.png",
+   "sha256": "83514c23159ddbe245d242d7d70fb4c605d988479efa65a68122edf4b3a7b658"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_03.png",
+   "sha256": "490df598a0a032a7f4049bba3e55c480ccde3bdc589c61de5e40571b3ebfa181"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_04.png",
+   "sha256": "31ef47cba68b0b02ddc23740b3078411b2e98138edb60c6dde343996455e5b11"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_05.png",
+   "sha256": "c69a8b03142706015a289fc405e3e935718bbfb8eb39739faa337cd8483170e3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_00.png",
+   "sha256": "40649fdba12682ab3fa6339551e68c136ec558f6ec8b9abfa37dec8db3249e09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_01.png",
+   "sha256": "02e6149b5021d5698c7bbc8e02bc0e635610af7804551c5c518d7b9466e43e25"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_02.png",
+   "sha256": "7488f0566241371e2a64a8d89061c90709693e9cb19bbab36be5ab35369f2d69"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_03.png",
+   "sha256": "965254d96e8a73c8b0d567f8758b9e58c69543edc6fb5a6a8b67effb7726cf92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_04.png",
+   "sha256": "07007a78b5dc94a5d4db3912971c1c188e2646cbc8402d64210fc58844ba426f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_05.png",
+   "sha256": "d9f4e3b77e0024febf6cfef3242342eee6e118f7270c04ff08d5e9121a640369"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_00.png",
+   "sha256": "ccf0cbc166c85d0f9ebd0241fd27ef39898cf3d2582380e7e7fc1ec8bb209771"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_01.png",
+   "sha256": "072d1d6ea898be96b88fbc93ea2a54d078deb45c0b48660301d1a9b61a9c1698"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_02.png",
+   "sha256": "5d22281f5b5960108109c10934b4ae67a07c8bb4e1b655b0ab6cf17f433305cf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_03.png",
+   "sha256": "52a687ae7ff49c3813e056a1e7d45f7a5548dae885465552a93b7761801356a4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_04.png",
+   "sha256": "0796b704f9fad86ef6c8fcdef93a600e1500853928f1f1404baeb56e8bbee726"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_05.png",
+   "sha256": "f12a6a7e58ff8f985e5b79f902089a349d7ee725f88ae1814535c2dea184b3c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_00.png",
+   "sha256": "46b57c5e4076786ac46c1d5cfde48cb2080385ea05b8cb3b83c682dd8d4a4dd5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_01.png",
+   "sha256": "0263a8b02c95f481aa202bf1a2bf3b8dfeac421cbb9b03a5db5cce3a0a102bc0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_02.png",
+   "sha256": "1467aa32b4494e87e080156efbae9e64ee3290597ac9c0aab86b1c4d6d5dada6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_03.png",
+   "sha256": "45b84bb2a037a6f652714073fcc157eb5ae9e0fa3acb7c7199037270a2fb9b89"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_04.png",
+   "sha256": "07cd459029feb1b4c6e203429dd6ae61f2bacf61423d013a06c4442213f322be"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_05.png",
+   "sha256": "6064bae3b71cacdc42a05ffec381c5a943c79db959a2ffd67fc9ef86156c9413"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_00.png",
+   "sha256": "25ec61ba0f5ffa4aa95b3cdf6b4b478e633f5a1e722bf551a379bffd03ab79c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_01.png",
+   "sha256": "748bfdfa1f216ff06198442fc0c33c38d6ae54434b31209ffd555b94ed5494e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_02.png",
+   "sha256": "d49002c79ffdb65ccc1bbc7b51b55aac59245a2e11678847c328e9db3088892f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_03.png",
+   "sha256": "e03408061cd36c17ca0b14e3d69942120c24a7ef8ec55ac2da9cee5d48f46dcd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_04.png",
+   "sha256": "995cf7fd6b812ab2bd940ef2b8a3307bb82d5a7f6c592436bdba6f372f048df6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_05.png",
+   "sha256": "6e235e675a6b6f7396cda70634b918c386bed6c8e639e7de13012c2458621972"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_00.png",
+   "sha256": "2833b82ddd6c8e7d172a7fa3264ca8c3e3a5d76200dde773addb27f8802210d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_01.png",
+   "sha256": "ba130f24f51588e525f1c305e420abbb6677b6b1a06666b6caed05ba866003ad"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_02.png",
+   "sha256": "42a95e45e798ee58c62b6fcea1bdbac67669cda8ce795e6002ce8630e88f76b3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_03.png",
+   "sha256": "0968b29b4b1da33a6c898f5f3dda7a4676d29c401d37d2a2a5064e531d0cf923"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_04.png",
+   "sha256": "9946805f1e94b98437da3196d051215c0dd030917331d39e5ae67047ca7d7823"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_05.png",
+   "sha256": "6d3937c2fc4790f04016e13d9d78d47706ceb91912cbd95faa56d7e8980e6031"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    250,
+    1,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    499,
+    1,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    748,
+    1,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    997,
+    1,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    1246,
+    1,
+    235,
+    247
+   ],
+   "margin": [
+    139,
+    234,
+    277,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1483,
+    1,
+    235,
+    247
+   ],
+   "margin": [
+    139,
+    234,
+    277,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    1720,
+    1,
+    227,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    285,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1949,
+    1,
+    98,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    414,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    227,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    285,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    230,
+    250,
+    224,
+    247
+   ],
+   "margin": [
+    144,
+    234,
+    288,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    456,
+    250,
+    220,
+    247
+   ],
+   "margin": [
+    146,
+    234,
+    292,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    678,
+    250,
+    215,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    297,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    895,
+    250,
+    212,
+    247
+   ],
+   "margin": [
+    150,
+    234,
+    300,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1109,
+    250,
+    211,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    301,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1322,
+    250,
+    211,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    301,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1535,
+    250,
+    210,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    302,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1747,
+    250,
+    207,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    305,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    207,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    305,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    210,
+    499,
+    205,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    307,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    417,
+    499,
+    203,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    309,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    622,
+    499,
+    203,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    309,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    827,
+    499,
+    199,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    313,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1028,
+    499,
+    198,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    314,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1228,
+    499,
+    191,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    321,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1421,
+    499,
+    191,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    321,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1614,
+    499,
+    190,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    322,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1806,
+    499,
+    189,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    323,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    188,
+    247
+   ],
+   "margin": [
+    162,
+    234,
+    324,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    191,
+    748,
+    187,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    325,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    380,
+    748,
+    187,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    325,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    569,
+    748,
+    187,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    325,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    758,
+    748,
+    187,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    325,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    947,
+    748,
+    183,
+    247
+   ],
+   "margin": [
+    165,
+    234,
+    329,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1132,
+    748,
+    175,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    337,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1309,
+    748,
+    175,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    337,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1486,
+    748,
+    175,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    337,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1663,
+    748,
+    175,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    337,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1840,
+    748,
+    171,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    341,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    169,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    343,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    172,
+    997,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    341,
+    997,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    510,
+    997,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    677,
+    997,
+    164,
+    247
+   ],
+   "margin": [
+    174,
+    234,
+    348,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    843,
+    997,
+    164,
+    247
+   ],
+   "margin": [
+    174,
+    234,
+    348,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1009,
+    997,
+    163,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    349,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1174,
+    997,
+    159,
+    247
+   ],
+   "margin": [
+    177,
+    234,
+    353,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1335,
+    997,
+    159,
+    247
+   ],
+   "margin": [
+    177,
+    234,
+    353,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1496,
+    997,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1654,
+    997,
+    152,
+    247
+   ],
+   "margin": [
+    180,
+    234,
+    360,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1808,
+    997,
+    151,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    361,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    138,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    374,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    141,
+    1246,
+    135,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    377,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    278,
+    1246,
+    126,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    386,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    406,
+    1246,
+    117,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    395,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    525,
+    1246,
+    117,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    395,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    644,
+    1246,
+    108,
+    247
+   ],
+   "margin": [
+    202,
+    234,
+    404,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    754,
+    1246,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    858,
+    1246,
+    99,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    413,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    959,
+    1246,
+    97,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    415,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1058,
+    1246,
+    97,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    415,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_05.png",
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1157,
+    1246,
+    97,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    415,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1256,
+    1246,
+    95,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    417,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1353,
+    1246,
+    95,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    417,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1450,
+    1246,
+    94,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    418,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1546,
+    1246,
+    243,
+    243
+   ],
+   "margin": [
+    135,
+    238,
+    269,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1791,
+    1246,
+    243,
+    243
+   ],
+   "margin": [
+    135,
+    238,
+    269,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1546,
+    1491,
+    228,
+    243
+   ],
+   "margin": [
+    142,
+    238,
+    284,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1776,
+    1491,
+    228,
+    243
+   ],
+   "margin": [
+    142,
+    238,
+    284,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1495,
+    227,
+    243
+   ],
+   "margin": [
+    143,
+    238,
+    285,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    230,
+    1495,
+    223,
+    243
+   ],
+   "margin": [
+    145,
+    238,
+    289,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    455,
+    1495,
+    223,
+    243
+   ],
+   "margin": [
+    145,
+    238,
+    289,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    680,
+    1495,
+    223,
+    243
+   ],
+   "margin": [
+    145,
+    238,
+    289,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    905,
+    1495,
+    223,
+    243
+   ],
+   "margin": [
+    145,
+    238,
+    289,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1130,
+    1495,
+    223,
+    243
+   ],
+   "margin": [
+    145,
+    238,
+    289,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1355,
+    1495,
+    185,
+    239
+   ],
+   "margin": [
+    163,
+    242,
+    327,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1355,
+    1736,
+    220,
+    243
+   ],
+   "margin": [
+    146,
+    238,
+    292,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1577,
+    1736,
+    216,
+    243
+   ],
+   "margin": [
+    148,
+    238,
+    296,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1795,
+    1736,
+    212,
+    243
+   ],
+   "margin": [
+    150,
+    238,
+    300,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1740,
+    200,
+    243
+   ],
+   "margin": [
+    156,
+    238,
+    312,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    203,
+    1740,
+    196,
+    243
+   ],
+   "margin": [
+    158,
+    238,
+    316,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    401,
+    1740,
+    195,
+    243
+   ],
+   "margin": [
+    159,
+    238,
+    317,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    598,
+    1740,
+    193,
+    243
+   ],
+   "margin": [
+    159,
+    238,
+    319,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    793,
+    1740,
+    190,
+    243
+   ],
+   "margin": [
+    161,
+    238,
+    322,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    985,
+    1740,
+    184,
+    243
+   ],
+   "margin": [
+    164,
+    238,
+    328,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1171,
+    1740,
+    181,
+    243
+   ],
+   "margin": [
+    165,
+    238,
+    331,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    183,
+    243
+   ],
+   "margin": [
+    165,
+    238,
+    329,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    186,
+    1,
+    179,
+    243
+   ],
+   "margin": [
+    167,
+    238,
+    333,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    367,
+    1,
+    170,
+    243
+   ],
+   "margin": [
+    171,
+    238,
+    342,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    539,
+    1,
+    168,
+    243
+   ],
+   "margin": [
+    172,
+    238,
+    344,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    709,
+    1,
+    159,
+    243
+   ],
+   "margin": [
+    177,
+    238,
+    353,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    870,
+    1,
+    156,
+    243
+   ],
+   "margin": [
+    178,
+    238,
+    356,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1028,
+    1,
+    155,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    357,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1185,
+    1,
+    152,
+    243
+   ],
+   "margin": [
+    180,
+    238,
+    360,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1339,
+    1,
+    116,
+    243
+   ],
+   "margin": [
+    198,
+    238,
+    396,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1457,
+    1,
+    107,
+    243
+   ],
+   "margin": [
+    203,
+    238,
+    405,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1566,
+    1,
+    105,
+    243
+   ],
+   "margin": [
+    203,
+    238,
+    407,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1673,
+    1,
+    95,
+    243
+   ],
+   "margin": [
+    209,
+    238,
+    417,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1770,
+    1,
+    255,
+    239
+   ],
+   "margin": [
+    129,
+    242,
+    257,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1770,
+    242,
+    230,
+    239
+   ],
+   "margin": [
+    141,
+    242,
+    282,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    246,
+    227,
+    239
+   ],
+   "margin": [
+    143,
+    242,
+    285,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    230,
+    246,
+    224,
+    239
+   ],
+   "margin": [
+    144,
+    242,
+    288,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    456,
+    246,
+    224,
+    239
+   ],
+   "margin": [
+    144,
+    242,
+    288,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    682,
+    246,
+    224,
+    239
+   ],
+   "margin": [
+    144,
+    242,
+    288,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    908,
+    246,
+    211,
+    239
+   ],
+   "margin": [
+    151,
+    242,
+    301,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1121,
+    246,
+    209,
+    239
+   ],
+   "margin": [
+    151,
+    242,
+    303,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1332,
+    246,
+    204,
+    239
+   ],
+   "margin": [
+    154,
+    242,
+    308,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1538,
+    246,
+    200,
+    239
+   ],
+   "margin": [
+    156,
+    242,
+    312,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1740,
+    483,
+    198,
+    239
+   ],
+   "margin": [
+    157,
+    242,
+    314,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1940,
+    483,
+    107,
+    239
+   ],
+   "margin": [
+    203,
+    242,
+    405,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    487,
+    184,
+    239
+   ],
+   "margin": [
+    164,
+    242,
+    328,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    187,
+    487,
+    182,
+    239
+   ],
+   "margin": [
+    165,
+    242,
+    330,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    371,
+    487,
+    181,
+    239
+   ],
+   "margin": [
+    165,
+    242,
+    331,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    554,
+    487,
+    177,
+    239
+   ],
+   "margin": [
+    167,
+    242,
+    335,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    733,
+    487,
+    176,
+    239
+   ],
+   "margin": [
+    168,
+    242,
+    336,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    911,
+    487,
+    173,
+    239
+   ],
+   "margin": [
+    169,
+    242,
+    339,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1086,
+    487,
+    170,
+    239
+   ],
+   "margin": [
+    171,
+    242,
+    342,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1258,
+    487,
+    170,
+    239
+   ],
+   "margin": [
+    171,
+    242,
+    342,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1430,
+    487,
+    170,
+    239
+   ],
+   "margin": [
+    171,
+    242,
+    342,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1602,
+    487,
+    123,
+    235
+   ],
+   "margin": [
+    195,
+    246,
+    389,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1602,
+    724,
+    168,
+    239
+   ],
+   "margin": [
+    172,
+    242,
+    344,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1772,
+    724,
+    155,
+    239
+   ],
+   "margin": [
+    179,
+    242,
+    357,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1929,
+    724,
+    118,
+    239
+   ],
+   "margin": [
+    197,
+    242,
+    394,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    728,
+    144,
+    239
+   ],
+   "margin": [
+    184,
+    242,
+    368,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    147,
+    728,
+    143,
+    239
+   ],
+   "margin": [
+    185,
+    242,
+    369,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    292,
+    728,
+    136,
+    239
+   ],
+   "margin": [
+    188,
+    242,
+    376,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    430,
+    728,
+    115,
+    239
+   ],
+   "margin": [
+    199,
+    242,
+    397,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    547,
+    728,
+    111,
+    239
+   ],
+   "margin": [
+    201,
+    242,
+    401,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    660,
+    728,
+    94,
+    239
+   ],
+   "margin": [
+    209,
+    242,
+    418,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    756,
+    728,
+    182,
+    236
+   ],
+   "margin": [
+    165,
+    245,
+    330,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    940,
+    728,
+    94,
+    236
+   ],
+   "margin": [
+    209,
+    245,
+    418,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1036,
+    728,
+    270,
+    235
+   ],
+   "margin": [
+    121,
+    246,
+    242,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1308,
+    728,
+    259,
+    235
+   ],
+   "margin": [
+    127,
+    246,
+    253,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1036,
+    965,
+    259,
+    235
+   ],
+   "margin": [
+    127,
+    246,
+    253,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1297,
+    965,
+    255,
+    235
+   ],
+   "margin": [
+    129,
+    246,
+    257,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1554,
+    965,
+    228,
+    235
+   ],
+   "margin": [
+    142,
+    246,
+    284,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1784,
+    965,
+    224,
+    235
+   ],
+   "margin": [
+    144,
+    246,
+    288,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    756,
+    966,
+    159,
+    235
+   ],
+   "margin": [
+    177,
+    246,
+    353,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    917,
+    966,
+    115,
+    231
+   ],
+   "margin": [
+    199,
+    250,
+    397,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    969,
+    140,
+    235
+   ],
+   "margin": [
+    186,
+    246,
+    372,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    143,
+    969,
+    139,
+    235
+   ],
+   "margin": [
+    187,
+    246,
+    373,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    284,
+    969,
+    251,
+    232
+   ],
+   "margin": [
+    131,
+    249,
+    261,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    537,
+    969,
+    211,
+    231
+   ],
+   "margin": [
+    151,
+    250,
+    301,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    537,
+    1202,
+    183,
+    231
+   ],
+   "margin": [
+    165,
+    250,
+    329,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    917,
+    1202,
+    236,
+    232
+   ],
+   "margin": [
+    138,
+    249,
+    276,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1155,
+    1202,
+    219,
+    231
+   ],
+   "margin": [
+    147,
+    250,
+    293,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1376,
+    1202,
+    243,
+    230
+   ],
+   "margin": [
+    135,
+    251,
+    269,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1621,
+    1202,
+    145,
+    227
+   ],
+   "margin": [
+    183,
+    254,
+    367,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1768,
+    1202,
+    219,
+    223
+   ],
+   "margin": [
+    147,
+    258,
+    293,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    284,
+    1203,
+    157,
+    222
+   ],
+   "margin": [
+    177,
+    259,
+    355,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    722,
+    1203,
+    182,
+    216
+   ],
+   "margin": [
+    165,
+    265,
+    330,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1206,
+    228,
+    220
+   ],
+   "margin": [
+    142,
+    261,
+    284,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    722,
+    1421,
+    184,
+    215
+   ],
+   "margin": [
+    164,
+    266,
+    328,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    231,
+    1427,
+    210,
+    218
+   ],
+   "margin": [
+    151,
+    263,
+    302,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1768,
+    1427,
+    227,
+    214
+   ],
+   "margin": [
+    143,
+    267,
+    285,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1428,
+    201,
+    205
+   ],
+   "margin": [
+    155,
+    276,
+    311,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1376,
+    1434,
+    255,
+    210
+   ],
+   "margin": [
+    129,
+    271,
+    257,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    443,
+    1435,
+    228,
+    204
+   ],
+   "margin": [
+    142,
+    277,
+    284,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1155,
+    1435,
+    193,
+    193
+   ],
+   "margin": [
+    159,
+    288,
+    319,
+    319
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    908,
+    1436,
+    222,
+    197
+   ],
+   "margin": [
+    145,
+    284,
+    290,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1165,
+    1630,
+    150,
+    193
+   ],
+   "margin": [
+    181,
+    288,
+    362,
+    319
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1635,
+    222,
+    176
+   ],
+   "margin": [
+    145,
+    305,
+    290,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    908,
+    1635,
+    255,
+    194
+   ],
+   "margin": [
+    129,
+    287,
+    257,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    692,
+    1638,
+    207,
+    164
+   ],
+   "margin": [
+    153,
+    317,
+    305,
+    348
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    443,
+    1641,
+    247,
+    190
+   ],
+   "margin": [
+    133,
+    291,
+    265,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1633,
+    1643,
+    247,
+    177
+   ],
+   "margin": [
+    133,
+    304,
+    265,
+    335
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1317,
+    1646,
+    264,
+    168
+   ],
+   "margin": [
+    124,
+    313,
+    248,
+    344
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1813,
+    251,
+    150
+   ],
+   "margin": [
+    131,
+    331,
+    261,
+    362
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1317,
+    1816,
+    272,
+    145
+   ],
+   "margin": [
+    120,
+    336,
+    240,
+    367
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1591,
+    1822,
+    271,
+    143
+   ],
+   "margin": [
+    121,
+    338,
+    241,
+    369
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    692,
+    1831,
+    289,
+    139
+   ],
+   "margin": [
+    111,
+    342,
+    223,
+    373
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    983,
+    1831,
+    235,
+    135
+   ],
+   "margin": [
+    139,
+    346,
+    277,
+    377
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    254,
+    1833,
+    276,
+    129
+   ],
+   "margin": [
+    118,
+    352,
+    236,
+    383
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1220,
+    1963,
+    275,
+    81
+   ],
+   "margin": [
+    119,
+    400,
+    237,
+    431
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1,
+    247,
+    122
+   ],
+   "margin": [
+    133,
+    359,
+    265,
+    390
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_05.png"
+   ],
+   "page": 2,
+   "region": [
+    250,
+    1,
+    272,
+    120
+   ],
+   "margin": [
+    120,
+    361,
+    240,
+    392
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_04.png"
+   ],
+   "page": 2,
+   "region": [
+    524,
+    1,
+    247,
+    117
+   ],
+   "margin": [
+    133,
+    364,
+    265,
+    395
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_04.png"
+   ],
+   "page": 2,
+   "region": [
+    773,
+    1,
+    272,
+    116
+   ],
+   "margin": [
+    120,
+    365,
+    240,
+    396
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1047,
+    1,
+    276,
+    106
+   ],
+   "margin": [
+    118,
+    375,
+    236,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1325,
+    1,
+    275,
+    106
+   ],
+   "margin": [
+    119,
+    375,
+    237,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1602,
+    1,
+    267,
+    106
+   ],
+   "margin": [
+    123,
+    375,
+    245,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1047,
+    109,
+    255,
+    102
+   ],
+   "margin": [
+    129,
+    379,
+    257,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1304,
+    109,
+    284,
+    96
+   ],
+   "margin": [
+    114,
+    385,
+    228,
+    416
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/bone_shaman/bone_shaman_idle_east.png"
+}

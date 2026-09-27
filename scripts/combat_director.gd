@@ -73,6 +73,7 @@ var _elite_defeated := false
 var _boss_victory_pending := false
 var _combat_start_finalized := false
 var _combat_start_in_progress := false
+var _combat_roster_wait_pending := false  # FAN-3977: start waiting for its full-frame roster
 var _combat_start_generation := 0
 
 
@@ -177,7 +178,12 @@ func _start_combat(is_boss_fight := false, combat_type := "battle") -> void:
 	# trigger an idempotent no-op. Otherwise normalize stale flags and start the
 	# route-selected combat normally.
 	if _combat_start_in_progress:
-		return
+		# FAN-3977: a build waiting for its full-frame roster whose Player/HUD
+		# generation was torn down without `_end_combat` is stale, not live.
+		if not (_combat_roster_wait_pending and not _has_live_owned_combat_generation()):
+			return
+		_combat_roster_wait_pending = false
+		_combat_start_in_progress = false
 	if game.combat_active:
 		if _has_live_owned_combat_generation():
 			return
@@ -277,8 +283,14 @@ func _has_live_owned_combat_generation() -> bool:
 func _finalize_combat_start() -> void:
 	if _combat_start_finalized or not game.combat_active:
 		return
+	# FAN-3977: nothing spawns until the encounter's full-frame roster is resident
+	# (re-entered from the prefetch tick when the last missing pack lands).
+	_combat_roster_wait_pending = not FullFrameEncounterRoster.prepare_encounter(game, Callable(self, "_boss_scene_for_id"), Callable(self, "_finalize_combat_start"))
+	if _combat_roster_wait_pending:
+		return
 	_combat_start_finalized = true
 	_combat_start_in_progress = false
+	FullFrameAnimationRegistry.set_combat_guard(true)
 	# SCRUM-961: battle-start artifact hooks run only after the prayer choice.
 	if game.current_player != null and is_instance_valid(game.current_player) and game.current_player.has_method("on_battle_start"):
 		game.current_player.on_battle_start()
@@ -288,6 +300,17 @@ func _finalize_combat_start() -> void:
 	elif game.current_combat_type == "elite":
 		_spawn_elite_enemy()
 	_encounters.begin(game, self)
+
+
+# FAN-3977: main.gd's per-frame combat update waits for this (no waves/timer/win checks before it).
+func is_combat_start_finalized() -> bool:
+	return _combat_start_finalized
+
+
+# FAN-3977: re-arms a pending roster wait whose registry waiter vanished (`release_prefetched`).
+func resume_stalled_combat_start() -> void:
+	if _combat_roster_wait_pending and FullFrameAnimationRegistry.residency_waiter_count() == 0:
+		_finalize_combat_start()
 
 
 func _configure_player_camera(player: Node2D) -> void:
@@ -342,6 +365,8 @@ func _end_combat(victory: bool) -> void:
 	if not game.combat_active:
 		return
 	_combat_start_in_progress = false
+	FullFrameAnimationRegistry.set_combat_guard(false)  # FAN-3977
+	_combat_roster_wait_pending = false
 
 	# FAN-1447: терминальная остановка бита ДО очистки мира/HUD.
 	_encounters.shutdown(victory)
@@ -566,6 +591,10 @@ func _maybe_spawn_mini_elite(asc: Dictionary, remaining_slots: int) -> int:
 		return 0
 	elite.set_meta("epic_scale_profile", "mini_elite")
 	elite.set_meta("drop_class", "mini_elite")
+	if not kind.is_empty():
+		# FAN-3977: _ready picks the visual by this meta; set it before add_child
+		# or the base elite pack is requested (a combat-guard miss).
+		elite.set_meta("mini_elite_kind", str(kind.get("id", "")))
 	elite.add_to_group("elite_enemies")
 	game.add_child(elite)
 	elite.global_position = _random_spawn_position()
@@ -885,32 +914,8 @@ func _spawn_boss() -> void:
 	)
 
 
-const BONE_ARCHON_BOSS_SCENE := preload("res://scenes/BossBoneArchon.tscn")
-const BROOD_MOTHER_BOSS_SCENE := preload("res://scenes/BossBroodMother.tscn")
-const ASHEN_COLOSSUS_BOSS_SCENE := preload("res://scenes/BossAshenColossus.tscn")
-const SECRET_ASCENSION_BOSS_SCENE := preload("res://scenes/BossSecretAscension.tscn")
-# SCRUM-794: новый босс из design-пакета SCRUM-779. Сцена резолвится здесь и готова
-# к спавну; в случайный route-пул (route_map_screen._random_boss_route_node) НЕ добавлен —
-# ротация подключается отдельной задачей после QA.
-const BLOODTHORN_LION_BOSS_SCENE := preload("res://scenes/BossBloodthornLion.tscn")
-
-
 func _boss_scene_for_id(boss_id: String) -> PackedScene:
-	match boss_id:
-		"disk_devourer":
-			return game.disk_devourer_boss_scene if game.disk_devourer_boss_scene != null else game.boss_scene
-		"bone_archon":
-			return BONE_ARCHON_BOSS_SCENE
-		"brood_mother":
-			return BROOD_MOTHER_BOSS_SCENE
-		"ashen_colossus":
-			return ASHEN_COLOSSUS_BOSS_SCENE
-		"secret_ascension_boss":
-			return SECRET_ASCENSION_BOSS_SCENE
-		"bloodthorn_lion":
-			return BLOODTHORN_LION_BOSS_SCENE
-		_:
-			return game.boss_scene
+	return BossSceneCatalog.scene_for_id(game, boss_id)
 
 
 func _spawn_elite_enemy() -> void:

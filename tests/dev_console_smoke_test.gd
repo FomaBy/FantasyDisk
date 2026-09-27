@@ -73,6 +73,7 @@ func _initialize() -> void:
 
 	# (d) Живой бой: прямой старт, консоль остаётся открытой как live overlay.
 	main.combat._start_combat(false, "battle")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	await process_frame
 	var player = main.current_player

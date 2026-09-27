@@ -1,4 +1,5 @@
 extends "res://tests/support/runtime_smoke_helpers.gd"
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 const EXPECTED_ARENA_SIZE := Vector2(4096, 2304)  # SCRUM-518: lock-step с ARENA_SIZE (×1.6)
 const EXPECTED_ARENA_CENTER := EXPECTED_ARENA_SIZE * 0.5
@@ -515,6 +516,7 @@ func _initialize() -> void:
 	main.set("selected_weapon_id", "axe")
 	main.set("selected_ascension_level", 1)
 	main.call("_start_combat")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await create_timer(1.0).timeout
 	var resource_hud := main.find_child("RunResourceHud", true, false) as PanelContainer
 	if resource_hud == null:
@@ -1835,6 +1837,7 @@ func _test_elite_boss_presentation(main_scene: PackedScene) -> void:
 	await process_frame
 	pm.set("selected_character_id", "berserk")
 	pm.call("_start_combat")
+	await CombatStartSupport.await_finalized(pm)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 
 	pm.combat.call("_spawn_elite_enemy")
@@ -3790,6 +3793,7 @@ func _test_boss_act_transition(main_scene: PackedScene) -> void:
 	act_main.set("current_act", 1)
 	act_main.set("route_stage", EXPECTED_ROUTE_STEPS_TO_BOSS)
 	act_main.call("_start_combat", true)
+	await CombatStartSupport.await_finalized(act_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	var boss := get_first_node_in_group("bosses")
 	if boss == null:
@@ -3860,6 +3864,7 @@ func _test_victory_flow(main: Node) -> void:
 	main.set("secret_boss_active", false)
 	main.call("_start_combat", true)
 	await process_frame
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the roster
 	var boss := get_first_node_in_group("bosses")
 	if boss == null:
 		_fail("Expected boss fight to spawn a boss.")
@@ -3977,6 +3982,7 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	elite_main.set("current_node_type", "elite_battle")
 	elite_main.call("_open_route_node", {"type": "elite_battle", "name": "Test Elite"})
 	await process_frame
+	await CombatStartSupport.await_finalized(elite_main)  # FAN-3977: spawns wait for the roster
 	if not bool(elite_main.get("combat_active")) or str(elite_main.get("current_combat_type")) != "elite":
 		_fail("Expected elite node to start elite combat mode.")
 		return
@@ -4064,6 +4070,7 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	# (Раньше тест добивал не элитку, а сразу звал _end_combat с живой элиткой —
 	# это закрепляло баг. Теперь добиваем элитку, чтобы выставился _elite_defeated.)
 	elite_main.call("_start_combat", false, "elite")
+	await CombatStartSupport.await_finalized(elite_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	var killed_elite := elite_main.get_tree().get_first_node_in_group("elite_enemies")
 	if killed_elite == null:
@@ -4095,6 +4102,7 @@ func _test_elite_flow(main_scene: PackedScene) -> void:
 	# SCRUM-528 регресс: элитка ВЫЖИЛА (победа по таймеру с живой элиткой) ->
 	# артефакт-награды НЕТ, сразу идёт обычный победный флоу (докачка атрибутов).
 	elite_main.call("_start_combat", false, "elite")
+	await CombatStartSupport.await_finalized(elite_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	var survivor_elite := elite_main.get_tree().get_first_node_in_group("elite_enemies")
 	if survivor_elite == null:
@@ -4147,6 +4155,7 @@ func _test_debug_free_pick(main_scene: PackedScene) -> void:
 	var target_node: Dictionary = route_nodes[5][0]
 	route_module.call("_activate_route_node", 5, 0, target_node)
 	await process_frame
+	await CombatStartSupport.await_finalized(debug_main)  # FAN-3977: spawns wait for the roster
 	if int(debug_main.get("route_stage")) != 5:
 		_fail("Expected debug free pick to fast-forward route stage to the picked row.")
 		return
@@ -6136,6 +6145,7 @@ func _test_debug_combat_click_to_move(main_scene: PackedScene) -> void:
 	debug_main.set("selected_character_id", "berserk")
 	debug_main.set("selected_weapon_id", "sword")
 	debug_main.call("_start_combat")
+	await CombatStartSupport.await_finalized(debug_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	await process_frame
 	var player := debug_main.get("current_player") as Node2D
@@ -6569,6 +6579,7 @@ func _test_ascension_difficulty_ladder(main_scene: PackedScene) -> void:
 	mini_main.set("selected_character_id", "berserk")
 	mini_main.set("selected_ascension_level", 0)
 	mini_main.call("_start_combat")
+	await CombatStartSupport.await_finalized(mini_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	# SCRUM-722: замораживаем живой авто-спавн (_process гейтится combat_active), чтобы
 	# проверка точного числа мини-элиток ниже зависела ТОЛЬКО от явных вызовов
@@ -8463,6 +8474,7 @@ func _assert_hud_no_overlap_at_size(main_scene: PackedScene, viewport_size: Vect
 	hud_main.set("selected_weapon_id", "axe")
 	hud_main.set("selected_ascension_level", 2)
 	hud_main.call("_start_combat", boss_fight)
+	await CombatStartSupport.await_finalized(hud_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	await process_frame
 	var player: Node = hud_main.get("current_player")
@@ -8663,6 +8675,7 @@ func _test_boss_hud_shows_timer(main_scene: PackedScene) -> void:
 	boss_main.set("selected_character_id", "berserk")
 	boss_main.set("selected_weapon_id", "axe")
 	boss_main.call("_start_combat", true)
+	await CombatStartSupport.await_finalized(boss_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	if boss_main.find_child("CombatTimerPanel", true, false) == null or boss_main.get("timer_label") == null:
 		_fail("Expected boss combat HUD to create CombatTimerPanel and timer_label (SCRUM-799).")
@@ -8684,6 +8697,7 @@ func _test_boss_hud_shows_timer(main_scene: PackedScene) -> void:
 	battle_main.set("selected_character_id", "berserk")
 	battle_main.set("selected_weapon_id", "axe")
 	battle_main.call("_start_combat", false)
+	await CombatStartSupport.await_finalized(battle_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	var timer_panel := battle_main.find_child("CombatTimerPanel", true, false) as PanelContainer
 	var timer_label := battle_main.get("timer_label") as Label
@@ -8708,6 +8722,7 @@ func _test_death_flow(main_scene: PackedScene) -> void:
 	death_main.set("selected_character_id", "berserk")
 	death_main.set("selected_weapon_id", "sword")
 	death_main.call("_start_combat")
+	await CombatStartSupport.await_finalized(death_main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	var player: Node = death_main.get("current_player")
 	# Dodge делает одиночный удар недетерминированным; для теста смерти обнуляем уворот.

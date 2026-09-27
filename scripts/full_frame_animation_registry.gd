@@ -216,6 +216,17 @@ static func registry_config(entity_kind: String, entity_id: String) -> Dictionar
 	return (kind_table.get(entity_id, {}) as Dictionary).duplicate(true)
 
 
+# FAN-3977: "this actor has a usable pack" without loading it — registered
+# (fail-closed registry validation) and not rejected at first use. Callers
+# that only need to CHOOSE an identity (enemy.gd picks the mini-elite pack
+# over the base elite behavior) must use this instead of `sprite_frames_for`,
+# which would load the pack synchronously outside a fight and, inside one,
+# would count a combat-guard miss and hand the owner the wrong pack.
+static func has_usable_pack(entity_kind: String, entity_id: String) -> bool:
+	var frames_path := frames_path_for(entity_kind, entity_id)
+	return frames_path != "" and not _rejected_frames_paths.has(frames_path)
+
+
 static func sprite_frames_for(entity_kind: String, entity_id: String) -> SpriteFrames:
 	var config := registry_config(entity_kind, entity_id)
 	return _frames_for_path(str(config.get("frames", "")), "%s/%s" % [entity_kind, entity_id])
@@ -225,17 +236,33 @@ static func sprite_frames_for(entity_kind: String, entity_id: String) -> SpriteF
 # SpriteFrames type check lives here (registry init must stay load-free, see
 # FRAMES_RESOURCE_TYPE); a resource that is not SpriteFrames is rejected once
 # with the registry warning, remembered, and the caller falls back to the
-# static body exactly like an unregistered actor. A path with a pending
-# background prefetch (see `queue_prefetch`) is collected from the threaded
-# loader instead of being loaded a second time: that blocks only for the
-# remainder of an in-flight load, and an unstarted request runs inline — the
-# same cost the synchronous load always had.
+# static body exactly like an unregistered actor.
+#
+# FAN-3977 (0.3.2 release blocker, FAN-3964 QA): while a fight is active
+# (`set_combat_guard`), a pack that is not resident is NEVER loaded on the
+# main thread — the Windows review traced every 1-FPS second to exactly such
+# a load (a mini-elite, `night_stalker` or boss pack of several hundred
+# textures). The miss is counted (`synchronous_combat_load_count`, asserted
+# 0 by the residency regression), warned once per path per fight, queued at
+# the front of the background prefetch, and the caller falls back to the
+# static body; `configure_entity_visual` also registers the owner for a
+# deferred swap when the pack lands. Outside a fight (menus, tests, tools)
+# the pre-existing synchronous path is unchanged: a pending background
+# request is collected from the threaded loader instead of being loaded a
+# second time, an unstarted request runs inline.
 static func _frames_for_path(frames_path: String, where: String) -> SpriteFrames:
 	if frames_path == "" or _rejected_frames_paths.has(frames_path):
 		return null
 	if _prefetched_frames.has(frames_path):
 		return _prefetched_frames[frames_path]
 	if not ResourceLoader.exists(frames_path):
+		return null
+	if _combat_guard_active:
+		_synchronous_combat_load_count += 1
+		if not _combat_miss_warned_paths.has(frames_path):
+			_combat_miss_warned_paths[frames_path] = true
+			push_warning("full_frame_animation_registry: %s needed %s during a fight but the pack is not resident — static body until the background load lands (encounter roster miss)." % [where, frames_path])
+		_queue_prefetch_path(frames_path, true)
 		return null
 	var loaded: Resource = null
 	if _prefetch_in_flight.has(frames_path):
@@ -250,37 +277,74 @@ static func _frames_for_path(frames_path: String, where: String) -> SpriteFrames
 	return loaded as SpriteFrames
 
 
-# FAN-3973: bounded background prefetch of the full-frame packs a fight is
-# about to use. The catalog cannot be made resident wholesale (~8.5 GiB of
-# lossless frames), so callers queue only a concrete roster at a natural
-# boundary (the route map, before any node is chosen), at most
-# MAX_PREFETCH_IN_FLIGHT threaded requests run at once so texture uploads
-# stay spread over frames instead of landing in one, completed packs are held
-# by `_prefetched_frames` for the rest of the run (the weak resource cache
-# would otherwise drop and re-load them between fights), and
-# `release_prefetched` lets go of everything when the run returns to the main
-# menu. A roster entry that is unregistered, already rejected or already
-# resident is a no-op. Progress is driven by `advance_prefetch`, which hooks
-# the scene tree's `process_frame` only while there is work to do.
-# Measured on the macOS development host (evidence/FAN-3973/first_spawn):
-# one request at a time keeps route-map frames under ~30 ms while 13 packs
-# become resident in ~0.8 s; two at a time finished in ~0.55 s but the
-# texture uploads bunched into 90-100 ms frames.
+# FAN-3973/FAN-3977: bounded background prefetch of the full-frame packs a
+# fight can use. Callers queue a concrete roster at a natural boundary (the
+# route map queues the core roster every regular fight can spawn; combat
+# start completes the encounter's roster and waits for it, see
+# `ensure_resident`), at most MAX_PREFETCH_IN_FLIGHT threaded requests
+# run at once so texture uploads stay spread over frames instead of landing
+# in one, completed packs are held by `_prefetched_frames` (the weak
+# resource cache would otherwise drop and re-load them between fights),
+# `retain_only` lets go of the packs the next encounter cannot spawn and
+# `release_prefetched` lets go of everything when the run returns to the
+# main menu. A roster entry that is unregistered, already rejected or
+# already resident is a no-op. Progress is driven by `advance_prefetch`,
+# which hooks the scene tree's `process_frame` only while there is work to
+# do. FAN-3977 also shrank every pack ~5x (trim atlases, see
+# tools/build_full_frame_trim_atlases.py), so the core roster of a regular
+# fight (11 enemies, 10 mini-elites, 10 allies) is ~1 GiB of texture memory
+# instead of the 3.1-4.4 GiB the FAN-3964 review measured for 11-14 packs.
 const MAX_PREFETCH_IN_FLIGHT := 1
 
 static var _prefetch_queue: Array = []
 static var _prefetch_in_flight: Dictionary = {}
 static var _prefetched_frames: Dictionary = {}
+static var _prefetch_failed_paths: Dictionary = {}
 static var _prefetch_tick_connected := false
+# FAN-3977: combat guard state (see `_frames_for_path`).
+static var _combat_guard_active := false
+static var _synchronous_combat_load_count := 0
+static var _combat_miss_warned_paths: Dictionary = {}
+# frames_path -> Array[WeakRef] of owners waiting for a deferred visual swap.
+static var _deferred_owners: Dictionary = {}
+# [{"paths": Array[String], "callback": Callable}] waiting for residency.
+static var _residency_waiters: Array = []
+
+
+static func frames_path_for(entity_kind: String, entity_id: String) -> String:
+	return str(registry_config(entity_kind, entity_id).get("frames", ""))
 
 
 static func queue_prefetch(entity_kind: String, entity_id: String) -> bool:
-	var frames_path := str(registry_config(entity_kind, entity_id).get("frames", ""))
+	return _queue_prefetch_path(frames_path_for(entity_kind, entity_id), false)
+
+
+# Queues a pack by its frames path (the secret boss declares its pack through
+# scene metadata, not a registry shard). Same cheap fail-closed checks as a
+# registry shard: the path must exist and carry a SpriteFrames extension.
+static func queue_prefetch_path(frames_path: String) -> bool:
+	if frames_path == "" or not frames_path.begins_with("res://"):
+		return false
+	if not ResourceLoader.exists(frames_path) or not _has_frames_resource_extension(frames_path):
+		return false
+	return _queue_prefetch_path(frames_path, false)
+
+
+static func _queue_prefetch_path(frames_path: String, front: bool) -> bool:
 	if frames_path == "" or _rejected_frames_paths.has(frames_path):
 		return false
-	if _prefetched_frames.has(frames_path) or _prefetch_in_flight.has(frames_path) or _prefetch_queue.has(frames_path):
+	if _prefetched_frames.has(frames_path) or _prefetch_in_flight.has(frames_path):
 		return false
-	_prefetch_queue.append(frames_path)
+	if _prefetch_queue.has(frames_path):
+		if front:
+			_prefetch_queue.erase(frames_path)
+			_prefetch_queue.push_front(frames_path)
+		return false
+	_prefetch_failed_paths.erase(frames_path)
+	if front:
+		_prefetch_queue.push_front(frames_path)
+	else:
+		_prefetch_queue.append(frames_path)
 	_connect_prefetch_tick()
 	return true
 
@@ -288,24 +352,35 @@ static func queue_prefetch(entity_kind: String, entity_id: String) -> bool:
 # Queues the pack of the actor a PackedScene's root declares through a string
 # property (`elite_behavior`, `boss_behavior`) without instantiating the scene.
 static func queue_prefetch_for_scene(entity_kind: String, scene: PackedScene, id_property: String) -> bool:
-	if scene == null:
-		return false
-	var state := scene.get_state()
-	for index in range(state.get_node_property_count(0)):
-		if str(state.get_node_property_name(0, index)) == id_property:
-			return queue_prefetch(entity_kind, str(state.get_node_property_value(0, index)))
-	return false
+	var entity_id := scene_root_string_property(scene, id_property)
+	return entity_id != "" and queue_prefetch(entity_kind, entity_id)
 
 
 static func queue_prefetch_kind(entity_kind: String) -> int:
 	var queued := 0
-	var kind_table: Dictionary = FULL_FRAME_SPRITEFRAMES.get(entity_kind, {})
-	var entity_ids := kind_table.keys()
-	entity_ids.sort()
-	for entity_id in entity_ids:
+	for entity_id in kind_entity_ids(entity_kind):
 		if queue_prefetch(entity_kind, str(entity_id)):
 			queued += 1
 	return queued
+
+
+static func kind_entity_ids(entity_kind: String) -> Array:
+	var kind_table: Dictionary = FULL_FRAME_SPRITEFRAMES.get(entity_kind, {})
+	var entity_ids := kind_table.keys()
+	entity_ids.sort()
+	return entity_ids
+
+
+# Reads a string property of a PackedScene's root node from the packed state
+# (no instantiation). Returns "" when absent.
+static func scene_root_string_property(scene: PackedScene, property_name: String) -> String:
+	if scene == null:
+		return ""
+	var state := scene.get_state()
+	for index in range(state.get_node_property_count(0)):
+		if str(state.get_node_property_name(0, index)) == property_name:
+			return str(state.get_node_property_value(0, index))
+	return ""
 
 
 # Returns the number of packs still queued or in flight; 0 means idle.
@@ -318,10 +393,12 @@ static func advance_prefetch() -> int:
 		var loaded: Resource = ResourceLoader.load_threaded_get(frames_path) if status == ResourceLoader.THREAD_LOAD_LOADED else null
 		if loaded is SpriteFrames:
 			_prefetched_frames[frames_path] = loaded
+			_swap_deferred_owners(frames_path)
 		elif loaded != null:
 			push_warning("full_frame_animation_registry: prefetched %s is not SpriteFrames — actor excluded (safe fallback)." % frames_path)
 			_rejected_frames_paths[frames_path] = true
 		else:
+			_prefetch_failed_paths[frames_path] = true
 			push_warning("full_frame_animation_registry: background prefetch of %s failed; the pack loads on first use instead." % frames_path)
 	while _prefetch_in_flight.size() < MAX_PREFETCH_IN_FLIGHT and not _prefetch_queue.is_empty():
 		var frames_path: String = _prefetch_queue.pop_front()
@@ -330,7 +407,9 @@ static func advance_prefetch() -> int:
 		if ResourceLoader.load_threaded_request(frames_path, FRAMES_RESOURCE_TYPE) == OK:
 			_prefetch_in_flight[frames_path] = true
 		else:
+			_prefetch_failed_paths[frames_path] = true
 			push_warning("full_frame_animation_registry: background prefetch of %s could not start; the pack loads on first use instead." % frames_path)
+	_notify_residency_waiters()
 	var remaining := _prefetch_queue.size() + _prefetch_in_flight.size()
 	if remaining == 0:
 		_disconnect_prefetch_tick()
@@ -345,10 +424,168 @@ static func advance_prefetch() -> int:
 static func release_prefetched() -> void:
 	_prefetch_queue.clear()
 	_prefetched_frames.clear()
+	_prefetch_failed_paths.clear()
+	_deferred_owners.clear()
+	_residency_waiters.clear()
 	for frames_path in _prefetch_in_flight.keys():
 		ResourceLoader.load_threaded_get(frames_path)
 	_prefetch_in_flight.clear()
 	_disconnect_prefetch_tick()
+
+
+# FAN-3977: keeps only the packs of `frames_paths` resident/queued and drops
+# the rest, so texture memory is bounded by what the coming encounter can
+# spawn (the route map keeps the core roster, an elite/boss fight drops the
+# mini-elites, the next route map drops the boss). Must be called at a
+# boundary where no live actor references a dropped pack (`_start_combat`
+# clears the world first). Returns the number of resident packs dropped.
+static func retain_only(frames_paths: Array) -> int:
+	var keep := {}
+	for frames_path in frames_paths:
+		keep[str(frames_path)] = true
+	var dropped := 0
+	for frames_path in _prefetched_frames.keys():
+		if not keep.has(frames_path):
+			_prefetched_frames.erase(frames_path)
+			_deferred_owners.erase(frames_path)
+			dropped += 1
+	var queue: Array = []
+	for frames_path in _prefetch_queue:
+		if keep.has(frames_path):
+			queue.append(frames_path)
+	_prefetch_queue = queue
+	# An in-flight request is left to complete: collecting it here would block
+	# for the remainder of the load; `advance_prefetch` drops nothing it did not
+	# ask for, so the pack simply becomes resident and is released at the next
+	# boundary.
+	if _prefetch_queue.is_empty() and _prefetch_in_flight.is_empty():
+		_disconnect_prefetch_tick()
+	return dropped
+
+
+static func is_resident(frames_path: String) -> bool:
+	return _prefetched_frames.has(frames_path)
+
+
+# A path counts as settled when it is resident or can never become resident
+# through the prefetch (rejected type, failed/unstartable request,
+# unregistered): waiting on it would never end.
+static func _is_settled(frames_path: String) -> bool:
+	if _prefetched_frames.has(frames_path) or _rejected_frames_paths.has(frames_path) or _prefetch_failed_paths.has(frames_path):
+		return true
+	return not (_prefetch_queue.has(frames_path) or _prefetch_in_flight.has(frames_path))
+
+
+static func all_resident(frames_paths: Array) -> bool:
+	for frames_path in frames_paths:
+		if not _prefetched_frames.has(str(frames_path)):
+			return false
+	return true
+
+
+# FAN-3977: queues every missing pack of `frames_paths` and returns true when
+# all of them are settled — resident, or unable to become resident (rejected
+# type, failed/unstartable request, unregistered/nonexistent path: the actor
+# keeps its static body). Otherwise `callback` is registered once (a waiter
+# with the same callback is updated, not duplicated) and invoked from the
+# prefetch tick that settles the last pack; it is never invoked from inside
+# this call. Combat start uses this so an encounter never spawns before its
+# roster is resident, without a synchronous drain at the node click.
+static func ensure_resident(frames_paths: Array, callback: Callable) -> bool:
+	var pending: Array = []
+	for frames_path_variant in frames_paths:
+		var frames_path := str(frames_path_variant)
+		if _prefetched_frames.has(frames_path):
+			continue
+		queue_prefetch_path(frames_path)
+		if not _is_settled(frames_path):
+			pending.append(frames_path)
+	if pending.is_empty():
+		return true
+	for waiter in _residency_waiters:
+		if (waiter["callback"] as Callable) == callback:
+			waiter["paths"] = pending
+			_connect_prefetch_tick()
+			return false
+	_residency_waiters.append({"paths": pending, "callback": callback})
+	_connect_prefetch_tick()
+	return false
+
+
+static func _notify_residency_waiters() -> void:
+	if _residency_waiters.is_empty():
+		return
+	var still_waiting: Array = []
+	var ready: Array = []
+	for waiter in _residency_waiters:
+		var settled := true
+		for frames_path in waiter["paths"]:
+			if not _is_settled(str(frames_path)):
+				settled = false
+				break
+		if settled:
+			ready.append(waiter)
+		else:
+			still_waiting.append(waiter)
+	_residency_waiters = still_waiting
+	for waiter in ready:
+		var callback: Callable = waiter["callback"]
+		if callback.is_valid():
+			callback.call()
+
+
+static func residency_waiter_count() -> int:
+	return _residency_waiters.size()
+
+
+# FAN-3977: combat guard. `combat_director` raises it when spawning starts and
+# lowers it when the fight ends; while it is up `_frames_for_path` never
+# loads synchronously (see there). The miss counter is cumulative for the
+# process so a scripted run can assert it stayed 0 across many fights.
+static func set_combat_guard(active: bool) -> void:
+	_combat_guard_active = active
+	if active:
+		_combat_miss_warned_paths.clear()
+
+
+static func is_combat_guard_active() -> bool:
+	return _combat_guard_active
+
+
+static func synchronous_combat_load_count() -> int:
+	return _synchronous_combat_load_count
+
+
+static func reset_synchronous_combat_load_count() -> void:
+	_synchronous_combat_load_count = 0
+
+
+static func _register_deferred_owner(frames_path: String, owner: Node2D) -> void:
+	if frames_path == "" or owner == null or _rejected_frames_paths.has(frames_path):
+		return
+	if not _deferred_owners.has(frames_path):
+		_deferred_owners[frames_path] = []
+	(_deferred_owners[frames_path] as Array).append(weakref(owner))
+
+
+static func _swap_deferred_owners(frames_path: String) -> void:
+	if not _deferred_owners.has(frames_path):
+		return
+	var owners: Array = _deferred_owners[frames_path]
+	_deferred_owners.erase(frames_path)
+	for owner_ref in owners:
+		var owner = (owner_ref as WeakRef).get_ref()
+		if owner == null or not is_instance_valid(owner) or not (owner is Node) or not (owner as Node).is_inside_tree():
+			continue
+		if owner.has_method("refresh_full_frame_visual"):
+			owner.call("refresh_full_frame_visual")
+
+
+static func deferred_owner_count() -> int:
+	var total := 0
+	for frames_path in _deferred_owners.keys():
+		total += (_deferred_owners[frames_path] as Array).size()
+	return total
 
 
 static func prefetched_frames_count() -> int:
@@ -389,8 +626,13 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 	if config.is_empty():
 		return null
 
-	var frames := _frames_for_path(str(config.get("frames", "")), "%s/%s" % [entity_kind, entity_id])
+	var frames_path := str(config.get("frames", ""))
+	var frames := _frames_for_path(frames_path, "%s/%s" % [entity_kind, entity_id])
 	if frames == null:
+		# FAN-3977: a miss under the combat guard keeps the static body now and
+		# swaps to the pack when the queued background load lands.
+		if _combat_guard_active:
+			_register_deferred_owner(frames_path, owner)
 		return null
 
 	var animated_body := owner.get_node_or_null(animated_body_name) as AnimatedSprite2D

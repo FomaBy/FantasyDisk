@@ -1,0 +1,6239 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "spark_runner",
+ "tres": "res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 208,
+ "unique_frames": 193,
+ "source_rgba_bytes": 218103808,
+ "page_rgba_bytes": 30588928,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_trim_0.png",
+   "width": 2048,
+   "height": 2000,
+   "sha256": "8363eaac05e3f86a0c8cdabdb2aeffd59d90e40e707b6098612e9583ca050ee5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_trim_1.png",
+   "width": 2048,
+   "height": 1734,
+   "sha256": "26b3e3a028534221a40fa09e0fc7570bc2f119f8ea1ca98ec48212e09a73997f"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_00.png",
+   "sha256": "8ec66b7bc772d7d67ef09b293c65fae671c3e757878a32b8173f9bd86d25137c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_01.png",
+   "sha256": "61042816ac232be9a9640410dfbd822d489b7d3048b8c105759168fb3f01eb4c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_02.png",
+   "sha256": "2dbd01020b531e2dd7bea17454d7676825a6a88f5bc56a95263825d99e2a155a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_03.png",
+   "sha256": "455965184a7967a3dd9dd905168d88330fd8ce9f48e8c1ac10ad6bbb75933763"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_04.png",
+   "sha256": "527c72aba521329aa7efe43b7131df4af165b41380302f85286d5a2c2c634bb7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_05.png",
+   "sha256": "4db458da7b502f31728be73e78879fc5bbc6073f5821217f9ea40ebd24df9766"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_06.png",
+   "sha256": "b6dc6ceded41636195d4e27cbb1dcd8cc2ad851987166b5513d217d5d50c0013"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_00.png",
+   "sha256": "cb6970b1eb369a56c64fec9db0d06fa4081b17c55c0d060190edf5d31b024898"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_01.png",
+   "sha256": "e0e9e6ca5d87433bebee57a71e100a6c22511ecb4dfd4cbbf58df496ea5c936a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_02.png",
+   "sha256": "3806e3d64455cbee44a355f6443930998e917ec88cb60c2a6f6b4b42951f42ef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_03.png",
+   "sha256": "4244f25f0e2f38b0f276be4d2a449def39398c7f67b76580e2fed67783a621df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_04.png",
+   "sha256": "c08c4f6ef83cf738361af2481d823a39d515d6da5f7ace59095befb1b81c484c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_05.png",
+   "sha256": "b4f4b02d04221f0790402e13ee0ab956051649112c05af85a6469edeb252d37d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_06.png",
+   "sha256": "3f53c2ba94ccbf1c99577e00604dde7de2aa416327b9beb403ed6d76a6a1a35b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_00.png",
+   "sha256": "643d5a7bc2c02f98559bcd5ecef951cc28ce8790ccd5f25f078b6bc4bb805c8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_01.png",
+   "sha256": "fac9deef5c174d2918b65d44cc56aebe72c90012fe22f27d9a594c3236faad86"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_02.png",
+   "sha256": "b702a2cb570a2ea22d65e7d16a7c105741aaf96fc4914e645ddbde599f215c3c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_03.png",
+   "sha256": "ec2791a272347a8488ae3d8cf139ac4a1b6159bac22b628c477a510dc9601687"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_04.png",
+   "sha256": "d6a2d1a38945fa3e0450175747fe931041c098290b8b35c2eb897f906c136ac1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_05.png",
+   "sha256": "834990836a5ce457ef0fa18aa039134082e6a54cc9741e2eef7e9a8e47ed3f36"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_06.png",
+   "sha256": "58dc5102e57decb36f8061fba72f1db9d54c6505a0d3ada103a0d75a3ccd354a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_00.png",
+   "sha256": "ca8a4f95bad46481de7dbec1aa677fa81404cf77aac0d7d1b512e618298d11fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_01.png",
+   "sha256": "8b45138955135d6f3b781f96506f5e5cc3a0993be8ddd8601f78998f08b810bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_02.png",
+   "sha256": "24e1f622ea9512738e2a82060710644446d3208e12ebdde7107426e3fc98719d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_03.png",
+   "sha256": "f97ec19e8e86bf9d7bcac433daddff1ccba3ce8618b3faf83333e24303b0ef41"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_04.png",
+   "sha256": "3dbfd1bcadca25a090d95c3c3c9aae2b572bb50b0d0cfc118d8209c14074ed30"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_05.png",
+   "sha256": "3ae3d1ef34cb18024737dddf585e8853aee9a13e3bdd234d064885fc2b5c7990"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_06.png",
+   "sha256": "3de58bb98a334ef6c735e4e57e617536f98cb28872adb2d9a256768de651bb76"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_00.png",
+   "sha256": "9b3714954e6c45697e49131e1972b5409a3b01274068bff4b393e016afc99aa6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_01.png",
+   "sha256": "c3df6c6cb7f5b76eeb8674253ca3ace419fdfc32e67257d2cdfe525d2efc03e9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_02.png",
+   "sha256": "23d8a15ef2628597bc539a0cc6a7ae2dec5bb71ce9a554df13bd95374511bb46"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_03.png",
+   "sha256": "51699dbf63db808cde53fe666697c8af46992cb84c43b858d7c4c34033593e7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_04.png",
+   "sha256": "96f2ddd4c8d1c0c26248c8a2fc7824f657f7c35bc564888667ef5754b99af511"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_05.png",
+   "sha256": "69efb6ef18b6cf74a8b26d845194141c2e695d94b95a7172024a1489e02e5a2f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_06.png",
+   "sha256": "c7720645769602ca3b0b1710c0f25b3242531adaf61d3a88e536f9a8d2806ffd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_00.png",
+   "sha256": "d4805e491d700be19a5024e7f72440ea69cd1a53003f70577880193c40b10483"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_01.png",
+   "sha256": "2ae090183b10981cf5dc3435b435ad3e73a23f562c0ff6f82ab08a580a3e8303"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_02.png",
+   "sha256": "56103dd1afcb04d161bab8099edaa3a00e877f00a475f0443e2be93bead9edc4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_03.png",
+   "sha256": "9ee01737c1811ba4828a6984d6839a97173a6a2ccfb60751270385375d063782"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_04.png",
+   "sha256": "07af0f1ec1d22b4921823409622aa9db6072c5510de56d7d07a4b3d97a28539b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_05.png",
+   "sha256": "b4d131b8299622fc236fb4e70e6aeb50fbfc73a896824a857f836067a496fb93"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_06.png",
+   "sha256": "ef4b8dc1b0db9639dc7e526dd52fd466ab2fcf6c071e19db3e27cf18a21e5ef7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_00.png",
+   "sha256": "6f0193e82a97b29baf50c429653900e531e3be22429822f4a3aa947248a1157e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_01.png",
+   "sha256": "8adceedcf04a869665b6e485e852cb5ac2b211e4b5c3a69c32525b5776957125"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_02.png",
+   "sha256": "d5f61c75962e9f46ffc0ce486297954721cb76f6c6ddb836699667578febf3df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_03.png",
+   "sha256": "8bd713f0a5564b533dc6fc25b1b76781bf69c453b7b0b4012bc163cde14aa89c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_04.png",
+   "sha256": "c004342293f82756ade7da0078819586d233e56b078d8e855082079197f54648"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_05.png",
+   "sha256": "a719c09ff6f1dbdb01ff6a72c48f2e960d6037cf1f1d8fc5b05952bb3d28acd0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_06.png",
+   "sha256": "96a1fe27e828ad6cedfedd4a88d670591b5290023564763de4850b308b241b9e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_00.png",
+   "sha256": "d24b359d84786f508ebebcc6a56432979171603c9068ea1e6222a5e6dab4b5d9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_01.png",
+   "sha256": "67d871948b6a9d012f2b7e5b0f0a151bf735431406f4c5e9bd1e9828b52ac96f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_02.png",
+   "sha256": "e245ce6ac4299da66b318cd97c8f8ca0e1cebe3ef0a3ce1dc34c832a23db6a4a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_03.png",
+   "sha256": "3a4afaeda9a98f5c46fceace54165df3258bb6df4aa20813db1cbc13aaa4a88a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_04.png",
+   "sha256": "d550b0c0691598804d8e873858f15671d7cc741e09815f0508f53b3121da9da1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_05.png",
+   "sha256": "db2c74a81c9ccad8eeae8913fc72142bd7e5fc3ed41344b657ddb178b90d06f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_06.png",
+   "sha256": "df8670fd1a041de3f45fe7b9c82498acd82a1db7fce0e3a080a4c37c49de3d9b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_00.png",
+   "sha256": "71bdfdc348992a250575a141b09a71e5f33e5bd267732c142b9a1ae72de3dc7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_01.png",
+   "sha256": "1f602fe583e95af47a477c0e976db869232c1ad148953ee73f18e75cc01fdbb6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_02.png",
+   "sha256": "b84536c2f44cb5fca38dd2a3b489153780273e40e8792969012492e1db7fc9f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_03.png",
+   "sha256": "5fcbd5b7a3a31569392e5303ac1da41eedfa1a4039835fd6cc7214ef5c3fe0d0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_04.png",
+   "sha256": "fe89491ffaef0d4fe79fdac6d74248a094c39f7eebb7df59b998c540ff96706e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_05.png",
+   "sha256": "395220766d71dde08c777d405c34b684e6770f43d542d0cdf7d38300604d913c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_06.png",
+   "sha256": "ef964c50a55d2ae3b9efb3411cbd7acb7d367cadcf4847f6bfd95c113f5bddb9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_00.png",
+   "sha256": "35bc89b096ac79a909081efad6b1b9bb8b3f15d3295e78cbfec18939095c2bb8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_01.png",
+   "sha256": "ba422dadc115f8e43f059e1d62d4c7ef6defd7dc567d6d9d821e196c6016f100"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_02.png",
+   "sha256": "8023a8f6ca33cea6d3460a78f51c11dac2e933d8dae45e9f7a0a8e346395b662"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_03.png",
+   "sha256": "ee1e371d9070e21bd7e07155addf5e2406cb5fc669a10aab403f89da55f17816"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_04.png",
+   "sha256": "3e6036f5b3750eebb0fe9e63009fe3203fb41481dd5934062bcf6113b88ce5be"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_05.png",
+   "sha256": "aac6d7830d34bd103581cf033ac199915d2bc92e17bebdc578e59526d6b42338"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_06.png",
+   "sha256": "0131177cd8373c918c75eab5c76ecfdaeae243910f1f3e50db64374a5272c30a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_00.png",
+   "sha256": "643d5a7bc2c02f98559bcd5ecef951cc28ce8790ccd5f25f078b6bc4bb805c8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_01.png",
+   "sha256": "c84f0c661b54e0e1c4bf565d1a1c651da68eb0624d6d08a3814134e2a79788e5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_02.png",
+   "sha256": "e92134cc723bc4b8dcea504ef77c33370ffbc7814eea294c76d8d4cd6db5a2ac"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_03.png",
+   "sha256": "bf422f74d7b18fb7b2e2de813dc759ae82e89e0d75cdcce1f471a587244afa93"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_04.png",
+   "sha256": "7230cad24c7e79b49ff12da56ffa0136f93e68c297eb1c9f223ebd34958a7cf2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_05.png",
+   "sha256": "98d32858234cab780084a02e0b4c850a63a2462bcc313f5962113e0e5d54d7e9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_06.png",
+   "sha256": "7ff0a672e330120f7598be2a866972c87eaddc419aed5d3eb529699ec5d33c9c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_00.png",
+   "sha256": "ca8a4f95bad46481de7dbec1aa677fa81404cf77aac0d7d1b512e618298d11fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_01.png",
+   "sha256": "230338e6b22bab0dd7ec542c4fe8be9313cb970edd48ace1dae4a21f71fe9805"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_02.png",
+   "sha256": "56692a1977ff1b6df3a0627a75ed41e2545c6f1a73259b3cb51f2d99d6263928"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_03.png",
+   "sha256": "bd1cd9b27650731085f3919556dac7a388aa7895191cf29021d5ce6498f2782d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_04.png",
+   "sha256": "41d46d3f7f006e428a23814b24309f702b4f7d57cfda29c2695303c70a709d36"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_05.png",
+   "sha256": "b036cedf11157ba757fdc741a88d2f9390c4c949a0e3546427564d9e0392e568"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_06.png",
+   "sha256": "67fa77eb7d74642cbcd29b71351da833ed0db12e19a59c1f470a7f47105b4de8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_00.png",
+   "sha256": "0de5bf230a6e8b21e9c8ed28cdf804cd4861566072c518f80558c34fe5cbf2bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_01.png",
+   "sha256": "45b8c9b8f1de3ada1e0a6b79ac66db30f8325e0cc0c283d83eae48cbe1a1d16c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_02.png",
+   "sha256": "257bc5864be27c354b284ee2799af34b8a7085e3aa8bfcba3afc418fe392db38"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_03.png",
+   "sha256": "180663253114650e09eb415d41ac45da85c939e5602af922b8f0fe9be7056f62"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_04.png",
+   "sha256": "dd1c9b25bb86544d616093dca984117ce8ac972c9d1590777cab290bdf400b01"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_05.png",
+   "sha256": "6bb02c5ba89baf192eda2f0d6f6af35b68ef95523595c3518d09851f389d6cd2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_06.png",
+   "sha256": "dee5fc4b31aa9ccc5b26b69cdd89a8ce325aaa5a93a7093add7d752ec7f69506"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_00.png",
+   "sha256": "d4805e491d700be19a5024e7f72440ea69cd1a53003f70577880193c40b10483"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_01.png",
+   "sha256": "b30c6741eca2ea9e1b6b1e1f9015c2e2bc6a15f4a84018999712463dda234484"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_02.png",
+   "sha256": "5b28cdec0fef5eb234479ff2fbbbc877910c0b1062ec883ac7c490a4b31734c0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_03.png",
+   "sha256": "a72494465e1aa4ab95971d26ad189790a4a31d285eb53047b7e479fe4eb08b1a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_04.png",
+   "sha256": "5c5df7a00482a6e3b07320477f81dd5b5313e2d0d6179ec87879fe08f08df344"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_05.png",
+   "sha256": "cafcc8bf0cf91f539c6f7b7a3c4717261e395704822bd8d86fe5b4892a0b3bea"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_06.png",
+   "sha256": "5c99f6d0d19fb28f4f1ff1c79ed916df7be640ead8db308d3e785b35526c9b43"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_00.png",
+   "sha256": "d6b86da5ecb76cd71ca389938f64c9729aa6690dca55d770779145eeab97905a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_01.png",
+   "sha256": "12046fb86335d49134fe507cce51319e623342016d5c552eab7e0ccadd3c5334"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_02.png",
+   "sha256": "19d3df5e913287532e9a0cab4d98654890d23593f6e4ba4a910a92b005903f5e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_03.png",
+   "sha256": "c4e6935e7affd344782cca50521f6a65dd42c588a566757491d9ef72654ef3f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_04.png",
+   "sha256": "d644280fc1cc8226d5bfec6b5ca797543ef41752e35f181581d6b8462fd0d227"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_05.png",
+   "sha256": "70b2b6589d671b736abae701181d93daa9809eb3cddc1b880dfaa79f57333e3a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_06.png",
+   "sha256": "7bc04e6f373442ffb29249083d5e890bcb76af733c04aad5a09d34ded897b55f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_00.png",
+   "sha256": "851a3d23441faac7406ea84072ff29a25d59b9dcea546384be7578e3700645f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_01.png",
+   "sha256": "93f12cc8869d8bc42e5bc45c8d184d6ecffc880b497084796936f6e8fb650370"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_02.png",
+   "sha256": "7476ac7ee84222d3d195555a457217db5285910d4fdfa025816520d070b98113"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_03.png",
+   "sha256": "70d88f340a1081d4c65a4d5c65538866d961d2146b04e9b957968fb86431445f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_04.png",
+   "sha256": "bc986b6fef69efa21ba4f4780ae1632e67f86f39a930bdbc5272f80960defc5d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_05.png",
+   "sha256": "65100d91326a60360bbc3dbf50839f6dcc4058f35df6b0a374551712d2585d37"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_06.png",
+   "sha256": "fafea70859338e395a8de0617cacf1b7f6de37d8bbf016d088d8cf5e33139dd2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_00.png",
+   "sha256": "637ac045e78cdbbc4f683b9f28fb6fcaa221d95f6d92d0871371b4d673306495"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_01.png",
+   "sha256": "3d78957d592b357bb94a4252c444f06b870364e533cda667fdfbe7c32e1252f0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_02.png",
+   "sha256": "ed41e2a540909dbf884f7e1eae2de15357d23e6acac7a8a06e92807e63f5c1a7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_03.png",
+   "sha256": "7d53504573163723a61bec7a7b7d1721eeacf992eab9a62e1b26cbbbf0522a06"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_04.png",
+   "sha256": "fd5a40380b3909256ef4db775303319eb0408afa9b8d424112d752d482408eb8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_00.png",
+   "sha256": "5336c75c7a791c4813b67f02640d43ab74942df8f5bedefd08494730049d60ac"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_01.png",
+   "sha256": "32d0860e09b9a513b6212278d8f26d25b671507c29e1f04194526cb80c161821"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_02.png",
+   "sha256": "0abf8405a6f792c335c8f324b3dc00891280d9f132932b9dd77f19a6f8313c8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_03.png",
+   "sha256": "e89b5435cd7050d6583872f2fc8a7ec393b3ecdf35fa4becef3df133c4db3a90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_04.png",
+   "sha256": "489d53b495718bb84810371c6a15706c4313c7a32c3566118ff8936e43e5c0b4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_00.png",
+   "sha256": "643d5a7bc2c02f98559bcd5ecef951cc28ce8790ccd5f25f078b6bc4bb805c8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_01.png",
+   "sha256": "5effba2249bdc347e575bbe9b6b021b1fa497c2e0e72b3b5329f891a26fe82f3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_02.png",
+   "sha256": "f0ced1132f04069ba53780f1ad9bed2b7a96deb1d4319f66fc4609a6571c6ec9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_03.png",
+   "sha256": "ab8c97ecbfaf5c225f72d7053ac1f99a3b2b7fd3604a7bdac5957d18d33e5f14"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_04.png",
+   "sha256": "30f183193eb3502024eba7b98726f364b43c2f4338767cedd0504873a520bbd6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_00.png",
+   "sha256": "d8c0d150def0c05d73b077b0b47a48fc8724a5a44669942833cf0d986a2cbb07"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_01.png",
+   "sha256": "dc67216ac79e1436dd1c7c6f2b4b61430c3e5733d45cb591040fdf0d912b9761"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_02.png",
+   "sha256": "d44d3dd6b46bda507d863fa22ef8cf1de41b3b64b0e34dd4216ee08d27fcc47d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_03.png",
+   "sha256": "546d1753591bc8141f740f525dcfd6d055e2a08b622e42e5661049f40ab91d8a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_04.png",
+   "sha256": "2802702c649ba5669bbbc82f6af8d513d292fdf6d77bed631f4b72c4ab3bd5c2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_00.png",
+   "sha256": "c0910acf4e0f322c3453849b90435c9e8a17aecfbca75bdebce5cd46480aed09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_01.png",
+   "sha256": "b8970419fcfd9cb013be8457c2a6b413badc10f19b44a285d91295eb596a2968"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_02.png",
+   "sha256": "359820c8e7a47891a7f3586b517e33910bd6f8a48240f12041d3c48b91d8e427"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_03.png",
+   "sha256": "b5a70431f23bdd58eb6a9cdcd45e702dcd33f1f3b2115d6972a15c0b6ea7a414"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_04.png",
+   "sha256": "c08fb20c9a2a0c9f07046796685ee59a5afd068c73f79ff9e2d9799c39612cda"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_00.png",
+   "sha256": "d4805e491d700be19a5024e7f72440ea69cd1a53003f70577880193c40b10483"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_01.png",
+   "sha256": "7be4c8cdfdeff162b3578f0aae4e3c4b875842e17f471d7c1a19964f491ebbf7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_02.png",
+   "sha256": "3441553dd4f62232199a11aef282c92fa41210bc116b76e23b1d14b0adaa37a1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_03.png",
+   "sha256": "c3dfbeb65605d32a37a441d44c6a7fbe9dcec66144bd2553a170e6c4ee23b944"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_04.png",
+   "sha256": "3585eb4ab7af86e7ec382bd7fc80e6aa7cb0dc22d4104bbf67c37b90399d575a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_00.png",
+   "sha256": "d6b86da5ecb76cd71ca389938f64c9729aa6690dca55d770779145eeab97905a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_01.png",
+   "sha256": "0eedaf0df99441e359b06e03303686ba75c0dd87266e067f83f9af86f7ad3442"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_02.png",
+   "sha256": "3b129950933257c8316d2ab2fc6d05fb36f4f09b713305b678bfcfd86b2a6b50"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_03.png",
+   "sha256": "d358307ca304d07c3f17d59a89fca35f8b02e449db25782eabec7214706ad1e5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_04.png",
+   "sha256": "2b2828d8b8ecec5cc49b11267ea35ee3359614d16d15f1ec772a9ba861de2acf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_00.png",
+   "sha256": "851a3d23441faac7406ea84072ff29a25d59b9dcea546384be7578e3700645f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_01.png",
+   "sha256": "f58ff272e7e31660a2431884391e89c312dda3b76ab0ef5ebee5ad41f88d65e0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_02.png",
+   "sha256": "28a0d5af8b1dfe1fecefd98d304cfa4da61b4d2d43977539593fd91a0f422682"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_03.png",
+   "sha256": "42d8647e682df97069f3756fd9c2c303aac007e671b0a63140394f15bf30346a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_04.png",
+   "sha256": "4271df81d43eaeee2a842004599573284f6a23ba048f4c9cbe4d48fd316d431a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_east.png",
+   "sha256": "8ec66b7bc772d7d67ef09b293c65fae671c3e757878a32b8173f9bd86d25137c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north.png",
+   "sha256": "35bc89b096ac79a909081efad6b1b9bb8b3f15d3295e78cbfec18939095c2bb8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_east.png",
+   "sha256": "643d5a7bc2c02f98559bcd5ecef951cc28ce8790ccd5f25f078b6bc4bb805c8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_west.png",
+   "sha256": "ca8a4f95bad46481de7dbec1aa677fa81404cf77aac0d7d1b512e618298d11fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south.png",
+   "sha256": "0de5bf230a6e8b21e9c8ed28cdf804cd4861566072c518f80558c34fe5cbf2bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_east.png",
+   "sha256": "d4805e491d700be19a5024e7f72440ea69cd1a53003f70577880193c40b10483"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_west.png",
+   "sha256": "d6b86da5ecb76cd71ca389938f64c9729aa6690dca55d770779145eeab97905a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_west.png",
+   "sha256": "851a3d23441faac7406ea84072ff29a25d59b9dcea546384be7578e3700645f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_00.png",
+   "sha256": "cd3a8bcaf1b69fcff4eb79bce800fad241d1aeb2a0da7a13645539443979c49c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_01.png",
+   "sha256": "162ed08b9f2c28c6231c5f53a647ef462529ad9d5f6c0cd2fcd79e3a34f5a0a4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_02.png",
+   "sha256": "b7d7bec12be0f615f16fd8f492fb4689e22e93173a0b9cbc6478bfa0b806f416"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_03.png",
+   "sha256": "8bd5d1b3dab8a8dce22ef1dcf913a922d21617e05acd7b7b9507bd177d96c03d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_04.png",
+   "sha256": "10f0626a2855131cf59b3f6a7ffa7b53b365ad3966a58d0345848d2362843220"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_05.png",
+   "sha256": "01896ec3c79c93228849e6f687a6fbf307c5371d635263bc65ce76e4e099a5cd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_00.png",
+   "sha256": "8776721c019404547010b406f989817a46b0332b6a78e2877e6d9ab56419fc79"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_01.png",
+   "sha256": "121111b1bb1b86976011236003852336d027566dfd64e2478ec9cdaf1ad39ac0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_02.png",
+   "sha256": "aba08b75dd5847918cfe8c5c50ea50fd414fe1bd232b0b8c2c238d9de4c5add2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_03.png",
+   "sha256": "cf1a25104a5028d05eda933b2d7d7477a838541d33a6706bbe513e76a5f048f6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_04.png",
+   "sha256": "87aa2368a4effa0b649a48ac4304b630351af3355f4b2596a7f144a752a6d477"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_05.png",
+   "sha256": "486dac7cac24196de9877cd798aaa25961628fc0a2899f5a6a6363e34e19b98c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_00.png",
+   "sha256": "dfa5fd8955bf6c3aaa1b13dc1378963e05bdab5e39dc8744fa242926099a592c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_01.png",
+   "sha256": "10b68a73b1f717fbc71823a70855d6602b1fd65f5b0f2123d40d33e903c08c31"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_02.png",
+   "sha256": "6fe47aafcd32797895c6fa538eff4eec2711d2ca1c244a184fe2521b95502be7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_03.png",
+   "sha256": "e88b7f52d092f24f092132a0cf0bdd17e81533f5ad9c8f4d74043d6f77ca5d6a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_04.png",
+   "sha256": "9c76fb200e4e77e1152aa2f9f103981f77935dcb94d9a5f9a98bc9e32639d32e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_05.png",
+   "sha256": "f29359eb4ff11968c1dcd48327ee9ec3bdb7e77e96127770dd1b50639fb417f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_00.png",
+   "sha256": "68063f37f839a23540780537f94402c97d75789206776c08c3b27bad7d7580bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_01.png",
+   "sha256": "4e0a00f3abbcfdd361d9f4f08ca89cdd1fd16bca1ef7231d517d7601adb7fcff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_02.png",
+   "sha256": "65138d9868bbed6519235aff386b0deb0787fe064a1abc0e2bb09d712159f0a3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_03.png",
+   "sha256": "bdc176c0c1dee3aa2a40424e8647269da7ba858bd5289ae2a39520a076dc6c44"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_04.png",
+   "sha256": "da236b6906541155a6db92fedf9a3b6c42dbc91e83315d861aaf48dd0d5b53cd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_05.png",
+   "sha256": "5b208e52716373578c2daebc32d14f942b5a2f22aef44f0ed3a6f795b0439b3f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_00.png",
+   "sha256": "3ed3accc0b99cab8b8982da1e75e64968fc73c2717076e5f6b5769a65cb189e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_01.png",
+   "sha256": "94598e7fba704308c61eeb81915add85009c31f196500779a2c587e30871d454"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_02.png",
+   "sha256": "fcef829b12ff6210a855518614e221345d8eff96da847164702f65089fd1c289"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_03.png",
+   "sha256": "658de6114ecde507ec46e1610b0148ed3ab81f77836724e2d194a0a54190e86e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_04.png",
+   "sha256": "216a1980d03d08ea0f73ea445a7518a52b68b74d5d2bc52bff86c1be70c5e25f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_05.png",
+   "sha256": "f2e328aefd18f254a230c4489c9507be4ce1dca57430e2838594eb2dff76044d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_00.png",
+   "sha256": "7dc4552e2a93b92ea8d13cc935e765c58e01f8229193bae71802db78c1476471"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_01.png",
+   "sha256": "555771b3bb3a5780f1cd2d8447d01d0c07d1aa38b4ba6089d40a79617fd89de9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_02.png",
+   "sha256": "25531a9347f4778332d9968086ca17bea66000848ad143a0678373ee021fc58f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_03.png",
+   "sha256": "2912eae3f998d8b5783fa4b6e8badc6200ed88a0f529ce2de9b2aad0f1c23da6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_04.png",
+   "sha256": "a7fa43a4f790454fb1244f5b9a776cce284306cde6bcdfa2b23963a380655a20"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_05.png",
+   "sha256": "1666a175bc1d7039acb8e2497ae07e693a95e600d162ffc9b4132dbaa9933112"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_00.png",
+   "sha256": "61be86d6b3f39496a5eb010da8172b620b761f6dfc9c195fd0251e88631fad30"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_01.png",
+   "sha256": "9c04ea9274e0944b965ad611424d3e17f63b31262d557b6a497838a8544af46a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_02.png",
+   "sha256": "23895ed4e5758c7d7ec3af4e46888add33f18d0d5227974928848ca38a3ef86c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_03.png",
+   "sha256": "7ac19f2987a840863becb44a76591c58e61e64a877842e3d022247c350baf548"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_04.png",
+   "sha256": "891d22e850c5df1c782b3310ce0b9aa93b66732e39cfc67dbb0243486dae1d03"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_05.png",
+   "sha256": "9cf4353ae1a0b27c72652e23c1f433a9a62c7b64de7fb19c28d38be678172916"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_00.png",
+   "sha256": "4088f3973a46e8434fb1c6970f7f70dabbd6402bc0e4b2b93591a09dcb085447"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_01.png",
+   "sha256": "ec27450416c7e55b335c4e6c43d9643a6400fcf8a718b4b6fc703e02221fb96a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_02.png",
+   "sha256": "4142cf596fafed2b84109be45f95412044c551859ce58f8996c7b41d041f1b08"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_03.png",
+   "sha256": "613692ee00d036c5e7392d9d28c635c66f2394bdfc13f200c2b8de31832bee68"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_04.png",
+   "sha256": "78e682464f723515693902e5857b52b311148e4c0d8cd1e6deaf485cf70da64f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_05.png",
+   "sha256": "9ad508c302071cab2c5dc82cb9b88d68ddc1af85cf8c2560f5e0b83813ad4cba"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    289,
+    184
+   ],
+   "margin": [
+    111,
+    297,
+    223,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    292,
+    1,
+    289,
+    184
+   ],
+   "margin": [
+    111,
+    297,
+    223,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    583,
+    1,
+    289,
+    184
+   ],
+   "margin": [
+    111,
+    297,
+    223,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    874,
+    1,
+    286,
+    184
+   ],
+   "margin": [
+    113,
+    297,
+    226,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1162,
+    1,
+    286,
+    184
+   ],
+   "margin": [
+    113,
+    297,
+    226,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1450,
+    1,
+    283,
+    184
+   ],
+   "margin": [
+    115,
+    297,
+    229,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1735,
+    1,
+    247,
+    184
+   ],
+   "margin": [
+    133,
+    297,
+    265,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    187,
+    245,
+    184
+   ],
+   "margin": [
+    133,
+    297,
+    267,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    248,
+    187,
+    243,
+    184
+   ],
+   "margin": [
+    135,
+    297,
+    269,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    493,
+    187,
+    238,
+    184
+   ],
+   "margin": [
+    137,
+    297,
+    274,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    733,
+    187,
+    228,
+    184
+   ],
+   "margin": [
+    142,
+    297,
+    284,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    963,
+    187,
+    217,
+    184
+   ],
+   "margin": [
+    147,
+    297,
+    295,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1182,
+    187,
+    216,
+    184
+   ],
+   "margin": [
+    148,
+    297,
+    296,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1400,
+    187,
+    216,
+    184
+   ],
+   "margin": [
+    148,
+    297,
+    296,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1618,
+    187,
+    212,
+    184
+   ],
+   "margin": [
+    150,
+    297,
+    300,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1832,
+    187,
+    208,
+    184
+   ],
+   "margin": [
+    152,
+    297,
+    304,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    373,
+    206,
+    184
+   ],
+   "margin": [
+    153,
+    297,
+    306,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    209,
+    373,
+    206,
+    184
+   ],
+   "margin": [
+    153,
+    297,
+    306,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    417,
+    373,
+    205,
+    184
+   ],
+   "margin": [
+    153,
+    297,
+    307,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    624,
+    373,
+    204,
+    184
+   ],
+   "margin": [
+    154,
+    297,
+    308,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    830,
+    373,
+    204,
+    184
+   ],
+   "margin": [
+    154,
+    297,
+    308,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1036,
+    373,
+    204,
+    184
+   ],
+   "margin": [
+    154,
+    297,
+    308,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1242,
+    373,
+    199,
+    184
+   ],
+   "margin": [
+    157,
+    297,
+    313,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1443,
+    373,
+    198,
+    184
+   ],
+   "margin": [
+    157,
+    297,
+    314,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1643,
+    373,
+    197,
+    184
+   ],
+   "margin": [
+    157,
+    297,
+    315,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1842,
+    373,
+    197,
+    184
+   ],
+   "margin": [
+    157,
+    297,
+    315,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    559,
+    195,
+    184
+   ],
+   "margin": [
+    159,
+    297,
+    317,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    198,
+    559,
+    194,
+    184
+   ],
+   "margin": [
+    159,
+    297,
+    318,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    394,
+    559,
+    190,
+    184
+   ],
+   "margin": [
+    161,
+    297,
+    322,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    586,
+    559,
+    190,
+    184
+   ],
+   "margin": [
+    161,
+    297,
+    322,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_00.png",
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    778,
+    559,
+    167,
+    184
+   ],
+   "margin": [
+    173,
+    297,
+    345,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    947,
+    559,
+    163,
+    184
+   ],
+   "margin": [
+    175,
+    297,
+    349,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1112,
+    559,
+    155,
+    184
+   ],
+   "margin": [
+    179,
+    297,
+    357,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1269,
+    559,
+    152,
+    184
+   ],
+   "margin": [
+    180,
+    297,
+    360,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1423,
+    559,
+    113,
+    184
+   ],
+   "margin": [
+    199,
+    297,
+    399,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1538,
+    559,
+    277,
+    182
+   ],
+   "margin": [
+    117,
+    299,
+    235,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1817,
+    559,
+    228,
+    182
+   ],
+   "margin": [
+    142,
+    299,
+    284,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1538,
+    743,
+    245,
+    182
+   ],
+   "margin": [
+    133,
+    299,
+    267,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1785,
+    743,
+    245,
+    182
+   ],
+   "margin": [
+    133,
+    299,
+    267,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    745,
+    243,
+    182
+   ],
+   "margin": [
+    135,
+    299,
+    269,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    246,
+    745,
+    239,
+    182
+   ],
+   "margin": [
+    137,
+    299,
+    273,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    487,
+    745,
+    216,
+    182
+   ],
+   "margin": [
+    148,
+    299,
+    296,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    705,
+    745,
+    200,
+    182
+   ],
+   "margin": [
+    156,
+    299,
+    312,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    907,
+    745,
+    197,
+    182
+   ],
+   "margin": [
+    157,
+    299,
+    315,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1106,
+    745,
+    190,
+    182
+   ],
+   "margin": [
+    161,
+    299,
+    322,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1298,
+    745,
+    190,
+    182
+   ],
+   "margin": [
+    161,
+    299,
+    322,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1490,
+    927,
+    190,
+    182
+   ],
+   "margin": [
+    161,
+    299,
+    322,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1682,
+    927,
+    188,
+    182
+   ],
+   "margin": [
+    162,
+    299,
+    324,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1872,
+    927,
+    154,
+    182
+   ],
+   "margin": [
+    179,
+    299,
+    358,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    929,
+    188,
+    182
+   ],
+   "margin": [
+    162,
+    299,
+    324,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    191,
+    929,
+    188,
+    182
+   ],
+   "margin": [
+    162,
+    299,
+    324,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    381,
+    929,
+    184,
+    182
+   ],
+   "margin": [
+    164,
+    299,
+    328,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    567,
+    929,
+    152,
+    182
+   ],
+   "margin": [
+    180,
+    299,
+    360,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    721,
+    929,
+    152,
+    182
+   ],
+   "margin": [
+    180,
+    299,
+    360,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    875,
+    929,
+    283,
+    180
+   ],
+   "margin": [
+    115,
+    301,
+    229,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1160,
+    929,
+    243,
+    180
+   ],
+   "margin": [
+    135,
+    301,
+    269,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    875,
+    1111,
+    226,
+    180
+   ],
+   "margin": [
+    143,
+    301,
+    286,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1103,
+    1111,
+    214,
+    180
+   ],
+   "margin": [
+    149,
+    301,
+    298,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1319,
+    1111,
+    208,
+    180
+   ],
+   "margin": [
+    152,
+    301,
+    304,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1529,
+    1111,
+    164,
+    180
+   ],
+   "margin": [
+    174,
+    301,
+    348,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1695,
+    1111,
+    163,
+    180
+   ],
+   "margin": [
+    175,
+    301,
+    349,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1860,
+    1111,
+    113,
+    179
+   ],
+   "margin": [
+    199,
+    302,
+    399,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1113,
+    245,
+    179
+   ],
+   "margin": [
+    133,
+    302,
+    267,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    248,
+    1113,
+    235,
+    179
+   ],
+   "margin": [
+    139,
+    302,
+    277,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    485,
+    1113,
+    235,
+    179
+   ],
+   "margin": [
+    139,
+    302,
+    277,
+    333
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_06.png"
+   ],
+   "page": 0,
+   "region": [
+    722,
+    1113,
+    113,
+    174
+   ],
+   "margin": [
+    199,
+    307,
+    399,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    722,
+    1293,
+    283,
+    178
+   ],
+   "margin": [
+    115,
+    303,
+    229,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1007,
+    1293,
+    261,
+    178
+   ],
+   "margin": [
+    125,
+    303,
+    251,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1270,
+    1293,
+    243,
+    178
+   ],
+   "margin": [
+    135,
+    303,
+    269,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1515,
+    1293,
+    213,
+    178
+   ],
+   "margin": [
+    149,
+    303,
+    299,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1730,
+    1293,
+    198,
+    178
+   ],
+   "margin": [
+    157,
+    303,
+    314,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1294,
+    197,
+    178
+   ],
+   "margin": [
+    157,
+    303,
+    315,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_06.png"
+   ],
+   "page": 0,
+   "region": [
+    200,
+    1294,
+    163,
+    178
+   ],
+   "margin": [
+    175,
+    303,
+    349,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    365,
+    1294,
+    218,
+    176
+   ],
+   "margin": [
+    147,
+    305,
+    294,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    585,
+    1294,
+    122,
+    151
+   ],
+   "margin": [
+    195,
+    330,
+    390,
+    361
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    365,
+    1472,
+    211,
+    176
+   ],
+   "margin": [
+    151,
+    305,
+    301,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    578,
+    1473,
+    208,
+    176
+   ],
+   "margin": [
+    152,
+    305,
+    304,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    788,
+    1473,
+    208,
+    176
+   ],
+   "margin": [
+    152,
+    305,
+    304,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    998,
+    1473,
+    202,
+    176
+   ],
+   "margin": [
+    155,
+    305,
+    310,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1202,
+    1473,
+    190,
+    176
+   ],
+   "margin": [
+    161,
+    305,
+    322,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1394,
+    1473,
+    220,
+    175
+   ],
+   "margin": [
+    146,
+    306,
+    292,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1616,
+    1473,
+    218,
+    175
+   ],
+   "margin": [
+    147,
+    306,
+    294,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1836,
+    1473,
+    199,
+    175
+   ],
+   "margin": [
+    157,
+    306,
+    313,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1474,
+    241,
+    174
+   ],
+   "margin": [
+    135,
+    307,
+    271,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1650,
+    230,
+    174
+   ],
+   "margin": [
+    141,
+    307,
+    282,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    233,
+    1650,
+    218,
+    174
+   ],
+   "margin": [
+    147,
+    307,
+    294,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1394,
+    1650,
+    216,
+    174
+   ],
+   "margin": [
+    148,
+    307,
+    296,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1612,
+    1650,
+    208,
+    174
+   ],
+   "margin": [
+    152,
+    307,
+    304,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1822,
+    1650,
+    222,
+    173
+   ],
+   "margin": [
+    145,
+    308,
+    290,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    453,
+    1651,
+    232,
+    173
+   ],
+   "margin": [
+    140,
+    308,
+    280,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    687,
+    1651,
+    222,
+    173
+   ],
+   "margin": [
+    145,
+    308,
+    290,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    911,
+    1651,
+    218,
+    173
+   ],
+   "margin": [
+    147,
+    308,
+    294,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1131,
+    1651,
+    213,
+    173
+   ],
+   "margin": [
+    149,
+    308,
+    299,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1822,
+    1825,
+    211,
+    173
+   ],
+   "margin": [
+    151,
+    308,
+    301,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1826,
+    193,
+    173
+   ],
+   "margin": [
+    159,
+    308,
+    319,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    196,
+    1826,
+    166,
+    173
+   ],
+   "margin": [
+    173,
+    308,
+    346,
+    339
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    364,
+    1826,
+    255,
+    172
+   ],
+   "margin": [
+    129,
+    309,
+    257,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    621,
+    1826,
+    233,
+    172
+   ],
+   "margin": [
+    139,
+    309,
+    279,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    856,
+    1826,
+    200,
+    172
+   ],
+   "margin": [
+    156,
+    309,
+    312,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1058,
+    1826,
+    172,
+    172
+   ],
+   "margin": [
+    170,
+    309,
+    340,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1232,
+    1826,
+    165,
+    172
+   ],
+   "margin": [
+    173,
+    309,
+    347,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1399,
+    1826,
+    255,
+    171
+   ],
+   "margin": [
+    129,
+    310,
+    257,
+    341
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1656,
+    1826,
+    154,
+    169
+   ],
+   "margin": [
+    179,
+    312,
+    358,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    172,
+    170
+   ],
+   "margin": [
+    170,
+    311,
+    340,
+    342
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    175,
+    1,
+    224,
+    169
+   ],
+   "margin": [
+    144,
+    312,
+    288,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    401,
+    1,
+    195,
+    169
+   ],
+   "margin": [
+    159,
+    312,
+    317,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    598,
+    1,
+    238,
+    168
+   ],
+   "margin": [
+    137,
+    313,
+    274,
+    344
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    838,
+    1,
+    219,
+    168
+   ],
+   "margin": [
+    147,
+    313,
+    293,
+    344
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1059,
+    1,
+    209,
+    167
+   ],
+   "margin": [
+    151,
+    314,
+    303,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1270,
+    1,
+    172,
+    167
+   ],
+   "margin": [
+    170,
+    314,
+    340,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1444,
+    1,
+    149,
+    167
+   ],
+   "margin": [
+    181,
+    314,
+    363,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1595,
+    1,
+    226,
+    166
+   ],
+   "margin": [
+    143,
+    315,
+    286,
+    346
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1823,
+    1,
+    222,
+    166
+   ],
+   "margin": [
+    145,
+    315,
+    290,
+    346
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1595,
+    169,
+    216,
+    166
+   ],
+   "margin": [
+    148,
+    315,
+    296,
+    346
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1813,
+    169,
+    216,
+    166
+   ],
+   "margin": [
+    148,
+    315,
+    296,
+    346
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1059,
+    170,
+    190,
+    166
+   ],
+   "margin": [
+    161,
+    315,
+    322,
+    346
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1251,
+    170,
+    238,
+    165
+   ],
+   "margin": [
+    137,
+    316,
+    274,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    598,
+    171,
+    238,
+    165
+   ],
+   "margin": [
+    137,
+    316,
+    274,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    838,
+    171,
+    195,
+    165
+   ],
+   "margin": [
+    159,
+    316,
+    317,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    175,
+    172,
+    161,
+    165
+   ],
+   "margin": [
+    175,
+    316,
+    351,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    338,
+    172,
+    154,
+    165
+   ],
+   "margin": [
+    179,
+    316,
+    358,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    173,
+    164,
+    160
+   ],
+   "margin": [
+    174,
+    321,
+    348,
+    352
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1251,
+    337,
+    225,
+    164
+   ],
+   "margin": [
+    143,
+    317,
+    287,
+    348
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1478,
+    337,
+    219,
+    164
+   ],
+   "margin": [
+    147,
+    317,
+    293,
+    348
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1699,
+    337,
+    184,
+    164
+   ],
+   "margin": [
+    164,
+    317,
+    328,
+    348
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1885,
+    337,
+    133,
+    146
+   ],
+   "margin": [
+    189,
+    335,
+    379,
+    366
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    494,
+    338,
+    244,
+    163
+   ],
+   "margin": [
+    134,
+    318,
+    268,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    740,
+    338,
+    232,
+    163
+   ],
+   "margin": [
+    140,
+    318,
+    280,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    974,
+    338,
+    228,
+    163
+   ],
+   "margin": [
+    142,
+    318,
+    284,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    339,
+    182,
+    163
+   ],
+   "margin": [
+    165,
+    318,
+    330,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    185,
+    339,
+    180,
+    163
+   ],
+   "margin": [
+    166,
+    318,
+    332,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    367,
+    503,
+    214,
+    162
+   ],
+   "margin": [
+    149,
+    319,
+    298,
+    350
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    583,
+    503,
+    182,
+    162
+   ],
+   "margin": [
+    165,
+    319,
+    330,
+    350
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    767,
+    503,
+    282,
+    161
+   ],
+   "margin": [
+    115,
+    320,
+    230,
+    351
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1051,
+    503,
+    232,
+    161
+   ],
+   "margin": [
+    140,
+    320,
+    280,
+    351
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1285,
+    503,
+    173,
+    161
+   ],
+   "margin": [
+    169,
+    320,
+    339,
+    351
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1460,
+    503,
+    247,
+    160
+   ],
+   "margin": [
+    133,
+    321,
+    265,
+    352
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1709,
+    503,
+    231,
+    160
+   ],
+   "margin": [
+    141,
+    321,
+    281,
+    352
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    504,
+    236,
+    159
+   ],
+   "margin": [
+    138,
+    322,
+    276,
+    353
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    665,
+    176,
+    159
+   ],
+   "margin": [
+    168,
+    322,
+    336,
+    353
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1460,
+    665,
+    273,
+    158
+   ],
+   "margin": [
+    119,
+    323,
+    239,
+    354
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1735,
+    665,
+    223,
+    158
+   ],
+   "margin": [
+    145,
+    323,
+    289,
+    354
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    767,
+    666,
+    264,
+    157
+   ],
+   "margin": [
+    124,
+    324,
+    248,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1033,
+    666,
+    234,
+    157
+   ],
+   "margin": [
+    139,
+    324,
+    278,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1269,
+    666,
+    178,
+    150
+   ],
+   "margin": [
+    167,
+    331,
+    334,
+    362
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    179,
+    667,
+    251,
+    156
+   ],
+   "margin": [
+    131,
+    325,
+    261,
+    356
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    432,
+    667,
+    245,
+    155
+   ],
+   "margin": [
+    133,
+    326,
+    267,
+    357
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    432,
+    824,
+    261,
+    153
+   ],
+   "margin": [
+    125,
+    328,
+    251,
+    359
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    179,
+    825,
+    196,
+    152
+   ],
+   "margin": [
+    158,
+    329,
+    316,
+    360
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    695,
+    825,
+    258,
+    151
+   ],
+   "margin": [
+    127,
+    330,
+    254,
+    361
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    955,
+    825,
+    266,
+    150
+   ],
+   "margin": [
+    123,
+    331,
+    246,
+    362
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1223,
+    825,
+    261,
+    150
+   ],
+   "margin": [
+    125,
+    331,
+    251,
+    362
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1486,
+    825,
+    259,
+    150
+   ],
+   "margin": [
+    127,
+    331,
+    253,
+    362
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1747,
+    825,
+    256,
+    149
+   ],
+   "margin": [
+    128,
+    332,
+    256,
+    363
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    826,
+    138,
+    136
+   ],
+   "margin": [
+    187,
+    345,
+    374,
+    376
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1747,
+    976,
+    239,
+    148
+   ],
+   "margin": [
+    137,
+    333,
+    273,
+    364
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    955,
+    977,
+    264,
+    146
+   ],
+   "margin": [
+    124,
+    335,
+    248,
+    366
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1221,
+    977,
+    259,
+    146
+   ],
+   "margin": [
+    127,
+    335,
+    253,
+    366
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1482,
+    977,
+    241,
+    146
+   ],
+   "margin": [
+    135,
+    335,
+    271,
+    366
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    695,
+    978,
+    243,
+    144
+   ],
+   "margin": [
+    135,
+    337,
+    269,
+    368
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    979,
+    224,
+    144
+   ],
+   "margin": [
+    144,
+    337,
+    288,
+    368
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    227,
+    979,
+    251,
+    143
+   ],
+   "margin": [
+    131,
+    338,
+    261,
+    369
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    480,
+    979,
+    136,
+    133
+   ],
+   "margin": [
+    188,
+    348,
+    376,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    227,
+    1124,
+    257,
+    140
+   ],
+   "margin": [
+    127,
+    341,
+    255,
+    372
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    486,
+    1124,
+    247,
+    140
+   ],
+   "margin": [
+    133,
+    341,
+    265,
+    372
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1125,
+    206,
+    119
+   ],
+   "margin": [
+    153,
+    362,
+    306,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    735,
+    1125,
+    285,
+    138
+   ],
+   "margin": [
+    113,
+    343,
+    227,
+    374
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1022,
+    1125,
+    253,
+    138
+   ],
+   "margin": [
+    129,
+    343,
+    259,
+    374
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1277,
+    1125,
+    292,
+    136
+   ],
+   "margin": [
+    110,
+    345,
+    220,
+    376
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1571,
+    1126,
+    263,
+    136
+   ],
+   "margin": [
+    125,
+    345,
+    249,
+    376
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1277,
+    1263,
+    237,
+    135
+   ],
+   "margin": [
+    137,
+    346,
+    275,
+    377
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1516,
+    1264,
+    275,
+    133
+   ],
+   "margin": [
+    119,
+    348,
+    237,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1793,
+    1264,
+    251,
+    133
+   ],
+   "margin": [
+    131,
+    348,
+    261,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    735,
+    1265,
+    261,
+    133
+   ],
+   "margin": [
+    125,
+    348,
+    251,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    998,
+    1265,
+    243,
+    131
+   ],
+   "margin": [
+    135,
+    350,
+    269,
+    381
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1266,
+    273,
+    129
+   ],
+   "margin": [
+    119,
+    352,
+    239,
+    383
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    276,
+    1266,
+    272,
+    127
+   ],
+   "margin": [
+    120,
+    354,
+    240,
+    385
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    276,
+    1395,
+    273,
+    125
+   ],
+   "margin": [
+    119,
+    356,
+    239,
+    387
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1397,
+    272,
+    119
+   ],
+   "margin": [
+    120,
+    362,
+    240,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    998,
+    1398,
+    272,
+    119
+   ],
+   "margin": [
+    120,
+    362,
+    240,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1516,
+    1399,
+    281,
+    124
+   ],
+   "margin": [
+    115,
+    357,
+    231,
+    388
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1799,
+    1399,
+    216,
+    97
+   ],
+   "margin": [
+    148,
+    384,
+    296,
+    415
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    551,
+    1400,
+    298,
+    120
+   ],
+   "margin": [
+    107,
+    361,
+    214,
+    392
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1272,
+    1400,
+    233,
+    95
+   ],
+   "margin": [
+    139,
+    386,
+    279,
+    417
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1518,
+    251,
+    119
+   ],
+   "margin": [
+    131,
+    362,
+    261,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    851,
+    1519,
+    251,
+    119
+   ],
+   "margin": [
+    131,
+    362,
+    261,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1104,
+    1519,
+    279,
+    118
+   ],
+   "margin": [
+    117,
+    363,
+    233,
+    394
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    254,
+    1522,
+    264,
+    113
+   ],
+   "margin": [
+    124,
+    368,
+    248,
+    399
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    520,
+    1522,
+    272,
+    109
+   ],
+   "margin": [
+    120,
+    372,
+    240,
+    403
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1385,
+    1525,
+    272,
+    109
+   ],
+   "margin": [
+    120,
+    372,
+    240,
+    403
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1659,
+    1525,
+    255,
+    104
+   ],
+   "margin": [
+    129,
+    377,
+    257,
+    408
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1659,
+    1631,
+    251,
+    102
+   ],
+   "margin": [
+    131,
+    379,
+    261,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    520,
+    1633,
+    253,
+    100
+   ],
+   "margin": [
+    129,
+    381,
+    259,
+    412
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_south_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_attack_north_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_south_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_hit_north_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_south_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_death_north_east_06.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/spark_runner_8dir/spark_runner_idle_east.png"
+}

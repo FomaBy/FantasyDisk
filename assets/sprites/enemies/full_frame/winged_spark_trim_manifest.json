@@ -1,0 +1,7046 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "winged_spark",
+ "tres": "res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 224,
+ "unique_frames": 224,
+ "source_rgba_bytes": 234881024,
+ "page_rgba_bytes": 52559872,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark_trim_0.png",
+   "width": 2048,
+   "height": 1988,
+   "sha256": "603429641b59e6c78645cde1da16537ee61c716cc4efa9c3beb9a1dbf6488997"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark_trim_1.png",
+   "width": 2048,
+   "height": 1943,
+   "sha256": "06c5a8106f701f7f5e837e9642f5042501257933407eb7f8655b07337099050a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark_trim_2.png",
+   "width": 2048,
+   "height": 1864,
+   "sha256": "3dc6ae6641b52c5bfc621205d010a2109c1dcafe4aeb7836def8fd9c6d2bb103"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark_trim_3.png",
+   "width": 2048,
+   "height": 621,
+   "sha256": "e01592d097366cf617228b35f03a02f34c78ab3dfedaa277e33ed5fe81f23a44"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_00.png",
+   "sha256": "7241210b21d0678dcd326fedcd7f4bcc96f6af5355178ac4811ae7020a82f571"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_01.png",
+   "sha256": "da49538344e197230ab74913e6564cf61054812afe2f86ba040f66503d450cc7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_02.png",
+   "sha256": "24d778d6fca46f36747e045767025f385258409aacd1116f6ed27df6e7eee651"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_03.png",
+   "sha256": "a4cbd2e4a75991e342672d4cc774704ce1c1d5922104385b3967fd69f41c5105"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_04.png",
+   "sha256": "4b9bc9847621fd8da370cd5502ed4a6e526a863523b02ec92cae42cca42bb894"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_05.png",
+   "sha256": "eb65b0edd2b0cd7d155914d75b5715e567619afc86cc11384ffd8423a8fbc9f6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_00.png",
+   "sha256": "62bf8cf2425df84ce84f409e634d641b903c5f602ad0c2f48ff6c1a66e0902b8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_01.png",
+   "sha256": "036aa72a4a67a675b5e93315b99515c8ffe9e2049fbbae33b9e2d91c3ac42d57"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_02.png",
+   "sha256": "8428267725d06f694e575468d57969bc7c6412df493a5a828853ecc91a560d5b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_03.png",
+   "sha256": "d7c9220a643d7dcc08cec334185364ccb094d850e50fe335b317768502d3ee94"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_04.png",
+   "sha256": "43ae4e045a0e0c39b82c64d76ee4c10a2bf132fc319863c67924e274bbd3b6cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_05.png",
+   "sha256": "4b00ab9f947ba7d8afe4bad771fc03df5f897cd743c58d3b3ed694709e17efbb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_00.png",
+   "sha256": "3536be470e5d65ed694c4dc57bbd6ed598a4103d25751e50d39c73834f1f73d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_01.png",
+   "sha256": "1f184e456f57196a6628399817d83e045d661b6c2aa5c9b8a1779aeea8635310"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_02.png",
+   "sha256": "928f66bf973a80f426c109207cfbb0af77c4bfb463242eb6982335face1b1011"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_03.png",
+   "sha256": "fe168dee313ab030771f2dd4dd9f433c381130dfeaca6c0b440eeb5322a65c6c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_04.png",
+   "sha256": "57e4338b9060bba37bf61726fd15d8aff9b74f05f9a2bb5ceec8fab34fad98cf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_05.png",
+   "sha256": "ef33fb9199dea4c65db6b561a918cea9bbdebeaddfa7d137bc9801f65ed298e7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_00.png",
+   "sha256": "799698312b31a560f7fe4ebf526317680973b0a4addb6d49258e33d005aa56d3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_01.png",
+   "sha256": "9fa86c3567994c8b14eb1ad85cc45e0fd68e0634295c80c9903e0505d72b809e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_02.png",
+   "sha256": "b116fae934f0fd8fe90a586cc52bf1f0ca6dffeae1c13c9b37ee716a7e463b88"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_03.png",
+   "sha256": "2d8ad61d2c62f8115d44ab7e33bce8291d9dac8616d5ca226f56a2d5fef95d55"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_04.png",
+   "sha256": "f61131b937be209432972d29faa9c946b9cb258e1e3c653ef31cfd0bb0a12853"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_05.png",
+   "sha256": "05f58848558b047920647437e0aebb221f4b277c5cdce044507fe0d1bcfd9ac0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_00.png",
+   "sha256": "28d1280e35097bd606f9e4611b22e4b4f73b8d9c9b7a5dc8876fe403c06c30cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_01.png",
+   "sha256": "6c4b3fdf93b26894c9bbb9fa37f524759a2f1ce34e355dbe263e8b4cf7f6cf10"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_02.png",
+   "sha256": "23a2a00eb006a15b7124d2e423c4bd84951d35018028cb8b6477c38e7c4ed290"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_03.png",
+   "sha256": "55a11b9a7db76bf41be4853f2621f148e119a98a7651309d51a00bf311876f60"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_04.png",
+   "sha256": "656aab4cf8d829935c349de2694c00a05e108b075eea92a995601b6f43e4dc77"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_05.png",
+   "sha256": "276f6a85fcff9770114dae15452df9d1f337a1a048289d2c752a3fb68f7ab602"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_00.png",
+   "sha256": "06a6e673f72aa01efb0fcdcd48476bf6099d69a8f5f5d80549821b7367cd1399"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_01.png",
+   "sha256": "6ac3bf9d646eba7b8fe4191199eb267f5c9bf12dea93022278cadaa298b8e236"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_02.png",
+   "sha256": "c4affdeb72d8d92410a532a6d437349b836f8e9fcae58e45311d224973a7785d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_03.png",
+   "sha256": "6d54533a83aed445283459b37c6ab3e9e28f81ff7c326060ee0a1cac97d16d8e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_04.png",
+   "sha256": "f41d0e696b0a87fb9be33a8f1c3cfdae8a8ced5e35a6d93bb327548333c5774d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_05.png",
+   "sha256": "83aa4e56c3bca3d5e2e18d237419fb4b32c711607da5716b34ef9ed434be248c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_00.png",
+   "sha256": "898ea668b1a0a8fa0fb0366550039e237d1e374ea169926e0aab2543a9d9f087"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_01.png",
+   "sha256": "9114efcb575b24dabdb3318409a369bfd39d1d9fab83593f0dfca1f839837f7d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_02.png",
+   "sha256": "70d9542f422a475cbeeb3c00d7537b324d293b81084e1572d50bc0f646225e70"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_03.png",
+   "sha256": "d4d2b278c4e51ad200bf7b388cbe75299b28ec3691f881028570dc38fe32e5fd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_04.png",
+   "sha256": "bb34015d7e516d7936b62c9d35625ad9d7e4e40e3131af53d33308cca35de156"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_05.png",
+   "sha256": "9b55b4ea5805df3cfbf5e42717f1004f8ff760b381a810ecdc8bf0cf29a37a52"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_00.png",
+   "sha256": "725ad499549ce0fccf899e60ab4e2cf1756dd1319d3820525520160c573a45c4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_01.png",
+   "sha256": "f37b719ade44246f634b21096e1673b2d724383a1c2185f5e7c50dffeaa0ce8b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_02.png",
+   "sha256": "99a1698f35033910de4795476dc0751656d33dee7844bf1a70ce52d9ed0e6802"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_03.png",
+   "sha256": "9aef5d486c17d1b4515d018e95b1a976ad693cee52b061f5b909107e3011fb14"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_04.png",
+   "sha256": "afbbd9124dcfdbf6776bb7735b68d913b366301d804fd1b4ea7dd63666afd645"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_05.png",
+   "sha256": "1dd6eeb3299d76ccfffd5397f471bfb98a6f0179349956ee0a5cd4fbadcc98b0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_00.png",
+   "sha256": "eb62ee836cf3978465f045abf34a10b5459c052c30326ec4b0bbd70fc5bd4df2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_01.png",
+   "sha256": "da42b7f295f5ab9f89d25a88caa65cefd59664123d8a9cbf9b29b0c7126e21a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_02.png",
+   "sha256": "eb9333df57440a2a92499325f9c22f4b7bc81896264145b6c2b1a1e5b7e1ed10"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_03.png",
+   "sha256": "72c7e009beb06cfb1981d0e03c4a4f5d11acc2f8c3c575beab92ca4c9ece7c7c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_04.png",
+   "sha256": "b3c6727d4005bbaf59b368ba3382d0e249f05a479049e11330b64f28379112d6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_05.png",
+   "sha256": "33d76d4b2f9e94170afc9bada8bac22c45a0c76f09842e20bb82a04bf6f1f6f3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_00.png",
+   "sha256": "90cfa7af0eb98a83bf4e77159cbbfae3dba4908994da1c7d76ddd0741edc79a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_01.png",
+   "sha256": "43e0c8175b9603247c0331c7b57b259a513ec89d0dad8bb16f989470c6b1887e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_02.png",
+   "sha256": "25487e17ea47988c524d8cf02e994b535ff2f1513fdc5eee30bb32959702faa0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_03.png",
+   "sha256": "e40c90506ee3533858a99239d24e410858fa72d6c5b6760b2697c9897c6fbfa7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_04.png",
+   "sha256": "34af72d3c7de9389b2b9ee7e32464ef69ff507cf7369ac4879eb18e9e13f2815"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_05.png",
+   "sha256": "4564b8f508a92384c3f48f522403153667ab148e7dcd22cc2876a9516b6eb71e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_00.png",
+   "sha256": "e581528408be7f8ebf24d335e458997dff203995ec6529745d22ea7b8adb75ea"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_01.png",
+   "sha256": "d26959a89bc4765a010660927a699b67863fbfd23bd8c338e22ecbb40873080e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_02.png",
+   "sha256": "99e7e634524573b9c2abf496bea8df97bdc0fbc3e7ffd4b565778faae2ebac99"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_03.png",
+   "sha256": "c8f5ea8b118fe8ad6bb1a38920bc855ceec2e3b03571304bfae9c1e2bbfaee54"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_04.png",
+   "sha256": "01aaed475085bbc5275356223f76f9297863fcf90b9c89a669b8acdbf426c1a7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_05.png",
+   "sha256": "b9d48258663dd45fbcabea2ee34f4ceeb238eb1ea4a8e2a23d1c91bddaf73f6b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_00.png",
+   "sha256": "1e60a8b2801ef13fcc997fb2b228bae86df298eda20520f37e0e8f968ee145c1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_01.png",
+   "sha256": "bd53ede1a80237f7b82fb612b9ca02b9ed1591c7f31ecfe9fab35dff7bf77a5c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_02.png",
+   "sha256": "5daf5132286d489d66ca1b7ae81ed04b7483672758fc8b4463efa506102e24b5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_03.png",
+   "sha256": "8cd99933211d8941f441b89ce81b92dedb602e155d69240bc7f7ab74cfac2bbc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_04.png",
+   "sha256": "ac3ee856451667472e60f9edfc5c6fdf65e4e50bac4d23061d35e2c76adaeaaf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_05.png",
+   "sha256": "586fed6fd023cf49e9ead70b86088f0f38cab40548741e1c3447784b8bf78271"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_00.png",
+   "sha256": "b3d5d1a2de6aa4cdee7df833cf2d9e4180d5da06899f8e62e16d2874a475e110"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_01.png",
+   "sha256": "9dcb8a9dd3333247f3ebe087a616a3990a7e72e85e539fb5c89f5795e3519081"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_02.png",
+   "sha256": "027604dad95b08f11603ea19af55027ff517e97eb224b2c5c6d201034e8de3c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_03.png",
+   "sha256": "b9340a1c523181bf0c113e269c681c13c2e96a4af096ad22e0a1908f84e4b3bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_04.png",
+   "sha256": "ee4ea832f90a56f1fdc79bd003f1933dfbe9a34ae0db448282c7af4a3d5a3bbe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_05.png",
+   "sha256": "9f15b198e0dad579049419a972359bdf8c73d4dfbbd8eda3b1b0a8ca864c4a09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_00.png",
+   "sha256": "462d447ec5ffd02db1627d338e7d38fed852ba9016b1f6e29f020dc7836327d5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_01.png",
+   "sha256": "e376f3154976a07f753dec98f697bc88b85523c4369fe18165bcc640cd22b9f1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_02.png",
+   "sha256": "e5ca9bfb0dc7c3d6a1f2358db40e68e5354f96e8cbf9795f8f999732927b6f3b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_03.png",
+   "sha256": "55f39e80aa9ea24ff5dfe10b32678ebbf7e990a743b4f37e1a015ad45f5f53c6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_04.png",
+   "sha256": "282be74a5c55ee7a7a7fefd6ec877f7b346401887ea7d9d720dbddda82845aa3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_05.png",
+   "sha256": "e6cae15d6d3e7092b5a4a58be9e38646535e5d28309e625731c0fc1c628c29bf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_00.png",
+   "sha256": "2dfc102135f5ef38940b51bcf12159e8a6cfb79dc61d2c959e68e49f8f3cdbc9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_01.png",
+   "sha256": "8c0669c13f27b3d4bb147d4d057357979c03f16fe9fa49a6246203f47ae93091"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_02.png",
+   "sha256": "ea32a85ecd48555fa7c9ef3cd671f57023b37d4a0e04a5a427a4573e761b4a39"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_03.png",
+   "sha256": "29217a1faf68e449845db369fff23b192384d9a2c15e4473fca3ef7793135e1b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_04.png",
+   "sha256": "429856716685b63c48e79a902808688053328684536cce55181197a2e17844e3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_05.png",
+   "sha256": "18b15e176940204750a66d48cb19fa61e2746b1ef7d5e9afef84070381d48ba0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_00.png",
+   "sha256": "4b97b4a3073627add137559596ffebf0246baf8a1804f6cdcb8f201ae72e2cd6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_01.png",
+   "sha256": "cab62186cee9c76123f38be2d7b57f8a701292aa22e48d1e88a5d9e37872c645"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_02.png",
+   "sha256": "0242e0699735179f1d263c41db2e84ba7782aaa1a21b5f37eb056651dc421726"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_03.png",
+   "sha256": "2d0c3f17ebdc09cc6b066620660155da853073f2214a3d04efea28315d018cdc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_04.png",
+   "sha256": "01bd66497292e92612780c29a7eca98dd2f8a9d627a311c48b2943fecb29e644"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_05.png",
+   "sha256": "63c4764ea96a6472b4ef4a61dc64affa2dc65752dde6d9fadc356412ca836695"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_00.png",
+   "sha256": "ef3c4af35bf960b3d563637f24f0216a278908a959e90b654030f1d8f99ae2e3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_01.png",
+   "sha256": "16b4d6278971fe65e5c61ab6e1c3d0396292a5877572f212c38afb8ed55e0824"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_02.png",
+   "sha256": "3188133e0d86b48d35f4584684177f3d469d02debe5e00b98b701dd559e800c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_03.png",
+   "sha256": "4c24274d1992ac245d2c1dff3e5f30d981041710430e4da0831a7f5123b8cc44"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_00.png",
+   "sha256": "1590f6603b650271d4e8e78d231fe9236ea98ae14cb4a65d44580adc10ff3dc9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_01.png",
+   "sha256": "0477693daead86faa458e879ce9196efb951d77ce606b966d3afb4109fb1ab15"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_02.png",
+   "sha256": "dacfc930deea5c3f9b560f2fd31d8f998053ab4259b528b3bde147c34045063b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_03.png",
+   "sha256": "713889be07d96af8f70da71589735dc14facdb41695239eb4fc0f9b31143ad42"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_00.png",
+   "sha256": "ffcaf85f9655d1c1230101173b0233a8f9d2a74a796dbb9036e91d0124fe6838"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_01.png",
+   "sha256": "a46739460bda9f431203cc8c5a9d17af6b7192a75e544270588943af6cb4c363"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_02.png",
+   "sha256": "24e7d3501d2fe207e84286941f3ffde0d71d81852693c904f3b16755e45313be"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_03.png",
+   "sha256": "c30c3e290bea35a70614e88a4d1dca1268aafbb76b8a71c5bf0a678a959076a8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_00.png",
+   "sha256": "79e6d22a63162a57cf7e1bc9349e9baaabb07ffb960af7984f252ee6ba9646eb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_01.png",
+   "sha256": "ebc1548e1169bf3692099b09f638dfb67a932c796f7e947cccce91d1d257d4b1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_02.png",
+   "sha256": "af1545d05e8044d4db8e45e1cd33fd5ea3c331bd9128851c081ec8abccc573a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_03.png",
+   "sha256": "a4cb81033232e7e572711a10f0711ba0bc80f34ed86fe9c7abb5ede2c27172de"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_00.png",
+   "sha256": "3f410c404966b194445a0c16255da389b99b08548d1242f79882c8dcfca0c512"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_01.png",
+   "sha256": "d3eeddad4a00bb34eb98f34abe566e48ca544f018699c1367c1dfd841605cbcc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_02.png",
+   "sha256": "dc871be94d22f20a907ca751a070d30967962327974c182f3816394418e2abc7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_03.png",
+   "sha256": "c419dfd1d069c809338a6d9d499c70ba168661ef2f0b5e82a2fbca25fa1450ba"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_00.png",
+   "sha256": "36407edd39dec8bc432928ef2e36d0c94c1476e179f6768003ae512f503d0ac6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_01.png",
+   "sha256": "f29aa2eef31cb1f7135b116b79eab2242cd9796256a86e098695979d69cb134b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_02.png",
+   "sha256": "6c8206c3cca0131e808837e31ac4e955b0683d4506fdd0d1425210a05cc5d9e9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_03.png",
+   "sha256": "4839c57eb6d003df0a5ba8b3c5e0f4867126555e8476253f4b3186766c22bc51"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_00.png",
+   "sha256": "cc1945ee102ce26c765a638d705fce330e1cdb54155882358fc4e19604c8bccf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_01.png",
+   "sha256": "5cdd9387063f36fbf30f77a8899731da417ade66189e143ad59872ebd306116f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_02.png",
+   "sha256": "2380a27c56a1066d0ddc43b59d060e16c04e761123401ad5d6a4504eb5b21395"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_03.png",
+   "sha256": "194b3e529f5bcf722b0cb6b08c4ae5453f4ea04114ed5fc6e5cc54cb683d8400"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_00.png",
+   "sha256": "e994de71d230f2f7f98728373d6aec23f2a5f4befaa2e7bf2e11953de867e173"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_01.png",
+   "sha256": "5b878af86fb2bcc091f439effd46b9cb43999b0bbfda58f9c5d66d84b3c29bf3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_02.png",
+   "sha256": "24e4ffaa716f11c64b9fdc99a89582dfb1e55b740b637d5fdfd62c2d1fd2f6c8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_03.png",
+   "sha256": "5b0b409009c56af76e4b51e0faa423334a5026f9f5589a68adfe3616994f3dc1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_00.png",
+   "sha256": "a820cfcfe1cf253f714f11043690400d1219cd5d49304081b13cd1b39fcb383d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_01.png",
+   "sha256": "250ed310aad3154af83980b0309c10b06ae4ea1ececb84ccd7f753c0642ee340"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_02.png",
+   "sha256": "ab655689d5aff232b976845c5095ffd558499bb4841ea1c66a91f172e1218fa1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_03.png",
+   "sha256": "dd13143deef5a9effa3404f1f631e4674b890f8fc27d91dfe2fc364a872c373c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_04.png",
+   "sha256": "c48bba49a1c9d46afe4e66fda141e9459574bb402e6f0474f073ba8291f35799"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_05.png",
+   "sha256": "ea47f55c0083edf11fa6c2030473d2e879723d92f475f8ffdcd591f44076e620"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_00.png",
+   "sha256": "25d8745d82e050a919c5e4a2bb0b69721c8109d2f84ed13df705f2fd0cfc39d6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_01.png",
+   "sha256": "42983afc338ac26c70942bfe42c965c175e3dc67c52d0e39c486163a7e6fcd2c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_02.png",
+   "sha256": "46bade58eb42c7a1c90547a4c97f6977fcc89ec0047184d93b6aa2b145c277d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_03.png",
+   "sha256": "5f45e767231114f8732b521a294c6a51f41d56201554e0e70da16a1920bf814b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_04.png",
+   "sha256": "64921f49458251026188255fc5a202428082f961a04a5595b487f85d00318e61"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_05.png",
+   "sha256": "39d7f7a8be8e3e5e394a05160842ed81a21b6184baadc961f8044e26b2f03ee6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_00.png",
+   "sha256": "c9c94927c86d02546b30dd60665e4ebeefdb76bd161ede41c4d65179f1be75e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_01.png",
+   "sha256": "3b7ba2ee3d64ade1af1d5f219d7fd34d63a1c97ce8e47766af598d8cb4c188e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_02.png",
+   "sha256": "4ec01c077102681090c717983291420bb839ad2133a3cc427b7ca3523c4b6554"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_03.png",
+   "sha256": "b8d99216c65290333ea1100ba23fc77c60eab582c678340a36c2ca8a9b3c9aea"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_04.png",
+   "sha256": "8753dab2f601051eec848ace10aa153a7c7d095b26963b9edd7988f5a21d0b2c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_05.png",
+   "sha256": "13444375e277b89f5d4c78de0e5c9ea70074984d6933d7f27dbace41ded0bae7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_00.png",
+   "sha256": "f214ec6e4a2768a296051c430136cf7d29dd8c7d521553c5eb73cc72a2e92034"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_01.png",
+   "sha256": "2e96dcb77e10a169f1b6468b23930a435440d59435536670acdf2c7c8c8ef150"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_02.png",
+   "sha256": "61b59f9b190f87d74dfb5b59ec28c94a068dc16813e71e72fa66d27e8e637a65"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_03.png",
+   "sha256": "6e009837404a6899dbbc875cb1c4f1b5127a01a3bad3c3c024f1f1d4bd0677ba"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_04.png",
+   "sha256": "932fa1dda651787a9b94de5adf1d1c8cc7baa57bb4110631db9d8ca115d09112"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_05.png",
+   "sha256": "c7f4c45999509b1746fc6ad1c103f4bc20a33e79c4d583017b12fb4f83fcdcba"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_00.png",
+   "sha256": "a80d99bdb4fb5f3d70658493c533984b25b1515a9e9018c479984eb564b93f05"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_01.png",
+   "sha256": "5105fab46dc199c1f98827ff4b9202d2b169698c76ebea0c573855724d6c3efb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_02.png",
+   "sha256": "ea0fdf93b7cc009da93080132e4800a7a68d275465456fdbd24b365d408e114d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_03.png",
+   "sha256": "5afaf5da00a42e529037a4f5375ef60634a6c5dad9c742a62c2108681de43d82"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_04.png",
+   "sha256": "a4b66b7ed608eaf6eabb115101db775da64aa74361105b188d82b72a7e97d383"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_05.png",
+   "sha256": "c0f7cd399a806004e791e5d2bf54010089e26122194d70141e64b7224f793ab1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_00.png",
+   "sha256": "d52d5e39d3050989402a2f19e161448f61f5074b12d31b5dace9826db54e3c68"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_01.png",
+   "sha256": "21c91133fc280a8970f38f024b4965c3d2df9508e389492d3e402e84baa97a6a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_02.png",
+   "sha256": "91e62c98bc5b21626a41bae1f2e0693b4a8cdb94a8b239f6341438ba9c344ee9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_03.png",
+   "sha256": "0b2c74b8c4fa2b4e7461192fd8cda3ac2905631ba0bf8569de3dd3c95677ea35"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_04.png",
+   "sha256": "938b3642721830e9c50a9f4ad97b132017bab631e591b00a38cb91dacf5dd4e8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_05.png",
+   "sha256": "328b39815f7b68387a7c232abc2e051025fa824a96f589b954fd8474785eaed1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_00.png",
+   "sha256": "210377b10d9f618e175923139a41f7e431e2f615d4980372ba5affbeaeeeaae8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_01.png",
+   "sha256": "21b239aba2437fd20764a5b03b3078a0050077045020da478b499fae486df117"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_02.png",
+   "sha256": "3bf50653f237b8e794f10af13fe11e90fc9cf85ac91b8b910cfdfcb18ce64a46"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_03.png",
+   "sha256": "4a487a5a1869e29ce647e4d55266fa05adebe46146d59b8f5e2c233dfbf3e585"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_04.png",
+   "sha256": "c7755cda65d79dc61d46ea18209dd8cc64fedf92908bea8e72542ca73f1c6a74"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_05.png",
+   "sha256": "5a504662a0a9016fe86e5c27163524a1423e81763916db8abefde2143fa75c05"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_00.png",
+   "sha256": "d9d42f07752c1a230275b5408c71b334fabd1aed6532123f7cabb84f4577c4d3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_01.png",
+   "sha256": "4bfa327ceccc20ba2ea0c6a1f690f8cbdb35641da87f22fad05f00b83d33d416"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_02.png",
+   "sha256": "e4c48e0df3a6f8d2827a85af5fea8a7d68e5940f8c6b3f2b3875ff5f3ac8fc94"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_03.png",
+   "sha256": "53185ee7aac439e699368cb03aae0187c677bacff0db4c57f57198155257289f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_04.png",
+   "sha256": "73a13e54022bd7c0d0dc806ded35c1b2b7bae49e33c558e3f7316dcaef0d61b1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_05.png",
+   "sha256": "1ac19964e55ff75134b273f281db2272d3243c589315c3f1edace35f86f7e192"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_00.png",
+   "sha256": "4829a44e2ad2c4fd463c0a57413187254dfe4875223e45dded4ce311d595c498"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_01.png",
+   "sha256": "088dd9d3af8b6fba14aa9cd7da709883f438993e496aeec4eb44bfb434977a67"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_02.png",
+   "sha256": "db94103743dd56152b31c9cd06f98a994bc0b22fae4d6edc930903cdc754bc3d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_03.png",
+   "sha256": "a20238b61b95239eeeac0c916a3b096fd4110e74446aaf5b25194e8aff49a74b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_04.png",
+   "sha256": "a77b17739978836b22f45685808542855d5cd9d7d9ffda6b506c45307f20ea2a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_05.png",
+   "sha256": "1a52f9954d7ca22c46d205e018f2af69438b6af210298374c6b26a265c5a34a1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_00.png",
+   "sha256": "eda8eaf5cfd96815f614ff3fbae6bd245881f7e131ad4b2ded67e2f85affcec7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_01.png",
+   "sha256": "2f659daf6ee7103df34552e921c9a6cab3b7b1c89659b60ba0db598a7b36a6df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_02.png",
+   "sha256": "85db6477664141f7644984ed8808b45841f3bb79f5f7b3dc2c4ddaf51d83162e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_03.png",
+   "sha256": "3b5b4ed44a83a7bba3db6606b325f3608a0c58601b5fb38c8c6974022a4165a0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_04.png",
+   "sha256": "cc56fd8beb4bc4844fcf4292ef27add51ca0d5158ba6f6bf368b3955fefe47f9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_05.png",
+   "sha256": "c833a5741540e76b0ec2baf67919a6838723b222dc7976de6b9d45c188b57cdc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_00.png",
+   "sha256": "f1cc36446fc8be023a33a3d846c4f6a24627ca267cf042bd38686b70ab364c82"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_01.png",
+   "sha256": "d7a3aeb1d8b3449f4e7a668d8dc62ea20d291252ca9d4c68e8b81807c283a60d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_02.png",
+   "sha256": "6d775cb84761256794aa1d80997532b3af030f9a6cf0c5afb94444651016bce1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_03.png",
+   "sha256": "20fdbe4236d4d2340757150b828f507d2ecb633420a320220031885f8d0f0721"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_04.png",
+   "sha256": "c65453d000f7f5821a1535a5ac308feef6e638e2f53bfe9b3e789b451973962f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_05.png",
+   "sha256": "deb98292deac6b39f5db55423c48424d0ecbd1656531d3925bd87c8c3836d920"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_00.png",
+   "sha256": "7342e44faa49e05d8855088047ea82e842dfbea87cb97151cc5fb4af852e5ba0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_01.png",
+   "sha256": "48cf1957b5b5730e7cf73acd57a096fdef93936f498561278c67c4f4e3208b9f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_02.png",
+   "sha256": "35bec7fa04584d0aedc150f890bb48b37fd394c4a4d27afc89bb3f18ec60624a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_03.png",
+   "sha256": "2a62bcc3f58de50be06c6e82daa9076856172c79a72e919f26b55cd6fecf2e53"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_04.png",
+   "sha256": "75966897f3197535f8ade45ac5debba756e3ff8833f0f2da12f3832d9b533518"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_05.png",
+   "sha256": "4a4847ade9d7af8d56955eef186d38e4b76df443ef7518e37ec4ee70dab36ff5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_00.png",
+   "sha256": "1a14859bde226dce0b215af6c74cb95f5dc652f87563ac88bb0f2c207cc01d5d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_01.png",
+   "sha256": "49729526525701327c461fa1238c2d2e340c05910474abc6234fd400b4fa1ff7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_02.png",
+   "sha256": "7ffb120fe2405f91e683ffb119c0236ee39ecda80c2252f742ed534e9f03412c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_03.png",
+   "sha256": "706f3897454e69277c44f1228be2506dacb762e463cde5df055591822aa6d67d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_04.png",
+   "sha256": "4d9f029ddd1b007c0a83b4b15fb693a882f092cffb603c95db67c0453838aa99"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_05.png",
+   "sha256": "6c9dc2236a14bd2d4ccf6f8bb4b3f37a9d5fdc2f11de0004e97340cc5dd195bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_00.png",
+   "sha256": "bd11c3985b0c3158dec766b4b107a995c067ef32e657c6eb129b137de0cd4493"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_01.png",
+   "sha256": "f607e80d6e98600a3ee93024da1e28c59bb29ba1a7151c5cda30f80451e89aa8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_02.png",
+   "sha256": "245854e12e57bd28925add2aa50684612bce81b578ca6449d8515823ad49943e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_03.png",
+   "sha256": "8797c7b7e4ec8fe7d513c41477a9765317739c7fa99599c2bba13e768e1793de"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_04.png",
+   "sha256": "b59b4bf936f7d88c7f705f316f7a9192dc7eac7174ba3af3adb994b422c5893e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_05.png",
+   "sha256": "6fe5560d5b8fe38d9e2f049737c3b1f2341beb1fcaf9f276c7b34a79133ec2af"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_00.png",
+   "sha256": "a00217b690544b87473cbb7720a1bcae024b33f68d552b57421bd67eaaea18d6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_01.png",
+   "sha256": "14300452ef95e90dd49b89df4f5ab8d8ed52bd7f85b47499a37d702e517a0a6b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_02.png",
+   "sha256": "7fa6ba1809290a27fc629722a2967942fd169e72d1fbf23cc74340cc48abc1ff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_03.png",
+   "sha256": "008d38eb2c407f16bb9a2c91b96042358c6e2ca4e91e692155b8c36e0f18f03c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_04.png",
+   "sha256": "54ab843d0a9c193e81a6afec4029aa0ff7c6bb1481ad9cce23ecffab25c93e88"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_05.png",
+   "sha256": "9852f37eac5c161b618bae70c590e493666165976c0191d8c95ba2d3b1eee20e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_00.png",
+   "sha256": "20e6628d76d03983872757bb398c0449e5e64c3b71a38bbd312257ae11197d1d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_01.png",
+   "sha256": "e5bba49367729e4bf35a9e0fa80110d941711f9980a738a2a9e6a3018bba7961"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_02.png",
+   "sha256": "aaf79281d78a0a1d9fd47481839079563c85e293dc989c06f941ef9f356b3082"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_03.png",
+   "sha256": "c5a9c357dfcdbe80b2404ba16aeaed0c1136476526ceeaffa312222a5e248fd7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_04.png",
+   "sha256": "ce5173bda3512d8470598bdc38a44afa0ee256b8c5a6ce6e97c5f671e9a0c4a1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_05.png",
+   "sha256": "12b3704e5043d9089f54d7cb55f9e65d769e8f1ac1b6a428e27f76db4ea897ab"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    292,
+    247
+   ],
+   "margin": [
+    110,
+    234,
+    220,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    295,
+    1,
+    285,
+    247
+   ],
+   "margin": [
+    113,
+    234,
+    227,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    582,
+    1,
+    285,
+    247
+   ],
+   "margin": [
+    113,
+    234,
+    227,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    869,
+    1,
+    278,
+    247
+   ],
+   "margin": [
+    117,
+    234,
+    234,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1149,
+    1,
+    278,
+    247
+   ],
+   "margin": [
+    117,
+    234,
+    234,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1429,
+    1,
+    270,
+    247
+   ],
+   "margin": [
+    121,
+    234,
+    242,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1701,
+    1,
+    269,
+    247
+   ],
+   "margin": [
+    121,
+    234,
+    243,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    268,
+    247
+   ],
+   "margin": [
+    122,
+    234,
+    244,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    271,
+    250,
+    264,
+    247
+   ],
+   "margin": [
+    124,
+    234,
+    248,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    537,
+    250,
+    263,
+    247
+   ],
+   "margin": [
+    125,
+    234,
+    249,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    802,
+    250,
+    260,
+    247
+   ],
+   "margin": [
+    126,
+    234,
+    252,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1064,
+    250,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1313,
+    250,
+    239,
+    247
+   ],
+   "margin": [
+    137,
+    234,
+    273,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1554,
+    250,
+    235,
+    247
+   ],
+   "margin": [
+    139,
+    234,
+    277,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1791,
+    250,
+    234,
+    247
+   ],
+   "margin": [
+    139,
+    234,
+    278,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    231,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    281,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    234,
+    499,
+    231,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    281,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    467,
+    499,
+    230,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    282,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    699,
+    499,
+    227,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    285,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    928,
+    499,
+    226,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    286,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1156,
+    499,
+    226,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    286,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1384,
+    499,
+    226,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    286,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1612,
+    499,
+    222,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    290,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1836,
+    499,
+    211,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    301,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    222,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    290,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    225,
+    748,
+    222,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    290,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    449,
+    748,
+    221,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    291,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    672,
+    748,
+    221,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    291,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    895,
+    748,
+    218,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    294,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1115,
+    748,
+    218,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    294,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1335,
+    748,
+    217,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    295,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1554,
+    748,
+    217,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    295,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1773,
+    748,
+    217,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    295,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    217,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    295,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    220,
+    997,
+    215,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    297,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    437,
+    997,
+    213,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    299,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    652,
+    997,
+    210,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    302,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    864,
+    997,
+    208,
+    247
+   ],
+   "margin": [
+    152,
+    234,
+    304,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1074,
+    997,
+    203,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    309,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1279,
+    997,
+    203,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    309,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1484,
+    997,
+    202,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    310,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1688,
+    997,
+    200,
+    247
+   ],
+   "margin": [
+    156,
+    234,
+    312,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1890,
+    997,
+    153,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    359,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    198,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    314,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    201,
+    1246,
+    196,
+    247
+   ],
+   "margin": [
+    158,
+    234,
+    316,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    399,
+    1246,
+    194,
+    247
+   ],
+   "margin": [
+    159,
+    234,
+    318,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    595,
+    1246,
+    183,
+    247
+   ],
+   "margin": [
+    165,
+    234,
+    329,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    780,
+    1246,
+    182,
+    247
+   ],
+   "margin": [
+    165,
+    234,
+    330,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    964,
+    1246,
+    178,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    334,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1144,
+    1246,
+    178,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    334,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1324,
+    1246,
+    176,
+    247
+   ],
+   "margin": [
+    168,
+    234,
+    336,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1502,
+    1246,
+    176,
+    247
+   ],
+   "margin": [
+    168,
+    234,
+    336,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1680,
+    1246,
+    174,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    338,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1856,
+    1246,
+    171,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    341,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1495,
+    168,
+    247
+   ],
+   "margin": [
+    172,
+    234,
+    344,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    171,
+    1495,
+    168,
+    247
+   ],
+   "margin": [
+    172,
+    234,
+    344,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    341,
+    1495,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    508,
+    1495,
+    164,
+    247
+   ],
+   "margin": [
+    174,
+    234,
+    348,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    674,
+    1495,
+    161,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    351,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    837,
+    1495,
+    161,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    351,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1000,
+    1495,
+    161,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    351,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1163,
+    1495,
+    160,
+    247
+   ],
+   "margin": [
+    176,
+    234,
+    352,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1325,
+    1495,
+    160,
+    247
+   ],
+   "margin": [
+    176,
+    234,
+    352,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1487,
+    1495,
+    318,
+    243
+   ],
+   "margin": [
+    97,
+    238,
+    194,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1807,
+    1495,
+    239,
+    243
+   ],
+   "margin": [
+    137,
+    238,
+    273,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1487,
+    1740,
+    305,
+    243
+   ],
+   "margin": [
+    103,
+    238,
+    207,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1794,
+    1740,
+    251,
+    243
+   ],
+   "margin": [
+    131,
+    238,
+    261,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1744,
+    285,
+    243
+   ],
+   "margin": [
+    113,
+    238,
+    227,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    288,
+    1744,
+    278,
+    243
+   ],
+   "margin": [
+    117,
+    238,
+    234,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    568,
+    1744,
+    269,
+    243
+   ],
+   "margin": [
+    121,
+    238,
+    243,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    839,
+    1744,
+    268,
+    243
+   ],
+   "margin": [
+    122,
+    238,
+    244,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1109,
+    1744,
+    268,
+    243
+   ],
+   "margin": [
+    122,
+    238,
+    244,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    260,
+    243
+   ],
+   "margin": [
+    126,
+    238,
+    252,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    263,
+    1,
+    260,
+    243
+   ],
+   "margin": [
+    126,
+    238,
+    252,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    525,
+    1,
+    255,
+    243
+   ],
+   "margin": [
+    129,
+    238,
+    257,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    782,
+    1,
+    255,
+    243
+   ],
+   "margin": [
+    129,
+    238,
+    257,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1039,
+    1,
+    255,
+    243
+   ],
+   "margin": [
+    129,
+    238,
+    257,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1296,
+    1,
+    247,
+    243
+   ],
+   "margin": [
+    133,
+    238,
+    265,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1545,
+    1,
+    243,
+    243
+   ],
+   "margin": [
+    135,
+    238,
+    269,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1790,
+    1,
+    243,
+    243
+   ],
+   "margin": [
+    135,
+    238,
+    269,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    246,
+    235,
+    243
+   ],
+   "margin": [
+    139,
+    238,
+    277,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    238,
+    246,
+    234,
+    243
+   ],
+   "margin": [
+    139,
+    238,
+    278,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    474,
+    246,
+    231,
+    243
+   ],
+   "margin": [
+    141,
+    238,
+    281,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    707,
+    246,
+    227,
+    243
+   ],
+   "margin": [
+    143,
+    238,
+    285,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    936,
+    246,
+    226,
+    243
+   ],
+   "margin": [
+    143,
+    238,
+    286,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1164,
+    246,
+    226,
+    243
+   ],
+   "margin": [
+    143,
+    238,
+    286,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1392,
+    246,
+    226,
+    243
+   ],
+   "margin": [
+    143,
+    238,
+    286,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1620,
+    246,
+    222,
+    243
+   ],
+   "margin": [
+    145,
+    238,
+    290,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1844,
+    246,
+    202,
+    243
+   ],
+   "margin": [
+    155,
+    238,
+    310,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    491,
+    215,
+    243
+   ],
+   "margin": [
+    149,
+    238,
+    297,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    218,
+    491,
+    215,
+    243
+   ],
+   "margin": [
+    149,
+    238,
+    297,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    435,
+    491,
+    215,
+    243
+   ],
+   "margin": [
+    149,
+    238,
+    297,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    652,
+    491,
+    214,
+    243
+   ],
+   "margin": [
+    149,
+    238,
+    298,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    868,
+    491,
+    211,
+    243
+   ],
+   "margin": [
+    151,
+    238,
+    301,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1081,
+    491,
+    208,
+    243
+   ],
+   "margin": [
+    152,
+    238,
+    304,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1291,
+    491,
+    207,
+    243
+   ],
+   "margin": [
+    153,
+    238,
+    305,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1500,
+    491,
+    204,
+    243
+   ],
+   "margin": [
+    154,
+    238,
+    308,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1706,
+    491,
+    193,
+    243
+   ],
+   "margin": [
+    159,
+    238,
+    319,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    736,
+    189,
+    243
+   ],
+   "margin": [
+    161,
+    238,
+    323,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    192,
+    736,
+    189,
+    243
+   ],
+   "margin": [
+    161,
+    238,
+    323,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    383,
+    736,
+    185,
+    243
+   ],
+   "margin": [
+    163,
+    238,
+    327,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    570,
+    736,
+    185,
+    243
+   ],
+   "margin": [
+    163,
+    238,
+    327,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    757,
+    736,
+    183,
+    243
+   ],
+   "margin": [
+    165,
+    238,
+    329,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    942,
+    736,
+    181,
+    243
+   ],
+   "margin": [
+    165,
+    238,
+    331,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1125,
+    736,
+    176,
+    243
+   ],
+   "margin": [
+    168,
+    238,
+    336,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1303,
+    736,
+    174,
+    243
+   ],
+   "margin": [
+    169,
+    238,
+    338,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1479,
+    736,
+    172,
+    243
+   ],
+   "margin": [
+    170,
+    238,
+    340,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1653,
+    736,
+    165,
+    243
+   ],
+   "margin": [
+    173,
+    238,
+    347,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1820,
+    736,
+    161,
+    243
+   ],
+   "margin": [
+    175,
+    238,
+    351,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    981,
+    159,
+    243
+   ],
+   "margin": [
+    177,
+    238,
+    353,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    162,
+    981,
+    268,
+    239
+   ],
+   "margin": [
+    122,
+    242,
+    244,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    432,
+    981,
+    264,
+    239
+   ],
+   "margin": [
+    124,
+    242,
+    248,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    698,
+    981,
+    255,
+    239
+   ],
+   "margin": [
+    129,
+    242,
+    257,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    955,
+    981,
+    255,
+    239
+   ],
+   "margin": [
+    129,
+    242,
+    257,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1212,
+    981,
+    255,
+    239
+   ],
+   "margin": [
+    129,
+    242,
+    257,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1469,
+    981,
+    247,
+    239
+   ],
+   "margin": [
+    133,
+    242,
+    265,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1718,
+    981,
+    243,
+    239
+   ],
+   "margin": [
+    135,
+    242,
+    269,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    162,
+    1222,
+    243,
+    239
+   ],
+   "margin": [
+    135,
+    242,
+    269,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    407,
+    1222,
+    243,
+    239
+   ],
+   "margin": [
+    135,
+    242,
+    269,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    652,
+    1222,
+    239,
+    239
+   ],
+   "margin": [
+    137,
+    242,
+    273,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    893,
+    1222,
+    235,
+    239
+   ],
+   "margin": [
+    139,
+    242,
+    277,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1130,
+    1222,
+    227,
+    239
+   ],
+   "margin": [
+    143,
+    242,
+    285,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1359,
+    1222,
+    227,
+    239
+   ],
+   "margin": [
+    143,
+    242,
+    285,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1588,
+    1222,
+    217,
+    239
+   ],
+   "margin": [
+    147,
+    242,
+    295,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1807,
+    1222,
+    214,
+    239
+   ],
+   "margin": [
+    149,
+    242,
+    298,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1463,
+    211,
+    239
+   ],
+   "margin": [
+    151,
+    242,
+    301,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    214,
+    1463,
+    207,
+    239
+   ],
+   "margin": [
+    153,
+    242,
+    305,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    423,
+    1463,
+    207,
+    239
+   ],
+   "margin": [
+    153,
+    242,
+    305,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    632,
+    1463,
+    201,
+    239
+   ],
+   "margin": [
+    155,
+    242,
+    311,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    835,
+    1463,
+    197,
+    239
+   ],
+   "margin": [
+    157,
+    242,
+    315,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1034,
+    1463,
+    197,
+    239
+   ],
+   "margin": [
+    157,
+    242,
+    315,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1233,
+    1463,
+    193,
+    239
+   ],
+   "margin": [
+    159,
+    242,
+    319,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1428,
+    1463,
+    169,
+    239
+   ],
+   "margin": [
+    171,
+    242,
+    343,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1599,
+    1463,
+    289,
+    238
+   ],
+   "margin": [
+    111,
+    243,
+    223,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1599,
+    1703,
+    283,
+    238
+   ],
+   "margin": [
+    115,
+    243,
+    229,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1704,
+    279,
+    238
+   ],
+   "margin": [
+    117,
+    243,
+    233,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    282,
+    1704,
+    272,
+    235
+   ],
+   "margin": [
+    120,
+    246,
+    240,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    556,
+    1704,
+    259,
+    235
+   ],
+   "margin": [
+    127,
+    246,
+    253,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    817,
+    1704,
+    247,
+    235
+   ],
+   "margin": [
+    133,
+    246,
+    265,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1066,
+    1704,
+    247,
+    235
+   ],
+   "margin": [
+    133,
+    246,
+    265,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1315,
+    1704,
+    247,
+    235
+   ],
+   "margin": [
+    133,
+    246,
+    265,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1,
+    239,
+    235
+   ],
+   "margin": [
+    137,
+    246,
+    273,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    242,
+    1,
+    235,
+    235
+   ],
+   "margin": [
+    139,
+    246,
+    277,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    479,
+    1,
+    231,
+    235
+   ],
+   "margin": [
+    141,
+    246,
+    281,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    712,
+    1,
+    231,
+    235
+   ],
+   "margin": [
+    141,
+    246,
+    281,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    945,
+    1,
+    231,
+    235
+   ],
+   "margin": [
+    141,
+    246,
+    281,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1178,
+    1,
+    223,
+    235
+   ],
+   "margin": [
+    145,
+    246,
+    289,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1403,
+    1,
+    219,
+    235
+   ],
+   "margin": [
+    147,
+    246,
+    293,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1624,
+    1,
+    210,
+    235
+   ],
+   "margin": [
+    151,
+    246,
+    302,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1836,
+    1,
+    205,
+    235
+   ],
+   "margin": [
+    153,
+    246,
+    307,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    238,
+    201,
+    235
+   ],
+   "margin": [
+    155,
+    246,
+    311,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    204,
+    238,
+    189,
+    235
+   ],
+   "margin": [
+    161,
+    246,
+    323,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    395,
+    238,
+    189,
+    235
+   ],
+   "margin": [
+    161,
+    246,
+    323,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    586,
+    238,
+    187,
+    235
+   ],
+   "margin": [
+    163,
+    246,
+    325,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    775,
+    238,
+    186,
+    235
+   ],
+   "margin": [
+    163,
+    246,
+    326,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    963,
+    238,
+    186,
+    235
+   ],
+   "margin": [
+    163,
+    246,
+    326,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1151,
+    238,
+    178,
+    235
+   ],
+   "margin": [
+    167,
+    246,
+    334,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1331,
+    238,
+    174,
+    235
+   ],
+   "margin": [
+    169,
+    246,
+    338,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1507,
+    238,
+    169,
+    235
+   ],
+   "margin": [
+    171,
+    246,
+    343,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1678,
+    238,
+    165,
+    235
+   ],
+   "margin": [
+    173,
+    246,
+    347,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1845,
+    238,
+    165,
+    235
+   ],
+   "margin": [
+    173,
+    246,
+    347,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    475,
+    318,
+    234
+   ],
+   "margin": [
+    97,
+    247,
+    194,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_02.png"
+   ],
+   "page": 2,
+   "region": [
+    321,
+    475,
+    296,
+    234
+   ],
+   "margin": [
+    108,
+    247,
+    216,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    619,
+    475,
+    287,
+    234
+   ],
+   "margin": [
+    113,
+    247,
+    225,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_01.png"
+   ],
+   "page": 2,
+   "region": [
+    908,
+    475,
+    287,
+    234
+   ],
+   "margin": [
+    113,
+    247,
+    225,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1197,
+    475,
+    272,
+    234
+   ],
+   "margin": [
+    120,
+    247,
+    240,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1471,
+    475,
+    272,
+    234
+   ],
+   "margin": [
+    120,
+    247,
+    240,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1745,
+    475,
+    269,
+    234
+   ],
+   "margin": [
+    121,
+    247,
+    243,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    711,
+    239,
+    234
+   ],
+   "margin": [
+    137,
+    247,
+    273,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    242,
+    711,
+    234,
+    234
+   ],
+   "margin": [
+    139,
+    247,
+    278,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    478,
+    711,
+    234,
+    234
+   ],
+   "margin": [
+    139,
+    247,
+    278,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_01.png"
+   ],
+   "page": 2,
+   "region": [
+    714,
+    711,
+    299,
+    233
+   ],
+   "margin": [
+    107,
+    248,
+    213,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1015,
+    711,
+    289,
+    233
+   ],
+   "margin": [
+    111,
+    248,
+    223,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1306,
+    711,
+    247,
+    233
+   ],
+   "margin": [
+    133,
+    248,
+    265,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1555,
+    711,
+    267,
+    231
+   ],
+   "margin": [
+    123,
+    250,
+    245,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1824,
+    711,
+    218,
+    230
+   ],
+   "margin": [
+    147,
+    251,
+    294,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1824,
+    943,
+    210,
+    230
+   ],
+   "margin": [
+    151,
+    251,
+    302,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1555,
+    944,
+    263,
+    231
+   ],
+   "margin": [
+    125,
+    250,
+    249,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    714,
+    946,
+    263,
+    231
+   ],
+   "margin": [
+    125,
+    250,
+    249,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    979,
+    946,
+    259,
+    231
+   ],
+   "margin": [
+    127,
+    250,
+    253,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1240,
+    946,
+    251,
+    231
+   ],
+   "margin": [
+    131,
+    250,
+    261,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    947,
+    239,
+    231
+   ],
+   "margin": [
+    137,
+    250,
+    273,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    242,
+    947,
+    264,
+    230
+   ],
+   "margin": [
+    124,
+    251,
+    248,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    508,
+    947,
+    194,
+    227
+   ],
+   "margin": [
+    159,
+    254,
+    318,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1493,
+    1177,
+    260,
+    230
+   ],
+   "margin": [
+    126,
+    251,
+    252,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1755,
+    1177,
+    251,
+    230
+   ],
+   "margin": [
+    131,
+    251,
+    261,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_03.png"
+   ],
+   "page": 2,
+   "region": [
+    242,
+    1179,
+    309,
+    229
+   ],
+   "margin": [
+    101,
+    252,
+    203,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_04.png"
+   ],
+   "page": 2,
+   "region": [
+    553,
+    1179,
+    300,
+    229
+   ],
+   "margin": [
+    106,
+    252,
+    212,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_04.png"
+   ],
+   "page": 2,
+   "region": [
+    855,
+    1179,
+    289,
+    229
+   ],
+   "margin": [
+    111,
+    252,
+    223,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1146,
+    1179,
+    287,
+    229
+   ],
+   "margin": [
+    113,
+    252,
+    225,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1180,
+    239,
+    226
+   ],
+   "margin": [
+    137,
+    255,
+    273,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1435,
+    1409,
+    284,
+    229
+   ],
+   "margin": [
+    114,
+    252,
+    228,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1721,
+    1409,
+    278,
+    229
+   ],
+   "margin": [
+    117,
+    252,
+    234,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1410,
+    251,
+    229
+   ],
+   "margin": [
+    131,
+    252,
+    261,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    254,
+    1410,
+    268,
+    226
+   ],
+   "margin": [
+    122,
+    255,
+    244,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    524,
+    1410,
+    264,
+    226
+   ],
+   "margin": [
+    124,
+    255,
+    248,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    790,
+    1410,
+    247,
+    226
+   ],
+   "margin": [
+    133,
+    255,
+    265,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1039,
+    1410,
+    243,
+    226
+   ],
+   "margin": [
+    135,
+    255,
+    269,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_02.png"
+   ],
+   "page": 2,
+   "region": [
+    254,
+    1638,
+    292,
+    225
+   ],
+   "margin": [
+    110,
+    256,
+    220,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_05.png"
+   ],
+   "page": 2,
+   "region": [
+    548,
+    1638,
+    216,
+    225
+   ],
+   "margin": [
+    148,
+    256,
+    296,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    766,
+    1638,
+    230,
+    222
+   ],
+   "margin": [
+    141,
+    259,
+    282,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    998,
+    1638,
+    218,
+    222
+   ],
+   "margin": [
+    147,
+    259,
+    294,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1218,
+    1638,
+    201,
+    222
+   ],
+   "margin": [
+    155,
+    259,
+    311,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1421,
+    1640,
+    269,
+    220
+   ],
+   "margin": [
+    121,
+    261,
+    243,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1692,
+    1640,
+    214,
+    218
+   ],
+   "margin": [
+    149,
+    263,
+    298,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1641,
+    247,
+    217
+   ],
+   "margin": [
+    133,
+    264,
+    265,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1,
+    205,
+    217
+   ],
+   "margin": [
+    153,
+    264,
+    307,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_04.png"
+   ],
+   "page": 3,
+   "region": [
+    208,
+    1,
+    238,
+    216
+   ],
+   "margin": [
+    137,
+    265,
+    274,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_02.png"
+   ],
+   "page": 3,
+   "region": [
+    448,
+    1,
+    231,
+    215
+   ],
+   "margin": [
+    141,
+    266,
+    281,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_02.png"
+   ],
+   "page": 3,
+   "region": [
+    681,
+    1,
+    318,
+    214
+   ],
+   "margin": [
+    97,
+    267,
+    194,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1001,
+    1,
+    252,
+    214
+   ],
+   "margin": [
+    130,
+    267,
+    260,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_01.png"
+   ],
+   "page": 3,
+   "region": [
+    1255,
+    1,
+    285,
+    213
+   ],
+   "margin": [
+    113,
+    268,
+    227,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1542,
+    1,
+    251,
+    211
+   ],
+   "margin": [
+    131,
+    270,
+    261,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1795,
+    1,
+    247,
+    211
+   ],
+   "margin": [
+    133,
+    270,
+    265,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1542,
+    214,
+    247,
+    211
+   ],
+   "margin": [
+    133,
+    270,
+    265,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1791,
+    214,
+    192,
+    201
+   ],
+   "margin": [
+    160,
+    280,
+    320,
+    311
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1255,
+    216,
+    260,
+    207
+   ],
+   "margin": [
+    126,
+    274,
+    252,
+    305
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_03.png"
+   ],
+   "page": 3,
+   "region": [
+    681,
+    217,
+    308,
+    205
+   ],
+   "margin": [
+    102,
+    276,
+    204,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    991,
+    217,
+    260,
+    191
+   ],
+   "margin": [
+    126,
+    290,
+    252,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_02.png"
+   ],
+   "page": 3,
+   "region": [
+    208,
+    219,
+    289,
+    205
+   ],
+   "margin": [
+    111,
+    276,
+    223,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    499,
+    424,
+    275,
+    195
+   ],
+   "margin": [
+    119,
+    286,
+    237,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    776,
+    424,
+    268,
+    195
+   ],
+   "margin": [
+    122,
+    286,
+    244,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1046,
+    425,
+    263,
+    195
+   ],
+   "margin": [
+    125,
+    286,
+    249,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    426,
+    281,
+    192
+   ],
+   "margin": [
+    115,
+    289,
+    231,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 8.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/winged_spark/winged_spark_idle_east_00.png"
+}

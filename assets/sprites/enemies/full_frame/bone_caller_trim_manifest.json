@@ -1,0 +1,5834 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "bone_caller",
+ "tres": "res://assets/sprites/enemies/full_frame/bone_caller_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 184,
+ "unique_frames": 184,
+ "source_rgba_bytes": 192937984,
+ "page_rgba_bytes": 31719424,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller_trim_0.png",
+   "width": 2048,
+   "height": 2046,
+   "sha256": "b0e9463cbae73d32f8dfe4b90c92dbc5c081779974e33f8626959249f54b89cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller_trim_1.png",
+   "width": 2048,
+   "height": 1826,
+   "sha256": "dc8c7972a4347fe4094f5bf041bd4da8016c544152d299da051f0b45d24e0dbe"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_00.png",
+   "sha256": "6d08304992a86a6fe907f2348a4747c604ebf99fa784a4e2920373802d1d5093"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_01.png",
+   "sha256": "91d8daadf778520f48f173502fcd2f619b56acc9dddcd9327b1a2a8ffd9c4df2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_02.png",
+   "sha256": "5188a5cc0a2d3e0cd23caa565e8dd554ea3237c12aa45db2939ea532a1fab4ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_03.png",
+   "sha256": "cad8711f793ee4177dd3cb353314ac9c5330486bce09f2134caf77b2fa780efe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_04.png",
+   "sha256": "4ac8ff257fc866900d92897c69d906de5415a6e909ecb94e45120ddf812ec37d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_05.png",
+   "sha256": "cf42e75a2c0366c0ac5624e126b56ffb432c7cba721f35241c55332094de45fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_00.png",
+   "sha256": "a28724ac681c5f2dea917e3915dd164c6393d7ba9c2d7f1387733c2fe3b0c3b0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_01.png",
+   "sha256": "8c72c31e3b090307fde5a865c470066723dfbce5505bed49c073a87c19af2575"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_02.png",
+   "sha256": "3787e0b3570b86ad261545f9ac21395ee3b4c8afd430c1b41a770e827c14f388"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_03.png",
+   "sha256": "0e11f7d672225a81b395c072be6acaa83cb06dd047ecf041f7a59063ef4a9e57"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_04.png",
+   "sha256": "7e9c1d08e766adafb66732f489b989af24fa3b758fa375a6c948a0216b07e329"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_05.png",
+   "sha256": "28f392cfdced059131abf79085c3cf0187a6b13b56dc0ac256f10657c37039f8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_00.png",
+   "sha256": "9469a2b72a8ae61911ed0cd5e489b04d74b992c833bdd44acbf3672fdde470e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_01.png",
+   "sha256": "904ade5470101b966740590eaa7fc9a052db4fab00f44604129842024fbdc132"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_02.png",
+   "sha256": "36891f25544b96446a21a011ac23f2994926c48599fa8de0abd9a789d87b1d5a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_03.png",
+   "sha256": "d1ae0206d48547baf057d019716d468130eb4f234f3cbbd8f1e28f9d7c9c4845"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_04.png",
+   "sha256": "cfe1e90ef93fa29f6eb50c71cedac80ef4c1e18309aae91ad530b09e9b506302"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_05.png",
+   "sha256": "7ff8860a7b2b9c46ecdca5ee28bda5b4770f678131a11389b1fd2514c0073fc6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_00.png",
+   "sha256": "7f46c511f9cd66803b496085defba8c26466e4735bfa10d4cee2bb8cea5680d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_01.png",
+   "sha256": "90afda5987d6110fed3c8b2a1628517c30b25da7aa8261aac2e6ba711f21c182"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_02.png",
+   "sha256": "b87eadf9f0d4434e81be1aa4f8d71953adc966b9af57cf5ca9617edb4aface0c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_03.png",
+   "sha256": "3f767276999af7d65d4764ea33095eb0bd9d6e80831ad13bd67d84b9e5b53da6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_04.png",
+   "sha256": "b9f4b6d2baeea81d2e4f4412725f8c22531b5655a45051a7ec5ae4b54b989a32"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_05.png",
+   "sha256": "96d7006e2274280235e1d44c53986109c928f6f9654b59429e20fdd002dfa3fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_00.png",
+   "sha256": "e55c315a8d3312cb0a61ba3fbf506fd8650d816603dd6c69e0fd4f1e76b5ea46"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_01.png",
+   "sha256": "2c5b6f9fc838a1772ae1ee2655e87f2e282afbcc1601b8ce30002156275b9948"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_02.png",
+   "sha256": "56e2a7d5e9c2e469fcfe4b9ffa71e5f41dc068c225a26fbc90d595a64da51152"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_03.png",
+   "sha256": "f924b1f874be78491a4df6679a705f5aa68a6276b538dbd27539de5cf06ed958"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_04.png",
+   "sha256": "5c4f602c75f94429e4d4f06d7e7029d08c2d8efc48d02fa31fad9eb585c66b65"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_05.png",
+   "sha256": "53337f3117cd54129a4151166af8cff795d2391043cde950189db644d1ee70a8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_00.png",
+   "sha256": "c405bceb834978e275db60a70ac1587b8f268b7b84d66d6a40f62a9798c834ab"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_01.png",
+   "sha256": "bc3a99c654f4d8faa960a3e840d4b88a8eac3322154e3764d9388804eb3afb46"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_02.png",
+   "sha256": "768f182f96d1ab86ce09a9994a36806ad1a4d614134b72dc65295a4aad003ed7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_03.png",
+   "sha256": "15a51ae0a31185fd0debc5550074fd39749444fcefbb687900c70f2a152a41ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_04.png",
+   "sha256": "31747f026b5fa9aaa0ae9415178822edceca8dc887a1dbf002be39d8356f0aa0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_05.png",
+   "sha256": "d64dcc51e8ba4f1ad97a08066ee98300fb5a4348ef0edc3adc7c382685cb161e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_00.png",
+   "sha256": "74dae30cb2bf0a6285f214aeedebc212ac86429c78cf3c8eaa1ed2180beec11a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_01.png",
+   "sha256": "6f4f5bbc98f6965b3ea5468a7f1024596237843ab04aef01a8396942816a34c2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_02.png",
+   "sha256": "38f08a6e3b37432a84793e4a342fc04025244d068ceca80317f072d407bd1139"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_03.png",
+   "sha256": "d9766b803e6fd626fe759611be1f84c578c2d4a41377ffac0e5ab3d8e87c6130"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_04.png",
+   "sha256": "0143e893d2dff988271fc1a3991aec4c341847c10c5cfb5b979bf8c118c5522a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_05.png",
+   "sha256": "2c6af6077059167b8f35cf5c0d1c70f8628dccddaea9cdee50087544274e3e88"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_00.png",
+   "sha256": "723e736448378fcfb8d334229371994662ae5a01ab254e1cf5fc1deb9e0cf87a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_01.png",
+   "sha256": "678f32498441f3fd81cac4aeacd570940621cdd6c78d025571135577accb0992"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_02.png",
+   "sha256": "3b6ba3079619c2adadb10cd6a374ed693358f64b988d1125353bccdef4ffe2cf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_03.png",
+   "sha256": "3e5a72280152d7fd61c94bbf172ba6c36ee9da92bb8262468d12b44a8c1afae8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_04.png",
+   "sha256": "f1f83eb06c0ef821a6accb9606800420fe0fae9acd61471f30b4108df2d7b7ad"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_05.png",
+   "sha256": "19f0a45f87f4bcc970ce8866c46b1cbecb73d3c6b7b91503fbd53b00f1ec4652"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_00.png",
+   "sha256": "0cbf224eed88f183edcbeaf19d69b8944613ed3b546a681f34a66a0fcd2e1da2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_01.png",
+   "sha256": "08e33381f361d0c5422827c5946a7304504507d7a5e7f72af8d0a3b7ed327366"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_02.png",
+   "sha256": "5e27860c6fec4853179a1d73129dba5e15468146cbaa5f82cb8aa588aed70913"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_03.png",
+   "sha256": "df06f8f2f62e0763135b09e2e91b8e42dbf43b06bc8f69ed5014d9038c4095e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_04.png",
+   "sha256": "50fcc0718d3282d9753f2ae13377fb8290f7bab1ce8a9164d895280f223767aa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_05.png",
+   "sha256": "ea550f581860e672f7a60e78e698567f65c3ea5b8626b824beca641d19e42d6b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_00.png",
+   "sha256": "38dee4cf9928ef320af28b9385efca8316deac6f66e12534200c7bb3a2398c28"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_01.png",
+   "sha256": "636038adc55769454abbe296a4d1d69663746ca8e53feb367505a85d40120c59"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_02.png",
+   "sha256": "f170ce0ce9253a6592aa4ac1b67a7ce597532bc33ce214679b24204c64b28b43"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_03.png",
+   "sha256": "f4d322d17a83d0efc98710e6066eeff494aaaad6ef697f07313dc580ce5d73df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_04.png",
+   "sha256": "6a52750315e09574b12952a4728f4afa2df6ca997894d2b76e420dadb6046d2e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_05.png",
+   "sha256": "7c7a6aaceb0446ca259ea46beb140df4228660f3432a2327d564088de38e84fd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_00.png",
+   "sha256": "a5c401fdd3036788d6c976b5482bc99a6505fd87a88755bb0072f4def716d645"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_01.png",
+   "sha256": "10e8fc61a4a5398815111613bc8a5eb37d756507e3e9b68d67dd5cab201c9213"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_02.png",
+   "sha256": "1e7a8a4e4326494a576c950ecaeb52af521606d9b5e7cee9eb9ae92618e66452"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_03.png",
+   "sha256": "20d706db234605d70c30f1bbaa8f69918668932e6cb67c773c2cf3c07509fc61"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_04.png",
+   "sha256": "808f3c1dabc6f26ba9b0a7a8adc304dff857ab57caa421e92b2b547f1ba70a14"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_05.png",
+   "sha256": "cd8e70b3bdcc9d74fdc2d3ed8cc088bd6247a561d889fa1b0d82a4e70259eb5b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_00.png",
+   "sha256": "0686f1e1bdbba6297bce50627234a2358de7d46e9aa60ab99664de4fe0a49ab2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_01.png",
+   "sha256": "633069d4360ccd92db7853ef8a6b02722f7847f49e9b2e4f9813d0b5541d1602"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_02.png",
+   "sha256": "a766730aea7eac23730a59004e5ed9b72d50678e20d4e0e676fcd204b0ac5b9b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_03.png",
+   "sha256": "db1b46ca7ac2315e9daff4e241e88c6bf776bd3fa6d96b578a9468af03621324"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_04.png",
+   "sha256": "952e0e0386090d6b5c516de4f85c3dececec9bb873a74645692bd9f99e391512"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_05.png",
+   "sha256": "3d08865f4f4c1fb2c873842156c0ea28c11580efabc11cd4249f731135592b36"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_00.png",
+   "sha256": "1fc398897adc7b6f69de9a552e80defc365620598279b3abe08ed561051c2756"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_01.png",
+   "sha256": "cec7d1dc44a5794dcc72172a1e869ec7237b76e50f17e3161ac03fdb196cebbb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_02.png",
+   "sha256": "b9d38f78a5711a4d8c6a692ca2beb24d1477eaf7e9fdbb43d33b9a3fe004680b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_03.png",
+   "sha256": "03fd3840eaa400513f1732a64383f638f58b1ec5aae619b523c7ab2318c0bcf5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_04.png",
+   "sha256": "a0de4b6c344d7611a41b3aa7a0e270e985b4148e8e31f994e46b82307d2c3775"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_05.png",
+   "sha256": "a2647c325fe7ad8efe97387245cdf341aec9b920cbb19c4ac80e45cdfd8c9db8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_00.png",
+   "sha256": "9b2f6b3eb9ed8b4e7069317470c1bfe8799c4fadd41214668172ae02a9ea1c2b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_01.png",
+   "sha256": "e441be4e71357cb7767ff7801adcb87181ed8d8e66a86d7a2ef830a6d054fddd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_02.png",
+   "sha256": "1aaedb01d8517e9a419ed86917b6182e0708ca0dd1a8cc25e6722c580ca8c183"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_03.png",
+   "sha256": "c69663539c8d0518d37de4dbab6393adedb8f81481df466d866af0fb8c0a17f1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_04.png",
+   "sha256": "1ea0b913855a567829fee8eaba78fe61490972f81df2879e6358d67e736165a3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_05.png",
+   "sha256": "4237d217fb024f74e4136c48221d9e1b6dca9905d5eab531568fa83842692654"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_00.png",
+   "sha256": "e8e05dd160d0661123386e135bc9b2275829c954a780c058d72f861cffa56367"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_01.png",
+   "sha256": "b9418a069734782215ebfa2b5685ed89afd7f9865b0cc4e167b00ad5480d11da"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_02.png",
+   "sha256": "8943f0cbf4b63eccf8091b74454f78198dd94979e693a16cec2130cb6eba708b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_03.png",
+   "sha256": "695425f5781b95db8ebd4805caf10f3a782d3268d4266350282cc0c094a2d194"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_04.png",
+   "sha256": "aa9244ed1d401a7a9df28b8710dbbbe389f4735f8d243b2843293a99249bfa81"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_05.png",
+   "sha256": "7dc0e491a861c63873f6a5ce004291901472f02e52c493d5ba909b60831f03a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_00.png",
+   "sha256": "0c29dc983bda2c864fc7b7ad27befe992306d68453d373f6d7ced126c0d931fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_01.png",
+   "sha256": "4bca29074e6b72dad8bc794934e5ac7049d1fc75edb5e89bc3e98c5009dd1e8d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_02.png",
+   "sha256": "68e7d6b8736086c5266924aef2a00f9b98be78f921e244cd0790d455ce444428"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_03.png",
+   "sha256": "3b8e90df45f2ace35ceb1a4cc6e7533124be56763dbecacf9e1041cfae3c2b65"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_04.png",
+   "sha256": "a17d43ad3269a12e1a318072222bba314f702fc9e6f9bceb72a15add4247c07d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_05.png",
+   "sha256": "e1e8b5a064805a191a93e832059c471d27a081ad1db724ae79593d2300bc993a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_00.png",
+   "sha256": "12981be1d7634ce60c9a5fbddb3de6037a43b00ca94c62147b1e4a0ec73fadb1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_01.png",
+   "sha256": "36254bc2533a85993710015cf0d7ff0dabc59a48e0c979228016120d6918b573"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_02.png",
+   "sha256": "83dd99c988631e394db14099507a491bd2ff1b8b4c3a0945dbf9b46809501b84"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_03.png",
+   "sha256": "9a96ddee882624258e8671cb05ecac518f0aa4258b2962e0a37df6d90a3e6ad3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_00.png",
+   "sha256": "2016b87a873af60c532db9b511ad0a77de372938117c6d780979dbd72f36a4b2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_01.png",
+   "sha256": "1da4b1a1871ccb9a939622ee94781156ddf1154f857ee50226b0fde8bf738a05"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_02.png",
+   "sha256": "e7d602b06d6eb5ae7578908f4ebafcc4dab579a256edd9a7ea5695d3900bf346"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_03.png",
+   "sha256": "cc0baaee99903ee41a89d25dffcc0a3a1430174c08fe77262f2575ce383a0d6a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_00.png",
+   "sha256": "aa17758ebfa929cab30b20a53b040ae81cf6ad2c1487c70ad0db6b1b9404a322"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_01.png",
+   "sha256": "505f7ae92778097a7f9f8651978a1928291b6053c5bd3bacd7220e0ffec8e283"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_02.png",
+   "sha256": "827a888d4f0d6514fe7f6e9d814c814f4425f31734cb5d4709b023c229f6c546"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_03.png",
+   "sha256": "fdaea23c0aacaf7869eebce754e090414d429b6f4f64485dec2e88c74795487d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_00.png",
+   "sha256": "13828e0b5657011341ce8dd6da1dce9ea20a911891dca3cba07f44e4d931dee9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_01.png",
+   "sha256": "1d653fc20dd73edad130273e874705de0a225da44e9da6b9b78924cff44e52f2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_02.png",
+   "sha256": "4fd04fc0e3f1b6ba78a6ed53bfabf038abf617b5954cb3369aa405581ff71a22"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_03.png",
+   "sha256": "6a886aa6165e0b6488c47bf1ef079a1b3ec56a8f2ecf2287e1df49fdc10e637f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_00.png",
+   "sha256": "bd2aa386d6fcfae24e9a687463d3e0d3c422c263c3e2ffe4d9cf2b957b56e631"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_01.png",
+   "sha256": "d79f066c0be81129587ceef53ae726c85180b778cca54d5d6eb6452ed909d178"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_02.png",
+   "sha256": "ed170a695d88a25580c7bb4c0bee8135977eea42f451b7c041f414d3d31e1e4d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_03.png",
+   "sha256": "2473d032e691a7ab7cb479f54c909808ca9fc3738c6e95359a14feb440861c6a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_00.png",
+   "sha256": "6e4e7ce07d466a50678e33be0df13035dd684566e49357bd26f183ef6893e923"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_01.png",
+   "sha256": "378ee66f47c3251ae6c1c82fea455118c21a625f234e547820e8f4223081f128"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_02.png",
+   "sha256": "42aa48e9d7a9ae66bf3fe8bb0ae2bca0f042a747af1853ad31c70d95b82cfa23"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_03.png",
+   "sha256": "cba9121dd93d490000ed3cf9dc7fc7dd9bc6e0d2be5b8b296c1fd5796b2880c9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_00.png",
+   "sha256": "9bd004d6c883b8f4e3655509a3d64e3499890ad1383ee43fe9d93c3c0a8e8241"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_01.png",
+   "sha256": "03190acad6bf80c19bbfdedd0d9b4fb7ad5a4dcc6938e4263ba45af25863400a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_02.png",
+   "sha256": "0d8e638111aabf6e32ddb7690b947885127cda5343192b3824a844e12d2da449"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_03.png",
+   "sha256": "a3b4a2318acd0464c319e605c141a2a21129211dc25792b75b348ed1f0ba2dc6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_00.png",
+   "sha256": "b5b85e1b770bd9b6482959e020f3b58f85a778cec2f17e598659877786509845"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_01.png",
+   "sha256": "10ea865e34883fcd831d33f3274e76d9c112647d0bdadd3b32e718e66e2cffc4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_02.png",
+   "sha256": "6a7417134e94a118b10092217b2692d045ca3ceb3a1dc98c2f8f36f0aeadbbcf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_03.png",
+   "sha256": "2155dd7cc7500015e7a098d71e569db26f51fd8e1c10b47d76f7951dd4e06d95"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_east.png",
+   "sha256": "a0fcb37b865ed63f0f5a5df9cb7d8d252c3bebf5651e101a05b68c5042d14cff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north.png",
+   "sha256": "566fdae59114b6cb0af032a43a6181e79f29720610ae830ce49c339e06923fc1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_east.png",
+   "sha256": "99817d63cfdab8879621c8b75fe40438e4f143252d20a41a63a79c006e2450e6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_west.png",
+   "sha256": "d5d83bbef1a01869945056115dc0b659795b4e1ca593aae8dc425b00bd6498bf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south.png",
+   "sha256": "1e142f51b0e1ba3a657a76641134703e1bc78595fe0c85b725eac2f69d417330"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_east.png",
+   "sha256": "e79c0ecf0150d613dfa8dae6451ced143a9dd6f4381f0eecf734593ce5834996"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_west.png",
+   "sha256": "1334881dd14ed5b28464b0d475a39ff5f39fc753a269e20109018ff0c54eab7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_west.png",
+   "sha256": "30f41bcd33f8cba314db99cdf74ee9d51576baadace541485342c4913e598f3a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_00.png",
+   "sha256": "ae5d20755fe563cbca1fab13dea78a6b1a00e2cb8c528d26283dff81b215c501"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_01.png",
+   "sha256": "69b65ddb30ec40f735d435f3391169f17f8d3cc31ac446cc0a6e676828d4c376"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_02.png",
+   "sha256": "6ce753015ceacc3f5b2bfba83888c6b5a657b5f65f2a6d6062b604c3adbf3b24"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_03.png",
+   "sha256": "934bfc3b430bb432eef4dc63e9a26dff2749905ced252711de0cd55039586fc7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_04.png",
+   "sha256": "b48364998019b476f8ed05e2c868d140cfb968a023ffdc1ffd75460d1631eed5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_05.png",
+   "sha256": "3c8659ac491601147eb2f9b32bba143a4b799d47f29f5c325ae01d6a0bb1c28d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_00.png",
+   "sha256": "530c1a6000e9454a4973c4c42bc7774ff745d07e5be63bc2bc0c0676e2f81738"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_01.png",
+   "sha256": "1dbf86115ea082375c4ce71a089a585eb4a56f49d09575bcad16b3ee2f4db5db"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_02.png",
+   "sha256": "8eb8d8d90b51bda87db352d7260044472591ff7dd81b5c543352777470165695"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_03.png",
+   "sha256": "a599d8c65a894159e1ba48cc6995a8ef9c1d969465cae1130bf26f6b64f6f860"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_04.png",
+   "sha256": "2583981aeac2f7654c877d3c2eb6c3eec78bdef121252c44dd1e1f1495cd8318"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_05.png",
+   "sha256": "1c4c4846d1b2d0d5343b55e8ce10fa9c70daa5c5a75939d73658572665531981"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_00.png",
+   "sha256": "72af5335e7d3f73376456ba85022741143ae455ba119c0f95bee4b587d913f00"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_01.png",
+   "sha256": "bc76a7d972d6728be33170352b2ee716b9bb43f3e1f1ddcf4bc71a77fde5e822"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_02.png",
+   "sha256": "be13c76a21a6c9f9abd68b172ebdb0d68d2ff2d493d9de37a3ec8d3a7836be66"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_03.png",
+   "sha256": "9dc3831da02eb36355258ca16af1510a4e0d849ddf29297b2679c8ce216737c4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_04.png",
+   "sha256": "d14ae3959024a91078dbf13beb8fc9a943e7d7a046e2f4d2d784ed7a0766f112"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_05.png",
+   "sha256": "cdab9741fbb5590e6d1d6f56ce7c2696562f8f29bcbed2658e208dadefaefe26"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_00.png",
+   "sha256": "71675515b6a47cf321889a49198e8b0e02217cef59e2761535fa934546c4660c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_01.png",
+   "sha256": "04618499f1aef9949af6894b36eb8ec50ecd362d0fed75ec407e914e2e94a6f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_02.png",
+   "sha256": "ce16c89e76dde7e443a539b07063faa6ae39585361f97acb5a0c5f4a62b84a17"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_03.png",
+   "sha256": "8eed12083aadaa90697c53c732af20bed2bb2e6d3c21e31f5d3c236b83254771"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_04.png",
+   "sha256": "27ee1ba1824f95bfc71022b7df8e083a8a497af0c09dcdff91482ab8271c34f9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_05.png",
+   "sha256": "223aa8e4154dfb7c2f755d9b075b018cc63a457d82ed19bdda313af2a327e271"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_00.png",
+   "sha256": "63e490da6d8034b8b2f272fcb34badee649649cbba59dd86a382eb56892585b3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_01.png",
+   "sha256": "718c71610a053cd073e2fa3e88fec616bd28fac2c89f4f4de28ab2f329490d43"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_02.png",
+   "sha256": "a903b699b1717b60b5f3331371e94fdcdb6817f7d7522d79d6f271de8d0aa6ff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_03.png",
+   "sha256": "d3e3c14be5ace4faa204220741f7030ffdb6da9ddf256e63513829e0c3484c4a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_04.png",
+   "sha256": "f331164d0029d33c03694811b0ae8a9ed8ec25ee84b4bdaa248a8028fb873b12"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_05.png",
+   "sha256": "a11493990003d103b759e4241b165b62145bc98fc0f27e0fe629df62c68c7880"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_00.png",
+   "sha256": "65e1c08fd37306f8da173ca826a14fd44ab8dac0fce26a6b2d5d5ca36846600d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_01.png",
+   "sha256": "dc381a49e6913f98f4981e75e25d9b25f8becd0b91e5361321f17bf6528b058c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_02.png",
+   "sha256": "a53894cfede38d7fd279669aff55b83e119f91adce1b9bf84f33f8c125e4c9f8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_03.png",
+   "sha256": "abf77709d454b36ecfd066efd70af910b05d9543500dd9254e6ef1decfeb0f2e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_04.png",
+   "sha256": "e9410c78064c9c8031eddab621a8d6b1e87baf58243d2eb828e02a773d3a77b6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_05.png",
+   "sha256": "b8ea9377b50c535034c1affb5f356bd41ca6226781a89d84b021b4021e2dd7fc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_00.png",
+   "sha256": "eccb0be78cfd9484e8fd7ce18c7599f753c1b19c3ef5a2cee1c8dfeaf1ccd450"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_01.png",
+   "sha256": "0f8eb3313874f9672397b529f60290566450194b040f136e548cbc7cc3717bc6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_02.png",
+   "sha256": "23038ad9a0da6f06ffce2109c7d7596e212057ef57a052b32093493ca102b9b0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_03.png",
+   "sha256": "4a1d30415114181a7cb5f0b8983564ff6818503631fe052ea89bf13d7894b5c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_04.png",
+   "sha256": "e69d0f80e62affe0a746165586a7b67243daba018258c6516bf2b2c78e78944e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_05.png",
+   "sha256": "ad62a6f9b0b726e46af8dea7dbd5f9d9eaf4910edc2ff0ca850f7cf897878961"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_00.png",
+   "sha256": "8fdda68f794c1e38a92708555b267deb04db41029784aad12e6470c7bcd00da0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_01.png",
+   "sha256": "eeafb4eec4a54052e5437ae78aeed60efe2f4872bd6e24893a6055070c3ba9f4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_02.png",
+   "sha256": "43baa498bf1e0b9d517723b40ee00fd482b9a6bc8ecd12b8a05868ecf06a12e8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_03.png",
+   "sha256": "0a4358f63dcce5c52d5305c9d141e20e82ea5caf6e713d88698640a88dffcc20"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_04.png",
+   "sha256": "c3a6eba771102be5b431f6da669ae6d0b400050ae52105e044ea25ce6c8303ad"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_05.png",
+   "sha256": "38893d19d96db07e949199910b669886dc1ab42b947165cdbef9b680eb514bac"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    263,
+    247
+   ],
+   "margin": [
+    125,
+    234,
+    249,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    266,
+    1,
+    262,
+    247
+   ],
+   "margin": [
+    125,
+    234,
+    250,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    530,
+    1,
+    258,
+    247
+   ],
+   "margin": [
+    127,
+    234,
+    254,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    790,
+    1,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1039,
+    1,
+    242,
+    247
+   ],
+   "margin": [
+    135,
+    234,
+    270,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1283,
+    1,
+    231,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    281,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1516,
+    1,
+    231,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    281,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1749,
+    1,
+    227,
+    247
+   ],
+   "margin": [
+    143,
+    234,
+    285,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    221,
+    247
+   ],
+   "margin": [
+    145,
+    234,
+    291,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    224,
+    250,
+    220,
+    247
+   ],
+   "margin": [
+    146,
+    234,
+    292,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    446,
+    250,
+    216,
+    247
+   ],
+   "margin": [
+    148,
+    234,
+    296,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    664,
+    250,
+    216,
+    247
+   ],
+   "margin": [
+    148,
+    234,
+    296,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    882,
+    250,
+    215,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    297,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1099,
+    250,
+    214,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    298,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1315,
+    250,
+    214,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    298,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1531,
+    250,
+    211,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    301,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1744,
+    250,
+    205,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    307,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1951,
+    250,
+    91,
+    247
+   ],
+   "margin": [
+    211,
+    234,
+    421,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    202,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    310,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    205,
+    499,
+    201,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    311,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    408,
+    499,
+    200,
+    247
+   ],
+   "margin": [
+    156,
+    234,
+    312,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    610,
+    499,
+    188,
+    247
+   ],
+   "margin": [
+    162,
+    234,
+    324,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    800,
+    499,
+    183,
+    247
+   ],
+   "margin": [
+    165,
+    234,
+    329,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    985,
+    499,
+    172,
+    247
+   ],
+   "margin": [
+    170,
+    234,
+    340,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1159,
+    499,
+    172,
+    247
+   ],
+   "margin": [
+    170,
+    234,
+    340,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1333,
+    499,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1502,
+    499,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1671,
+    499,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1840,
+    499,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    164,
+    247
+   ],
+   "margin": [
+    174,
+    234,
+    348,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    167,
+    748,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    331,
+    748,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    495,
+    748,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    659,
+    748,
+    158,
+    247
+   ],
+   "margin": [
+    177,
+    234,
+    354,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    819,
+    748,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    977,
+    748,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1135,
+    748,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1293,
+    748,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1451,
+    748,
+    151,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    361,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1604,
+    748,
+    151,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    361,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1757,
+    748,
+    151,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    361,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1910,
+    748,
+    135,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    377,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    149,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    363,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    152,
+    997,
+    146,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    366,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    300,
+    997,
+    146,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    366,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    448,
+    997,
+    144,
+    247
+   ],
+   "margin": [
+    184,
+    234,
+    368,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    594,
+    997,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    736,
+    997,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    878,
+    997,
+    132,
+    247
+   ],
+   "margin": [
+    190,
+    234,
+    380,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1012,
+    997,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1144,
+    997,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1257,
+    997,
+    104,
+    247
+   ],
+   "margin": [
+    204,
+    234,
+    408,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1363,
+    997,
+    103,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    409,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1468,
+    997,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1572,
+    997,
+    101,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    411,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1675,
+    997,
+    100,
+    247
+   ],
+   "margin": [
+    206,
+    234,
+    412,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1777,
+    997,
+    100,
+    247
+   ],
+   "margin": [
+    206,
+    234,
+    412,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1879,
+    997,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    90,
+    1246,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    179,
+    1246,
+    82,
+    247
+   ],
+   "margin": [
+    215,
+    234,
+    430,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    263,
+    1246,
+    82,
+    247
+   ],
+   "margin": [
+    215,
+    234,
+    430,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    347,
+    1246,
+    252,
+    242
+   ],
+   "margin": [
+    130,
+    239,
+    260,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    601,
+    1246,
+    237,
+    242
+   ],
+   "margin": [
+    137,
+    239,
+    275,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    840,
+    1246,
+    214,
+    242
+   ],
+   "margin": [
+    149,
+    239,
+    298,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1056,
+    1246,
+    206,
+    242
+   ],
+   "margin": [
+    153,
+    239,
+    306,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1264,
+    1246,
+    204,
+    242
+   ],
+   "margin": [
+    154,
+    239,
+    308,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1470,
+    1246,
+    204,
+    242
+   ],
+   "margin": [
+    154,
+    239,
+    308,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1676,
+    1246,
+    199,
+    242
+   ],
+   "margin": [
+    157,
+    239,
+    313,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1877,
+    1246,
+    169,
+    242
+   ],
+   "margin": [
+    171,
+    239,
+    343,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    347,
+    1490,
+    199,
+    242
+   ],
+   "margin": [
+    157,
+    239,
+    313,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    548,
+    1490,
+    195,
+    242
+   ],
+   "margin": [
+    159,
+    239,
+    317,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    745,
+    1490,
+    178,
+    242
+   ],
+   "margin": [
+    167,
+    239,
+    334,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    925,
+    1490,
+    178,
+    242
+   ],
+   "margin": [
+    167,
+    239,
+    334,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1105,
+    1490,
+    176,
+    242
+   ],
+   "margin": [
+    168,
+    239,
+    336,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1283,
+    1490,
+    176,
+    242
+   ],
+   "margin": [
+    168,
+    239,
+    336,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1461,
+    1490,
+    172,
+    242
+   ],
+   "margin": [
+    170,
+    239,
+    340,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1635,
+    1490,
+    171,
+    242
+   ],
+   "margin": [
+    171,
+    239,
+    341,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1808,
+    1490,
+    169,
+    242
+   ],
+   "margin": [
+    171,
+    239,
+    343,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1495,
+    167,
+    242
+   ],
+   "margin": [
+    173,
+    239,
+    345,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    170,
+    1495,
+    167,
+    242
+   ],
+   "margin": [
+    173,
+    239,
+    345,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    339,
+    1734,
+    162,
+    242
+   ],
+   "margin": [
+    175,
+    239,
+    350,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    503,
+    1734,
+    158,
+    242
+   ],
+   "margin": [
+    177,
+    239,
+    354,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    663,
+    1734,
+    156,
+    242
+   ],
+   "margin": [
+    178,
+    239,
+    356,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    821,
+    1734,
+    153,
+    242
+   ],
+   "margin": [
+    179,
+    239,
+    359,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    976,
+    1734,
+    153,
+    242
+   ],
+   "margin": [
+    179,
+    239,
+    359,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1131,
+    1734,
+    153,
+    242
+   ],
+   "margin": [
+    179,
+    239,
+    359,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1286,
+    1734,
+    148,
+    242
+   ],
+   "margin": [
+    182,
+    239,
+    364,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1436,
+    1734,
+    140,
+    242
+   ],
+   "margin": [
+    186,
+    239,
+    372,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1578,
+    1734,
+    140,
+    242
+   ],
+   "margin": [
+    186,
+    239,
+    372,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1720,
+    1734,
+    138,
+    242
+   ],
+   "margin": [
+    187,
+    239,
+    374,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1860,
+    1734,
+    135,
+    242
+   ],
+   "margin": [
+    189,
+    239,
+    377,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1739,
+    132,
+    242
+   ],
+   "margin": [
+    190,
+    239,
+    380,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    135,
+    1739,
+    132,
+    242
+   ],
+   "margin": [
+    190,
+    239,
+    380,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    269,
+    1978,
+    258,
+    67
+   ],
+   "margin": [
+    127,
+    414,
+    254,
+    445
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    132,
+    242
+   ],
+   "margin": [
+    190,
+    239,
+    380,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    135,
+    1,
+    130,
+    242
+   ],
+   "margin": [
+    191,
+    239,
+    382,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    267,
+    1,
+    96,
+    242
+   ],
+   "margin": [
+    208,
+    239,
+    416,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    365,
+    1,
+    96,
+    242
+   ],
+   "margin": [
+    208,
+    239,
+    416,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    463,
+    1,
+    96,
+    242
+   ],
+   "margin": [
+    208,
+    239,
+    416,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    561,
+    1,
+    89,
+    242
+   ],
+   "margin": [
+    211,
+    239,
+    423,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    652,
+    1,
+    214,
+    241
+   ],
+   "margin": [
+    149,
+    240,
+    298,
+    271
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    868,
+    1,
+    206,
+    237
+   ],
+   "margin": [
+    153,
+    244,
+    306,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1076,
+    1,
+    196,
+    237
+   ],
+   "margin": [
+    158,
+    244,
+    316,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1274,
+    1,
+    190,
+    237
+   ],
+   "margin": [
+    161,
+    244,
+    322,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1466,
+    1,
+    190,
+    237
+   ],
+   "margin": [
+    161,
+    244,
+    322,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1658,
+    1,
+    184,
+    237
+   ],
+   "margin": [
+    164,
+    244,
+    328,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1844,
+    1,
+    179,
+    237
+   ],
+   "margin": [
+    167,
+    244,
+    333,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    868,
+    240,
+    179,
+    237
+   ],
+   "margin": [
+    167,
+    244,
+    333,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1049,
+    240,
+    176,
+    237
+   ],
+   "margin": [
+    168,
+    244,
+    336,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1227,
+    240,
+    174,
+    237
+   ],
+   "margin": [
+    169,
+    244,
+    338,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1403,
+    240,
+    165,
+    237
+   ],
+   "margin": [
+    173,
+    244,
+    347,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1570,
+    240,
+    160,
+    237
+   ],
+   "margin": [
+    176,
+    244,
+    352,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1732,
+    240,
+    158,
+    237
+   ],
+   "margin": [
+    177,
+    244,
+    354,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1892,
+    240,
+    148,
+    237
+   ],
+   "margin": [
+    182,
+    244,
+    364,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    652,
+    244,
+    143,
+    237
+   ],
+   "margin": [
+    185,
+    244,
+    369,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    245,
+    138,
+    237
+   ],
+   "margin": [
+    187,
+    244,
+    374,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    141,
+    245,
+    138,
+    237
+   ],
+   "margin": [
+    187,
+    244,
+    374,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    281,
+    245,
+    132,
+    237
+   ],
+   "margin": [
+    190,
+    244,
+    380,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    415,
+    245,
+    127,
+    237
+   ],
+   "margin": [
+    193,
+    244,
+    385,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    544,
+    245,
+    106,
+    237
+   ],
+   "margin": [
+    203,
+    244,
+    406,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    797,
+    479,
+    122,
+    237
+   ],
+   "margin": [
+    195,
+    244,
+    390,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    921,
+    479,
+    114,
+    237
+   ],
+   "margin": [
+    199,
+    244,
+    398,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1037,
+    479,
+    111,
+    237
+   ],
+   "margin": [
+    201,
+    244,
+    401,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    479,
+    230,
+    236
+   ],
+   "margin": [
+    141,
+    245,
+    282,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1382,
+    479,
+    219,
+    236
+   ],
+   "margin": [
+    147,
+    245,
+    293,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1603,
+    479,
+    194,
+    236
+   ],
+   "margin": [
+    159,
+    245,
+    318,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1799,
+    479,
+    172,
+    236
+   ],
+   "margin": [
+    170,
+    245,
+    340,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    676,
+    483,
+    111,
+    231
+   ],
+   "margin": [
+    201,
+    250,
+    401,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    484,
+    171,
+    236
+   ],
+   "margin": [
+    171,
+    245,
+    341,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    174,
+    484,
+    167,
+    236
+   ],
+   "margin": [
+    173,
+    245,
+    345,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    343,
+    484,
+    167,
+    236
+   ],
+   "margin": [
+    173,
+    245,
+    345,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    512,
+    484,
+    162,
+    236
+   ],
+   "margin": [
+    175,
+    245,
+    350,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    717,
+    135,
+    236
+   ],
+   "margin": [
+    189,
+    245,
+    377,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1287,
+    717,
+    217,
+    232
+   ],
+   "margin": [
+    147,
+    249,
+    295,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1506,
+    717,
+    196,
+    232
+   ],
+   "margin": [
+    158,
+    249,
+    316,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1704,
+    717,
+    187,
+    232
+   ],
+   "margin": [
+    163,
+    249,
+    325,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1893,
+    717,
+    147,
+    232
+   ],
+   "margin": [
+    183,
+    249,
+    365,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    676,
+    718,
+    263,
+    231
+   ],
+   "margin": [
+    125,
+    250,
+    249,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    941,
+    718,
+    193,
+    231
+   ],
+   "margin": [
+    159,
+    250,
+    319,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    722,
+    226,
+    231
+   ],
+   "margin": [
+    143,
+    250,
+    286,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    229,
+    722,
+    172,
+    231
+   ],
+   "margin": [
+    170,
+    250,
+    340,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    403,
+    722,
+    172,
+    231
+   ],
+   "margin": [
+    170,
+    250,
+    340,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    577,
+    951,
+    172,
+    231
+   ],
+   "margin": [
+    170,
+    250,
+    340,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    751,
+    951,
+    167,
+    231
+   ],
+   "margin": [
+    173,
+    250,
+    345,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    920,
+    951,
+    164,
+    231
+   ],
+   "margin": [
+    174,
+    250,
+    348,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1287,
+    951,
+    164,
+    231
+   ],
+   "margin": [
+    174,
+    250,
+    348,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1453,
+    951,
+    162,
+    231
+   ],
+   "margin": [
+    175,
+    250,
+    350,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1617,
+    951,
+    156,
+    231
+   ],
+   "margin": [
+    178,
+    250,
+    356,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1775,
+    951,
+    127,
+    231
+   ],
+   "margin": [
+    193,
+    250,
+    385,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1904,
+    951,
+    124,
+    231
+   ],
+   "margin": [
+    194,
+    250,
+    388,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    955,
+    183,
+    226
+   ],
+   "margin": [
+    165,
+    255,
+    329,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    186,
+    955,
+    182,
+    225
+   ],
+   "margin": [
+    165,
+    256,
+    330,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    370,
+    955,
+    163,
+    225
+   ],
+   "margin": [
+    175,
+    256,
+    349,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1086,
+    955,
+    122,
+    225
+   ],
+   "margin": [
+    195,
+    256,
+    390,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    186,
+    1182,
+    177,
+    222
+   ],
+   "margin": [
+    167,
+    259,
+    335,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    365,
+    1182,
+    196,
+    221
+   ],
+   "margin": [
+    158,
+    260,
+    316,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1183,
+    156,
+    220
+   ],
+   "margin": [
+    178,
+    261,
+    356,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    563,
+    1184,
+    263,
+    220
+   ],
+   "margin": [
+    125,
+    261,
+    249,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    828,
+    1184,
+    242,
+    220
+   ],
+   "margin": [
+    135,
+    261,
+    270,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1072,
+    1184,
+    242,
+    220
+   ],
+   "margin": [
+    135,
+    261,
+    270,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1316,
+    1184,
+    194,
+    220
+   ],
+   "margin": [
+    159,
+    261,
+    318,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1512,
+    1184,
+    152,
+    217
+   ],
+   "margin": [
+    180,
+    264,
+    360,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1666,
+    1184,
+    135,
+    215
+   ],
+   "margin": [
+    189,
+    266,
+    377,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1803,
+    1184,
+    225,
+    209
+   ],
+   "margin": [
+    143,
+    272,
+    287,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1803,
+    1395,
+    214,
+    209
+   ],
+   "margin": [
+    149,
+    272,
+    298,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1512,
+    1403,
+    174,
+    200
+   ],
+   "margin": [
+    169,
+    281,
+    338,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    365,
+    1405,
+    149,
+    198
+   ],
+   "margin": [
+    181,
+    283,
+    363,
+    314
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1406,
+    220,
+    198
+   ],
+   "margin": [
+    146,
+    283,
+    292,
+    314
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    516,
+    1406,
+    197,
+    197
+   ],
+   "margin": [
+    157,
+    284,
+    315,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    715,
+    1406,
+    204,
+    172
+   ],
+   "margin": [
+    154,
+    309,
+    308,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    921,
+    1406,
+    252,
+    149
+   ],
+   "margin": [
+    130,
+    332,
+    260,
+    363
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1175,
+    1406,
+    258,
+    144
+   ],
+   "margin": [
+    127,
+    337,
+    254,
+    368
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1175,
+    1552,
+    231,
+    143
+   ],
+   "margin": [
+    141,
+    338,
+    281,
+    369
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    921,
+    1557,
+    165,
+    138
+   ],
+   "margin": [
+    173,
+    343,
+    347,
+    374
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    223,
+    1605,
+    285,
+    127
+   ],
+   "margin": [
+    113,
+    354,
+    227,
+    385
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    510,
+    1605,
+    230,
+    124
+   ],
+   "margin": [
+    141,
+    357,
+    282,
+    388
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1408,
+    1605,
+    247,
+    119
+   ],
+   "margin": [
+    133,
+    362,
+    265,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1606,
+    214,
+    100
+   ],
+   "margin": [
+    149,
+    381,
+    298,
+    412
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1657,
+    1606,
+    269,
+    116
+   ],
+   "margin": [
+    121,
+    365,
+    243,
+    396
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    742,
+    1697,
+    269,
+    116
+   ],
+   "margin": [
+    121,
+    365,
+    243,
+    396
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1013,
+    1697,
+    237,
+    106
+   ],
+   "margin": [
+    137,
+    375,
+    275,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1657,
+    1724,
+    242,
+    101
+   ],
+   "margin": [
+    135,
+    380,
+    270,
+    411
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1252,
+    1726,
+    275,
+    91
+   ],
+   "margin": [
+    119,
+    390,
+    237,
+    421
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/bone_caller/bone_caller_idle_east.png"
+}

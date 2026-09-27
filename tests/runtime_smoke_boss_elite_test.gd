@@ -46,6 +46,16 @@ func _test_secret_boss_uses_full_frame() -> void:
 	if boss_scene == null:
 		_fail("BossSecretAscension scene did not load.")
 		return
+	# FAN-3977: an earlier flow of this suite may have left a fight active, and
+	# under the combat guard a pack that is not resident is never loaded
+	# synchronously (static fallback + deferred swap). The production path makes
+	# the boss pack resident before the boss spawns; mirror that here.
+	var secret_frames := "res://assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres"
+	FullFrameAnimationRegistry.queue_prefetch_path(secret_frames)
+	for _frame in range(3000):
+		if FullFrameAnimationRegistry.is_resident(secret_frames):
+			break
+		await process_frame
 	var boss := boss_scene.instantiate()
 	root.add_child(boss)
 	await process_frame

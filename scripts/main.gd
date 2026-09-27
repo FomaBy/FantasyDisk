@@ -1424,6 +1424,9 @@ func _process(delta: float) -> void:
 
 	if not combat_active:
 		return
+	if not combat.is_combat_start_finalized():  # FAN-3977: roster not resident yet — no waves/timer/win checks
+		combat.resume_stalled_combat_start()
+		return
 
 	# SCRUM-502: суммарное время забега (только в активном бою, не в паузе — оба гарда выше).
 	add_run_time(delta)

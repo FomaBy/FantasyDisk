@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 # SCRUM-926/SCRUM-1088 focused acceptance: the mandatory Priest pre-battle
 # choice uses the exact live Level Up overlay/panel/card builders, not the old
@@ -143,6 +144,10 @@ func _check_priest_resolution(target: Vector2i) -> void:
 		buttons[1].emit_signal("pressed")
 		buttons[1].emit_signal("pressed") # same-frame duplicate must be ignored
 	await _settle()
+	# FAN-3977: after the choice the combat start still waits for the elite's
+	# full-frame pack before the continuation spawns.
+	await CombatStartSupport.await_finalized(main)
+	await _settle()
 	if str(player.call("active_battle_prayer_id")) != "prayer_mending":
 		_errors.append("%s: exact selected id was not applied." % context)
 	if _prayer_screen(main) != null:
@@ -167,6 +172,7 @@ func _check_non_priest_fast_path() -> void:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "sword")
 	main.call("_start_combat", false, "battle")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await _settle()
 	if _prayer_screen(main) != null:
 		_errors.append("non-Priest: prayer Level Up screen leaked to Berserk.")
@@ -188,6 +194,7 @@ func _open_priest(target: Vector2i, combat_type: String) -> Dictionary:
 	main.set("selected_weapon_id", "priest_censer")
 	main.set("route_stage", 3)
 	main.call("_start_combat", false, combat_type)
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await _settle()
 	return {"viewport": viewport, "main": main}
 

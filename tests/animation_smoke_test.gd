@@ -1441,6 +1441,36 @@ func _check_elite_strike_pose(_rig: Node2D) -> void:
 	pass
 
 
+# FAN-3977: the retained per-frame source PNGs a trimmed frame was cut from,
+# read from the pack's trim manifest (entry with the same page/region/margin).
+var _trim_manifest_cache := {}
+
+
+func _full_frame_trim_sources(frames: SpriteFrames, texture: Texture2D) -> Array:
+	var atlas_texture := texture as AtlasTexture
+	if atlas_texture == null or atlas_texture.atlas == null:
+		return [texture.resource_path] if texture != null else []
+	var frames_path := frames.resource_path
+	if not _trim_manifest_cache.has(frames_path):
+		var stem := frames_path.get_file().trim_suffix(".tres").trim_suffix("_spriteframes")
+		if frames_path.contains("/allies/"):
+			stem = stem.trim_prefix("ally_")
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(frames_path.get_base_dir().path_join(stem + "_trim_manifest.json")))
+		_trim_manifest_cache[frames_path] = parsed if parsed is Dictionary else {}
+	var manifest: Dictionary = _trim_manifest_cache[frames_path]
+	var page_index := -1
+	var pages: Array = manifest.get("pages", [])
+	for index in range(pages.size()):
+		if str((pages[index] as Dictionary).get("path", "")) == atlas_texture.atlas.resource_path:
+			page_index = index
+	for entry in manifest.get("entries", []):
+		var region: Array = entry["region"]
+		var margin: Array = entry["margin"]
+		if int(entry["page"]) == page_index and Rect2i(atlas_texture.region) == Rect2i(int(region[0]), int(region[1]), int(region[2]), int(region[3])) and Rect2i(atlas_texture.margin) == Rect2i(int(margin[0]), int(margin[1]), int(margin[2]), int(margin[3])):
+			return entry["sources"]
+	return []
+
+
 func _assert_druid_ghost_pack(ghost_id: String, check_cast_alias: bool, check_silhouette_continuity: bool) -> void:
 	var ally_scene := load("res://scenes/AllyMinion.tscn") as PackedScene
 	var allowed_animations := ["attack", "attack_primary", "attack_left", "attack_right", "idle", "move", "move_left", "move_right", "walk"]
@@ -1477,7 +1507,9 @@ func _assert_druid_ghost_pack(ghost_id: String, check_cast_alias: bool, check_si
 			return
 		for frame_index in range(frames.get_frame_count(animation_name)):
 			var texture := frames.get_frame_texture(animation_name, frame_index)
-			if texture == null or texture.get_image() == null or texture.get_image().get_size() != Vector2i(256, 256):
+			# FAN-3977: frames are AtlasTexture trims whose margin restores the
+			# 256 canvas; the logical size is the canvas, the region is the trim.
+			if texture == null or Vector2i(texture.get_size()) != Vector2i(256, 256):
 				_fail("Expected %s %s frame %d to use a 256x256 runtime texture." % [ghost_id, animation_name, frame_index])
 				return
 			var expected_direction := "south"
@@ -1491,8 +1523,13 @@ func _assert_druid_ghost_pack(ghost_id: String, check_cast_alias: bool, check_si
 			if animation_name == "walk":
 				expected_kind = "move"
 			var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
-			if not texture.resource_path.begins_with(expected_prefix):
-				_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, texture.resource_path])
+			var frame_sources := _full_frame_trim_sources(frames, texture)
+			var source_matches := false
+			for source in frame_sources:
+				if str(source).begins_with(expected_prefix):
+					source_matches = true
+			if not source_matches:
+				_fail("Expected %s %s frame %d to resolve from %s, got %s." % [ghost_id, animation_name, frame_index, expected_prefix, frame_sources])
 				return
 	var runtime_files := []
 	for file_name in DirAccess.get_files_at("res://assets/sprites/allies/%s/runtime" % ghost_id):

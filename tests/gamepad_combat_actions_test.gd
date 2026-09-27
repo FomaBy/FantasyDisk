@@ -34,6 +34,7 @@ func _initialize() -> void:
 	main.set("selected_weapon_id", "sword")
 	main.set("route_stage", 2)
 	main.call("_start_combat")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await process_frame
 	await process_frame
 	if not bool(main.get("combat_active")):
