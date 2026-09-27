@@ -1,953 +1,1070 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_east_00.png" id="tex_001"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_east_00.png" id="tex_002"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_00.png" id="tex_003"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_south_west_00.png" id="tex_004"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_west_00.png" id="tex_005"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_west_00.png" id="tex_006"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_00.png" id="tex_007"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_idle_north_east_00.png" id="tex_008"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_00.png" id="tex_009"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_01.png" id="tex_010"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_02.png" id="tex_011"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_03.png" id="tex_012"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_04.png" id="tex_013"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_east_05.png" id="tex_014"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_00.png" id="tex_015"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_01.png" id="tex_016"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_02.png" id="tex_017"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_03.png" id="tex_018"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_04.png" id="tex_019"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_east_05.png" id="tex_020"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_00.png" id="tex_021"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_01.png" id="tex_022"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_02.png" id="tex_023"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_03.png" id="tex_024"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_04.png" id="tex_025"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_05.png" id="tex_026"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_00.png" id="tex_027"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_01.png" id="tex_028"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_02.png" id="tex_029"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_03.png" id="tex_030"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_04.png" id="tex_031"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_south_west_05.png" id="tex_032"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_00.png" id="tex_033"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_01.png" id="tex_034"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_02.png" id="tex_035"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_03.png" id="tex_036"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_04.png" id="tex_037"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_west_05.png" id="tex_038"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_00.png" id="tex_039"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_01.png" id="tex_040"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_02.png" id="tex_041"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_03.png" id="tex_042"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_04.png" id="tex_043"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_west_05.png" id="tex_044"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_00.png" id="tex_045"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_01.png" id="tex_046"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_02.png" id="tex_047"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_03.png" id="tex_048"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_04.png" id="tex_049"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_05.png" id="tex_050"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_00.png" id="tex_051"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_01.png" id="tex_052"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_02.png" id="tex_053"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_03.png" id="tex_054"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_04.png" id="tex_055"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_move_north_east_05.png" id="tex_056"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_00.png" id="tex_057"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_01.png" id="tex_058"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_02.png" id="tex_059"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_03.png" id="tex_060"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_04.png" id="tex_061"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_east_05.png" id="tex_062"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_00.png" id="tex_063"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_01.png" id="tex_064"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_02.png" id="tex_065"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_03.png" id="tex_066"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_04.png" id="tex_067"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_east_05.png" id="tex_068"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_00.png" id="tex_069"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_01.png" id="tex_070"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_02.png" id="tex_071"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_03.png" id="tex_072"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_04.png" id="tex_073"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_05.png" id="tex_074"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_00.png" id="tex_075"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_01.png" id="tex_076"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_02.png" id="tex_077"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_03.png" id="tex_078"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_04.png" id="tex_079"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_south_west_05.png" id="tex_080"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_00.png" id="tex_081"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_01.png" id="tex_082"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_02.png" id="tex_083"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_03.png" id="tex_084"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_04.png" id="tex_085"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_west_05.png" id="tex_086"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_00.png" id="tex_087"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_01.png" id="tex_088"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_02.png" id="tex_089"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_03.png" id="tex_090"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_04.png" id="tex_091"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_west_05.png" id="tex_092"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_00.png" id="tex_093"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_01.png" id="tex_094"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_02.png" id="tex_095"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_03.png" id="tex_096"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_04.png" id="tex_097"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_05.png" id="tex_098"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_00.png" id="tex_099"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_01.png" id="tex_100"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_02.png" id="tex_101"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_03.png" id="tex_102"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_04.png" id="tex_103"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag/runtime/druid_ghost_stag_attack_north_east_05.png" id="tex_104"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_stag_trim_0.png" id="page_0"]
+
+[sub_resource type="AtlasTexture" id="Trim_0"]
+atlas = ExtResource("page_0")
+region = Rect2(983, 409, 192, 201)
+margin = Rect2(32, 32, 64, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_1"]
+atlas = ExtResource("page_0")
+region = Rect2(1176, 1013, 196, 195)
+margin = Rect2(30, 38, 60, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_2"]
+atlas = ExtResource("page_0")
+region = Rect2(978, 1013, 196, 195)
+margin = Rect2(30, 38, 60, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_3"]
+atlas = ExtResource("page_0")
+region = Rect2(1620, 1210, 195, 193)
+margin = Rect2(30, 40, 61, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_4"]
+atlas = ExtResource("page_0")
+region = Rect2(1757, 611, 189, 201)
+margin = Rect2(33, 32, 67, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_5"]
+atlas = ExtResource("page_0")
+region = Rect2(1164, 612, 198, 199)
+margin = Rect2(29, 34, 58, 57)
+
+[sub_resource type="AtlasTexture" id="Trim_6"]
+atlas = ExtResource("page_0")
+region = Rect2(778, 613, 184, 196)
+margin = Rect2(36, 37, 72, 60)
+
+[sub_resource type="AtlasTexture" id="Trim_7"]
+atlas = ExtResource("page_0")
+region = Rect2(1377, 1599, 199, 187)
+margin = Rect2(28, 46, 57, 69)
+
+[sub_resource type="AtlasTexture" id="Trim_8"]
+atlas = ExtResource("page_0")
+region = Rect2(1819, 1405, 198, 192)
+margin = Rect2(29, 41, 58, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_9"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1406, 196, 192)
+margin = Rect2(30, 41, 60, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_10"]
+atlas = ExtResource("page_0")
+region = Rect2(987, 1599, 196, 190)
+margin = Rect2(30, 43, 60, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_11"]
+atlas = ExtResource("page_0")
+region = Rect2(196, 410, 190, 201)
+margin = Rect2(33, 32, 66, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_12"]
+atlas = ExtResource("page_0")
+region = Rect2(1565, 611, 190, 201)
+margin = Rect2(33, 32, 66, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_13"]
+atlas = ExtResource("page_0")
+region = Rect2(1177, 409, 192, 201)
+margin = Rect2(32, 32, 64, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_14"]
+atlas = ExtResource("page_0")
+region = Rect2(1743, 408, 192, 201)
+margin = Rect2(32, 32, 64, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_15"]
+atlas = ExtResource("page_0")
+region = Rect2(1371, 409, 192, 201)
+margin = Rect2(32, 32, 64, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_16"]
+atlas = ExtResource("page_0")
+region = Rect2(580, 410, 190, 201)
+margin = Rect2(33, 32, 66, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_17"]
+atlas = ExtResource("page_0")
+region = Rect2(388, 410, 190, 201)
+margin = Rect2(33, 32, 66, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_18"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 208, 193, 201)
+margin = Rect2(31, 32, 63, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_19"]
+atlas = ExtResource("page_0")
+region = Rect2(385, 814, 186, 193)
+margin = Rect2(35, 40, 70, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_20"]
+atlas = ExtResource("page_0")
+region = Rect2(1578, 1785, 187, 184)
+margin = Rect2(34, 49, 69, 72)
+
+[sub_resource type="AtlasTexture" id="Trim_21"]
+atlas = ExtResource("page_0")
+region = Rect2(196, 814, 187, 198)
+margin = Rect2(34, 35, 69, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_22"]
+atlas = ExtResource("page_0")
+region = Rect2(1569, 1, 196, 202)
+margin = Rect2(30, 31, 60, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_23"]
+atlas = ExtResource("page_0")
+region = Rect2(964, 612, 198, 199)
+margin = Rect2(29, 34, 58, 57)
+
+[sub_resource type="AtlasTexture" id="Trim_24"]
+atlas = ExtResource("page_0")
+region = Rect2(780, 1013, 196, 195)
+margin = Rect2(30, 38, 60, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_25"]
+atlas = ExtResource("page_0")
+region = Rect2(196, 1014, 187, 187)
+margin = Rect2(34, 46, 69, 69)
+
+[sub_resource type="AtlasTexture" id="Trim_26"]
+atlas = ExtResource("page_0")
+region = Rect2(1374, 1013, 186, 190)
+margin = Rect2(35, 43, 70, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_27"]
+atlas = ExtResource("page_0")
+region = Rect2(772, 410, 190, 201)
+margin = Rect2(33, 32, 66, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_28"]
+atlas = ExtResource("page_0")
+region = Rect2(397, 1, 198, 204)
+margin = Rect2(29, 29, 58, 52)
+
+[sub_resource type="AtlasTexture" id="Trim_29"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 814, 193, 198)
+margin = Rect2(31, 35, 63, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_30"]
+atlas = ExtResource("page_0")
+region = Rect2(385, 1013, 189, 196)
+margin = Rect2(33, 37, 67, 60)
+
+[sub_resource type="AtlasTexture" id="Trim_31"]
+atlas = ExtResource("page_0")
+region = Rect2(789, 1, 186, 204)
+margin = Rect2(35, 29, 70, 52)
+
+[sub_resource type="AtlasTexture" id="Trim_32"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 411, 190, 201)
+margin = Rect2(33, 32, 66, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_33"]
+atlas = ExtResource("page_0")
+region = Rect2(574, 613, 202, 198)
+margin = Rect2(27, 35, 54, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_34"]
+atlas = ExtResource("page_0")
+region = Rect2(1215, 1210, 202, 193)
+margin = Rect2(27, 40, 54, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_35"]
+atlas = ExtResource("page_0")
+region = Rect2(199, 1406, 190, 192)
+margin = Rect2(33, 41, 66, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_36"]
+atlas = ExtResource("page_0")
+region = Rect2(1563, 1012, 190, 196)
+margin = Rect2(33, 37, 66, 60)
+
+[sub_resource type="AtlasTexture" id="Trim_37"]
+atlas = ExtResource("page_0")
+region = Rect2(574, 813, 199, 198)
+margin = Rect2(28, 35, 57, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_38"]
+atlas = ExtResource("page_0")
+region = Rect2(1162, 1, 204, 202)
+margin = Rect2(26, 31, 52, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_39"]
+atlas = ExtResource("page_0")
+region = Rect2(1174, 813, 195, 198)
+margin = Rect2(30, 35, 61, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_40"]
+atlas = ExtResource("page_0")
+region = Rect2(385, 1211, 189, 193)
+margin = Rect2(33, 40, 67, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_41"]
+atlas = ExtResource("page_0")
+region = Rect2(385, 613, 187, 199)
+margin = Rect2(34, 34, 69, 57)
+
+[sub_resource type="AtlasTexture" id="Trim_42"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1, 193, 205)
+margin = Rect2(31, 28, 63, 51)
+
+[sub_resource type="AtlasTexture" id="Trim_43"]
+atlas = ExtResource("page_0")
+region = Rect2(1743, 205, 201, 201)
+margin = Rect2(27, 32, 55, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_44"]
+atlas = ExtResource("page_0")
+region = Rect2(576, 1013, 202, 195)
+margin = Rect2(27, 38, 54, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_45"]
+atlas = ExtResource("page_0")
+region = Rect2(1185, 1599, 190, 190)
+margin = Rect2(33, 43, 66, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_46"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 614, 190, 198)
+margin = Rect2(33, 35, 66, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_47"]
+atlas = ExtResource("page_0")
+region = Rect2(1368, 1, 199, 202)
+margin = Rect2(28, 31, 57, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_48"]
+atlas = ExtResource("page_0")
+region = Rect2(396, 207, 195, 201)
+margin = Rect2(30, 32, 61, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_49"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1014, 193, 195)
+margin = Rect2(31, 38, 63, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_50"]
+atlas = ExtResource("page_0")
+region = Rect2(391, 1407, 190, 192)
+margin = Rect2(33, 41, 66, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_51"]
+atlas = ExtResource("page_0")
+region = Rect2(1755, 1012, 190, 196)
+margin = Rect2(33, 37, 66, 60)
+
+[sub_resource type="AtlasTexture" id="Trim_52"]
+atlas = ExtResource("page_0")
+region = Rect2(1767, 1, 196, 202)
+margin = Rect2(30, 31, 60, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_53"]
+atlas = ExtResource("page_0")
+region = Rect2(1371, 813, 190, 198)
+margin = Rect2(33, 35, 66, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_54"]
+atlas = ExtResource("page_0")
+region = Rect2(193, 1211, 190, 193)
+margin = Rect2(33, 40, 66, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_55"]
+atlas = ExtResource("page_0")
+region = Rect2(787, 1599, 198, 190)
+margin = Rect2(29, 43, 58, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_56"]
+atlas = ExtResource("page_0")
+region = Rect2(1414, 1405, 202, 192)
+margin = Rect2(27, 41, 54, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_57"]
+atlas = ExtResource("page_0")
+region = Rect2(1419, 1210, 199, 193)
+margin = Rect2(28, 40, 57, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_58"]
+atlas = ExtResource("page_0")
+region = Rect2(976, 813, 196, 198)
+margin = Rect2(30, 35, 60, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_59"]
+atlas = ExtResource("page_0")
+region = Rect2(1208, 1405, 204, 192)
+margin = Rect2(26, 41, 52, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_60"]
+atlas = ExtResource("page_0")
+region = Rect2(771, 1405, 226, 192)
+margin = Rect2(15, 41, 30, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_61"]
+atlas = ExtResource("page_0")
+region = Rect2(771, 1210, 223, 193)
+margin = Rect2(16, 40, 33, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_62"]
+atlas = ExtResource("page_0")
+region = Rect2(775, 813, 199, 198)
+margin = Rect2(28, 35, 57, 58)
+
+[sub_resource type="AtlasTexture" id="Trim_63"]
+atlas = ExtResource("page_0")
+region = Rect2(1563, 814, 198, 196)
+margin = Rect2(29, 37, 58, 60)
+
+[sub_resource type="AtlasTexture" id="Trim_64"]
+atlas = ExtResource("page_0")
+region = Rect2(1618, 1405, 199, 192)
+margin = Rect2(28, 41, 57, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_65"]
+atlas = ExtResource("page_0")
+region = Rect2(1802, 1599, 210, 184)
+margin = Rect2(23, 49, 46, 72)
+
+[sub_resource type="AtlasTexture" id="Trim_66"]
+atlas = ExtResource("page_0")
+region = Rect2(1767, 1785, 213, 183)
+margin = Rect2(21, 50, 43, 73)
+
+[sub_resource type="AtlasTexture" id="Trim_67"]
+atlas = ExtResource("page_0")
+region = Rect2(583, 1599, 202, 190)
+margin = Rect2(27, 43, 54, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_68"]
+atlas = ExtResource("page_0")
+region = Rect2(1162, 205, 196, 202)
+margin = Rect2(30, 31, 60, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_69"]
+atlas = ExtResource("page_0")
+region = Rect2(1360, 205, 196, 202)
+margin = Rect2(30, 31, 60, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_70"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1211, 190, 193)
+margin = Rect2(33, 40, 66, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_71"]
+atlas = ExtResource("page_0")
+region = Rect2(1558, 205, 183, 202)
+margin = Rect2(36, 31, 73, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_72"]
+atlas = ExtResource("page_0")
+region = Rect2(977, 1, 183, 204)
+margin = Rect2(36, 29, 73, 52)
+
+[sub_resource type="AtlasTexture" id="Trim_73"]
+atlas = ExtResource("page_0")
+region = Rect2(193, 613, 190, 199)
+margin = Rect2(33, 34, 66, 57)
+
+[sub_resource type="AtlasTexture" id="Trim_74"]
+atlas = ExtResource("page_0")
+region = Rect2(597, 1, 190, 204)
+margin = Rect2(33, 29, 66, 52)
+
+[sub_resource type="AtlasTexture" id="Trim_75"]
+atlas = ExtResource("page_0")
+region = Rect2(788, 207, 193, 201)
+margin = Rect2(31, 32, 63, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_76"]
+atlas = ExtResource("page_0")
+region = Rect2(196, 1, 199, 204)
+margin = Rect2(28, 29, 57, 52)
+
+[sub_resource type="AtlasTexture" id="Trim_77"]
+atlas = ExtResource("page_0")
+region = Rect2(196, 207, 198, 201)
+margin = Rect2(29, 32, 58, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_78"]
+atlas = ExtResource("page_0")
+region = Rect2(1763, 814, 196, 196)
+margin = Rect2(30, 37, 60, 60)
+
+[sub_resource type="AtlasTexture" id="Trim_79"]
+atlas = ExtResource("page_0")
+region = Rect2(576, 1210, 193, 195)
+margin = Rect2(31, 38, 63, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_80"]
+atlas = ExtResource("page_0")
+region = Rect2(1817, 1210, 192, 193)
+margin = Rect2(32, 40, 64, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_81"]
+atlas = ExtResource("page_0")
+region = Rect2(593, 207, 193, 201)
+margin = Rect2(31, 32, 63, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_82"]
+atlas = ExtResource("page_0")
+region = Rect2(1364, 612, 195, 199)
+margin = Rect2(30, 34, 61, 57)
+
+[sub_resource type="AtlasTexture" id="Trim_83"]
+atlas = ExtResource("page_0")
+region = Rect2(999, 1405, 207, 192)
+margin = Rect2(24, 41, 49, 64)
+
+[sub_resource type="AtlasTexture" id="Trim_84"]
+atlas = ExtResource("page_0")
+region = Rect2(996, 1210, 217, 193)
+margin = Rect2(19, 40, 39, 63)
+
+[sub_resource type="AtlasTexture" id="Trim_85"]
+atlas = ExtResource("page_0")
+region = Rect2(1578, 1599, 222, 184)
+margin = Rect2(17, 49, 34, 72)
+
+[sub_resource type="AtlasTexture" id="Trim_86"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1600, 201, 184)
+margin = Rect2(27, 49, 55, 72)
+
+[sub_resource type="AtlasTexture" id="Trim_87"]
+atlas = ExtResource("page_0")
+region = Rect2(204, 1601, 192, 184)
+margin = Rect2(32, 49, 64, 72)
 
 [resource]
-animations = [
-{
-"frames": [
-{
+animations = [{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_003")
-}
-],
+"texture": SubResource("Trim_0")
+}],
 "loop": true,
 "name": &"idle",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_021")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_022")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_023")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_024")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_025")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_026")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": true,
 "name": &"move",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_069")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_070")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_071")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_072")
-},
-{
+"texture": SubResource("Trim_8")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_073")
-},
-{
+"texture": SubResource("Trim_9")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_074")
-}
-],
+"texture": SubResource("Trim_10")
+}],
 "loop": false,
 "name": &"attack",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_021")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_022")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_023")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_024")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_025")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_026")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": true,
 "name": &"walk",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_001")
-}
-],
+"texture": SubResource("Trim_11")
+}],
 "loop": true,
 "name": &"idle_east",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_002")
-}
-],
+"texture": SubResource("Trim_12")
+}],
 "loop": true,
 "name": &"idle_south_east",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_003")
-}
-],
+"texture": SubResource("Trim_0")
+}],
 "loop": true,
 "name": &"idle_south",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_004")
-}
-],
+"texture": SubResource("Trim_13")
+}],
 "loop": true,
 "name": &"idle_south_west",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_005")
-}
-],
+"texture": SubResource("Trim_14")
+}],
 "loop": true,
 "name": &"idle_west",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_006")
-}
-],
+"texture": SubResource("Trim_15")
+}],
 "loop": true,
 "name": &"idle_north_west",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_007")
-}
-],
+"texture": SubResource("Trim_16")
+}],
 "loop": true,
 "name": &"idle_north",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_008")
-}
-],
+"texture": SubResource("Trim_17")
+}],
 "loop": true,
 "name": &"idle_north_east",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_009")
-},
-{
+"texture": SubResource("Trim_11")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_010")
-},
-{
+"texture": SubResource("Trim_18")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_011")
-},
-{
+"texture": SubResource("Trim_19")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_012")
-},
-{
+"texture": SubResource("Trim_20")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_013")
-},
-{
+"texture": SubResource("Trim_21")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_014")
-}
-],
+"texture": SubResource("Trim_22")
+}],
 "loop": true,
 "name": &"move_east",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_015")
-},
-{
+"texture": SubResource("Trim_12")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_016")
-},
-{
+"texture": SubResource("Trim_23")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_017")
-},
-{
+"texture": SubResource("Trim_24")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_018")
-},
-{
+"texture": SubResource("Trim_25")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_019")
-},
-{
+"texture": SubResource("Trim_26")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_020")
-}
-],
+"texture": SubResource("Trim_27")
+}],
 "loop": true,
 "name": &"move_south_east",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_021")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_022")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_023")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_024")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_025")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_026")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": true,
 "name": &"move_south",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_027")
-},
-{
+"texture": SubResource("Trim_13")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_028")
-},
-{
+"texture": SubResource("Trim_28")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_029")
-},
-{
+"texture": SubResource("Trim_29")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_030")
-},
-{
+"texture": SubResource("Trim_30")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_031")
-},
-{
+"texture": SubResource("Trim_31")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_032")
-}
-],
+"texture": SubResource("Trim_32")
+}],
 "loop": true,
 "name": &"move_south_west",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_033")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_034")
-},
-{
+"texture": SubResource("Trim_33")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_035")
-},
-{
+"texture": SubResource("Trim_34")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_036")
-},
-{
+"texture": SubResource("Trim_35")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_037")
-},
-{
+"texture": SubResource("Trim_36")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_038")
-}
-],
+"texture": SubResource("Trim_37")
+}],
 "loop": true,
 "name": &"move_west",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_039")
-},
-{
+"texture": SubResource("Trim_15")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_040")
-},
-{
+"texture": SubResource("Trim_38")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_041")
-},
-{
+"texture": SubResource("Trim_39")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_042")
-},
-{
+"texture": SubResource("Trim_40")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_043")
-},
-{
+"texture": SubResource("Trim_41")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_044")
-}
-],
+"texture": SubResource("Trim_42")
+}],
 "loop": true,
 "name": &"move_north_west",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_045")
-},
-{
+"texture": SubResource("Trim_16")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_046")
-},
-{
+"texture": SubResource("Trim_43")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_047")
-},
-{
+"texture": SubResource("Trim_44")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_048")
-},
-{
+"texture": SubResource("Trim_45")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_049")
-},
-{
+"texture": SubResource("Trim_46")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_050")
-}
-],
+"texture": SubResource("Trim_47")
+}],
 "loop": true,
 "name": &"move_north",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_051")
-},
-{
+"texture": SubResource("Trim_17")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_052")
-},
-{
+"texture": SubResource("Trim_48")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_053")
-},
-{
+"texture": SubResource("Trim_49")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_054")
-},
-{
+"texture": SubResource("Trim_50")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_055")
-},
-{
+"texture": SubResource("Trim_51")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_056")
-}
-],
+"texture": SubResource("Trim_52")
+}],
 "loop": true,
 "name": &"move_north_east",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_057")
-},
-{
+"texture": SubResource("Trim_11")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_058")
-},
-{
+"texture": SubResource("Trim_53")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_059")
-},
-{
+"texture": SubResource("Trim_54")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_060")
-},
-{
+"texture": SubResource("Trim_55")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_061")
-},
-{
+"texture": SubResource("Trim_56")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_062")
-}
-],
+"texture": SubResource("Trim_57")
+}],
 "loop": false,
 "name": &"attack_east",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_063")
-},
-{
+"texture": SubResource("Trim_12")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_064")
-},
-{
+"texture": SubResource("Trim_58")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_065")
-},
-{
+"texture": SubResource("Trim_59")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_066")
-},
-{
+"texture": SubResource("Trim_60")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_067")
-},
-{
+"texture": SubResource("Trim_61")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_068")
-}
-],
+"texture": SubResource("Trim_62")
+}],
 "loop": false,
 "name": &"attack_south_east",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_069")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_070")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_071")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_072")
-},
-{
+"texture": SubResource("Trim_8")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_073")
-},
-{
+"texture": SubResource("Trim_9")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_074")
-}
-],
+"texture": SubResource("Trim_10")
+}],
 "loop": false,
 "name": &"attack_south",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_075")
-},
-{
+"texture": SubResource("Trim_13")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_076")
-},
-{
+"texture": SubResource("Trim_63")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_077")
-},
-{
+"texture": SubResource("Trim_64")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_078")
-},
-{
+"texture": SubResource("Trim_65")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_079")
-},
-{
+"texture": SubResource("Trim_66")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_080")
-}
-],
+"texture": SubResource("Trim_67")
+}],
 "loop": false,
 "name": &"attack_south_west",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_081")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_082")
-},
-{
+"texture": SubResource("Trim_68")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_083")
-},
-{
+"texture": SubResource("Trim_69")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_084")
-},
-{
+"texture": SubResource("Trim_70")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_085")
-},
-{
+"texture": SubResource("Trim_71")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_086")
-}
-],
+"texture": SubResource("Trim_72")
+}],
 "loop": false,
 "name": &"attack_west",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_087")
-},
-{
+"texture": SubResource("Trim_15")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_088")
-},
-{
+"texture": SubResource("Trim_73")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_089")
-},
-{
+"texture": SubResource("Trim_74")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_090")
-},
-{
+"texture": SubResource("Trim_75")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_091")
-},
-{
+"texture": SubResource("Trim_76")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_092")
-}
-],
+"texture": SubResource("Trim_77")
+}],
 "loop": false,
 "name": &"attack_north_west",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_093")
-},
-{
+"texture": SubResource("Trim_16")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_094")
-},
-{
+"texture": SubResource("Trim_78")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_095")
-},
-{
+"texture": SubResource("Trim_79")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_096")
-},
-{
+"texture": SubResource("Trim_80")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_097")
-},
-{
+"texture": SubResource("Trim_81")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_098")
-}
-],
+"texture": SubResource("Trim_82")
+}],
 "loop": false,
 "name": &"attack_north",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_099")
-},
-{
+"texture": SubResource("Trim_17")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_100")
-},
-{
+"texture": SubResource("Trim_83")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_101")
-},
-{
+"texture": SubResource("Trim_84")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_102")
-},
-{
+"texture": SubResource("Trim_85")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_103")
-},
-{
+"texture": SubResource("Trim_86")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_104")
-}
-],
+"texture": SubResource("Trim_87")
+}],
 "loop": false,
 "name": &"attack_north_east",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_033")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_034")
-},
-{
+"texture": SubResource("Trim_33")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_035")
-},
-{
+"texture": SubResource("Trim_34")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_036")
-},
-{
+"texture": SubResource("Trim_35")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_037")
-},
-{
+"texture": SubResource("Trim_36")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_038")
-}
-],
+"texture": SubResource("Trim_37")
+}],
 "loop": true,
 "name": &"move_left",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_009")
-},
-{
+"texture": SubResource("Trim_11")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_010")
-},
-{
+"texture": SubResource("Trim_18")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_011")
-},
-{
+"texture": SubResource("Trim_19")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_012")
-},
-{
+"texture": SubResource("Trim_20")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_013")
-},
-{
+"texture": SubResource("Trim_21")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_014")
-}
-],
+"texture": SubResource("Trim_22")
+}],
 "loop": true,
 "name": &"move_right",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_081")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_082")
-},
-{
+"texture": SubResource("Trim_68")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_083")
-},
-{
+"texture": SubResource("Trim_69")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_084")
-},
-{
+"texture": SubResource("Trim_70")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_085")
-},
-{
+"texture": SubResource("Trim_71")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_086")
-}
-],
+"texture": SubResource("Trim_72")
+}],
 "loop": false,
 "name": &"attack_left",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_057")
-},
-{
+"texture": SubResource("Trim_11")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_058")
-},
-{
+"texture": SubResource("Trim_53")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_059")
-},
-{
+"texture": SubResource("Trim_54")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_060")
-},
-{
+"texture": SubResource("Trim_55")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_061")
-},
-{
+"texture": SubResource("Trim_56")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_062")
-}
-],
+"texture": SubResource("Trim_57")
+}],
 "loop": false,
 "name": &"attack_right",
 "speed": 12.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("tex_069")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_070")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_071")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_072")
-},
-{
+"texture": SubResource("Trim_8")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_073")
-},
-{
+"texture": SubResource("Trim_9")
+}, {
 "duration": 1.0,
-"texture": ExtResource("tex_074")
-}
-],
+"texture": SubResource("Trim_10")
+}],
 "loop": false,
 "name": &"attack_primary",
 "speed": 12.0
-}
-]
+}]

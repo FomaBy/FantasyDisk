@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const TARGETS := [Vector2i(1280, 720), Vector2i(1920, 1080), Vector2i(2560, 1440)]
@@ -28,6 +29,7 @@ func _capture(target: Vector2i, absolute: String) -> void:
 	main.set("selected_character_id", "priest")
 	main.set("selected_weapon_id", "priest_censer")
 	main.call("_start_combat", false, "elite")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	# Level Up intro rays/sparks finish within ~0.7s; wait long enough that the
 	# evidence matrix shows the stable picker rather than a transient burst.
 	for _frame in range(75):

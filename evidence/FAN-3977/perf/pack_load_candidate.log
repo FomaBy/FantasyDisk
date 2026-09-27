@@ -1,0 +1,47 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+| pack | frames | textures | load ms | frame ms | texture MiB |
+|---|---|---|---|---|---|
+| enemy/ash_marksman | 184 | 2 | 18.1 | 33.8 | 39 |
+| enemy/bone_caller | 184 | 2 | 16.7 | 19.9 | 40 |
+| enemy/bone_shaman | 184 | 3 | 17.7 | 22.9 | 44 |
+| enemy/rift_cutter | 306 | 2 | 18.0 | 24.3 | 35 |
+| enemy/rift_shieldbearer | 184 | 2 | 14.9 | 20.7 | 32 |
+| enemy/small_biter | 184 | 3 | 20.8 | 29.1 | 57 |
+| enemy/spark_runner | 208 | 2 | 23.0 | 36.3 | 39 |
+| enemy/stone_bruiser | 216 | 2 | 12.4 | 18.9 | 33 |
+| enemy/venom_spitter | 184 | 4 | 24.7 | 41.9 | 80 |
+| enemy/void_mage | 184 | 3 | 18.9 | 29.4 | 46 |
+| enemy/winged_spark | 224 | 4 | 25.2 | 42.3 | 67 |
+| elite/iron_bastion | 344 | 5 | 31.2 | 46.9 | 87 |
+| elite/mini_bone_warden | 488 | 4 | 28.4 | 32.4 | 65 |
+| elite/mini_plague_bellringer | 488 | 3 | 25.8 | 37.1 | 56 |
+| elite/mini_plague_berserker | 424 | 2 | 17.3 | 24.1 | 33 |
+| elite/mini_rot_hound | 264 | 4 | 25.3 | 39.6 | 76 |
+| elite/mini_scavenger_reaper | 488 | 3 | 26.9 | 40.1 | 61 |
+| elite/mini_shadow_devourer | 488 | 4 | 45.7 | 48.1 | 70 |
+| elite/mini_siege_rammer | 488 | 4 | 31.9 | 45.8 | 72 |
+| elite/mini_spark_wight | 488 | 3 | 24.9 | 29.1 | 54 |
+| elite/mini_swarm_sniper | 488 | 3 | 25.4 | 36.6 | 61 |
+| elite/mini_void_phantom | 488 | 3 | 40.0 | 45.9 | 60 |
+| elite/night_stalker | 368 | 6 | 50.6 | 56.6 | 109 |
+| elite/plague_prophet | 248 | 2 | 15.5 | 22.4 | 39 |
+| elite/shard_marshal | 504 | 3 | 25.2 | 37.9 | 59 |
+| boss/ashen_colossus | 448 | 3 | 51.3 | 54.3 | 56 |
+| boss/bloodthorn_lion | 448 | 5 | 60.2 | 63.8 | 85 |
+| boss/bone_archon | 448 | 3 | 45.9 | 54.4 | 61 |
+| boss/brood_mother | 448 | 4 | 63.4 | 71.6 | 76 |
+| boss/disk_devourer | 328 | 5 | 40.2 | 53.4 | 90 |
+| boss/rift_warden | 448 | 3 | 39.2 | 52.5 | 61 |
+| ally/druid_beast | 26 | 1 | 10.0 | 24.6 | 5 |
+| ally/druid_ghost_bear | 153 | 1 | 11.7 | 17.7 | 17 |
+| ally/druid_ghost_lion | 153 | 1 | 12.0 | 20.5 | 15 |
+| ally/druid_ghost_panther | 153 | 1 | 10.6 | 25.7 | 13 |
+| ally/druid_ghost_stag | 153 | 1 | 13.6 | 18.4 | 21 |
+| ally/druid_ghost_wolf | 153 | 1 | 12.6 | 26.6 | 16 |
+| ally/druid_pack_spirit | 26 | 1 | 9.3 | 20.5 | 4 |
+| ally/homunculus | 26 | 1 | 8.4 | 15.3 | 4 |
+| ally/homunculus_tank | 206 | 2 | 15.9 | 20.6 | 31 |
+| ally/leadership_echo | 26 | 1 | 5.9 | 12.3 | 3 |
+| boss/secret_ascension_boss | 912 | 14 | 138.0 | 147.3 | 287 |

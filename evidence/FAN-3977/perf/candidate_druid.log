@@ -1,0 +1,28 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver candidate_druid: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase route_map_first_show: 8 s, avg 118 FPS, 1% low 112, worst second 112, >50 ms 0, >100 ms 0, longest 22.0 ms, peak texture 1396 MiB
+phase p2_48_enemies: 60 s, avg 116 FPS, 1% low 106, worst second 106, >50 ms 0, >100 ms 0, longest 31.0 ms, peak texture 1488 MiB
+phase route_map_after_p2: 3 s, avg 115 FPS, 1% low 108, worst second 108, >50 ms 1, >100 ms 0, longest 93.7 ms, peak texture 1439 MiB
+phase elite_night_stalker: 20 s, avg 111 FPS, 1% low 101, worst second 101, >50 ms 1, >100 ms 0, longest 52.1 ms, peak texture 1032 MiB
+phase route_map_after_elite: 3 s, avg 120 FPS, 1% low 118, worst second 118, >50 ms 0, >100 ms 0, longest 27.0 ms, peak texture 957 MiB
+phase boss_act1_rift_warden: 20 s, avg 112 FPS, 1% low 106, worst second 106, >50 ms 0, >100 ms 0, longest 29.8 ms, peak texture 1001 MiB
+phase route_map_after_boss1: 3 s, avg 120 FPS, 1% low 120, worst second 120, >50 ms 0, >100 ms 0, longest 14.7 ms, peak texture 946 MiB
+phase boss_act2_disk_devourer: 20 s, avg 91 FPS, 1% low 72, worst second 72, >50 ms 9, >100 ms 0, longest 57.0 ms, peak texture 1049 MiB
+
+| build | phase | seconds | avg FPS | 1%% low FPS | worst second FPS | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB |
+|---|---|---|---|---|---|---|---|---|---|
+| candidate_druid | route_map_first_show | 8 | 118 | 112 | 112 | 0 | 0 | 22.0 | 1396 |
+| candidate_druid | p2_48_enemies | 60 | 116 | 106 | 106 | 0 | 0 | 31.0 | 1488 |
+| candidate_druid | route_map_after_p2 | 3 | 115 | 108 | 108 | 1 | 0 | 93.7 | 1439 |
+| candidate_druid | elite_night_stalker | 20 | 111 | 101 | 101 | 1 | 0 | 52.1 | 1032 |
+| candidate_druid | route_map_after_elite | 3 | 120 | 118 | 118 | 0 | 0 | 27.0 | 957 |
+| candidate_druid | boss_act1_rift_warden | 20 | 112 | 106 | 106 | 0 | 0 | 29.8 | 1001 |
+| candidate_druid | route_map_after_boss1 | 3 | 120 | 120 | 120 | 0 | 0 | 14.7 | 946 |
+| candidate_druid | boss_act2_disk_devourer | 20 | 91 | 72 | 72 | 9 | 0 | 57.0 | 1049 |
+candidate_druid: menu texture 28 MiB -> after run 310 MiB; act-1 peak 1488 MiB; P2 click frame 187.9 ms, roster wait 0 ms; elite roster wait 205 ms
+WARNING: 12 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2535)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

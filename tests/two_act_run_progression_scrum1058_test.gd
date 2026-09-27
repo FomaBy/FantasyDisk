@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 const RunAutosave := preload("res://scripts/run_autosave.gd")
 
@@ -187,6 +188,7 @@ func _test_secret_boss_completion_clears_autosave(game: Node) -> void:
 	game._start_combat(true)
 	await process_frame
 	await process_frame
+	await CombatStartSupport.await_finalized(game)  # FAN-3977: spawns wait for the roster
 	# _start_combat clamps the selected level to account unlocks. This focused
 	# flow intentionally exercises the max-Ascension branch without mutating the
 	# persistent profile, so restore the branch input after combat setup.

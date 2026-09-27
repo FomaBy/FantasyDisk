@@ -1,0 +1,6494 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "homunculus_tank",
+ "tres": "res://assets/sprites/allies/homunculus_tank_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 206,
+ "unique_frames": 206,
+ "source_rgba_bytes": 216006656,
+ "page_rgba_bytes": 24682496,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank_trim_0.png",
+   "width": 2048,
+   "height": 2047,
+   "sha256": "aa73075d54877bc739277726729796d357f0b1f5ade818cb565f8ac0a51d0dcb"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank_trim_1.png",
+   "width": 2048,
+   "height": 966,
+   "sha256": "5b177bfb2195e7e7d2c6b7e45d965a3c4cf3e55fd7dddf97b0d2fc0dd7282191"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_00.png",
+   "sha256": "78f4fe75bb424cb46402ca7a2aa067fb6764825fbfcb88e5cddee0131cd26fe8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_01.png",
+   "sha256": "1a13e3e3f9ce937bf8bdb587afaa6466dc68cfc5eb0c17e6aec83e84ce2a4eed"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_02.png",
+   "sha256": "754150bc5a18591fe4d789cdc7d1865338710e4c197f3b55bd9108c0a9bce67e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_03.png",
+   "sha256": "b7840a9167bd5a82be0c274cc5860ea42bc9b10397559b31e25934a5e72a1556"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_04.png",
+   "sha256": "a8749f74a1b9c4792b45aebb6c980ea80aa2d17ac81669843c65e76f33071859"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_05.png",
+   "sha256": "134df81ac4649e67dd79d2cdfd16777c79a6b4f5383acddfe124018e2ef53812"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_00.png",
+   "sha256": "5688638d7d77ae606491442f3c54c8a523e2e4dad1897878272fee836355eb3d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_01.png",
+   "sha256": "0dcff97e869f0c38170e518fb83709b5364f44f876c3c532ca66116b1752f6c3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_02.png",
+   "sha256": "23d2bd661885df05db6379738a8d8c304d189d7ac1217e37902a870e6938fce3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_03.png",
+   "sha256": "a83ecf3ef9a5fd8e55ee735b5c491d47787cb30594c844454b9c6112be61006d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_04.png",
+   "sha256": "8a3b4fa87463d85d2b65fcba9a9dfb09d7d8698dce8a58c08de4d8363592ecb2"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_05.png",
+   "sha256": "71fea1f8f9210cec855f8ed369abb1049636c6fc35c9360c5894b24b0d2395d8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_00.png",
+   "sha256": "f82afa0385d71e6bc580d47286b496291f5090103943240eba03b0965b36dc13"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_01.png",
+   "sha256": "756c06f095fa15573324d2abb718a48d20ff7614a3581032417820b645ad9db7"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_02.png",
+   "sha256": "50d0bf13b8cbff05353b75ebe94bf54041b5e121b0768582bde8e24eafc013e4"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_03.png",
+   "sha256": "0a215fdd461297c1adba03e684cce0e00067c19d3d8b2342241c2cc47a6d4917"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_04.png",
+   "sha256": "9a99832603c0d190f842bb59a3e44c1e535f80030d6b55fada9def2a76c42d70"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_05.png",
+   "sha256": "b49e653f6d7a0c50a908f170e2acd6d4f6e9e431db38e65d0eae50341a8112ac"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_00.png",
+   "sha256": "08961e9551ecb4faf291428368d01a6a0d204e4eb2c9582e656bec35cd2919dc"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_01.png",
+   "sha256": "24c26b254aea2848a12702983ee013e2404b716dffece5af70bc896fb4497034"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_02.png",
+   "sha256": "55a68f21a031ebab272b6edb010ddf41b3a1a431ad8006705d298ebfb3200461"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_03.png",
+   "sha256": "bcac5c7561cc4f1d6aa886141e59d1e4eb6977d8d1e6c54571d316b65eeb0df7"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_04.png",
+   "sha256": "8288c053a4c221a24ab43f91f276b1e56b8cda34f7ebfb9a385533b47ea5b1c6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_05.png",
+   "sha256": "7f39ae517cff83321f3748065277950d2117e76c9af716ad44accc4be2b14aea"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_00.png",
+   "sha256": "427c3cf9d04ed732cad8c28853a22225e5ee6f95b0cf86c333a9966f1c721db8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_01.png",
+   "sha256": "a4f70795a19c529e803697b17271f8981043fb4c8d856c6c75016f0c251f01ac"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_02.png",
+   "sha256": "0f0cebada79403aa132eccf444e09d55e1e205ceaa16506d286825eeaf8e0068"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_03.png",
+   "sha256": "18d4773a22f459787e2baadc47c9d322e27bd00888ea384b0da7951539085efd"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_04.png",
+   "sha256": "223e1df5088480b5ec3b0e62d948887aa80d64087921f585dd248eb8d2d4bc8b"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_05.png",
+   "sha256": "2375ddda0cb02e8564b7bc545606aff98b48608c5496e41734dec535e605be95"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_00.png",
+   "sha256": "6f314b82423c517ee5d0de9290ef4b23b56ee9193b211c4f562aaab59f81624d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_01.png",
+   "sha256": "055fb34e13cc13d9e9c59c0f0c72af4beaf398483448fbcc70786c9ea26dbd10"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_02.png",
+   "sha256": "79e026a4c04fa9a9bda422aaf6ef36681d7eda6b321926266157357abb6dc450"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_03.png",
+   "sha256": "228d574f522b2a99d601dee5623e0e29a7b8f60b226d4090a83b8f17294a9a79"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_04.png",
+   "sha256": "de9221c5e7d64fdfeb42e58f1962409ba31ee243d0f9798d8261f2e7e31d7ff3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_05.png",
+   "sha256": "c9de6ef5b681178cb9be0b022f02effe6d6f0bb6172860493afd251170a44321"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_00.png",
+   "sha256": "73adf093e89d083cce391c44b6b987a586e691ee2a411f26c7f0a488248ff7ec"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_01.png",
+   "sha256": "2e8436e39716a148e30d8ff86ebc92535d587d5332b91d613ccfc82cb14682a3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_02.png",
+   "sha256": "4f3c8df9e89b95d5208a1d74549a2c939b84a946e9bfbfbaa52e24b247a0759f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_03.png",
+   "sha256": "6b3d5b09dc7e69b2390234fff2e93a0c02aef7e2a325926d689dea40d783b86e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_04.png",
+   "sha256": "2f65ba6a28d015eb8b7846bf1006e40e73c6ebc24550fc806b95538acd617f34"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_05.png",
+   "sha256": "e6bd707e7faf03ff66dcc9a486a633dcb9fe05636c33a1f264cfb6428a57fdf6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_00.png",
+   "sha256": "564894b9c0513b53b663dca00f07f063c9eb50245f9e5acd5bceb06fe1749ac4"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_01.png",
+   "sha256": "46907bfa5c5bd397b95541b5d3b88dfbeadf2dc1988d2465f6901ea5eb6fb960"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_02.png",
+   "sha256": "9cd4dc76945f4bb32a56b6872e45c40e0649f42a4a4d1b3b34bf3007c4d42319"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_03.png",
+   "sha256": "f56c38addff959d13c5724f5075ec3b686d196cd722dc5ee971072f776c5556a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_04.png",
+   "sha256": "0adeccc04b0e419559afdb6498578463e5759bcc963b6f3a3de8ba2256a16106"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_05.png",
+   "sha256": "66540ba0206496a8c7dfcf0aea729716bb3aa237d0f4c77d68ce2f1b352a30d7"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_00.png",
+   "sha256": "6fd0026ac0f7eec818cde1bb3f26b85d9947da4dfdfcb8ba60a29b531145bc7f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_01.png",
+   "sha256": "6a1e6fef7b26468538cce77c01b2d17921df456c6c6d5b263986558ba7ba6ef8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_02.png",
+   "sha256": "a75e4ed6a8e2719a04c9a4933c994834d56fbb075d8da76f27a26ae5170093c9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_03.png",
+   "sha256": "db9049ccadc7a7416c54ea31415efff84de6fd96536fc38de288cb2f806ecdb5"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_04.png",
+   "sha256": "6d5339529f9e17bad0b1aeefc4a9cb4a3767d0a4e0f31a2e9ac12aefbc37d447"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_05.png",
+   "sha256": "9884d2c3fb5d56083baa5e730b38b256a9aff33ec57e5afb4d663da698efee0e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_06.png",
+   "sha256": "46204022f16d8fb96a66353fbcb08d1ce6fb1f3876818e50d2c67f97a0858e9c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_00.png",
+   "sha256": "138b4d91262687e7f183e18f6da00463450c456cfdcaffee6ec17f77b8f73308"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_01.png",
+   "sha256": "eb0ab080b800bc35f1b975aaa9ab7e7f08910d288c7c6edec157b9357df00d44"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_02.png",
+   "sha256": "673b945866d969a8680b77fa0bfb6ee16926465ef77f1d3967294259c7e3cd4d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_03.png",
+   "sha256": "c0441b80f3a12612366dcea366beabca0dfef94e91000298572d58352823ca1a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_04.png",
+   "sha256": "fa2eeb13d63b86437a38aa4bed81b1b9dab1e4796bdc3166525d555e918b6192"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_05.png",
+   "sha256": "894d916f1e4f214b11302b4d956a55e6dd695f19464b0aefc4a5bb62c23027eb"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_06.png",
+   "sha256": "0009115828ad19325de7f1af38f62533a5296e6eeef27d4defc7efc2332a760d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_00.png",
+   "sha256": "efb1038fe52be3633abcc710319f7ecfccfb71685f99d43f80f75ae049e3803c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_01.png",
+   "sha256": "b89bf776c61ea06e1ba03da970c37742fbaf7b03fffa0f266e4d8ce3ca8bb300"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_02.png",
+   "sha256": "193cb664c0ba8e13b6db3945f37f097d7c7e5a98e3f346b6897b8f4ef668ed07"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_03.png",
+   "sha256": "20289f091d9b109ad254e5bffba768267b0e5ff307f0b7c96a452e4cb6973d3b"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_04.png",
+   "sha256": "474cc39cd7c5a22b149c887a25ac195de28881194e4e694a18cfa986f7a367b2"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_05.png",
+   "sha256": "140733e7e11ed696caa343d613a41763a8b6bfffc420a06240bff02fea5eb0be"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_00.png",
+   "sha256": "1e6cdb419a18f48eee3608cc416fcda2a31278d50529edc884e5ae6efb95f0e5"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_01.png",
+   "sha256": "211f6a570f80ddb8a9932fb0b77b4616cbae711064ccad5889f7b8f72bd76df1"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_02.png",
+   "sha256": "46ac2b4f1731beb7bd1607c3e769ba851f99b6b81c9a017a8596768a338cd647"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_03.png",
+   "sha256": "966614ff9bba68197ebeb2704d55824ae30d076bbf2f9c492faa68725e76b02b"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_04.png",
+   "sha256": "cc76f6d5be3e48b3f1e3ca3bb5969bf7ca50592ed5a943d57d02652514664afd"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_05.png",
+   "sha256": "83b64220e18976b307804c255c233ac5c96dbad2cf428e529e281ad738661c4c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_06.png",
+   "sha256": "0531f280464de9393c32a2373bee65e4ae96f6beb5e542c00cf701b38ed4b966"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_00.png",
+   "sha256": "64a166b0ede7bb50cbdb786d9b35822d6951dbe34c5e04a60f8444c4b325e381"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_01.png",
+   "sha256": "26413a412caad0f7fa8f9e3a7a7f46af419680ee0cccf4387909dd709ea1274c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_02.png",
+   "sha256": "d314c55dd6d178b0e6eeeb13be628159fba95f20ecf3cf03651448e6e8b2a6c6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_03.png",
+   "sha256": "528d781a2e5ce343d485eda51c88a741ea8b061792b5352e13f8411e3303a780"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_04.png",
+   "sha256": "180c6c0c9a8013a44daf6114a5ead50f40031a5256753385d15c203427276ca5"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_05.png",
+   "sha256": "daed3c4aec1cecec7ee730b9c3f4349c6f01a8f464edafa807c2c07603dc3154"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_06.png",
+   "sha256": "7fa478800742c6d117e46b4282558ee14a28ecd2a30949a552e129ca88601922"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_00.png",
+   "sha256": "75338753b4f65ed9c0da7e2b42a700e9d13d5876af3ad42f7d32446dbc404bc7"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_01.png",
+   "sha256": "5a01222593279420a51b4018c022c0f828d6d38d937fb6eeabcb5739ad3f33d8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_02.png",
+   "sha256": "30b6e59d68d232d9006856a6ae0ce69bf6b63411f51e8bde0c4bb0959e6c441a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_03.png",
+   "sha256": "721ee9cb3b40636455b400a4a392e5677c989666538a9ad132ffaec1240869c0"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_04.png",
+   "sha256": "a5393697bb9d6a1cad8f6939ff2d38f43ab2d3dfbbe72c8dbb9c4a557aff45f6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_05.png",
+   "sha256": "6b9920296b78766dc41cc2f5626ea285e5a6fcedde6d91a449ce947263f6f4d8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_06.png",
+   "sha256": "9c0575ccbc96c599f2b9f18a5c5244000a425362e6e957eea6dc67085b99afff"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_00.png",
+   "sha256": "94251b44f86ad4713c0c1eae488c73f778b670ffabd38cdb7b9879ee4b30c1a6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_01.png",
+   "sha256": "72f793f2bc13b1c3ad8cba6d9d703bae87a29a1893b64398b511944b424c3bf5"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_02.png",
+   "sha256": "02af8c2e5bdec3ab314550d48ad0c9e41dc4bee16cb3d3c248f0823231f6dd35"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_03.png",
+   "sha256": "bfbb62b4540bbb87c2c3ea4168c389b865b17e145768bc16bb61e936062b55b8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_04.png",
+   "sha256": "86359a88c3142b5e3777533009dca391f93cb1a4b722e2b52114e2c1b85c4065"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_05.png",
+   "sha256": "75eb1980314608578f6e87c5dc28c52025775a1339b58df2ba8e240343446431"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_00.png",
+   "sha256": "cb5d4a9df7b97e8f0023797ef885b60e2cce185e78cce2bc9b72503d9c967ce3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_01.png",
+   "sha256": "55400de4b38b6d939f4b10425afca2a6aa9cf67b492c627841ed1c5d3c3d7ead"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_02.png",
+   "sha256": "f500f24d66d2e111d92bd906c966d05e0ee3a71c05a63770223aa17df038aed7"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_03.png",
+   "sha256": "966f8c059ed0a7bf61ef4461ee37d1177bc4d7c08a66a8809189025d58215968"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_04.png",
+   "sha256": "c13c113d02c3862ba837fe149d30c2ab5e59d58410b12752747e4bac26c3f03f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_05.png",
+   "sha256": "1620954941d702cec3898ac367f9d42e19b124260f6dc408f4d7f084f3c447ab"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_06.png",
+   "sha256": "3cbe578c5c869447515ef8c954ce791d98c9c84a253e2059ea91b278b0592ddb"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_00.png",
+   "sha256": "04824d321df6b56aec6d7ac7d9591ed6d6d91825d9678b3f8ca816d4108b82a5"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_01.png",
+   "sha256": "ccedcada9fe76ac41302c6191e04184bec0889736574d3366ce70f25a25a3609"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_02.png",
+   "sha256": "306f6a702a1aa75ab34e6f1eba86721e3d52727b5142c0ccb9197698c19fc287"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_03.png",
+   "sha256": "e6bce1e3f96d20aa38b76c69b331621916069c491f74cef00c270a795197c50a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_04.png",
+   "sha256": "b74f12f8e81187c5294b42d558978aaa00b78654a4c1eee2aebb35bfabfc1330"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_05.png",
+   "sha256": "493d8537025b93c4d4460e8b5d97f62faf01ec2441db5651aaf613f2125bff70"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_00.png",
+   "sha256": "9bae1be273c5a955a5bd40fe74171c858e23e83c8ae0965405761837d34df1bf"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_01.png",
+   "sha256": "2c4e6a6735e3227e887d29fd4868e890311fdfc6c9f05e9a928b80fde4d4e573"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_02.png",
+   "sha256": "39ce7916e81c237a0339618e73e85c5f5a774148682b3814a6745125778847e3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_03.png",
+   "sha256": "fea221e42756ea64c894f603c9038d38716af60f9edeebf1e5b9fc8aa57802bd"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_04.png",
+   "sha256": "e57e050b63d094a77c3d2da7dc73008ec5b357faaa286e79e96a4f24f1225a6a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_05.png",
+   "sha256": "e81b2f741a0f8d202804e288c0a4c09a71415771a88b1ecad344b23f11afdd74"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_00.png",
+   "sha256": "e99ba82bc27cb800c4f2aa968fcbafc60ca7ba6f008e162796f6580b3e078415"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_01.png",
+   "sha256": "069a874095707a04995aad483d50f2feea5158a4b04b1c0ddf8cf43b3f1a6014"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_02.png",
+   "sha256": "ea954c2a32ad9674710ab9d5f5a1f2b09397946e2dd78cf8cc4f41e55b99ee6f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_03.png",
+   "sha256": "e14e58dbc95ba3e07add44324ed4731c63df31a01299841bdc7ba27a7a8cb6e4"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_04.png",
+   "sha256": "e4a93a2bbf1514c820fd9779e8775036c09adbe2ecf42ae47391a40f8d990d31"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_05.png",
+   "sha256": "d5e352e6fd7ba1d7023c9123331c228e6d042dcaad4c088f6ee32323c2d4799a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_00.png",
+   "sha256": "b828ac6b194940c99a18f0ef94803a9a587a6b91191b91abe0c50c9a03f64ccd"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_01.png",
+   "sha256": "822218aee603005e97ca9edfc178c89b93525fa8f7b08453426e46ecb6d65b8d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_02.png",
+   "sha256": "afcdab05341e6898c386ca09070878fe2826975184701446d641d235e21e45a9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_03.png",
+   "sha256": "2e37514917e8fb8410dc15a41d2beadb689aa38737e6015a1e04ec71aa281dd1"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_04.png",
+   "sha256": "98cf2b1af82550773f1ca8e386b09dceb783c164feb48cdb33fc2741c2997dfa"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_05.png",
+   "sha256": "54a1eac4faf12c7d881eda8194e938e61f6d9e482c51381fa46af42431662ea1"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_00.png",
+   "sha256": "fe9bc47d6de0467c6aedd0d1a16f61c7ea247bd15a8e212ce2040a9177a455ec"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_01.png",
+   "sha256": "568af91218126308e155aa6c33264c4383181f4f979f111690638d9d6eb0b58e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_02.png",
+   "sha256": "bac261b2304ef007a2021000451b7a0b0788c34f9cbcb1b3fec53ec2cb19c993"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_03.png",
+   "sha256": "7e8f9bd55fca037c6ac8dc57dd3f96942390aed1536bd799b3d03eae1435fc09"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_04.png",
+   "sha256": "556fd82276ad71b584537d856be1fbd94b3b10676f56552aec3f868bdc15aa3f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_05.png",
+   "sha256": "7080b72fe37ed4737b7c53039ecfe7a607fea9a7c53ebe108c0145e20cdf37e1"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_00.png",
+   "sha256": "d76d29d216b29315088506acac234d4df054f73729bb01c71ae1561790278675"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_01.png",
+   "sha256": "b63b0d8b9e39bbfb4d76fa0f2910aaea4e27d5985ea205fd3a779a2976b02348"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_02.png",
+   "sha256": "3d79c6d05e12aade56e80565e2dfe74b5ab819732ae0c28184d44fe28f2c156e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_03.png",
+   "sha256": "e647d00bed404177b3f23b8ba2d7af9e07f309bec69202e03b32ab7675da6788"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_04.png",
+   "sha256": "f32cf8b933cedcdf6a62904616266cce3fbf0d23223897fff0071fc52849d19e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_05.png",
+   "sha256": "eef438bf475ddcaecf12a67b12e91c29afd639f13b5101929695022ca94af656"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_00.png",
+   "sha256": "52bc44359fafc2ddd4317638e331f5c07b28cd22a43f4200cdec3fa836101136"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_01.png",
+   "sha256": "82cf2b9c80efbb7f08ba596fa32b82cd0d719075351912e602c0b90ad7c8fbde"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_02.png",
+   "sha256": "7f96efa93787e56fbc8dbe3518c344556185c7cfb915e89c8fea3d5aa45274a9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_03.png",
+   "sha256": "65af39371ec303ce19a9dd910225b09f1bcdbc9aa01e1e26b6ced37e9ed41ce3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_04.png",
+   "sha256": "d35e8f2b3fc2c9cac8bfac2e4161da89fae1ddacc79e3e2c0152d63efe3d5429"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_05.png",
+   "sha256": "1f7bbfba9fc6ef2a9e54e81970c877c01273610342118e3facd5cda318167257"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_00.png",
+   "sha256": "6642ef5ed955950f92bd6264ebfb95b00dae7e912dddda549ce6fa5d6955a610"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_01.png",
+   "sha256": "69701afa1cdaa093397bb445af58f36ce85b9f2f1936f1863ef0c54853d1831d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_02.png",
+   "sha256": "6b3f54e2f86fef7624cd3d8601795086f1ce26d0acdb1d72678418b0adec9d13"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_03.png",
+   "sha256": "ee02fc8547dfcbc6aebcea24641e3865c4c8f0f629427c29c19b8fb1544c79a9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_04.png",
+   "sha256": "8d7a80cd0707afae80f7b26ec3d91bb216283a9f455f0a71ed1295593325e39e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_05.png",
+   "sha256": "50c28426d38e958f1a4c76b3147801bb22a24bbd0d27c8d70edddfac93afe179"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_east.png",
+   "sha256": "b62d5007c6539c2b3ac85e64c7a9759ba58764005e3ef78dd38aa54b532601a7"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north.png",
+   "sha256": "255ded80a8f1038277646d3f5ddf75ff27d92cb90d99d4893fde26f0cc9286db"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_east.png",
+   "sha256": "e8139070b9f7cc721608442798dbf73f5764d3285793a157e9f9d09fa861f163"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_west.png",
+   "sha256": "ee3b883e0b1cbfbb97696d28c62586ecca5b9d8d7fa92b828860d3caeb239a46"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south.png",
+   "sha256": "2407ee37a5ce523430d5b01f39678b5cb0df3419d1581a9aeb7423dd20ebd9c8"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_east.png",
+   "sha256": "4b1962040e89da9bee39a773a5c2fd1e48b6d44282abf5e9edc5ac1351d8e3db"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_west.png",
+   "sha256": "4942f3ee8f085fc4878cb5699531e45b19e994baef73d5e80e8dcc811b7d1ec1"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_west.png",
+   "sha256": "8a5ea1434420dd553e8b4c4951eb88fcc1065b54f4ce69eeccf40be255b9fe75"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_00.png",
+   "sha256": "983cf9d190fb619d2d5722a40904acccf2cef478b9deed6ff2508cfc6cddf647"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_01.png",
+   "sha256": "b5cfaf1b1ee23166ea9ecf2ddf0fcc622b021604a463b662c569581e695c58c9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_02.png",
+   "sha256": "7cc495a966e1c964b9404f1f10f5bd9d27e1d04ebd8694f7932c139dafd7c06c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_03.png",
+   "sha256": "89e8bb2ac456b17d7808a4c2d64f8f0add7350161e14c8c3ec553b2cdeeee6bb"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_04.png",
+   "sha256": "0886a106294b62a386a31054c23d0728afd2029a192d1738a322372d1ef04f4d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_05.png",
+   "sha256": "d18ca062201478805f3d1c6fdf796dd01fd85a471299dba18a0cab65ea32ce16"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_00.png",
+   "sha256": "7c4c67535a7defc0522375a70c40d0072ac56f79ca84674ff93526c3c3976708"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_01.png",
+   "sha256": "9b8b918d40392b014ab0b49d22f147dea59813d42d3a282ac0712dca3ebf9f7a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_02.png",
+   "sha256": "317b33ef9d28d51652b74515242f3d2ff32e7e0256ee0063b4a792700c175089"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_03.png",
+   "sha256": "1d034641772a79e84a8e487a790147c673dc57b6ec2d9bc1b48f878f915e1254"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_04.png",
+   "sha256": "b1bd7326352e21606089b2d374b7aa7da4bb3dfd6a778753c6148fc454eb939c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_05.png",
+   "sha256": "3f7abb7808c26f6eff69fe480fa71c9d4671d3273b8fe3059c2334ca9057b85c"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_00.png",
+   "sha256": "3ac8bf6f5a06962dfdd252db5301d13827ad5ed000c672c06db34a31f91c10ce"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_01.png",
+   "sha256": "788b99a03fbff801aca5ca671f63aaada50914b6f5691d7ca99b5822224525dc"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_02.png",
+   "sha256": "43c5603580c29b0dc835d1353b455c14e2810d3b12e7396e8d172d22c8413455"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_03.png",
+   "sha256": "2cb95f7e08ab4ef65e1280cc515b0587a903387f158b062803b9e533264c9fbe"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_04.png",
+   "sha256": "2b4a7b72c106e6b49e83348dc4eb389cac2324befb18ef77e394c7a377cb5e12"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_05.png",
+   "sha256": "9efcfd0c5842702fea99be4ce41b070ecf76971215b62c9302d2f2b9b96b500a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_00.png",
+   "sha256": "396cfc1fe117dc1f61ad7714b301b95f4e4fb8837da4337c7d38430730b69dc6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_01.png",
+   "sha256": "61de50b8b2b1b7def5ca5172a5d63d3c589d7a75bd62c3d94f697a3167900b9b"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_02.png",
+   "sha256": "955ad5c57d60ac72f29b9daeaff232cc49c907c251fd162b0b3d8b82280e9a26"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_03.png",
+   "sha256": "ce49a722e8a98cfb666b8e20112b5e25792db99d80e46c69d88ea60368936687"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_04.png",
+   "sha256": "97351d38a269fb2a819f51be833d46f86eeb908b8cf0ff50649d8b031176b8fe"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_05.png",
+   "sha256": "9bd56b567613be44b83dca5d88891240539b3111cc972651f086db8ee7a1c46a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_00.png",
+   "sha256": "2fa92954e6c35e30c7f20873898d9e379637e3d87152ea19fc50c1319cb48e25"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_01.png",
+   "sha256": "ec91b561976bd1d3a4414cfa7206fad7fdb5b63d7a40a159ea4573f81958dd37"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_02.png",
+   "sha256": "5ab34e5ef97dff912f251aa0a995306c4f4f7807065fd927176b623bfc767fab"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_03.png",
+   "sha256": "d29687a56d2abdcf2fa4fabaa2341044a478f5918b62542dc9a78ffb5b8ed2a6"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_04.png",
+   "sha256": "8f4e3a2f496a3c49b878c15e091060f6c6c942758f9f311fea83d2136f9ab89e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_05.png",
+   "sha256": "16ec39808222e4592062eb386d9cf5b93b2c232a242f0f65edff1ffb0e7c5b89"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_00.png",
+   "sha256": "81c8aa8858b040a58237d39c470cfe0c1ea1f3fef8af5922548fd00f69d81c50"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_01.png",
+   "sha256": "48cf91b445df88b3150cf5dca38f52fb985e6c735eb480929f139b2aacd9fb1a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_02.png",
+   "sha256": "c05501a09b0d3436367b0fc2505954c5dab4dbb5eca7e5e259ba3ef37c5866d3"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_03.png",
+   "sha256": "32f88ace786b4290ec2c1416d3c841d03a992b4f07538a10a862583eb1cd6c6a"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_04.png",
+   "sha256": "d56ad0d3502f8aff345ef557dc8e9e97595a0684f69c41eac16fc408e692258e"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_05.png",
+   "sha256": "23529e5e0b85bbe7436704c8ae6d74fcc9d0854f4581037e8651df7fd1d5ad2f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_00.png",
+   "sha256": "db54a6e28b5e24e355fc66dc309fea35c167e18339c77377fea893c49927617d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_01.png",
+   "sha256": "077a0295a22fed01c2e2876c48feabcb6b7f133864ae250eafaa9a35f17d9c4b"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_02.png",
+   "sha256": "2bb8e3d492cc23daa5bcbcb73a22d65c1feccb3b93de9c0ad508427939b52860"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_03.png",
+   "sha256": "3f27ff7b2c954d426f54bf58afff3d7f3b303bc7f718adf530839d6cf7e76515"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_04.png",
+   "sha256": "3d7252f4deac95c397434c287c1c886e1e433e81cd14849bbe1c1d8adb958adc"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_05.png",
+   "sha256": "393815d9241a3e53c3321c4dcdcad8a727e7628b5296bba17c1cb9819318fe43"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_00.png",
+   "sha256": "678e937a32d8353341bee8a3ec76e85c179b60eafff7946602141d29a954cee9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_01.png",
+   "sha256": "57e7bc2ae01db169e41960a6f6b4ccb96fbea82f4082f6687ec540c3f8bc4363"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_02.png",
+   "sha256": "3079243d66976121a213c100e2e9e69785702f0ddadd66c93c101f3526c454e0"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_03.png",
+   "sha256": "178cc26e14a78664a71cccb17346038da350c93d8fafaee1cd037ae5f2fc118b"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_04.png",
+   "sha256": "c5bddbcda04a3cafe8b5082e87c858e27e611383bdabe83c6870166a9b08ef2f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_05.png",
+   "sha256": "1dcb8301d95e77aa9fd555c6e249a76e884be3cf1192d9cc25c80235936486f5"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    210,
+    210
+   ],
+   "margin": [
+    151,
+    271,
+    302,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    213,
+    1,
+    206,
+    210
+   ],
+   "margin": [
+    153,
+    271,
+    306,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    421,
+    1,
+    203,
+    210
+   ],
+   "margin": [
+    155,
+    271,
+    309,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    626,
+    1,
+    203,
+    210
+   ],
+   "margin": [
+    155,
+    271,
+    309,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    831,
+    1,
+    188,
+    210
+   ],
+   "margin": [
+    162,
+    271,
+    324,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1021,
+    1,
+    188,
+    210
+   ],
+   "margin": [
+    162,
+    271,
+    324,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1211,
+    1,
+    184,
+    210
+   ],
+   "margin": [
+    164,
+    271,
+    328,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1397,
+    1,
+    184,
+    210
+   ],
+   "margin": [
+    164,
+    271,
+    328,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1583,
+    1,
+    184,
+    210
+   ],
+   "margin": [
+    164,
+    271,
+    328,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1769,
+    1,
+    184,
+    210
+   ],
+   "margin": [
+    164,
+    271,
+    328,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1955,
+    1,
+    89,
+    210
+   ],
+   "margin": [
+    211,
+    271,
+    423,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    213,
+    180,
+    210
+   ],
+   "margin": [
+    166,
+    271,
+    332,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    183,
+    213,
+    175,
+    210
+   ],
+   "margin": [
+    169,
+    271,
+    337,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    360,
+    213,
+    175,
+    210
+   ],
+   "margin": [
+    169,
+    271,
+    337,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    537,
+    213,
+    175,
+    210
+   ],
+   "margin": [
+    169,
+    271,
+    337,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    714,
+    213,
+    165,
+    210
+   ],
+   "margin": [
+    173,
+    271,
+    347,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    881,
+    213,
+    165,
+    210
+   ],
+   "margin": [
+    173,
+    271,
+    347,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1048,
+    213,
+    162,
+    210
+   ],
+   "margin": [
+    175,
+    271,
+    350,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1212,
+    213,
+    160,
+    210
+   ],
+   "margin": [
+    176,
+    271,
+    352,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1374,
+    213,
+    160,
+    210
+   ],
+   "margin": [
+    176,
+    271,
+    352,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1536,
+    213,
+    158,
+    210
+   ],
+   "margin": [
+    177,
+    271,
+    354,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1696,
+    213,
+    158,
+    210
+   ],
+   "margin": [
+    177,
+    271,
+    354,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1856,
+    213,
+    156,
+    210
+   ],
+   "margin": [
+    178,
+    271,
+    356,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    425,
+    156,
+    210
+   ],
+   "margin": [
+    178,
+    271,
+    356,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    159,
+    425,
+    156,
+    210
+   ],
+   "margin": [
+    178,
+    271,
+    356,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    317,
+    425,
+    154,
+    210
+   ],
+   "margin": [
+    179,
+    271,
+    358,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    473,
+    425,
+    153,
+    210
+   ],
+   "margin": [
+    179,
+    271,
+    359,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    628,
+    425,
+    150,
+    210
+   ],
+   "margin": [
+    181,
+    271,
+    362,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    780,
+    425,
+    149,
+    210
+   ],
+   "margin": [
+    181,
+    271,
+    363,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    931,
+    425,
+    142,
+    210
+   ],
+   "margin": [
+    185,
+    271,
+    370,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1075,
+    425,
+    142,
+    210
+   ],
+   "margin": [
+    185,
+    271,
+    370,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1219,
+    425,
+    139,
+    210
+   ],
+   "margin": [
+    187,
+    271,
+    373,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1360,
+    425,
+    138,
+    210
+   ],
+   "margin": [
+    187,
+    271,
+    374,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1500,
+    425,
+    138,
+    210
+   ],
+   "margin": [
+    187,
+    271,
+    374,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1640,
+    425,
+    138,
+    210
+   ],
+   "margin": [
+    187,
+    271,
+    374,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1780,
+    425,
+    136,
+    210
+   ],
+   "margin": [
+    188,
+    271,
+    376,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1918,
+    425,
+    126,
+    210
+   ],
+   "margin": [
+    193,
+    271,
+    386,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    637,
+    134,
+    210
+   ],
+   "margin": [
+    189,
+    271,
+    378,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    137,
+    637,
+    132,
+    210
+   ],
+   "margin": [
+    190,
+    271,
+    380,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    271,
+    637,
+    125,
+    210
+   ],
+   "margin": [
+    193,
+    271,
+    387,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    398,
+    637,
+    123,
+    210
+   ],
+   "margin": [
+    195,
+    271,
+    389,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    523,
+    637,
+    122,
+    210
+   ],
+   "margin": [
+    195,
+    271,
+    390,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    647,
+    637,
+    121,
+    210
+   ],
+   "margin": [
+    195,
+    271,
+    391,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    770,
+    637,
+    121,
+    210
+   ],
+   "margin": [
+    195,
+    271,
+    391,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    893,
+    637,
+    119,
+    210
+   ],
+   "margin": [
+    197,
+    271,
+    393,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1014,
+    637,
+    118,
+    210
+   ],
+   "margin": [
+    197,
+    271,
+    394,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1134,
+    637,
+    115,
+    210
+   ],
+   "margin": [
+    199,
+    271,
+    397,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1251,
+    637,
+    114,
+    210
+   ],
+   "margin": [
+    199,
+    271,
+    398,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1367,
+    637,
+    114,
+    210
+   ],
+   "margin": [
+    199,
+    271,
+    398,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1483,
+    637,
+    113,
+    210
+   ],
+   "margin": [
+    199,
+    271,
+    399,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1598,
+    637,
+    113,
+    210
+   ],
+   "margin": [
+    199,
+    271,
+    399,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1713,
+    637,
+    112,
+    210
+   ],
+   "margin": [
+    200,
+    271,
+    400,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1827,
+    637,
+    110,
+    210
+   ],
+   "margin": [
+    201,
+    271,
+    402,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1939,
+    637,
+    108,
+    210
+   ],
+   "margin": [
+    202,
+    271,
+    404,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    849,
+    106,
+    210
+   ],
+   "margin": [
+    203,
+    271,
+    406,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    109,
+    849,
+    106,
+    210
+   ],
+   "margin": [
+    203,
+    271,
+    406,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    217,
+    849,
+    106,
+    210
+   ],
+   "margin": [
+    203,
+    271,
+    406,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    325,
+    849,
+    104,
+    210
+   ],
+   "margin": [
+    204,
+    271,
+    408,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    431,
+    849,
+    102,
+    210
+   ],
+   "margin": [
+    205,
+    271,
+    410,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    535,
+    849,
+    102,
+    210
+   ],
+   "margin": [
+    205,
+    271,
+    410,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    639,
+    849,
+    96,
+    210
+   ],
+   "margin": [
+    208,
+    271,
+    416,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    737,
+    849,
+    94,
+    210
+   ],
+   "margin": [
+    209,
+    271,
+    418,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    833,
+    849,
+    89,
+    210
+   ],
+   "margin": [
+    211,
+    271,
+    423,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    924,
+    849,
+    84,
+    210
+   ],
+   "margin": [
+    214,
+    271,
+    428,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1010,
+    849,
+    83,
+    210
+   ],
+   "margin": [
+    215,
+    271,
+    429,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1095,
+    849,
+    78,
+    210
+   ],
+   "margin": [
+    217,
+    271,
+    434,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1175,
+    849,
+    78,
+    210
+   ],
+   "margin": [
+    217,
+    271,
+    434,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1255,
+    849,
+    188,
+    206
+   ],
+   "margin": [
+    162,
+    275,
+    324,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1445,
+    849,
+    171,
+    206
+   ],
+   "margin": [
+    171,
+    275,
+    341,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1618,
+    849,
+    167,
+    206
+   ],
+   "margin": [
+    173,
+    275,
+    345,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1787,
+    849,
+    161,
+    206
+   ],
+   "margin": [
+    175,
+    275,
+    351,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1950,
+    849,
+    96,
+    206
+   ],
+   "margin": [
+    208,
+    275,
+    416,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1255,
+    1057,
+    159,
+    206
+   ],
+   "margin": [
+    177,
+    275,
+    353,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1416,
+    1057,
+    145,
+    206
+   ],
+   "margin": [
+    183,
+    275,
+    367,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1563,
+    1057,
+    142,
+    206
+   ],
+   "margin": [
+    185,
+    275,
+    370,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1707,
+    1057,
+    138,
+    206
+   ],
+   "margin": [
+    187,
+    275,
+    374,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1847,
+    1057,
+    138,
+    206
+   ],
+   "margin": [
+    187,
+    275,
+    374,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1061,
+    138,
+    206
+   ],
+   "margin": [
+    187,
+    275,
+    374,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    141,
+    1061,
+    132,
+    206
+   ],
+   "margin": [
+    190,
+    275,
+    380,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    275,
+    1061,
+    130,
+    206
+   ],
+   "margin": [
+    191,
+    275,
+    382,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    407,
+    1061,
+    129,
+    206
+   ],
+   "margin": [
+    191,
+    275,
+    383,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    538,
+    1061,
+    128,
+    206
+   ],
+   "margin": [
+    192,
+    275,
+    384,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    668,
+    1061,
+    125,
+    206
+   ],
+   "margin": [
+    193,
+    275,
+    387,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    795,
+    1061,
+    122,
+    206
+   ],
+   "margin": [
+    195,
+    275,
+    390,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    919,
+    1061,
+    122,
+    206
+   ],
+   "margin": [
+    195,
+    275,
+    390,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1043,
+    1061,
+    121,
+    206
+   ],
+   "margin": [
+    195,
+    275,
+    391,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1166,
+    1061,
+    81,
+    202
+   ],
+   "margin": [
+    215,
+    279,
+    431,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1166,
+    1265,
+    121,
+    206
+   ],
+   "margin": [
+    195,
+    275,
+    391,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1289,
+    1265,
+    121,
+    206
+   ],
+   "margin": [
+    195,
+    275,
+    391,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1412,
+    1265,
+    121,
+    206
+   ],
+   "margin": [
+    195,
+    275,
+    391,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1535,
+    1265,
+    117,
+    206
+   ],
+   "margin": [
+    197,
+    275,
+    395,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1654,
+    1265,
+    115,
+    206
+   ],
+   "margin": [
+    199,
+    275,
+    397,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1771,
+    1265,
+    115,
+    206
+   ],
+   "margin": [
+    199,
+    275,
+    397,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1888,
+    1265,
+    115,
+    206
+   ],
+   "margin": [
+    199,
+    275,
+    397,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1269,
+    111,
+    206
+   ],
+   "margin": [
+    201,
+    275,
+    401,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    114,
+    1269,
+    108,
+    206
+   ],
+   "margin": [
+    202,
+    275,
+    404,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    224,
+    1269,
+    106,
+    206
+   ],
+   "margin": [
+    203,
+    275,
+    406,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    332,
+    1269,
+    106,
+    206
+   ],
+   "margin": [
+    203,
+    275,
+    406,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    440,
+    1269,
+    106,
+    206
+   ],
+   "margin": [
+    203,
+    275,
+    406,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    548,
+    1269,
+    106,
+    206
+   ],
+   "margin": [
+    203,
+    275,
+    406,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    656,
+    1269,
+    100,
+    206
+   ],
+   "margin": [
+    206,
+    275,
+    412,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    758,
+    1269,
+    98,
+    206
+   ],
+   "margin": [
+    207,
+    275,
+    414,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    858,
+    1269,
+    98,
+    206
+   ],
+   "margin": [
+    207,
+    275,
+    414,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    958,
+    1269,
+    96,
+    206
+   ],
+   "margin": [
+    208,
+    275,
+    416,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1056,
+    1269,
+    96,
+    206
+   ],
+   "margin": [
+    208,
+    275,
+    416,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1154,
+    1473,
+    95,
+    206
+   ],
+   "margin": [
+    209,
+    275,
+    417,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1251,
+    1473,
+    94,
+    206
+   ],
+   "margin": [
+    209,
+    275,
+    418,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1347,
+    1473,
+    94,
+    206
+   ],
+   "margin": [
+    209,
+    275,
+    418,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1443,
+    1473,
+    94,
+    206
+   ],
+   "margin": [
+    209,
+    275,
+    418,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1539,
+    1473,
+    91,
+    206
+   ],
+   "margin": [
+    211,
+    275,
+    421,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1632,
+    1473,
+    90,
+    206
+   ],
+   "margin": [
+    211,
+    275,
+    422,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1724,
+    1473,
+    89,
+    206
+   ],
+   "margin": [
+    211,
+    275,
+    423,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1815,
+    1473,
+    87,
+    206
+   ],
+   "margin": [
+    213,
+    275,
+    425,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1904,
+    1473,
+    87,
+    206
+   ],
+   "margin": [
+    213,
+    275,
+    425,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1477,
+    84,
+    206
+   ],
+   "margin": [
+    214,
+    275,
+    428,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    87,
+    1477,
+    83,
+    206
+   ],
+   "margin": [
+    215,
+    275,
+    429,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    172,
+    1477,
+    83,
+    206
+   ],
+   "margin": [
+    215,
+    275,
+    429,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    257,
+    1477,
+    83,
+    206
+   ],
+   "margin": [
+    215,
+    275,
+    429,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    342,
+    1477,
+    83,
+    206
+   ],
+   "margin": [
+    215,
+    275,
+    429,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    427,
+    1477,
+    83,
+    206
+   ],
+   "margin": [
+    215,
+    275,
+    429,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    512,
+    1477,
+    81,
+    206
+   ],
+   "margin": [
+    215,
+    275,
+    431,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    595,
+    1477,
+    78,
+    206
+   ],
+   "margin": [
+    217,
+    275,
+    434,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    675,
+    1477,
+    78,
+    206
+   ],
+   "margin": [
+    217,
+    275,
+    434,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    755,
+    1477,
+    199,
+    203
+   ],
+   "margin": [
+    157,
+    278,
+    313,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    956,
+    1477,
+    181,
+    203
+   ],
+   "margin": [
+    165,
+    278,
+    331,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1139,
+    1681,
+    168,
+    203
+   ],
+   "margin": [
+    172,
+    278,
+    344,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1309,
+    1681,
+    162,
+    203
+   ],
+   "margin": [
+    175,
+    278,
+    350,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1473,
+    1681,
+    160,
+    203
+   ],
+   "margin": [
+    176,
+    278,
+    352,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1635,
+    1681,
+    158,
+    203
+   ],
+   "margin": [
+    177,
+    278,
+    354,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1795,
+    1681,
+    154,
+    203
+   ],
+   "margin": [
+    179,
+    278,
+    358,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1951,
+    1681,
+    95,
+    203
+   ],
+   "margin": [
+    209,
+    278,
+    417,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    755,
+    1682,
+    145,
+    203
+   ],
+   "margin": [
+    183,
+    278,
+    367,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    902,
+    1682,
+    139,
+    203
+   ],
+   "margin": [
+    187,
+    278,
+    373,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1043,
+    1682,
+    91,
+    203
+   ],
+   "margin": [
+    211,
+    278,
+    421,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1685,
+    138,
+    203
+   ],
+   "margin": [
+    187,
+    278,
+    374,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    141,
+    1685,
+    133,
+    203
+   ],
+   "margin": [
+    189,
+    278,
+    379,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    276,
+    1685,
+    128,
+    203
+   ],
+   "margin": [
+    192,
+    278,
+    384,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    406,
+    1685,
+    122,
+    203
+   ],
+   "margin": [
+    195,
+    278,
+    390,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    530,
+    1685,
+    122,
+    203
+   ],
+   "margin": [
+    195,
+    278,
+    390,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    654,
+    1685,
+    95,
+    203
+   ],
+   "margin": [
+    209,
+    278,
+    417,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1136,
+    1886,
+    131,
+    160
+   ],
+   "margin": [
+    191,
+    321,
+    381,
+    352
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1269,
+    1886,
+    188,
+    158
+   ],
+   "margin": [
+    162,
+    323,
+    324,
+    354
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1459,
+    1886,
+    169,
+    154
+   ],
+   "margin": [
+    171,
+    327,
+    343,
+    358
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1630,
+    1886,
+    199,
+    131
+   ],
+   "margin": [
+    157,
+    350,
+    313,
+    381
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    751,
+    1887,
+    232,
+    113
+   ],
+   "margin": [
+    140,
+    368,
+    280,
+    399
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    122,
+    203
+   ],
+   "margin": [
+    195,
+    278,
+    390,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    125,
+    1,
+    121,
+    203
+   ],
+   "margin": [
+    195,
+    278,
+    391,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    248,
+    1,
+    118,
+    203
+   ],
+   "margin": [
+    197,
+    278,
+    394,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    368,
+    1,
+    118,
+    203
+   ],
+   "margin": [
+    197,
+    278,
+    394,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    488,
+    1,
+    115,
+    203
+   ],
+   "margin": [
+    199,
+    278,
+    397,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    605,
+    1,
+    102,
+    203
+   ],
+   "margin": [
+    205,
+    278,
+    410,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    709,
+    1,
+    91,
+    203
+   ],
+   "margin": [
+    211,
+    278,
+    421,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    802,
+    1,
+    83,
+    203
+   ],
+   "margin": [
+    215,
+    278,
+    429,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    887,
+    1,
+    130,
+    202
+   ],
+   "margin": [
+    191,
+    279,
+    382,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1019,
+    1,
+    129,
+    202
+   ],
+   "margin": [
+    191,
+    279,
+    383,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    1,
+    122,
+    202
+   ],
+   "margin": [
+    195,
+    279,
+    390,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1274,
+    1,
+    106,
+    202
+   ],
+   "margin": [
+    203,
+    279,
+    406,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1382,
+    1,
+    106,
+    202
+   ],
+   "margin": [
+    203,
+    279,
+    406,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1490,
+    1,
+    106,
+    202
+   ],
+   "margin": [
+    203,
+    279,
+    406,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1598,
+    1,
+    106,
+    202
+   ],
+   "margin": [
+    203,
+    279,
+    406,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1706,
+    1,
+    106,
+    202
+   ],
+   "margin": [
+    203,
+    279,
+    406,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1814,
+    1,
+    98,
+    202
+   ],
+   "margin": [
+    207,
+    279,
+    414,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1914,
+    1,
+    92,
+    202
+   ],
+   "margin": [
+    210,
+    279,
+    420,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    887,
+    205,
+    128,
+    201
+   ],
+   "margin": [
+    192,
+    280,
+    384,
+    311
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1017,
+    205,
+    123,
+    201
+   ],
+   "margin": [
+    195,
+    280,
+    389,
+    311
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1142,
+    205,
+    229,
+    199
+   ],
+   "margin": [
+    141,
+    282,
+    283,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1373,
+    205,
+    225,
+    199
+   ],
+   "margin": [
+    143,
+    282,
+    287,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1600,
+    205,
+    188,
+    199
+   ],
+   "margin": [
+    162,
+    282,
+    324,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1790,
+    205,
+    182,
+    199
+   ],
+   "margin": [
+    165,
+    282,
+    330,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    206,
+    173,
+    199
+   ],
+   "margin": [
+    169,
+    282,
+    339,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    176,
+    206,
+    165,
+    199
+   ],
+   "margin": [
+    173,
+    282,
+    347,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    343,
+    206,
+    132,
+    199
+   ],
+   "margin": [
+    190,
+    282,
+    380,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    477,
+    206,
+    118,
+    199
+   ],
+   "margin": [
+    197,
+    282,
+    394,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    597,
+    206,
+    144,
+    197
+   ],
+   "margin": [
+    184,
+    284,
+    368,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    743,
+    206,
+    139,
+    197
+   ],
+   "margin": [
+    187,
+    284,
+    373,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    597,
+    405,
+    138,
+    197
+   ],
+   "margin": [
+    187,
+    284,
+    374,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    737,
+    405,
+    136,
+    197
+   ],
+   "margin": [
+    188,
+    284,
+    376,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1142,
+    406,
+    125,
+    197
+   ],
+   "margin": [
+    193,
+    284,
+    387,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1269,
+    406,
+    121,
+    197
+   ],
+   "margin": [
+    195,
+    284,
+    391,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1392,
+    406,
+    121,
+    197
+   ],
+   "margin": [
+    195,
+    284,
+    391,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1515,
+    406,
+    108,
+    197
+   ],
+   "margin": [
+    202,
+    284,
+    404,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1625,
+    406,
+    171,
+    196
+   ],
+   "margin": [
+    171,
+    285,
+    341,
+    316
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1798,
+    406,
+    168,
+    196
+   ],
+   "margin": [
+    172,
+    285,
+    344,
+    316
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    407,
+    163,
+    196
+   ],
+   "margin": [
+    175,
+    285,
+    349,
+    316
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    166,
+    407,
+    206,
+    195
+   ],
+   "margin": [
+    153,
+    286,
+    306,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    374,
+    407,
+    195,
+    195
+   ],
+   "margin": [
+    159,
+    286,
+    317,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    875,
+    408,
+    182,
+    192
+   ],
+   "margin": [
+    165,
+    289,
+    330,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    875,
+    602,
+    149,
+    192
+   ],
+   "margin": [
+    181,
+    289,
+    363,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    166,
+    604,
+    148,
+    192
+   ],
+   "margin": [
+    182,
+    289,
+    364,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    316,
+    604,
+    154,
+    191
+   ],
+   "margin": [
+    179,
+    290,
+    358,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    472,
+    604,
+    127,
+    189
+   ],
+   "margin": [
+    193,
+    292,
+    385,
+    323
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    601,
+    604,
+    192,
+    188
+   ],
+   "margin": [
+    160,
+    293,
+    320,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1625,
+    604,
+    158,
+    188
+   ],
+   "margin": [
+    177,
+    293,
+    354,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1785,
+    604,
+    188,
+    181
+   ],
+   "margin": [
+    162,
+    300,
+    324,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    605,
+    163,
+    181
+   ],
+   "margin": [
+    175,
+    300,
+    349,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1026,
+    605,
+    142,
+    181
+   ],
+   "margin": [
+    185,
+    300,
+    370,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1170,
+    605,
+    196,
+    178
+   ],
+   "margin": [
+    158,
+    303,
+    316,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1368,
+    605,
+    206,
+    177
+   ],
+   "margin": [
+    153,
+    304,
+    306,
+    335
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1368,
+    784,
+    119,
+    177
+   ],
+   "margin": [
+    197,
+    304,
+    393,
+    335
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1170,
+    785,
+    154,
+    175
+   ],
+   "margin": [
+    179,
+    306,
+    358,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1785,
+    787,
+    167,
+    174
+   ],
+   "margin": [
+    173,
+    307,
+    345,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    788,
+    143,
+    169
+   ],
+   "margin": [
+    185,
+    312,
+    369,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    601,
+    794,
+    174,
+    171
+   ],
+   "margin": [
+    169,
+    310,
+    338,
+    341
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1489,
+    794,
+    143,
+    168
+   ],
+   "margin": [
+    185,
+    313,
+    369,
+    344
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1634,
+    794,
+    147,
+    165
+   ],
+   "margin": [
+    183,
+    316,
+    365,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_06.png"
+   ],
+   "page": 1,
+   "region": [
+    777,
+    796,
+    178,
+    167
+   ],
+   "margin": [
+    167,
+    314,
+    334,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_hit_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/homunculus_tank/runtime/homunculus_tank_idle_east.png"
+}

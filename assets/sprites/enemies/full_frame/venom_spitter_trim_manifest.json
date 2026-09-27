@@ -1,0 +1,5846 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "venom_spitter",
+ "tres": "res://assets/sprites/enemies/full_frame/venom_spitter_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 184,
+ "unique_frames": 184,
+ "source_rgba_bytes": 192937984,
+ "page_rgba_bytes": 62652416,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_trim_0.png",
+   "width": 2048,
+   "height": 1992,
+   "sha256": "b7d82c2975ab2e3a8d5ff166f103fe6af59bcaa48641c7497c8f0de9833f502c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_trim_1.png",
+   "width": 2048,
+   "height": 1962,
+   "sha256": "a9bb2075062cc08e980ec99b80c40f7bdd49fe4aeb7d0234bd56175c7e6c6fbe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_trim_2.png",
+   "width": 2048,
+   "height": 1885,
+   "sha256": "f9ebffd4bbe3b08e99f895a3ec87353c25e86adc6e990cc17622d7f9f0cafd93"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_trim_3.png",
+   "width": 2048,
+   "height": 1809,
+   "sha256": "c93627f3d3b1fed5682166b67114fd106d64bed6d4b0eed361ddbc29900babfa"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_00.png",
+   "sha256": "8e381c1d8bdc7ec258df5c05eb98cbb01377b99fc2f31b93585deb0c937b032e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_01.png",
+   "sha256": "51d1a703649a88d1f5f54f217082c80af43b27332a2f8c98c1e31eae899aba78"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_02.png",
+   "sha256": "6e822224e6ab0bcde59503e3e5638a409de8395b020991c62ed83106264d3f57"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_03.png",
+   "sha256": "ffd7e38b577590d2c56ccb9ff55cefeeacd661c4b550c775c7e2ef1b93929b87"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_04.png",
+   "sha256": "a0da09953d1d86a824221f7843115646398f9b7749a1b0ee0f47508e1c8da61f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_05.png",
+   "sha256": "b1723f3df297be56c4f7391d05164929ddd88e2f41355e9842f669341c519bd8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_00.png",
+   "sha256": "2671ae4f363a362a924fb0ab9ce13ad2d49db638be70ab7189da37de93c30a92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_01.png",
+   "sha256": "87f69a5e7d2d6ecddfad75a54f7e59dc5258504a3aed793a96a081e528315c48"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_02.png",
+   "sha256": "e768f56652434aa7df596f2fa2e101ea49b90ec2fa1830be7655e59e39227f2d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_03.png",
+   "sha256": "7fea53999d629db85b9940cb16e42437273f1d52dadfee6f852942385c821f90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_04.png",
+   "sha256": "3c5b0a6fb93f556ac00aecb5ff508889171130ca9e540eea3ac821cfe4286773"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_05.png",
+   "sha256": "811a89ab71834a18a6b1fe23e1d9d9c475034f8b0510a1e1c078c88d6da43b18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_00.png",
+   "sha256": "df93e281099dcab71f0422a8f8ca5517f26ef2509ca9030bbca31296cea9a2a8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_01.png",
+   "sha256": "a94a7f84a89d86f98315fc17e554b8cd51783c3f66bf41cf3bea586bdf941f29"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_02.png",
+   "sha256": "9a26437134029291b331b8fbec99a98fae3e76a56bea03428cef2c993eed8595"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_03.png",
+   "sha256": "ee8b82f3ca6b022c34abdf7c42157ae4bfb6145fe9ab0dd7d9a0b036026099df"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_04.png",
+   "sha256": "6f5afe4597d17297e07db3e03b98cebe0aa58808b7f5e6ad9d3b60b4bcfa6e61"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_05.png",
+   "sha256": "ff95bea4087f1e44404c2bf4c0b1291c5f5ef3df763afbac3fa1d38f878142d6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_00.png",
+   "sha256": "2801547a39f0bf5cd0fdcb0c8f8877e6c3b1c181a47463f518c156937cc678b3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_01.png",
+   "sha256": "05afd030648376f1ffa1720cea7ff7fea7001042794fa909b95c3a10fa900015"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_02.png",
+   "sha256": "a5dcd1e53092470c679547ff8cdec221f7dfa4e403468a125ba20219c7c20ba8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_03.png",
+   "sha256": "e0fd3d5e93985190f5b1218ca33c87d4806a3919bb90af01912e229276ae01a6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_04.png",
+   "sha256": "f7fb832463109573d1b973a7192a95c5803e9a12be9f70277b56f8ca3cfc6b62"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_05.png",
+   "sha256": "ada6d7ea2ed74952d7e088ea44b116be5af2d1ca96ea235f496b6443ba08a03e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_00.png",
+   "sha256": "3404d38571424dd94713d963c8c6c3b776838ceb3d8e5a069e8500f6939ffef7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_01.png",
+   "sha256": "d8ec0a0774c1750823d4c43325d5c57b1d9555addc06af35d1d19978a1048f0b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_02.png",
+   "sha256": "836806f585d0a2c221d3bdaa9a6e3eb7705d268ca10e67d6c8e49a89d439930b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_03.png",
+   "sha256": "062cc3da95e6c9955311a3d6f5a6f8aea669289134f5dc4736d4b73efb920448"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_04.png",
+   "sha256": "10f335b5b5c2936f3720fe096e72c2c2aaa511665100cd2b98b2f4df492c3d1f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_05.png",
+   "sha256": "f985ddfdaa6b58f5ca58e234e62d2af77ea3e07c6919c79a928c7f9932c33e36"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_00.png",
+   "sha256": "6f817a60721f8ad0434793a16126ee7e659be7c49b83f703f22e460462fca274"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_01.png",
+   "sha256": "c6b498a790498107320087854619427aa3def6f73d668bcddfabd8dbc5cec3e5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_02.png",
+   "sha256": "b25dc18ca2629cc3f7b26cb9228cae7fbfc3f258ea04ff0b0a50932ab29bf943"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_03.png",
+   "sha256": "f33d6e102cc5513a4a308bf1aef07fb7d2582b97fcdba7ffddf8b5e91b803218"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_04.png",
+   "sha256": "e43c485013ec3ded420be4851648f58e61de733188689ba8354b6b8a417645bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_05.png",
+   "sha256": "7925894b3236c29edbd74d33c41dc262c20d6ff23b371d0dc0d4c95be68caed4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_00.png",
+   "sha256": "10ce5a91a81fb34c8be50d0b3bc50e0d567b80991b7d5c314bd63ec5e6648033"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_01.png",
+   "sha256": "fa46720927faf200b66db4ec1947b3626b1cc349bb4dbaf96be8d759111296bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_02.png",
+   "sha256": "7506edb80bd0f31fb5d11dc23f80ad2d5c8f1c561f0ec9b6e533b81818d1de1d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_03.png",
+   "sha256": "75cd94afbc422a22b64d014fd420d2b7c2f00cc551b07fbc123175c4c0fdd4a8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_04.png",
+   "sha256": "653f25b9a06d133a3b92bcb2733e13f8a0e7279951dbffd7402b56b7a370f335"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_05.png",
+   "sha256": "47bdd2452dbd5eef65780013ba856abd5a838ce4a9a0dea05072cfc736c3df69"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_00.png",
+   "sha256": "3ace42c86ce1273b74210b5ed2fec4615398b8482db865cac0e13e169956e068"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_01.png",
+   "sha256": "a2b1f024a64cb0642b08259e5fda6bef7cd29764841710eba18c836787ffc0a2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_02.png",
+   "sha256": "95871cfeb9e067c47bc778e9f517b00b57fb7cde36fd83e32721ea92f6451f0d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_03.png",
+   "sha256": "170e4d174b2bbaa78f8ce1318481635f92acd3f92321851c121d0f0afb64a3f3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_04.png",
+   "sha256": "fef0952f2cc795901ac2f362195406dcbbb36109ebc555e3c4b9626683ee263e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_05.png",
+   "sha256": "262bd4abaff4bd9cb13c1247342c600aa652fbd38c12c95be02fefb7d363c0ec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_00.png",
+   "sha256": "eb8388dfabc97b4a95a0f77822dd2bec06cbc260c0792ed01e53a3cf380a7bce"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_01.png",
+   "sha256": "df11bc777c3b50aa203d005f22d6fb9cf85c7cd1cbd929d5c8739152f54e1f2a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_02.png",
+   "sha256": "897a889d6c68dedf46fd79c39a308a48de6d5f069a855f3d6df49976debf19d9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_03.png",
+   "sha256": "0ebbdd95d10dca9cd281b9f07e4e36cb079b613e953e83d9bdbb274b118e5353"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_04.png",
+   "sha256": "d3a25e0c4d89e05fa6241db45c60d9f7f35c97ac54090fff47723aeae5648c38"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_05.png",
+   "sha256": "3b859afcaa41f537db1b302802fd40659e1e957f34e4381abbf3212933361c3f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_00.png",
+   "sha256": "46b9b6c82ad7a1c7fe3b01b99df1d89ffb018373cfb6ce7122bf02c555ca6257"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_01.png",
+   "sha256": "6b55e08832ad79abf8f3cbe9c977ceb9e8a259a985226f27bc61e658a7716c05"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_02.png",
+   "sha256": "6497d047cdb45d53fc8656dfb429e8b67ea815912d18cc86ef6573da3a60dd4e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_03.png",
+   "sha256": "30e9ccf3e80e86533058e1f623ef2752cae86bf43a507fd50de61827f71ac81b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_04.png",
+   "sha256": "39c094e1ed0f469389e673c472388e700cc71d6c751551ac05efa12af73e501a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_05.png",
+   "sha256": "9b3346dc2d2ffe8e4548157fb8a8fba09adddd94453c1389fad917ff1fdda4e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_00.png",
+   "sha256": "e8f31a25514c5aad7b9ab975880bcca5046304a32f103f2866969c65dedcf41d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_01.png",
+   "sha256": "8b6932f123ce907e7d3c75a098df2b05653dd64eb204856915fd89d911266b71"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_02.png",
+   "sha256": "88d78f347c3a9b931b19d8a447523d4338f00eb142326a651bd390d733cf8f18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_03.png",
+   "sha256": "f480b7034f4d67bab6d61379405493e1b99b032bc3e852c1d6bc617656d49c46"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_04.png",
+   "sha256": "d1526c30cf6d87c9fd5c429908e5827696625ae0b05f072f25764ec9481ed27e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_05.png",
+   "sha256": "96195e4fb05efbc1630804769d4430da1ff2af0a38aebb90aca8fe9eeaf4c986"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_00.png",
+   "sha256": "ba6284addf7befb34214cf532b6295f4f1c12ff0e5ffbf0849bdd285101913aa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_01.png",
+   "sha256": "2e526413bd74b65f95198a96a908ad61d5857c1b0f4bf47a75925cfa739c7f5e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_02.png",
+   "sha256": "07f40a1e489c57c6d615391fccd2e649a14754136c5738a111dc7ad31985054f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_03.png",
+   "sha256": "a8fecdb4d53f690a95508955c2c99f369b8c4ea767af4d1dee5e1d689eebdd14"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_04.png",
+   "sha256": "28938ea593c8fc40e7d2cff56a09768741b3f805d9e4b629e8e021d35de64159"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_05.png",
+   "sha256": "7561ce8240e3d07c12284c0b47692c46c8fe628b868c474fb05e5cc01ac693e7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_00.png",
+   "sha256": "f11c3202a8fecc54ec174f489ba358803390d1e07190de928079142e9bb3f5ab"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_01.png",
+   "sha256": "e68d37ecc1f3705615922911c4aefedc156f42e0e27815af6b7dfe4d09905aa9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_02.png",
+   "sha256": "a0a1b19b2dfa216719e04b0849a12264c2a32a1658084f965d5b956b46b149cc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_03.png",
+   "sha256": "d1d045c29e3c316d0a7dbedd82e460bece4978274acd54c860812074d0c4609b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_04.png",
+   "sha256": "991aaf5c5aee2a4b1e07ce58e6cd3294753de3d9c74d0d3352b487b3dbb6269f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_05.png",
+   "sha256": "0109194e7fc24a024872817c15e711071eb9cd9dd366a3aa7f180c2d0a8bcec9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_00.png",
+   "sha256": "6af7871c37f5c1fb183a0b14eb956193c9e229c835030a392eb97fcaede5dd9f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_01.png",
+   "sha256": "83f39212b35b51c69a41e5d02500617d3eca164db804da11fcb5d3ee9c52e509"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_02.png",
+   "sha256": "7ea359d5d06ba74f1413c616b28164cf3c02d689e75c8a1da84d33f0216ce445"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_03.png",
+   "sha256": "6d714ca1c095a647ac46a6b4e3925e33aed374437b6848c98aabd46f61b69cba"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_04.png",
+   "sha256": "5716fc39845cb0bd7f3a14eb5818c36d15d568529e221cba4088e2acd7c42377"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_05.png",
+   "sha256": "9ad99814639f3996d9f611d786bd79ee877aeb1158494683f3f7613cdccc7565"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_00.png",
+   "sha256": "c1dd89c7ac5f5c984670c4fee55c71d60afc3f3e04f494a02d1a903c937a0361"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_01.png",
+   "sha256": "6ca85c07f5b1c5d6bd9b8ab469f8796f07a39db982ca75ade21734bad62ea3fd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_02.png",
+   "sha256": "bfa861e7efb5b6f414b53a837d1e9e083b9194911e429d110d8f08d75ffb54d3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_03.png",
+   "sha256": "73d09ecbfbfde9e3036d6f781069bf97a69b9cab9f03d5a507874a327585eef6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_04.png",
+   "sha256": "87df7e7a3cab0f566920e7d6a226c9ccb1074553828f3bf3b4d1b9ee14681d12"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_05.png",
+   "sha256": "1ef950ce77273d2ac9458b21f4abdaf18740393627b8c90529261572529659e4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_00.png",
+   "sha256": "e9ff2ec4eaeb83a70e9b39d05d8dfeeec1bb8f321d2f413c1555c3fd1703a7e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_01.png",
+   "sha256": "97dd3186b4c4e2592ed2b44a2801a782f92f21b3cb8f1c405c7e389fb25d548b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_02.png",
+   "sha256": "12b007032bd2528b4f54b8a3dd9cbe69296313724bb7ca01bd1dbb2768a0c9fb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_03.png",
+   "sha256": "2938e9f797ff0944c322c2c1bb40456e17fce84913cfdac17e48acacf9979da0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_04.png",
+   "sha256": "e221abd9956c65c87c882ce907827596d642d120f8a55fe498730640ef7a3b56"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_05.png",
+   "sha256": "575cec4d3fbb9ae5b9ed76b62b5722be3eef62ede18c5cd9e3c6ccc095198457"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_00.png",
+   "sha256": "2066c560ce92f4bffe34ce10c267cac777dde52c038cb2c2d75e814dc8113577"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_01.png",
+   "sha256": "c7d1b667e7db602f49b11a6e326d6f44f23457f3e46bd734f815e7d2796b1949"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_02.png",
+   "sha256": "8052242628abfa31fc9725c74a982f83f127b81bbf44eae6f2cf4a774a026c5d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_03.png",
+   "sha256": "f69c5da9b9f82375b8f97b613d520c96f7796fb72962d7876e33b226da12525b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_00.png",
+   "sha256": "99121beb24596565a59bae31965be46c366e9425d48def2eb835ac5b04b4cab3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_01.png",
+   "sha256": "77e57c02c37d15ef3e3aa9b0b118acad1ddaf93ab587040d0f2471c8fe05b303"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_02.png",
+   "sha256": "e02cc5fb823fea46a52c333f1ae4cae6dd9c61b203a5bb1c5e74a17f43da921d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_03.png",
+   "sha256": "35849293748b16f389225b3659c639fe2887c0a1cd1516617868abb015b5186e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_00.png",
+   "sha256": "8fd56953f8cf6ad621229d2e20a126dac8cf95116f4b8523d57c6a27e7a8af23"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_01.png",
+   "sha256": "de3a21a7b1ad572f0faf79e8471c4022bd04713737bc367c0b2ded322c7b134d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_02.png",
+   "sha256": "19c53b43559187b9b790a2aea59d676395234250634bcada1df5a4f17c7a7547"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_03.png",
+   "sha256": "ddcf3408bb3625f69bde8b6cdff7b192109f97d62963890fab0b3789e2c7d7fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_00.png",
+   "sha256": "d0038043f9d631145a1ec84a31e1b07220c45b5ca24417861a8981d7d418e0aa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_01.png",
+   "sha256": "a64bde7bdd7475bfacba36fdabfdb9f6835ed92dfdb1c27285e8f0f1802f696b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_02.png",
+   "sha256": "e0830f696815961d9eaf1419af4a4e2016b88ae706d2118e1e22aa5f829a3d70"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_03.png",
+   "sha256": "b8dcfcfb204da02dab221ca0545d238469c937331566fddb4619936898db034c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_00.png",
+   "sha256": "66a5b81349803f301663a39b863f2660fd0a9b47a619a99de833a928526e2f55"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_01.png",
+   "sha256": "cbcab660f7f7e89c9c274336512244cd362bba0d429e6f790ba59a36ce23efda"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_02.png",
+   "sha256": "0a1c53947c056f15c324dd605139d590dfaf7fdb55430471170dfce7c58cd64d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_03.png",
+   "sha256": "cff02d35122fbf7c86d6aee1986052b7e78102bd33caf99999fb014d271a2a4e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_00.png",
+   "sha256": "92d389793cf30fae773e23cb3f4649c15f97a2fe5da36b18ceb4227c04ed2dd6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_01.png",
+   "sha256": "0ed8ecdc277040b5a4ef1824bbbd752f756c10f22887199f57cf9c14a0897000"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_02.png",
+   "sha256": "1b93df754472d689523ccbcc2c05f157c65455fc28719986bcbfb2a52cc4dd0e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_03.png",
+   "sha256": "76c774fc37b6690906db5f9b3c7b8f1e8c99290bdeb563d671cedb0958606b32"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_00.png",
+   "sha256": "6a4e379dcc5908bd3f4533f348a869a73fff2b3390bcc28d5826220b682b5e90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_01.png",
+   "sha256": "3e60b5bb189d0f1bb63b74a9b8dbd65c19cd1517710737726c4d045982e31c1b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_02.png",
+   "sha256": "57dc9a70fd684c2c6322519a40526bbe5bd8f083b713f863d75af680aa93cca9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_03.png",
+   "sha256": "29c0df7f18f5b6cd72f6fae4b36d28558e4c80d69a581271d05020b516328d42"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_00.png",
+   "sha256": "c84065c86018cafc9b490e163eb57ee85110cd9e3ad388a911b91d0684e15975"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_01.png",
+   "sha256": "1ea535e025bda02bfcfcc6ae23d8bdf58efefdfdc7578d3ddef7c8bdb2bd838a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_02.png",
+   "sha256": "13ce5ba61e987d0e6c7f6ac5d2340b120bbeca473e7cd0c92498fc187dacb442"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_03.png",
+   "sha256": "a926947d91a8bf3e6bc900d7a7c6f40e600554ba0bc7038a63c1ff693870ec1c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_east.png",
+   "sha256": "f2dbef437c748fd8cf88b153123e401361ce4217953fa696f4ee2f573910eed1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north.png",
+   "sha256": "2f8302c7cfba38d383338b81b53f1619b4b0fa77e71040230b1e8edf78e4b398"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_east.png",
+   "sha256": "b61ac13218da871c2426d8f1d986fef204f90e32293d0a8f23dbf8be3610276c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_west.png",
+   "sha256": "d022338ca9c534f1c285b0746ad49af5d9f6490a616670f5d02db06bbd577f3c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south.png",
+   "sha256": "9cd988ea014437b6b221687bc335c3ba93171e5c2c21b5f5faa58917a9577f40"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_east.png",
+   "sha256": "e40348ddefc004fc774c2a89892e1c87567e3eb4ed7e4b89dec7cae52ce05f04"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_west.png",
+   "sha256": "98ddf1a153139b75da9bde855c4dd9ca152c74a0646d7bc8f68cc5986bef07fd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_west.png",
+   "sha256": "e5bd63cae891d69cc5ecd4d6d73209d0afb70972332f319f5365d144d714c082"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_00.png",
+   "sha256": "fcc0760147dd5d9fac0054acfce6afb2ffb2d19544da4fb996e39b1c3c0e0ca1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_01.png",
+   "sha256": "eb2a7751e6b8e094188726a5e5c3a437e82bdcd34e6c0fdd20caa0284cf8fa92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_02.png",
+   "sha256": "4d80a1338cd52cc5f2e63216433b58772abd243b7d0838b920ddd20f09555030"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_03.png",
+   "sha256": "6b8876486b6ae3b1aa56ba94a28ff38fe3c7ca7e1c805f8302cc932ec1e909a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_04.png",
+   "sha256": "91ab07c894b7b6fdda7e46bc44b4a54909a161302ab244e3a8abaf9579c43eb0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_05.png",
+   "sha256": "5314ebac16691ff2b9028dae6d965219d160952bf55aa488fa289f710a590fa6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_00.png",
+   "sha256": "ff4d1333e5870f19f8d69d043290db91682421015f2dd73d6a9af769d199b0ee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_01.png",
+   "sha256": "ba122adfee2f3796f6016f6075eb8d9bed0656a33596e950233bc1fad32a2d90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_02.png",
+   "sha256": "ca6a9261c4ec1670723569232659fb256cc13eda27e1e071da7ce28a1c529b28"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_03.png",
+   "sha256": "1665663d79b0579ecd1224279c1c88372a98e9c5327bc4a4fac0a5262664dc86"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_04.png",
+   "sha256": "2c59d1032944f804524a55c6222e978a498656180a1f652e0c63f33ca69e6396"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_05.png",
+   "sha256": "d282ff3be4c6c0f7cc063598bf8157dbb6cf5be6ab00ab12a1b5e2ab2e9853a7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_00.png",
+   "sha256": "d93cc4a75497bc614d4dc5116e521e8292b828ecdc2a743d94ba8cef91af0116"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_01.png",
+   "sha256": "4d0b21459412372c4afb5b96bc7f621b7e2c172ad835519100cfb02f1a909a44"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_02.png",
+   "sha256": "833339947692a561eefc98ddc6bc64d8579ac3726c58ca66425f25867e00f20e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_03.png",
+   "sha256": "fce7eec382a7028eff355e9c289435f3c615ee2f4d46ee14ac5af1e984b5cd79"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_04.png",
+   "sha256": "06140a66b1b279069608a3a30afdc2faa2ab774e55c7eb34c63da25898653772"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_05.png",
+   "sha256": "6840d1cfacb66b14e0ec94f973289c87a4694f00c7c53152c1049e2deae8ecd5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_00.png",
+   "sha256": "93a556c1983e609bb8efd751426932a0f91c79fcbfcc85c6d90494180df14ef3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_01.png",
+   "sha256": "a43c282c529a0a01a14058dbd0c83d91292a1e786fca3c19845e6ed39f4ee250"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_02.png",
+   "sha256": "29b8fe850c115bdc20338a584f38f1b40589d16db91e096d875b020debaa24aa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_03.png",
+   "sha256": "394f3871bbc0bf0826ffab0de01f04239bd06032999a2136a4195bf80f513f92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_04.png",
+   "sha256": "67c348718f6aa01be9e96c1013c0e7f57f9f296bab0745ca58e6566842f1a68c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_05.png",
+   "sha256": "185a13fe63137fe03451c148a071e9e4c9c0bb2f65407d1df7b21f248b4925c9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_00.png",
+   "sha256": "7b14fc54f65713fa62472c888d4ac3c1d2c0a28c37771e244a4bbbb2a45f00b8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_01.png",
+   "sha256": "91d5b8ee5d21f631c77da8d2831aa05b3eba51e583f8cacf1ee261d399451ac8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_02.png",
+   "sha256": "d87f05c918c791bbfef6a774c0b5bc1583727faeb7a8f03a7d2c857ebca38d93"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_03.png",
+   "sha256": "b85913b5cf409c0387231f00192e6fa8d3826ff6e693dc1b4b18bf096599fcd3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_04.png",
+   "sha256": "71231ac8503a98d64cd6a7323e9ffb656e7bc8059dd8e349bf963948304f1c92"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_05.png",
+   "sha256": "8a9a1ae9dcfc3fe1beb0a9b3bd3f6fcda88f728e262682cf07f67c2ad4ec09eb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_00.png",
+   "sha256": "5a9ebb6c2f3c61a866e3c1aa7c325df1833ce493aaf653c580a9a88c674d8173"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_01.png",
+   "sha256": "a0b22e73d0eda593855c5fa55a056c9303bdd3d98befa3ab3ab051060a04b882"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_02.png",
+   "sha256": "47e81c2754c30e92c91eecf491010a053d924a073e77fbc2a4bf8373d1b94130"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_03.png",
+   "sha256": "c6f0111307ba107ae01799352a77e5ced69e15bb21f9ceffd8a3a6eaa0c4710e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_04.png",
+   "sha256": "f2f9abc61863b6ef6517adce176400ffcaebdcbe841b25d435f0a975e5bb0790"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_05.png",
+   "sha256": "60f5b3e3ecff2a15e205825fce87d0a409a13778ffb2a88a58ac9ba9c8a71044"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_00.png",
+   "sha256": "374bcd49b768a2477d63316ade0c191973ef5ce0ad4e2683e1010c2269b1ef49"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_01.png",
+   "sha256": "53287f6e7aa2f4f14d3ea7330eb7fc59d2fed24ca13ff2992876ac28f0cbb546"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_02.png",
+   "sha256": "81738a62b711c0a21f49578244b28c517754d8e6f506a096f43fd6ae41dc6529"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_03.png",
+   "sha256": "0ccfcb4d80f64f00611cab3b83249af24dcf9105a2415979ef95e36debcbc5cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_04.png",
+   "sha256": "94954acabfc6f84d77e415599d04c4a0db80087d34e035b2a411fe4b946c7fce"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_05.png",
+   "sha256": "bac73cd4ee64e6ef3cb80f269ed768cf710f90fe3c3676146ab83ef2def21e16"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_00.png",
+   "sha256": "927e488d40519aa2a3847fc3bbe5a14c8caa7ecf7104d5d0e89e8deb872555c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_01.png",
+   "sha256": "fcbec226c7ba35c8ddca0121c3b74435e184a4f075db50a812a0cd73fbda8c07"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_02.png",
+   "sha256": "f892c823f100bbdd05c36fc1e9aecd8a4b29fa9b28d989053553d3790efac73a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_03.png",
+   "sha256": "468fbd6f18735759d0bc5f947e1060a26cd3a3a3d2996e913a1b4697ee76df80"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_04.png",
+   "sha256": "4b7cbc41f9801c1e5c639022f6e8f3e1e51266aeaae9eab9b43234863b6f11e8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_05.png",
+   "sha256": "90d63d196b5e5ecde39dd8b7e86fb21f63a84cb1769d19ee81191325ad1884a0"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    407,
+    247
+   ],
+   "margin": [
+    53,
+    234,
+    105,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    410,
+    1,
+    395,
+    247
+   ],
+   "margin": [
+    59,
+    234,
+    117,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    807,
+    1,
+    395,
+    247
+   ],
+   "margin": [
+    59,
+    234,
+    117,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1204,
+    1,
+    390,
+    247
+   ],
+   "margin": [
+    61,
+    234,
+    122,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1596,
+    1,
+    388,
+    247
+   ],
+   "margin": [
+    62,
+    234,
+    124,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    386,
+    247
+   ],
+   "margin": [
+    63,
+    234,
+    126,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    389,
+    250,
+    384,
+    247
+   ],
+   "margin": [
+    64,
+    234,
+    128,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    775,
+    250,
+    384,
+    247
+   ],
+   "margin": [
+    64,
+    234,
+    128,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1161,
+    250,
+    384,
+    247
+   ],
+   "margin": [
+    64,
+    234,
+    128,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1547,
+    250,
+    383,
+    247
+   ],
+   "margin": [
+    65,
+    234,
+    129,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    379,
+    247
+   ],
+   "margin": [
+    67,
+    234,
+    133,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    382,
+    499,
+    379,
+    247
+   ],
+   "margin": [
+    67,
+    234,
+    133,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    763,
+    499,
+    374,
+    247
+   ],
+   "margin": [
+    69,
+    234,
+    138,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1139,
+    499,
+    372,
+    247
+   ],
+   "margin": [
+    70,
+    234,
+    140,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1513,
+    499,
+    370,
+    247
+   ],
+   "margin": [
+    71,
+    234,
+    142,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    370,
+    247
+   ],
+   "margin": [
+    71,
+    234,
+    142,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    373,
+    748,
+    370,
+    247
+   ],
+   "margin": [
+    71,
+    234,
+    142,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    745,
+    748,
+    370,
+    247
+   ],
+   "margin": [
+    71,
+    234,
+    142,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1117,
+    748,
+    365,
+    247
+   ],
+   "margin": [
+    73,
+    234,
+    147,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1484,
+    748,
+    365,
+    247
+   ],
+   "margin": [
+    73,
+    234,
+    147,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1851,
+    748,
+    166,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    346,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    363,
+    247
+   ],
+   "margin": [
+    75,
+    234,
+    149,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    366,
+    997,
+    362,
+    247
+   ],
+   "margin": [
+    75,
+    234,
+    150,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    730,
+    997,
+    350,
+    247
+   ],
+   "margin": [
+    81,
+    234,
+    162,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1082,
+    997,
+    350,
+    247
+   ],
+   "margin": [
+    81,
+    234,
+    162,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1434,
+    997,
+    348,
+    247
+   ],
+   "margin": [
+    82,
+    234,
+    164,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1784,
+    997,
+    255,
+    247
+   ],
+   "margin": [
+    129,
+    234,
+    257,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    340,
+    247
+   ],
+   "margin": [
+    86,
+    234,
+    172,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    343,
+    1246,
+    339,
+    247
+   ],
+   "margin": [
+    87,
+    234,
+    173,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    684,
+    1246,
+    338,
+    247
+   ],
+   "margin": [
+    87,
+    234,
+    174,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1024,
+    1246,
+    338,
+    247
+   ],
+   "margin": [
+    87,
+    234,
+    174,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1364,
+    1246,
+    337,
+    247
+   ],
+   "margin": [
+    87,
+    234,
+    175,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1703,
+    1246,
+    336,
+    247
+   ],
+   "margin": [
+    88,
+    234,
+    176,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1495,
+    336,
+    247
+   ],
+   "margin": [
+    88,
+    234,
+    176,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    339,
+    1495,
+    333,
+    247
+   ],
+   "margin": [
+    89,
+    234,
+    179,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    674,
+    1495,
+    333,
+    247
+   ],
+   "margin": [
+    89,
+    234,
+    179,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1009,
+    1495,
+    333,
+    247
+   ],
+   "margin": [
+    89,
+    234,
+    179,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1344,
+    1495,
+    331,
+    247
+   ],
+   "margin": [
+    91,
+    234,
+    181,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1677,
+    1495,
+    329,
+    247
+   ],
+   "margin": [
+    91,
+    234,
+    183,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1744,
+    329,
+    247
+   ],
+   "margin": [
+    91,
+    234,
+    183,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    332,
+    1744,
+    327,
+    247
+   ],
+   "margin": [
+    93,
+    234,
+    185,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    661,
+    1744,
+    325,
+    247
+   ],
+   "margin": [
+    93,
+    234,
+    187,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    988,
+    1744,
+    324,
+    247
+   ],
+   "margin": [
+    94,
+    234,
+    188,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1314,
+    1744,
+    319,
+    247
+   ],
+   "margin": [
+    97,
+    234,
+    193,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1635,
+    1744,
+    319,
+    247
+   ],
+   "margin": [
+    97,
+    234,
+    193,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    316,
+    247
+   ],
+   "margin": [
+    98,
+    234,
+    196,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    319,
+    1,
+    308,
+    247
+   ],
+   "margin": [
+    102,
+    234,
+    204,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    629,
+    1,
+    289,
+    247
+   ],
+   "margin": [
+    111,
+    234,
+    223,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south.png"
+   ],
+   "page": 1,
+   "region": [
+    920,
+    1,
+    280,
+    247
+   ],
+   "margin": [
+    116,
+    234,
+    232,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1202,
+    1,
+    273,
+    247
+   ],
+   "margin": [
+    119,
+    234,
+    239,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1477,
+    1,
+    270,
+    247
+   ],
+   "margin": [
+    121,
+    234,
+    242,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1749,
+    1,
+    266,
+    247
+   ],
+   "margin": [
+    123,
+    234,
+    246,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    250,
+    266,
+    247
+   ],
+   "margin": [
+    123,
+    234,
+    246,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    269,
+    250,
+    266,
+    247
+   ],
+   "margin": [
+    123,
+    234,
+    246,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    537,
+    250,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north.png"
+   ],
+   "page": 1,
+   "region": [
+    786,
+    250,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1035,
+    250,
+    224,
+    247
+   ],
+   "margin": [
+    144,
+    234,
+    288,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1261,
+    250,
+    224,
+    247
+   ],
+   "margin": [
+    144,
+    234,
+    288,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1487,
+    250,
+    207,
+    247
+   ],
+   "margin": [
+    153,
+    234,
+    305,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1696,
+    250,
+    221,
+    244
+   ],
+   "margin": [
+    145,
+    237,
+    291,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    499,
+    402,
+    243
+   ],
+   "margin": [
+    55,
+    238,
+    110,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    405,
+    499,
+    394,
+    243
+   ],
+   "margin": [
+    59,
+    238,
+    118,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    801,
+    499,
+    385,
+    243
+   ],
+   "margin": [
+    63,
+    238,
+    127,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1188,
+    499,
+    370,
+    243
+   ],
+   "margin": [
+    71,
+    238,
+    142,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1560,
+    499,
+    359,
+    243
+   ],
+   "margin": [
+    77,
+    238,
+    153,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    744,
+    353,
+    243
+   ],
+   "margin": [
+    79,
+    238,
+    159,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    356,
+    744,
+    341,
+    243
+   ],
+   "margin": [
+    85,
+    238,
+    171,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    699,
+    744,
+    339,
+    243
+   ],
+   "margin": [
+    87,
+    238,
+    173,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1040,
+    744,
+    331,
+    243
+   ],
+   "margin": [
+    91,
+    238,
+    181,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1373,
+    744,
+    331,
+    243
+   ],
+   "margin": [
+    91,
+    238,
+    181,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1706,
+    744,
+    327,
+    243
+   ],
+   "margin": [
+    93,
+    238,
+    185,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    989,
+    266,
+    243
+   ],
+   "margin": [
+    123,
+    238,
+    246,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    269,
+    989,
+    259,
+    243
+   ],
+   "margin": [
+    127,
+    238,
+    253,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    530,
+    989,
+    255,
+    243
+   ],
+   "margin": [
+    129,
+    238,
+    257,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    787,
+    989,
+    255,
+    243
+   ],
+   "margin": [
+    129,
+    238,
+    257,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1044,
+    989,
+    407,
+    242
+   ],
+   "margin": [
+    53,
+    239,
+    105,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1453,
+    989,
+    398,
+    242
+   ],
+   "margin": [
+    57,
+    239,
+    114,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1044,
+    1233,
+    388,
+    242
+   ],
+   "margin": [
+    62,
+    239,
+    124,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1434,
+    1233,
+    384,
+    242
+   ],
+   "margin": [
+    64,
+    239,
+    128,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1820,
+    1233,
+    224,
+    237
+   ],
+   "margin": [
+    144,
+    244,
+    288,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1234,
+    365,
+    242
+   ],
+   "margin": [
+    73,
+    239,
+    147,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    368,
+    1234,
+    365,
+    242
+   ],
+   "margin": [
+    73,
+    239,
+    147,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    735,
+    1234,
+    298,
+    239
+   ],
+   "margin": [
+    107,
+    242,
+    214,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    735,
+    1477,
+    333,
+    242
+   ],
+   "margin": [
+    89,
+    239,
+    179,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1070,
+    1477,
+    324,
+    242
+   ],
+   "margin": [
+    94,
+    239,
+    188,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1396,
+    1477,
+    316,
+    242
+   ],
+   "margin": [
+    98,
+    239,
+    196,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1714,
+    1477,
+    316,
+    242
+   ],
+   "margin": [
+    98,
+    239,
+    196,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1478,
+    265,
+    242
+   ],
+   "margin": [
+    123,
+    239,
+    247,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    268,
+    1478,
+    265,
+    242
+   ],
+   "margin": [
+    123,
+    239,
+    247,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    535,
+    1721,
+    378,
+    239
+   ],
+   "margin": [
+    67,
+    242,
+    134,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    915,
+    1721,
+    370,
+    239
+   ],
+   "margin": [
+    71,
+    242,
+    142,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1287,
+    1721,
+    327,
+    239
+   ],
+   "margin": [
+    93,
+    242,
+    185,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1616,
+    1721,
+    327,
+    239
+   ],
+   "margin": [
+    93,
+    242,
+    185,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1722,
+    327,
+    239
+   ],
+   "margin": [
+    93,
+    242,
+    185,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1,
+    319,
+    239
+   ],
+   "margin": [
+    97,
+    242,
+    193,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_02.png"
+   ],
+   "page": 2,
+   "region": [
+    322,
+    1,
+    273,
+    239
+   ],
+   "margin": [
+    119,
+    242,
+    239,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_01.png"
+   ],
+   "page": 2,
+   "region": [
+    597,
+    1,
+    266,
+    239
+   ],
+   "margin": [
+    123,
+    242,
+    246,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    865,
+    1,
+    255,
+    239
+   ],
+   "margin": [
+    129,
+    242,
+    257,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1122,
+    1,
+    255,
+    239
+   ],
+   "margin": [
+    129,
+    242,
+    257,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1379,
+    1,
+    421,
+    238
+   ],
+   "margin": [
+    45,
+    243,
+    91,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1802,
+    1,
+    207,
+    237
+   ],
+   "margin": [
+    153,
+    244,
+    305,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1802,
+    240,
+    215,
+    235
+   ],
+   "margin": [
+    149,
+    246,
+    297,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1379,
+    241,
+    409,
+    238
+   ],
+   "margin": [
+    51,
+    243,
+    103,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    242,
+    388,
+    238
+   ],
+   "margin": [
+    62,
+    243,
+    124,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    391,
+    242,
+    383,
+    238
+   ],
+   "margin": [
+    65,
+    243,
+    129,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_00.png"
+   ],
+   "page": 2,
+   "region": [
+    776,
+    242,
+    379,
+    238
+   ],
+   "margin": [
+    67,
+    243,
+    133,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1157,
+    242,
+    210,
+    234
+   ],
+   "margin": [
+    151,
+    247,
+    302,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1157,
+    481,
+    367,
+    238
+   ],
+   "margin": [
+    73,
+    243,
+    145,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1526,
+    481,
+    350,
+    238
+   ],
+   "margin": [
+    81,
+    243,
+    162,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    482,
+    329,
+    238
+   ],
+   "margin": [
+    91,
+    243,
+    183,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    332,
+    482,
+    329,
+    238
+   ],
+   "margin": [
+    91,
+    243,
+    183,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_01.png"
+   ],
+   "page": 2,
+   "region": [
+    663,
+    482,
+    265,
+    238
+   ],
+   "margin": [
+    123,
+    243,
+    247,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    930,
+    482,
+    221,
+    234
+   ],
+   "margin": [
+    145,
+    247,
+    291,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    930,
+    721,
+    370,
+    237
+   ],
+   "margin": [
+    71,
+    244,
+    142,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1302,
+    721,
+    347,
+    236
+   ],
+   "margin": [
+    83,
+    245,
+    165,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1651,
+    721,
+    367,
+    235
+   ],
+   "margin": [
+    73,
+    246,
+    145,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    722,
+    345,
+    235
+   ],
+   "margin": [
+    83,
+    246,
+    167,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    348,
+    722,
+    338,
+    235
+   ],
+   "margin": [
+    87,
+    246,
+    174,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_02.png"
+   ],
+   "page": 2,
+   "region": [
+    688,
+    722,
+    215,
+    231
+   ],
+   "margin": [
+    149,
+    250,
+    297,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1651,
+    958,
+    338,
+    235
+   ],
+   "margin": [
+    87,
+    246,
+    174,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    959,
+    413,
+    234
+   ],
+   "margin": [
+    49,
+    247,
+    99,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    416,
+    959,
+    353,
+    234
+   ],
+   "margin": [
+    79,
+    247,
+    159,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1302,
+    959,
+    346,
+    234
+   ],
+   "margin": [
+    83,
+    247,
+    166,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    771,
+    960,
+    329,
+    233
+   ],
+   "margin": [
+    91,
+    248,
+    183,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1195,
+    316,
+    233
+   ],
+   "margin": [
+    98,
+    248,
+    196,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    319,
+    1195,
+    370,
+    232
+   ],
+   "margin": [
+    71,
+    249,
+    142,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    691,
+    1195,
+    382,
+    231
+   ],
+   "margin": [
+    65,
+    250,
+    130,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1075,
+    1195,
+    316,
+    231
+   ],
+   "margin": [
+    98,
+    250,
+    196,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1393,
+    1195,
+    351,
+    230
+   ],
+   "margin": [
+    81,
+    251,
+    161,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1746,
+    1195,
+    235,
+    227
+   ],
+   "margin": [
+    139,
+    254,
+    277,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1393,
+    1427,
+    320,
+    229
+   ],
+   "margin": [
+    96,
+    252,
+    192,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1715,
+    1427,
+    316,
+    229
+   ],
+   "margin": [
+    98,
+    252,
+    196,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    691,
+    1428,
+    315,
+    229
+   ],
+   "margin": [
+    99,
+    252,
+    197,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1008,
+    1428,
+    324,
+    228
+   ],
+   "margin": [
+    94,
+    253,
+    188,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_00.png"
+   ],
+   "page": 2,
+   "region": [
+    319,
+    1429,
+    316,
+    228
+   ],
+   "margin": [
+    98,
+    253,
+    196,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1430,
+    266,
+    224
+   ],
+   "margin": [
+    123,
+    257,
+    246,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1008,
+    1658,
+    376,
+    226
+   ],
+   "margin": [
+    68,
+    255,
+    136,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1386,
+    1658,
+    396,
+    225
+   ],
+   "margin": [
+    58,
+    256,
+    116,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_00.png"
+   ],
+   "page": 2,
+   "region": [
+    1784,
+    1658,
+    227,
+    224
+   ],
+   "margin": [
+    143,
+    257,
+    285,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1659,
+    378,
+    225
+   ],
+   "margin": [
+    67,
+    256,
+    134,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    381,
+    1659,
+    320,
+    224
+   ],
+   "margin": [
+    96,
+    257,
+    192,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    703,
+    1659,
+    221,
+    221
+   ],
+   "margin": [
+    145,
+    260,
+    291,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1,
+    338,
+    222
+   ],
+   "margin": [
+    87,
+    259,
+    174,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    341,
+    1,
+    327,
+    222
+   ],
+   "margin": [
+    93,
+    259,
+    185,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_00.png"
+   ],
+   "page": 3,
+   "region": [
+    670,
+    1,
+    221,
+    221
+   ],
+   "margin": [
+    145,
+    260,
+    291,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_02.png"
+   ],
+   "page": 3,
+   "region": [
+    893,
+    1,
+    335,
+    220
+   ],
+   "margin": [
+    89,
+    261,
+    177,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1230,
+    1,
+    324,
+    220
+   ],
+   "margin": [
+    94,
+    261,
+    188,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_00.png"
+   ],
+   "page": 3,
+   "region": [
+    1556,
+    1,
+    266,
+    220
+   ],
+   "margin": [
+    123,
+    261,
+    246,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_01.png"
+   ],
+   "page": 3,
+   "region": [
+    1824,
+    1,
+    221,
+    217
+   ],
+   "margin": [
+    145,
+    264,
+    291,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_02.png"
+   ],
+   "page": 3,
+   "region": [
+    893,
+    223,
+    316,
+    219
+   ],
+   "margin": [
+    98,
+    262,
+    196,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_01.png"
+   ],
+   "page": 3,
+   "region": [
+    1211,
+    223,
+    345,
+    218
+   ],
+   "margin": [
+    83,
+    263,
+    167,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_00.png"
+   ],
+   "page": 3,
+   "region": [
+    1558,
+    223,
+    341,
+    218
+   ],
+   "margin": [
+    85,
+    263,
+    171,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    225,
+    341,
+    218
+   ],
+   "margin": [
+    85,
+    263,
+    171,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_02.png"
+   ],
+   "page": 3,
+   "region": [
+    344,
+    225,
+    333,
+    217
+   ],
+   "margin": [
+    89,
+    264,
+    179,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_02.png"
+   ],
+   "page": 3,
+   "region": [
+    1211,
+    443,
+    400,
+    216
+   ],
+   "margin": [
+    56,
+    265,
+    112,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_02.png"
+   ],
+   "page": 3,
+   "region": [
+    1613,
+    443,
+    270,
+    215
+   ],
+   "margin": [
+    121,
+    266,
+    242,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_05.png"
+   ],
+   "page": 3,
+   "region": [
+    344,
+    444,
+    270,
+    215
+   ],
+   "margin": [
+    121,
+    266,
+    242,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_01.png"
+   ],
+   "page": 3,
+   "region": [
+    616,
+    444,
+    224,
+    211
+   ],
+   "margin": [
+    144,
+    270,
+    288,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_03.png"
+   ],
+   "page": 3,
+   "region": [
+    842,
+    444,
+    315,
+    206
+   ],
+   "margin": [
+    99,
+    275,
+    197,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    445,
+    337,
+    204
+   ],
+   "margin": [
+    87,
+    277,
+    175,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_02.png"
+   ],
+   "page": 3,
+   "region": [
+    616,
+    657,
+    404,
+    210
+   ],
+   "margin": [
+    54,
+    271,
+    108,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1613,
+    660,
+    410,
+    208
+   ],
+   "margin": [
+    51,
+    273,
+    102,
+    304
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_02.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    661,
+    409,
+    205
+   ],
+   "margin": [
+    51,
+    276,
+    103,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1022,
+    661,
+    370,
+    203
+   ],
+   "margin": [
+    71,
+    278,
+    142,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1022,
+    866,
+    410,
+    200
+   ],
+   "margin": [
+    51,
+    281,
+    102,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    868,
+    393,
+    200
+   ],
+   "margin": [
+    59,
+    281,
+    119,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    396,
+    869,
+    350,
+    200
+   ],
+   "margin": [
+    81,
+    281,
+    162,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_05.png"
+   ],
+   "page": 3,
+   "region": [
+    748,
+    869,
+    224,
+    194
+   ],
+   "margin": [
+    144,
+    287,
+    288,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1434,
+    870,
+    346,
+    200
+   ],
+   "margin": [
+    83,
+    281,
+    166,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_00.png"
+   ],
+   "page": 3,
+   "region": [
+    1782,
+    870,
+    224,
+    194
+   ],
+   "margin": [
+    144,
+    287,
+    288,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_02.png"
+   ],
+   "page": 3,
+   "region": [
+    748,
+    1068,
+    330,
+    199
+   ],
+   "margin": [
+    91,
+    282,
+    182,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1071,
+    409,
+    192
+   ],
+   "margin": [
+    51,
+    289,
+    103,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_05.png"
+   ],
+   "page": 3,
+   "region": [
+    412,
+    1071,
+    319,
+    187
+   ],
+   "margin": [
+    97,
+    294,
+    193,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1080,
+    1072,
+    365,
+    190
+   ],
+   "margin": [
+    73,
+    291,
+    147,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1447,
+    1072,
+    365,
+    190
+   ],
+   "margin": [
+    73,
+    291,
+    147,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1080,
+    1264,
+    361,
+    190
+   ],
+   "margin": [
+    75,
+    291,
+    151,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1443,
+    1264,
+    409,
+    187
+   ],
+   "margin": [
+    51,
+    294,
+    103,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1265,
+    391,
+    186
+   ],
+   "margin": [
+    61,
+    295,
+    121,
+    326
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    394,
+    1269,
+    423,
+    182
+   ],
+   "margin": [
+    45,
+    299,
+    89,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1453,
+    423,
+    182
+   ],
+   "margin": [
+    45,
+    299,
+    89,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_03.png"
+   ],
+   "page": 3,
+   "region": [
+    426,
+    1453,
+    409,
+    182
+   ],
+   "margin": [
+    51,
+    299,
+    103,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1443,
+    1453,
+    387,
+    181
+   ],
+   "margin": [
+    63,
+    300,
+    125,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    837,
+    1456,
+    418,
+    178
+   ],
+   "margin": [
+    47,
+    303,
+    94,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_04.png"
+   ],
+   "page": 3,
+   "region": [
+    837,
+    1636,
+    322,
+    172
+   ],
+   "margin": [
+    95,
+    309,
+    190,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/venom_spitter_8dir/venom_spitter_idle_east.png"
+}

@@ -1,0 +1,533 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "leadership_echo",
+ "tres": "res://assets/sprites/allies/ally_leadership_echo_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 26,
+ "unique_frames": 13,
+ "source_rgba_bytes": 5242880,
+ "page_rgba_bytes": 2605056,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/leadership_echo_trim_0.png",
+   "width": 1024,
+   "height": 636,
+   "sha256": "be76b64b49d21df1476f500bed2de0c27b6f6aed30d51ebe9e5a4fc480297a53"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_00.png",
+   "sha256": "fcdaa3d128bb12adbdbf7b3e32a65a6d8b7e2827ed6d47b14354af026ee1b31e"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_01.png",
+   "sha256": "a0d15c5e1b2a96d8ef4595e48596a8d114f3d0ef0459e2d672bccd657652ce5d"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_02.png",
+   "sha256": "af4fd2addde73998470f90ae625c2dc9ae682e8916ae3ac0b14cbc01efc180d5"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_03.png",
+   "sha256": "780a679a5d7383dec0385206afb34fc72fa728508aee75272f4cb5e727286e1f"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_04.png",
+   "sha256": "3160f07ed2ab18bb1701a30e56b29b13ccfa6e835c1a12d399860844846b77a1"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_05.png",
+   "sha256": "d5a4c7bafeb02b781d24e279ad9f1736e033b4e6e42f06eaa0e7e86f2cd27324"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_00.png",
+   "sha256": "a23858f9714500cb73699bd8b651c3f0a6d5971fee5d71fd243fb39cd7c737f2"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_01.png",
+   "sha256": "a19e45e93b6370f8ed7dbfc5884f5d28574e87ea785bcb9a8558fa427825f2a2"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_02.png",
+   "sha256": "9e1d4345945ec2d824011812d7b3fb023bf94c90d271f4bfcf176160bd302d9c"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_03.png",
+   "sha256": "7633b05f7f4b2253f79c9ef12f3f78390783f26ea970625f69642baafa9bd9a0"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_04.png",
+   "sha256": "ec7ebfb8b888f38a6c819213893c9ebf89d2bb840ce9827b4a32cc1177d0f922"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_05.png",
+   "sha256": "b454a9ec0b2ab6a6e25054d380c273e7174653fa832f058f1541caabbb9f1f2b"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_00.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_01.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_02.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_03.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_04.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_05.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_06.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  },
+  {
+   "path": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_07.png",
+   "sha256": "cf04a170f6bf648546f59ef871b58aae7af97fc762f6a1316226711e3e15a6bc"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    204,
+    210
+   ],
+   "margin": [
+    26,
+    23,
+    52,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_00.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_01.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_02.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_03.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_04.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_05.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_06.png",
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_07.png"
+   ],
+   "page": 0,
+   "region": [
+    207,
+    1,
+    204,
+    210
+   ],
+   "margin": [
+    26,
+    23,
+    52,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_02.png"
+   ],
+   "page": 0,
+   "region": [
+    413,
+    1,
+    203,
+    210
+   ],
+   "margin": [
+    26,
+    23,
+    53,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_05.png"
+   ],
+   "page": 0,
+   "region": [
+    618,
+    1,
+    203,
+    210
+   ],
+   "margin": [
+    26,
+    23,
+    53,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_03.png"
+   ],
+   "page": 0,
+   "region": [
+    823,
+    1,
+    199,
+    210
+   ],
+   "margin": [
+    28,
+    23,
+    57,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    213,
+    203,
+    210
+   ],
+   "margin": [
+    26,
+    23,
+    53,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_01.png"
+   ],
+   "page": 0,
+   "region": [
+    206,
+    213,
+    202,
+    210
+   ],
+   "margin": [
+    27,
+    23,
+    54,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_01.png"
+   ],
+   "page": 0,
+   "region": [
+    410,
+    213,
+    146,
+    210
+   ],
+   "margin": [
+    55,
+    23,
+    110,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_02.png"
+   ],
+   "page": 0,
+   "region": [
+    558,
+    213,
+    143,
+    210
+   ],
+   "margin": [
+    56,
+    23,
+    113,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_03.png"
+   ],
+   "page": 0,
+   "region": [
+    703,
+    213,
+    127,
+    210
+   ],
+   "margin": [
+    64,
+    23,
+    129,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_00.png"
+   ],
+   "page": 0,
+   "region": [
+    832,
+    213,
+    121,
+    210
+   ],
+   "margin": [
+    67,
+    23,
+    135,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    425,
+    111,
+    210
+   ],
+   "margin": [
+    72,
+    23,
+    145,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_04.png"
+   ],
+   "page": 0,
+   "region": [
+    114,
+    425,
+    109,
+    210
+   ],
+   "margin": [
+    73,
+    23,
+    147,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 14.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 14.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_death_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_move_07.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/leadership_echo/ally_leadership_echo_attack_00.png"
+}

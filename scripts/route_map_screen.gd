@@ -1099,28 +1099,24 @@ func _enemy_archetype_name(path: String) -> String:
 	return str(_ENEMY_ARCHETYPES.get(path, "враги"))
 
 
-# FAN-3973: the route map is the natural boundary before every fight — queue
-# the full-frame packs the selectable row can spawn so they load in the
-# background while the player chooses (see FullFrameAnimationRegistry
-# prefetch). The regular enemy pool spawns in every node type, a node elite
-# is deterministic per node seed, the boss id is fixed per act. Random
-# mini-elites and class summons stay lazy (rare, small packs). Node types
-# match `_open_route_node` (`elite_battle` from generated routes, `elite`
-# alias for old saves; QA d7bc8435 caught the first candidate matching only
-# the alias). The boss id is read from the node as-is: a read-only roster
-# lookup must not touch run state the way `resolve_final_act_boss_id` does.
+# FAN-3973/FAN-3977: the route map is the natural boundary before every
+# fight — queue the full-frame packs so they load in the background while the
+# player chooses (see FullFrameAnimationRegistry prefetch). FAN-3977 keeps
+# the CORE roster resident: the regular enemy pool, every mini-elite kind
+# (any of them can roll in any regular fight — the FAN-3964 review traced
+# 1-FPS seconds to mini-elite packs loading mid-fight) and the ally packs the
+# selected class can summon.
+# The node elite / act boss is NOT warmed here: it depends on the node the
+# player picks, and warming a whole row's elites and boss on top of the core
+# roster would push texture memory past the 1.5 GiB acceptance line;
+# `_finalize_combat_start` loads that one pack after the click and waits for
+# it before anything spawns. Packs outside the core roster (last fight's
+# elite/boss) are released here; the world is already cleared at this point.
 func _prefetch_full_frame_roster() -> void:
-	FullFrameAnimationRegistry.queue_prefetch_kind("enemy")
-	if game.route_stage < 0 or game.route_stage >= game.route_nodes.size():
-		return
-	for route_node_variant in game.route_nodes[game.route_stage]:
-		var route_node: Dictionary = route_node_variant
-		match str(route_node.get("type", "")):
-			"elite_battle", "elite":
-				var node_seed := int(route_node.get("seed", game.fallback_node_seed(route_node)))
-				FullFrameAnimationRegistry.queue_prefetch_for_scene("elite", game.node_elite_scene(node_seed), "elite_behavior")
-			"boss":
-				FullFrameAnimationRegistry.queue_prefetch("boss", str(route_node.get("boss_id", "rift_warden")))
+	var core := FullFrameEncounterRoster.core_paths(game.PROGRESSION_DATA, str(game.selected_character_id))
+	FullFrameAnimationRegistry.retain_only(core)
+	for frames_path in core:
+		FullFrameAnimationRegistry.queue_prefetch_path(str(frames_path))
 
 
 func _elite_archetype_name(scene: PackedScene) -> String:

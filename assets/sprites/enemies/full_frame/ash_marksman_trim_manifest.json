@@ -1,0 +1,5834 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "ash_marksman",
+ "tres": "res://assets/sprites/enemies/full_frame/ash_marksman_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 184,
+ "unique_frames": 184,
+ "source_rgba_bytes": 192937984,
+ "page_rgba_bytes": 30998528,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_trim_0.png",
+   "width": 2048,
+   "height": 1980,
+   "sha256": "27aab75150d198085b0ed35c81cd253b5c3f95871f1505fb0f19bae0eea5927e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_trim_1.png",
+   "width": 2048,
+   "height": 1804,
+   "sha256": "46658f7dc67d5064c3e3ba0ef16597f94180e03ef1de364114be39a0a5ff0d89"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_00.png",
+   "sha256": "6c5190d4308b1a6134805a97756e17fcc3f169addb6b500a4bfc9b3c4eb87132"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_01.png",
+   "sha256": "e4b014b14c4b7a7510862a53a120705c2acb20ecbee2b9dc3631c59e528fe9d0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_02.png",
+   "sha256": "ce351702ddcf9288165e3efcc6fae32847e47c01b89e450514c6fb51f4b0d5a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_03.png",
+   "sha256": "a7775613b435acebef4b3c3fb0be7adae68499978a5bd83a92c6b3714f1cf72a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_04.png",
+   "sha256": "6c71595be146531d3584a6367cb4035df6cb6dbeb3a0c402332e19c947acc556"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_05.png",
+   "sha256": "a051ff3ad9a2c97dcf2eb045688500c7ad887e331791f953a9aafaab9e570cdb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_00.png",
+   "sha256": "eaf481fbe176e63ace06ee5e4a1f48bd5b3161dc7b26871d1485998c9bdb322b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_01.png",
+   "sha256": "fad3177593d2dabd552d3e6f791f1c27335da54fa6e05a99cbe9e2ed4441f03a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_02.png",
+   "sha256": "c108b2553fa5f1579ebd5337aea1cb24247090bd745e5b165635af3d173a9bec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_03.png",
+   "sha256": "7a656f93907d7d2794be0414c70e7f3ddc1d1f362fd01388f80527632a84144d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_04.png",
+   "sha256": "a2569b9a16bf78dd085fea1ce497e237266272f67554cfbbc82282d8b6c7eeec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_05.png",
+   "sha256": "0eebda4132545f261bd203c594065820328438398cab952a29af54c9a827054a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_00.png",
+   "sha256": "2a48f4f36b44a67ed39c007381685f7ac5f1f47e8457d6d01af81f12c6d00de5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_01.png",
+   "sha256": "d00653f632910b13578a84a5b767b4ffc52aae23005e18856725858b58122843"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_02.png",
+   "sha256": "dec9528a9c145caf55b5e90c48665cc159fdc4edbb0e6ba7576a7f20c9e11c02"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_03.png",
+   "sha256": "cf75630e137ae2bfb00fd585853644e682a9606b9af31afdad87a0171db35314"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_04.png",
+   "sha256": "2c53077224b0650d218a855c8a4235106efc4eeb3058733a6703af928e8bea3f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_05.png",
+   "sha256": "b31e5b187a135b8729a269f0e27b18896f80af4d42e743610e20a3c6d6a4a17d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_00.png",
+   "sha256": "8bbf5c08dff17ec9ed2a96127d1b4e0b55a681bb5f7559ad6b0a2601af289669"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_01.png",
+   "sha256": "5b53fe2a2468b4dfe6cbbea230bb0332705b505905c34263d11c1ad5bdd799f8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_02.png",
+   "sha256": "dfa9f5fed547e503d62d8f2c596eb04224c31780619f23190c7798be65accaf7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_03.png",
+   "sha256": "2055d139617c0906eea3ca1138568732bd71cdd86af073d29b3c17f81d33d6ba"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_04.png",
+   "sha256": "f0fb3389a2d1b1fe445fd59e52e3c424bd173c03ea2a41dee589753c9e971397"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_05.png",
+   "sha256": "1d6d03b9c9cd811e721012bd8c790b7a7d117ceab5a59891651b360245693d4d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_00.png",
+   "sha256": "d74f8d63f6c98c75f9c2dcfef1d474cfc4c875fb89b405dc64ef054238987975"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_01.png",
+   "sha256": "eb4c1fbc8ea6abcb2f4b548f6268ce115cf3a853816aac68cc2bcf9c26b6751e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_02.png",
+   "sha256": "69087a311d9691de582b672ad720b2a9d611d680932922f5bf65f6c7005bf81a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_03.png",
+   "sha256": "7b274064abf099e87d27770f19118d88e4d23b9dce28b87a22b8620a3c18171d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_04.png",
+   "sha256": "bd032f46a273a887d21f4f5a077f5081566b7d32896cdad5766711a0b019e097"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_05.png",
+   "sha256": "381b65f5d2f6292085477369a69770f3b4621b69c0ae8dc20fd3d4cc722029f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_00.png",
+   "sha256": "db0cf6c36672828b85f69a3f7333bdc67d4990e9541205adeae8d9fea62008a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_01.png",
+   "sha256": "49272d38679acd545728aeb6baec84997ec8519acf21474e3095dc492d6896a9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_02.png",
+   "sha256": "4cf24c1899a2899c1c5442540f67162a3ecc6c5cb089a183e57c4b91f26a15e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_03.png",
+   "sha256": "4c6948a753eb85c0fc4ccf34d546efaa2dc3f189477a214987d954129fbde57e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_04.png",
+   "sha256": "7c86031fffb1714e12462bc59fc233e68d7ca84dda395245b78d0e83335b2572"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_05.png",
+   "sha256": "04cbc205c5d197739e575f71161b201ecc76110edc9ed3c7cfd9d8def787cdab"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_00.png",
+   "sha256": "0b73e694e5a085a21606b42ebdc3ad51e5cf2c9fe99a7115d1e81f110f557440"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_01.png",
+   "sha256": "641e3ae67a0ee40172abd495dfd8ed0cce2f93170cfa1c5fc7558de1606d7254"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_02.png",
+   "sha256": "717e98698e679ad0a69ba3d6b67eb632f12f1f3e3b6ab59345dce15ad7100df0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_03.png",
+   "sha256": "18d2a8a4a5adf8fdcfd0e1850d1918ad8248d2967c99a88c455a80fe4d95682b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_04.png",
+   "sha256": "3a63671c192eeabd7217babfd8d8362d4d52481035405d371ee6359ebd588db8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_05.png",
+   "sha256": "d9baab3f65f8abdae8c9b0d696fbe624add4f1df61143f15ea3dd97129cb4acf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_00.png",
+   "sha256": "e4b0b708c7afe17a3eee22babd71a82f7654c59b8c00bf725764e2a432be800c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_01.png",
+   "sha256": "a38a9d8b827b79bf58c77bd8300335bb57d36a266046e4f41f931b270af5916a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_02.png",
+   "sha256": "8fcd968a57f28185eccc45fcbb5d37d7e2e32a1ade27a2e700287621d4501b35"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_03.png",
+   "sha256": "b17f7184f531a2486e099cf6a0cd6883a8e78f03cd7c786acdd23c83d3eb38f4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_04.png",
+   "sha256": "826d624d85eaafdc33551d84df0827ec097828d463909c778123c745e68e6939"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_05.png",
+   "sha256": "0f175de0a4f320ab41181f109d84536aefff55002171a0ce1aecf7471862030e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_00.png",
+   "sha256": "31296e78550a7838f957faca97ab106518b602534f5a058f713b35843a2c08ad"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_01.png",
+   "sha256": "962778c358f5406631e1b1c9fe27ae1d68ad50804d232d47b6d3e4cf8d01c12e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_02.png",
+   "sha256": "8a5ecf9fcf2233a15e21dd28f2e03d2b9e3c424b4cb0a55e101e92b5cf7ca124"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_03.png",
+   "sha256": "6b23e5f66fc282cabbb30eff2d52a0a37c3c55f55daeea28001528faa1e0687c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_04.png",
+   "sha256": "4c218c14a1a6a6caee5f415c8c9180afbf4a76c2b9f70d80c339685974ac07c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_05.png",
+   "sha256": "1d6ca812074c096e758260a86b7531ed27eb688f9cf49201f206ef70d7c0afeb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_00.png",
+   "sha256": "e21e7b7603366fe0a06400520853a55adbc082c424e67ccebbfb0b1b4e68a172"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_01.png",
+   "sha256": "1785d9e3c7d4100a8646305c3e9c34e5f385c79d1b45c16739b5b12f615135e5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_02.png",
+   "sha256": "b94a5ab3150d7d2f806899ea9fc5b5781f6e649deba9c6a59bb52b84ef258dd9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_03.png",
+   "sha256": "75b14cb1757cde5b37208c2c8c9e4a596fc3bda905355e820cab3198df97d0a7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_04.png",
+   "sha256": "ec6b6fbd799f85646c744eed73b6193ef4bc61b08a4dd5086a36090c09bf9efe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_05.png",
+   "sha256": "2294e477c5c9e9cec2ed5865322bf1a835a80ac010241128b0af92b622fe9932"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_00.png",
+   "sha256": "eccdb2a9442199d7d74e5eef846f29a07c9dc136d881d88414419dcfa8496d75"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_01.png",
+   "sha256": "3e36a7121bd6aade098329e52e255a45598d826e7195071fe78a6823e5e77e23"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_02.png",
+   "sha256": "eb2239b5b7c0aff7c0dd63e4eaf425c458d8ccb66933cb124fe35f0b45010a14"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_03.png",
+   "sha256": "fd0e0d989ac4893b40bf3ed739d8ac4706406074c013a22dd3487db6afee895c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_04.png",
+   "sha256": "bcd8a83c4216ce991518f1acba176325dba5bae953048f9d547bf4d5666aa699"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_05.png",
+   "sha256": "c9b0dded12f5f6fe43845a691f3ceb30837c4bdfbd8a57fdddac2684d4710743"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_00.png",
+   "sha256": "b49574763ab980b2247fa9fa734b24b6bb48df5ba62c6422800eeccc30a35adb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_01.png",
+   "sha256": "1a20ae60e31e531f85bccb8f7bf9859a95fb642bea8b0e60eb0296150b436806"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_02.png",
+   "sha256": "47bee4f9b1e399882eb62bdda3f8995199f43b37f5526a3b1ad480e372ea3d13"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_03.png",
+   "sha256": "27ba289ef788588251b41b4262799e632387b41abd4b5cd562b5c43665c04598"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_04.png",
+   "sha256": "0d3e9b5d460802faeac4949aa832a71e480c71c49093f603fe3ce550a0e8984e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_05.png",
+   "sha256": "f9cbd4aa4c44c4695cb4f8d025f560bda2b3aa7a8ec4c6cff02ab4f272bb7e63"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_00.png",
+   "sha256": "bc68da18a597ba174d9ecdc77fc5c4114f3f5db1e6e587fe0f8a164a33f5ecae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_01.png",
+   "sha256": "cdbbaeedddecec392259a8ef9d111370bc08ea0f1eb9543d48ecb88b00cd0524"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_02.png",
+   "sha256": "d201f04b58783aec2d3893b25e2d847298f0e83efae3cf124dee85d4828e608b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_03.png",
+   "sha256": "b12fa794e3fd5576d8e5b28f90e55cb53f176ee6d3d18494442c36c3a543e28b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_04.png",
+   "sha256": "e6e5c28d1be832c5b54b23f5501e004d91db3b4024e20558b7d4ea7da240ae31"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_05.png",
+   "sha256": "5e57576c44d8b55eb07cddbc30e196630fb614872f8bc723e9ab375e25673a18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_00.png",
+   "sha256": "d321ae7d29a8967f1e4c76e6383fe3f37480e31e5c0710079725b97b0d1b1576"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_01.png",
+   "sha256": "b6f3fe3a8ed67cc92fd74889abdf80d062068ccf977252d5c3ff01b1659da0cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_02.png",
+   "sha256": "fac7ce2f09bcd5248ba42e7dafd519308ecc9f2842c334431052fe05763149b7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_03.png",
+   "sha256": "71d944d06a110c337f52e12352cfc77da83743a06c80deb787e0dd23e2f73c9b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_04.png",
+   "sha256": "021bde8c14314bb9e370d5e6a2599369117f95b6af97d0ad1f40388940bb6828"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_05.png",
+   "sha256": "4fc3f8218aac5d606417ee32948acc5229ceb28e4b22c18013ada577e40fd81e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_00.png",
+   "sha256": "2fc2e94400d0b4b0fc04241cac1ee4dfe48902b574aad211fd6571acded7782a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_01.png",
+   "sha256": "b1da05ca8968371eac4d98ed39ffbc15bfcfd046ba69e675e40009050c30c62f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_02.png",
+   "sha256": "0d67ff5803f5b988a6a057294a03075fef3d6c6c139c91bb65b69b044a0f5aae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_03.png",
+   "sha256": "ae24facff7d7619af575e62954932b2a59e88a2eed885f437ac528c091559fc2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_04.png",
+   "sha256": "c336fe52a7a014e4fd7894eece2cb7c46e2c303b275b8c6c777f84f257f457a2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_05.png",
+   "sha256": "41211d3bc5c539be64dc88a5248dfc3dd9d5eb355307ac890d1f0ed6a564b743"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_00.png",
+   "sha256": "e7790289cff4885fb9e47429debee611d9bcc72b93c3d770fe06a48eef5a8a38"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_01.png",
+   "sha256": "736bd58824d0c510546958ae39dd523873e673c072179c0f588758d24fee7b90"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_02.png",
+   "sha256": "e01cc715da57cd5165fa151a788ac0904d4b9ff743e9e1a495244dcf2e84149f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_03.png",
+   "sha256": "c02f27ee40d17848c4bd889f1f9761f9da2e6aa80656d8024c37ea41f8be9015"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_04.png",
+   "sha256": "56674bda2a9e49cbc36c5abbc5704d1eaf74b312e87106e9ebb79f4658b61db5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_05.png",
+   "sha256": "d7043039ceae2c5079a94a73467f184056ff677e6e451634e2e1314536108186"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_00.png",
+   "sha256": "43523921fda0bb5052e27bdbd95e48c388372fb8fafaa613d74d149089b43b39"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_01.png",
+   "sha256": "820a8fe438b8d702e0e7e64b6bb51719c83fac6b6ae87f748a400f5fda2696af"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_02.png",
+   "sha256": "4416a546aea0e8fdf48ea25059a6c855e0689ceb38d096ed09a45b76bb587e5e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_03.png",
+   "sha256": "85b1be95e846ea99e677ad0901ff1244ca6a0d93badfddbb3f697e94eb36e54e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_00.png",
+   "sha256": "774d6ede51b806f807b9f313b7f33e43b93daf3c81af5ac1d98763d97fa41384"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_01.png",
+   "sha256": "185f3f4538b00869e703dbe017cc06042c53680c277938b43759db4c6b012f2b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_02.png",
+   "sha256": "69be0ec529a63bf4850cfe01b17f4744033b69649916210ba50feddcb0181173"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_03.png",
+   "sha256": "decd36b67628ca00a5658b5727194dbad8426b373adf505e4983ce0612ddcd0d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_00.png",
+   "sha256": "39a015782f811e800c9032b1dbd7002331ada609f67a4605fece68cdc9eb2ee1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_01.png",
+   "sha256": "725f043a91ecb990073ac66ef543a1016e8587f0316368f5699a8b1268f7f0a2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_02.png",
+   "sha256": "eda1869f1e75b58326dd8bf6a23b004ef949bec0b0256cb23b33282f91c57882"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_03.png",
+   "sha256": "403eadccec373bbb2529d7c512ea627150ce8ea2d4b2b2b44625b6ae3d7c8eab"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_00.png",
+   "sha256": "9d5a8cbab8a97a5245bb5da41d717fb63fee9371dbc526b5e710843a8a9f4f06"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_01.png",
+   "sha256": "122712f0075a129c6fcb405288cb17e6efb9aab0efde9a65549096fcb52a8196"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_02.png",
+   "sha256": "2539e45f6b9a2f47abecbbf7f78efc6c33ab38398684a8f62b42f80b5b63e219"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_03.png",
+   "sha256": "96986690f59fa41c20d8d0dbb2943e813db63f78f06ebc7f79805655070b88e5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_00.png",
+   "sha256": "a4a3af8d82967769900ba0714b6f34567026e8cbb6995e8480e79bf24fd86352"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_01.png",
+   "sha256": "c039c129612f7c5165e4f60d08b1ea7b0418eb9cb5113b1ab6df24e2b0b0f951"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_02.png",
+   "sha256": "b8a3d364c13873d1e2a7d4c99d250112c64e7eec34f4202a691b9d02225bedaf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_03.png",
+   "sha256": "07415e804a1abbb5e99b9606b4f5b86d2f3309e364d271f8a952bae848f51a33"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_00.png",
+   "sha256": "11f3a681bff8ae0529ffb6874063a9748d5481a281b45ad62131cd8cb409752f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_01.png",
+   "sha256": "cfc6f9cab13430576556b0d3792c9e8eb506833b2e40a87cc3e847fb68934459"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_02.png",
+   "sha256": "9f7b526169f84981bb189794b8ab2a906b45e362cd4fda3ce1f2c217d48e3ac3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_03.png",
+   "sha256": "22f41961e489b827b3cfa1bad4922f07bdb738ab67a4e2929a5c5c65c4908722"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_00.png",
+   "sha256": "90bcc366e81fade0ad30f8bd80168083456db2ba059d3740189b8a072cf316c1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_01.png",
+   "sha256": "71386efd99e14ac3e8b4dac9b1a7797ec5412e6b739b3161cc019ce0c64d81cd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_02.png",
+   "sha256": "a7c013abc6e27e20efa96f3be1ded41bab60e9e136c8e5abdcbce5333cb0e68b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_03.png",
+   "sha256": "d66ffaa83b3e19b40e1b2e70f9ac870f246d3e41734b90ecac510715aabfb2f5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_00.png",
+   "sha256": "e4bccc26de78bf619dc72ede238315476bc40ff91cfec3a86fd9c5d08f96cef0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_01.png",
+   "sha256": "4c33c48d50606cbdd9f53821e832089ebaf137645c92f2b827f2a765c6072dcf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_02.png",
+   "sha256": "9f02c0f53967ea0f7a9be0a3faaad0b0d8c5363242da5e0c2efa864ea9ac936d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_03.png",
+   "sha256": "2f709422bc3a45d38bdfc8cb12d63ab11c82cc80e1057069ec66904cb2374ac2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_east.png",
+   "sha256": "57e2b3179bf7915c427d34d4bd890b88ad11b8da28f91b2c58b90d07d9995f36"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north.png",
+   "sha256": "50d6ed73c7978c5e0eccbc3d86c895cb504a3d434ba1e5f1ca475c36438a0bee"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north_east.png",
+   "sha256": "321aa258c2124106af21443b413790046a8c99a9f1629668f17957dfeb85665a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north_west.png",
+   "sha256": "a82b002c6b47ac57b0fa9a2e6c2071440e31451342a74d5598a0f55ee636246f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south.png",
+   "sha256": "b8377c4dd064a72bcc933208346d2ae324cb7738d4fa4f4522b4272753250094"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south_east.png",
+   "sha256": "2242823deb27b868d82527d2c219e02561a4927093d3cb893479814e6d33b106"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south_west.png",
+   "sha256": "6a7dec2fcd07188ddf4cc529722403945ea4c7e477be909b605fc608a1bf17ae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_west.png",
+   "sha256": "760ab249705b7249c1c0fcc05e378656c8f87484afc34fcda2298799f995b62d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_00.png",
+   "sha256": "b460c5b87e550a7bdb33bd5addd9f19162b014d2800aec815ceb71a7e5a0da73"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_01.png",
+   "sha256": "2da01c64271014a74749296d4259edd06576fb704080310b6e729dbfb9a8202c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_02.png",
+   "sha256": "15ec994a01003e4d29b0ffb4a0fbb670f730a9fad49af17293617650f5241af2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_03.png",
+   "sha256": "3f30fad281c2c847face7eebd1129fa962333cccb3fb04f1e909046239747887"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_04.png",
+   "sha256": "8ee7aa4fdc1c9a3e628df7cd446d95342512c10dd5df4099a82db2b049e112f6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_05.png",
+   "sha256": "865625f6c1b8e536f9abfa5adbf35e7686a7073e1829cc8ccfdebf5809ecf688"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_00.png",
+   "sha256": "ce2bb94abd4279333dd10f729a61162565dd4d27a72ec57d27c07e67a09ff4f3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_01.png",
+   "sha256": "fdf12681dfc921f45be49936a3a7180375b9762065845eaa2b0263738173645a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_02.png",
+   "sha256": "bb99f51c31dfa10c00868b866b4fc3d19dcdb7f400c7e1eb339871e35443793c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_03.png",
+   "sha256": "433086a9038aa75f379a100bdfd7be3d313479707eac7bafe92460d71941dfd9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_04.png",
+   "sha256": "a7d4ef7342e14f0f7ad718b499a4ba239e851ee70dd8df4480fdd501c8b7542e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_05.png",
+   "sha256": "9e4825acf4691330629db332ad8614003962e31c4023d573e821b42cdd642b7c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_00.png",
+   "sha256": "4baa1fa8a41e94baf3b5d53662963d13e0f7bb826f79866341ca5d1f9d5548d5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_01.png",
+   "sha256": "3f1d422634e7091237067927aa23be588a64577dd0722cb5e5e885c1eeda069c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_02.png",
+   "sha256": "e9b9b4baf333e88e3b30694a41f7be15f1e741fe9afc9c94e29c7f946d1cf2c5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_03.png",
+   "sha256": "8c311b82d620ab4d0186d9028899ba86e6583118a30d464328b98c70aa87e94a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_04.png",
+   "sha256": "a967a88e83e86d9e5e60299c4401735ae4c52d2c7da3224e4220f46fcf15cfd4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_05.png",
+   "sha256": "b0ef93efbdbadeaddde492867b9f00a0ed9ee2c9aeca6dd597d7ad6d52a0ce9e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_00.png",
+   "sha256": "5590b76db89a88e7cd2b217634cf40776065c57dfb3da7bc086f132d324bb2c6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_01.png",
+   "sha256": "d2dd912567aa7323b6f77f0a6636fad6fa0f778892cf3872f2ec3191a0c05613"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_02.png",
+   "sha256": "357c939c65ac0d145153423ff600804f095d365a34587a06afc14ea6df5f00ed"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_03.png",
+   "sha256": "446bcc90163ffbd215da08c9742af5d7d84f87ea3284567a4fd81e0a917b75da"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_04.png",
+   "sha256": "7b27e065a6d138e294279a4c23ab789d990a941969a51c3a64c747bdfb7af2d5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_05.png",
+   "sha256": "c9e1c6dbe2f7191a8f3f10761dffe967514c6fcccee7d2e3cd5d6154ac6ac845"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_00.png",
+   "sha256": "7c5788f0d29eb49412533c8c23cd376703df997bb881e39605e7d652a4f35026"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_01.png",
+   "sha256": "797ad12d4a18048b1ee84d8dcd16b933c6add493c95af7cfbc865348f628e39f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_02.png",
+   "sha256": "b177abd69b566e850ab61e6b370321b59f678b800acd929e1cf8e6c50d4e3f46"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_03.png",
+   "sha256": "22a8db6dba299adcce3b24465bbcf75ab7d3bdad6a5a10b5e1693280056f9c0c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_04.png",
+   "sha256": "f0394797b68aae1cdc429bf77d0e56a67d569be040ed6574477de48ebcd38831"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_05.png",
+   "sha256": "4ed59278a6c6170d7e19a720b0902778dba9e74fab48eaf34f0e87d32ce34c8f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_00.png",
+   "sha256": "323f3d78652115afa83b2759b5bf4d3e911aee6b8bcc02a8578dbe3d59718e53"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_01.png",
+   "sha256": "0beccdee75a4259ec0a3611a89073e56d1d580005df44282c868c978ea91fc09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_02.png",
+   "sha256": "c9acfb11b8e851df9ca60a9882023eea4cd3fa17c9e9942ce4ff3e457d6d77b2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_03.png",
+   "sha256": "af64843e112169c9090a1278341e6722ceacecec68f424d48f0e46b424c65cef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_04.png",
+   "sha256": "c576a066e8bb3a79b9942b1bc7a04a440dabf9997fef0174a2372f01ebc4a842"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_05.png",
+   "sha256": "b6f76f8acdc22d4eaca695f383da8e6343130572f1dd83bb182a007275ffbb93"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_00.png",
+   "sha256": "44a5498932437671b835ca0588600a7fe78b584b5098fe39349cede85ad65354"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_01.png",
+   "sha256": "40429257a0a06478a4c25526517b2c01d7b3c8fdf83085aa9f8a1e32588b2b50"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_02.png",
+   "sha256": "921638fdbddf67c3a62457bfb5af5242b38345fde3b307e0c983b544b43c29d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_03.png",
+   "sha256": "573dc4e710b14180dc084ff4d6f6d56bd5150c39e9b53cd65d6c9a64976862d9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_04.png",
+   "sha256": "c5d27dfd7f8c67050837bbc6313b3d723ed06c129902b031be18cc264a30a02f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_05.png",
+   "sha256": "0df3b1bfcfa83f33ffe371cbfcf72c1272616bade6df94d6f618e7d9a188f428"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_00.png",
+   "sha256": "47fa6c0fad6eb52915a1801f31718ff529ee2e3599be5daedc20870e4fa67207"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_01.png",
+   "sha256": "d61097a7cf0be029e168f78aaadee5ee5a72780edbb3e6b1219703781eec2713"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_02.png",
+   "sha256": "44600071a01404bb92c7daf5de87bf6c544874f102ba67e8f2d9cd9e7c93ce07"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_03.png",
+   "sha256": "68ffb235bd5c3ee638494fb18442442e4fa3de8bf8c9f83522a77fcfd999963a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_04.png",
+   "sha256": "54a98efd295af3c0aed3ede738cda4e19e23f092737471adc99d4d35f0f3b976"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_05.png",
+   "sha256": "36bdbb5a9bed7d9e7b13efae9a5c6ccac56759a16b35e780e9299863c0d6547e"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    209,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    303,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    212,
+    1,
+    209,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    303,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    423,
+    1,
+    202,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    310,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    627,
+    1,
+    202,
+    247
+   ],
+   "margin": [
+    155,
+    234,
+    310,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    831,
+    1,
+    199,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    313,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1032,
+    1,
+    194,
+    247
+   ],
+   "margin": [
+    159,
+    234,
+    318,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1228,
+    1,
+    186,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    326,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1416,
+    1,
+    183,
+    247
+   ],
+   "margin": [
+    165,
+    234,
+    329,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1601,
+    1,
+    179,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    333,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1782,
+    1,
+    178,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    334,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    177,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    335,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    180,
+    250,
+    173,
+    247
+   ],
+   "margin": [
+    169,
+    234,
+    339,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    355,
+    250,
+    172,
+    247
+   ],
+   "margin": [
+    170,
+    234,
+    340,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    529,
+    250,
+    171,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    341,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    702,
+    250,
+    170,
+    247
+   ],
+   "margin": [
+    171,
+    234,
+    342,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    874,
+    250,
+    168,
+    247
+   ],
+   "margin": [
+    172,
+    234,
+    344,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1044,
+    250,
+    167,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    345,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1213,
+    250,
+    166,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    346,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1381,
+    250,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1548,
+    250,
+    165,
+    247
+   ],
+   "margin": [
+    173,
+    234,
+    347,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1715,
+    250,
+    163,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    349,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1880,
+    250,
+    163,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    349,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    165,
+    499,
+    161,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    351,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    328,
+    499,
+    157,
+    247
+   ],
+   "margin": [
+    177,
+    234,
+    355,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    487,
+    499,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    645,
+    499,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    803,
+    499,
+    156,
+    247
+   ],
+   "margin": [
+    178,
+    234,
+    356,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    961,
+    499,
+    155,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    357,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1118,
+    499,
+    155,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    357,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1275,
+    499,
+    155,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    357,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1432,
+    499,
+    155,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    357,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1589,
+    499,
+    155,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    357,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1746,
+    499,
+    154,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    358,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1902,
+    499,
+    143,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    369,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    153,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    359,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    156,
+    748,
+    153,
+    247
+   ],
+   "margin": [
+    179,
+    234,
+    359,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    311,
+    748,
+    152,
+    247
+   ],
+   "margin": [
+    180,
+    234,
+    360,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    465,
+    748,
+    151,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    361,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    618,
+    748,
+    150,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    362,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    770,
+    748,
+    150,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    362,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    922,
+    748,
+    150,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    362,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1074,
+    748,
+    150,
+    247
+   ],
+   "margin": [
+    181,
+    234,
+    362,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1226,
+    748,
+    148,
+    247
+   ],
+   "margin": [
+    182,
+    234,
+    364,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1376,
+    748,
+    148,
+    247
+   ],
+   "margin": [
+    182,
+    234,
+    364,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1526,
+    748,
+    148,
+    247
+   ],
+   "margin": [
+    182,
+    234,
+    364,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1676,
+    748,
+    147,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    365,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1825,
+    748,
+    146,
+    247
+   ],
+   "margin": [
+    183,
+    234,
+    366,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    140,
+    997,
+    137,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    375,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    279,
+    997,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    411,
+    997,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    543,
+    997,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    675,
+    997,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    807,
+    997,
+    114,
+    247
+   ],
+   "margin": [
+    199,
+    234,
+    398,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    923,
+    997,
+    177,
+    244
+   ],
+   "margin": [
+    167,
+    237,
+    335,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1102,
+    997,
+    163,
+    244
+   ],
+   "margin": [
+    175,
+    237,
+    349,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1267,
+    997,
+    156,
+    244
+   ],
+   "margin": [
+    178,
+    237,
+    356,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1425,
+    997,
+    146,
+    244
+   ],
+   "margin": [
+    183,
+    237,
+    366,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1573,
+    997,
+    124,
+    244
+   ],
+   "margin": [
+    194,
+    237,
+    388,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1699,
+    997,
+    121,
+    244
+   ],
+   "margin": [
+    195,
+    237,
+    391,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1822,
+    997,
+    215,
+    243
+   ],
+   "margin": [
+    149,
+    238,
+    297,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1822,
+    1242,
+    197,
+    243
+   ],
+   "margin": [
+    157,
+    238,
+    315,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    923,
+    1243,
+    229,
+    243
+   ],
+   "margin": [
+    141,
+    238,
+    283,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1154,
+    1243,
+    193,
+    243
+   ],
+   "margin": [
+    159,
+    238,
+    319,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1349,
+    1243,
+    183,
+    243
+   ],
+   "margin": [
+    165,
+    238,
+    329,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1534,
+    1243,
+    180,
+    243
+   ],
+   "margin": [
+    166,
+    238,
+    332,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    180,
+    243
+   ],
+   "margin": [
+    166,
+    238,
+    332,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    183,
+    1246,
+    175,
+    243
+   ],
+   "margin": [
+    169,
+    238,
+    337,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    360,
+    1246,
+    171,
+    243
+   ],
+   "margin": [
+    171,
+    238,
+    341,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    533,
+    1246,
+    168,
+    243
+   ],
+   "margin": [
+    172,
+    238,
+    344,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    703,
+    1246,
+    168,
+    243
+   ],
+   "margin": [
+    172,
+    238,
+    344,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1716,
+    1487,
+    164,
+    243
+   ],
+   "margin": [
+    174,
+    238,
+    348,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1882,
+    1487,
+    163,
+    243
+   ],
+   "margin": [
+    175,
+    238,
+    349,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    873,
+    1488,
+    162,
+    243
+   ],
+   "margin": [
+    175,
+    238,
+    350,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1037,
+    1488,
+    162,
+    243
+   ],
+   "margin": [
+    175,
+    238,
+    350,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1201,
+    1488,
+    159,
+    243
+   ],
+   "margin": [
+    177,
+    238,
+    353,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1362,
+    1488,
+    157,
+    243
+   ],
+   "margin": [
+    177,
+    238,
+    355,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1521,
+    1488,
+    157,
+    243
+   ],
+   "margin": [
+    177,
+    238,
+    355,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1491,
+    155,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    357,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    158,
+    1491,
+    153,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    359,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    313,
+    1491,
+    153,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    359,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    468,
+    1491,
+    153,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    359,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    623,
+    1491,
+    153,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    359,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1680,
+    1732,
+    153,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    359,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1835,
+    1732,
+    153,
+    243
+   ],
+   "margin": [
+    179,
+    238,
+    359,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    778,
+    1733,
+    150,
+    243
+   ],
+   "margin": [
+    181,
+    238,
+    362,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    930,
+    1733,
+    150,
+    243
+   ],
+   "margin": [
+    181,
+    238,
+    362,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1082,
+    1733,
+    148,
+    243
+   ],
+   "margin": [
+    182,
+    238,
+    364,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1232,
+    1733,
+    148,
+    243
+   ],
+   "margin": [
+    182,
+    238,
+    364,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1382,
+    1733,
+    147,
+    243
+   ],
+   "margin": [
+    183,
+    238,
+    365,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1531,
+    1733,
+    146,
+    243
+   ],
+   "margin": [
+    183,
+    238,
+    366,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1736,
+    126,
+    243
+   ],
+   "margin": [
+    193,
+    238,
+    386,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    129,
+    1736,
+    202,
+    240
+   ],
+   "margin": [
+    155,
+    241,
+    310,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    333,
+    1736,
+    198,
+    240
+   ],
+   "margin": [
+    157,
+    241,
+    314,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    533,
+    1736,
+    195,
+    240
+   ],
+   "margin": [
+    159,
+    241,
+    317,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    191,
+    240
+   ],
+   "margin": [
+    161,
+    241,
+    321,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    194,
+    1,
+    180,
+    240
+   ],
+   "margin": [
+    166,
+    241,
+    332,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    376,
+    1,
+    172,
+    240
+   ],
+   "margin": [
+    170,
+    241,
+    340,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    550,
+    1,
+    169,
+    240
+   ],
+   "margin": [
+    171,
+    241,
+    343,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    721,
+    1,
+    165,
+    240
+   ],
+   "margin": [
+    173,
+    241,
+    347,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    888,
+    1,
+    165,
+    240
+   ],
+   "margin": [
+    173,
+    241,
+    347,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1055,
+    1,
+    165,
+    240
+   ],
+   "margin": [
+    173,
+    241,
+    347,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1222,
+    1,
+    165,
+    240
+   ],
+   "margin": [
+    173,
+    241,
+    347,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1389,
+    1,
+    163,
+    240
+   ],
+   "margin": [
+    175,
+    241,
+    349,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1554,
+    1,
+    158,
+    240
+   ],
+   "margin": [
+    177,
+    241,
+    354,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1714,
+    1,
+    157,
+    240
+   ],
+   "margin": [
+    177,
+    241,
+    355,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1873,
+    1,
+    156,
+    240
+   ],
+   "margin": [
+    178,
+    241,
+    356,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    243,
+    155,
+    240
+   ],
+   "margin": [
+    179,
+    241,
+    357,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    158,
+    243,
+    154,
+    240
+   ],
+   "margin": [
+    179,
+    241,
+    358,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    314,
+    243,
+    153,
+    240
+   ],
+   "margin": [
+    179,
+    241,
+    359,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    469,
+    243,
+    153,
+    240
+   ],
+   "margin": [
+    179,
+    241,
+    359,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    624,
+    243,
+    152,
+    240
+   ],
+   "margin": [
+    180,
+    241,
+    360,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    778,
+    243,
+    151,
+    240
+   ],
+   "margin": [
+    181,
+    241,
+    361,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    931,
+    243,
+    150,
+    240
+   ],
+   "margin": [
+    181,
+    241,
+    362,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1083,
+    243,
+    148,
+    240
+   ],
+   "margin": [
+    182,
+    241,
+    364,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1233,
+    243,
+    148,
+    240
+   ],
+   "margin": [
+    182,
+    241,
+    364,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1383,
+    243,
+    134,
+    240
+   ],
+   "margin": [
+    189,
+    241,
+    378,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1519,
+    243,
+    126,
+    240
+   ],
+   "margin": [
+    193,
+    241,
+    386,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1647,
+    243,
+    118,
+    240
+   ],
+   "margin": [
+    197,
+    241,
+    394,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1767,
+    243,
+    187,
+    239
+   ],
+   "margin": [
+    163,
+    242,
+    325,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1767,
+    484,
+    175,
+    239
+   ],
+   "margin": [
+    169,
+    242,
+    337,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    485,
+    202,
+    237
+   ],
+   "margin": [
+    155,
+    244,
+    310,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    205,
+    485,
+    171,
+    237
+   ],
+   "margin": [
+    171,
+    244,
+    341,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    378,
+    485,
+    154,
+    237
+   ],
+   "margin": [
+    179,
+    244,
+    358,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    534,
+    485,
+    222,
+    236
+   ],
+   "margin": [
+    145,
+    245,
+    290,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    758,
+    485,
+    212,
+    236
+   ],
+   "margin": [
+    150,
+    245,
+    300,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    972,
+    485,
+    185,
+    236
+   ],
+   "margin": [
+    163,
+    245,
+    327,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1159,
+    485,
+    158,
+    236
+   ],
+   "margin": [
+    177,
+    245,
+    354,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1319,
+    485,
+    158,
+    236
+   ],
+   "margin": [
+    177,
+    245,
+    354,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1479,
+    485,
+    156,
+    236
+   ],
+   "margin": [
+    178,
+    245,
+    356,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1637,
+    485,
+    126,
+    236
+   ],
+   "margin": [
+    193,
+    245,
+    386,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    534,
+    723,
+    155,
+    236
+   ],
+   "margin": [
+    179,
+    245,
+    357,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    691,
+    723,
+    155,
+    236
+   ],
+   "margin": [
+    179,
+    245,
+    357,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    848,
+    723,
+    155,
+    236
+   ],
+   "margin": [
+    179,
+    245,
+    357,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1005,
+    723,
+    153,
+    236
+   ],
+   "margin": [
+    179,
+    245,
+    359,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1160,
+    723,
+    148,
+    236
+   ],
+   "margin": [
+    182,
+    245,
+    364,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1310,
+    723,
+    141,
+    236
+   ],
+   "margin": [
+    185,
+    245,
+    371,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1453,
+    723,
+    126,
+    236
+   ],
+   "margin": [
+    193,
+    245,
+    386,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1581,
+    723,
+    124,
+    236
+   ],
+   "margin": [
+    194,
+    245,
+    388,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    724,
+    124,
+    236
+   ],
+   "margin": [
+    194,
+    245,
+    388,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    127,
+    724,
+    169,
+    233
+   ],
+   "margin": [
+    171,
+    248,
+    343,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    298,
+    724,
+    128,
+    233
+   ],
+   "margin": [
+    192,
+    248,
+    384,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1707,
+    725,
+    191,
+    232
+   ],
+   "margin": [
+    161,
+    249,
+    321,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1900,
+    725,
+    126,
+    232
+   ],
+   "margin": [
+    193,
+    249,
+    386,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    127,
+    959,
+    179,
+    232
+   ],
+   "margin": [
+    167,
+    249,
+    333,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    308,
+    959,
+    165,
+    232
+   ],
+   "margin": [
+    173,
+    249,
+    347,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1707,
+    959,
+    171,
+    229
+   ],
+   "margin": [
+    171,
+    252,
+    341,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1880,
+    959,
+    152,
+    229
+   ],
+   "margin": [
+    180,
+    252,
+    360,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    475,
+    961,
+    199,
+    228
+   ],
+   "margin": [
+    157,
+    253,
+    313,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    676,
+    961,
+    156,
+    227
+   ],
+   "margin": [
+    178,
+    254,
+    356,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    834,
+    961,
+    156,
+    227
+   ],
+   "margin": [
+    178,
+    254,
+    356,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    992,
+    961,
+    156,
+    227
+   ],
+   "margin": [
+    178,
+    254,
+    356,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    961,
+    143,
+    225
+   ],
+   "margin": [
+    185,
+    256,
+    369,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1295,
+    961,
+    137,
+    225
+   ],
+   "margin": [
+    187,
+    256,
+    375,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1434,
+    961,
+    128,
+    222
+   ],
+   "margin": [
+    192,
+    259,
+    384,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1434,
+    1185,
+    162,
+    221
+   ],
+   "margin": [
+    175,
+    260,
+    350,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    1188,
+    156,
+    221
+   ],
+   "margin": [
+    178,
+    260,
+    356,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    676,
+    1190,
+    154,
+    221
+   ],
+   "margin": [
+    179,
+    260,
+    358,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    832,
+    1190,
+    142,
+    221
+   ],
+   "margin": [
+    185,
+    260,
+    370,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    976,
+    1190,
+    148,
+    218
+   ],
+   "margin": [
+    182,
+    263,
+    364,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1598,
+    1190,
+    178,
+    218
+   ],
+   "margin": [
+    167,
+    263,
+    334,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1778,
+    1190,
+    162,
+    214
+   ],
+   "margin": [
+    175,
+    267,
+    350,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    475,
+    1191,
+    172,
+    213
+   ],
+   "margin": [
+    170,
+    268,
+    340,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1193,
+    150,
+    206
+   ],
+   "margin": [
+    181,
+    275,
+    362,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    153,
+    1193,
+    189,
+    197
+   ],
+   "margin": [
+    161,
+    284,
+    323,
+    315
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    153,
+    1392,
+    232,
+    194
+   ],
+   "margin": [
+    140,
+    287,
+    280,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    387,
+    1406,
+    214,
+    192
+   ],
+   "margin": [
+    149,
+    289,
+    298,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1778,
+    1406,
+    229,
+    181
+   ],
+   "margin": [
+    141,
+    300,
+    283,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1308,
+    1408,
+    199,
+    181
+   ],
+   "margin": [
+    157,
+    300,
+    313,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1509,
+    1410,
+    202,
+    169
+   ],
+   "margin": [
+    155,
+    312,
+    310,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    976,
+    1411,
+    254,
+    163
+   ],
+   "margin": [
+    129,
+    318,
+    258,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    603,
+    1413,
+    232,
+    163
+   ],
+   "margin": [
+    140,
+    318,
+    280,
+    349
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    837,
+    1576,
+    168,
+    160
+   ],
+   "margin": [
+    172,
+    321,
+    344,
+    352
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1007,
+    1576,
+    240,
+    154
+   ],
+   "margin": [
+    136,
+    327,
+    272,
+    358
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    603,
+    1578,
+    224,
+    130
+   ],
+   "margin": [
+    144,
+    351,
+    288,
+    382
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1509,
+    1581,
+    251,
+    150
+   ],
+   "margin": [
+    131,
+    331,
+    261,
+    362
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1588,
+    258,
+    141
+   ],
+   "margin": [
+    127,
+    340,
+    254,
+    371
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1762,
+    1589,
+    258,
+    137
+   ],
+   "margin": [
+    127,
+    344,
+    254,
+    375
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1249,
+    1591,
+    229,
+    114
+   ],
+   "margin": [
+    141,
+    367,
+    283,
+    398
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    261,
+    1600,
+    265,
+    108
+   ],
+   "margin": [
+    123,
+    373,
+    247,
+    404
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1249,
+    1707,
+    243,
+    96
+   ],
+   "margin": [
+    135,
+    385,
+    269,
+    416
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    261,
+    1710,
+    251,
+    92
+   ],
+   "margin": [
+    131,
+    389,
+    261,
+    420
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    514,
+    1710,
+    258,
+    81
+   ],
+   "margin": [
+    127,
+    400,
+    254,
+    431
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_south_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_west_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_03.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_hit_north_east_03.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_death_north_east_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/ash_marksman_8dir/ash_marksman_idle_east.png"
+}

@@ -1855,7 +1855,10 @@ func _configure_full_frame_animation() -> bool:
 
 
 func refresh_full_frame_visual() -> void:
-	_configure_full_frame_animation()
+	# FAN-3977: also the deferred swap after a combat-guard miss (the registry
+	# calls this when the pack lands); the contact fit follows the live body.
+	if _configure_full_frame_animation():
+		_fit_contact_range_to_sprite()
 
 
 func _full_frame_entity_kind() -> String:
@@ -1871,7 +1874,10 @@ func _full_frame_entity_id(entity_kind: String) -> String:
 		return str(get("boss_behavior"))
 	if entity_kind == "elite" and has_meta("mini_elite_kind"):
 		var mini_elite_id := str(get_meta("mini_elite_kind", ""))
-		if mini_elite_id != "" and FullFrameAnimationRegistry.sprite_frames_for("elite", mini_elite_id) != null:
+		# FAN-3977: choose by registration, never by loading (a load here ran on
+		# the main thread mid-fight and, under the combat guard, would pick the
+		# base elite pack for a mini-elite whose own pack is still loading).
+		if mini_elite_id != "" and FullFrameAnimationRegistry.has_usable_pack("elite", mini_elite_id):
 			return mini_elite_id
 	if entity_kind == "elite" and elite_behavior != "":
 		return elite_behavior

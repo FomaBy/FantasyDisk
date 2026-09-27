@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 # FAN-1927: полная runtime-матрица визуальной приёмки атрибутного контракта —
 # 4 surface-группы × 3 viewport × 4 состояния = 48 живых состояний с PNG-
@@ -1408,6 +1409,7 @@ func _run_pause_codex(viewport_size: Vector2i, state: String) -> void:
 	main.set("selected_weapon_id", weapon_id)
 	main.set("route_stage", 2)
 	main.call("_start_combat")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await _settle(4)
 	if state == "capped":
 		var player: Node = main.get("current_player")

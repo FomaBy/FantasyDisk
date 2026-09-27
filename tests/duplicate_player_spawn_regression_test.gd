@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 const MAIN_SCENE := preload("res://scenes/Main.tscn")
 const STRESS_CYCLES := 50
@@ -136,6 +137,9 @@ func _test_double_start_idempotency(main: Node) -> Dictionary:
 	_assert_combat_uniqueness(main, "double start immediate")
 	await process_frame
 	await physics_frame
+	# FAN-3977: the accepted start finalizes (spawns) once its full-frame roster
+	# is resident; later stale-boundary fixtures assume a completed start.
+	await CombatStartSupport.await_finalized(main)
 	if legacy_ref.get_ref() != null:
 		_errors.append("legacy unmarked Player orphan survived combat cleanup")
 	_assert_combat_uniqueness(main, "double start after frames")
@@ -168,6 +172,7 @@ func _test_stale_combat_active_route_activation(main: Node) -> void:
 	focus.pressed.emit()
 	await process_frame
 	await physics_frame
+	await CombatStartSupport.await_finalized(main)  # FAN-3977
 	if map_screen != null and is_instance_valid(map_screen) and map_screen.get_parent() != null:
 		_errors.append("stale combat_active blocked RouteNode gamepad-A/pressed activation")
 	if int(main.combat.get("_combat_start_generation")) != generation_before + 1:
@@ -220,6 +225,7 @@ func _stress_new_continue_transitions(main: Node, continue_snapshot: Dictionary)
 		_assert_combat_uniqueness(main, "cycle %d immediate" % cycle)
 		await process_frame
 		await physics_frame
+		await CombatStartSupport.await_finalized(main)  # FAN-3977
 		_assert_combat_uniqueness(main, "cycle %d after frames" % cycle)
 
 

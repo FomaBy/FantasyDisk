@@ -1,0 +1,47 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+| pack | frames | textures | load ms | frame ms | texture MiB |
+|---|---|---|---|---|---|
+| enemy/ash_marksman | 184 | 184 | 144.0 | 160.3 | 245 |
+| enemy/bone_caller | 184 | 184 | 138.3 | 141.7 | 245 |
+| enemy/bone_shaman | 184 | 184 | 141.6 | 154.2 | 245 |
+| enemy/rift_cutter | 306 | 224 | 169.6 | 174.0 | 299 |
+| enemy/rift_shieldbearer | 184 | 184 | 138.5 | 146.6 | 245 |
+| enemy/small_biter | 184 | 3 | 48.6 | 57.7 | 256 |
+| enemy/spark_runner | 208 | 208 | 165.6 | 181.3 | 277 |
+| enemy/stone_bruiser | 216 | 216 | 164.4 | 181.0 | 288 |
+| enemy/venom_spitter | 184 | 184 | 137.5 | 150.9 | 245 |
+| enemy/void_mage | 184 | 184 | 133.7 | 139.0 | 245 |
+| enemy/winged_spark | 224 | 224 | 166.6 | 172.0 | 299 |
+| elite/iron_bastion | 344 | 344 | 246.0 | 251.3 | 459 |
+| elite/mini_bone_warden | 488 | 296 | 220.4 | 223.7 | 395 |
+| elite/mini_plague_bellringer | 488 | 296 | 216.3 | 231.9 | 395 |
+| elite/mini_plague_berserker | 424 | 264 | 189.4 | 203.3 | 352 |
+| elite/mini_rot_hound | 264 | 264 | 185.7 | 199.4 | 352 |
+| elite/mini_scavenger_reaper | 488 | 296 | 210.8 | 216.2 | 395 |
+| elite/mini_shadow_devourer | 488 | 296 | 236.4 | 241.5 | 395 |
+| elite/mini_siege_rammer | 488 | 296 | 216.2 | 231.3 | 395 |
+| elite/mini_spark_wight | 488 | 296 | 214.3 | 228.6 | 395 |
+| elite/mini_swarm_sniper | 488 | 296 | 209.4 | 214.7 | 395 |
+| elite/mini_void_phantom | 488 | 296 | 231.0 | 245.9 | 395 |
+| elite/night_stalker | 368 | 368 | 272.7 | 277.6 | 491 |
+| elite/plague_prophet | 248 | 248 | 166.8 | 180.7 | 331 |
+| elite/shard_marshal | 504 | 336 | 227.8 | 242.3 | 448 |
+| boss/ashen_colossus | 448 | 304 | 238.4 | 246.2 | 405 |
+| boss/bloodthorn_lion | 448 | 304 | 242.2 | 247.3 | 405 |
+| boss/bone_archon | 448 | 304 | 232.2 | 246.2 | 405 |
+| boss/brood_mother | 448 | 304 | 250.8 | 256.7 | 405 |
+| boss/disk_devourer | 328 | 328 | 251.4 | 267.5 | 437 |
+| boss/rift_warden | 448 | 304 | 226.9 | 243.1 | 405 |
+| ally/druid_beast | 26 | 20 | 22.9 | 37.5 | 7 |
+| ally/druid_ghost_bear | 153 | 104 | 57.2 | 61.3 | 35 |
+| ally/druid_ghost_lion | 153 | 104 | 60.6 | 70.8 | 35 |
+| ally/druid_ghost_panther | 153 | 104 | 61.4 | 75.7 | 35 |
+| ally/druid_ghost_stag | 153 | 104 | 60.7 | 65.0 | 35 |
+| ally/druid_ghost_wolf | 153 | 104 | 55.8 | 65.3 | 35 |
+| ally/druid_pack_spirit | 26 | 20 | 24.7 | 27.9 | 7 |
+| ally/homunculus | 26 | 20 | 23.5 | 37.1 | 7 |
+| ally/homunculus_tank | 206 | 206 | 155.5 | 158.8 | 275 |
+| ally/leadership_echo | 26 | 20 | 23.7 | 38.4 | 7 |
+| boss/secret_ascension_boss | 912 | 432 | 421.5 | 429.7 | 576 |

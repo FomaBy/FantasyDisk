@@ -1,0 +1,7903 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "mini_rot_hound",
+ "tres": "res://assets/sprites/elites/full_frame/mini_rot_hound_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 264,
+ "unique_frames": 245,
+ "source_rgba_bytes": 276824064,
+ "page_rgba_bytes": 60063744,
+ "pages": [
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound_trim_0.png",
+   "width": 2048,
+   "height": 1977,
+   "sha256": "68a53b09ff1d5bd2b3f4a2d095834132f69a6fb220c2a44ef32ce14733362daa"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound_trim_1.png",
+   "width": 2048,
+   "height": 2044,
+   "sha256": "c054e797790e2694a6f00e0f51e1d4af70ab94542584c6bc8c401d2b1708fe7f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound_trim_2.png",
+   "width": 2048,
+   "height": 2006,
+   "sha256": "053576c217d820233257e0e8e42fc015a45dd1f88782ed822095187517f91a05"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound_trim_3.png",
+   "width": 2048,
+   "height": 1305,
+   "sha256": "7559ca2a6353640c09987ae3fba414696ce3a6d4b94229e748ebdb3bcdfafb03"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_00.png",
+   "sha256": "3dc7f231d5b515db7ab42a4ce501a66176a87a1e2fc70c5969ceab942844814e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_01.png",
+   "sha256": "15857d5a448527f21cb4ecbc7dbbf2a9847cda8c41ff2a699db78cb78980efd2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_02.png",
+   "sha256": "61a4a524a0f540e650b97527f45df9f797a8f0d7661834a1245d2e90680031bf"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_03.png",
+   "sha256": "45d437b873f3faf4454217359f8bde5aed2854ffc04d3f908b3c9de2a5b73b3a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_04.png",
+   "sha256": "e8d7452364f92c298edff4f7a8f86c205094a186785559562904b54d0f41ea95"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_05.png",
+   "sha256": "1065c71d56134e444cdde3be58c033a00c263fe1ae4f1c491c75d48fbbb954c9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_06.png",
+   "sha256": "9640448d61d5c5a8bbe14ce5058c653104d95859a7bab921f350f9d4884e44ab"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_00.png",
+   "sha256": "73524ee3888e30b5e02766ff9ffcbe9a5b301d934535bea055a65c4662eb6120"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_01.png",
+   "sha256": "f9773a64cd9ebf6442b7e4800ee578315d9f597d1ef5b909faf809f9e38e06e4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_02.png",
+   "sha256": "f85fb739d85f6dc0c041a3dec05158cbc472e0bc4d8fa59ba0763ac2654f83a8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_03.png",
+   "sha256": "a3dcc0e0b189a6f34c74029207ed21bc9ce2b7f105dcb121918be49613e572b3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_04.png",
+   "sha256": "9b53972a9af657252b594894033967de642ba9b1cf25850f36bde1f4510d9272"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_05.png",
+   "sha256": "179be9dae0e78681f3ad28d2211ac87c03a3c86b66857c371676b32128257f3b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_06.png",
+   "sha256": "387191590e05a4165d1e1510f4a3328796add14f597aea816294a39a6fefb7a0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_00.png",
+   "sha256": "4674ae71b0d65ac5429cf6e3bae52abbdbbd442981dae088a2188dc221120a0a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_01.png",
+   "sha256": "beb0a20128f83f35825d80e53e1987630655326a3f49a67d95752eb96d3115c3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_02.png",
+   "sha256": "fec1c25af688a4ca7eda483079d80f7c7f2599cc299a18b22979ef9dfd94d746"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_03.png",
+   "sha256": "0fd1b001b7af7f2ec48d01f57267884fc966034c2a9e29fb6b63c55cf916ecff"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_04.png",
+   "sha256": "10f7d1c96f8f6beaf567b72a8f3f2a8e1dded14f4c6d5abd6ec2980737eb2694"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_05.png",
+   "sha256": "a5edc2b8a55a36dc77dfaf940f27737a0f370f1bd395f066acd993602bdcb211"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_06.png",
+   "sha256": "232112d6a514903f5c4ee7714bb4abe521442472e0bb84a4436b22d740e533c2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_00.png",
+   "sha256": "3f5cb8af57b4ef560cc2527e756919f40681b5aca41a860405fc3ade72a4b0d2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_01.png",
+   "sha256": "008ef9bf71a7d78bcb08b675b2556a974de8b22cac7daf63c6b965489892c000"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_02.png",
+   "sha256": "7548cc1b7b204de7232aef386ad181ddc85e2bba902238a3e8066b819c09de4a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_03.png",
+   "sha256": "4a637af1740d4f765e8fbdcc556d7675029c8112abaf7a56eb667e1eba3dd2e7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_04.png",
+   "sha256": "0eb6ac90bd81ebe6a7cf8b9037c9a13dfa950a8dc1c3ce99d581a33369048efd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_05.png",
+   "sha256": "9f5b5736bbcb275415cab2532dbc7f79d3263cd94fad769914e7a028d4d3b649"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_06.png",
+   "sha256": "34de7cc907941d8cc3875d75251bfa2ee3aa3569a156fbd53b8009f6109d1469"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_00.png",
+   "sha256": "13458ffde0df6b3a282b3c5c674439d3fda9f5f6aa9667cbcba58f3e200a0706"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_01.png",
+   "sha256": "a3f847a0769b1ceca7e583106d7a6db92dbc137a3147e25e8fc1913e37ceb260"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_02.png",
+   "sha256": "4321943081cfe03f999fbd1e8ae0598a7a19b0e424e1fca4d662a7f52781a39a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_03.png",
+   "sha256": "a874eb6beb19ade02324477306036e675d6f16e879e678f70bcd684637611484"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_04.png",
+   "sha256": "882c725feaf7549baa84a242096824813acc51351a94c5c5e4ab06f9302852a8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_05.png",
+   "sha256": "f6466006675c83a2bc5a240f1acc96acc55f8ec8679988582ae786f9771c344c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_06.png",
+   "sha256": "d7b6d39c1ef4d412b8e0270c9c585ff24a102c47bb9c8f0e3a79c75f8b220b35"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_00.png",
+   "sha256": "f4fec4d7704e5afa76cabedc39a7b1e1fd21ec7bf6d2330d3752470dc31fb84d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_01.png",
+   "sha256": "7c6a8ea1530559b75a5b01a17787f93936e0010c8925f7a4b8579fafa18414f6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_02.png",
+   "sha256": "1160a6b382a327bec2e436cf785c5267ee3a1fb35df8be23e9ea24dbb956b8aa"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_03.png",
+   "sha256": "274503d36c0d4b2219bd5d79a92e27609a8f851ae21a66f653f7a8a78418cc87"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_04.png",
+   "sha256": "cc2ab44f93fb015dc02e2ff669998c4074ba6b3d0ae3cbc4ab1b6acc30ef9c69"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_05.png",
+   "sha256": "735b024c059202d65057f8d2bb05f7f9ff443a9870c17359c871eb5b733e501f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_06.png",
+   "sha256": "2844527f37cf1d0dba3cf0f70ec5da01441bce70b280e3d4e928a8631a2fea0f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_00.png",
+   "sha256": "7eada93a6d3a340dfb35b38bd933caa4b929c4b8ca48df48621b8c5d4f0e6064"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_01.png",
+   "sha256": "7d8a032e303028004e07631e977cc7d6fa69da08b011a291dd1d67a902ed9e7d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_02.png",
+   "sha256": "b0cc7343a58b75d8c165269560b192ad024c596d78611a0c20c92d7e702f97ec"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_03.png",
+   "sha256": "8abbf4a643c122652b4b3b79a83da0d220e8eb74da67dc8fea1b7f7b5ad39d54"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_04.png",
+   "sha256": "7942a507651f39cfcb06dc337941770ccf406de2a60dad5ed9fc7601add106fb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_05.png",
+   "sha256": "b8e62d3a4c6ca2c409a78063bf1a79b98db8d424e987da703b02896f05035081"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_06.png",
+   "sha256": "8049e85e10ebdc6883fc3665b9afeb7bbf1163c6d3d4fb04a43ae1ebd221a666"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_00.png",
+   "sha256": "f1697b3c696e83d01dbd0fe27288c0b08b6f1365f8e36d9c482e919b2dedc862"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_01.png",
+   "sha256": "502600a326b3b85bd86f922192d24e383f3cf8c196715d4d1d66b767232aa2c0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_02.png",
+   "sha256": "cc60e63ef448be11d62eef04729e1ddd7993e615a75ce54d22f7535de32c91b1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_03.png",
+   "sha256": "49eb2290518d5de3e9b0b5510367d230a18998ba721985a78b3dd989658ee3f2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_04.png",
+   "sha256": "a1011d80712c1831dd6115718c06464e9ba8e7d24323ad11ef5912e4e04f51fc"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_05.png",
+   "sha256": "2df9c201b0ebfe3b5b9ab2ee7169f02b381ade41d824d4eac47fe3903b544910"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_06.png",
+   "sha256": "38e08ca197028156d3af48697f0b3cb4ecc9f4c54cf765aa8c4be1db22a1cc9e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_00.png",
+   "sha256": "84669f2b1f605d07e7af05983225a9b109754eba07a9501f9d6c6cb26121581a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_01.png",
+   "sha256": "597e0a3fad510a5c5559b74a66c7f74907c18b2aa2c90a6f4d6042879fdd27cd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_02.png",
+   "sha256": "c7c59a5e289076548d55a59b71f2cd1fecc4322e846a98a86e9de9537d32cc9e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_03.png",
+   "sha256": "5068f58a5e5a18adc845c8c5defe74797ae5edfeb4a20a8de66a67b71ceeccc9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_04.png",
+   "sha256": "160729ea23fdfe9bcc6e21a2f43b5cb33dd7052f8927ec506d6188c5af6f0c28"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_05.png",
+   "sha256": "58e19a0fcefb6ffb44d3cedea60270a8b85a81b2bfe20280104c88d323454d89"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_06.png",
+   "sha256": "d129d093717b1d7cf494dd42b06639d1afeeddd2f5fb0527a9d0421057e6ee26"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_00.png",
+   "sha256": "73524ee3888e30b5e02766ff9ffcbe9a5b301d934535bea055a65c4662eb6120"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_01.png",
+   "sha256": "afbb3d780b67ab1345ab1de74ba92e990dfbbbf99584e17f30c44014ab57d576"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_02.png",
+   "sha256": "fda71bad730f41813769d504ec8fb2eeea007f48a4775411d8b63c21ae41ef3a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_03.png",
+   "sha256": "1486088918a266f2e35537e118724130868037276eca35ce4a448782b2bfcb6e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_04.png",
+   "sha256": "6b96ced9af6415e6151696ae8bed0dcdb015c367784f2fedf1993032ac755a0a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_05.png",
+   "sha256": "177f7961c9820006ee07402a7f96701f6108c56def8d971fc20f3c2a3bb984d4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_06.png",
+   "sha256": "69ce1d13c07f451e63037a72b5e82db4fffcb709fe8ec5786de4502f808440ff"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_00.png",
+   "sha256": "4674ae71b0d65ac5429cf6e3bae52abbdbbd442981dae088a2188dc221120a0a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_01.png",
+   "sha256": "ca79f625c842223fc96ec83b478a1f4b51e9cc21ff64506fa4e718dc51f6fc32"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_02.png",
+   "sha256": "8e8d22560c63a200c5f32dae03380bc8dcfc4bc931edacb380878a206e37de38"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_03.png",
+   "sha256": "1905242645c16d4373639dd78f86d9aeacd368998065789edc893894b8c10257"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_04.png",
+   "sha256": "f19a40fefe546315c986ad86f7c6348b2982353ea43c99f71c91d18c509a2efe"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_05.png",
+   "sha256": "7340a36c38b9d3be538974ce2b59d4bb6eba6495308dae728349251a538734e4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_06.png",
+   "sha256": "ff9f3e9cf23d550f0f1cb5f89a2872decc8cdaaae9208c48a136aa8609e5c6f9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_00.png",
+   "sha256": "3f5cb8af57b4ef560cc2527e756919f40681b5aca41a860405fc3ade72a4b0d2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_01.png",
+   "sha256": "b07acc73524815ef1a617f8455b94f77315954cf8aafdf50b1496ca56963561a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_02.png",
+   "sha256": "1ade2a1ce2a485142128199ddafb8fed5350dae93a821a44a97e239d319b89be"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_03.png",
+   "sha256": "f05f2749b2e66081ce24eb1d2d6fde6d92ee12849576240f02985cab072d9769"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_04.png",
+   "sha256": "90a1c96913f9bd3f5babc0741873d33ac589893d8003dadc827da160828793f3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_05.png",
+   "sha256": "a6d3a45f2b0ade102625c217b351e2089007b628f3c95116269b3b95926b4bee"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_06.png",
+   "sha256": "4e6094b29a7bd87b12d3d49726c45dae5bbb7ff48735df6ab7fa7b8fb2432e3e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_00.png",
+   "sha256": "13458ffde0df6b3a282b3c5c674439d3fda9f5f6aa9667cbcba58f3e200a0706"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_01.png",
+   "sha256": "25c5fbf7c800ab320f8f6ce79fbe51351242df7bfa714cc45b0af1828d2d0ee9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_02.png",
+   "sha256": "4e789872a6627235fcc9c6fcbd486a300719c7dedece8137884a4884805d222c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_03.png",
+   "sha256": "5bb2a3c2e6a35f3c1c48cc634227ac8f849285915ea8f0aed398f75200b9ad33"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_04.png",
+   "sha256": "b3aada91be545b81efdd06f7b3710eb1cdf4b13dfd9b99aa068c46746ecee753"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_05.png",
+   "sha256": "b7c9e125cafce477701515ff3040382ec9d7c21e822f1f6ebf7d584799478a0b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_06.png",
+   "sha256": "d91d263232f620954b5d49ae740d13e09fc4210a6f9febe8f90a9e609d8a9d2a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_00.png",
+   "sha256": "f4fec4d7704e5afa76cabedc39a7b1e1fd21ec7bf6d2330d3752470dc31fb84d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_01.png",
+   "sha256": "4d83387bbc48caa59a720eb0b04e00d42c380d1b6f3a52a3470f633c48d21c33"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_02.png",
+   "sha256": "456eed8eecef6b0ce7c336299a5141f5d9b253e7376d2b1af868926e2a164171"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_03.png",
+   "sha256": "136368e31150528367066175e8dfdcbf5deebec0c0329a253f6d6c4120b62ec5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_04.png",
+   "sha256": "fcc0efa70d686be29da91cd915b319c27698c6fc6a8d4e48a1cb4ba9641144d4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_05.png",
+   "sha256": "fdb57cf72888017280be9f52a2ffc2398219a7fee0f01594b5f837c1258dee13"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_06.png",
+   "sha256": "a158f664dbf68b09b493903e68d969149737393e7af8cbb35c3513d833efc7de"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_00.png",
+   "sha256": "7eada93a6d3a340dfb35b38bd933caa4b929c4b8ca48df48621b8c5d4f0e6064"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_01.png",
+   "sha256": "27c7899c613bf20029d3dbd7eb9d4ab79c7f6038508cfd36538ac95f48506faa"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_02.png",
+   "sha256": "f7431ee9ada89b4f68b3dd50d0136aacc2d42f25e9339245c430e45bd6e50617"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_03.png",
+   "sha256": "b952210aafa4e6a68cf9b8dae492133476ccfd9138236a0ddb729ce37499a60d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_04.png",
+   "sha256": "b576d7a56f5e5ee399cb69119e49425b1db5f97c277f6d0b84576dd3349da2d3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_05.png",
+   "sha256": "848a476fc50224a17f30a60ad79c9431d94eb2c152a2f8a4a93274d0c64db350"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_06.png",
+   "sha256": "22f989acae52c888a787f1669bdc60e4055c3211357b9693c9bcad37d879e444"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_00.png",
+   "sha256": "f1697b3c696e83d01dbd0fe27288c0b08b6f1365f8e36d9c482e919b2dedc862"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_01.png",
+   "sha256": "7e4e54efee0d51a23dbac0415a42c075245f5f5d7de78175b754ca187584d333"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_02.png",
+   "sha256": "d99395ed71c2e19b1f711738553bd3ff4ae89f9927469414e0eafebfee3a205f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_03.png",
+   "sha256": "d63da67f0c620d31af00b71df6773c7c2adc9397705643a780f6fb266f5d612b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_04.png",
+   "sha256": "e901eb2d6c4a56a2b3aef71827ea4e0f53e85ba0b6243cde712c5fac5acac992"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_05.png",
+   "sha256": "4333f5abe6559e59ad4ac457cce7b9b826f08bc0079b13f937e460bba017dcf3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_06.png",
+   "sha256": "563e6a23572ccf4c8f50301c28ba9ef9fc29cef6d1ab6f194389cc73ca0ce8af"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_00.png",
+   "sha256": "84669f2b1f605d07e7af05983225a9b109754eba07a9501f9d6c6cb26121581a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_01.png",
+   "sha256": "5b9fbc66bac98d0cfb14f1408b4b03857ac36688098e6b29a04e2e192a7bd5d5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_02.png",
+   "sha256": "961770855af54f85eda120485297833576d32a6577eef23720ca390618a7a9fa"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_03.png",
+   "sha256": "2e27ac613542e9981978aa6b588119452d7f9c7be5838a2f3d46fe2817149f93"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_04.png",
+   "sha256": "7758b83bff9fec6f22e5d370c4f7b4c1cb604a2def960fc299738bca2e19c6d2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_00.png",
+   "sha256": "73524ee3888e30b5e02766ff9ffcbe9a5b301d934535bea055a65c4662eb6120"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_01.png",
+   "sha256": "6bb1b06e774caae49aceec2f3886658efec517b95adabe147399a37aa4df8ae1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_02.png",
+   "sha256": "c456f57ec83119359ef825011c27531b164e92a8f9c61403a75be37b6c7948a2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_03.png",
+   "sha256": "9c3d7571bb487892224371a4d2e36cf31b45a9e58ea5b1d5335a575de05210f4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_04.png",
+   "sha256": "8fd7a448c4d7bd07f0745ccf44019cf592736aee92023f5333bbb8b7382a0426"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_00.png",
+   "sha256": "4674ae71b0d65ac5429cf6e3bae52abbdbbd442981dae088a2188dc221120a0a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_01.png",
+   "sha256": "73b90a9db61fba3f0e7d456078fc9d6216456f8c8ab0b5b0205a9e4ea59a9b3f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_02.png",
+   "sha256": "86f59dc7820813e8896f3f59cc887c485deb9bb27d430dfa0ccb8eb1385f88b4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_03.png",
+   "sha256": "cea5971f4a3f8b93764b827c14d55a9b68e98de5c52b4eee4ac3d73be16b8098"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_04.png",
+   "sha256": "c147385678ba6fdd572f7d80f1af9b2464972b78b865c55bc6f75d78ca03b90a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_00.png",
+   "sha256": "3fbbebe7a4b4cbe385260e7121d96f195c3ac5269b283cdb7d3c072740ae78c5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_01.png",
+   "sha256": "e77255d550a3f4afdeb7176cef87a5410c689919df27b64e97a308bdf1f11b44"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_02.png",
+   "sha256": "5ede515477f7e4dae84bcd66d1be30a5249eaa3787705e68b330d5f644bf44f7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_03.png",
+   "sha256": "4d83b90485d06cd9745a92e42801e7ee647d05106267558e2bef87b4fb8c804a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_04.png",
+   "sha256": "66b81e6f12f55918ed224f997f3089bd533d121fca4825d8b3e10cea60453868"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_00.png",
+   "sha256": "445c97e01d6f54f4f1afe6766456c56749042357595288376e3f1544ee2ff289"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_01.png",
+   "sha256": "8fc1751d9fb08ad3cd272dfad99b72204041a5bf1848b03b36b23361646adeff"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_02.png",
+   "sha256": "091be5c20879ec88512d81172833bcfee905ff281455c56ec9635f82f116654d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_03.png",
+   "sha256": "d6d1298d8109ab1120709bea27b0f6b0b8c8be608a1317042f8bc891e76e72a5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_04.png",
+   "sha256": "d479a6a377df642148965cf1645522f820179be53c523c19e068930365c7039a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_00.png",
+   "sha256": "419115371e31168dff98e0f30940e9f65404282e0b9c6b288b9dfead723952ae"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_01.png",
+   "sha256": "1e45ee08f4f35898190ef898c9f0e37ba68880c53754b436da418c507d54b2a5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_02.png",
+   "sha256": "295e457e8c6c5d683c4cdc9581b89189c1ec64111b5b80a50bd382534fa49016"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_03.png",
+   "sha256": "9ec3773bcbe2babefb44db65bd80c251b5b4ed3d44388a9eb6c3bfc02a0f14af"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_04.png",
+   "sha256": "9f1647466ed962a8a0f0a5337753bdb16fe2b33aae12a6f44a0d728e50ae7f1b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_00.png",
+   "sha256": "b96f2b57d0ead1c398af54d8b2cea1a0b0d21644ea42c87e7e21e9324aaf62dc"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_01.png",
+   "sha256": "c52a9a4e25c4fd2c05bb73b3e60b8fd376da0253aece973cc38a164ae4ec57b6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_02.png",
+   "sha256": "762299aea92b57c3760a5eb3b3826a188adb40026835d1b7a54fcba437670667"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_03.png",
+   "sha256": "8959e2600c1263705f18e16719466612d3949e5354ff8ecee2791a32604c4004"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_04.png",
+   "sha256": "fc721c244258053750a3f7e67bf8e9b539a73ad2c712c633399ab34e9bc4fce3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_00.png",
+   "sha256": "d00290c84e0f8ee62151d003e8ed912cb9ac2e40b157713645eeee4703e4e859"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_01.png",
+   "sha256": "b8510af4d221278dfa3479b50f028972a55d7eab5e782ca89acd68db85f30c8f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_02.png",
+   "sha256": "2d13653ade327becbb3deec5fc0e9b765d8b9fa2021b56786e49916784177266"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_03.png",
+   "sha256": "3e5bb07bd5dc7b4db1eea1e52654b09008d55684a0c68ee61f64b3a3912d7272"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_04.png",
+   "sha256": "b0226778124c52eb5da961cb4641c1651ba0d137ae4dd07c9700f7f8e487dc5d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_east.png",
+   "sha256": "84669f2b1f605d07e7af05983225a9b109754eba07a9501f9d6c6cb26121581a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north.png",
+   "sha256": "73524ee3888e30b5e02766ff9ffcbe9a5b301d934535bea055a65c4662eb6120"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_east.png",
+   "sha256": "4674ae71b0d65ac5429cf6e3bae52abbdbbd442981dae088a2188dc221120a0a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_west.png",
+   "sha256": "3f5cb8af57b4ef560cc2527e756919f40681b5aca41a860405fc3ade72a4b0d2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south.png",
+   "sha256": "13458ffde0df6b3a282b3c5c674439d3fda9f5f6aa9667cbcba58f3e200a0706"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_east.png",
+   "sha256": "f4fec4d7704e5afa76cabedc39a7b1e1fd21ec7bf6d2330d3752470dc31fb84d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_west.png",
+   "sha256": "7eada93a6d3a340dfb35b38bd933caa4b929c4b8ca48df48621b8c5d4f0e6064"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_west.png",
+   "sha256": "f1697b3c696e83d01dbd0fe27288c0b08b6f1365f8e36d9c482e919b2dedc862"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_00.png",
+   "sha256": "07a3b9108ff2bb13d5c3cd6c9529ee791e44bc4a136304ace7f90f94b3e7a88e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_01.png",
+   "sha256": "d5e9effcb0b116cc9f45454f1f28f657507f5973126eee8025871ec37abef91f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_02.png",
+   "sha256": "f8314589444842c6748010f334d1a9460ca310456cce0e297e28ec009389f8de"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_03.png",
+   "sha256": "f5a33e78d8f989001fb121936480a17232511ece3ae024660ae477abdeaa76a9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_04.png",
+   "sha256": "7235e1b0e611d31ca361a7c02b8ad08a771b55341a1787fa3ec7a8f00e5d9f5e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_05.png",
+   "sha256": "7a11f03a37bb22e7bf68e866b712ff62c3efbc91cc8c6c003ca2105008ebe365"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_00.png",
+   "sha256": "dd15bea89718619f10139f001bd135f264b14b169768582e3c1fe62bb8843aba"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_01.png",
+   "sha256": "677cd57cb154f057406099c15c1c2542ce267ad73781f498f31db02038eddf95"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_02.png",
+   "sha256": "5962f92a2b72faf98604d2a92b37f1d4f019d65520302d8357a1b98d2b27de8c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_03.png",
+   "sha256": "cf393d54b53774d06c0247ad76d9d2a56493887741e927b646c345d4fc882c9a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_04.png",
+   "sha256": "2db7fe332a1175839a8e09e5bcc28445b0335339136b93a9508b691377306e7b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_05.png",
+   "sha256": "180b7fe1f70e721b1ef3804e4fb5342f1462029524e2886af565327e542e2ad4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_00.png",
+   "sha256": "94ec12283dc13adc8e3aec99beebcb5655dcef348267169f38625c44a23c6e1f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_01.png",
+   "sha256": "29ef45878f979f79f55597105feb28936b61bf80a2b7581e2e43d5f89aeec2c4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_02.png",
+   "sha256": "cefa20138d9126a982f60e4085f5a87bfe693dbbad7603a297725ad55e1aea32"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_03.png",
+   "sha256": "2792215e59728cc42469f3d8c029d9ae3c6c8b0db57984e6de0d3b125d5cc702"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_04.png",
+   "sha256": "f253e35adee87670f9c5b6dc0f82b87f37c650cefe1b72e51d120a5d8c2a93e5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_05.png",
+   "sha256": "0b93b48b8aad79b6c885ba2f679a48146844b89e3004a8dd0dc09a72f26bc1db"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_00.png",
+   "sha256": "a11a5ccd4c4b5dc0314a80fc25d816655e25b4b851b38680f78ae01a3e54e79e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_01.png",
+   "sha256": "4286caf3e8ffbe7c4f928deb145ec8afb4d11867575e3591e4845c30b3c50f97"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_02.png",
+   "sha256": "86bcdf8ec397f119307536c02302a506fe21060e4b1ee5b9ee1b1b4c85cf6eba"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_03.png",
+   "sha256": "424bea84738beacfb88eeab3a0234fc33fd2729f9217ac558b8c4d5daba3c3a2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_04.png",
+   "sha256": "26f812c89ff602ac6590478f7efea7f302da6b64b3e1502dd5d1274cc5050496"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_05.png",
+   "sha256": "0db18d5f1a2cdbb5336534d4265dcc607ec83554a60ee1c9271635ebe7c0e814"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_00.png",
+   "sha256": "3f7065647bd8440e609506bfa1cf69b6511e2679ac472d9b7d004d007a9fe2ad"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_01.png",
+   "sha256": "852293744915758e415a5517423e1db5bd1ef131d1fcbcd60297cf37eb5977bf"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_02.png",
+   "sha256": "5bec8ba3d65e319687bd2601661172814442739730b77229a44ba132ad83774f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_03.png",
+   "sha256": "95648b7867df2c8e367a33d8f0dec811efc3dc71aa5e8fd7bc00253f96a802b4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_04.png",
+   "sha256": "838fd96c381e70375ae5ab3a146b00c069dbc29e7e887673809beae01e8db8ce"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_05.png",
+   "sha256": "3ec8b59fa51927d5089a6df1456fc8b254715acbe6bcf7ae67173e9578bd3e7d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_00.png",
+   "sha256": "9ea12abb354853be2c1d5fa99df3a8529aed0f190c7e1e03d77f6ecd9d5a1a24"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_01.png",
+   "sha256": "415c0065ec9bc90bed49c305e7adf4d3e94741ebb8f1d58510754e361764095f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_02.png",
+   "sha256": "a52a288e5765e39dfd89d0d7ace0c6196af00a926ed359e6120065c4f6a952b8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_03.png",
+   "sha256": "530eb34d8aefc48291ec85e62caac386eec18cf4831daaae183e8d353b50a375"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_04.png",
+   "sha256": "c8a33b4d64839f31e0ad7310beba1df9c4942acff39af1abd032ef2dcbc9bda4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_05.png",
+   "sha256": "964821f47ffd0861285552d57eb8903aae5a0d46348822ea3a6c132d0bafe232"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_00.png",
+   "sha256": "1327c48abb09684bc25d5a3b3e9dff2a8684620df510b2c8f7fc42ffb28c2df5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_01.png",
+   "sha256": "ab4e4837aecb119ef73efc658fca168bacae2c88c9eb1452385989695edfe531"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_02.png",
+   "sha256": "1cc9bdf7fb4b3901a7195b50d60155641aa0db451f192058ded281cc32d63cc1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_03.png",
+   "sha256": "7e01ef9bfa2313b5b5d8bea10a3b2804463b62f524ba3f7ed88004d286100765"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_04.png",
+   "sha256": "df286e7b5c0ea7a5595ba5c09240d5ca3ed53a53abbafff10d726d6990957e70"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_05.png",
+   "sha256": "5cd110408825cb87a4be70701aa73d1da8aea9b0706a3e99dcd21fb9d4a92d62"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_00.png",
+   "sha256": "d2cd8896625c05340771130fd5f44ef7d705f0679e9cf2d583d78cbd777e083d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_01.png",
+   "sha256": "7e3d090a3f871e6a41eb249aeaf062e7bddfc9b8e722e71b2d9cfa39641d4a3d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_02.png",
+   "sha256": "9df4ba768d0ed0cba097d2730ce0528f43f7d18983cc60e88b8678bc2ccf1751"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_03.png",
+   "sha256": "c5d885b0e9d4f81db8856a0d9a0edb8adf28e7181b94843bd38ec9d93cd16f57"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_04.png",
+   "sha256": "776c9d4df11b37643189e4de9dd0e10a804d48e8245cdf1a276a1240c30f614b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_05.png",
+   "sha256": "cac7fbc17a1c7062d46f7cd7932944b79b5e64686405c861ce5f8fa7985eb850"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_00.png",
+   "sha256": "5a128f91032ce257046fccd0f914bb35edffd4d61af13532500740d62b73a264"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_01.png",
+   "sha256": "451b8777e413d9125846aa7bbb0247cc96554124a33ec90410856565fedfbcdd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_02.png",
+   "sha256": "549dfa58cf552dc72a8ffbcd23ebfdfaa8b6bdc8dd74a39ffa8f9c5ed69353ca"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_03.png",
+   "sha256": "31adb965b31cf7b4f8e7a54810f6845cec7de2f55c204704150f754c2de877d2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_04.png",
+   "sha256": "34976873958d25d08d329824d423c273352155bc3bd065f47eaa4cc6a157e66d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_05.png",
+   "sha256": "93319436d638f0802169eeec3826beed6da87163af5042c90126bb1ee7f8ccdd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_06.png",
+   "sha256": "7c8aae3471bfd738211db179c467a4d5be9cfeeea1ef6a5f1791c2e38834343f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_00.png",
+   "sha256": "cbf973a2f8eca1101410c600b07933955a1bf26d83f189dc4ead4e63841fb818"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_01.png",
+   "sha256": "f67b86f64afb0d69359646ee3acf225921a60320214bcf5b89234ac4c48ed771"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_02.png",
+   "sha256": "497f528353c43f399fb1b2ac97f442b94e87bc477239279c2164fb4ff4c24c57"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_03.png",
+   "sha256": "8abee2884357784b53e148063024cf7a38ff8693592bf6e625c5efb7837da389"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_04.png",
+   "sha256": "758e81e466ef840cc10180beeb2537181c98474dc4ef0b775009a51f6b16307a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_05.png",
+   "sha256": "3747ffaf7964f29bbe9ca74ef5a81031343e1c1ed49d7c233e2268cde29e0996"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_06.png",
+   "sha256": "70d7f99fa02e50c91537784401ce197a3ad1f9fb95321e8704f1b85d10bcdbde"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_00.png",
+   "sha256": "4674ae71b0d65ac5429cf6e3bae52abbdbbd442981dae088a2188dc221120a0a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_01.png",
+   "sha256": "35647cc707a42458ce685e1f3a67dcc9e19d1a728474387c0f243629a198d27c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_02.png",
+   "sha256": "05e649a94ae5768a827b688ddb64255b60a10211d4bf659254d5b1ed867fb9de"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_03.png",
+   "sha256": "568a3150feb21072c32c73677f5f96e677c1c498d4d512381bba7832fcb6631f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_04.png",
+   "sha256": "0a5d7f6d6dae1b52eb35b47ecdbeedd7b36ae8b0ca887ee86289c5729eb91573"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_05.png",
+   "sha256": "781eacf005041681e2ed3949f9a53d3229ece24ba0c1a35652105547b13b40d7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_06.png",
+   "sha256": "486b0fc0cf9a8b8b7b6ae63bd0c61f02dd0bd01ece763aa34aa7875e2a170097"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_00.png",
+   "sha256": "e34d5a7f5db9f68489db4ab928616889ab7b47ab6dd4b1949f3172f991464a50"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_01.png",
+   "sha256": "6f1587c58a5c4ba430ace87eff5671aa3e5361e3d5eac4082d57580d18d49533"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_02.png",
+   "sha256": "400a62ca36f072d8b64ebb18492fe19c07b852b2fe48253f1c7c38d9c030c59a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_03.png",
+   "sha256": "3a5afbad61d9f1bf5661917405d99d5c7dbb1ce856727a2c2d4e2a4851c4d0ea"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_04.png",
+   "sha256": "30601136675756aefc6cf3d538f78bfc0ee7e567ceac04a67f42dba900e95779"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_05.png",
+   "sha256": "f635c98038f1d750b8c2a97059008f5a3a92a7487af0471eb90b9f375bd7ad29"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_06.png",
+   "sha256": "1b177e344071d40a669a27870ba9dde3f9b1409515101c64636c87d8ad25862a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_00.png",
+   "sha256": "2a1cdd2906c2afb21c5f20a146ea9edfc119fba826eeb841dea74955cdc60ab4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_01.png",
+   "sha256": "84a9099defb216dab63d42a1a6913846fe279dfb5a92740818f8ebdeaf64601a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_02.png",
+   "sha256": "8d87ed48342f6e6382c2f0c697d069d8b3537bb874c04aae8c3b981de195ec3a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_03.png",
+   "sha256": "f6ba536caca755f650e23b8d986c7d3805be6b067fdce57c6e45f9ccbd849e79"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_04.png",
+   "sha256": "4c64e4ef5a7664cc40919d71f672ec828ec5c0fc369b02138f4bc3216c573dd7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_05.png",
+   "sha256": "c97db2036b8616b350638ff29172778a6f7a8e91e5a3f3ed000d2bdb449912c0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_06.png",
+   "sha256": "f14617e2270d5053eb2f40c15baafa19dc799ea2283f272833a3c47c456cdb65"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_00.png",
+   "sha256": "980f022d31f34491f603ada8b39a14d119115104e2f62fd514ac673a77618a31"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_01.png",
+   "sha256": "7107814e7603f57e57b2e0f33ada69c05c4f673c8da74219007f435b84a11d27"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_02.png",
+   "sha256": "0b2e0fc2f477c6dfe0cc3116e0af26856a58cad7c772a213f55c2467d9b3236e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_03.png",
+   "sha256": "051ce7fa19d8a7f7534a9799dd13f5a56b3429d0ef409aab18f4c9ba8bba267a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_04.png",
+   "sha256": "78361c37304afc683b9598170e2beac64e0df4a1f2fe0a1299bb0e341083a3ff"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_05.png",
+   "sha256": "205974d3f3c60115253f1b591ecb944f93410aae200b0fc502b4bf220ca754e6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_06.png",
+   "sha256": "a75ad0eeb1a8bfdbfa66396d5fec2e4f226a29ce5e41574dbe76ee3d354eb399"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_00.png",
+   "sha256": "35c2f6e65884e3e4141dede5fb15a201f64481f006e9e4a73ff6f5c657ddf44b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_01.png",
+   "sha256": "95689e06a3fc06e09c0f9370ea007ef84203f64510ad45243bd1f1820ae7766c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_02.png",
+   "sha256": "3fc5def6196096d4b6f22dbd35e5cd1474a08c247f4066c5df336284e9e1f200"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_03.png",
+   "sha256": "79a415c537dd48be996a0dcd3a2f30bd4cfec30edd3b6296ae0a02d26cfed836"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_04.png",
+   "sha256": "402790abdc52b97da1266cf4060ea6bf4d4ac941fd8666f6e6a3a2380e6f378f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_05.png",
+   "sha256": "1d1ceedf13fec443178baaab1ba344dd2ea683d92de73bd5d1a0428511ef58fd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_06.png",
+   "sha256": "fd0b46a80e7a7f4a1d8c7c7375c96458f58414184597d1a9ac6f7777907b86d3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_00.png",
+   "sha256": "f3e4911fb907c3fec7456e4248816ef78b359d0f41cd277d77da5a367f143281"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_01.png",
+   "sha256": "e36ba7d27ac273cd4037a954c6b695c986dd0c4a6183338ed1b869c5c40b3bad"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_02.png",
+   "sha256": "95ebcbc2c5b9f0c9fa244ba937d26dc35394fdf0c91efd6a0475806b5272778a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_03.png",
+   "sha256": "02ed719bf7f7d0e045d77c9603ad2c5fa253571467db324a83bad6e5a4dc3da2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_04.png",
+   "sha256": "9dc778bdd57b05525f5aecd1a17a852bec45e549982e781e3bb478641336f2a6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_05.png",
+   "sha256": "06a1a83836f54ac6e070475d36f5fa16842abf8ee101d06ccea7fcd2ecf1eff5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_06.png",
+   "sha256": "9f4e3e9f6ff18794d69847cabf149239a440ee55bf4d43c5fbeb8b8e742fa374"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    442,
+    247
+   ],
+   "margin": [
+    35,
+    234,
+    70,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    445,
+    1,
+    404,
+    247
+   ],
+   "margin": [
+    54,
+    234,
+    108,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    851,
+    1,
+    399,
+    247
+   ],
+   "margin": [
+    57,
+    234,
+    113,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1252,
+    1,
+    399,
+    247
+   ],
+   "margin": [
+    57,
+    234,
+    113,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1653,
+    1,
+    393,
+    247
+   ],
+   "margin": [
+    59,
+    234,
+    119,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    361,
+    247
+   ],
+   "margin": [
+    75,
+    234,
+    151,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    364,
+    250,
+    354,
+    247
+   ],
+   "margin": [
+    79,
+    234,
+    158,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    720,
+    250,
+    349,
+    247
+   ],
+   "margin": [
+    81,
+    234,
+    163,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1071,
+    250,
+    335,
+    247
+   ],
+   "margin": [
+    89,
+    234,
+    177,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1408,
+    250,
+    333,
+    247
+   ],
+   "margin": [
+    89,
+    234,
+    179,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1743,
+    250,
+    292,
+    247
+   ],
+   "margin": [
+    110,
+    234,
+    220,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    322,
+    247
+   ],
+   "margin": [
+    95,
+    234,
+    190,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    325,
+    499,
+    311,
+    247
+   ],
+   "margin": [
+    101,
+    234,
+    201,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    638,
+    499,
+    286,
+    247
+   ],
+   "margin": [
+    113,
+    234,
+    226,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    926,
+    499,
+    284,
+    247
+   ],
+   "margin": [
+    114,
+    234,
+    228,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1212,
+    499,
+    280,
+    247
+   ],
+   "margin": [
+    116,
+    234,
+    232,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1494,
+    499,
+    278,
+    247
+   ],
+   "margin": [
+    117,
+    234,
+    234,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1774,
+    499,
+    272,
+    247
+   ],
+   "margin": [
+    120,
+    234,
+    240,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    271,
+    247
+   ],
+   "margin": [
+    121,
+    234,
+    241,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    274,
+    748,
+    266,
+    247
+   ],
+   "margin": [
+    123,
+    234,
+    246,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    542,
+    748,
+    252,
+    247
+   ],
+   "margin": [
+    130,
+    234,
+    260,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_east.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    796,
+    748,
+    251,
+    247
+   ],
+   "margin": [
+    131,
+    234,
+    261,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1049,
+    748,
+    250,
+    247
+   ],
+   "margin": [
+    131,
+    234,
+    262,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1301,
+    748,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1550,
+    748,
+    247,
+    247
+   ],
+   "margin": [
+    133,
+    234,
+    265,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1799,
+    748,
+    243,
+    247
+   ],
+   "margin": [
+    135,
+    234,
+    269,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    242,
+    247
+   ],
+   "margin": [
+    135,
+    234,
+    270,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    245,
+    997,
+    235,
+    247
+   ],
+   "margin": [
+    139,
+    234,
+    277,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    482,
+    997,
+    231,
+    247
+   ],
+   "margin": [
+    141,
+    234,
+    281,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    715,
+    997,
+    127,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    385,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    844,
+    997,
+    120,
+    247
+   ],
+   "margin": [
+    196,
+    234,
+    392,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    966,
+    997,
+    114,
+    247
+   ],
+   "margin": [
+    199,
+    234,
+    398,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1082,
+    997,
+    110,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    402,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1194,
+    997,
+    110,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    402,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_00.png",
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    1306,
+    997,
+    110,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    402,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1418,
+    997,
+    106,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    406,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1526,
+    997,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1630,
+    997,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1734,
+    997,
+    293,
+    243
+   ],
+   "margin": [
+    109,
+    238,
+    219,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1734,
+    1242,
+    256,
+    243
+   ],
+   "margin": [
+    128,
+    238,
+    256,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1246,
+    251,
+    243
+   ],
+   "margin": [
+    131,
+    238,
+    261,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    254,
+    1246,
+    247,
+    243
+   ],
+   "margin": [
+    133,
+    238,
+    265,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    503,
+    1246,
+    243,
+    243
+   ],
+   "margin": [
+    135,
+    238,
+    269,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    748,
+    1246,
+    120,
+    243
+   ],
+   "margin": [
+    196,
+    238,
+    392,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    870,
+    1246,
+    120,
+    243
+   ],
+   "margin": [
+    196,
+    238,
+    392,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    992,
+    1246,
+    112,
+    243
+   ],
+   "margin": [
+    200,
+    238,
+    400,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1106,
+    1246,
+    102,
+    243
+   ],
+   "margin": [
+    205,
+    238,
+    410,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1210,
+    1246,
+    102,
+    243
+   ],
+   "margin": [
+    205,
+    238,
+    410,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1314,
+    1246,
+    342,
+    242
+   ],
+   "margin": [
+    85,
+    239,
+    170,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1658,
+    1487,
+    313,
+    242
+   ],
+   "margin": [
+    99,
+    239,
+    199,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1314,
+    1490,
+    292,
+    242
+   ],
+   "margin": [
+    110,
+    239,
+    220,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1491,
+    277,
+    242
+   ],
+   "margin": [
+    117,
+    239,
+    235,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    280,
+    1491,
+    277,
+    242
+   ],
+   "margin": [
+    117,
+    239,
+    235,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    559,
+    1491,
+    277,
+    242
+   ],
+   "margin": [
+    117,
+    239,
+    235,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    838,
+    1491,
+    261,
+    242
+   ],
+   "margin": [
+    125,
+    239,
+    251,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1101,
+    1491,
+    110,
+    242
+   ],
+   "margin": [
+    201,
+    239,
+    402,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1213,
+    1491,
+    98,
+    235
+   ],
+   "margin": [
+    207,
+    246,
+    414,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1608,
+    1731,
+    404,
+    241
+   ],
+   "margin": [
+    54,
+    240,
+    108,
+    271
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1213,
+    1734,
+    276,
+    239
+   ],
+   "margin": [
+    118,
+    242,
+    236,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1491,
+    1734,
+    102,
+    235
+   ],
+   "margin": [
+    205,
+    246,
+    410,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1735,
+    399,
+    241
+   ],
+   "margin": [
+    57,
+    240,
+    113,
+    271
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    402,
+    1735,
+    399,
+    241
+   ],
+   "margin": [
+    57,
+    240,
+    113,
+    271
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    803,
+    1735,
+    239,
+    239
+   ],
+   "margin": [
+    137,
+    242,
+    273,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1044,
+    1735,
+    127,
+    235
+   ],
+   "margin": [
+    193,
+    246,
+    385,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    193,
+    239
+   ],
+   "margin": [
+    159,
+    242,
+    319,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    196,
+    1,
+    322,
+    238
+   ],
+   "margin": [
+    95,
+    243,
+    190,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    520,
+    1,
+    291,
+    238
+   ],
+   "margin": [
+    111,
+    243,
+    221,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    813,
+    1,
+    261,
+    238
+   ],
+   "margin": [
+    125,
+    243,
+    251,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1076,
+    1,
+    261,
+    238
+   ],
+   "margin": [
+    125,
+    243,
+    251,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1339,
+    1,
+    261,
+    238
+   ],
+   "margin": [
+    125,
+    243,
+    251,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1602,
+    1,
+    260,
+    238
+   ],
+   "margin": [
+    126,
+    243,
+    252,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1864,
+    1,
+    114,
+    234
+   ],
+   "margin": [
+    199,
+    247,
+    398,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    196,
+    241,
+    256,
+    238
+   ],
+   "margin": [
+    128,
+    243,
+    256,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    454,
+    241,
+    247,
+    238
+   ],
+   "margin": [
+    133,
+    243,
+    265,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    703,
+    241,
+    242,
+    238
+   ],
+   "margin": [
+    135,
+    243,
+    270,
+    274
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    947,
+    241,
+    364,
+    237
+   ],
+   "margin": [
+    74,
+    244,
+    148,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1313,
+    241,
+    349,
+    237
+   ],
+   "margin": [
+    81,
+    244,
+    163,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1664,
+    241,
+    345,
+    237
+   ],
+   "margin": [
+    83,
+    244,
+    167,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    242,
+    114,
+    234
+   ],
+   "margin": [
+    199,
+    247,
+    398,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    947,
+    480,
+    287,
+    237
+   ],
+   "margin": [
+    113,
+    244,
+    225,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1236,
+    480,
+    282,
+    237
+   ],
+   "margin": [
+    115,
+    244,
+    230,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1520,
+    480,
+    278,
+    237
+   ],
+   "margin": [
+    117,
+    244,
+    234,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1800,
+    480,
+    239,
+    235
+   ],
+   "margin": [
+    137,
+    246,
+    273,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    481,
+    404,
+    235
+   ],
+   "margin": [
+    54,
+    246,
+    108,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    407,
+    481,
+    393,
+    235
+   ],
+   "margin": [
+    59,
+    246,
+    119,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    802,
+    481,
+    112,
+    234
+   ],
+   "margin": [
+    200,
+    247,
+    400,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1800,
+    717,
+    235,
+    235
+   ],
+   "margin": [
+    139,
+    246,
+    277,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    718,
+    393,
+    235
+   ],
+   "margin": [
+    59,
+    246,
+    119,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    396,
+    718,
+    251,
+    235
+   ],
+   "margin": [
+    131,
+    246,
+    261,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    649,
+    718,
+    235,
+    235
+   ],
+   "margin": [
+    139,
+    246,
+    277,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    886,
+    719,
+    260,
+    234
+   ],
+   "margin": [
+    126,
+    247,
+    252,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1148,
+    719,
+    247,
+    234
+   ],
+   "margin": [
+    133,
+    247,
+    265,
+    278
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1397,
+    719,
+    365,
+    233
+   ],
+   "margin": [
+    73,
+    248,
+    147,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1397,
+    954,
+    338,
+    233
+   ],
+   "margin": [
+    87,
+    248,
+    174,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1737,
+    954,
+    261,
+    233
+   ],
+   "margin": [
+    125,
+    248,
+    251,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    955,
+    313,
+    233
+   ],
+   "margin": [
+    99,
+    248,
+    199,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    316,
+    955,
+    106,
+    233
+   ],
+   "margin": [
+    203,
+    248,
+    406,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    424,
+    955,
+    426,
+    232
+   ],
+   "margin": [
+    43,
+    249,
+    86,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    852,
+    955,
+    354,
+    232
+   ],
+   "margin": [
+    79,
+    249,
+    158,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1208,
+    955,
+    106,
+    228
+   ],
+   "margin": [
+    203,
+    253,
+    406,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    424,
+    1189,
+    350,
+    232
+   ],
+   "margin": [
+    81,
+    249,
+    162,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    776,
+    1189,
+    342,
+    232
+   ],
+   "margin": [
+    85,
+    249,
+    170,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1120,
+    1189,
+    335,
+    232
+   ],
+   "margin": [
+    89,
+    249,
+    177,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1457,
+    1189,
+    278,
+    232
+   ],
+   "margin": [
+    117,
+    249,
+    234,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1737,
+    1189,
+    277,
+    232
+   ],
+   "margin": [
+    117,
+    249,
+    235,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1190,
+    267,
+    231
+   ],
+   "margin": [
+    123,
+    250,
+    245,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    270,
+    1190,
+    139,
+    226
+   ],
+   "margin": [
+    187,
+    255,
+    373,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1423,
+    393,
+    230
+   ],
+   "margin": [
+    59,
+    251,
+    119,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    396,
+    1423,
+    393,
+    230
+   ],
+   "margin": [
+    59,
+    251,
+    119,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    791,
+    1423,
+    273,
+    230
+   ],
+   "margin": [
+    119,
+    251,
+    239,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1066,
+    1423,
+    264,
+    230
+   ],
+   "margin": [
+    124,
+    251,
+    248,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1332,
+    1423,
+    260,
+    230
+   ],
+   "margin": [
+    126,
+    251,
+    252,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1594,
+    1423,
+    311,
+    229
+   ],
+   "margin": [
+    101,
+    252,
+    201,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1907,
+    1423,
+    114,
+    226
+   ],
+   "margin": [
+    199,
+    255,
+    398,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1907,
+    1651,
+    103,
+    224
+   ],
+   "margin": [
+    205,
+    257,
+    409,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1594,
+    1654,
+    306,
+    229
+   ],
+   "margin": [
+    103,
+    252,
+    206,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1655,
+    265,
+    229
+   ],
+   "margin": [
+    123,
+    252,
+    247,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    268,
+    1655,
+    252,
+    229
+   ],
+   "margin": [
+    130,
+    252,
+    260,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    522,
+    1655,
+    242,
+    229
+   ],
+   "margin": [
+    135,
+    252,
+    270,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    766,
+    1655,
+    318,
+    228
+   ],
+   "margin": [
+    97,
+    253,
+    194,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1086,
+    1655,
+    308,
+    228
+   ],
+   "margin": [
+    102,
+    253,
+    204,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1396,
+    1655,
+    164,
+    226
+   ],
+   "margin": [
+    174,
+    255,
+    348,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    766,
+    1885,
+    281,
+    158
+   ],
+   "margin": [
+    115,
+    323,
+    231,
+    354
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1049,
+    1885,
+    205,
+    157
+   ],
+   "margin": [
+    153,
+    324,
+    307,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1256,
+    1885,
+    205,
+    151
+   ],
+   "margin": [
+    153,
+    330,
+    307,
+    361
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1463,
+    1885,
+    226,
+    148
+   ],
+   "margin": [
+    143,
+    333,
+    286,
+    364
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1691,
+    1885,
+    205,
+    148
+   ],
+   "margin": [
+    153,
+    333,
+    307,
+    364
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1886,
+    315,
+    146
+   ],
+   "margin": [
+    99,
+    335,
+    197,
+    366
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    318,
+    1886,
+    346,
+    143
+   ],
+   "margin": [
+    83,
+    338,
+    166,
+    369
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1,
+    285,
+    228
+   ],
+   "margin": [
+    113,
+    253,
+    227,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_06.png"
+   ],
+   "page": 2,
+   "region": [
+    288,
+    1,
+    266,
+    228
+   ],
+   "margin": [
+    123,
+    253,
+    246,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    556,
+    1,
+    261,
+    228
+   ],
+   "margin": [
+    125,
+    253,
+    251,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    819,
+    1,
+    256,
+    228
+   ],
+   "margin": [
+    128,
+    253,
+    256,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1077,
+    1,
+    256,
+    228
+   ],
+   "margin": [
+    128,
+    253,
+    256,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1335,
+    1,
+    252,
+    228
+   ],
+   "margin": [
+    130,
+    253,
+    260,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1589,
+    1,
+    457,
+    227
+   ],
+   "margin": [
+    27,
+    254,
+    55,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1589,
+    230,
+    417,
+    227
+   ],
+   "margin": [
+    47,
+    254,
+    95,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    231,
+    292,
+    227
+   ],
+   "margin": [
+    110,
+    254,
+    220,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    295,
+    231,
+    278,
+    227
+   ],
+   "margin": [
+    117,
+    254,
+    234,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    575,
+    231,
+    276,
+    227
+   ],
+   "margin": [
+    118,
+    254,
+    236,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    853,
+    231,
+    277,
+    226
+   ],
+   "margin": [
+    117,
+    255,
+    235,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_06.png"
+   ],
+   "page": 2,
+   "region": [
+    1132,
+    231,
+    272,
+    226
+   ],
+   "margin": [
+    120,
+    255,
+    240,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1406,
+    231,
+    131,
+    221
+   ],
+   "margin": [
+    191,
+    260,
+    381,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    853,
+    459,
+    239,
+    226
+   ],
+   "margin": [
+    137,
+    255,
+    273,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1094,
+    459,
+    300,
+    225
+   ],
+   "margin": [
+    106,
+    256,
+    212,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_06.png"
+   ],
+   "page": 2,
+   "region": [
+    1396,
+    459,
+    273,
+    225
+   ],
+   "margin": [
+    119,
+    256,
+    239,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1671,
+    459,
+    264,
+    225
+   ],
+   "margin": [
+    124,
+    256,
+    248,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1937,
+    459,
+    103,
+    216
+   ],
+   "margin": [
+    205,
+    265,
+    409,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    460,
+    264,
+    225
+   ],
+   "margin": [
+    124,
+    256,
+    248,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    267,
+    460,
+    260,
+    225
+   ],
+   "margin": [
+    126,
+    256,
+    252,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_03.png"
+   ],
+   "page": 2,
+   "region": [
+    529,
+    460,
+    231,
+    224
+   ],
+   "margin": [
+    141,
+    257,
+    281,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_06.png"
+   ],
+   "page": 2,
+   "region": [
+    529,
+    686,
+    322,
+    223
+   ],
+   "margin": [
+    95,
+    258,
+    190,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1094,
+    686,
+    345,
+    223
+   ],
+   "margin": [
+    83,
+    258,
+    167,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1441,
+    686,
+    335,
+    223
+   ],
+   "margin": [
+    89,
+    258,
+    177,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1778,
+    686,
+    256,
+    223
+   ],
+   "margin": [
+    128,
+    258,
+    256,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_06.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    687,
+    275,
+    223
+   ],
+   "margin": [
+    119,
+    258,
+    237,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_05.png"
+   ],
+   "page": 2,
+   "region": [
+    278,
+    687,
+    243,
+    218
+   ],
+   "margin": [
+    135,
+    263,
+    269,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_03.png"
+   ],
+   "page": 2,
+   "region": [
+    853,
+    687,
+    230,
+    218
+   ],
+   "margin": [
+    141,
+    263,
+    282,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_01.png"
+   ],
+   "page": 2,
+   "region": [
+    278,
+    911,
+    271,
+    223
+   ],
+   "margin": [
+    121,
+    258,
+    241,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_02.png"
+   ],
+   "page": 2,
+   "region": [
+    551,
+    911,
+    287,
+    222
+   ],
+   "margin": [
+    113,
+    259,
+    225,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_04.png"
+   ],
+   "page": 2,
+   "region": [
+    840,
+    911,
+    264,
+    222
+   ],
+   "margin": [
+    124,
+    259,
+    248,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1106,
+    911,
+    255,
+    222
+   ],
+   "margin": [
+    129,
+    259,
+    257,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1363,
+    911,
+    255,
+    222
+   ],
+   "margin": [
+    129,
+    259,
+    257,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1620,
+    911,
+    370,
+    221
+   ],
+   "margin": [
+    71,
+    260,
+    142,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    912,
+    269,
+    221
+   ],
+   "margin": [
+    121,
+    260,
+    243,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1620,
+    1134,
+    354,
+    221
+   ],
+   "margin": [
+    79,
+    260,
+    158,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_04.png"
+   ],
+   "page": 2,
+   "region": [
+    551,
+    1135,
+    436,
+    221
+   ],
+   "margin": [
+    38,
+    260,
+    76,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    989,
+    1135,
+    354,
+    221
+   ],
+   "margin": [
+    79,
+    260,
+    158,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1345,
+    1135,
+    135,
+    218
+   ],
+   "margin": [
+    189,
+    263,
+    377,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_06.png"
+   ],
+   "page": 2,
+   "region": [
+    1482,
+    1135,
+    119,
+    212
+   ],
+   "margin": [
+    197,
+    269,
+    393,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1136,
+    295,
+    221
+   ],
+   "margin": [
+    109,
+    260,
+    217,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_00.png"
+   ],
+   "page": 2,
+   "region": [
+    298,
+    1136,
+    218,
+    214
+   ],
+   "margin": [
+    147,
+    267,
+    294,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1345,
+    1357,
+    283,
+    221
+   ],
+   "margin": [
+    115,
+    260,
+    229,
+    291
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1630,
+    1357,
+    332,
+    219
+   ],
+   "margin": [
+    90,
+    262,
+    180,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    298,
+    1358,
+    304,
+    219
+   ],
+   "margin": [
+    104,
+    262,
+    208,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    604,
+    1358,
+    340,
+    218
+   ],
+   "margin": [
+    86,
+    263,
+    172,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    946,
+    1358,
+    348,
+    216
+   ],
+   "margin": [
+    82,
+    265,
+    164,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_06.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1359,
+    286,
+    216
+   ],
+   "margin": [
+    113,
+    265,
+    226,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    946,
+    1576,
+    269,
+    216
+   ],
+   "margin": [
+    121,
+    265,
+    243,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1577,
+    264,
+    216
+   ],
+   "margin": [
+    124,
+    265,
+    248,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_05.png"
+   ],
+   "page": 2,
+   "region": [
+    604,
+    1578,
+    277,
+    213
+   ],
+   "margin": [
+    117,
+    268,
+    235,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1630,
+    1578,
+    360,
+    214
+   ],
+   "margin": [
+    76,
+    267,
+    152,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_00.png"
+   ],
+   "page": 2,
+   "region": [
+    267,
+    1579,
+    300,
+    212
+   ],
+   "margin": [
+    106,
+    269,
+    212,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1217,
+    1580,
+    356,
+    212
+   ],
+   "margin": [
+    78,
+    269,
+    156,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_05.png"
+   ],
+   "page": 2,
+   "region": [
+    267,
+    1793,
+    297,
+    212
+   ],
+   "margin": [
+    107,
+    269,
+    215,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_03.png"
+   ],
+   "page": 2,
+   "region": [
+    566,
+    1793,
+    264,
+    212
+   ],
+   "margin": [
+    124,
+    269,
+    248,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_02.png"
+   ],
+   "page": 2,
+   "region": [
+    832,
+    1794,
+    278,
+    211
+   ],
+   "margin": [
+    117,
+    270,
+    234,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_03.png"
+   ],
+   "page": 2,
+   "region": [
+    1112,
+    1794,
+    263,
+    211
+   ],
+   "margin": [
+    125,
+    270,
+    249,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1377,
+    1794,
+    243,
+    210
+   ],
+   "margin": [
+    135,
+    271,
+    269,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_02.png"
+   ],
+   "page": 2,
+   "region": [
+    1622,
+    1794,
+    185,
+    210
+   ],
+   "margin": [
+    163,
+    271,
+    327,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_04.png"
+   ],
+   "page": 2,
+   "region": [
+    1809,
+    1794,
+    114,
+    208
+   ],
+   "margin": [
+    199,
+    273,
+    398,
+    304
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_05.png"
+   ],
+   "page": 2,
+   "region": [
+    1925,
+    1794,
+    114,
+    208
+   ],
+   "margin": [
+    199,
+    273,
+    398,
+    304
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_01.png"
+   ],
+   "page": 2,
+   "region": [
+    1,
+    1795,
+    227,
+    206
+   ],
+   "margin": [
+    143,
+    275,
+    285,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1,
+    281,
+    209
+   ],
+   "margin": [
+    115,
+    272,
+    231,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_03.png"
+   ],
+   "page": 3,
+   "region": [
+    284,
+    1,
+    385,
+    206
+   ],
+   "margin": [
+    63,
+    275,
+    127,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_00.png"
+   ],
+   "page": 3,
+   "region": [
+    671,
+    1,
+    92,
+    206
+   ],
+   "margin": [
+    210,
+    275,
+    420,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_03.png"
+   ],
+   "page": 3,
+   "region": [
+    765,
+    1,
+    114,
+    204
+   ],
+   "margin": [
+    199,
+    277,
+    398,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    881,
+    1,
+    282,
+    203
+   ],
+   "margin": [
+    115,
+    278,
+    230,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1165,
+    1,
+    274,
+    202
+   ],
+   "margin": [
+    119,
+    279,
+    238,
+    310
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1441,
+    1,
+    374,
+    200
+   ],
+   "margin": [
+    69,
+    281,
+    138,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1817,
+    1,
+    114,
+    200
+   ],
+   "margin": [
+    199,
+    281,
+    398,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_01.png"
+   ],
+   "page": 3,
+   "region": [
+    1933,
+    1,
+    99,
+    178
+   ],
+   "margin": [
+    207,
+    303,
+    413,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1441,
+    203,
+    267,
+    199
+   ],
+   "margin": [
+    123,
+    282,
+    245,
+    313
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1710,
+    203,
+    247,
+    198
+   ],
+   "margin": [
+    133,
+    283,
+    265,
+    314
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1165,
+    205,
+    206,
+    198
+   ],
+   "margin": [
+    153,
+    283,
+    306,
+    314
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_04.png"
+   ],
+   "page": 3,
+   "region": [
+    765,
+    207,
+    334,
+    194
+   ],
+   "margin": [
+    89,
+    287,
+    178,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    284,
+    209,
+    282,
+    194
+   ],
+   "margin": [
+    115,
+    287,
+    230,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_05.png"
+   ],
+   "page": 3,
+   "region": [
+    568,
+    209,
+    150,
+    193
+   ],
+   "margin": [
+    181,
+    288,
+    362,
+    319
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_02.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    212,
+    268,
+    192
+   ],
+   "margin": [
+    122,
+    289,
+    244,
+    320
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    720,
+    403,
+    318,
+    190
+   ],
+   "margin": [
+    97,
+    291,
+    194,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1710,
+    403,
+    168,
+    189
+   ],
+   "margin": [
+    172,
+    292,
+    344,
+    323
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_02.png"
+   ],
+   "page": 3,
+   "region": [
+    1880,
+    403,
+    161,
+    189
+   ],
+   "margin": [
+    175,
+    292,
+    351,
+    323
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_02.png"
+   ],
+   "page": 3,
+   "region": [
+    1373,
+    404,
+    244,
+    188
+   ],
+   "margin": [
+    134,
+    293,
+    268,
+    324
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_00.png"
+   ],
+   "page": 3,
+   "region": [
+    271,
+    405,
+    202,
+    184
+   ],
+   "margin": [
+    155,
+    297,
+    310,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_02.png"
+   ],
+   "page": 3,
+   "region": [
+    475,
+    405,
+    206,
+    181
+   ],
+   "margin": [
+    153,
+    300,
+    306,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1040,
+    405,
+    133,
+    181
+   ],
+   "margin": [
+    189,
+    300,
+    379,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1175,
+    405,
+    161,
+    175
+   ],
+   "margin": [
+    175,
+    306,
+    351,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    406,
+    254,
+    180
+   ],
+   "margin": [
+    129,
+    301,
+    258,
+    332
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_01.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    588,
+    202,
+    177
+   ],
+   "margin": [
+    155,
+    304,
+    310,
+    335
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_06.png"
+   ],
+   "page": 3,
+   "region": [
+    475,
+    588,
+    202,
+    177
+   ],
+   "margin": [
+    155,
+    304,
+    310,
+    335
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1040,
+    588,
+    313,
+    176
+   ],
+   "margin": [
+    99,
+    305,
+    199,
+    336
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_03.png"
+   ],
+   "page": 3,
+   "region": [
+    205,
+    591,
+    157,
+    175
+   ],
+   "margin": [
+    177,
+    306,
+    355,
+    337
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1355,
+    594,
+    370,
+    174
+   ],
+   "margin": [
+    71,
+    307,
+    142,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_03.png"
+   ],
+   "page": 3,
+   "region": [
+    1727,
+    594,
+    170,
+    174
+   ],
+   "margin": [
+    171,
+    307,
+    342,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    679,
+    595,
+    341,
+    139
+   ],
+   "margin": [
+    85,
+    342,
+    171,
+    373
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    679,
+    766,
+    423,
+    169
+   ],
+   "margin": [
+    45,
+    312,
+    89,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_06.png"
+   ],
+   "page": 3,
+   "region": [
+    439,
+    767,
+    217,
+    133
+   ],
+   "margin": [
+    147,
+    348,
+    295,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    768,
+    436,
+    165
+   ],
+   "margin": [
+    38,
+    316,
+    76,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1104,
+    770,
+    441,
+    140
+   ],
+   "margin": [
+    35,
+    341,
+    71,
+    372
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1547,
+    770,
+    428,
+    139
+   ],
+   "margin": [
+    42,
+    342,
+    84,
+    373
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    439,
+    902,
+    226,
+    130
+   ],
+   "margin": [
+    143,
+    351,
+    286,
+    382
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1547,
+    911,
+    384,
+    134
+   ],
+   "margin": [
+    64,
+    347,
+    128,
+    378
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1104,
+    912,
+    300,
+    133
+   ],
+   "margin": [
+    106,
+    348,
+    212,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    935,
+    428,
+    129
+   ],
+   "margin": [
+    42,
+    352,
+    84,
+    383
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_05.png"
+   ],
+   "page": 3,
+   "region": [
+    667,
+    937,
+    384,
+    129
+   ],
+   "margin": [
+    64,
+    352,
+    128,
+    383
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1053,
+    1047,
+    379,
+    129
+   ],
+   "margin": [
+    67,
+    352,
+    133,
+    383
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1434,
+    1047,
+    351,
+    129
+   ],
+   "margin": [
+    81,
+    352,
+    161,
+    383
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_04.png"
+   ],
+   "page": 3,
+   "region": [
+    1787,
+    1047,
+    243,
+    118
+   ],
+   "margin": [
+    135,
+    363,
+    269,
+    394
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1066,
+    310,
+    125
+   ],
+   "margin": [
+    101,
+    356,
+    202,
+    387
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_06.png"
+   ],
+   "page": 3,
+   "region": [
+    313,
+    1066,
+    310,
+    125
+   ],
+   "margin": [
+    101,
+    356,
+    202,
+    387
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_06.png"
+   ],
+   "page": 3,
+   "region": [
+    625,
+    1068,
+    303,
+    122
+   ],
+   "margin": [
+    105,
+    359,
+    209,
+    390
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1787,
+    1167,
+    255,
+    114
+   ],
+   "margin": [
+    129,
+    367,
+    257,
+    398
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_06.png"
+   ],
+   "page": 3,
+   "region": [
+    930,
+    1178,
+    272,
+    122
+   ],
+   "margin": [
+    120,
+    359,
+    240,
+    390
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_05.png"
+   ],
+   "page": 3,
+   "region": [
+    1204,
+    1178,
+    307,
+    114
+   ],
+   "margin": [
+    103,
+    367,
+    205,
+    398
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_06.png"
+   ],
+   "page": 3,
+   "region": [
+    1,
+    1193,
+    308,
+    111
+   ],
+   "margin": [
+    102,
+    370,
+    204,
+    401
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_south_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_attack_north_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_south_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_hit_north_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_south_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_death_north_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_south_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_shadow_strike_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_skill_shadow_strike_north_east_06.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/elites/full_frame/mini_rot_hound/mini_rot_hound_idle_east.png"
+}

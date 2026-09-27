@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 ## FAN-1447 — runtime smoke: адаптер CombatDirector поднимает Encounter Beat
 ## Director в реальном нормальном бою и соблюдает default-off parity.
 ##
@@ -40,6 +41,7 @@ func _boot_main() -> Node:
 	main.set("selected_character_id", "berserk")
 	main.set("selected_weapon_id", "axe")
 	main.call("_start_combat")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await create_timer(1.0).timeout
 	return main
 

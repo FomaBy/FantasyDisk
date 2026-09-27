@@ -1,158 +1,204 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png" id="1_adw1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png" id="2_adw2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png" id="3_adw3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png" id="4_adw4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png" id="5_adw5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png" id="6_adw6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png" id="7_adw7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png" id="8_adw8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png" id="9_adw9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png" id="10_adw10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png" id="11_adw11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png" id="12_adw12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png" id="13_adw13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png" id="14_adw14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png" id="15_adw15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png" id="16_adw16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png" id="17_adw17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png" id="18_adw18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png" id="19_adw19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png" id="20_adw20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_wolf_trim_0.png" id="page_0"]
+
+[sub_resource type="AtlasTexture" id="Trim_0"]
+atlas = ExtResource("page_0")
+region = Rect2(759, 1, 210, 207)
+margin = Rect2(23, 26, 46, 49)
+
+[sub_resource type="AtlasTexture" id="Trim_1"]
+atlas = ExtResource("page_0")
+region = Rect2(425, 414, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_2"]
+atlas = ExtResource("page_0")
+region = Rect2(213, 213, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_3"]
+atlas = ExtResource("page_0")
+region = Rect2(425, 611, 210, 190)
+margin = Rect2(23, 43, 46, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_4"]
+atlas = ExtResource("page_0")
+region = Rect2(547, 1, 210, 207)
+margin = Rect2(23, 26, 46, 49)
+
+[sub_resource type="AtlasTexture" id="Trim_5"]
+atlas = ExtResource("page_0")
+region = Rect2(212, 1, 192, 210)
+margin = Rect2(32, 23, 64, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_6"]
+atlas = ExtResource("page_0")
+region = Rect2(547, 210, 210, 202)
+margin = Rect2(23, 31, 46, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_7"]
+atlas = ExtResource("page_0")
+region = Rect2(425, 803, 210, 183)
+margin = Rect2(23, 50, 46, 73)
+
+[sub_resource type="AtlasTexture" id="Trim_8"]
+atlas = ExtResource("page_0")
+region = Rect2(637, 803, 210, 183)
+margin = Rect2(23, 50, 46, 73)
+
+[sub_resource type="AtlasTexture" id="Trim_9"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 804, 210, 153)
+margin = Rect2(23, 80, 46, 103)
+
+[sub_resource type="AtlasTexture" id="Trim_10"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1, 209, 210)
+margin = Rect2(23, 23, 47, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_11"]
+atlas = ExtResource("page_0")
+region = Rect2(406, 1, 139, 210)
+margin = Rect2(58, 23, 117, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_12"]
+atlas = ExtResource("page_0")
+region = Rect2(213, 410, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_13"]
+atlas = ExtResource("page_0")
+region = Rect2(759, 210, 210, 202)
+margin = Rect2(23, 31, 46, 54)
+
+[sub_resource type="AtlasTexture" id="Trim_14"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 213, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_15"]
+atlas = ExtResource("page_0")
+region = Rect2(213, 607, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_16"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 607, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_17"]
+atlas = ExtResource("page_0")
+region = Rect2(637, 611, 210, 190)
+margin = Rect2(23, 43, 46, 66)
+
+[sub_resource type="AtlasTexture" id="Trim_18"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 410, 210, 195)
+margin = Rect2(23, 38, 46, 61)
+
+[sub_resource type="AtlasTexture" id="Trim_19"]
+atlas = ExtResource("page_0")
+region = Rect2(637, 414, 210, 195)
+margin = Rect2(23, 38, 46, 61)
 
 [resource]
-animations = [
-{
-"frames": [
-{
+animations = [{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_adw1")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("2_adw2")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("3_adw3")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("4_adw4")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("5_adw5")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("6_adw6")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": false,
 "name": &"attack",
 "speed": 14.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_adw1")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("2_adw2")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("3_adw3")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("4_adw4")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("5_adw5")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("6_adw6")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": false,
 "name": &"attack_primary",
 "speed": 14.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_adw7")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("8_adw8")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("9_adw9")
-},
-{
+"texture": SubResource("Trim_8")
+}, {
 "duration": 1.0,
-"texture": ExtResource("10_adw10")
-},
-{
+"texture": SubResource("Trim_9")
+}, {
 "duration": 1.0,
-"texture": ExtResource("11_adw11")
-},
-{
+"texture": SubResource("Trim_10")
+}, {
 "duration": 1.0,
-"texture": ExtResource("12_adw12")
-}
-],
+"texture": SubResource("Trim_11")
+}],
 "loop": false,
 "name": &"death",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_adw13")
-},
-{
+"texture": SubResource("Trim_12")
+}, {
 "duration": 1.0,
-"texture": ExtResource("14_adw14")
-},
-{
+"texture": SubResource("Trim_13")
+}, {
 "duration": 1.0,
-"texture": ExtResource("15_adw15")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("16_adw16")
-},
-{
+"texture": SubResource("Trim_15")
+}, {
 "duration": 1.0,
-"texture": ExtResource("17_adw17")
-},
-{
+"texture": SubResource("Trim_16")
+}, {
 "duration": 1.0,
-"texture": ExtResource("18_adw18")
-},
-{
+"texture": SubResource("Trim_17")
+}, {
 "duration": 1.0,
-"texture": ExtResource("19_adw19")
-},
-{
+"texture": SubResource("Trim_18")
+}, {
 "duration": 1.0,
-"texture": ExtResource("20_adw20")
-}
-],
+"texture": SubResource("Trim_19")
+}],
 "loop": true,
 "name": &"move",
 "speed": 12.0
-}
-]
+}]

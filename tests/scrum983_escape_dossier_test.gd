@@ -1,4 +1,5 @@
 extends SceneTree
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 # SCRUM-983 focused acceptance for the real Escape/pause dossier. The oracle
 # validates authored content zones, semantic stat rows, compact values,
@@ -167,6 +168,7 @@ func _open_fixture(viewport_size: Vector2i, character_id := "berserk", weapon_id
 	main.set("selected_weapon_id", weapon_id)
 	main.set("route_stage", 2)
 	main.call("_start_combat")
+	await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the full-frame roster
 	await _settle()
 	main.ui._show_pause_menu(true)
 	await _settle()

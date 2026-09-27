@@ -1,0 +1,617 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "homunculus",
+ "tres": "res://assets/sprites/allies/ally_homunculus_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 26,
+ "unique_frames": 17,
+ "source_rgba_bytes": 5242880,
+ "page_rgba_bytes": 3469312,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/homunculus_trim_0.png",
+   "width": 1024,
+   "height": 847,
+   "sha256": "7be54db3eff78273e119372c8617bf9f74103d02ada4483436341453428ed7a9"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png",
+   "sha256": "d19d8e390e7277e04fd47421cbb9d6589b13db5ae3defa23a435f63eadb52aa1"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png",
+   "sha256": "10c0e9d3a0dd3e1df33c081ba8a96acf40703bdd038a25693bbd5d6b27af0a5d"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png",
+   "sha256": "9a01a0cffe2e795cd9a1d63ce09b1238230e3e43b889560f4064385399085abf"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png",
+   "sha256": "c98465db6da55f1c6a929ff25a61f8196330b6994af8b6c0d3c5be70232a2110"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png",
+   "sha256": "62592d98b86aeb29a4319a73527e0db7356257900d4249e30bf6060476ad47ea"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png",
+   "sha256": "153d973ed7e9c4c7086024a676a7cc06550102d4b8edb23d5f0d797068a5a177"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_death_00.png",
+   "sha256": "5e165c8f2d4b6fc9b2ae4e2d20917f045d79fb8c8bd659747909a843e05bca5f"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_death_01.png",
+   "sha256": "d69a5a1a1a789bc6cb6eb1572dfa2a1a3fed915d52c030c95210afc5106f6306"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_death_02.png",
+   "sha256": "9cf77eb27e6e9ed2bb2ceb0dd89ccbf9ce63a34d3841f97a6b7c79649643a2fd"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_death_03.png",
+   "sha256": "6d411292fc92a6dd34d5f731c7a35e24887005f9df590be5ba1e177908e68770"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_death_04.png",
+   "sha256": "7c5d59460ba49c3566db9af197139b296dee1495df03cab6f82487eb698a83e9"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_death_05.png",
+   "sha256": "71ee9c1f373d365be8525e637bef6dae4190cbd4c63c15130fe9a831ce8d1f64"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png",
+   "sha256": "b6f1ca024e77276c4f88682dc37e4a98c86af5d6ea25c18b68d584a8b95487df"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png",
+   "sha256": "d3827a39f8a5d1667b93cd432081ae956b940b52ed7a18dd20476246c433aa37"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png",
+   "sha256": "8b83747075b93240542076a66937157ae66000f196a700bf665a89174ef17e93"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png",
+   "sha256": "d3827a39f8a5d1667b93cd432081ae956b940b52ed7a18dd20476246c433aa37"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png",
+   "sha256": "b6f1ca024e77276c4f88682dc37e4a98c86af5d6ea25c18b68d584a8b95487df"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png",
+   "sha256": "f992f260c367c2cad2f1bd7afceaca36457e91093cade0fb60f31111b00ac5b0"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png",
+   "sha256": "4aac6b78fd2cc7a0a30804fd292d67e9fab3d653c473858d69f85a4e3c3753a2"
+  },
+  {
+   "path": "res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png",
+   "sha256": "f992f260c367c2cad2f1bd7afceaca36457e91093cade0fb60f31111b00ac5b0"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_death_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    200,
+    210
+   ],
+   "margin": [
+    28,
+    23,
+    56,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png"
+   ],
+   "page": 0,
+   "region": [
+    203,
+    1,
+    191,
+    210
+   ],
+   "margin": [
+    32,
+    23,
+    65,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png"
+   ],
+   "page": 0,
+   "region": [
+    396,
+    1,
+    191,
+    210
+   ],
+   "margin": [
+    32,
+    23,
+    65,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png"
+   ],
+   "page": 0,
+   "region": [
+    589,
+    1,
+    190,
+    210
+   ],
+   "margin": [
+    33,
+    23,
+    66,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png",
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png"
+   ],
+   "page": 0,
+   "region": [
+    781,
+    1,
+    190,
+    210
+   ],
+   "margin": [
+    33,
+    23,
+    66,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png",
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    213,
+    189,
+    210
+   ],
+   "margin": [
+    33,
+    23,
+    67,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png"
+   ],
+   "page": 0,
+   "region": [
+    192,
+    213,
+    189,
+    210
+   ],
+   "margin": [
+    33,
+    23,
+    67,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png",
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png"
+   ],
+   "page": 0,
+   "region": [
+    383,
+    213,
+    189,
+    210
+   ],
+   "margin": [
+    33,
+    23,
+    67,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png"
+   ],
+   "page": 0,
+   "region": [
+    574,
+    213,
+    189,
+    210
+   ],
+   "margin": [
+    33,
+    23,
+    67,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png"
+   ],
+   "page": 0,
+   "region": [
+    765,
+    213,
+    188,
+    210
+   ],
+   "margin": [
+    34,
+    23,
+    68,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    425,
+    187,
+    210
+   ],
+   "margin": [
+    34,
+    23,
+    69,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png"
+   ],
+   "page": 0,
+   "region": [
+    190,
+    425,
+    185,
+    210
+   ],
+   "margin": [
+    35,
+    23,
+    71,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_death_00.png"
+   ],
+   "page": 0,
+   "region": [
+    377,
+    425,
+    183,
+    210
+   ],
+   "margin": [
+    36,
+    23,
+    73,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_death_03.png"
+   ],
+   "page": 0,
+   "region": [
+    562,
+    425,
+    182,
+    210
+   ],
+   "margin": [
+    37,
+    23,
+    74,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_death_05.png"
+   ],
+   "page": 0,
+   "region": [
+    746,
+    425,
+    175,
+    210
+   ],
+   "margin": [
+    40,
+    23,
+    81,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_death_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    637,
+    188,
+    209
+   ],
+   "margin": [
+    34,
+    24,
+    68,
+    47
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/homunculus/ally_homunculus_death_01.png"
+   ],
+   "page": 0,
+   "region": [
+    191,
+    637,
+    201,
+    201
+   ],
+   "margin": [
+    27,
+    32,
+    55,
+    55
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 14.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 14.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_death_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_death_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_death_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_death_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_death_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_death_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png"
+}

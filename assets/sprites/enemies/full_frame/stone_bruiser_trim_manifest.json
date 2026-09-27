@@ -1,0 +1,6794 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "stone_bruiser",
+ "tres": "res://assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 216,
+ "unique_frames": 216,
+ "source_rgba_bytes": 226492416,
+ "page_rgba_bytes": 25608192,
+ "pages": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_trim_0.png",
+   "width": 2048,
+   "height": 2048,
+   "sha256": "87de0738c83ca11e1a9e6e9bc8c4617e70d5874333646dc18a457607adf8522a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_trim_1.png",
+   "width": 2048,
+   "height": 1078,
+   "sha256": "281f16b4b540270d2d694a33b5f93e81d373ef446999115db8c793a67efacc52"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_00.png",
+   "sha256": "fc8f5528de887b7d81aaff6bf06bed8a540b4029a9f7a3067845953fafb2331c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_01.png",
+   "sha256": "16ae69f4f3920fdb5ae2f228531531e77e4ddaa153e2f45cff21b54881f49bd7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_02.png",
+   "sha256": "a179b1861c8b9dd2980dc4e4719f1989e3869d96d5a7e9c859386eb677d74595"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_03.png",
+   "sha256": "541ac78e04e6ece7efecf68d64d523c7f5c697d461131ce250557dfae17abd7b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_04.png",
+   "sha256": "6fc1ea28251e959e1f7fae9510714d9f27493b5ff8622119cf48e491968e6835"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_05.png",
+   "sha256": "90e74362a3dc9b8f4b3acbc81e4519f62b98c01f52dbed058e939c2fa351213e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_00.png",
+   "sha256": "b75eab320cb3ee9bd5e8d42d7bd37224b5b991cb3cc48cb17253694005ddd566"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_01.png",
+   "sha256": "9b21badb579dd52f38a571723819d28d3e120140e0c94e957aba155e4cca3409"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_02.png",
+   "sha256": "3150226c6a07fe81ae81adef606b9e930884f8598ca3d8fa9c5114afd689becc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_03.png",
+   "sha256": "2849290864de47e470e7a316d4b9459392bbe35bed8fb6d0ab8d016930419565"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_04.png",
+   "sha256": "6cccff526d97c6c1eafc98a6a4233a36651ac0f1c484985114669dd705043bd9"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_05.png",
+   "sha256": "c7054ba5d53d1ee34d414bfc173005604b73d79ddaefbaf2f8cbec4db5870a1c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_00.png",
+   "sha256": "987bbd6f9d7706be8c3b159df55e7951d003cbc81cb19af52b7d265804ab5de8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_01.png",
+   "sha256": "c43dab5994d593dda32c4ea5b57ee3155788aa8ee3a9ffb05f3332b32434becc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_02.png",
+   "sha256": "3d75a973f26e122e4483ead086fd1f96b55a68add5907a85f96da7cc9ce57e76"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_03.png",
+   "sha256": "52124e8e0660b535df29f9063d46463473e69bcb11351b957feb8dbeb075bb2e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_04.png",
+   "sha256": "7a5acd50ce8e37db2b710eca0a954289bc6e6684b517bb5da84ee9f64b3d575b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_05.png",
+   "sha256": "0b843b84ae1470c4cf9d0195fc64caa1c4fa1633240b2a4a19bed83447967e95"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_00.png",
+   "sha256": "43539fe7cfb0aa33f40a33ff4ff5023ba2fbbb0a7bc25ed153ef6d492fb364a5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_01.png",
+   "sha256": "4c1ba084e798ac913839c8681784a5013da970222d3ef4170f6810c8d26115d8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_02.png",
+   "sha256": "23c5311399300d5ed9c28879a361d1f15ffac0cd512c69bbe7c53d276b00ca09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_03.png",
+   "sha256": "d457289ed99f739b6776876f6ae6244b1d992fe9ff5ab1bcddb83c085d8f62cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_04.png",
+   "sha256": "5e9c80a1b66ee7ed999a22be1b1c6f43aeb420a650797c3f5d3c6434d5323dc7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_05.png",
+   "sha256": "fe0a638286b7241b34a447eddf7ba22c2de723c6e838b90779fb01f55f539ea7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_00.png",
+   "sha256": "b81166edd8d1f7298f0c92520938f2059b01241871accd786a1201e1f928b76e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_01.png",
+   "sha256": "eb3b29033dffd6521d3e5f480699e6e6dd411a0d7d185a8d40854be6f283554e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_02.png",
+   "sha256": "5e0edcdca4891a527e8c4869d325686287c5d1d6fbd30cc6cb81b42f99cbba42"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_03.png",
+   "sha256": "53000d54ce359ce31446a52c15f55d681ba598e0239efab332c7f44910128f09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_04.png",
+   "sha256": "b04ec997b18e54b75e649d5569e2368361ef632c150bdf94b3e8f59da6ecf604"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_05.png",
+   "sha256": "5af42cacac97916149bfe482b63201e0270ed80a06fd97c13a238c5cee1738fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_00.png",
+   "sha256": "ad487013fc6a0b8f279163e3788c37012a5144ac5648d30d91162f80af543496"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_01.png",
+   "sha256": "3541fad45eb6762998bed7babeab6bc835945fff22ed91cdc796572c13e073eb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_02.png",
+   "sha256": "8c3df4a9e2d4f0383b2a3641dedcb0cd009b194dbd07ff4a32588f1c2cd1a212"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_03.png",
+   "sha256": "51aba349bd8ee49bdbf6e34ea71d21136be0655981539dc5bb9ec085d5abe465"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_04.png",
+   "sha256": "1b4e007e847a9a2e275dfdedfa84ba01a9ac419c24b2161363545cce0b099d18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_05.png",
+   "sha256": "8f83c3bf48daac16c8c8931f14dd58ed33a1b78b601a8da43afbc739f35e6a18"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_00.png",
+   "sha256": "bfbd5922c7f7e81a5021213971e50beece20aac639a6ac02892cda94c1a50de4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_01.png",
+   "sha256": "9e0c825db519f13bebb42f0f5888fb6f15b4799f7453b6dbcb78eb9e2dab39fe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_02.png",
+   "sha256": "169976b86d6e162a1eb93e937df61b50bb213eee356eb624a5fd829396f6eec5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_03.png",
+   "sha256": "e0913a55858179d11fbb25e3e107066f88e0836d951eb1aa4b9af8c9aaf1970a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_04.png",
+   "sha256": "2cbb856750ceb667767499cda5287b3e15aac390e453a97bd47c040a860cab01"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_05.png",
+   "sha256": "a772ffb7d551c7abf6ca97c9a435f155efcb44228c8e6bc5b029f0139b6cb8dd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_00.png",
+   "sha256": "8cc1ae2a94161fb1521b8cc193e22345eea9cb7502d8d11258170e403e8263e3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_01.png",
+   "sha256": "3f5886256228421db922cc48de513a2ac5014852a3fbe3fb15bdbeb30a7967ec"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_02.png",
+   "sha256": "beccbfd3d1fc455fd3a0f52c5d21c0fa2115816ae3add75d6aa2308ec5c1461d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_03.png",
+   "sha256": "11423e321593670a37d05bfceb9ed919d7d5ede14db4b361409a1ae95a232fbe"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_04.png",
+   "sha256": "8c4e8de370a129eeca7a82b24837e1216694d7ec4c0ef4c635097a7ec9c8cd19"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_05.png",
+   "sha256": "80e0c105084233b0ee017bd3b42ba843b96b1663589f6c9d5aeda214db8bc08d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_00.png",
+   "sha256": "614d39cf5e77cad297f813355f0220527a1959bff1633f4880633b7fe22b91c2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_01.png",
+   "sha256": "183c5286e52bd0f7dcd9ac965af3d945d0ad62390e61b8f57b2025321734c2ff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_02.png",
+   "sha256": "2dc14c1115d22f27ac716f7e89cf6e4eacf0846bcb9e1549e5bf5e8be83992fd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_03.png",
+   "sha256": "dfe2783c7007b263aac0180ffc9c39dd836c158a2e6e98d4e9bf43ab28c2644f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_04.png",
+   "sha256": "1dfab54ff02aff37216885e91c151c18b4b1b6c74d4b132fec4662052fd2ada5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_05.png",
+   "sha256": "cddccee7ef83046496c408de99d9ca17c3545b1c50a72830eba2585a3bee158e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_06.png",
+   "sha256": "0105fdd9c48f27e5c74c671d5cb9291e4fc312da783cc393d4b0f3b1576fd81a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_07.png",
+   "sha256": "ab559bd8f70f5dfe9776956d97ccf5d4aacca8b977beb6400479d56e37b102e7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_00.png",
+   "sha256": "cc927d96ed84da8b2bfa3c91698a6b85d1a40d8dac96a72f8deeda3bdd1e7839"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_01.png",
+   "sha256": "d99d9d49547feaf805bdc4b7e5c2f29ecb823d7cb140e3c50abc4abb02279906"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_02.png",
+   "sha256": "1d664257cb010363ba34b73639daba4982827e17f358f9610639c154cb6f300f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_03.png",
+   "sha256": "ec4142f4843adb818144d5b34ae1ac116f68ee10ddb5b92b5fddc2352184d772"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_04.png",
+   "sha256": "d228c50aeceae8fe7b78a89a53f0d26b446858b1f682a4268a6a1065bb7d29b1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_05.png",
+   "sha256": "af93833e32637ea2b378406865eea2cdf16e6d00639c70febc96cc3931ef1c9a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_06.png",
+   "sha256": "16e7896432f2893a284b8b69c34bbfd67452a3f8bde34d347dda86c1f3b8aeff"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_07.png",
+   "sha256": "37c77b5d926d91fa44d51a496182888cfa93b20a886032799e367a4f19d23834"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_00.png",
+   "sha256": "f759bc30b98255634109de46791575b9f433b9a804e7d0f7744c3801979bb96d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_01.png",
+   "sha256": "00987096d512e9701deeac90b43b4d21dff2742bb85cae95001c7f6478b4e1ef"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_02.png",
+   "sha256": "852cd996083c1b679cdff27fbaf3cb693294963a1560e80c766d82b82ceb1501"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_03.png",
+   "sha256": "96d3661eef19a746625b2b06b9cab6a078d374c7e6017c21722865a65ec8c381"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_04.png",
+   "sha256": "895c470ce1f0b324202f56658689b91981481e81eb72b728bea113b7e4b6ee57"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_05.png",
+   "sha256": "b5e1df4418d13576b9305d919881acc52ecdc4226fd97e5ff2acaf3ff5766d51"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_06.png",
+   "sha256": "b79add5ef410bf0370f00155eae2304a9c64f1093071bf99e979c9cbc0aff9ca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_07.png",
+   "sha256": "216d486110730123e1a632478246bd2df3ee9117503ebfbcefb2eaa7de57554d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_00.png",
+   "sha256": "88ff216a8d069bcbf37659e2ef237140e4c34bc02ced39bb34a885cdb4c8ec47"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_01.png",
+   "sha256": "a6fd125ef6b5aaa49bb0891fc3a0d3c8fb1386d81d94217efaa6265f72dab672"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_02.png",
+   "sha256": "b87521b45fdf7bdaa59e0d9ce347dee747402ea1bddd06e289afcdac9ab74d22"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_03.png",
+   "sha256": "8d9b566d95347754722a34694a4757791cb8609a814f67547958fd10dc542987"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_04.png",
+   "sha256": "3a68e300586482a906d8f400ccd1332947bc99ed198afa6beb1eab46ef80dc39"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_05.png",
+   "sha256": "2a1eadab91d2b30acbbe7426fce8862dfe4c2a2468e5d45878929226de5b3886"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_06.png",
+   "sha256": "93f747d357302d2d8509ac438fe004419c2d2fb4cb12fcbbd1a19504e1c1888b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_07.png",
+   "sha256": "7a6779347be8deccd9de6b64af0fb6e76ac2ca6a29337310f4629de23b064946"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_00.png",
+   "sha256": "2a0355d3396ceec3682d6a2667362057e4ea767f0ada06bfb37eae4090d0431a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_01.png",
+   "sha256": "d38f8c008a7d36c236b228468a58ed0276ee081724cd876fd0fde3285b20c8d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_02.png",
+   "sha256": "cff15d7e2b70e30f2b150eeb1208d24a193828963d49da3028b5dc2e9de8a138"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_03.png",
+   "sha256": "a984ac1f64363ec2ef456cdc8ebbafbdd7ff356f5593d0a056ce283ca11b182f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_04.png",
+   "sha256": "c23638e2ccf14c2df534042db68ceeaa0b591639fe5244527b2817ba98207680"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_05.png",
+   "sha256": "00517092326f997c495e76e45b839e6d7c45eb32082abe215e8a99d05eb09f8a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_06.png",
+   "sha256": "0d2277128da6be68bc0337714164547d978df7f440bf5cd3b0ff8f54d0c82f28"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_07.png",
+   "sha256": "d20b7fb0b0fbd483663257fa49b0dfdcba60bc710cfa2cd6b58d79e87349161e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_00.png",
+   "sha256": "0261556fd77c9b60700cbedeb02a0abfd2b3ec8b131ab8cc8741c954635db571"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_01.png",
+   "sha256": "5042741e5d7365dd1f76346ff3fe86452e595ab40a852872ecdb4ce2fb5ea1d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_02.png",
+   "sha256": "6923955b075cfdc90ad0d6c00474156714689a625ffdff4c5c9f0c23217fc64d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_03.png",
+   "sha256": "110c256351a009219027715fd59bcd0b3197553e18d76769ca8318b4878ceb97"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_04.png",
+   "sha256": "5549276e135e3c403c52dad3608dd068705634b2c65eb674965f2bff0b9b7591"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_05.png",
+   "sha256": "3dc9699c24e60132e0a47c058be98ff44f20c4ef05f3aa64ce3f05d7d4eeb648"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_06.png",
+   "sha256": "cc613fe2e1fd7b219b99a01c4dd3594fbca674a47c275ad322314e333ac9ad28"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_07.png",
+   "sha256": "fcd9e18fdaf178da25aff66b46ecd34feaf477652c547d3dec31fc77fea6df9d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_00.png",
+   "sha256": "401646c953e7561cfa83ec57b6ec23ac6415e510349be7fd64b291b817c1ea5f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_01.png",
+   "sha256": "68a8b6ca57c41405ec9d58391b1ea1a0114cdfc4083a26193fc61a586bfc2ca8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_02.png",
+   "sha256": "28d7548f7e7a5a8e864ff48f12d837267ed94d9c471dc76496685ea3aa2071c4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_03.png",
+   "sha256": "ffa819cc5d47753961398b71d5e2d9de18d70aed6a02afc905a3d4229c100584"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_04.png",
+   "sha256": "e3be4ff163b8b8c2ce61e9064841ed8ad7c52b63a34d1716da7fc955d6d150de"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_05.png",
+   "sha256": "fc4eb025d721336f3e512d140e2d0837af07df5db8e9066ebfbeefb64810b1a7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_06.png",
+   "sha256": "8971d1397ca6fdc143f76bb599f3a2fb9229e5ef4881c861e0bb2715870ff1bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_07.png",
+   "sha256": "3dc75083fd87e271e2c7395ac110d6c925dda60167dc2a0fb1859cd43e2b5b09"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_00.png",
+   "sha256": "984a819ec705950d7787ac6c929d08998597b5f5839a5454230ddc694e2ed5c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_01.png",
+   "sha256": "9da4621f6d9559a63c62e569d40c2e273b30438c04b7bb16c3549dd8bf93c8ed"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_02.png",
+   "sha256": "374cd3621c7af1b129a5d943dfe3c20c5dc464a06bb261b2e2f4a87dcedfde1e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_03.png",
+   "sha256": "8e9bc21644d1e257c0c799143adb99ccdeef58648470aa88486059e6e11975c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_04.png",
+   "sha256": "f3a2a41cce1431bf88486d8d070de82eb60f4151e6cab278fef7f240c28f8452"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_05.png",
+   "sha256": "84aa1dbeb26595b21c343f2def444ee7e02453677fa2cbdbba4323ce8767ec3d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_06.png",
+   "sha256": "e6654aaff64814f50775edd7984a010529ed7040fc042e7ea866ffabf03d3cc4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_07.png",
+   "sha256": "c1b25f08a926497c9f1efbbb4113aea7219466081c1072e6b51ef5507be52436"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_00.png",
+   "sha256": "432ae825b70aab57de16054aaccffaac7cfcd4ae42e726a52b6c11b0b59947a8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_01.png",
+   "sha256": "54d107015e9004d70b6292ebf38622d85ebe88b805d89a9f6bc7c6fdec485b4a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_02.png",
+   "sha256": "4f7d2911916ed074f1ee05e0bf3e01a1bc488d2999197521cbd7b857e4f07692"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_03.png",
+   "sha256": "f6920d3755645f233693ecb5abaa0abcb3218ed42597677492ca1bf9c1654e48"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_04.png",
+   "sha256": "cb6455fdbc019a0bb1525639106a03fe7f5e795d4b3b1cada06c5d2ef4bcc5b5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_05.png",
+   "sha256": "a28d15e7f3255a7583f2ccb6729fc2750e47fb8995f4c89b23c5ba0b4e1bf7fa"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_00.png",
+   "sha256": "a0f64dd389d5b6f534601dc4ac04eba20384deeb99d8fb4ba1fb235ce693dbe3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_01.png",
+   "sha256": "a34327fef486e4f6c34812e964807a7b5407956a9bb555aa3093d4316dd4dd2c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_02.png",
+   "sha256": "95e100a073ed12192c243564c1d182149a9d6a81d7359376b7301c9ae81029ea"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_03.png",
+   "sha256": "57807988bf9764f3bffba5314a503e9670955a636a28435837ba8abe652e780d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_04.png",
+   "sha256": "4d7cc1226d3d67ab1b4083c7329b3e65c2aad113a1f207cb2042f5756e2ce372"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_05.png",
+   "sha256": "580b4dc7b33929fe2cdc947935f39a83c662917e1f79c695e4c8a3a259a208b6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_00.png",
+   "sha256": "c57b6c5385145994054d40b93cae2a875b57f6cfb5cc6643d30277f9691dd916"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_01.png",
+   "sha256": "308a984e679669818c830943134b5201bc4ad20ae32d188e245cf9c7a15c166f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_02.png",
+   "sha256": "9356a9d597d100effb0b01d2be96b81300ba691f4f8fa391025b3eddba2e8cf8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_03.png",
+   "sha256": "860328502cd6e9b560c6bdcf385a3d3a898b616bb6e5262538f7e5f99eff7a4a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_04.png",
+   "sha256": "bee82e19648690a1cfe29e2715745aca263cdb6e8dcc9045def6b9b9706afdb6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_05.png",
+   "sha256": "a15c8737e1d6cf7942c4857853bc4ac53df672a2294d1c28922d94139c6308bd"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_00.png",
+   "sha256": "949f24cdb2f81df3e2ab366b319c85ad7b012111573a1aabe001d8d60cb38ac5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_01.png",
+   "sha256": "2f1462995a9dde6c06273322fdf84334c9f760538ce9e12f96ed4df6bd6e3754"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_02.png",
+   "sha256": "7df3f7a44baf99e6eca7a0cf4dd83e95b6d1731229fe5c24ae028b19103ea64f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_03.png",
+   "sha256": "ecf5b9e17abb5cadec8286536c684134c93cafa2e7407be474c5768bc1c770b5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_04.png",
+   "sha256": "2dd62b16c6bbfdf368f3021f357299ada1c502d59e148dde4c6cb5aae5967ad8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_05.png",
+   "sha256": "ed8c280e29007706c4774949598ec715f06b4dfc797e3b518685a42d2428ad36"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_00.png",
+   "sha256": "ba44d9a3b7ca1daaddc237b2ce845e6b7b75c178289a8b47e437430878b42c71"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_01.png",
+   "sha256": "ace05f275951676acf026eba015c3e6fe51133acd33c651a478cc61619056d3e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_02.png",
+   "sha256": "1a1fd5b55b858b191ac98c55899a007f36c1f6b6b3b93b7e538341da6aa5d76c"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_03.png",
+   "sha256": "ec00dd67eb2ae14eaec289715ecd75f2493ddf7f838f7d736f8b5777359f17e0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_04.png",
+   "sha256": "3da68404bd3b913c856bd68509eb18013f1ba1649a9d930de1e50a8590b49116"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_05.png",
+   "sha256": "bd4bd08416d842303cf7e044f1631f2ffa478fa05a3c0190375dfc4c6309f7d7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_00.png",
+   "sha256": "6a45101edee62a3d641eb6d2180e243b18bc51cce2fd96dda51ed9d926a560a0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_01.png",
+   "sha256": "415bcdeaa3ba79779201ef23254e13c772c60d13197d33ee4f43018b9ecb4411"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_02.png",
+   "sha256": "eee4726f63a66022785c27828f00dfcce6c97933c9bba90f2a07cb90766e74a0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_03.png",
+   "sha256": "bd5ae49345c1c1cc04a3339b13da309da9653d3b4226aea099084dedc397e9d3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_04.png",
+   "sha256": "f751f3b0b4f0ad06f0bf49fe2071bbb1de0588392ca2db36a888ca2b1f23ee6e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_05.png",
+   "sha256": "efb83daf1b1b61b5598651c75f36f92c60aa121b30f7c1b0131a8ddd9825724d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_00.png",
+   "sha256": "7216c58fc7233335abba873794a0a333bb76a53605dc1d8b1616dc51c72e12a0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_01.png",
+   "sha256": "3893006e3fd4d9280c6c5230a8825428ab65d581986dcf68e5e49fdc0d60b2c0"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_02.png",
+   "sha256": "11ecd2abd4dfa9ddc28108c097f800a6436aaa5282b338daea621596f1eb9660"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_03.png",
+   "sha256": "44dc41f47c5c6c2024c2f8db045a6aaddc5e7320d380a7dd8cd0653f49f13225"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_04.png",
+   "sha256": "2c7679cb0512847e1b6722e3427ff727d5b1c7956340af0293c4f55e3c8e3945"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_05.png",
+   "sha256": "54d3819ab53c1caeffc9ff3273360d9c4e55584062a1a8c9c7f44e4734d39e1b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_00.png",
+   "sha256": "7f9d61c84ba59ee7fea250f88aae4b227a271291d3e9110e144f80d91a01b5bc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_01.png",
+   "sha256": "b943d4f7569e484a2f1b439941fe019b887f8f1a0be4d39e0d10c9d033a73bcb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_02.png",
+   "sha256": "5cce033badff3e419cb4162a62b540e8be851934f0a3ca87eff099ffc85c820a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_03.png",
+   "sha256": "d75b8c88709013103e629c358004b364c5ab7cf920fabf6e8cc799b6eb5602b7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_04.png",
+   "sha256": "ec1c4816c6aceb7de4d8fb1f961c9b235d43caa5a0c8d34ae872e1bed89a40ed"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_05.png",
+   "sha256": "0ea85282c7d723d1fa4996b6b50f3bc80f89398b46d81b747831887b948c71c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_east.png",
+   "sha256": "7ce43616d027f4090b123076964e6879746076f5d5326085edb0825fe70be0cb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north.png",
+   "sha256": "4d26bb0bc40360d891f4966a5e9c28f9271550bd82cf31a887a72d9477250b7f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_east.png",
+   "sha256": "24d65422270ad1c03dc94b8ff243e334be952564ea73f8f7446f4b4fd6dc4676"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_west.png",
+   "sha256": "ded05c558fdf3c64266695227e578685dca0a7a1cefb02c76c54890a136442c2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south.png",
+   "sha256": "4279bd4865e4c88a05ac0607a95e57b7ee67477ae972b7ae70e31bdf32d9219b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_east.png",
+   "sha256": "0cb60df92776d3650df569d0909fd91eb90d0e280f8e560db235f733bb19034e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_west.png",
+   "sha256": "b0a1856fe0e5ec8fe8f1a635e1c35551809aeac02be8e976980b622dec1ca1e2"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_west.png",
+   "sha256": "29e6ffc9d3cb46cab62e21edba6f44f022950edda5d9f39ebd656411ee34989f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_00.png",
+   "sha256": "502507d666fcf0d10fcdeeb09d47f04b37b8410ac681354852b2b1e98f2477a4"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_01.png",
+   "sha256": "9d6f91ebfab566bee99f0e412eb491f4ff0ee06e5995c5551bcf37d302304535"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_02.png",
+   "sha256": "ea0b8c79c7218b1ca14467053ec6ebd2bfddeaf16f1800eb925e3748941260c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_03.png",
+   "sha256": "c8233ddd047396bbab24739c3fd9321c5e20e1e369c1d4bf1c32f95f2df5865d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_04.png",
+   "sha256": "6063cefefc598b683636bc128c266c529d159dbaeb7005dd424bf3f8f08cb653"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_05.png",
+   "sha256": "1bfd03614b157269f43b8fd0e58e2614aab4638d5f73709e9eb93c760b14c490"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_00.png",
+   "sha256": "f634471250a086ad186e5457febad5b523f23b1799301df5c9bc8eca05cca73d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_01.png",
+   "sha256": "9620077ba99d80aa929c4e8799fb5ccd781afd06364d3c31f353941f8dbe8b6e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_02.png",
+   "sha256": "3bd9cd28d91dbcd2dae4385a69d36cba1c01acf160c0d549cfa2fc6483740355"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_03.png",
+   "sha256": "49e4dc0bb9aaf188b0133e7b738e4d2b5ace244a0520a42ea501950c11d73655"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_04.png",
+   "sha256": "f3e0eb79724469ec38ad21e5bec0f8ce33bd75b8476efdd58b2d9c2dc3c34e30"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_05.png",
+   "sha256": "2b5e4a10372e2992676c70cd694fc4897c6330a03a9c7c1bb549ef32dc8d107a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_00.png",
+   "sha256": "24908bb11175bc7261f23fa055f638fc1d98b21ca5b1a3a8fd815d02875be2c7"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_01.png",
+   "sha256": "8bc7788270aea9926fb600d7b6e0c5a219f8b109f368872487554abbb01a70f3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_02.png",
+   "sha256": "ec1cdec6a5b91e4e4023598f80365427831747f7518ae60eb0de1c343877d586"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_03.png",
+   "sha256": "25e0273f6169f2f63c8b462d37184123d6540fbce282e03a715a2ce460da803b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_04.png",
+   "sha256": "5df34f326b819465ee86934c40c44e7f2d3080e6703e9eb258b812190ffa5c5a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_05.png",
+   "sha256": "1a7bb9a926778453477c1158d8a86c67837f867d8e5605837e7720864b28a5de"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_00.png",
+   "sha256": "6907cb09518f33675f2441c2eeb11db7aff45a0c5748dfc00c03159c2f4ecd9d"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_01.png",
+   "sha256": "aa5a917542118775d44f3f35285cc69c308d41a667a11d396bb8c24f8622aee3"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_02.png",
+   "sha256": "9c7d1d67cc7d7ab4e70580a7114490c2df3e78b296300e57d52810123a45f450"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_03.png",
+   "sha256": "f7bc6a73554584a3d275584384485e516a0260cf6292852fcf58ab748d96ade1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_04.png",
+   "sha256": "f8b7f3abf21ffab9697e00ff1c8fe92f66eb87472e4a4234bc9f5099b06dd20b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_05.png",
+   "sha256": "4749d608d4001494713bfa935ac3abeecccab469349b0daa9962ebde79aca0dc"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_00.png",
+   "sha256": "377d5f4c9f4f29c66247e3f20d4881288dcfa0507f372b8c63e03bae81867fae"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_01.png",
+   "sha256": "ea8dc3ea7763fbb07d830dce6fa5c847da00dbdf233ba7c26d02e92e86c78937"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_02.png",
+   "sha256": "0e1646a324e5043c7e045f1658fd178f4a6fd8a2f6d1924ff0a0cae0838351d1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_03.png",
+   "sha256": "dd6d386bf57618ad4f7ba9b4fb1756fa31b678b99b1a42629358e903e7455ba5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_04.png",
+   "sha256": "c43af98019f59154848a05d35971b6978298989a58cb6b1153c940e3131b2715"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_05.png",
+   "sha256": "6b54f213457a4e8238c47801e2fb8ef38436edddb9598623d66087d2f1cd751e"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_00.png",
+   "sha256": "b628466fe351668ffeaec4fd533e719ab2364877660d4e9b3294893ebb8874cf"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_01.png",
+   "sha256": "ce55a4f0da4ce62c7729e2d353de1b316c5e8baa9a80713ed041ab768b98402b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_02.png",
+   "sha256": "8740d58ce3ef0eff6de3bb0f81cac8328fc3967f9498af35844443eed2a0ff8b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_03.png",
+   "sha256": "ac2661de02a73feb6e3836ded23de30bd03ff0ca8aec9269df27e3c1ba563dd8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_04.png",
+   "sha256": "b147a2e62892dafadfe5dad542d1ccd6b7d1dd04048f21cedc2ffd8199b43c52"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_05.png",
+   "sha256": "29fb6d61461611b4861cd8eff8f7d3482fbc3dfe9209688ba95cac3e8e813cb1"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_00.png",
+   "sha256": "b5607b1e3c49da9e350dc0f9ff4deb550446ae6ea9d2223ed379b7535afa6336"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_01.png",
+   "sha256": "e789674827c96604a4595b506be615d1766f9156c8905592dd0566b576b21be6"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_02.png",
+   "sha256": "e8adc3511c88354a1d7908929d18754bd08d307f087c921a221d9e7d54a7f6e5"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_03.png",
+   "sha256": "41200e1651490247c99a651a3b9f113002a7f8bb9c8ec995d6de8c5aca42e9bb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_04.png",
+   "sha256": "f9659f4b9502b5fb7d6c97ef4ee91c979ddd21d4a97391d66adc7655b33e9bca"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_05.png",
+   "sha256": "978cc5f006b5d0b22d79cb0138cdaf85ca21826bd00243b876d25d98d20dcb3a"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_00.png",
+   "sha256": "6f2c9bd44cc83645960f951e6c06a8896a992a3e2ffec575ec67548a7e0ad95f"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_01.png",
+   "sha256": "3cecbd7d304207b12d066c9427607f8f1a53714e31432763cc49664c570d0ef8"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_02.png",
+   "sha256": "77d84b204dc3a3fee2e201101d55a96f65ad6cac17caa103c0eac7504a965edb"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_03.png",
+   "sha256": "edf87935f611bb9d0d7238440e1660bab5cccd07761fa20106e1458cb22e668b"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_04.png",
+   "sha256": "1e197722e6b532b80505b9c6694fd8f6f9110ca11110dae0d5b4c27684217728"
+  },
+  {
+   "path": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_05.png",
+   "sha256": "ca5ba1a69d24089931eef8a37f8972e0088fb5258e9c91c1c31238e11f61ca75"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    219,
+    247
+   ],
+   "margin": [
+    147,
+    234,
+    293,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    222,
+    1,
+    190,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    322,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    414,
+    1,
+    190,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    322,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    606,
+    1,
+    189,
+    247
+   ],
+   "margin": [
+    161,
+    234,
+    323,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    797,
+    1,
+    186,
+    247
+   ],
+   "margin": [
+    163,
+    234,
+    326,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    985,
+    1,
+    183,
+    247
+   ],
+   "margin": [
+    165,
+    234,
+    329,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1170,
+    1,
+    178,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    334,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1350,
+    1,
+    162,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    350,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1514,
+    1,
+    161,
+    247
+   ],
+   "margin": [
+    175,
+    234,
+    351,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1677,
+    1,
+    143,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    369,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1822,
+    1,
+    132,
+    247
+   ],
+   "margin": [
+    190,
+    234,
+    380,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1956,
+    1,
+    91,
+    247
+   ],
+   "margin": [
+    211,
+    234,
+    421,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    127,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    385,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    130,
+    250,
+    127,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    385,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    259,
+    250,
+    125,
+    247
+   ],
+   "margin": [
+    193,
+    234,
+    387,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    386,
+    250,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    512,
+    250,
+    117,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    395,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    631,
+    250,
+    117,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    395,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    750,
+    250,
+    115,
+    247
+   ],
+   "margin": [
+    199,
+    234,
+    397,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    867,
+    250,
+    110,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    402,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    979,
+    250,
+    109,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    403,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1090,
+    250,
+    109,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    403,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    1201,
+    250,
+    109,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    403,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1312,
+    250,
+    106,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    406,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1420,
+    250,
+    104,
+    247
+   ],
+   "margin": [
+    204,
+    234,
+    408,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    1526,
+    250,
+    104,
+    247
+   ],
+   "margin": [
+    204,
+    234,
+    408,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1632,
+    250,
+    102,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    410,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1736,
+    250,
+    100,
+    247
+   ],
+   "margin": [
+    206,
+    234,
+    412,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1838,
+    250,
+    94,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    418,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1934,
+    250,
+    93,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    419,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    92,
+    247
+   ],
+   "margin": [
+    210,
+    234,
+    420,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    95,
+    499,
+    92,
+    247
+   ],
+   "margin": [
+    210,
+    234,
+    420,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    189,
+    499,
+    92,
+    247
+   ],
+   "margin": [
+    210,
+    234,
+    420,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    283,
+    499,
+    92,
+    247
+   ],
+   "margin": [
+    210,
+    234,
+    420,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    377,
+    499,
+    90,
+    247
+   ],
+   "margin": [
+    211,
+    234,
+    422,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    469,
+    499,
+    89,
+    247
+   ],
+   "margin": [
+    211,
+    234,
+    423,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    560,
+    499,
+    89,
+    247
+   ],
+   "margin": [
+    211,
+    234,
+    423,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    651,
+    499,
+    89,
+    247
+   ],
+   "margin": [
+    211,
+    234,
+    423,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    742,
+    499,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    831,
+    499,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    920,
+    499,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1009,
+    499,
+    87,
+    247
+   ],
+   "margin": [
+    213,
+    234,
+    425,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1098,
+    499,
+    84,
+    247
+   ],
+   "margin": [
+    214,
+    234,
+    428,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1184,
+    499,
+    80,
+    247
+   ],
+   "margin": [
+    216,
+    234,
+    432,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    1266,
+    499,
+    68,
+    247
+   ],
+   "margin": [
+    222,
+    234,
+    444,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1336,
+    499,
+    68,
+    247
+   ],
+   "margin": [
+    222,
+    234,
+    444,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1406,
+    499,
+    68,
+    247
+   ],
+   "margin": [
+    222,
+    234,
+    444,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1476,
+    499,
+    67,
+    247
+   ],
+   "margin": [
+    223,
+    234,
+    445,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1545,
+    499,
+    67,
+    247
+   ],
+   "margin": [
+    223,
+    234,
+    445,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1614,
+    499,
+    62,
+    247
+   ],
+   "margin": [
+    225,
+    234,
+    450,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1678,
+    499,
+    62,
+    247
+   ],
+   "margin": [
+    225,
+    234,
+    450,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1742,
+    499,
+    116,
+    243
+   ],
+   "margin": [
+    198,
+    238,
+    396,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1860,
+    499,
+    185,
+    242
+   ],
+   "margin": [
+    163,
+    239,
+    327,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1942,
+    743,
+    104,
+    242
+   ],
+   "margin": [
+    204,
+    239,
+    408,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1742,
+    744,
+    198,
+    242
+   ],
+   "margin": [
+    157,
+    239,
+    314,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    134,
+    242
+   ],
+   "margin": [
+    189,
+    239,
+    378,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    137,
+    748,
+    120,
+    242
+   ],
+   "margin": [
+    196,
+    239,
+    392,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    259,
+    748,
+    117,
+    242
+   ],
+   "margin": [
+    197,
+    239,
+    395,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    378,
+    748,
+    115,
+    242
+   ],
+   "margin": [
+    199,
+    239,
+    397,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    495,
+    748,
+    112,
+    242
+   ],
+   "margin": [
+    200,
+    239,
+    400,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    609,
+    748,
+    110,
+    242
+   ],
+   "margin": [
+    201,
+    239,
+    402,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    721,
+    748,
+    110,
+    242
+   ],
+   "margin": [
+    201,
+    239,
+    402,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    833,
+    748,
+    109,
+    242
+   ],
+   "margin": [
+    201,
+    239,
+    403,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    944,
+    748,
+    107,
+    242
+   ],
+   "margin": [
+    203,
+    239,
+    405,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1053,
+    748,
+    102,
+    242
+   ],
+   "margin": [
+    205,
+    239,
+    410,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1157,
+    748,
+    99,
+    242
+   ],
+   "margin": [
+    207,
+    239,
+    413,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1258,
+    748,
+    97,
+    242
+   ],
+   "margin": [
+    207,
+    239,
+    415,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1357,
+    748,
+    96,
+    242
+   ],
+   "margin": [
+    208,
+    239,
+    416,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1455,
+    748,
+    87,
+    242
+   ],
+   "margin": [
+    213,
+    239,
+    425,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1544,
+    748,
+    87,
+    242
+   ],
+   "margin": [
+    213,
+    239,
+    425,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1633,
+    748,
+    85,
+    242
+   ],
+   "margin": [
+    213,
+    239,
+    427,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1942,
+    987,
+    84,
+    242
+   ],
+   "margin": [
+    214,
+    239,
+    428,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1720,
+    988,
+    82,
+    242
+   ],
+   "margin": [
+    215,
+    239,
+    430,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1804,
+    988,
+    62,
+    242
+   ],
+   "margin": [
+    225,
+    239,
+    450,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1868,
+    988,
+    62,
+    242
+   ],
+   "margin": [
+    225,
+    239,
+    450,
+    270
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    992,
+    156,
+    237
+   ],
+   "margin": [
+    178,
+    244,
+    356,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    159,
+    992,
+    132,
+    237
+   ],
+   "margin": [
+    190,
+    244,
+    380,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    293,
+    992,
+    132,
+    237
+   ],
+   "margin": [
+    190,
+    244,
+    380,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    427,
+    992,
+    122,
+    237
+   ],
+   "margin": [
+    195,
+    244,
+    390,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    551,
+    992,
+    115,
+    237
+   ],
+   "margin": [
+    199,
+    244,
+    397,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    668,
+    992,
+    114,
+    237
+   ],
+   "margin": [
+    199,
+    244,
+    398,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    784,
+    992,
+    110,
+    237
+   ],
+   "margin": [
+    201,
+    244,
+    402,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    896,
+    992,
+    109,
+    237
+   ],
+   "margin": [
+    201,
+    244,
+    403,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1007,
+    992,
+    107,
+    237
+   ],
+   "margin": [
+    203,
+    244,
+    405,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1116,
+    992,
+    105,
+    237
+   ],
+   "margin": [
+    203,
+    244,
+    407,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1223,
+    992,
+    97,
+    237
+   ],
+   "margin": [
+    207,
+    244,
+    415,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1322,
+    992,
+    92,
+    237
+   ],
+   "margin": [
+    210,
+    244,
+    420,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1416,
+    992,
+    90,
+    237
+   ],
+   "margin": [
+    211,
+    244,
+    422,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1508,
+    992,
+    80,
+    237
+   ],
+   "margin": [
+    216,
+    244,
+    432,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1590,
+    992,
+    76,
+    237
+   ],
+   "margin": [
+    218,
+    244,
+    436,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1231,
+    68,
+    237
+   ],
+   "margin": [
+    222,
+    244,
+    444,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    71,
+    1231,
+    98,
+    236
+   ],
+   "margin": [
+    207,
+    245,
+    414,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    171,
+    1231,
+    219,
+    233
+   ],
+   "margin": [
+    147,
+    248,
+    293,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    392,
+    1231,
+    148,
+    233
+   ],
+   "margin": [
+    182,
+    248,
+    364,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    542,
+    1231,
+    139,
+    233
+   ],
+   "margin": [
+    187,
+    248,
+    373,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    683,
+    1231,
+    117,
+    233
+   ],
+   "margin": [
+    197,
+    248,
+    395,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    802,
+    1231,
+    92,
+    233
+   ],
+   "margin": [
+    210,
+    248,
+    420,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    896,
+    1231,
+    85,
+    233
+   ],
+   "margin": [
+    213,
+    248,
+    427,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    983,
+    1231,
+    85,
+    233
+   ],
+   "margin": [
+    213,
+    248,
+    427,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1070,
+    1231,
+    134,
+    232
+   ],
+   "margin": [
+    189,
+    249,
+    378,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1206,
+    1231,
+    110,
+    232
+   ],
+   "margin": [
+    201,
+    249,
+    402,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1318,
+    1231,
+    105,
+    232
+   ],
+   "margin": [
+    203,
+    249,
+    407,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1425,
+    1231,
+    102,
+    232
+   ],
+   "margin": [
+    205,
+    249,
+    410,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1529,
+    1231,
+    80,
+    232
+   ],
+   "margin": [
+    216,
+    249,
+    432,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1611,
+    1231,
+    96,
+    231
+   ],
+   "margin": [
+    208,
+    250,
+    416,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1944,
+    1231,
+    62,
+    229
+   ],
+   "margin": [
+    225,
+    252,
+    450,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1709,
+    1232,
+    233,
+    229
+   ],
+   "margin": [
+    139,
+    252,
+    279,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1709,
+    1463,
+    159,
+    229
+   ],
+   "margin": [
+    177,
+    252,
+    353,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1870,
+    1463,
+    141,
+    229
+   ],
+   "margin": [
+    185,
+    252,
+    371,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1611,
+    1464,
+    62,
+    229
+   ],
+   "margin": [
+    225,
+    252,
+    450,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1070,
+    1465,
+    120,
+    228
+   ],
+   "margin": [
+    196,
+    253,
+    392,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1192,
+    1465,
+    120,
+    228
+   ],
+   "margin": [
+    196,
+    253,
+    392,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1314,
+    1465,
+    115,
+    228
+   ],
+   "margin": [
+    199,
+    253,
+    397,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1431,
+    1465,
+    110,
+    228
+   ],
+   "margin": [
+    201,
+    253,
+    402,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1543,
+    1465,
+    59,
+    194
+   ],
+   "margin": [
+    227,
+    287,
+    453,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    171,
+    1466,
+    108,
+    228
+   ],
+   "margin": [
+    202,
+    253,
+    404,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    281,
+    1466,
+    106,
+    228
+   ],
+   "margin": [
+    203,
+    253,
+    406,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    389,
+    1466,
+    82,
+    228
+   ],
+   "margin": [
+    215,
+    253,
+    430,
+    284
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    473,
+    1466,
+    178,
+    224
+   ],
+   "margin": [
+    167,
+    257,
+    334,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    653,
+    1466,
+    164,
+    224
+   ],
+   "margin": [
+    174,
+    257,
+    348,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    819,
+    1466,
+    113,
+    224
+   ],
+   "margin": [
+    199,
+    257,
+    399,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    934,
+    1466,
+    85,
+    224
+   ],
+   "margin": [
+    213,
+    257,
+    427,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1470,
+    164,
+    223
+   ],
+   "margin": [
+    174,
+    258,
+    348,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    473,
+    1692,
+    218,
+    223
+   ],
+   "margin": [
+    147,
+    258,
+    294,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    693,
+    1692,
+    194,
+    223
+   ],
+   "margin": [
+    159,
+    258,
+    318,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    889,
+    1692,
+    132,
+    223
+   ],
+   "margin": [
+    190,
+    258,
+    380,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1675,
+    1694,
+    193,
+    223
+   ],
+   "margin": [
+    159,
+    258,
+    319,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1870,
+    1694,
+    110,
+    223
+   ],
+   "margin": [
+    201,
+    258,
+    402,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1695,
+    110,
+    223
+   ],
+   "margin": [
+    201,
+    258,
+    402,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1023,
+    1695,
+    93,
+    223
+   ],
+   "margin": [
+    209,
+    258,
+    419,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1118,
+    1695,
+    87,
+    223
+   ],
+   "margin": [
+    213,
+    258,
+    425,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1207,
+    1695,
+    84,
+    223
+   ],
+   "margin": [
+    214,
+    258,
+    428,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1293,
+    1695,
+    73,
+    223
+   ],
+   "margin": [
+    219,
+    258,
+    439,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1368,
+    1695,
+    162,
+    222
+   ],
+   "margin": [
+    175,
+    259,
+    350,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1532,
+    1695,
+    137,
+    222
+   ],
+   "margin": [
+    187,
+    259,
+    375,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    113,
+    1696,
+    100,
+    222
+   ],
+   "margin": [
+    206,
+    259,
+    412,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    215,
+    1696,
+    196,
+    219
+   ],
+   "margin": [
+    158,
+    262,
+    316,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    215,
+    1917,
+    274,
+    130
+   ],
+   "margin": [
+    119,
+    351,
+    238,
+    382
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    491,
+    1917,
+    242,
+    127
+   ],
+   "margin": [
+    135,
+    354,
+    270,
+    385
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    735,
+    1917,
+    226,
+    127
+   ],
+   "margin": [
+    143,
+    354,
+    286,
+    385
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1368,
+    1919,
+    205,
+    127
+   ],
+   "margin": [
+    153,
+    354,
+    307,
+    385
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1575,
+    1919,
+    311,
+    124
+   ],
+   "margin": [
+    101,
+    357,
+    201,
+    388
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1920,
+    167,
+    122
+   ],
+   "margin": [
+    173,
+    359,
+    345,
+    390
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_07.png"
+   ],
+   "page": 0,
+   "region": [
+    963,
+    1920,
+    263,
+    122
+   ],
+   "margin": [
+    125,
+    359,
+    249,
+    390
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    92,
+    219
+   ],
+   "margin": [
+    210,
+    262,
+    420,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    95,
+    1,
+    199,
+    218
+   ],
+   "margin": [
+    157,
+    263,
+    313,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    296,
+    1,
+    165,
+    218
+   ],
+   "margin": [
+    173,
+    263,
+    347,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    463,
+    1,
+    129,
+    218
+   ],
+   "margin": [
+    191,
+    263,
+    383,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    594,
+    1,
+    112,
+    218
+   ],
+   "margin": [
+    200,
+    263,
+    400,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    708,
+    1,
+    103,
+    218
+   ],
+   "margin": [
+    205,
+    263,
+    409,
+    294
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    813,
+    1,
+    138,
+    216
+   ],
+   "margin": [
+    187,
+    265,
+    374,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    953,
+    1,
+    88,
+    214
+   ],
+   "margin": [
+    212,
+    267,
+    424,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1043,
+    1,
+    161,
+    213
+   ],
+   "margin": [
+    175,
+    268,
+    351,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1206,
+    1,
+    161,
+    213
+   ],
+   "margin": [
+    175,
+    268,
+    351,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1369,
+    1,
+    79,
+    213
+   ],
+   "margin": [
+    217,
+    268,
+    433,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1450,
+    1,
+    117,
+    211
+   ],
+   "margin": [
+    197,
+    270,
+    395,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1569,
+    1,
+    219,
+    209
+   ],
+   "margin": [
+    147,
+    272,
+    293,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1790,
+    1,
+    165,
+    209
+   ],
+   "margin": [
+    173,
+    272,
+    347,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1957,
+    1,
+    67,
+    194
+   ],
+   "margin": [
+    223,
+    287,
+    445,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1569,
+    212,
+    106,
+    209
+   ],
+   "margin": [
+    203,
+    272,
+    406,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1677,
+    212,
+    129,
+    205
+   ],
+   "margin": [
+    191,
+    276,
+    383,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1808,
+    212,
+    127,
+    204
+   ],
+   "margin": [
+    193,
+    277,
+    385,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1937,
+    212,
+    105,
+    204
+   ],
+   "margin": [
+    203,
+    277,
+    407,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1450,
+    214,
+    109,
+    200
+   ],
+   "margin": [
+    201,
+    281,
+    403,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1043,
+    216,
+    238,
+    200
+   ],
+   "margin": [
+    137,
+    281,
+    274,
+    312
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1283,
+    216,
+    143,
+    195
+   ],
+   "margin": [
+    185,
+    286,
+    369,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    953,
+    217,
+    84,
+    190
+   ],
+   "margin": [
+    214,
+    291,
+    428,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    813,
+    219,
+    131,
+    195
+   ],
+   "margin": [
+    191,
+    286,
+    381,
+    317
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    95,
+    221,
+    178,
+    194
+   ],
+   "margin": [
+    167,
+    287,
+    334,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    275,
+    221,
+    116,
+    194
+   ],
+   "margin": [
+    198,
+    287,
+    396,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_00.png"
+   ],
+   "page": 1,
+   "region": [
+    393,
+    221,
+    100,
+    194
+   ],
+   "margin": [
+    206,
+    287,
+    412,
+    318
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    495,
+    221,
+    135,
+    191
+   ],
+   "margin": [
+    189,
+    290,
+    377,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    632,
+    221,
+    122,
+    191
+   ],
+   "margin": [
+    195,
+    290,
+    390,
+    321
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    222,
+    80,
+    190
+   ],
+   "margin": [
+    216,
+    291,
+    432,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    946,
+    409,
+    76,
+    190
+   ],
+   "margin": [
+    218,
+    291,
+    436,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1283,
+    413,
+    143,
+    190
+   ],
+   "margin": [
+    185,
+    291,
+    369,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    414,
+    71,
+    190
+   ],
+   "margin": [
+    221,
+    291,
+    441,
+    322
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    495,
+    414,
+    131,
+    187
+   ],
+   "margin": [
+    191,
+    294,
+    381,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    628,
+    414,
+    158,
+    184
+   ],
+   "margin": [
+    177,
+    297,
+    354,
+    328
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    788,
+    416,
+    148,
+    183
+   ],
+   "margin": [
+    182,
+    298,
+    364,
+    329
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1428,
+    416,
+    88,
+    182
+   ],
+   "margin": [
+    212,
+    299,
+    424,
+    330
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    74,
+    417,
+    186,
+    181
+   ],
+   "margin": [
+    163,
+    300,
+    326,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    262,
+    417,
+    165,
+    178
+   ],
+   "margin": [
+    173,
+    303,
+    347,
+    334
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1024,
+    418,
+    148,
+    174
+   ],
+   "margin": [
+    182,
+    307,
+    364,
+    338
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1174,
+    418,
+    104,
+    169
+   ],
+   "margin": [
+    204,
+    312,
+    408,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1808,
+    418,
+    147,
+    172
+   ],
+   "margin": [
+    183,
+    309,
+    365,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1518,
+    423,
+    139,
+    172
+   ],
+   "margin": [
+    187,
+    309,
+    373,
+    340
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1659,
+    423,
+    137,
+    167
+   ],
+   "margin": [
+    187,
+    314,
+    375,
+    345
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1659,
+    592,
+    190,
+    169
+   ],
+   "margin": [
+    161,
+    312,
+    322,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1851,
+    592,
+    120,
+    157
+   ],
+   "margin": [
+    196,
+    324,
+    392,
+    355
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1024,
+    594,
+    228,
+    153
+   ],
+   "margin": [
+    142,
+    328,
+    284,
+    359
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    262,
+    597,
+    179,
+    153
+   ],
+   "margin": [
+    167,
+    328,
+    333,
+    359
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1518,
+    597,
+    139,
+    153
+   ],
+   "margin": [
+    187,
+    328,
+    373,
+    359
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    74,
+    600,
+    177,
+    147
+   ],
+   "margin": [
+    167,
+    334,
+    335,
+    365
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_07.png"
+   ],
+   "page": 1,
+   "region": [
+    628,
+    601,
+    252,
+    148
+   ],
+   "margin": [
+    130,
+    333,
+    260,
+    364
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    443,
+    603,
+    179,
+    138
+   ],
+   "margin": [
+    167,
+    343,
+    333,
+    374
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1254,
+    605,
+    221,
+    143
+   ],
+   "margin": [
+    145,
+    338,
+    291,
+    369
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    749,
+    197,
+    137
+   ],
+   "margin": [
+    157,
+    344,
+    315,
+    375
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    882,
+    749,
+    252,
+    122
+   ],
+   "margin": [
+    130,
+    359,
+    260,
+    390
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1136,
+    750,
+    290,
+    119
+   ],
+   "margin": [
+    111,
+    362,
+    222,
+    393
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    443,
+    751,
+    242,
+    117
+   ],
+   "margin": [
+    135,
+    364,
+    270,
+    395
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    687,
+    751,
+    174,
+    117
+   ],
+   "margin": [
+    169,
+    364,
+    338,
+    395
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    200,
+    752,
+    233,
+    115
+   ],
+   "margin": [
+    139,
+    366,
+    279,
+    397
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_07.png"
+   ],
+   "page": 1,
+   "region": [
+    1428,
+    763,
+    242,
+    115
+   ],
+   "margin": [
+    135,
+    366,
+    270,
+    397
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1672,
+    763,
+    252,
+    111
+   ],
+   "margin": [
+    130,
+    370,
+    260,
+    401
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_07.png"
+   ],
+   "page": 1,
+   "region": [
+    200,
+    870,
+    273,
+    106
+   ],
+   "margin": [
+    119,
+    375,
+    239,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    475,
+    870,
+    247,
+    106
+   ],
+   "margin": [
+    133,
+    375,
+    265,
+    406
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_07.png"
+   ],
+   "page": 1,
+   "region": [
+    1136,
+    871,
+    287,
+    102
+   ],
+   "margin": [
+    113,
+    379,
+    225,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_07.png"
+   ],
+   "page": 1,
+   "region": [
+    724,
+    873,
+    272,
+    102
+   ],
+   "margin": [
+    120,
+    379,
+    240,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1672,
+    876,
+    252,
+    102
+   ],
+   "margin": [
+    130,
+    379,
+    260,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1425,
+    880,
+    227,
+    102
+   ],
+   "margin": [
+    143,
+    379,
+    285,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    998,
+    975,
+    207,
+    102
+   ],
+   "margin": [
+    153,
+    379,
+    305,
+    410
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    724,
+    977,
+    257,
+    97
+   ],
+   "margin": [
+    127,
+    384,
+    255,
+    415
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_07.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    978,
+    274,
+    98
+   ],
+   "margin": [
+    119,
+    383,
+    238,
+    414
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    277,
+    978,
+    279,
+    93
+   ],
+   "margin": [
+    117,
+    388,
+    233,
+    419
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_07.png"
+   ],
+   "page": 1,
+   "region": [
+    1654,
+    980,
+    278,
+    91
+   ],
+   "margin": [
+    117,
+    390,
+    234,
+    421
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_hit_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_east_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_east_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_south_west_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_west_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_west_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_07.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_death_north_east_07.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/enemies/full_frame/stone_bruiser_8dir/stone_bruiser_idle_east.png"
+}

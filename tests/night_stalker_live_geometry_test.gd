@@ -161,7 +161,7 @@ func _initialize() -> void:
 func _live_frame_metrics(stalker: Node2D, body: AnimatedSprite2D, texture: Texture2D) -> Dictionary:
 	if texture == null:
 		return {}
-	var image := texture.get_image()
+	var image := _canvas_image(texture)
 	if image == null or image.is_empty() or image.get_width() != CANVAS_SIZE or image.get_height() != CANVAS_SIZE:
 		return {}
 	var used_rect := image.get_used_rect()
@@ -184,3 +184,23 @@ func _collision_radius(stalker: Node2D) -> float:
 func _fail(message: String) -> void:
 	push_error("Night Stalker live geometry: %s" % message)
 	quit(1)
+
+
+# FAN-3977: frames are AtlasTexture trims whose `margin` restores the 512
+# canvas; rebuild the canvas image so the feet/height math stays in canvas
+# coordinates (a plain texture is returned as-is).
+func _canvas_image(texture: Texture2D) -> Image:
+	var atlas_texture := texture as AtlasTexture
+	if atlas_texture == null or atlas_texture.atlas == null:
+		return texture.get_image()
+	var atlas_image := atlas_texture.atlas.get_image()
+	if atlas_image == null:
+		return null
+	var canvas_size := Vector2i(atlas_texture.get_size())
+	var canvas := Image.create(canvas_size.x, canvas_size.y, false, Image.FORMAT_RGBA8)
+	canvas.fill(Color(0, 0, 0, 0))
+	var region_image := atlas_image.get_region(Rect2i(atlas_texture.region))
+	if region_image.get_format() != Image.FORMAT_RGBA8:
+		region_image.convert(Image.FORMAT_RGBA8)
+	canvas.blit_rect(region_image, Rect2i(Vector2i.ZERO, region_image.get_size()), Vector2i(atlas_texture.margin.position))
+	return canvas

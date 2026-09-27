@@ -1,0 +1,7397 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "plague_prophet",
+ "tres": "res://assets/sprites/elites/full_frame/plague_prophet_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 248,
+ "unique_frames": 231,
+ "source_rgba_bytes": 260046848,
+ "page_rgba_bytes": 30736384,
+ "pages": [
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet_trim_0.png",
+   "width": 2048,
+   "height": 2048,
+   "sha256": "19cf3c6b856ca2a926cde5ccccf5e6e1d34a3bf0adac619b1a26580ce8b8c24c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet_trim_1.png",
+   "width": 2048,
+   "height": 1704,
+   "sha256": "209cb60cd0cbbd4778be519f3f2745de86c38f49a76aec95ce917894bf09adf0"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_00.png",
+   "sha256": "dcf1612e15c85ff8a4a0f865e816232de465712a98ae37ab4198d1320e71a101"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_01.png",
+   "sha256": "848e513e32a0a6df87787a0c30cee29710441e9737c3de2eff0fc9a484fe6d4c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_02.png",
+   "sha256": "2d67a80ed38b029b88837f66aecce0a292c1f7ba4793f84fbf85681896606264"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_03.png",
+   "sha256": "30bbf0db015a616bc436a2d13193edb91cb7519674a6c3ab38bd31ba9c200715"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_04.png",
+   "sha256": "3a2768357f5fdc3beda70b69781d8b812ffa5bb981b685d858fd824e91c48e1c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_05.png",
+   "sha256": "728f32f0b46980aed31c61b2ad0b395f36fd4a4a8e2581d08da8395182fa6fb8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_06.png",
+   "sha256": "219263341435534cf74d7ef6a52df1d3fdf189c1112c45f7cab586956e6d4c94"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_00.png",
+   "sha256": "99fb158f04611fc1d2c2ff5f02480c60e79c5c9301ef87f3003e134eb8644dce"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_01.png",
+   "sha256": "4a2de3874d89dd61f2a5ef648a63d9bf394a789076826ca00109d810126b32f6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_02.png",
+   "sha256": "27402505a6e50341d7ba6effe5a062445f5a1fc4117c03fe321b3df62bc02ee1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_03.png",
+   "sha256": "8f5ccd64404e3316b048ec0e3d30798287b94a7506eb800ac1d37dd2c3a3bce5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_04.png",
+   "sha256": "99651829307cbe02e0ba1ff09917f8845a153cacf058080fb14841c74a39df6a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_05.png",
+   "sha256": "d32ce9b79f03675c266279725eb0f4f226025caa8ce69e51a71aa7e935dfeaf7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_06.png",
+   "sha256": "71d68293e78a27623bf86764cdbbeca2bff13b17b7770f3f5a5776e7d3226b86"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_00.png",
+   "sha256": "1bc42c57fc9188ea16bdb96ce45b12750b1afe2a74bd0f2b0adbd3d69237c4fe"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_01.png",
+   "sha256": "2e992eaca429eddd96619c23c3dc553d219027a7f4cb34cf78526bbd368c1646"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_02.png",
+   "sha256": "aa21739ac4db4e37a62db72f71d867f0742f96c00f7e1285ae40cdebcf6fe268"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_03.png",
+   "sha256": "d90d831a62c2ebe1d9a967aba442f30a5638d81d526127b8a2ede70277a0a340"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_04.png",
+   "sha256": "d8e4ac7356c73869d9557961e028842c32b8683e3ebddcad4d0f681b1fe727ca"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_05.png",
+   "sha256": "9bc69a317a2b4c5b90f259864a753620328777c776e613246357ab468149e033"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_06.png",
+   "sha256": "3a886c3785ee94643539b7ed04aa3250c1804099f01f80e01fc34e9dfe73778c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_00.png",
+   "sha256": "42b721bdcad3fa679e3ebfa7a22b58019de238faa57d10bed14e2bfaaf2d9673"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_01.png",
+   "sha256": "ccc41fbb7e750b6a1cfc0f0cccedb4caaae6e348a5d39f880bde3c657c414d46"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_02.png",
+   "sha256": "477e2cc4ebef72fccf4b3c837f9b7fc976a56e671a5a554931738f89734eb29f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_03.png",
+   "sha256": "770278e0b8816a0634f70fdd7c894977555aa100784501f85bd4ed77c5078632"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_04.png",
+   "sha256": "5ee8cf2860b6e57a9ccf11423e716e5de114c0a1bb9bb15f687d11f1c29168d3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_05.png",
+   "sha256": "20d8a010c879cc50e18e9c17e7ed6c235a486e9c4b6f82a3a32c38b3325438dc"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_06.png",
+   "sha256": "e08c5b21cc93c7118b94069274bf602fd6320ff716e834e79ae23c0b3809517a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_00.png",
+   "sha256": "e5ca7daeee5e185ca84deab3f5cbb3b9662fa64acc5c889bce2637c1ec65e78a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_01.png",
+   "sha256": "b59c754cac7635f968e2718c24b5a675bddaaf9163d3b47075f4e4585b25dd3e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_02.png",
+   "sha256": "657a8701c6c31678c499bf60aa119599b59ec26e2f02e0cfdbd9807584499098"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_03.png",
+   "sha256": "b2f98fd1e53b7dd6093885603ecc813bfe355520696b034e69c3921c7c3be81f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_04.png",
+   "sha256": "f2df9f43c51593af6ad2c93b037ca94915cada217b6b48c5e1273fd6b899ff5d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_05.png",
+   "sha256": "11391767b0f912e8b8a6a9f9b910dfb09fae037b9e72ca9519aa74231da7228d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_06.png",
+   "sha256": "ec8ca69a12b097b6102adf28e4978ce2ad07685807bcfae7189402886a77079b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_00.png",
+   "sha256": "5913be0ff31c3dacbac62747824cd92c453618e414da5eca74c39e7975919f77"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_01.png",
+   "sha256": "8cc4b536f8779f085f3ecd9d113b330fab064010d381000ec02de28009982bc9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_02.png",
+   "sha256": "d795e91c38ae485c11da3edbeab4cd238edc612ac60e4ccfddb80f2006b09ea9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_03.png",
+   "sha256": "9bacc5743e7d129e92da1c1af1d5abb57f7fb1ebe39e1b66254e975ad0c86cbe"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_04.png",
+   "sha256": "2bd12b68e21c35bdbda7f612d43fbf14f317297c29132a02fa41bc872e150282"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_05.png",
+   "sha256": "2c9aa5916ab9e9a020a487230bdb5d8ddd33c2bf830bd68cb3123da9d58d3a51"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_06.png",
+   "sha256": "7c0f9bebc988c25041ecbaa047e2b46caac0c98c8e7160e67bcb790723d4a942"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_00.png",
+   "sha256": "e1e5a2348adb27a7592e780ce6558d71ce496961bfee440202e31078be47e01c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_01.png",
+   "sha256": "34c840bfee6bc80eb9080550c8ae8e09c66e8d5bf463c2d9ab13bf96c1f3141d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_02.png",
+   "sha256": "a021ed30e139fe5c2a3cd54f0f398a80879a6c205f7dbcecd514216e4a14a0ad"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_03.png",
+   "sha256": "bcde59e7a96bca847a9bb34ee64d53640f5d40b5499a2af0b5d1aca0420f45c4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_04.png",
+   "sha256": "a7d017d9b97f4609d45e8d8e2a955f268d3d57a0f2b18175aa46e47b745ede5e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_05.png",
+   "sha256": "f8d4b6a56bbde7e99fca5007c81dfa64489c1364e527a9618b9a2009f4339926"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_06.png",
+   "sha256": "2ddc92992c337fbc3a641601079fff7612c83474a31062e408e92d047c176c00"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_00.png",
+   "sha256": "4fe02bf11844ad996eaeab50897781144ab1c07f3e04e2ce3ee673b42e157f47"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_01.png",
+   "sha256": "30e11853e6a3528d887635835a0c838d00f881c5e455138cb14d80a20f4b3043"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_02.png",
+   "sha256": "1c85b84882d3249da75a355460b931003d8aa943974c2ae6a3e2c0a4fbfac62d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_03.png",
+   "sha256": "0bfd419c3ab77d31b49b21e3b88c8506d82027c5e7c1851bcf06a896f79a6309"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_04.png",
+   "sha256": "d8c1f7c10eb8caf74ca967f27cf3555da32bb4dd22411191452b3c2701c7323d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_05.png",
+   "sha256": "53dcbc26ad09cbce6fbf3e232affde8f6dd5cd6f196f00879f68146de213f1b0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_06.png",
+   "sha256": "375952e750eb72d15a2cc144a3b787a4b5f45ab655f21ab64155f548aa4e7f9e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_00.png",
+   "sha256": "d2e657b100b04ba9e56b981205c26f71850f22f1117a7b8920f3689a0cea26a6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_01.png",
+   "sha256": "5fc880365e4c90da53e088b25844e35bdeffe54acfdce13ec8524db935b25361"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_02.png",
+   "sha256": "110570299f966dae33a4e592c46287d136126bc5a5265b030e84d7495621cb90"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_03.png",
+   "sha256": "7a01bebd8028190df6bc5c0ddf2f961b6f2acd5af89f63f705c3a2a734063eb8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_04.png",
+   "sha256": "b96b5c281f28a6a255efb5730fab9f2690cdda3c856fa2ab196de254aff10dcb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_00.png",
+   "sha256": "4c57d3b1f21061698dce69dbab1dca68a6d81120425c4f28c9178c8153448c65"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_01.png",
+   "sha256": "64a00a1372f6bcc2b62b55ae08ca02dcfe392a42ce6f3a59bb59618e79e286e4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_02.png",
+   "sha256": "1afc3ba0202d9f9f3da9b7869e3a6c21f82990939f685413e58368e74beced62"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_03.png",
+   "sha256": "abd770968d26213c3ee7b1cc737c4e34250bb5d68ccde921939be0466c0842bb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_04.png",
+   "sha256": "7f4f880393bc327da7e6795290376885c6ab4863b2e6079347a7da3189036d6f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_00.png",
+   "sha256": "f881083c9abee26d7d97c365f871c81b6d8fbdceb168a2caf41f3eebe39dd819"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_01.png",
+   "sha256": "42203adcf4f88ba09acb7697464200945b5659b64b834726cbf0cc50faa9a6b9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_02.png",
+   "sha256": "0468088a34887e9290ed632d27f71709845248c3fd224d8861d5c5a08262493c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_03.png",
+   "sha256": "6747b26363fb542775a6464fa49f7a50e25eb294c26f68bfe4c2f6a4740aab01"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_04.png",
+   "sha256": "f68f01ad5833e6500e7ddaeea07aa0431bcc1a9adbd9485b3bbe3e94f86ab2e2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_00.png",
+   "sha256": "efcde8ce835ce8d24af9a7ecd5c78571ca8adfb1ecfb666150209cdfa72e1063"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_01.png",
+   "sha256": "d493e87b9b35ea4df0819df6dee25f750285bdfd4b7b0ab898152be437ad85ff"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_02.png",
+   "sha256": "a33fd4471419467ee0eacfe66dbc940dd7a11392ef6589b12abd9c4872f0bf52"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_03.png",
+   "sha256": "ce99eae916bd726d1c3d692ac7173162ac6d229d42aa62d5fc68c6fb3473f97c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_04.png",
+   "sha256": "757cceb1efabe973aacfbb82106c1c7e60a69499eaf6f87e09e66b120aacb181"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_00.png",
+   "sha256": "31a26ad072486cfa070899b4cfa9716563002231977872337dd3518c5e115ac0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_01.png",
+   "sha256": "780507f20cc179bf60cd5643902a511660f651932b42e330757c690dd6e9ec74"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_02.png",
+   "sha256": "ffd6bb048a5571b1c92599196fc1b2a28f43bc3b8ee49b02eef2f18f9bb3fe97"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_03.png",
+   "sha256": "e157f5e403060fdabb9ef75f7c5b8d7799755932afa09fb9b459cd018a370662"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_04.png",
+   "sha256": "5220a1bb9e9168b0198c472a8c53538d9017a97ae498572ad595f535f924f7d5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_00.png",
+   "sha256": "5913be0ff31c3dacbac62747824cd92c453618e414da5eca74c39e7975919f77"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_01.png",
+   "sha256": "fa198386d6ae96affc26ffa1eec24e2b5f0a865a62761d78a1f3c6f3897fdaa8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_02.png",
+   "sha256": "1ee23a031d6a0b12dd5f10784718f0e59880a71559c358bb4b82f44a47e75482"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_03.png",
+   "sha256": "b9a558a2d5076940010b90be4f05f55150fe506ed6c81b1dc1d8164594dc79d8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_04.png",
+   "sha256": "c14cab6e337d9910e4ac396cce193e68e4ae8efcb08a3cd141a0db330013088d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_00.png",
+   "sha256": "6d06a76ef2b9df678c07fbb5522f51217a1788598c8d01c2a70aa3e7a2988637"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_01.png",
+   "sha256": "a41a3d26e95b91b5aa98ac67bcdc79f883e32a275b5c2c84415ee374ed89e0ff"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_02.png",
+   "sha256": "8876f231856f66ddbb7e8ca6350f2187d3ce3616ca830b1021b52d200ea9bc74"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_03.png",
+   "sha256": "3d2a7781f07754d1aabab0b928c60c098000a368cafd8a2462acb1331edd757f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_04.png",
+   "sha256": "3bd13fe5387d5ada5cd3319bef18f02645ef8e21e2fbe8e3c4abddfadbad4059"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_00.png",
+   "sha256": "91ec43e54a916eb98563136de7b2b4dfb882636eb61d08ab152e8484a030cd5a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_01.png",
+   "sha256": "59068f4edad5b51b185a4b2bc15c5c8284f34c89977111717c6f8f4b3fac292b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_02.png",
+   "sha256": "6552994c82183af203d3c3fcb4fbd03e36a9a1d8212600caa5833f91ecdffe44"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_03.png",
+   "sha256": "24fedd9baaa7b7d15639899599ed117ef5848a07bce2cbeef20fcba0a89745fd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_04.png",
+   "sha256": "8e3e2ff2637938bf8cd6f85f69b8876e63962df297c8212f698a92f8b18e6893"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_east.png",
+   "sha256": "dcf1612e15c85ff8a4a0f865e816232de465712a98ae37ab4198d1320e71a101"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north.png",
+   "sha256": "99fb158f04611fc1d2c2ff5f02480c60e79c5c9301ef87f3003e134eb8644dce"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_east.png",
+   "sha256": "1bc42c57fc9188ea16bdb96ce45b12750b1afe2a74bd0f2b0adbd3d69237c4fe"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_west.png",
+   "sha256": "9bef0c2807952a83948c1b8adf309e953f520c2ed4d4222245836c8ef0446213"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south.png",
+   "sha256": "31a26ad072486cfa070899b4cfa9716563002231977872337dd3518c5e115ac0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_east.png",
+   "sha256": "5913be0ff31c3dacbac62747824cd92c453618e414da5eca74c39e7975919f77"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_west.png",
+   "sha256": "e1e5a2348adb27a7592e780ce6558d71ce496961bfee440202e31078be47e01c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_west.png",
+   "sha256": "91ec43e54a916eb98563136de7b2b4dfb882636eb61d08ab152e8484a030cd5a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_00.png",
+   "sha256": "a2bf975d22f0ae4aaae529a1791b63b70c39a0e642f5a65420b1419d644c55e0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_01.png",
+   "sha256": "b85fc15d6af57e460a512cce94281025a45a9bb7d06480e5bf2e667842937e3f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_02.png",
+   "sha256": "4251dade8bdff01cd699a7bd4ae9fb2054e8f5dad751f001d5e594df24577916"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_03.png",
+   "sha256": "e58baa40158853030c5a1405e9aba90ab0ded78fe075b2b4b2b3e4d013a9acca"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_04.png",
+   "sha256": "54a283081be1631118920dd1ef271380b48b4547fe8a065004e0ee0ad904fd9b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_05.png",
+   "sha256": "2692acdf8854f82b999fb148aefffe4976c242c51d52be2544ac0baeed72533c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_06.png",
+   "sha256": "71f62f90de6a52518dc6fc4eb1f8c66b4f1cf7375cff31ab60a3f7d1862768c9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_07.png",
+   "sha256": "5d1395f74885dae63fce76ba801ad428f64e45be832ab9450ce917d0441922fd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_00.png",
+   "sha256": "7f9638e72dcf99f5682704f0240b9722c698bcd0e2e78d62e2ea43e3a96f2d8e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_01.png",
+   "sha256": "9878c0d352e9243e7052beb7d33bf3f3663acda34bf6de73490c7ec8abae7453"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_02.png",
+   "sha256": "8999c479187400d7cf6e9a328e90c65a83a16fce8e6ada2c481d6e451f2cb1bd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_03.png",
+   "sha256": "91da5bfd7c00e5dc47eb9b94e9075dbb7f4aae40e14215c70d9d66ddf44d3a0d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_04.png",
+   "sha256": "0bf1b8128151b30319832b10b652c6ec56a324f3fbf0a8e5ba3bc5d3de037c9a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_05.png",
+   "sha256": "825a5c907a82dbb0ceb701223d432ae512209d7495baff7a93fb104be4453172"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_06.png",
+   "sha256": "c4ca305737a7fb592712275847ecdf2bf26b7a9c70265d6c116cf29a82aeb537"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_07.png",
+   "sha256": "e13f3dff91675ce7b6ff0d52c2822112156ed6cf1a7d62d791a64f38ba3fb4f0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_00.png",
+   "sha256": "19bb834b00731d7ee03172345a0cba6e73a958edb2ee3ad3acc642f575357c42"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_01.png",
+   "sha256": "315da03194e4516190031354bbc97561c89245c452fe6725357fd9434691df85"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_02.png",
+   "sha256": "cd37d230d0cac8377988bf54d2ff18a3299fea273bef97604192cb2ba70e74c4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_03.png",
+   "sha256": "918aa3c14c7534bb57cf16f8ed1b2bae3100adb802a913aa479ddb5da8fd6fd4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_04.png",
+   "sha256": "c7c32a30e61c52af884fb52f153074b8fa4ee4ada65af20248e7eddaa436621e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_05.png",
+   "sha256": "d4da77718d4358d0ed08a6e98b8b5be8e584dcc0c58f0c43b09c8634f8393d7c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_06.png",
+   "sha256": "01d6f95e251c815a0426f2976ef919828e81b7b05b9431bcfe2da15bae77463d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_07.png",
+   "sha256": "04c8fc46c8abac1807c933a604181750df92a1f32b2a7512105de3eb397ff98c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_00.png",
+   "sha256": "94bb5c6439acc46e23d31d6acd5a63fe38a50bad4e40d6f95ea291ae9d50bfd7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_01.png",
+   "sha256": "3bbfc25bccf459e25806eeeb1fc687c282c09f9b04d9c2249d55cc0f36822796"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_02.png",
+   "sha256": "5a1690dc578ecf4e4d6dca5f346e1bc0cc58691ddc7cb0f752c34a123c2f2c23"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_03.png",
+   "sha256": "53454ff4d549edea4cfc726e148a1c730dd8c4e88ba97e512611ad87e969d71c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_04.png",
+   "sha256": "e91d805d2f0b0c1815be78760ec2561ae2c79838e7fbdc2340b32eed18c3bddf"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_05.png",
+   "sha256": "c5accccf24cb0149fb9ec81b96fe0b496bff8c7734149a46344f5613b3b5c6a5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_06.png",
+   "sha256": "2b4c05b0fc4477261d1d6ce11454171799253f06d30b7ac51ac525e0d7d33260"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_07.png",
+   "sha256": "94d8b608b785a007d52ceae3d124b5a4ac11874c438f69792f224fee44e026f0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_00.png",
+   "sha256": "54ff151912b9239ed429b622c1d73433ed164f39f0becf555168367389211d58"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_01.png",
+   "sha256": "235929e1764a4816fd9938b764f8072c324b56429417977e11f285864797f490"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_02.png",
+   "sha256": "961394b4948cb56eeefe307a81fb87219a9fb26a93d754370532c06415d418c8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_03.png",
+   "sha256": "be09a8e8b597d2fab27fc5964e243d84940d6b718c6c4c37ab21eb2e022f692c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_04.png",
+   "sha256": "f382060a041ad3026e247418af727f94a94c52c418643c6bb1467fa456b73f91"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_05.png",
+   "sha256": "cc76cd97d98cc0e4baa268ca1c16ce274f7dd30776e66599df1319c2cbe6b42f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_06.png",
+   "sha256": "940e1a9e3e54a3f59794b218368449468cd3b4775973828c3de84324dbad2f06"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_07.png",
+   "sha256": "922e36eff4081bf352eb17b469e0028dc02adc1adfb73077ee8d1cb7da507310"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_00.png",
+   "sha256": "27365d10c215af3adb338cfc49e4ef87becc298cdd0e0fdee38f8001af21dfc0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_01.png",
+   "sha256": "6a1e3ea9a8a324f89c98c57f8d7f8f27a3b03d06e912958479ded1b5e3df5831"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_02.png",
+   "sha256": "88781a02e7414d668f1f60677d6d666471e73adede802eaf7fe395ad09174102"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_03.png",
+   "sha256": "e4f315896b3e0a2f72e3b24be8143ca56e1ee9f22571094c04abe4fa0e48c728"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_04.png",
+   "sha256": "6cc00ecc04fd9f30f1c4340654bdbc9d09c83371d5614bbbecb7e09d494b9808"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_05.png",
+   "sha256": "164d9a52c7cd2a5ad631454bff7fed0f68da343fc97bdedb5ba2c4373fdd8465"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_06.png",
+   "sha256": "b3fc94468b6bfb64b5c5944e20d40bcf2b688514c2cebd0e19fd5a3ef726acbd"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_07.png",
+   "sha256": "386cf0506337967640213623cc9234e5fe8a06f6f3c4dfc0cf1cc8456501dc95"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_00.png",
+   "sha256": "e3415b2158c113cd84bca545f9289436e724c4663b8fc7ee8ed638569c0428f7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_01.png",
+   "sha256": "4412ac079fd63f0ecfcaf620e4e061f3e5c995136f19d27e6ac7c8cfd2ce005a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_02.png",
+   "sha256": "30a7def314f951d63efb53a3bc6afbf4b03c5bda22d56a86741ab4bc9a86533c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_03.png",
+   "sha256": "e96674d1a0c82f2d9524f866db2a79c45cf91d082bf7f2c4883f20a6e5e17b09"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_04.png",
+   "sha256": "c6fb7e100af55da19337457d78e11fd1ff43757ac3e8d688f22c5785de25447b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_05.png",
+   "sha256": "f9e6f473df19c28ce08c49696cc048c48c77b1c3eef3dc358fad1c97d6d1ab2e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_06.png",
+   "sha256": "46ad6d9f6a7b5cf75fc0804f84b1267d482a5001fcb76e7a6c92efd1614e3f86"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_07.png",
+   "sha256": "603860a78d1dc869ac79d24c0a242cdcf1d256063e43c568a08d018e2beffb44"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_00.png",
+   "sha256": "2cb7292ea32e694fedaf01f4050a6219e2a9fb495fd9d4b123271c5caa0ea209"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_01.png",
+   "sha256": "719bba423f5fca72806080cbac8eea33209e8fcb4d1fbf07dc0d45fb14aed906"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_02.png",
+   "sha256": "fce0d606082ed52699adceb64d336af4736204a28f0bd51cf3eb4f7146b3f8c5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_03.png",
+   "sha256": "036ce45db7c1f3890a97fae62951c237f0560da4d81b773511ad8bac99988edb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_04.png",
+   "sha256": "85c98f4a11b792a680e45dbaa2195663a2f8bb547986c4f65b624d1558f6af44"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_05.png",
+   "sha256": "a2ca9ea3898dcdbbfd04862e9bde90127135591830fd688f33529376ed87f3d3"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_06.png",
+   "sha256": "d81837a70b728915c6771e5d434dade8bcfdf3e3b3950b629b868808cec158ac"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_07.png",
+   "sha256": "cf2c2a63822c38e7f55406e4d6f3324e6f97be32e2441029b7f2bb7a50d180c8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_00.png",
+   "sha256": "1df35a1e686cf0530b94b010df5f0d1ba614ca2ade84545b65263ba612a43aa2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_01.png",
+   "sha256": "373a7bd02d7c4d65930a3823bf6bffe294e23654c1a7a610ff17c77f10288b32"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_02.png",
+   "sha256": "a0aec6f888f93afb350fe2f6c78a31c1aabc41f62925b48c25bddc38224aaf73"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_03.png",
+   "sha256": "bce68ff0ac13c9632c183e6932389b0a45668569bb11e47c08c2ab7587412412"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_04.png",
+   "sha256": "642be78ef6698c4df031326d22c250a1d7f3105a9f3ffc2f70c562bad1a4d747"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_05.png",
+   "sha256": "1df35a1e686cf0530b94b010df5f0d1ba614ca2ade84545b65263ba612a43aa2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_06.png",
+   "sha256": "06af7bfa25132a84d53b1926cb51dfcb9224fa09cd51ec6858b495b53e227034"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_07.png",
+   "sha256": "02b52084f86a60ddcbf0b2d992599e6a64e01df599faeda15a96ade614db15da"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_08.png",
+   "sha256": "bcb8501a7c0e0796877e6ca8373827404885fcffd869d041613b5cbd465051d9"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_09.png",
+   "sha256": "f512d58904be52331df425346be966a52c46bd90a549e8d9d50ad53d5de1dbcf"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_00.png",
+   "sha256": "af62fcebf393489465861585f2aaa1123d2f6d5d399824c50f5d90c30ea90cbb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_01.png",
+   "sha256": "f3e75751a0f2e3101b9d8787ac2dad3b981673b22dbb1fec8378ac106ec74c6d"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_02.png",
+   "sha256": "4bd7e6cfa609902f366709ff829dc5087f5981b1f37f2979952700b7e2152a81"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_03.png",
+   "sha256": "abe9562ba6487a2c5b728efead730da813c18fec986eb23a20ed9b50017e72a1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_04.png",
+   "sha256": "3d7897ae5c94cb84bc03670e98773d6cd54abc7c5f6e5dd89f467adfc03b75a2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_05.png",
+   "sha256": "af62fcebf393489465861585f2aaa1123d2f6d5d399824c50f5d90c30ea90cbb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_06.png",
+   "sha256": "bbab014eb96201b987f07f92e02f854c792217ae79598bd1cd43bbb6138dcae0"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_07.png",
+   "sha256": "3ff771ed753143304e22fb4645176ac9c6126b9f337fdf4caa470664bbfc81e2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_08.png",
+   "sha256": "42f6e653611d154b16b52772b83233260b292d49312b313af87f1037ddabb59e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_09.png",
+   "sha256": "efe30b7c87cca405d536227c00edbb5c90dee9320fad89c51b9a33a587dc434c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_00.png",
+   "sha256": "ba99ce795a47d0496e1992892c93d06acc129894514a9c36dc24c41a5075ef5b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_01.png",
+   "sha256": "7c17c33f9578b0297e388bbdb82bec6e03e221e64ccb3f7f9fa4af58bcfe7903"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_02.png",
+   "sha256": "19222604a636274905f7d9964435cb19c9dbffdc8efce5e2d77f00e4992888a8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_03.png",
+   "sha256": "d413f39de559ea01c5c75364fd4a7f3288e3f8aa6dcf84d2d33ef3eb77b994de"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_04.png",
+   "sha256": "7d28cf7e3aa30f2af9b69c44fd4391ab585b05f745f50ef02cc846e1bd7e3ae4"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_05.png",
+   "sha256": "ba99ce795a47d0496e1992892c93d06acc129894514a9c36dc24c41a5075ef5b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_06.png",
+   "sha256": "aea23051e2197a37ab6eea6c627d45dfe737d1a7bd59284774b60c91d0a2770a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_07.png",
+   "sha256": "937e9e0eaa794789d856b3386bc603d40bf0c0ebe9e53f0c288bdaec9ac72341"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_08.png",
+   "sha256": "b780294b6d1f4ff7403056f5861942ec56eb30f5312ce4fbc6354891e5b21add"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_09.png",
+   "sha256": "ecfb723bcfea492705998de0f47f607aac58b309c895f4f00173ee7af907192e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_00.png",
+   "sha256": "8feb189680dbd43ba4d24f53e626321b83be088cf2d02bb494ab6226cb30a010"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_01.png",
+   "sha256": "846fc0366e72f9a7d6e65df567ad1cc4e1bcddfa1ca41cd1e834f31d6fc80ef8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_02.png",
+   "sha256": "cc21342bb45644ade31e82e6d8132951fb5b1f94e9d2d54dc4652410d34736f5"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_03.png",
+   "sha256": "bf1714363d1f004143c10e3a1693144468bc8bd20fa6277bc9da69f623ed117e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_04.png",
+   "sha256": "0c2a56ee88e60ef0428ee3579c003a90b065af13de5c9b3c18375e72641fb3d6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_05.png",
+   "sha256": "8feb189680dbd43ba4d24f53e626321b83be088cf2d02bb494ab6226cb30a010"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_06.png",
+   "sha256": "0ce4453cfac86bbc434de4858ee0ebea6812b7da4f465164219c80940120ca87"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_07.png",
+   "sha256": "fafd471d57aaa94b4f49e0476e105ff364fd5c327c4ed23f867e381ce6662913"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_08.png",
+   "sha256": "aeef190f18aa8e1cb133dba410cd97d4083f82d966992756e00e6dba7816b365"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_09.png",
+   "sha256": "420925a7aa449549564888f8d0da3b8149410343eda845e41bd60548f505b7a2"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_00.png",
+   "sha256": "15a03040c4ebd5b88d9043b54901e1d80cc6b559bfc4670ca6afad26a8384eb1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_01.png",
+   "sha256": "1b4325a71c5735135d4734af34be052c962895ebd3fef0b7f3598f5fa1b3b14c"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_02.png",
+   "sha256": "8c23330309c79da0b425cca64dbe83e1f7b270c86da5bcc8b16fe2ec1141a07a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_03.png",
+   "sha256": "afadab07ac5857bfb686aa3bd2d5282a66d8560b4221fa5bca0d6921f54fcfbe"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_04.png",
+   "sha256": "938fa2e28e6bafb1b05ecfd8159881d5a5e3d3861d77cb1039f5fd4e12c9e823"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_05.png",
+   "sha256": "15a03040c4ebd5b88d9043b54901e1d80cc6b559bfc4670ca6afad26a8384eb1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_06.png",
+   "sha256": "f9d191dd4dc4b2a3903fbd403da71fe38f28583f7b10b838ddd5e2dddc7ee363"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_07.png",
+   "sha256": "9c37804977bc5a7fa22d533240c942c1683a2a669897c1ffb6b01907ad256537"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_08.png",
+   "sha256": "f26071832f338815f1742f4b5170a949b0c63231d932266f3d26222a9e1e98e6"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_09.png",
+   "sha256": "bf2f902dfe3940d5a8d21338caab0d9bfd80944c5f7f0da04cf2a18a573a795a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_00.png",
+   "sha256": "12b3e23f04c6f31a6b932fd663d8b34baeb7fd2e301b4f2578f1f6d4de5da6a1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_01.png",
+   "sha256": "1595708e1778040543bcaea9e645728f03ddffc3fca486ac27d3787fa64436b1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_02.png",
+   "sha256": "a8b6952f121a29fee084d083400c59564af94bcbd3750f5351449a4400af46bb"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_03.png",
+   "sha256": "846c287f82c810bc844dd07d58d4b5a78a8094bccde5625cbea202879014aeaa"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_04.png",
+   "sha256": "fbf1c127042e62c78b717381e9333b853452be58608fdfab9ece50e4f9053072"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_05.png",
+   "sha256": "12b3e23f04c6f31a6b932fd663d8b34baeb7fd2e301b4f2578f1f6d4de5da6a1"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_06.png",
+   "sha256": "e137c0f2955a63b787468749883d2a3016612a3fc0499ffb63e8bcbfcdf939e8"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_07.png",
+   "sha256": "5a24e0fd3de4a86aca8f4cd66b2ac10d6e7129785949c4e61793a504c265e5d7"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_08.png",
+   "sha256": "659fdb1ee1a99bea6b1c12f49e68e7e44f6eaca49a0616ce027a6e405c0d2976"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_09.png",
+   "sha256": "4f574c3f7574167448f77376b91708762203d49aabef8ab3110d156b747c5c44"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_00.png",
+   "sha256": "2fd216959046b212969b0aa7f2f2951d430dea51ead1fdd07ef4a25ed2c6c36f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_01.png",
+   "sha256": "ea51dc5fddccc790914f72d0c735f7f956cb594050ab219dcf046bc33c6a7e78"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_02.png",
+   "sha256": "61c554458ca065a108c7b43113708350525d6487884354a88f22c30215df7608"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_03.png",
+   "sha256": "9b53a473a86c3078bae5c5279553029361706f61a402e37b62c6872f7c2e9427"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_04.png",
+   "sha256": "592dad8ac73f97b7f874965ecb744288b6a2bb2bb1314f75dda0129271c2402a"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_05.png",
+   "sha256": "2fd216959046b212969b0aa7f2f2951d430dea51ead1fdd07ef4a25ed2c6c36f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_06.png",
+   "sha256": "65f10703304d9b5cf7dc0fb0301ed5ca7867b37899b77431e0af643aff1bc85b"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_07.png",
+   "sha256": "230274529134903512801da9996beceb8ac532d0b8aaef02512a70d23c22700e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_08.png",
+   "sha256": "7624ca223e5976024870fe34f180d28be947c58fb153131db2edb6f6c557bb8f"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_09.png",
+   "sha256": "64d85670181a24f2ad005c99225da708717cf51713d7794c14845e28f4cc1c16"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_00.png",
+   "sha256": "4fe02bf11844ad996eaeab50897781144ab1c07f3e04e2ce3ee673b42e157f47"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_01.png",
+   "sha256": "1d3e1407458a43527ecab6b566d316d5f18da7cd3cfa47dce3fc89149c392a40"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_02.png",
+   "sha256": "52d6a0561c07937911d4b8c032b228a26db81c38d518421f5013de4df02a35ce"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_03.png",
+   "sha256": "733841fccd5c6d2842453c35393e4fdeca68fa06d0782a76df9dae0ad9c1326e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_04.png",
+   "sha256": "a0a7ceef1efab82c9910b324034c0f39027a830cb4712a62f026458899938646"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_05.png",
+   "sha256": "4fe02bf11844ad996eaeab50897781144ab1c07f3e04e2ce3ee673b42e157f47"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_06.png",
+   "sha256": "3199066a30dd2b19c24f4856fb6d999eeb5b02bea513e701fd6d46059aedab2e"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_07.png",
+   "sha256": "4f32fa7edef3ff838fee008f413a9cd58b34d7fd91798152f74ff86ee44aa388"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_08.png",
+   "sha256": "e2dc500f9c30c9d702535ebc3a5058bc6c6392ce9b6377468e5e681bbe5aa182"
+  },
+  {
+   "path": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_09.png",
+   "sha256": "4c2b4b354b04fa4301ebb85626d76a057ca9fab923b452d78ec6d8b8073ea921"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    244,
+    247
+   ],
+   "margin": [
+    134,
+    234,
+    268,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    247,
+    1,
+    237,
+    247
+   ],
+   "margin": [
+    137,
+    234,
+    275,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_08.png"
+   ],
+   "page": 0,
+   "region": [
+    486,
+    1,
+    220,
+    247
+   ],
+   "margin": [
+    146,
+    234,
+    292,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_07.png"
+   ],
+   "page": 0,
+   "region": [
+    708,
+    1,
+    215,
+    247
+   ],
+   "margin": [
+    149,
+    234,
+    297,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_07.png"
+   ],
+   "page": 0,
+   "region": [
+    925,
+    1,
+    209,
+    247
+   ],
+   "margin": [
+    151,
+    234,
+    303,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1136,
+    1,
+    198,
+    247
+   ],
+   "margin": [
+    157,
+    234,
+    314,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1336,
+    1,
+    188,
+    247
+   ],
+   "margin": [
+    162,
+    234,
+    324,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1526,
+    1,
+    188,
+    247
+   ],
+   "margin": [
+    162,
+    234,
+    324,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1716,
+    1,
+    178,
+    247
+   ],
+   "margin": [
+    167,
+    234,
+    334,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1896,
+    1,
+    142,
+    247
+   ],
+   "margin": [
+    185,
+    234,
+    370,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    250,
+    140,
+    247
+   ],
+   "margin": [
+    186,
+    234,
+    372,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    143,
+    250,
+    138,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    374,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    283,
+    250,
+    138,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    374,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_east.png"
+   ],
+   "page": 0,
+   "region": [
+    423,
+    250,
+    138,
+    247
+   ],
+   "margin": [
+    187,
+    234,
+    374,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    563,
+    250,
+    134,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    378,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    699,
+    250,
+    134,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    378,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_west.png"
+   ],
+   "page": 0,
+   "region": [
+    835,
+    250,
+    134,
+    247
+   ],
+   "margin": [
+    189,
+    234,
+    378,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_06.png"
+   ],
+   "page": 0,
+   "region": [
+    971,
+    250,
+    132,
+    247
+   ],
+   "margin": [
+    190,
+    234,
+    380,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1105,
+    250,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1237,
+    250,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1369,
+    250,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1501,
+    250,
+    130,
+    247
+   ],
+   "margin": [
+    191,
+    234,
+    382,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north.png"
+   ],
+   "page": 0,
+   "region": [
+    1633,
+    250,
+    128,
+    247
+   ],
+   "margin": [
+    192,
+    234,
+    384,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1763,
+    250,
+    124,
+    247
+   ],
+   "margin": [
+    194,
+    234,
+    388,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1889,
+    250,
+    123,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    389,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    499,
+    121,
+    247
+   ],
+   "margin": [
+    195,
+    234,
+    391,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    124,
+    499,
+    119,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    393,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    245,
+    499,
+    119,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    393,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    366,
+    499,
+    118,
+    247
+   ],
+   "margin": [
+    197,
+    234,
+    394,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_06.png"
+   ],
+   "page": 0,
+   "region": [
+    486,
+    499,
+    115,
+    247
+   ],
+   "margin": [
+    199,
+    234,
+    397,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    603,
+    499,
+    115,
+    247
+   ],
+   "margin": [
+    199,
+    234,
+    397,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    720,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    833,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_east.png"
+   ],
+   "page": 0,
+   "region": [
+    946,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1059,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1172,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1285,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1398,
+    499,
+    111,
+    247
+   ],
+   "margin": [
+    201,
+    234,
+    401,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1511,
+    499,
+    108,
+    247
+   ],
+   "margin": [
+    202,
+    234,
+    404,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1621,
+    499,
+    108,
+    247
+   ],
+   "margin": [
+    202,
+    234,
+    404,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1731,
+    499,
+    107,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    405,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_west.png"
+   ],
+   "page": 0,
+   "region": [
+    1840,
+    499,
+    107,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    405,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1949,
+    499,
+    95,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    417,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    748,
+    107,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    405,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    110,
+    748,
+    107,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    405,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_08.png"
+   ],
+   "page": 0,
+   "region": [
+    219,
+    748,
+    105,
+    247
+   ],
+   "margin": [
+    203,
+    234,
+    407,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south.png"
+   ],
+   "page": 0,
+   "region": [
+    326,
+    748,
+    103,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    409,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_east.png"
+   ],
+   "page": 0,
+   "region": [
+    431,
+    748,
+    103,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    409,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_west.png"
+   ],
+   "page": 0,
+   "region": [
+    536,
+    748,
+    103,
+    247
+   ],
+   "margin": [
+    205,
+    234,
+    409,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    641,
+    748,
+    99,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    413,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    742,
+    748,
+    99,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    413,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    843,
+    748,
+    99,
+    247
+   ],
+   "margin": [
+    207,
+    234,
+    413,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    944,
+    748,
+    95,
+    247
+   ],
+   "margin": [
+    209,
+    234,
+    417,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1041,
+    748,
+    92,
+    247
+   ],
+   "margin": [
+    210,
+    234,
+    420,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1135,
+    748,
+    74,
+    247
+   ],
+   "margin": [
+    219,
+    234,
+    438,
+    265
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1211,
+    748,
+    257,
+    244
+   ],
+   "margin": [
+    127,
+    237,
+    255,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1470,
+    748,
+    233,
+    244
+   ],
+   "margin": [
+    139,
+    237,
+    279,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1705,
+    748,
+    230,
+    244
+   ],
+   "margin": [
+    141,
+    237,
+    282,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1937,
+    748,
+    78,
+    244
+   ],
+   "margin": [
+    217,
+    237,
+    434,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1211,
+    994,
+    178,
+    244
+   ],
+   "margin": [
+    167,
+    237,
+    334,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1391,
+    994,
+    156,
+    244
+   ],
+   "margin": [
+    178,
+    237,
+    356,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1549,
+    994,
+    114,
+    244
+   ],
+   "margin": [
+    199,
+    237,
+    398,
+    268
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1665,
+    994,
+    174,
+    243
+   ],
+   "margin": [
+    169,
+    238,
+    338,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1841,
+    994,
+    147,
+    243
+   ],
+   "margin": [
+    183,
+    238,
+    365,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    997,
+    144,
+    243
+   ],
+   "margin": [
+    184,
+    238,
+    368,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    147,
+    997,
+    136,
+    243
+   ],
+   "margin": [
+    188,
+    238,
+    376,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_06.png"
+   ],
+   "page": 0,
+   "region": [
+    285,
+    997,
+    134,
+    243
+   ],
+   "margin": [
+    189,
+    238,
+    378,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    421,
+    997,
+    134,
+    243
+   ],
+   "margin": [
+    189,
+    238,
+    378,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    557,
+    997,
+    132,
+    243
+   ],
+   "margin": [
+    190,
+    238,
+    380,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    691,
+    997,
+    132,
+    243
+   ],
+   "margin": [
+    190,
+    238,
+    380,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_07.png"
+   ],
+   "page": 0,
+   "region": [
+    825,
+    997,
+    130,
+    243
+   ],
+   "margin": [
+    191,
+    238,
+    382,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    957,
+    997,
+    124,
+    243
+   ],
+   "margin": [
+    194,
+    238,
+    388,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1083,
+    997,
+    123,
+    243
+   ],
+   "margin": [
+    195,
+    238,
+    389,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1665,
+    1239,
+    119,
+    243
+   ],
+   "margin": [
+    197,
+    238,
+    393,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1786,
+    1239,
+    115,
+    243
+   ],
+   "margin": [
+    199,
+    238,
+    397,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1903,
+    1239,
+    115,
+    243
+   ],
+   "margin": [
+    199,
+    238,
+    397,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1208,
+    1240,
+    115,
+    243
+   ],
+   "margin": [
+    199,
+    238,
+    397,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1325,
+    1240,
+    113,
+    243
+   ],
+   "margin": [
+    199,
+    238,
+    399,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1440,
+    1240,
+    111,
+    243
+   ],
+   "margin": [
+    201,
+    238,
+    401,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1553,
+    1240,
+    109,
+    243
+   ],
+   "margin": [
+    201,
+    238,
+    403,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1242,
+    107,
+    243
+   ],
+   "margin": [
+    203,
+    238,
+    405,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    110,
+    1242,
+    101,
+    243
+   ],
+   "margin": [
+    205,
+    238,
+    411,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    213,
+    1242,
+    99,
+    243
+   ],
+   "margin": [
+    207,
+    238,
+    413,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    314,
+    1242,
+    92,
+    243
+   ],
+   "margin": [
+    210,
+    238,
+    420,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    408,
+    1242,
+    92,
+    243
+   ],
+   "margin": [
+    210,
+    238,
+    420,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    502,
+    1242,
+    92,
+    243
+   ],
+   "margin": [
+    210,
+    238,
+    420,
+    269
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    596,
+    1242,
+    254,
+    240
+   ],
+   "margin": [
+    129,
+    241,
+    258,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_07.png"
+   ],
+   "page": 0,
+   "region": [
+    852,
+    1242,
+    233,
+    240
+   ],
+   "margin": [
+    139,
+    241,
+    279,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1087,
+    1242,
+    113,
+    240
+   ],
+   "margin": [
+    199,
+    241,
+    399,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    596,
+    1484,
+    226,
+    240
+   ],
+   "margin": [
+    143,
+    241,
+    286,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    824,
+    1484,
+    173,
+    240
+   ],
+   "margin": [
+    169,
+    241,
+    339,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_08.png"
+   ],
+   "page": 0,
+   "region": [
+    999,
+    1484,
+    135,
+    240
+   ],
+   "margin": [
+    189,
+    241,
+    377,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1664,
+    1484,
+    124,
+    240
+   ],
+   "margin": [
+    194,
+    241,
+    388,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1790,
+    1484,
+    121,
+    240
+   ],
+   "margin": [
+    195,
+    241,
+    391,
+    272
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1913,
+    1484,
+    132,
+    239
+   ],
+   "margin": [
+    190,
+    242,
+    380,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1136,
+    1485,
+    144,
+    239
+   ],
+   "margin": [
+    184,
+    242,
+    368,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1282,
+    1485,
+    142,
+    239
+   ],
+   "margin": [
+    185,
+    242,
+    370,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1426,
+    1485,
+    136,
+    239
+   ],
+   "margin": [
+    188,
+    242,
+    376,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1564,
+    1485,
+    96,
+    239
+   ],
+   "margin": [
+    208,
+    242,
+    416,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1487,
+    132,
+    239
+   ],
+   "margin": [
+    190,
+    242,
+    380,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    135,
+    1487,
+    130,
+    239
+   ],
+   "margin": [
+    191,
+    242,
+    382,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    267,
+    1487,
+    130,
+    239
+   ],
+   "margin": [
+    191,
+    242,
+    382,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    399,
+    1487,
+    130,
+    239
+   ],
+   "margin": [
+    191,
+    242,
+    382,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1913,
+    1725,
+    126,
+    239
+   ],
+   "margin": [
+    193,
+    242,
+    386,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    531,
+    1726,
+    115,
+    239
+   ],
+   "margin": [
+    199,
+    242,
+    397,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    648,
+    1726,
+    111,
+    239
+   ],
+   "margin": [
+    201,
+    242,
+    401,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    761,
+    1726,
+    111,
+    239
+   ],
+   "margin": [
+    201,
+    242,
+    401,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    874,
+    1726,
+    111,
+    239
+   ],
+   "margin": [
+    201,
+    242,
+    401,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    987,
+    1726,
+    102,
+    239
+   ],
+   "margin": [
+    205,
+    242,
+    410,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1091,
+    1726,
+    92,
+    239
+   ],
+   "margin": [
+    210,
+    242,
+    420,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1185,
+    1726,
+    92,
+    239
+   ],
+   "margin": [
+    210,
+    242,
+    420,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1279,
+    1726,
+    92,
+    239
+   ],
+   "margin": [
+    210,
+    242,
+    420,
+    273
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1373,
+    1726,
+    179,
+    237
+   ],
+   "margin": [
+    167,
+    244,
+    333,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1554,
+    1726,
+    162,
+    237
+   ],
+   "margin": [
+    175,
+    244,
+    350,
+    275
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1718,
+    1726,
+    153,
+    236
+   ],
+   "margin": [
+    179,
+    245,
+    359,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_07.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1728,
+    140,
+    236
+   ],
+   "margin": [
+    186,
+    245,
+    372,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    143,
+    1728,
+    117,
+    236
+   ],
+   "margin": [
+    197,
+    245,
+    395,
+    276
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    262,
+    1728,
+    165,
+    235
+   ],
+   "margin": [
+    173,
+    246,
+    347,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    429,
+    1728,
+    88,
+    233
+   ],
+   "margin": [
+    212,
+    248,
+    424,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    262,
+    1965,
+    243,
+    76
+   ],
+   "margin": [
+    135,
+    405,
+    269,
+    436
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1373,
+    1965,
+    274,
+    82
+   ],
+   "margin": [
+    119,
+    399,
+    238,
+    430
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1649,
+    1965,
+    210,
+    72
+   ],
+   "margin": [
+    151,
+    409,
+    302,
+    440
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1966,
+    234,
+    69
+   ],
+   "margin": [
+    139,
+    412,
+    278,
+    443
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    507,
+    1967,
+    305,
+    68
+   ],
+   "margin": [
+    103,
+    413,
+    207,
+    444
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    814,
+    1967,
+    216,
+    68
+   ],
+   "margin": [
+    148,
+    413,
+    296,
+    444
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1032,
+    1967,
+    274,
+    67
+   ],
+   "margin": [
+    119,
+    414,
+    238,
+    445
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1,
+    161,
+    235
+   ],
+   "margin": [
+    175,
+    246,
+    351,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    164,
+    1,
+    134,
+    235
+   ],
+   "margin": [
+    189,
+    246,
+    378,
+    277
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_07.png"
+   ],
+   "page": 1,
+   "region": [
+    300,
+    1,
+    247,
+    233
+   ],
+   "margin": [
+    133,
+    248,
+    265,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    549,
+    1,
+    223,
+    233
+   ],
+   "margin": [
+    145,
+    248,
+    289,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_07.png"
+   ],
+   "page": 1,
+   "region": [
+    774,
+    1,
+    199,
+    233
+   ],
+   "margin": [
+    157,
+    248,
+    313,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    975,
+    1,
+    164,
+    233
+   ],
+   "margin": [
+    174,
+    248,
+    348,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1141,
+    1,
+    161,
+    233
+   ],
+   "margin": [
+    175,
+    248,
+    351,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1304,
+    1,
+    111,
+    233
+   ],
+   "margin": [
+    201,
+    248,
+    401,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1417,
+    1,
+    109,
+    233
+   ],
+   "margin": [
+    201,
+    248,
+    403,
+    279
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1528,
+    1,
+    163,
+    232
+   ],
+   "margin": [
+    175,
+    249,
+    349,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1693,
+    1,
+    132,
+    232
+   ],
+   "margin": [
+    190,
+    249,
+    380,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1827,
+    1,
+    121,
+    232
+   ],
+   "margin": [
+    195,
+    249,
+    391,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1950,
+    1,
+    96,
+    229
+   ],
+   "margin": [
+    208,
+    252,
+    416,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1528,
+    235,
+    104,
+    232
+   ],
+   "margin": [
+    204,
+    249,
+    408,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1634,
+    235,
+    104,
+    232
+   ],
+   "margin": [
+    204,
+    249,
+    408,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1740,
+    235,
+    102,
+    232
+   ],
+   "margin": [
+    205,
+    249,
+    410,
+    280
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1844,
+    235,
+    134,
+    231
+   ],
+   "margin": [
+    189,
+    250,
+    378,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    300,
+    236,
+    231,
+    231
+   ],
+   "margin": [
+    141,
+    250,
+    281,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    533,
+    236,
+    220,
+    231
+   ],
+   "margin": [
+    146,
+    250,
+    292,
+    281
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    755,
+    236,
+    147,
+    230
+   ],
+   "margin": [
+    183,
+    251,
+    365,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_02.png"
+   ],
+   "page": 1,
+   "region": [
+    904,
+    236,
+    124,
+    230
+   ],
+   "margin": [
+    194,
+    251,
+    388,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1030,
+    236,
+    119,
+    230
+   ],
+   "margin": [
+    197,
+    251,
+    393,
+    282
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1151,
+    236,
+    145,
+    229
+   ],
+   "margin": [
+    183,
+    252,
+    367,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_09.png"
+   ],
+   "page": 1,
+   "region": [
+    1298,
+    236,
+    135,
+    229
+   ],
+   "margin": [
+    189,
+    252,
+    377,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1435,
+    236,
+    82,
+    222
+   ],
+   "margin": [
+    215,
+    259,
+    430,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    238,
+    103,
+    229
+   ],
+   "margin": [
+    205,
+    252,
+    409,
+    283
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_09.png"
+   ],
+   "page": 1,
+   "region": [
+    106,
+    238,
+    101,
+    227
+   ],
+   "margin": [
+    205,
+    254,
+    411,
+    285
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_09.png"
+   ],
+   "page": 1,
+   "region": [
+    209,
+    238,
+    88,
+    219
+   ],
+   "margin": [
+    212,
+    262,
+    424,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    106,
+    467,
+    150,
+    226
+   ],
+   "margin": [
+    181,
+    255,
+    362,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1151,
+    467,
+    237,
+    226
+   ],
+   "margin": [
+    137,
+    255,
+    275,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1390,
+    467,
+    98,
+    226
+   ],
+   "margin": [
+    207,
+    255,
+    414,
+    286
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    755,
+    468,
+    145,
+    225
+   ],
+   "margin": [
+    183,
+    256,
+    367,
+    287
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    902,
+    468,
+    177,
+    224
+   ],
+   "margin": [
+    167,
+    257,
+    335,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1844,
+    468,
+    154,
+    224
+   ],
+   "margin": [
+    179,
+    257,
+    358,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    469,
+    92,
+    223
+   ],
+   "margin": [
+    210,
+    258,
+    420,
+    289
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    258,
+    469,
+    138,
+    224
+   ],
+   "margin": [
+    187,
+    257,
+    374,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_02.png"
+   ],
+   "page": 1,
+   "region": [
+    398,
+    469,
+    134,
+    224
+   ],
+   "margin": [
+    189,
+    257,
+    378,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_06.png"
+   ],
+   "page": 1,
+   "region": [
+    534,
+    469,
+    116,
+    224
+   ],
+   "margin": [
+    198,
+    257,
+    396,
+    288
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    652,
+    469,
+    100,
+    222
+   ],
+   "margin": [
+    206,
+    259,
+    412,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1490,
+    469,
+    229,
+    222
+   ],
+   "margin": [
+    141,
+    259,
+    283,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_08.png"
+   ],
+   "page": 1,
+   "region": [
+    1721,
+    469,
+    114,
+    222
+   ],
+   "margin": [
+    199,
+    259,
+    398,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_09.png"
+   ],
+   "page": 1,
+   "region": [
+    652,
+    693,
+    93,
+    222
+   ],
+   "margin": [
+    209,
+    259,
+    419,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1490,
+    693,
+    166,
+    222
+   ],
+   "margin": [
+    173,
+    259,
+    346,
+    290
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1658,
+    693,
+    162,
+    220
+   ],
+   "margin": [
+    175,
+    261,
+    350,
+    292
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_08.png"
+   ],
+   "page": 1,
+   "region": [
+    902,
+    694,
+    157,
+    219
+   ],
+   "margin": [
+    177,
+    262,
+    355,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1061,
+    694,
+    88,
+    219
+   ],
+   "margin": [
+    212,
+    262,
+    424,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_09.png"
+   ],
+   "page": 1,
+   "region": [
+    1822,
+    694,
+    157,
+    219
+   ],
+   "margin": [
+    177,
+    262,
+    355,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    695,
+    123,
+    219
+   ],
+   "margin": [
+    195,
+    262,
+    389,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    126,
+    695,
+    119,
+    219
+   ],
+   "margin": [
+    197,
+    262,
+    393,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_08.png"
+   ],
+   "page": 1,
+   "region": [
+    247,
+    695,
+    102,
+    219
+   ],
+   "margin": [
+    205,
+    262,
+    410,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    351,
+    695,
+    92,
+    219
+   ],
+   "margin": [
+    210,
+    262,
+    420,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_00.png"
+   ],
+   "page": 1,
+   "region": [
+    445,
+    695,
+    92,
+    219
+   ],
+   "margin": [
+    210,
+    262,
+    420,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    539,
+    695,
+    81,
+    219
+   ],
+   "margin": [
+    215,
+    262,
+    431,
+    293
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_07.png"
+   ],
+   "page": 1,
+   "region": [
+    747,
+    695,
+    95,
+    217
+   ],
+   "margin": [
+    209,
+    264,
+    417,
+    295
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1151,
+    695,
+    150,
+    216
+   ],
+   "margin": [
+    181,
+    265,
+    362,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_09.png"
+   ],
+   "page": 1,
+   "region": [
+    1303,
+    695,
+    135,
+    216
+   ],
+   "margin": [
+    189,
+    265,
+    377,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1151,
+    913,
+    118,
+    216
+   ],
+   "margin": [
+    197,
+    265,
+    394,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1271,
+    913,
+    118,
+    216
+   ],
+   "margin": [
+    197,
+    265,
+    394,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1391,
+    913,
+    94,
+    216
+   ],
+   "margin": [
+    209,
+    265,
+    418,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    747,
+    914,
+    101,
+    216
+   ],
+   "margin": [
+    205,
+    265,
+    411,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_00.png"
+   ],
+   "page": 1,
+   "region": [
+    850,
+    915,
+    90,
+    216
+   ],
+   "margin": [
+    211,
+    265,
+    422,
+    296
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    942,
+    915,
+    105,
+    215
+   ],
+   "margin": [
+    203,
+    266,
+    407,
+    297
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1049,
+    915,
+    93,
+    213
+   ],
+   "margin": [
+    209,
+    268,
+    419,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1658,
+    915,
+    118,
+    214
+   ],
+   "margin": [
+    197,
+    267,
+    394,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1778,
+    915,
+    111,
+    214
+   ],
+   "margin": [
+    201,
+    267,
+    401,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_01.png"
+   ],
+   "page": 1,
+   "region": [
+    1891,
+    915,
+    101,
+    214
+   ],
+   "margin": [
+    205,
+    267,
+    411,
+    298
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_00.png",
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_05.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    916,
+    89,
+    213
+   ],
+   "margin": [
+    211,
+    268,
+    423,
+    299
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    92,
+    916,
+    99,
+    212
+   ],
+   "margin": [
+    207,
+    269,
+    413,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_07.png"
+   ],
+   "page": 1,
+   "region": [
+    193,
+    916,
+    95,
+    212
+   ],
+   "margin": [
+    209,
+    269,
+    417,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    290,
+    916,
+    79,
+    212
+   ],
+   "margin": [
+    217,
+    269,
+    433,
+    300
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    371,
+    916,
+    91,
+    211
+   ],
+   "margin": [
+    211,
+    270,
+    421,
+    301
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_03.png"
+   ],
+   "page": 1,
+   "region": [
+    464,
+    916,
+    109,
+    210
+   ],
+   "margin": [
+    201,
+    271,
+    403,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_04.png"
+   ],
+   "page": 1,
+   "region": [
+    575,
+    917,
+    93,
+    210
+   ],
+   "margin": [
+    209,
+    271,
+    419,
+    302
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_08.png"
+   ],
+   "page": 1,
+   "region": [
+    1487,
+    917,
+    147,
+    209
+   ],
+   "margin": [
+    183,
+    272,
+    365,
+    303
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_01.png"
+   ],
+   "page": 1,
+   "region": [
+    464,
+    1128,
+    99,
+    208
+   ],
+   "margin": [
+    207,
+    273,
+    413,
+    304
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_00.png"
+   ],
+   "page": 1,
+   "region": [
+    1487,
+    1128,
+    83,
+    208
+   ],
+   "margin": [
+    215,
+    273,
+    429,
+    304
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_01.png"
+   ],
+   "page": 1,
+   "region": [
+    565,
+    1129,
+    153,
+    207
+   ],
+   "margin": [
+    179,
+    274,
+    359,
+    305
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_09.png"
+   ],
+   "page": 1,
+   "region": [
+    92,
+    1130,
+    106,
+    207
+   ],
+   "margin": [
+    203,
+    274,
+    406,
+    305
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_09.png"
+   ],
+   "page": 1,
+   "region": [
+    200,
+    1130,
+    161,
+    206
+   ],
+   "margin": [
+    175,
+    275,
+    351,
+    306
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    363,
+    1130,
+    99,
+    205
+   ],
+   "margin": [
+    207,
+    276,
+    413,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_02.png"
+   ],
+   "page": 1,
+   "region": [
+    1049,
+    1130,
+    99,
+    205
+   ],
+   "margin": [
+    207,
+    276,
+    413,
+    307
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1150,
+    1131,
+    208,
+    204
+   ],
+   "margin": [
+    152,
+    277,
+    304,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_08.png"
+   ],
+   "page": 1,
+   "region": [
+    1360,
+    1131,
+    123,
+    203
+   ],
+   "margin": [
+    195,
+    278,
+    389,
+    309
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1572,
+    1131,
+    173,
+    204
+   ],
+   "margin": [
+    169,
+    277,
+    339,
+    308
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1747,
+    1131,
+    224,
+    201
+   ],
+   "margin": [
+    144,
+    280,
+    288,
+    311
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    720,
+    1133,
+    187,
+    201
+   ],
+   "margin": [
+    163,
+    280,
+    325,
+    311
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    909,
+    1133,
+    130,
+    187
+   ],
+   "margin": [
+    191,
+    294,
+    382,
+    325
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    1747,
+    1334,
+    189,
+    193
+   ],
+   "margin": [
+    161,
+    288,
+    323,
+    319
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_03.png"
+   ],
+   "page": 1,
+   "region": [
+    720,
+    1336,
+    266,
+    189
+   ],
+   "margin": [
+    123,
+    292,
+    246,
+    323
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_03.png"
+   ],
+   "page": 1,
+   "region": [
+    988,
+    1337,
+    204,
+    185
+   ],
+   "margin": [
+    154,
+    296,
+    308,
+    327
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1194,
+    1337,
+    192,
+    181
+   ],
+   "margin": [
+    160,
+    300,
+    320,
+    331
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_06.png"
+   ],
+   "page": 1,
+   "region": [
+    200,
+    1338,
+    216,
+    169
+   ],
+   "margin": [
+    148,
+    312,
+    296,
+    343
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    418,
+    1338,
+    204,
+    165
+   ],
+   "margin": [
+    154,
+    316,
+    308,
+    347
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1388,
+    1338,
+    224,
+    161
+   ],
+   "margin": [
+    144,
+    320,
+    288,
+    351
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1339,
+    170,
+    133
+   ],
+   "margin": [
+    171,
+    348,
+    342,
+    379
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1388,
+    1501,
+    262,
+    159
+   ],
+   "margin": [
+    125,
+    322,
+    250,
+    353
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    418,
+    1505,
+    259,
+    95
+   ],
+   "margin": [
+    127,
+    386,
+    253,
+    417
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1509,
+    247,
+    95
+   ],
+   "margin": [
+    133,
+    386,
+    265,
+    417
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_05.png"
+   ],
+   "page": 1,
+   "region": [
+    988,
+    1524,
+    243,
+    95
+   ],
+   "margin": [
+    135,
+    386,
+    269,
+    417
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_04.png"
+   ],
+   "page": 1,
+   "region": [
+    679,
+    1527,
+    235,
+    95
+   ],
+   "margin": [
+    139,
+    386,
+    277,
+    417
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_04.png"
+   ],
+   "page": 1,
+   "region": [
+    1652,
+    1529,
+    286,
+    88
+   ],
+   "margin": [
+    113,
+    393,
+    226,
+    424
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_05.png"
+   ],
+   "page": 1,
+   "region": [
+    250,
+    1602,
+    251,
+    88
+   ],
+   "margin": [
+    131,
+    393,
+    261,
+    424
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1,
+    1606,
+    219,
+    54
+   ],
+   "margin": [
+    147,
+    427,
+    293,
+    458
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    1652,
+    1619,
+    301,
+    84
+   ],
+   "margin": [
+    105,
+    397,
+    211,
+    428
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_06.png"
+   ],
+   "page": 1,
+   "region": [
+    916,
+    1621,
+    266,
+    64
+   ],
+   "margin": [
+    123,
+    417,
+    246,
+    448
+   ],
+   "canvas": [
+    512,
+    512
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_east.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_south_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_west.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 1.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_north_east.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_east_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_east_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_south_west_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_west_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_west_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_07.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_move_north_east_07.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_east",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_east_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_south_east",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_east_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_south",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_south_west",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_south_west_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_west",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_west_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_north_west",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_west_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_north",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_09.png"
+    }
+   ]
+  },
+  {
+   "name": "skill_poison_volley_north_east",
+   "loop": false,
+   "speed": 9.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_07.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_08.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_skill_poison_volley_north_east_09.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_south_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_west_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_04.png"
+    }
+   ]
+  },
+  {
+   "name": "hit_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_hit_north_east_04.png"
+    }
+   ]
+  },
+  {
+   "name": "death_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_east_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_south_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_south_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_west",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_west_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_06.png"
+    }
+   ]
+  },
+  {
+   "name": "death_north_east",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_death_north_east_06.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/elites/full_frame/plague_prophet/plague_prophet_idle_east.png"
+}

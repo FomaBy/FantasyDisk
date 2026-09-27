@@ -60,6 +60,7 @@ func _initialize() -> void:
 		main.route._activate_route_node(row, branch, route_node)
 		await process_frame
 		await process_frame
+		await CombatStartSupport.await_finalized(main)  # FAN-3977: spawns wait for the roster
 
 		if not bool(main.combat_active):
 			_fail("SCRUM-1000(r%d): активация узла '%s' не запустила бой." % [combat_round, str(route_node.get("type"))])

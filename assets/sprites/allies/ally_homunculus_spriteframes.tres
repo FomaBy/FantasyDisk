@@ -1,158 +1,189 @@
 [gd_resource type="SpriteFrames" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_00.png" id="1_ah1"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_01.png" id="2_ah2"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_02.png" id="3_ah3"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_03.png" id="4_ah4"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_04.png" id="5_ah5"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_attack_05.png" id="6_ah6"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_00.png" id="7_ah7"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_01.png" id="8_ah8"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_02.png" id="9_ah9"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_03.png" id="10_ah10"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_04.png" id="11_ah11"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_death_05.png" id="12_ah12"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_00.png" id="13_ah13"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_01.png" id="14_ah14"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_02.png" id="15_ah15"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_03.png" id="16_ah16"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_04.png" id="17_ah17"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_05.png" id="18_ah18"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_06.png" id="19_ah19"]
-[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus/ally_homunculus_move_07.png" id="20_ah20"]
+[ext_resource type="Texture2D" path="res://assets/sprites/allies/homunculus_trim_0.png" id="page_0"]
+
+[sub_resource type="AtlasTexture" id="Trim_0"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 425, 187, 210)
+margin = Rect2(34, 23, 69, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_1"]
+atlas = ExtResource("page_0")
+region = Rect2(190, 425, 185, 210)
+margin = Rect2(35, 23, 71, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_2"]
+atlas = ExtResource("page_0")
+region = Rect2(589, 1, 190, 210)
+margin = Rect2(33, 23, 66, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_3"]
+atlas = ExtResource("page_0")
+region = Rect2(396, 1, 191, 210)
+margin = Rect2(32, 23, 65, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_4"]
+atlas = ExtResource("page_0")
+region = Rect2(203, 1, 191, 210)
+margin = Rect2(32, 23, 65, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_5"]
+atlas = ExtResource("page_0")
+region = Rect2(574, 213, 189, 210)
+margin = Rect2(33, 23, 67, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_6"]
+atlas = ExtResource("page_0")
+region = Rect2(377, 425, 183, 210)
+margin = Rect2(36, 23, 73, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_7"]
+atlas = ExtResource("page_0")
+region = Rect2(191, 637, 201, 201)
+margin = Rect2(27, 32, 55, 55)
+
+[sub_resource type="AtlasTexture" id="Trim_8"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 1, 200, 210)
+margin = Rect2(28, 23, 56, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_9"]
+atlas = ExtResource("page_0")
+region = Rect2(562, 425, 182, 210)
+margin = Rect2(37, 23, 74, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_10"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 637, 188, 209)
+margin = Rect2(34, 24, 68, 47)
+
+[sub_resource type="AtlasTexture" id="Trim_11"]
+atlas = ExtResource("page_0")
+region = Rect2(746, 425, 175, 210)
+margin = Rect2(40, 23, 81, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_12"]
+atlas = ExtResource("page_0")
+region = Rect2(781, 1, 190, 210)
+margin = Rect2(33, 23, 66, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_13"]
+atlas = ExtResource("page_0")
+region = Rect2(383, 213, 189, 210)
+margin = Rect2(33, 23, 67, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_14"]
+atlas = ExtResource("page_0")
+region = Rect2(192, 213, 189, 210)
+margin = Rect2(33, 23, 67, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_15"]
+atlas = ExtResource("page_0")
+region = Rect2(1, 213, 189, 210)
+margin = Rect2(33, 23, 67, 46)
+
+[sub_resource type="AtlasTexture" id="Trim_16"]
+atlas = ExtResource("page_0")
+region = Rect2(765, 213, 188, 210)
+margin = Rect2(34, 23, 68, 46)
 
 [resource]
-animations = [
-{
-"frames": [
-{
+animations = [{
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_ah1")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("2_ah2")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("3_ah3")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("4_ah4")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("5_ah5")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("6_ah6")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": false,
 "name": &"attack",
 "speed": 14.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_ah1")
-},
-{
+"texture": SubResource("Trim_0")
+}, {
 "duration": 1.0,
-"texture": ExtResource("2_ah2")
-},
-{
+"texture": SubResource("Trim_1")
+}, {
 "duration": 1.0,
-"texture": ExtResource("3_ah3")
-},
-{
+"texture": SubResource("Trim_2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("4_ah4")
-},
-{
+"texture": SubResource("Trim_3")
+}, {
 "duration": 1.0,
-"texture": ExtResource("5_ah5")
-},
-{
+"texture": SubResource("Trim_4")
+}, {
 "duration": 1.0,
-"texture": ExtResource("6_ah6")
-}
-],
+"texture": SubResource("Trim_5")
+}],
 "loop": false,
 "name": &"attack_primary",
 "speed": 14.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("7_ah7")
-},
-{
+"texture": SubResource("Trim_6")
+}, {
 "duration": 1.0,
-"texture": ExtResource("8_ah8")
-},
-{
+"texture": SubResource("Trim_7")
+}, {
 "duration": 1.0,
-"texture": ExtResource("9_ah9")
-},
-{
+"texture": SubResource("Trim_8")
+}, {
 "duration": 1.0,
-"texture": ExtResource("10_ah10")
-},
-{
+"texture": SubResource("Trim_9")
+}, {
 "duration": 1.0,
-"texture": ExtResource("11_ah11")
-},
-{
+"texture": SubResource("Trim_10")
+}, {
 "duration": 1.0,
-"texture": ExtResource("12_ah12")
-}
-],
+"texture": SubResource("Trim_11")
+}],
 "loop": false,
 "name": &"death",
 "speed": 10.0
-},
-{
-"frames": [
-{
+}, {
+"frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_ah13")
-},
-{
+"texture": SubResource("Trim_12")
+}, {
 "duration": 1.0,
-"texture": ExtResource("14_ah14")
-},
-{
+"texture": SubResource("Trim_13")
+}, {
 "duration": 1.0,
-"texture": ExtResource("15_ah15")
-},
-{
+"texture": SubResource("Trim_14")
+}, {
 "duration": 1.0,
-"texture": ExtResource("16_ah16")
-},
-{
+"texture": SubResource("Trim_13")
+}, {
 "duration": 1.0,
-"texture": ExtResource("17_ah17")
-},
-{
+"texture": SubResource("Trim_12")
+}, {
 "duration": 1.0,
-"texture": ExtResource("18_ah18")
-},
-{
+"texture": SubResource("Trim_15")
+}, {
 "duration": 1.0,
-"texture": ExtResource("19_ah19")
-},
-{
+"texture": SubResource("Trim_16")
+}, {
 "duration": 1.0,
-"texture": ExtResource("20_ah20")
-}
-],
+"texture": SubResource("Trim_15")
+}],
 "loop": true,
 "name": &"move",
 "speed": 12.0
-}
-]
+}]

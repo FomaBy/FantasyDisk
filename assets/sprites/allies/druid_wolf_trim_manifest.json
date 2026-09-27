@@ -1,0 +1,680 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "druid_wolf",
+ "tres": "res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 26,
+ "unique_frames": 20,
+ "source_rgba_bytes": 5242880,
+ "page_rgba_bytes": 4042752,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/druid_wolf_trim_0.png",
+   "width": 1024,
+   "height": 987,
+   "sha256": "0296ebcb9b08f8299e7dcb727ab4fc12e902db23f7bf232b8dbdae4f5d2d633c"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png",
+   "sha256": "5160ca52c8a84767e1500e8bb1c72b71b987d01c2341de127105de30a0a40567"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png",
+   "sha256": "1be2db1757129765f81bca010d5b1e6bad855c633af607a6316d42ed2e044768"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png",
+   "sha256": "1ddd7acc6f9e56f83f16ea8ea830bc5bc34e01f217eed6bfb7416988025fb0cc"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png",
+   "sha256": "f3f648a64ba1c3ec7b6a5ba51ed3161ec909fc70553a6850e0b30c56bb7572f7"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png",
+   "sha256": "db2cd2dd2d962c6c33504a1073add888a796793e06fb51b02f8f5cd10f1d4f31"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png",
+   "sha256": "744ae81e6eb3bce113b68598b25976f06587fe5a25184c81724d98e01c499a2b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png",
+   "sha256": "72c9e3bac400049bf9664070435f977c31f7b79e57d9ab0cc9c472426732d750"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png",
+   "sha256": "94a43a5b55fad9e38bc5d48b58e0cfebcc9c16c5a2b357c7c03e3138f01314bf"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png",
+   "sha256": "cee3752fd524dc79913f251f77b0950ca7473d1ef7be5535ac9799bb7e37ed19"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png",
+   "sha256": "39341745f78d3e16eb5d8c146cc26042066f103c390e1c4b4416e4009997dbb1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png",
+   "sha256": "5420a2beb95e211f6eae3db1e552357064636ee3a6555a5eb7d343caf4d86e7b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png",
+   "sha256": "4d00644303fa44e4f90e0e76f60f53148111e533b410eacba9c5ce1234357a58"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png",
+   "sha256": "be911803ccd1862268b78906dcf8b769f8a0aa36d7b1cc87753e871fdda3ec40"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png",
+   "sha256": "88600171b1eb6af668c88f817c9dad8c88414c4881e5a814201d0b4ad9b2fb35"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png",
+   "sha256": "cb627fd0196d7c8d279652a0e1207cd3224beeeceaa22c2b19c3843fa30b55e9"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png",
+   "sha256": "f7f2ec00790b7495fa2acfaf65e0fb5d7f3702a4608698c420837d1670bce94a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png",
+   "sha256": "f40f6a9603b57be730dfcb0a3f7d46db141aa42a4bc0707c7c1ae318af02e2ac"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png",
+   "sha256": "75f66f7e2003255159cea00ba5e5674f8b57674dd9c35d722c4e2d324b4fe700"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png",
+   "sha256": "00cfeb12e5fc456acefb820f6a2ffe1520a84693891b69c3d1261c54092fd939"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png",
+   "sha256": "1014e83c8f377ca8284125cec2236e578d487c3e3630c2d70051d1333af842d1"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    209,
+    210
+   ],
+   "margin": [
+    23,
+    23,
+    47,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png"
+   ],
+   "page": 0,
+   "region": [
+    212,
+    1,
+    192,
+    210
+   ],
+   "margin": [
+    32,
+    23,
+    64,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png"
+   ],
+   "page": 0,
+   "region": [
+    406,
+    1,
+    139,
+    210
+   ],
+   "margin": [
+    58,
+    23,
+    117,
+    46
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png"
+   ],
+   "page": 0,
+   "region": [
+    547,
+    1,
+    210,
+    207
+   ],
+   "margin": [
+    23,
+    26,
+    46,
+    49
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png"
+   ],
+   "page": 0,
+   "region": [
+    759,
+    1,
+    210,
+    207
+   ],
+   "margin": [
+    23,
+    26,
+    46,
+    49
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png"
+   ],
+   "page": 0,
+   "region": [
+    547,
+    210,
+    210,
+    202
+   ],
+   "margin": [
+    23,
+    31,
+    46,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png"
+   ],
+   "page": 0,
+   "region": [
+    759,
+    210,
+    210,
+    202
+   ],
+   "margin": [
+    23,
+    31,
+    46,
+    54
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    213,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png"
+   ],
+   "page": 0,
+   "region": [
+    213,
+    213,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    410,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png"
+   ],
+   "page": 0,
+   "region": [
+    213,
+    410,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png"
+   ],
+   "page": 0,
+   "region": [
+    425,
+    414,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png"
+   ],
+   "page": 0,
+   "region": [
+    637,
+    414,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    607,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png"
+   ],
+   "page": 0,
+   "region": [
+    213,
+    607,
+    210,
+    195
+   ],
+   "margin": [
+    23,
+    38,
+    46,
+    61
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png"
+   ],
+   "page": 0,
+   "region": [
+    425,
+    611,
+    210,
+    190
+   ],
+   "margin": [
+    23,
+    43,
+    46,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png"
+   ],
+   "page": 0,
+   "region": [
+    637,
+    611,
+    210,
+    190
+   ],
+   "margin": [
+    23,
+    43,
+    46,
+    66
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png"
+   ],
+   "page": 0,
+   "region": [
+    425,
+    803,
+    210,
+    183
+   ],
+   "margin": [
+    23,
+    50,
+    46,
+    73
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png"
+   ],
+   "page": 0,
+   "region": [
+    637,
+    803,
+    210,
+    183
+   ],
+   "margin": [
+    23,
+    50,
+    46,
+    73
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    804,
+    210,
+    153
+   ],
+   "margin": [
+    23,
+    80,
+    46,
+    103
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 14.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 14.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_05.png"
+    }
+   ]
+  },
+  {
+   "name": "death",
+   "loop": false,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_death_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_05.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_06.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_move_07.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/druid_wolf/ally_druid_wolf_attack_00.png"
+}

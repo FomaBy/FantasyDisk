@@ -1,0 +1,3239 @@
+{
+ "version": 1,
+ "packer": "tools/build_full_frame_trim_atlases.py",
+ "pack": "druid_ghost_panther",
+ "tres": "res://assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres",
+ "pad": 1,
+ "gutter": 2,
+ "frames_total": 153,
+ "unique_frames": 88,
+ "source_rgba_bytes": 27262976,
+ "page_rgba_bytes": 9871360,
+ "pages": [
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther_trim_0.png",
+   "width": 2048,
+   "height": 1205,
+   "sha256": "c864092ea267dd2c4a09d93a9cd0e90b911881357f92ce5425a1630859df6458"
+  }
+ ],
+ "sources": [
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_00.png",
+   "sha256": "fe6bee11a70df07472309ceb74a6a214a80faa512ea82acd9bad55d8d7ed3acc"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_01.png",
+   "sha256": "3d1a94c698f7986fc13cfbb2650508f110d16409468629c283e2486d03555ef0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_02.png",
+   "sha256": "cb2c6e6e617980809879decbbd571459d8c34b3cd8933106586e345334b002c4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_03.png",
+   "sha256": "b4bf611ae48053b503e2ff4807cd1528eeafa702e85c203341af570b2c387041"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_04.png",
+   "sha256": "9576546385d7ec70b37057a7bc06b870c8b443711a182cdafdb3fb7fe2283cd4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_05.png",
+   "sha256": "2f649156d4a4835d9aa1a4120b3aef6200afce32974d158935c50f9a6da340ba"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_00.png",
+   "sha256": "21a1f2e699db58bf24d096466b498b770c6e0b57eeeba25f2ffd1d5743fbb631"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_01.png",
+   "sha256": "fc775fcb4f77ceb1879c65892fd33b3af6b255adf29397661f3e9c01c94d8be4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_02.png",
+   "sha256": "c3167a5836636177d5bf15dd1b95ba52c52fa26bfe32f2a35709d0f4ffd81b75"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_03.png",
+   "sha256": "fffde164975f51aeefd79e8af05584b3b8192a86d3838495d5f9c99ee4a4ecb0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_04.png",
+   "sha256": "0cb52c79d33b100c1d579eb07b04b9205b2814ac54e6ce03fa3189968d5e42e5"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_05.png",
+   "sha256": "455dd86155b548840e73b3e90e479147bac85959c8894e0fed9a442b3c963a16"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_00.png",
+   "sha256": "d21785f1704a10578b5ba8bf80623651ab02d7788d44749b989a2cd0055e42a3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_01.png",
+   "sha256": "09b1a9d0851ad420a75d6d25db641d836e9d7d69b8afaa516e5e930a2010aa2e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_02.png",
+   "sha256": "87580268d006fe86396446c7afc7342435e0946eed181818c928bfad90a37fed"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_03.png",
+   "sha256": "90452e67b6f1ef18cb45dc63068c2220a1158c93d03dcc5d7b3c7eb994d7d47f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_04.png",
+   "sha256": "70310961face50ccc6b35bc53c978db1741a25a81ceb0b88fdc29083d8ac0bb8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_05.png",
+   "sha256": "b1dd72963c8ebee6925a89ac5b6d1c210e31c9c424404451d4d8a4265098e303"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_00.png",
+   "sha256": "1d183fc0fce0a3888219bda022f1a2a68e21b8a0f3d867a0a4e854dcf752e9d0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_01.png",
+   "sha256": "d4b814e01c33f138910eada807b0f83ca462358807a3d7d6573512128d9ca966"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_02.png",
+   "sha256": "9f40e8ec3edd70ba060fd01ac411b782c637d684c4be7bcb54801e5e8f25e961"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_03.png",
+   "sha256": "2c7a25928c334d619a2f59aeba53974db98b790fa1671a611cc6b63e838a9a7d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_04.png",
+   "sha256": "19a9ab5e4dae4638ffc335c0c760ffa2024fdecff0b306e853caf1a0f9007595"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_05.png",
+   "sha256": "89dd1e1e3c57a650800273c6cc43a5b882f4bb6686ffffe9540fade47ad0da9b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_00.png",
+   "sha256": "0f92112f1bf54446babd0e6457e9560436f4391def6078e17786957099a71698"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_01.png",
+   "sha256": "84208fcf19134a0aaf92d01ab43f12a291fb78207178438fd4e9ad0b4697401d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_02.png",
+   "sha256": "1e8b08ddc11cbddd5b3031b8a156590125fbd13cd5fc67f35a74420938d4b979"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_03.png",
+   "sha256": "4954fa772b760de168661351f8c8f6f4da5df17da7f25d988d71827996718823"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_04.png",
+   "sha256": "b8353fcb667a73ee1eed3d48f82f41d2e955cbbb9d1437df96104f31bb109d3d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_05.png",
+   "sha256": "e13250123a1f8cfa8d2da92555bff323a36353ca8cbe2d5390144ed3b59343fe"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_00.png",
+   "sha256": "5a19f7cd7ac9fc209c1367222efb2429e5e1f59d97e8f9e4a340ad919e437bc1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_01.png",
+   "sha256": "2bb2a3a1092c7771e44a98af8fc36ec75072a2108c8d03d7d909ea38a4b9e13a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_02.png",
+   "sha256": "df53754a56b649b81487e47d39e0b80fc2f7033366f00bf0d957d6d90d59f762"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_03.png",
+   "sha256": "2c3ac58f3ce20eca9f9ad1ecfde0ba049c74c519cc163c9a90eb2610899ed746"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_04.png",
+   "sha256": "8e4a834289f449d618a7b68f2222095d3875582a70629d8797cc919cba17d529"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_05.png",
+   "sha256": "c14018e3a74a355d2f91ad79476992e90d0769d76f74b86914c81fabe8be4303"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_00.png",
+   "sha256": "74832f3598fe4f82def8c5b8f1b228095fa7084c77fab12302c9e17941d1412f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_01.png",
+   "sha256": "a310da2cd19d07aa546e469d833028989b4d0e9325a5f131105b282be1dc3dd3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_02.png",
+   "sha256": "99312b6b7520e50187284cf382a0c3b37fc056b9855ce22c646e3002cf655015"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_03.png",
+   "sha256": "3e6b25ccf71a47ef33b63dfcfed0e95ad7ef46bc1681b284eef4f6c126bde268"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_04.png",
+   "sha256": "f1cceb2d7b78fdc28fdd7794743ae11352a654fe3326bcb32d51e37cf39a0809"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_05.png",
+   "sha256": "c5bcff35c2ea6c40dfbd4942decfee6d74ee9d60c3357b07ed19b45015d526b4"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_00.png",
+   "sha256": "8b6b0ab93083ce8069e54817b8f5e778af9b637ab74034725b0af53f0e0dce94"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_01.png",
+   "sha256": "98897d7177ef5b15afd315127a4f1e82beff80f42c3cd738c29ac65b2dd1b41a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_02.png",
+   "sha256": "f46c97dd61bfaebb0be80c5885b40200e26c43696a19c4b716eff35e5ed72c4b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_03.png",
+   "sha256": "2da9b7b7c37b552c83a5ccf8c2cb0af3e061ec86c9f71d77aa90a399ce379784"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_04.png",
+   "sha256": "e842ed34b5072d20867892b09f975202bcd7cc2996b02fefce52edbe92084bb5"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_05.png",
+   "sha256": "9d34d88c54cb7e6b56d95d5ce3f27308a78195936105eb3bddc174fa0f92bb6d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_east_00.png",
+   "sha256": "fe6bee11a70df07472309ceb74a6a214a80faa512ea82acd9bad55d8d7ed3acc"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_00.png",
+   "sha256": "21a1f2e699db58bf24d096466b498b770c6e0b57eeeba25f2ffd1d5743fbb631"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_east_00.png",
+   "sha256": "d21785f1704a10578b5ba8bf80623651ab02d7788d44749b989a2cd0055e42a3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_west_00.png",
+   "sha256": "1d183fc0fce0a3888219bda022f1a2a68e21b8a0f3d867a0a4e854dcf752e9d0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_00.png",
+   "sha256": "0f92112f1bf54446babd0e6457e9560436f4391def6078e17786957099a71698"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_east_00.png",
+   "sha256": "5a19f7cd7ac9fc209c1367222efb2429e5e1f59d97e8f9e4a340ad919e437bc1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_west_00.png",
+   "sha256": "74832f3598fe4f82def8c5b8f1b228095fa7084c77fab12302c9e17941d1412f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_west_00.png",
+   "sha256": "8b6b0ab93083ce8069e54817b8f5e778af9b637ab74034725b0af53f0e0dce94"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_00.png",
+   "sha256": "fe6bee11a70df07472309ceb74a6a214a80faa512ea82acd9bad55d8d7ed3acc"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_01.png",
+   "sha256": "971a2001419c8219f44d119fe362c124a6eef6e274c5a988b233456f7cba7eef"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_02.png",
+   "sha256": "c5fa47c2477dcf6fcf6a9460283a413f6ed8ec372116e032b908e0db0480bd5b"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_03.png",
+   "sha256": "8a58c0874fc29729a61d91e4bd9537d52f94b9848dfa423757d53050870328a8"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_04.png",
+   "sha256": "4ebc16e9c6c44f8421de9e2ce6476b8872c0ae7f8c89c168bb9f2035c0c6bbe6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_05.png",
+   "sha256": "837b8a4706a57ef61fee4f688ad682e484dbaa3e03d952191d061f14ec2d358c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_00.png",
+   "sha256": "21a1f2e699db58bf24d096466b498b770c6e0b57eeeba25f2ffd1d5743fbb631"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_01.png",
+   "sha256": "e57da74e92528fc33ebece0489ccc28becbce2500ff8e50a02ccf20b9b2d1a97"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_02.png",
+   "sha256": "8dc2e469cbb4a6eda28606511c58c9ca50724d02c33eae31f47253eea451dc3c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_03.png",
+   "sha256": "c4d3d1818c2be26f3085a5e201174e91107bb8502a453fbbe3aa1b3a9d7ee167"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_04.png",
+   "sha256": "08522a4bdcbb735a55e2ec9fe58968ef046e9223e5b98c005726ebc1684b9e22"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_05.png",
+   "sha256": "710b8fefacd5272b23e6e3ac7b7f8bd01fbceae35125253aada2d973bf32d0f9"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_00.png",
+   "sha256": "d21785f1704a10578b5ba8bf80623651ab02d7788d44749b989a2cd0055e42a3"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_01.png",
+   "sha256": "a152b21348c9b2fe7e4f2f5ee6c5acf060bf4159e399dcad21b70fe0e58e7c2c"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_02.png",
+   "sha256": "902497df21a43d939df81872a7356b70623059dea47ca4a73181f0359e328756"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_03.png",
+   "sha256": "8eb1f5d6f7411e3e3550f9796ca01dbd1a2b582d6095376b76988245bd161c7a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_04.png",
+   "sha256": "37da9881fda415211a9af3e3e4a571961381e478145db4aea03cbac7d94b4adf"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_05.png",
+   "sha256": "221a6a37dbb96a47959012a170109e9eed3b59f13988120e585bfe5be53818ce"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_00.png",
+   "sha256": "1d183fc0fce0a3888219bda022f1a2a68e21b8a0f3d867a0a4e854dcf752e9d0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_01.png",
+   "sha256": "37e91e465f176c46ba6b7801dff8439e72e7465f41b5f9fd957db99b5fdddc36"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_02.png",
+   "sha256": "5d6f20732404db22a194fdcdc967d37072486bd53489439befd6717b2b17bdb1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_03.png",
+   "sha256": "6c2ef6d9f615744fa2540449f475a22030fa293e7bb0be94a691aff8c10acdf6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_04.png",
+   "sha256": "e6ca5d53c4959dc4b5bc41f87ef2dc964b4c30888b10fd0d71ddf22d5c7638b0"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_05.png",
+   "sha256": "7d79edee41b1d70e26e27ee25809461ede12d0e8d2ee738d2466fbb4f338da3f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_00.png",
+   "sha256": "0f92112f1bf54446babd0e6457e9560436f4391def6078e17786957099a71698"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_01.png",
+   "sha256": "af23ab690d3687561b337ded55ed1ce0c65966645094731cff4bd8fb3017edc1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_02.png",
+   "sha256": "f7c250c17037b8ddda5dda6dc259b976c2c972a6a9d3cd70f457c235a311d42d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_03.png",
+   "sha256": "7538a6019ee2ea3fde955ad4356f1fbd9e1da21e79a3cc08d6247912a64dadea"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_04.png",
+   "sha256": "363b0d5ce5728d520a6e1d6543cff904d0d0812f502731c482d4e65fc1fb4693"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_05.png",
+   "sha256": "387ce815d231431474621a0b847b5fd06ac185ac3ddb24c6e0f4e028917fd650"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_00.png",
+   "sha256": "5a19f7cd7ac9fc209c1367222efb2429e5e1f59d97e8f9e4a340ad919e437bc1"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_01.png",
+   "sha256": "d51577edbe703f65cbf750f7d0cd0b72c6f964b1712c4d7cc6d0e10f0287d9eb"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_02.png",
+   "sha256": "53542d16e1d40325c02afd4659145a2dcab15eeb86ed09cae1a24a7f96fafb6e"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_03.png",
+   "sha256": "ef49cb062a95999a94c5cac43f771cdc676af4f267f20861ec4866bb562e6d21"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_04.png",
+   "sha256": "be1b1b78ac74243a0d1f98665439e372331d5fe591728767a34fcbea2250bd73"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_05.png",
+   "sha256": "540d5fc72cd41f2e227a7c333848fa008a80e5c80fa2d5e4b40454dfbf2db3ef"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_00.png",
+   "sha256": "74832f3598fe4f82def8c5b8f1b228095fa7084c77fab12302c9e17941d1412f"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_01.png",
+   "sha256": "eb19b7cd0df0933d8d285e39ba1cb591212753fa1cc00d0ddd806db354f671ef"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_02.png",
+   "sha256": "b02b95f5249a34a228c0d2bd31850df1e163bf48224bdd042c6d367667c5cd11"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_03.png",
+   "sha256": "a60e512d41608ad04c5f658bd3f8d044f834844bc795451e54f7b8a4f82ee16a"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_04.png",
+   "sha256": "714e869de85693e2f47797d4f1dabdc652a8d99e92322e4cd1c353ddfa3b60e9"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_05.png",
+   "sha256": "fa8a604be3b85628355cd56373302ab2ec0e42a340c51985a311a37dc434137d"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_00.png",
+   "sha256": "8b6b0ab93083ce8069e54817b8f5e778af9b637ab74034725b0af53f0e0dce94"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_01.png",
+   "sha256": "f5ce0030532baf69e1599594a4a4ff92298d6997adf3527ae9faf23e5a866ed6"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_02.png",
+   "sha256": "16483d4e8814c8542fdb3f76d70eea0347b0a9978132dfd81953467f09a248bb"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_03.png",
+   "sha256": "b602d61b2045b7a8d8f0134f24e3cc5adccdd7b299698da673845fdf35513c54"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_04.png",
+   "sha256": "3c646433488f1585c7517480541c00f95964a27195326617f9c9b4f5b0f360ac"
+  },
+  {
+   "path": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_05.png",
+   "sha256": "03cef40d81c9e493ea9e2b9dedb22dd2dc44b5f4c5cc0deea6aa137111943d45"
+  }
+ ],
+ "entries": [
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1,
+    198,
+    176
+   ],
+   "margin": [
+    29,
+    57,
+    58,
+    80
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    201,
+    1,
+    184,
+    176
+   ],
+   "margin": [
+    36,
+    57,
+    72,
+    80
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    387,
+    1,
+    226,
+    170
+   ],
+   "margin": [
+    15,
+    63,
+    30,
+    86
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    615,
+    1,
+    218,
+    164
+   ],
+   "margin": [
+    19,
+    69,
+    38,
+    92
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    835,
+    1,
+    202,
+    152
+   ],
+   "margin": [
+    27,
+    81,
+    54,
+    104
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1039,
+    1,
+    192,
+    150
+   ],
+   "margin": [
+    32,
+    83,
+    64,
+    106
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1233,
+    1,
+    192,
+    146
+   ],
+   "margin": [
+    32,
+    87,
+    64,
+    110
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1427,
+    1,
+    176,
+    146
+   ],
+   "margin": [
+    40,
+    87,
+    80,
+    110
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1605,
+    1,
+    162,
+    145
+   ],
+   "margin": [
+    47,
+    88,
+    94,
+    111
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1769,
+    1,
+    197,
+    144
+   ],
+   "margin": [
+    29,
+    89,
+    59,
+    112
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1769,
+    147,
+    190,
+    142
+   ],
+   "margin": [
+    33,
+    91,
+    66,
+    114
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1233,
+    149,
+    182,
+    142
+   ],
+   "margin": [
+    37,
+    91,
+    74,
+    114
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1417,
+    149,
+    173,
+    142
+   ],
+   "margin": [
+    41,
+    91,
+    83,
+    114
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1592,
+    149,
+    170,
+    142
+   ],
+   "margin": [
+    43,
+    91,
+    86,
+    114
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1039,
+    153,
+    170,
+    142
+   ],
+   "margin": [
+    43,
+    91,
+    86,
+    114
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    835,
+    155,
+    180,
+    141
+   ],
+   "margin": [
+    38,
+    92,
+    76,
+    115
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    615,
+    167,
+    201,
+    140
+   ],
+   "margin": [
+    27,
+    93,
+    55,
+    116
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    387,
+    173,
+    194,
+    140
+   ],
+   "margin": [
+    31,
+    93,
+    62,
+    116
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    179,
+    168,
+    140
+   ],
+   "margin": [
+    44,
+    93,
+    88,
+    116
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    171,
+    179,
+    176,
+    139
+   ],
+   "margin": [
+    40,
+    94,
+    80,
+    117
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1764,
+    291,
+    207,
+    137
+   ],
+   "margin": [
+    24,
+    96,
+    49,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1211,
+    293,
+    181,
+    137
+   ],
+   "margin": [
+    37,
+    96,
+    75,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1394,
+    293,
+    178,
+    137
+   ],
+   "margin": [
+    39,
+    96,
+    78,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1574,
+    293,
+    178,
+    137
+   ],
+   "margin": [
+    39,
+    96,
+    78,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1017,
+    297,
+    176,
+    137
+   ],
+   "margin": [
+    40,
+    96,
+    80,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    818,
+    298,
+    172,
+    137
+   ],
+   "margin": [
+    42,
+    96,
+    84,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    583,
+    309,
+    161,
+    137
+   ],
+   "margin": [
+    47,
+    96,
+    95,
+    119
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    349,
+    315,
+    207,
+    136
+   ],
+   "margin": [
+    24,
+    97,
+    49,
+    120
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    187,
+    320,
+    152,
+    131
+   ],
+   "margin": [
+    52,
+    102,
+    104,
+    125
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    321,
+    184,
+    136
+   ],
+   "margin": [
+    36,
+    97,
+    72,
+    120
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1754,
+    430,
+    178,
+    136
+   ],
+   "margin": [
+    39,
+    97,
+    78,
+    120
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1195,
+    432,
+    177,
+    136
+   ],
+   "margin": [
+    39,
+    97,
+    79,
+    120
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    1374,
+    432,
+    176,
+    136
+   ],
+   "margin": [
+    40,
+    97,
+    80,
+    120
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1552,
+    432,
+    196,
+    135
+   ],
+   "margin": [
+    30,
+    98,
+    60,
+    121
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    992,
+    436,
+    184,
+    135
+   ],
+   "margin": [
+    36,
+    98,
+    72,
+    121
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_west_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_00.png"
+   ],
+   "page": 0,
+   "region": [
+    746,
+    437,
+    176,
+    135
+   ],
+   "margin": [
+    40,
+    98,
+    80,
+    121
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    187,
+    453,
+    207,
+    133
+   ],
+   "margin": [
+    24,
+    100,
+    49,
+    123
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    396,
+    453,
+    199,
+    133
+   ],
+   "margin": [
+    28,
+    100,
+    57,
+    123
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    459,
+    184,
+    133
+   ],
+   "margin": [
+    36,
+    100,
+    72,
+    123
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1750,
+    568,
+    184,
+    133
+   ],
+   "margin": [
+    36,
+    100,
+    72,
+    123
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1552,
+    569,
+    182,
+    133
+   ],
+   "margin": [
+    37,
+    100,
+    74,
+    123
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1178,
+    570,
+    180,
+    133
+   ],
+   "margin": [
+    38,
+    100,
+    76,
+    123
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1360,
+    570,
+    180,
+    132
+   ],
+   "margin": [
+    38,
+    101,
+    76,
+    124
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    924,
+    573,
+    174,
+    132
+   ],
+   "margin": [
+    41,
+    101,
+    82,
+    124
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_east_00.png",
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_00.png"
+   ],
+   "page": 0,
+   "region": [
+    597,
+    574,
+    172,
+    132
+   ],
+   "margin": [
+    42,
+    101,
+    84,
+    124
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    187,
+    588,
+    182,
+    131
+   ],
+   "margin": [
+    37,
+    102,
+    74,
+    125
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    371,
+    588,
+    180,
+    131
+   ],
+   "margin": [
+    38,
+    102,
+    76,
+    125
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    594,
+    178,
+    131
+   ],
+   "margin": [
+    39,
+    102,
+    78,
+    125
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1736,
+    703,
+    170,
+    131
+   ],
+   "margin": [
+    43,
+    102,
+    86,
+    125
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1360,
+    704,
+    164,
+    131
+   ],
+   "margin": [
+    46,
+    102,
+    92,
+    125
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1526,
+    704,
+    186,
+    129
+   ],
+   "margin": [
+    35,
+    104,
+    70,
+    127
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1100,
+    705,
+    176,
+    129
+   ],
+   "margin": [
+    40,
+    104,
+    80,
+    127
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    771,
+    707,
+    176,
+    129
+   ],
+   "margin": [
+    40,
+    104,
+    80,
+    127
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    553,
+    708,
+    156,
+    129
+   ],
+   "margin": [
+    50,
+    104,
+    100,
+    127
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    181,
+    721,
+    185,
+    128
+   ],
+   "margin": [
+    35,
+    105,
+    71,
+    128
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_02.png"
+   ],
+   "page": 0,
+   "region": [
+    368,
+    721,
+    180,
+    128
+   ],
+   "margin": [
+    38,
+    105,
+    76,
+    128
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    727,
+    176,
+    128
+   ],
+   "margin": [
+    40,
+    105,
+    80,
+    128
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1526,
+    835,
+    184,
+    128
+   ],
+   "margin": [
+    36,
+    105,
+    72,
+    128
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    949,
+    836,
+    176,
+    128
+   ],
+   "margin": [
+    40,
+    105,
+    80,
+    128
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    1127,
+    836,
+    198,
+    127
+   ],
+   "margin": [
+    29,
+    106,
+    58,
+    129
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1712,
+    836,
+    184,
+    127
+   ],
+   "margin": [
+    36,
+    106,
+    72,
+    129
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1327,
+    837,
+    176,
+    127
+   ],
+   "margin": [
+    40,
+    106,
+    80,
+    129
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    711,
+    838,
+    174,
+    127
+   ],
+   "margin": [
+    41,
+    106,
+    82,
+    129
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    550,
+    839,
+    156,
+    124
+   ],
+   "margin": [
+    50,
+    109,
+    100,
+    132
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_01.png"
+   ],
+   "page": 0,
+   "region": [
+    179,
+    851,
+    172,
+    127
+   ],
+   "margin": [
+    42,
+    106,
+    84,
+    129
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_02.png"
+   ],
+   "page": 0,
+   "region": [
+    353,
+    851,
+    184,
+    125
+   ],
+   "margin": [
+    36,
+    108,
+    72,
+    131
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_02.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    857,
+    158,
+    123
+   ],
+   "margin": [
+    49,
+    110,
+    98,
+    133
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1127,
+    965,
+    189,
+    124
+   ],
+   "margin": [
+    33,
+    109,
+    67,
+    132
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1505,
+    965,
+    177,
+    124
+   ],
+   "margin": [
+    39,
+    109,
+    79,
+    132
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1684,
+    965,
+    192,
+    123
+   ],
+   "margin": [
+    32,
+    110,
+    64,
+    133
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1878,
+    965,
+    164,
+    119
+   ],
+   "margin": [
+    46,
+    114,
+    92,
+    137
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    887,
+    966,
+    184,
+    121
+   ],
+   "margin": [
+    36,
+    112,
+    72,
+    135
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1318,
+    966,
+    182,
+    120
+   ],
+   "margin": [
+    37,
+    113,
+    74,
+    136
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_03.png"
+   ],
+   "page": 0,
+   "region": [
+    539,
+    967,
+    178,
+    120
+   ],
+   "margin": [
+    39,
+    113,
+    78,
+    136
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    719,
+    967,
+    160,
+    117
+   ],
+   "margin": [
+    48,
+    116,
+    96,
+    139
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_02.png"
+   ],
+   "page": 0,
+   "region": [
+    353,
+    978,
+    178,
+    119
+   ],
+   "margin": [
+    39,
+    114,
+    78,
+    137
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    161,
+    980,
+    188,
+    119
+   ],
+   "margin": [
+    34,
+    114,
+    68,
+    137
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    982,
+    158,
+    116
+   ],
+   "margin": [
+    49,
+    117,
+    98,
+    140
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1878,
+    1086,
+    168,
+    111
+   ],
+   "margin": [
+    44,
+    122,
+    88,
+    145
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1318,
+    1088,
+    178,
+    116
+   ],
+   "margin": [
+    39,
+    117,
+    78,
+    140
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_04.png"
+   ],
+   "page": 0,
+   "region": [
+    533,
+    1089,
+    184,
+    109
+   ],
+   "margin": [
+    36,
+    124,
+    72,
+    147
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_04.png"
+   ],
+   "page": 0,
+   "region": [
+    719,
+    1089,
+    172,
+    107
+   ],
+   "margin": [
+    42,
+    126,
+    84,
+    149
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_03.png"
+   ],
+   "page": 0,
+   "region": [
+    893,
+    1089,
+    205,
+    103
+   ],
+   "margin": [
+    25,
+    130,
+    51,
+    153
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1684,
+    1090,
+    154,
+    99
+   ],
+   "margin": [
+    51,
+    134,
+    102,
+    157
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_05.png"
+   ],
+   "page": 0,
+   "region": [
+    1100,
+    1091,
+    209,
+    95
+   ],
+   "margin": [
+    23,
+    138,
+    47,
+    161
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_03.png"
+   ],
+   "page": 0,
+   "region": [
+    1498,
+    1091,
+    166,
+    91
+   ],
+   "margin": [
+    45,
+    142,
+    90,
+    165
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_05.png"
+   ],
+   "page": 0,
+   "region": [
+    351,
+    1099,
+    172,
+    89
+   ],
+   "margin": [
+    42,
+    144,
+    84,
+    167
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  },
+  {
+   "sources": [
+    "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_04.png"
+   ],
+   "page": 0,
+   "region": [
+    1,
+    1101,
+    164,
+    89
+   ],
+   "margin": [
+    46,
+    144,
+    92,
+    167
+   ],
+   "canvas": [
+    256,
+    256
+   ]
+  }
+ ],
+ "animations": [
+  {
+   "name": "idle",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_00.png"
+    }
+   ]
+  },
+  {
+   "name": "move",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "walk",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_west_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_00.png"
+    }
+   ]
+  },
+  {
+   "name": "idle_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_north_east_00.png"
+    }
+   ]
+  },
+  {
+   "name": "move_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_south_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_west",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_north_east",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_south_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_west",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_north_east",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_north_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_left",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "move_right",
+   "loop": true,
+   "speed": 10.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_move_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_left",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_west_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_right",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_east_05.png"
+    }
+   ]
+  },
+  {
+   "name": "attack_primary",
+   "loop": false,
+   "speed": 12.0,
+   "frames": [
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_00.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_01.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_02.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_03.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_04.png"
+    },
+    {
+     "duration": 1.0,
+     "source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_attack_south_05.png"
+    }
+   ]
+  }
+ ],
+ "resource_props": {},
+ "import_params_source": "res://assets/sprites/allies/druid_ghost_panther/runtime/druid_ghost_panther_idle_south_00.png"
+}
