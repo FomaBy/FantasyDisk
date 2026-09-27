@@ -39,6 +39,7 @@ const Accessibility := preload("res://scripts/settings/ultimate_accessibility_se
 ## Loaded on demand: the focused gate reads this script's constants headlessly
 ## and must not drag the whole game scene in to do it.
 const MAIN_SCENE_PATH := "res://scenes/Main.tscn"
+const CombatStartSupport := preload("res://tests/support/combat_start_support.gd")
 
 const CLASS_ID := "doctor"
 const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/doctor/manifest.json"
@@ -189,6 +190,9 @@ func _capture_combination(viewport: Dictionary, weapon_id: String, mode: Diction
 	main.set("selected_character_id", CLASS_ID)
 	main.set("selected_weapon_id", weapon_id)
 	main.call("_start_combat", false, "battle")
+	## FAN-3977: shipped spawns wait until the encounter's full-frame roster is
+	## resident, so the hazards below play their packs, not the static fallback.
+	await CombatStartSupport.await_finalized(main)
 	for _frame in SETTLE_FRAMES:
 		await process_frame
 	## `Main` restores its own window geometry while it boots, so the capture
