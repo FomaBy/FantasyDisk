@@ -1,0 +1,23 @@
+# 4b main merge push
+at_utc=2026-09-27T23:42:32Z
+remote main immediately before push = 67b24d499082c7f15943253c5e857cd4b2e6892d
+$ git push origin dafb99ea70af8ace6c2b866cd1fb57a52bda0a87efs/heads/main
+error: src refspec dafb99ea70af8ace6c2b866cd1fb57a52bda0a87efs/heads/main does not match any
+error: failed to push some refs to 'https://github.com/FomaBy/FantasyDisk.git'
+exit=1
+
+## readback
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/heads/dev
+67b24d499082c7f15943253c5e857cd4b2e6892d	refs/heads/main
+
+## retry (previous attempt failed client-side: zsh expanded $M:refs as a modifier; no remote write happened, readback above shows main unchanged)
+at_utc=2026-09-27T23:42:43Z
+remote main immediately before push = 67b24d499082c7f15943253c5e857cd4b2e6892d
+$ git push origin dafb99ea70af8ace6c2b866cd1fb57a52bda0a87:refs/heads/main
+To https://github.com/FomaBy/FantasyDisk.git
+   67b24d499..dafb99ea7  dafb99ea70af8ace6c2b866cd1fb57a52bda0a87 -> main
+exit=0
+
+## readback
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/heads/dev
+dafb99ea70af8ace6c2b866cd1fb57a52bda0a87	refs/heads/main

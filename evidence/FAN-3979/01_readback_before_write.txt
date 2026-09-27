@@ -1,0 +1,33 @@
+# Fresh readback before any remote write (AC2)
+read_at_utc=2026-09-27T23:42:02Z
+
+## git ls-remote FomaBy/FantasyDisk
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/heads/agent/claude-dev-opus-b/b375e6f0a58a
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/heads/dev
+67b24d499082c7f15943253c5e857cd4b2e6892d	refs/heads/main
+d7e516cde235adf347d511e922ab19667bf82f65	refs/tags/v0.3.0
+fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb	refs/tags/v0.3.0^{}
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/v0.3.1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/v0.3.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}
+
+## git ls-remote FomaBy/FantasyDisk-Releases (all refs)
+162ac9f886a7c4deaa05d6c70c23779f406c7080	HEAD
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/heads/main
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/tags/v0.2.4
+
+## gh release list FomaBy/FantasyDisk
+FantasyDisk v0.2.3	Latest	v0.2.3	2026-07-16T09:41:35Z
+
+## gh release list FomaBy/FantasyDisk-Releases
+FantasyDisk v0.2.4	Latest	v0.2.4	2026-07-16T13:23:48Z
+
+## gh api repos/FomaBy/FantasyDisk/rulesets (id name target enforcement)
+21860507	dev-protection	branch	active
+
+## branch protection main / dev (classic API)
+{"message":"Branch not protected","documentation_url":"https://docs.github.com/rest/branches/branch-protection#get-branch-protection","status":"404"}gh: Branch not protected (HTTP 404)
+
+{"message":"Branch not protected","documentation_url":"https://docs.github.com/rest/branches/branch-protection#get-branch-protection","status":"404"}gh: Branch not protected (HTTP 404)
+

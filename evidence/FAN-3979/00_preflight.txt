@@ -1,0 +1,60 @@
+# Preflight on exact S (refined AC3, identical-tree path)
+run_at_utc=2026-09-27T23:44:24Z
+host=macOS 26.5.1 arm64; git 2.50.1; python 3.9.6
+
+## Clean task checkout
+worktree=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3979-0dfdfe0b722c/workdir/FantasyDisk
+branch=agent/claude-dev-fable/0dfdfe0b722c
+HEAD=165f14aa0ce5bcbd884e4dfde137283a8010e863
+HEAD tree=9dd96fa9cec99be330b638cdd04dfd1a42d4840d
+git status --porcelain (excluding evidence/FAN-3979): 0 entries
+
+## Tree-equality proof
+S = 165f14aa0ce5bcbd884e4dfde137283a8010e863
+S^{tree} = 9dd96fa9cec99be330b638cdd04dfd1a42d4840d
+FAN-3978 metadata candidate_sha = 165f14aa0ce5bcbd884e4dfde137283a8010e863, candidate_tree_sha = 9dd96fa9cec99be330b638cdd04dfd1a42d4840d, qa_candidate_sha = 165f14aa0ce5bcbd884e4dfde137283a8010e863
+FAN-3978 qa_verdict = PASSED, reviewer d7bc8435-0d2d-44f8-b77a-bd9723a3880e, run 01a0e4f9-e6c9-78d7-bf87-ed23f4965689, comment 01a0e524-3d49-790a-b91e-0cf33c9e6db4 (quality_gate --profile changed certifying: 16 static / 560 Godot / 802 Python on tree 9dd96fa9…; six core smokes inside that run)
+FAN-3978 integration_evidence: fast-forward a8a3b913 -> 165f14aa on dev by fde18c1d (run 01a0e530-e41e-7bd5-adb3-4dfd2f55fa64)
+FAN-3978 source ref refs/heads/agent/claude-dev-opus-b/b375e6f0a58a = 165f14aa0ce5bcbd884e4dfde137283a8010e863
+origin/dev at preflight = 165f14aa0ce5bcbd884e4dfde137283a8010e863
+=> S tree equals the FAN-3978 PASSED candidate tree; no additional commit on dev. Certifying gate/smokes/QA reused, not rerun.
+
+## Commits entering main (v0.3.2^{}..S)
+165f14aa0ce5bcbd884e4dfde137283a8010e863 Recapture Assassin, Doctor and Druid certification on the 0.3.1 source
+289699b9509311364f9c4d93004c1560bbd79437 Restore FantasyDisk 0.3.1 release source with all fixes
+a8a3b913676d163b2d3bbe251212946a35399a6c fix(FAN-3977): trim-atlas full-frame packs, encounter roster residency, combat load guard
+merge-base(main 67b24d49, S) = 36340c473772781edafffb61ff1d8cc7caa42024 (= v0.3.2^{})
+v0.3.1 old target 448a0cc1 is an ancestor of S: yes
+
+## tools/release_version_mapping.py --version 0.3.1
+$ python3 tools/release_version_mapping.py --version 0.3.1
+0.3.1	1.3.10	0.3.1	0.3.1.0
+exit=0
+project.godot: 18:config/version="0.3.1"
+29:application/short_version="0.3.1"
+30:application/version="1.3.10"
+100:application/file_version="0.3.1.0"
+101:application/product_version="0.3.1"
+
+## Notes / poster / date consistency
+5:## [Unreleased] — ветка dev
+7:## [0.3.1] — 2026-09-28
+42:## [0.3.0] — 2026-08-13
+10:		"version": "0.3.1",
+11:		"date": "2026-09-28",
+docs/design/references/release_0_3_1/ui_plan.json:13:    "release_date": "28.09.2026",
+docs/design/references/release_0_3_1/layout.json:18:    "release_date": "28.09.2026",
+poster sha256: 6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7  assets/marketing/fantasydisk_031_announcement.png
+poster blob: 51803688c0e2aa81a9255f94ca5214c0418d6242
+The publishable 1350 × 1350 RGB poster is
+`assets/marketing/fantasydisk_031_announcement.png` (SHA-256
+`6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7`,
+Git blob `51803688c0e2aa81a9255f94ca5214c0418d6242`), dated 28.09.2026.
+=> CHANGELOG [0.3.1] 2026-09-28, in-game notes 0.3.1 2026-09-28, poster 28.09.2026 (README sha matches file)
+
+## FAN-3973 static export-exclusion check
+$ python3 -m pytest tests/test_export_presets_exclusions.py -q
+.....                                                                    [100%]
+5 passed in 0.03s
+exclude_filter contains evidence/*, skills/*, before/after_berserk_648p.png in both presets: 2 of 2
+evidence/.gdignore present: yes; skills/.gdignore present: yes
