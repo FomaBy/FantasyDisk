@@ -1,0 +1,16 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe ashen_colossus: objects before 285 / after 4, 1344 captures, max diff before/after 0, vs source 2
+probe bloodthorn_lion: objects before 301 / after 4, 1344 captures, max diff before/after 0, vs source 2
+probe bone_archon: objects before 276 / after 4, 1344 captures, max diff before/after 0, vs source 2
+probe brood_mother: objects before 296 / after 4, 1344 captures, max diff before/after 0, vs source 2
+
+| pack | frames | unique | pages | objects before (AtlasTexture) | objects after (trim table) | captures | max diff before/after | max diff vs source |
+|---|---|---|---|---|---|---|---|---|
+| ashen_colossus | 448 | 284 | 3 | 285 | 4 | 1344 | 0 | 2 |
+| bloodthorn_lion | 448 | 300 | 5 | 301 | 4 | 1344 | 0 | 2 |
+| bone_archon | 448 | 275 | 3 | 276 | 4 | 1344 | 0 | 2 |
+| brood_mother | 448 | 295 | 4 | 296 | 4 | 1344 | 0 | 2 |
+REPRESENTATION PROBE OK (4 packs)

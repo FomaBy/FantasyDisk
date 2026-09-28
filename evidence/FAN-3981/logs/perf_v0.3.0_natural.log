@@ -1,0 +1,26 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.0_natural: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase p1_main_menu: 20 s, avg 118 FPS, 1% low 113, worst second 113, >50 ms 0, >100 ms 0, longest 17.4 ms, peak texture 173 MiB, objects peak 2202 min 2200 (first s 2202, last s 2202), resident packs -1 -> -1, alive first s 0 last s 0
+phase route_map_first_show: 8 s, avg 119 FPS, 1% low 116, worst second 116, >50 ms 0, >100 ms 0, longest 16.9 ms, peak texture 191 MiB, objects peak 2633 min 2565 (first s 2565, last s 2565), resident packs -1 -> -1, alive first s 0 last s 0
+phase p2_48_enemies: 60 s, avg 116 FPS, 1% low 86, worst second 86, >50 ms 9, >100 ms 2, longest 294.1 ms, peak texture 566 MiB, objects peak 4273 min 2472 (first s 3123, last s 3874), resident packs -1 -> -1, alive first s 44 last s 46
+phase route_map_after_p2: 3 s, avg 116 FPS, 1% low 110, worst second 110, >50 ms 1, >100 ms 0, longest 93.6 ms, peak texture 249 MiB, objects peak 2771 min 2277 (first s 2281, last s 2380), resident packs -1 -> -1, alive first s 0 last s 0
+phase elite_night_stalker: 20 s, avg 116 FPS, 1% low 92, worst second 92, >50 ms 1, >100 ms 1, longest 248.3 ms, peak texture 564 MiB, objects peak 4399 min 2604 (first s 3337, last s 4193), resident packs -1 -> -1, alive first s 45 last s 39
+phase route_map_after_elite: 3 s, avg 118 FPS, 1% low 117, worst second 117, >50 ms 0, >100 ms 0, longest 29.0 ms, peak texture 323 MiB, objects peak 3076 min 2303 (first s 2307, last s 2378), resident packs -1 -> -1, alive first s 0 last s 0
+phase p3_boss_act1_rift_warden: 60 s, avg 119 FPS, 1% low 114, worst second 114, >50 ms 1, >100 ms 0, longest 52.7 ms, peak texture 491 MiB, objects peak 3354 min 2605 (first s 2719, last s 3168), resident packs -1 -> -1, alive first s 3 last s 12
+phase route_map_after_boss1: 3 s, avg 119 FPS, 1% low 117, worst second 117, >50 ms 0, >100 ms 0, longest 17.6 ms, peak texture 306 MiB, objects peak 2658 min 2391 (first s 2395, last s 2391), resident packs -1 -> -1, alive first s 0 last s 0
+phase boss_act2_disk_devourer: 20 s, avg 118 FPS, 1% low 115, worst second 115, >50 ms 0, >100 ms 0, longest 44.3 ms, peak texture 583 MiB, objects peak 3524 min 2613 (first s 2760, last s 3187), resident packs -1 -> -1, alive first s 5 last s 23
+
+| build | phase | s | avg FPS | 1% low | worst second | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB | objects peak | objects min | objects first s | objects last s | resident packs start -> end |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| v0.3.0_natural | p1_main_menu | 20 | 118 | 113 | 113 | 0 | 0 | 17.4 | 173 | 2202 | 2200 | 2202 | 2202 | -1 -> -1 |
+| v0.3.0_natural | route_map_first_show | 8 | 119 | 116 | 116 | 0 | 0 | 16.9 | 191 | 2633 | 2565 | 2565 | 2565 | -1 -> -1 |
+| v0.3.0_natural | p2_48_enemies | 60 | 116 | 86 | 86 | 9 | 2 | 294.1 | 566 | 4273 | 2472 | 3123 | 3874 | -1 -> -1 |
+| v0.3.0_natural | route_map_after_p2 | 3 | 116 | 110 | 110 | 1 | 0 | 93.6 | 249 | 2771 | 2277 | 2281 | 2380 | -1 -> -1 |
+| v0.3.0_natural | elite_night_stalker | 20 | 116 | 92 | 92 | 1 | 1 | 248.3 | 564 | 4399 | 2604 | 3337 | 4193 | -1 -> -1 |
+| v0.3.0_natural | route_map_after_elite | 3 | 118 | 117 | 117 | 0 | 0 | 29.0 | 323 | 3076 | 2303 | 2307 | 2378 | -1 -> -1 |
+| v0.3.0_natural | p3_boss_act1_rift_warden | 60 | 119 | 114 | 114 | 1 | 0 | 52.7 | 491 | 3354 | 2605 | 2719 | 3168 | -1 -> -1 |
+| v0.3.0_natural | route_map_after_boss1 | 3 | 119 | 117 | 117 | 0 | 0 | 17.6 | 306 | 2658 | 2391 | 2395 | 2391 | -1 -> -1 |
+| v0.3.0_natural | boss_act2_disk_devourer | 20 | 118 | 115 | 115 | 0 | 0 | 44.3 | 583 | 3524 | 2613 | 2760 | 3187 | -1 -> -1 |
+v0.3.0_natural: menu texture 28 MiB -> after run 312 MiB; act-1 peak 566 MiB; objects menu 1594 -> after run 2386 (resident packs -1); act-1 peak objects 4399; P2 click frame 440.0 ms, roster wait 0 ms; elite roster wait 157 ms

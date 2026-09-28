@@ -1,0 +1,26 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe druid_wolf: objects before 21 / after 4, 78 captures, max diff before/after 0, vs source 1
+probe druid_ghost_bear: objects before 97 / after 4, 459 captures, max diff before/after 0, vs source 2
+probe druid_ghost_lion: objects before 89 / after 4, 459 captures, max diff before/after 0, vs source 3
+probe druid_ghost_panther: objects before 89 / after 4, 459 captures, max diff before/after 0, vs source 2
+probe druid_ghost_stag: objects before 89 / after 4, 459 captures, max diff before/after 0, vs source 2
+probe druid_ghost_wolf: objects before 89 / after 4, 459 captures, max diff before/after 0, vs source 3
+probe pack_spirit: objects before 18 / after 4, 78 captures, max diff before/after 0, vs source 1
+probe homunculus: objects before 18 / after 4, 78 captures, max diff before/after 0, vs source 1
+probe leadership_echo: objects before 14 / after 4, 78 captures, max diff before/after 0, vs source 1
+
+| pack | frames | unique | pages | objects before (AtlasTexture) | objects after (trim table) | captures | max diff before/after | max diff vs source |
+|---|---|---|---|---|---|---|---|---|
+| druid_wolf | 26 | 20 | 1 | 21 | 4 | 78 | 0 | 1 |
+| druid_ghost_bear | 153 | 96 | 1 | 97 | 4 | 459 | 0 | 2 |
+| druid_ghost_lion | 153 | 88 | 1 | 89 | 4 | 459 | 0 | 3 |
+| druid_ghost_panther | 153 | 88 | 1 | 89 | 4 | 459 | 0 | 2 |
+| druid_ghost_stag | 153 | 88 | 1 | 89 | 4 | 459 | 0 | 2 |
+| druid_ghost_wolf | 153 | 88 | 1 | 89 | 4 | 459 | 0 | 3 |
+| pack_spirit | 26 | 17 | 1 | 18 | 4 | 78 | 0 | 1 |
+| homunculus | 26 | 17 | 1 | 18 | 4 | 78 | 0 | 1 |
+| leadership_echo | 26 | 13 | 1 | 14 | 4 | 78 | 0 | 1 |
+REPRESENTATION PROBE OK (9 packs)

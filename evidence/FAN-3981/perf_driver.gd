@@ -5,7 +5,12 @@ extends SceneTree
 # per phase and the number of resident full-frame packs. Run WINDOWED so
 # the real GL Compatibility renderer is measured:
 #
-#   Godot --path <project> --script <abs path to this file> -- label=<name> out=<abs dir> [class=berserk weapon=sword]
+#   Godot --path <project> --script <abs path to this file> -- label=<name> out=<abs dir> [class=berserk weapon=sword] [boss=natural]
+#
+# boss=natural (FAN-3981): boss phases spawn nothing beyond what the combat
+# director and the boss spawn themselves — the checklist's plain P3 "boss
+# fight"; without it the boss phases also keep 48 enemies alive like P2.
+# Every phase also records the alive enemy+boss count per second.
 #
 # The same script runs against v0.3.0, v0.3.1 (165f14aa) and the candidate
 # (it only uses APIs all three share; the resident-pack counter is read
@@ -43,6 +48,10 @@ var _act1_peak_objects := 0
 var _mini_kinds: Array = []
 var _next_mini := 0
 var _registry: Script = null
+# boss=natural: boss phases spawn only what the combat director and the boss
+# spawn themselves (the checklist's plain P3 "boss fight"); default keeps the
+# FAN-3977 driver's 48-enemy top-up during boss phases as well.
+var _boss_natural := false
 
 
 func _initialize() -> void:
@@ -56,6 +65,8 @@ func _initialize() -> void:
 			_character_id = text.trim_prefix("class=")
 		elif text.begins_with("weapon="):
 			_weapon_id = text.trim_prefix("weapon=")
+		elif text == "boss=natural":
+			_boss_natural = true
 	if _out_dir != "":
 		DirAccess.make_dir_recursive_absolute(_out_dir)
 	if ResourceLoader.exists(REGISTRY_SCRIPT):
@@ -202,7 +213,7 @@ func _boss_phase(phase_name: String, boss_id: String, act: int, seconds: int) ->
 	var wait_ms := float(Time.get_ticks_usec() - wait_started) / 1000.0
 	_godmode()
 	_main.set("round_time_left", 600.0)
-	var stats := await _sample(phase_name, seconds, Callable(self, "_topup_tick"))
+	var stats := await _sample(phase_name, seconds, Callable() if _boss_natural else Callable(self, "_topup_tick"))
 	stats["finalize_wait_ms"] = wait_ms
 	var boss := get_first_node_in_group("bosses")
 	stats["boss_full_frame"] = boss != null and boss.get_node_or_null("FullFrameBody") != null and (boss.get_node("FullFrameBody") as AnimatedSprite2D).visible
@@ -214,6 +225,10 @@ func _boss_phase(phase_name: String, boss_id: String, act: int, seconds: int) ->
 
 
 func _await_finalized() -> void:
+	# Builds without the FAN-3977 residency gate (v0.3.0) start the fight at
+	# once; only wait for the flag when the build has one.
+	if not ("_combat_start_finalized" in _main.combat):
+		return
 	for _frame in range(3000):
 		if bool(_main.combat.get("_combat_start_finalized")) or not bool(_main.get("combat_active")):
 			return
@@ -279,6 +294,7 @@ func _sample(phase_name: String, seconds: int, tick: Callable) -> Dictionary:
 	var deltas: Array = []
 	var per_second: Array = []
 	var objects_per_second: Array = []
+	var alive_per_second: Array = []
 	var frames_this_second := 0
 	var second_index := 0
 	var peak_texture := _texture_mib()
@@ -302,6 +318,7 @@ func _sample(phase_name: String, seconds: int, tick: Callable) -> Dictionary:
 		if elapsed_s > second_index:
 			per_second.append(frames_this_second)
 			objects_per_second.append(objects)
+			alive_per_second.append(get_nodes_in_group("enemies").size() + get_nodes_in_group("bosses").size())
 			frames_this_second = 0
 			second_index = elapsed_s
 			if second_index >= seconds:
@@ -345,10 +362,12 @@ func _sample(phase_name: String, seconds: int, tick: Callable) -> Dictionary:
 		"objects_first_second": int(objects_per_second[0]) if not objects_per_second.is_empty() else objects_peak,
 		"objects_last_second": int(objects_per_second[-1]) if not objects_per_second.is_empty() else objects_peak,
 		"objects_per_second": objects_per_second,
+		"alive_per_second": alive_per_second,
+		"boss_natural": _boss_natural,
 		"resident_packs_start": packs_start,
 		"resident_packs_end": _resident_packs(),
 		"per_second_fps": per_second,
 	}
 	_phases.append(stats)
-	print("phase %s: %d s, avg %.0f FPS, 1%% low %.0f, worst second %.0f, >50 ms %d, >100 ms %d, longest %.1f ms, peak texture %.0f MiB, objects peak %d min %d (first s %d, last s %d), resident packs %d -> %d" % [phase_name, per_second.size(), avg, stats["low_1pct_fps"], stats["worst_second_fps"], over_50, over_100, longest, peak_texture, objects_peak, objects_min, stats["objects_first_second"], stats["objects_last_second"], packs_start, stats["resident_packs_end"]])
+	print("phase %s: %d s, avg %.0f FPS, 1%% low %.0f, worst second %.0f, >50 ms %d, >100 ms %d, longest %.1f ms, peak texture %.0f MiB, objects peak %d min %d (first s %d, last s %d), resident packs %d -> %d, alive first s %d last s %d" % [phase_name, per_second.size(), avg, stats["low_1pct_fps"], stats["worst_second_fps"], over_50, over_100, longest, peak_texture, objects_peak, objects_min, stats["objects_first_second"], stats["objects_last_second"], packs_start, stats["resident_packs_end"], int(alive_per_second[0]) if not alive_per_second.is_empty() else -1, int(alive_per_second[-1]) if not alive_per_second.is_empty() else -1])
 	return stats

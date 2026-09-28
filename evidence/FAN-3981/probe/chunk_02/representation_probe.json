@@ -1,0 +1,28 @@
+{
+  "errors": [],
+  "packs": [
+    {
+      "captures": 1464,
+      "frames": 488,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 3,
+      "objects_after": 3,
+      "objects_before": 297,
+      "pack": "mini_spark_wight",
+      "pages": 3,
+      "unique": 296
+    },
+    {
+      "captures": 1464,
+      "frames": 488,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 297,
+      "pack": "mini_swarm_sniper",
+      "pages": 3,
+      "unique": 296
+    }
+  ],
+  "renderer": "gl_compatibility"
+}

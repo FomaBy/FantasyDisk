@@ -1,0 +1,26 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver candidate_natural: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase p1_main_menu: 20 s, avg 118 FPS, 1% low 115, worst second 115, >50 ms 0, >100 ms 0, longest 19.4 ms, peak texture 172 MiB, objects peak 2234 min 2230 (first s 2232, last s 2233), resident packs 0 -> 0, alive first s 0 last s 0
+phase route_map_first_show: 8 s, avg 119 FPS, 1% low 115, worst second 115, >50 ms 0, >100 ms 0, longest 17.7 ms, peak texture 1315 MiB, objects peak 2731 min 2603 (first s 2725, last s 2725), resident packs 0 -> 23, alive first s 0 last s 0
+phase p2_48_enemies: 60 s, avg 119 FPS, 1% low 116, worst second 116, >50 ms 0, >100 ms 0, longest 26.1 ms, peak texture 1407 MiB, objects peak 4080 min 2576 (first s 3106, last s 3761), resident packs 23 -> 23, alive first s 39 last s 47
+phase route_map_after_p2: 3 s, avg 117 FPS, 1% low 110, worst second 110, >50 ms 1, >100 ms 0, longest 97.2 ms, peak texture 1358 MiB, objects peak 2791 min 2497 (first s 2501, last s 2583), resident packs 23 -> 23, alive first s 0 last s 0
+phase elite_night_stalker: 20 s, avg 118 FPS, 1% low 115, worst second 115, >50 ms 0, >100 ms 0, longest 27.1 ms, peak texture 951 MiB, objects peak 3902 min 2736 (first s 3176, last s 3644), resident packs 14 -> 14, alive first s 44 last s 40
+phase route_map_after_elite: 3 s, avg 117 FPS, 1% low 114, worst second 114, >50 ms 0, >100 ms 0, longest 36.4 ms, peak texture 876 MiB, objects peak 2921 min 2472 (first s 2476, last s 2548), resident packs 14 -> 14, alive first s 0 last s 0
+phase p3_boss_act1_rift_warden: 60 s, avg 120 FPS, 1% low 118, worst second 118, >50 ms 0, >100 ms 0, longest 24.3 ms, peak texture 920 MiB, objects peak 3308 min 2752 (first s 2779, last s 3234), resident packs 14 -> 14, alive first s 3 last s 14
+phase route_map_after_boss1: 3 s, avg 117 FPS, 1% low 117, worst second 117, >50 ms 0, >100 ms 0, longest 17.4 ms, peak texture 865 MiB, objects peak 2824 min 2564 (first s 2568, last s 2564), resident packs 14 -> 14, alive first s 0 last s 0
+phase boss_act2_disk_devourer: 20 s, avg 120 FPS, 1% low 118, worst second 118, >50 ms 0, >100 ms 0, longest 16.1 ms, peak texture 968 MiB, objects peak 3390 min 2781 (first s 2815, last s 3028), resident packs 14 -> 14, alive first s 5 last s 22
+
+| build | phase | s | avg FPS | 1% low | worst second | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB | objects peak | objects min | objects first s | objects last s | resident packs start -> end |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| candidate_natural | p1_main_menu | 20 | 118 | 115 | 115 | 0 | 0 | 19.4 | 172 | 2234 | 2230 | 2232 | 2233 | 0 -> 0 |
+| candidate_natural | route_map_first_show | 8 | 119 | 115 | 115 | 0 | 0 | 17.7 | 1315 | 2731 | 2603 | 2725 | 2725 | 0 -> 23 |
+| candidate_natural | p2_48_enemies | 60 | 119 | 116 | 116 | 0 | 0 | 26.1 | 1407 | 4080 | 2576 | 3106 | 3761 | 23 -> 23 |
+| candidate_natural | route_map_after_p2 | 3 | 117 | 110 | 110 | 1 | 0 | 97.2 | 1358 | 2791 | 2497 | 2501 | 2583 | 23 -> 23 |
+| candidate_natural | elite_night_stalker | 20 | 118 | 115 | 115 | 0 | 0 | 27.1 | 951 | 3902 | 2736 | 3176 | 3644 | 14 -> 14 |
+| candidate_natural | route_map_after_elite | 3 | 117 | 114 | 114 | 0 | 0 | 36.4 | 876 | 2921 | 2472 | 2476 | 2548 | 14 -> 14 |
+| candidate_natural | p3_boss_act1_rift_warden | 60 | 120 | 118 | 118 | 0 | 0 | 24.3 | 920 | 3308 | 2752 | 2779 | 3234 | 14 -> 14 |
+| candidate_natural | route_map_after_boss1 | 3 | 117 | 117 | 117 | 0 | 0 | 17.4 | 865 | 2824 | 2564 | 2568 | 2564 | 14 -> 14 |
+| candidate_natural | boss_act2_disk_devourer | 20 | 120 | 118 | 118 | 0 | 0 | 16.1 | 968 | 3390 | 2781 | 2815 | 3028 | 14 -> 14 |
+candidate_natural: menu texture 28 MiB -> after run 311 MiB; act-1 peak 1407 MiB; objects menu 1593 -> after run 2487 (resident packs 0); act-1 peak objects 4080; P2 click frame 143.8 ms, roster wait 0 ms; elite roster wait 141 ms

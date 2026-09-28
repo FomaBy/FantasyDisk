@@ -1,0 +1,16 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe disk_devourer: objects before 297 / after 4, 984 captures, max diff before/after 0, vs source 2
+probe rift_warden: objects before 283 / after 4, 1344 captures, max diff before/after 0, vs source 2
+probe homunculus_tank: objects before 207 / after 4, 618 captures, max diff before/after 0, vs source 2
+probe secret_ascension_boss: objects before 428 / after 4, 2736 captures, max diff before/after 0, vs source 2
+
+| pack | frames | unique | pages | objects before (AtlasTexture) | objects after (trim table) | captures | max diff before/after | max diff vs source |
+|---|---|---|---|---|---|---|---|---|
+| disk_devourer | 328 | 296 | 5 | 297 | 4 | 984 | 0 | 2 |
+| rift_warden | 448 | 282 | 3 | 283 | 4 | 1344 | 0 | 2 |
+| homunculus_tank | 206 | 206 | 2 | 207 | 4 | 618 | 0 | 2 |
+| secret_ascension_boss | 912 | 427 | 14 | 428 | 4 | 2736 | 0 | 2 |
+REPRESENTATION PROBE OK (4 packs)

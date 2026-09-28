@@ -1,0 +1,16 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe mini_void_phantom: objects before 296 / after 4, 1464 captures, max diff before/after 0, vs source 2
+probe night_stalker: objects before 353 / after 4, 1104 captures, max diff before/after 0, vs source 2
+probe plague_prophet: objects before 232 / after 4, 744 captures, max diff before/after 0, vs source 2
+probe shard_marshal: objects before 305 / after 4, 1512 captures, max diff before/after 0, vs source 2
+
+| pack | frames | unique | pages | objects before (AtlasTexture) | objects after (trim table) | captures | max diff before/after | max diff vs source |
+|---|---|---|---|---|---|---|---|---|
+| mini_void_phantom | 488 | 295 | 3 | 296 | 4 | 1464 | 0 | 2 |
+| night_stalker | 368 | 352 | 6 | 353 | 4 | 1104 | 0 | 2 |
+| plague_prophet | 248 | 231 | 2 | 232 | 4 | 744 | 0 | 2 |
+| shard_marshal | 504 | 304 | 3 | 305 | 4 | 1512 | 0 | 2 |
+REPRESENTATION PROBE OK (4 packs)
