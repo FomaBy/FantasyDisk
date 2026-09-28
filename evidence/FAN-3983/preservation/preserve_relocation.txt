@@ -1,0 +1,13 @@
+relocation_started_utc=2026-09-28T11:34:19Z
+relocation_finished_utc=2026-09-28T11:34:19Z
+from=/Users/sergeyfomin/FantasyDisk/releases/v0.3.1
+to=/Users/sergeyfomin/FantasyDisk/releases/archive/v0.3.1-attempt2-165f14aa
+method=mv (same APFS volume, directory rename; file names unchanged)
+files_before=115269 files_after=115269
+manifest_before_sha256=5880ffaddfd9be28dfbaa6fb1666a06eff7797e85db4b73102977f4d0736ea28
+manifest_after_sha256=5880ffaddfd9be28dfbaa6fb1666a06eff7797e85db4b73102977f4d0736ea28
+manifests_equal=true dirs_equal=true
+old_LOCAL_RELEASE_sha256=a264215d6123c86b05dfffc9d3e2e483020fcf6741ca7f1c8b76d29601d0a213
+old_dmg_sha256=d6fc182c82a37545f36ed203f416d0c1385a24d18fc98e8da42ad21121945872
+old_setup_sha256=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e
+reason=skills/codex/fantasydisk-release-director/scripts/local_release.py materialize_package() writes only releases/v<version> and calls _compare_package() when that directory exists, which raises 'existing local release differs' for any byte-different package; there is no alternate destination option (tooling identical to the FAN-3980 tree)

@@ -1,0 +1,31 @@
+setup=FantasyDisk-0.3.1-windows-setup.exe bytes=438427863
+setup_sha256_retained=db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de
+setup_sha256_in_SHA256SUMS=db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de
+rejoin_sha256=db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de
+rejoin_equal=true
+parts=9
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-aa
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ab
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ac
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ad
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ae
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-af
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ag
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ah
+38427863 FantasyDisk-0.3.1-windows-setup.exe.part-ai
+PARTS.sha256 bytes=990 sha256=5cb0d4dbbba9b280ca48105f1bd3608270158dfa7429d7062b4c380a13025f62
+SHA256SUMS.txt bytes=196 sha256=ac2e0424ecf26e4de7ba40aef96481a2175387ad0096abb996d702fb7620cbe9
+update-manifest.json bytes=793 sha256=6fb982a86c1fdbcbbdb6065b5900404e64cdcf2063ec596658ff818a6ca009bf
+fan3964_comment_id=01a0e7de-878e-78fd-b433-58ff2bb8ed7f created_at=2026-09-28T11:55:15Z
+attachment 01a0e7dd-19d4-74bf-a377-e5999b91191f FantasyDisk-0.3.1-windows-setup.exe.part-aa size_bytes=50000000
+attachment 01a0e7dd-56d5-7895-9bae-072101fd82c9 FantasyDisk-0.3.1-windows-setup.exe.part-ab size_bytes=50000000
+attachment 01a0e7dd-8943-78d3-a9b0-8b3a004031ca FantasyDisk-0.3.1-windows-setup.exe.part-ac size_bytes=50000000
+attachment 01a0e7dd-b4fc-766d-b2a4-196fa43fc164 FantasyDisk-0.3.1-windows-setup.exe.part-ad size_bytes=50000000
+attachment 01a0e7dd-d441-7e09-adbf-8a8049323f7c FantasyDisk-0.3.1-windows-setup.exe.part-ae size_bytes=50000000
+attachment 01a0e7dd-f899-70ae-a5b5-af422c77b0be FantasyDisk-0.3.1-windows-setup.exe.part-af size_bytes=50000000
+attachment 01a0e7de-241b-793d-85bf-c515915a2204 FantasyDisk-0.3.1-windows-setup.exe.part-ag size_bytes=50000000
+attachment 01a0e7de-556b-7cbb-9c51-2800b88c5593 FantasyDisk-0.3.1-windows-setup.exe.part-ah size_bytes=50000000
+attachment 01a0e7de-81bc-7141-bb6c-06994991fb1c FantasyDisk-0.3.1-windows-setup.exe.part-ai size_bytes=38427863
+attachment 01a0e7de-8446-7452-80bb-1c76fd43f8a1 PARTS.sha256 size_bytes=990
+attachment 01a0e7de-8580-7cbc-be7a-ef2a3b1eba36 SHA256SUMS.txt size_bytes=196
+attachment 01a0e7de-8669-7a97-802a-4859086b9fc7 update-manifest.json size_bytes=793

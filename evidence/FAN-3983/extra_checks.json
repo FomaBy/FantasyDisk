@@ -1,0 +1,1192 @@
+{
+  "pck_exclusion": {
+    "tool": "evidence/FAN-3983/list_pck.py (= FAN-3980 list_pck.py, FAN-3973 rule set); Windows exe extracted read-only from the retained Setup with `7z e`",
+    "forbidden_prefixes": [
+      "res://evidence/",
+      "res://skills/",
+      "res://docs/",
+      "res://tools/",
+      "res://tests/",
+      "stray root .import"
+    ],
+    "macos_installed_app_pck": {
+      "file_count": 27017,
+      "payload_bytes": 420157443,
+      "top_level": {
+        ".godot": {
+          "files": 13062,
+          "bytes": 398161013
+        },
+        "assets": {
+          "files": 13020,
+          "bytes": 18393415
+        },
+        "data": {
+          "files": 156,
+          "bytes": 602450
+        },
+        "<root>": {
+          "files": 3,
+          "bytes": 5338
+        },
+        "scenes": {
+          "files": 196,
+          "bytes": 271897
+        },
+        "scripts": {
+          "files": 580,
+          "bytes": 2723330
+        }
+      },
+      "root_files": [
+        "res://icon.svg",
+        "res://icon.svg.import",
+        "res://project.binary"
+      ],
+      "forbidden_count": 0
+    },
+    "windows_exe_embedded_pck": {
+      "file_count": 27017,
+      "payload_bytes": 420157443,
+      "top_level": {
+        ".godot": {
+          "files": 13062,
+          "bytes": 398161013
+        },
+        "assets": {
+          "files": 13020,
+          "bytes": 18393415
+        },
+        "data": {
+          "files": 156,
+          "bytes": 602450
+        },
+        "<root>": {
+          "files": 3,
+          "bytes": 5338
+        },
+        "scenes": {
+          "files": 196,
+          "bytes": 271897
+        },
+        "scripts": {
+          "files": 580,
+          "bytes": 2723330
+        }
+      },
+      "root_files": [
+        "res://icon.svg",
+        "res://icon.svg.import",
+        "res://project.binary"
+      ],
+      "forbidden_count": 0,
+      "pck_start": 109050880,
+      "container_size": 532885616
+    },
+    "macos_windows_file_tables_identical": true,
+    "forbidden_paths_new_0.3.1": 0,
+    "fan3980_0.3.1_windows_exe_pck_for_comparison": {
+      "file_count": 27013,
+      "payload_bytes": 420853259,
+      "forbidden_count": 0
+    },
+    "fan3963_0.3.1_windows_exe_pck_for_comparison": {
+      "file_count": 47137,
+      "payload_bytes": 735045521,
+      "forbidden_count": 1237
+    },
+    "macos_pck_sha256": "85dce876f1c85f6d7ad14504fb8c17e7e19c8d557be8ce9c31c8af010b183790",
+    "installed_app_equals_dmg_app": true,
+    "installed_app_file_count": 9
+  },
+  "sizes_vs_old_0.3.1_packages": {
+    "windows_exe_inside_setup": {
+      "new": 532885616,
+      "fan3980": 533581104,
+      "fan3963": 850651688
+    },
+    "windows_setup_exe": {
+      "new": 438427863,
+      "fan3980": 438509199,
+      "fan3963": 535974634
+    },
+    "macos_dmg": {
+      "new": 462967900,
+      "fan3980": 463011379,
+      "fan3963": 559696549
+    },
+    "pck_payload_bytes": {
+      "new": 420157443,
+      "fan3980": 420853259,
+      "fan3963": 735045521
+    },
+    "pck_file_count": {
+      "new": 27017,
+      "fan3980": 27013,
+      "fan3963": 47137
+    }
+  },
+  "macos_cold_start": {
+    "method": "FAN-3973 method on the exported app binaries (evidence/FAN-3983/measure_cold_start_app.sh): `--print-fps --verbose --quit-after 600`, first `Project FPS` line minus 1 s; 5 back-to-back launches per build; isolated HOME per build; summary via evidence/FAN-3973/analyze_cold_start.py",
+    "builds": {
+      "v0.3.0_app": "FantasyDisk.app extracted read-only from the retained releases/v0.3.0 DMG",
+      "v0.3.1new_app": "/Applications/FantasyDisk.app installed by local_release.py from the new retained DMG (file tree == DMG app)"
+    },
+    "runs": {
+      "v0.3.0_app": [
+        {
+          "log": "v0.3.0_app_run1.log",
+          "first_fps_line_s": 8.99,
+          "first_frame_est_s": 7.99,
+          "main_gd_s": 3.48,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 111
+        },
+        {
+          "log": "v0.3.0_app_run2.log",
+          "first_fps_line_s": 6.55,
+          "first_frame_est_s": 5.55,
+          "main_gd_s": 1.05,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 111
+        },
+        {
+          "log": "v0.3.0_app_run3.log",
+          "first_fps_line_s": 6.5,
+          "first_frame_est_s": 5.5,
+          "main_gd_s": 1.05,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 111
+        },
+        {
+          "log": "v0.3.0_app_run4.log",
+          "first_fps_line_s": 6.56,
+          "first_frame_est_s": 5.56,
+          "main_gd_s": 1.07,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 111
+        },
+        {
+          "log": "v0.3.0_app_run5.log",
+          "first_fps_line_s": 6.51,
+          "first_frame_est_s": 5.51,
+          "main_gd_s": 1.05,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 111
+        }
+      ],
+      "v0.3.1new_app": [
+        {
+          "log": "v0.3.1new_app_run1.log",
+          "first_fps_line_s": 8.2,
+          "first_frame_est_s": 7.2,
+          "main_gd_s": 2.62,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 92
+        },
+        {
+          "log": "v0.3.1new_app_run2.log",
+          "first_fps_line_s": 6.59,
+          "first_frame_est_s": 5.59,
+          "main_gd_s": 1.16,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 92
+        },
+        {
+          "log": "v0.3.1new_app_run3.log",
+          "first_fps_line_s": 6.65,
+          "first_frame_est_s": 5.65,
+          "main_gd_s": 1.16,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 92
+        },
+        {
+          "log": "v0.3.1new_app_run4.log",
+          "first_fps_line_s": 6.66,
+          "first_frame_est_s": 5.66,
+          "main_gd_s": 1.13,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 92
+        },
+        {
+          "log": "v0.3.1new_app_run5.log",
+          "first_fps_line_s": 6.63,
+          "first_frame_est_s": 5.63,
+          "main_gd_s": 1.17,
+          "actor_spriteframes_before_first_frame": 1,
+          "actor_textures_before_first_frame": 92
+        }
+      ]
+    },
+    "median_first_frame_s": {
+      "v0.3.0_app": 5.55,
+      "v0.3.1new_app": 5.65
+    },
+    "min_first_frame_s": {
+      "v0.3.0_app": 5.5,
+      "v0.3.1new_app": 5.59
+    },
+    "max_first_frame_s": {
+      "v0.3.0_app": 7.99,
+      "v0.3.1new_app": 7.2
+    },
+    "actor_spriteframes_before_first_frame_max": {
+      "v0.3.0_app": 1,
+      "v0.3.1new_app": 1
+    },
+    "reference_fan3980_app_medians_s": {
+      "v0.3.0_app": 5.47,
+      "fan3980_0.3.1_app": 5.7
+    },
+    "reference_fan3964_windows_old_0.3.1_median_s": 17.4,
+    "verdict": {
+      "new_within_0.5s_of_v0.3.0": true
+    }
+  },
+  "combat_check_fan3977_metrics_and_fan3981_m3": {
+    "method": "evidence/FAN-3983/run_combat_check.sh: unchanged evidence/FAN-3981/perf_driver.gd (= FAN-3977 driver + Performance.OBJECT_COUNT per phase) run by the Godot 4.7.stable editor engine binary with --main-pack on the installed app's PCK (exported app binary does not run an external --script), windowed, gl_compatibility, vsync 120 Hz, 2560x1440, isolated HOME per run; route map 8 s -> P2 48 enemies 60 s (every mini-elite kind) -> elite night_stalker 20 s -> P3 act-1 boss rift_warden 60 s -> act-2 boss disk_devourer 20 s -> main menu",
+    "driver_sha256": "2a386cddcb42089a147adde5efe2627fe80d19855d37d510749ce718c7ef2065",
+    "targets_fan3977": {
+      "synchronous_combat_loads": 0,
+      "act1_peak_texture_mib_max": 1536,
+      "p2_frames_over_100ms": 0
+    },
+    "m3_limits": {
+      "hard": {
+        "p2_48_enemies": 6250,
+        "p3_boss_act1_rift_warden": 5000
+      },
+      "checklist_target": {
+        "p2_48_enemies": 5000,
+        "p3_boss_act1_rift_warden": 4000
+      }
+    },
+    "runs": [
+      {
+        "label": "new031_berserk_natural",
+        "class": "berserk",
+        "weapon": "sword",
+        "renderer": "gl_compatibility",
+        "window": [
+          2560,
+          1440
+        ],
+        "boss_mode": "natural",
+        "act1_peak_texture_mib": 1407.5,
+        "act1_peak_objects": 4051,
+        "menu_texture_mib_before_after": [
+          28.2,
+          310.2
+        ],
+        "menu_objects_before_after": [
+          1593,
+          2496
+        ],
+        "menu_resident_packs_after_run": 0,
+        "encounter_roster_miss_warnings": 0,
+        "warning_lines": 0,
+        "phases": [
+          {
+            "phase": "p1_main_menu",
+            "seconds": 20,
+            "avg_fps": 120.05,
+            "low_1pct_fps": 119.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 16.179,
+            "peak_texture_mib": 171.757232666016,
+            "objects_peak": 2234,
+            "objects_min": 2232,
+            "objects_first_second": 2234,
+            "objects_last_second": 2234,
+            "resident_packs_start": 0,
+            "resident_packs_end": 0,
+            "boss_natural": true
+          },
+          {
+            "phase": "route_map_first_show",
+            "seconds": 8,
+            "avg_fps": 119.125,
+            "low_1pct_fps": 113.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 17.989,
+            "peak_texture_mib": 1314.77414035797,
+            "objects_peak": 2736,
+            "objects_min": 2604,
+            "objects_first_second": 2726,
+            "objects_last_second": 2726,
+            "resident_packs_start": 0,
+            "resident_packs_end": 23,
+            "boss_natural": true
+          },
+          {
+            "phase": "p2_48_enemies",
+            "seconds": 60,
+            "avg_fps": 140.1,
+            "low_1pct_fps": 110.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 83.675,
+            "peak_texture_mib": 1407.47837257385,
+            "objects_peak": 4051,
+            "objects_min": 2577,
+            "objects_first_second": 3125,
+            "objects_last_second": 3700,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "boss_natural": true
+          },
+          {
+            "phase": "route_map_after_p2",
+            "seconds": 3,
+            "avg_fps": 141.0,
+            "low_1pct_fps": 132.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 106.138,
+            "peak_texture_mib": 1357.76174926758,
+            "objects_peak": 2910,
+            "objects_min": 2499,
+            "objects_first_second": 2503,
+            "objects_last_second": 2585,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "boss_natural": true
+          },
+          {
+            "phase": "elite_night_stalker",
+            "seconds": 20,
+            "avg_fps": 141.35,
+            "low_1pct_fps": 138.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 39.818,
+            "peak_texture_mib": 950.520396232605,
+            "objects_peak": 3870,
+            "objects_min": 2738,
+            "objects_first_second": 3159,
+            "objects_last_second": 3690,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": true
+          },
+          {
+            "phase": "route_map_after_elite",
+            "seconds": 3,
+            "avg_fps": 143.666666666667,
+            "low_1pct_fps": 141.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 46.003,
+            "peak_texture_mib": 875.473595619202,
+            "objects_peak": 2897,
+            "objects_min": 2485,
+            "objects_first_second": 2489,
+            "objects_last_second": 2560,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": true
+          },
+          {
+            "phase": "p3_boss_act1_rift_warden",
+            "seconds": 60,
+            "avg_fps": 144.883333333333,
+            "low_1pct_fps": 144.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 19.307,
+            "peak_texture_mib": 920.077302932739,
+            "objects_peak": 3242,
+            "objects_min": 2764,
+            "objects_first_second": 2802,
+            "objects_last_second": 3209,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": true
+          },
+          {
+            "phase": "route_map_after_boss1",
+            "seconds": 3,
+            "avg_fps": 145.333333333333,
+            "low_1pct_fps": 145.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 8.075,
+            "peak_texture_mib": 864.613691329956,
+            "objects_peak": 2957,
+            "objects_min": 2573,
+            "objects_first_second": 2577,
+            "objects_last_second": 2573,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": true
+          },
+          {
+            "phase": "boss_act2_disk_devourer",
+            "seconds": 20,
+            "avg_fps": 145.0,
+            "low_1pct_fps": 144.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 16.764,
+            "peak_texture_mib": 968.134515762329,
+            "objects_peak": 3383,
+            "objects_min": 2788,
+            "objects_first_second": 2824,
+            "objects_last_second": 3134,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": true
+          }
+        ],
+        "m3": {
+          "p2_48_enemies": {
+            "objects_peak": 4051,
+            "hard_limit": 6250,
+            "within_hard_limit": true,
+            "checklist_target": 5000,
+            "within_target": true
+          },
+          "p3_boss_act1_rift_warden": {
+            "objects_peak": 3242,
+            "hard_limit": 5000,
+            "within_hard_limit": true,
+            "checklist_target": 4000,
+            "within_target": true
+          }
+        }
+      },
+      {
+        "label": "new031_berserk_topup",
+        "class": "berserk",
+        "weapon": "sword",
+        "renderer": "gl_compatibility",
+        "window": [
+          2560,
+          1440
+        ],
+        "boss_mode": "48-enemy top-up (FAN-3977 default)",
+        "act1_peak_texture_mib": 1407.4,
+        "act1_peak_objects": 4533,
+        "menu_texture_mib_before_after": [
+          28.2,
+          310.2
+        ],
+        "menu_objects_before_after": [
+          1593,
+          2497
+        ],
+        "menu_resident_packs_after_run": 0,
+        "encounter_roster_miss_warnings": 0,
+        "warning_lines": 0,
+        "phases": [
+          {
+            "phase": "p1_main_menu",
+            "seconds": 20,
+            "avg_fps": 126.5,
+            "low_1pct_fps": 118.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 16.911,
+            "peak_texture_mib": 171.757232666016,
+            "objects_peak": 2232,
+            "objects_min": 2230,
+            "objects_first_second": 2232,
+            "objects_last_second": 2232,
+            "resident_packs_start": 0,
+            "resident_packs_end": 0,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_first_show",
+            "seconds": 8,
+            "avg_fps": 145.125,
+            "low_1pct_fps": 144.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 14.064,
+            "peak_texture_mib": 1314.77414035797,
+            "objects_peak": 2735,
+            "objects_min": 2602,
+            "objects_first_second": 2724,
+            "objects_last_second": 2724,
+            "resident_packs_start": 0,
+            "resident_packs_end": 23,
+            "boss_natural": false
+          },
+          {
+            "phase": "p2_48_enemies",
+            "seconds": 60,
+            "avg_fps": 142.433333333333,
+            "low_1pct_fps": 137.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 76.134,
+            "peak_texture_mib": 1407.43670654297,
+            "objects_peak": 3984,
+            "objects_min": 2575,
+            "objects_first_second": 3128,
+            "objects_last_second": 3766,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_p2",
+            "seconds": 3,
+            "avg_fps": 140.666666666667,
+            "low_1pct_fps": 131.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 112.678,
+            "peak_texture_mib": 1357.76174926758,
+            "objects_peak": 2783,
+            "objects_min": 2499,
+            "objects_first_second": 2503,
+            "objects_last_second": 2585,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "boss_natural": false
+          },
+          {
+            "phase": "elite_night_stalker",
+            "seconds": 20,
+            "avg_fps": 140.05,
+            "low_1pct_fps": 134.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 46.129,
+            "peak_texture_mib": 950.520396232605,
+            "objects_peak": 4001,
+            "objects_min": 2738,
+            "objects_first_second": 3177,
+            "objects_last_second": 3967,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_elite",
+            "seconds": 3,
+            "avg_fps": 143.666666666667,
+            "low_1pct_fps": 141.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 44.141,
+            "peak_texture_mib": 875.473595619202,
+            "objects_peak": 3025,
+            "objects_min": 2474,
+            "objects_first_second": 2478,
+            "objects_last_second": 2549,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": false
+          },
+          {
+            "phase": "p3_boss_act1_rift_warden",
+            "seconds": 60,
+            "avg_fps": 141.35,
+            "low_1pct_fps": 136.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 38.762,
+            "peak_texture_mib": 920.077302932739,
+            "objects_peak": 4533,
+            "objects_min": 2762,
+            "objects_first_second": 3194,
+            "objects_last_second": 4371,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_boss1",
+            "seconds": 3,
+            "avg_fps": 145.333333333333,
+            "low_1pct_fps": 145.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 7.772,
+            "peak_texture_mib": 864.613691329956,
+            "objects_peak": 3080,
+            "objects_min": 2565,
+            "objects_first_second": 2569,
+            "objects_last_second": 2565,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": false
+          },
+          {
+            "phase": "boss_act2_disk_devourer",
+            "seconds": 20,
+            "avg_fps": 137.5,
+            "low_1pct_fps": 134.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 48.565,
+            "peak_texture_mib": 968.134515762329,
+            "objects_peak": 4036,
+            "objects_min": 2783,
+            "objects_first_second": 3216,
+            "objects_last_second": 3609,
+            "resident_packs_start": 14,
+            "resident_packs_end": 14,
+            "boss_natural": false
+          }
+        ],
+        "m3": {
+          "p2_48_enemies": {
+            "objects_peak": 3984,
+            "hard_limit": 6250,
+            "within_hard_limit": true,
+            "checklist_target": 5000,
+            "within_target": true
+          },
+          "p3_boss_act1_rift_warden": {
+            "objects_peak": 4533,
+            "hard_limit": 5000,
+            "within_hard_limit": true,
+            "checklist_target": 4000,
+            "within_target": false
+          }
+        }
+      },
+      {
+        "label": "new031_druid_topup",
+        "class": "druid",
+        "weapon": "staff",
+        "renderer": "gl_compatibility",
+        "window": [
+          2560,
+          1440
+        ],
+        "boss_mode": "48-enemy top-up (FAN-3977 default)",
+        "act1_peak_texture_mib": 1488.5,
+        "act1_peak_objects": 4184,
+        "menu_texture_mib_before_after": [
+          28.2,
+          310.0
+        ],
+        "menu_objects_before_after": [
+          1595,
+          2496
+        ],
+        "menu_resident_packs_after_run": 0,
+        "encounter_roster_miss_warnings": 0,
+        "warning_lines": 0,
+        "phases": [
+          {
+            "phase": "p1_main_menu",
+            "seconds": 20,
+            "avg_fps": 145.0,
+            "low_1pct_fps": 144.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 11.017,
+            "peak_texture_mib": 171.757232666016,
+            "objects_peak": 2234,
+            "objects_min": 2232,
+            "objects_first_second": 2234,
+            "objects_last_second": 2234,
+            "resident_packs_start": 0,
+            "resident_packs_end": 0,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_first_show",
+            "seconds": 8,
+            "avg_fps": 145.125,
+            "low_1pct_fps": 144.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 10.41,
+            "peak_texture_mib": 1396.04827594757,
+            "objects_peak": 2757,
+            "objects_min": 2604,
+            "objects_first_second": 2746,
+            "objects_last_second": 2746,
+            "resident_packs_start": 0,
+            "resident_packs_end": 28,
+            "boss_natural": false
+          },
+          {
+            "phase": "p2_48_enemies",
+            "seconds": 60,
+            "avg_fps": 141.316666666667,
+            "low_1pct_fps": 132.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 69.951,
+            "peak_texture_mib": 1488.46084213257,
+            "objects_peak": 3614,
+            "objects_min": 2625,
+            "objects_first_second": 3089,
+            "objects_last_second": 3291,
+            "resident_packs_start": 28,
+            "resident_packs_end": 28,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_p2",
+            "seconds": 3,
+            "avg_fps": 141.333333333333,
+            "low_1pct_fps": 134.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 94.498,
+            "peak_texture_mib": 1438.82755088806,
+            "objects_peak": 2640,
+            "objects_min": 2535,
+            "objects_first_second": 2539,
+            "objects_last_second": 2621,
+            "resident_packs_start": 28,
+            "resident_packs_end": 28,
+            "boss_natural": false
+          },
+          {
+            "phase": "elite_night_stalker",
+            "seconds": 20,
+            "avg_fps": 136.15,
+            "low_1pct_fps": 125.0,
+            "frames_over_50ms": 8,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 60.664,
+            "peak_texture_mib": 1031.58619785309,
+            "objects_peak": 3716,
+            "objects_min": 2776,
+            "objects_first_second": 3219,
+            "objects_last_second": 3324,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_elite",
+            "seconds": 3,
+            "avg_fps": 143.666666666667,
+            "low_1pct_fps": 141.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 43.385,
+            "peak_texture_mib": 956.539397239685,
+            "objects_peak": 2588,
+            "objects_min": 2507,
+            "objects_first_second": 2511,
+            "objects_last_second": 2582,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "p3_boss_act1_rift_warden",
+            "seconds": 60,
+            "avg_fps": 134.95,
+            "low_1pct_fps": 124.0,
+            "frames_over_50ms": 13,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 69.791,
+            "peak_texture_mib": 1001.14310455322,
+            "objects_peak": 4184,
+            "objects_min": 2798,
+            "objects_first_second": 3217,
+            "objects_last_second": 3950,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_boss1",
+            "seconds": 3,
+            "avg_fps": 145.333333333333,
+            "low_1pct_fps": 145.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 7.743,
+            "peak_texture_mib": 946.012825012207,
+            "objects_peak": 2825,
+            "objects_min": 2593,
+            "objects_first_second": 2597,
+            "objects_last_second": 2593,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "boss_act2_disk_devourer",
+            "seconds": 20,
+            "avg_fps": 115.7,
+            "low_1pct_fps": 99.0,
+            "frames_over_50ms": 29,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 60.606,
+            "peak_texture_mib": 1049.20031738281,
+            "objects_peak": 3797,
+            "objects_min": 2814,
+            "objects_first_second": 3199,
+            "objects_last_second": 3244,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          }
+        ],
+        "m3": {
+          "p2_48_enemies": {
+            "objects_peak": 3614,
+            "hard_limit": 6250,
+            "within_hard_limit": true,
+            "checklist_target": 5000,
+            "within_target": true
+          },
+          "p3_boss_act1_rift_warden": {
+            "objects_peak": 4184,
+            "hard_limit": 5000,
+            "within_hard_limit": true,
+            "checklist_target": 4000,
+            "within_target": false
+          }
+        }
+      },
+      {
+        "label": "new031_druid_topup_rerun",
+        "class": "druid",
+        "weapon": "staff",
+        "renderer": "gl_compatibility",
+        "window": [
+          2560,
+          1440
+        ],
+        "boss_mode": "48-enemy top-up (FAN-3977 default)",
+        "act1_peak_texture_mib": 1488.5,
+        "act1_peak_objects": 4293,
+        "menu_texture_mib_before_after": [
+          28.2,
+          310.0
+        ],
+        "menu_objects_before_after": [
+          1595,
+          2497
+        ],
+        "menu_resident_packs_after_run": 0,
+        "encounter_roster_miss_warnings": 0,
+        "warning_lines": 0,
+        "phases": [
+          {
+            "phase": "p1_main_menu",
+            "seconds": 20,
+            "avg_fps": 119.95,
+            "low_1pct_fps": 119.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 17.053,
+            "peak_texture_mib": 171.757232666016,
+            "objects_peak": 2233,
+            "objects_min": 2231,
+            "objects_first_second": 2233,
+            "objects_last_second": 2233,
+            "resident_packs_start": 0,
+            "resident_packs_end": 0,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_first_show",
+            "seconds": 8,
+            "avg_fps": 119.125,
+            "low_1pct_fps": 115.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 18.305,
+            "peak_texture_mib": 1396.04827594757,
+            "objects_peak": 2756,
+            "objects_min": 2603,
+            "objects_first_second": 2745,
+            "objects_last_second": 2745,
+            "resident_packs_start": 0,
+            "resident_packs_end": 28,
+            "boss_natural": false
+          },
+          {
+            "phase": "p2_48_enemies",
+            "seconds": 60,
+            "avg_fps": 115.383333333333,
+            "low_1pct_fps": 102.0,
+            "frames_over_50ms": 2,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 86.43,
+            "peak_texture_mib": 1488.46084213257,
+            "objects_peak": 3624,
+            "objects_min": 2624,
+            "objects_first_second": 3112,
+            "objects_last_second": 3278,
+            "resident_packs_start": 28,
+            "resident_packs_end": 28,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_p2",
+            "seconds": 3,
+            "avg_fps": 129.666666666667,
+            "low_1pct_fps": 120.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 110.581,
+            "peak_texture_mib": 1438.82755088806,
+            "objects_peak": 2648,
+            "objects_min": 2537,
+            "objects_first_second": 2541,
+            "objects_last_second": 2623,
+            "resident_packs_start": 28,
+            "resident_packs_end": 28,
+            "boss_natural": false
+          },
+          {
+            "phase": "elite_night_stalker",
+            "seconds": 20,
+            "avg_fps": 132.35,
+            "low_1pct_fps": 112.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 45.412,
+            "peak_texture_mib": 1031.58619785309,
+            "objects_peak": 3660,
+            "objects_min": 2777,
+            "objects_first_second": 3207,
+            "objects_last_second": 3334,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_elite",
+            "seconds": 3,
+            "avg_fps": 144.333333333333,
+            "low_1pct_fps": 143.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 31.834,
+            "peak_texture_mib": 956.539397239685,
+            "objects_peak": 2606,
+            "objects_min": 2509,
+            "objects_first_second": 2513,
+            "objects_last_second": 2584,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "p3_boss_act1_rift_warden",
+            "seconds": 60,
+            "avg_fps": 121.983333333333,
+            "low_1pct_fps": 95.0,
+            "frames_over_50ms": 7,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 82.322,
+            "peak_texture_mib": 1001.14310455322,
+            "objects_peak": 4293,
+            "objects_min": 2799,
+            "objects_first_second": 3202,
+            "objects_last_second": 4239,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "route_map_after_boss1",
+            "seconds": 3,
+            "avg_fps": 120.0,
+            "low_1pct_fps": 119.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 12.175,
+            "peak_texture_mib": 946.012825012207,
+            "objects_peak": 3015,
+            "objects_min": 2594,
+            "objects_first_second": 2598,
+            "objects_last_second": 2594,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          },
+          {
+            "phase": "boss_act2_disk_devourer",
+            "seconds": 20,
+            "avg_fps": 94.15,
+            "low_1pct_fps": 83.0,
+            "frames_over_50ms": 8,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 58.299,
+            "peak_texture_mib": 1049.20031738281,
+            "objects_peak": 3787,
+            "objects_min": 2815,
+            "objects_first_second": 3198,
+            "objects_last_second": 3251,
+            "resident_packs_start": 19,
+            "resident_packs_end": 19,
+            "boss_natural": false
+          }
+        ],
+        "m3": {
+          "p2_48_enemies": {
+            "objects_peak": 3624,
+            "hard_limit": 6250,
+            "within_hard_limit": true,
+            "checklist_target": 5000,
+            "within_target": true
+          },
+          "p3_boss_act1_rift_warden": {
+            "objects_peak": 4293,
+            "hard_limit": 5000,
+            "within_hard_limit": true,
+            "checklist_target": 4000,
+            "within_target": false
+          }
+        }
+      }
+    ],
+    "reference_fan3981_qa_numbers": {
+      "source": "FAN-3981 QA PASSED comment 01a0e641-65f9-7838-8417-af81fa8b52ea (reviewer d7bc8435, run 01a0e60c-6f2c-75ef-a361-15c488ac4895), editor project run and exported PCK",
+      "candidate_topup": {
+        "p2": 4042,
+        "p3": 4845,
+        "exported_pck_p2": 4123,
+        "exported_pck_p3": 4808
+      },
+      "candidate_natural": {
+        "p2": 4023,
+        "p3": 3288
+      },
+      "v0.3.1_165f14aa_topup": {
+        "p2": 8993,
+        "p3": 7362
+      },
+      "v0.3.1_165f14aa_natural": {
+        "p2": 9176,
+        "p3": 5677
+      },
+      "v0.3.0_topup": {
+        "p2": 4363,
+        "p3": 5305
+      },
+      "v0.3.0_natural": {
+        "p2": 4251,
+        "p3": 3378
+      },
+      "fan3964_windows_fan3980_package": {
+        "p2": "8643-8719",
+        "p3": 5680
+      }
+    },
+    "reference_fan3980_package_metrics": {
+      "berserk_p2_frames_over_100ms": 0,
+      "druid_p2_frames_over_100ms": 0,
+      "act1_peak_texture_mib": {
+        "berserk": 1407,
+        "druid": 1488
+      }
+    },
+    "verdict": {
+      "no_synchronous_combat_loads_all_runs": true,
+      "act1_peak_texture_within_1536_mib_all_runs": true,
+      "p2_frames_over_100ms_zero_all_runs": true,
+      "m3_within_hard_limits_all_runs": true,
+      "m3_within_checklist_targets_per_run": {
+        "new031_berserk_natural": {
+          "p2_48_enemies": true,
+          "p3_boss_act1_rift_warden": true
+        },
+        "new031_berserk_topup": {
+          "p2_48_enemies": true,
+          "p3_boss_act1_rift_warden": false
+        },
+        "new031_druid_topup": {
+          "p2_48_enemies": true,
+          "p3_boss_act1_rift_warden": false
+        },
+        "new031_druid_topup_rerun": {
+          "p2_48_enemies": true,
+          "p3_boss_act1_rift_warden": false
+        }
+      }
+    }
+  },
+  "source_snapshot": {
+    "retained_project_vs_git_archive_v0.3.1": [
+      "diff -rq --exclude=.godot <git archive v0.3.1> releases/v0.3.1/project : 0 differences",
+      "tag_ls_tree_files=57798",
+      "snapshot_files_excluding_.godot=57798",
+      "snapshot_has_.godot=no"
+    ],
+    "changelog_section_equals_tag": true,
+    "poster_sha256_equals_tag_blob": true,
+    "poster_sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+  },
+  "operator_app_reinstall": {
+    "before": {
+      "app_short": "0.3.1",
+      "app_build": "1.3.10",
+      "package": "FAN-3980 attempt 2 (source 165f14aa), file tree == FAN-3980 DMG app",
+      "current_project": "v0.3.1/godot-project (FAN-3980 package)"
+    },
+    "after": {
+      "app_short": "0.3.1",
+      "app_build": "1.3.10",
+      "installed_app_equals_new_dmg_app": true,
+      "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+      "local_release_verify": {
+        "status": "verified",
+        "version": "0.3.1",
+        "tag_commit": "f4d05fea91a5ce8b3fb858a5035df1fe54236369",
+        "macos_channel": "signed"
+      }
+    },
+    "saves_dir": "~/Library/Application Support/Godot/app_userdata/FantasyDisk",
+    "save_cfg_files_unchanged": true,
+    "save_cfg_manifest": [
+      "5a908e2ad7a546182992eb5a9c85b13ee8c2a3588521b97ad0f74398c9d9d92f  ./_qa_stale_save.cfg",
+      "b9e1372b0cf0caefef89921be525335359e58a4e768606a490154ddc62710728  ./fantasydisk_meta.cfg",
+      "2e548d9e9e511d7ec182358b6b8a149c0e74c74148338c4a133f078f65d68993  ./settings.cfg",
+      "fae3f8b160b580e0e0d8df16aeb27eeb95970d1fdf9fd56e92786dfff8a35756  ./test_meta_skilltree.cfg",
+      "ad7baa458b7617bf23f081d5a6b37793ecb07eb15817a3b4cf72a2995dfb02e6  ./test_meta_skilltree_migration.cfg"
+    ],
+    "userdata_excluding_logs_shader_cache_vulkan_diff_lines": 0,
+    "userdata_files_hashed": 5624,
+    "note": "same version reinstall 0.3.1 -> 0.3.1 with new bytes; cold-start and perf runs used isolated HOME directories; verify --launch-smoke ran the installed app once with the operator HOME"
+  },
+  "transfer_fan3964": {
+    "record": [
+      "setup=FantasyDisk-0.3.1-windows-setup.exe bytes=438427863",
+      "setup_sha256_retained=db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de",
+      "setup_sha256_in_SHA256SUMS=db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de",
+      "rejoin_sha256=db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de",
+      "rejoin_equal=true",
+      "parts=9",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-aa",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ab",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ac",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ad",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ae",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-af",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ag",
+      "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ah",
+      "38427863 FantasyDisk-0.3.1-windows-setup.exe.part-ai",
+      "PARTS.sha256 bytes=990 sha256=5cb0d4dbbba9b280ca48105f1bd3608270158dfa7429d7062b4c380a13025f62",
+      "SHA256SUMS.txt bytes=196 sha256=ac2e0424ecf26e4de7ba40aef96481a2175387ad0096abb996d702fb7620cbe9",
+      "update-manifest.json bytes=793 sha256=6fb982a86c1fdbcbbdb6065b5900404e64cdcf2063ec596658ff818a6ca009bf",
+      "fan3964_comment_id=01a0e7de-878e-78fd-b433-58ff2bb8ed7f created_at=2026-09-28T11:55:15Z",
+      "attachment 01a0e7dd-19d4-74bf-a377-e5999b91191f FantasyDisk-0.3.1-windows-setup.exe.part-aa size_bytes=50000000",
+      "attachment 01a0e7dd-56d5-7895-9bae-072101fd82c9 FantasyDisk-0.3.1-windows-setup.exe.part-ab size_bytes=50000000",
+      "attachment 01a0e7dd-8943-78d3-a9b0-8b3a004031ca FantasyDisk-0.3.1-windows-setup.exe.part-ac size_bytes=50000000",
+      "attachment 01a0e7dd-b4fc-766d-b2a4-196fa43fc164 FantasyDisk-0.3.1-windows-setup.exe.part-ad size_bytes=50000000",
+      "attachment 01a0e7dd-d441-7e09-adbf-8a8049323f7c FantasyDisk-0.3.1-windows-setup.exe.part-ae size_bytes=50000000",
+      "attachment 01a0e7dd-f899-70ae-a5b5-af422c77b0be FantasyDisk-0.3.1-windows-setup.exe.part-af size_bytes=50000000",
+      "attachment 01a0e7de-241b-793d-85bf-c515915a2204 FantasyDisk-0.3.1-windows-setup.exe.part-ag size_bytes=50000000",
+      "attachment 01a0e7de-556b-7cbb-9c51-2800b88c5593 FantasyDisk-0.3.1-windows-setup.exe.part-ah size_bytes=50000000",
+      "attachment 01a0e7de-81bc-7141-bb6c-06994991fb1c FantasyDisk-0.3.1-windows-setup.exe.part-ai size_bytes=38427863",
+      "attachment 01a0e7de-8446-7452-80bb-1c76fd43f8a1 PARTS.sha256 size_bytes=990",
+      "attachment 01a0e7de-8580-7cbc-be7a-ef2a3b1eba36 SHA256SUMS.txt size_bytes=196",
+      "attachment 01a0e7de-8669-7a97-802a-4859086b9fc7 update-manifest.json size_bytes=793"
+    ],
+    "readback": "PARTS.sha256 and part-ai downloaded back from FAN-3964 and byte-equal to the local files",
+    "marking": "package review pending"
+  }
+}

@@ -1,0 +1,53 @@
+# FAN-3983 sanitized build log — milestone lines (line numbers refer to the full sanitized log: 54286 lines, SHA-256 da8b49a2b0938ab2e0e7962eb4de391ae19a1a24e3074b17ea49afc95bcde0bc, attached to the handoff comment as build_release.sanitized.full.log.gz)
+1:==> Worktree из tag v0.3.1
+113:==> Проверка точных build inputs внутри tag v0.3.1
+114:==> Assembling canonical release notes from source-pinned fragments
+116:==> Проверка версии tag v0.3.1 и export presets
+117:==> Проверка release scope tag v0.3.1
+119:==> Проверка визуальных утверждений release notes tag v0.3.1
+121:==> Проверка честной маркировки macOS-канала в клиенте tag v0.3.1
+122:==> Feedback delivery
+124:==> Импорт ресурсов (headless)
+125:==> Экспорт macOS (.app в zip; подпись будет последним изменением bundle)
+27163:==> Финализация и подпись готового .app
+27164:==> Минималистичный Finder layout: две системные иконки и одна стрелка
+27168:/tmp/fantasydisk-build-fnX2FW/src/build/macos-stage/FantasyDisk.app: valid on disk
+27169:/tmp/fantasydisk-build-fnX2FW/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement
+27170:==> Apple notarization + stapling приложения
+27171:    Apple notarization accepted FantasyDisk.app
+27174:The staple and validate action worked!
+27176:The validate action worked!
+27177:/tmp/fantasydisk-build-fnX2FW/src/build/macos-stage/FantasyDisk.app: valid on disk
+27178:/tmp/fantasydisk-build-fnX2FW/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement
+27179:/tmp/fantasydisk-build-fnX2FW/src/build/macos-stage/FantasyDisk.app: accepted
+27180:source=Notarized Developer ID
+27181:==> Создание DMG с ярлыком Applications и стрелкой
+27183:hdiutil: verify: checksum of "/tmp/fantasydisk-build-fnX2FW/src/build/FantasyDisk-0.3.1-macos.dmg" is VALID
+27185:/tmp/fantasydisk-build-fnX2FW/src/build/FantasyDisk-0.3.1-macos.dmg: valid on disk
+27186:/tmp/fantasydisk-build-fnX2FW/src/build/FantasyDisk-0.3.1-macos.dmg: satisfies its Designated Requirement
+27187:==> Apple notarization + stapling DMG
+27188:    Apple notarization accepted FantasyDisk DMG
+27191:The staple and validate action worked!
+27193:The validate action worked!
+27194:/tmp/fantasydisk-build-fnX2FW/src/build/FantasyDisk-0.3.1-macos.dmg: valid on disk
+27195:/tmp/fantasydisk-build-fnX2FW/src/build/FantasyDisk-0.3.1-macos.dmg: satisfies its Designated Requirement
+27196:/tmp/fantasydisk-build-fnX2FW/src/build/FantasyDisk-0.3.1-macos.dmg: accepted
+27197:source=Notarized Developer ID
+27198:==> Экспорт Windows (x86_64, embed_pck)
+54230:==> NSIS-инсталлер
+54251:==> Верификация NSIS CRC (точный алгоритм exehead: crc32 файла с байта 512 до поля CRC)
+54252:NSIS CRC OK (firstheader @ 38912, crc @ 438427859)
+54253:==> Read-only mount macOS DMG для проверки подписи, layout и secret scan
+54254:/tmp/fantasydisk-build-fnX2FW/src/build/secret-scan-dmg/FantasyDisk.app: valid on disk
+54255:/tmp/fantasydisk-build-fnX2FW/src/build/secret-scan-dmg/FantasyDisk.app: satisfies its Designated Requirement
+54257:The validate action worked!
+54258:/tmp/fantasydisk-build-fnX2FW/src/build/secret-scan-dmg/FantasyDisk.app: accepted
+54259:source=Notarized Developer ID
+54260:==> Secret scan staged player payloads до публикации
+54261:Release secret scan passed (3 artifact root(s)).
+54262:==> Публикация проверенных staged artifacts
+54263:==> SHA256SUMS.txt (контроль порчи при передаче файлов)
+54266:==> Публичный update-manifest.json для клиента 0.2.2+
+54268:==> Постоянная локальная копия, Godot snapshot и установка macOS
+54270:  "status": "verified",
+54279:==> Готово:

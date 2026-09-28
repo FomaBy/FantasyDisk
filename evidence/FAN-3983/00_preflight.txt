@@ -1,0 +1,63 @@
+# FAN-3983 preflight — 2026-09-28T11:31:27Z
+## task worktree
+path=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3983-6e007ed21a1b/workdir/FantasyDisk
+branch=agent/fable/6e007ed21a1b
+HEAD=f4d05fea91a5ce8b3fb858a5035df1fe54236369
+HEAD_tree=e659e92afdd2dad1a3aec8ca7bce49cfac250ec6
+status_porcelain_lines=0
+## remote readback (git ls-remote origin)
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/heads/dev
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/archive/v0.3.1-attempt1-448a0cc1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/archive/v0.3.1-attempt1-448a0cc1^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/archive/v0.3.1-attempt2-165f14aa
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/tags/archive/v0.3.1-attempt2-165f14aa^{}
+8c2cbdf89f07f8d63417303fb35387a29250b446	refs/tags/v0.3.1
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/tags/v0.3.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}
+## local tag after 'git fetch --force origin +refs/tags/*:refs/tags/*'
+v0.3.1_object=8c2cbdf89f07f8d63417303fb35387a29250b446 type=tag
+v0.3.1_commit=f4d05fea91a5ce8b3fb858a5035df1fe54236369
+v0.3.1_tree=e659e92afdd2dad1a3aec8ca7bce49cfac250ec6
+object f4d05fea91a5ce8b3fb858a5035df1fe54236369
+type commit
+tag v0.3.1
+tagger <redacted line>
+
+FantasyDisk v0.3.1
+archive_attempt2_tag=c692d01973a7e4765807bd5fcae11c6bb74df5e6 -> 165f14aa0ce5bcbd884e4dfde137283a8010e863 tree 9dd96fa9cec99be330b638cdd04dfd1a42d4840d
+archive_attempt1_tag=676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71 -> 448a0cc12f02eb05bc16becc69fde365021a9a17 tree 3e02df83290741b21d4de37c4fa03e356e20c591
+## dispatch contract pins
+approved_source_sha=f4d05fea91a5ce8b3fb858a5035df1fe54236369 approved_tree=e659e92afdd2dad1a3aec8ca7bce49cfac250ec6 tag_object=8c2cbdf89f07f8d63417303fb35387a29250b446
+pins_match=true
+HEAD_equals_tag_commit=true
+## refined AC1 tree equality: FAN-3984 PASSED candidate_sha=f4d05fea91a5ce8b3fb858a5035df1fe54236369 candidate_tree_sha=e659e92afdd2dad1a3aec8ca7bce49cfac250ec6 (QA PASSED d7bc8435 run 01a0e72d-041c-70ed-bc08-0a3a9a418c4d); FAN-3982 done QA PASSED run 01a0e7b2-33d4-7bc3-a0a1-12909a47fc0f
+tree_equal_S_vs_FAN3984=true
+origin_dev_equals_S=true
+fan3981_fix_scripts_present=true
+## release inputs on exact S
+release_version_mapping: 0.3.1	1.3.10	0.3.1	0.3.1.0
+release_version_mapping_exit=0
+7:## [0.3.1] — 2026-09-28
+10:		"version": "0.3.1",
+11:		"date": "2026-09-28",
+poster_sha256=6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7 blob=51803688c0e2aa81a9255f94ca5214c0418d6242
+client_channel=signed
+release_scope_guard: release scope OK: 0.3.1, 0 entries
+exit=0
+visual_claims_guard: OK: 0.3.1 release notes carry no unbacked visual claims
+exit=0
+export_exclusions_test: OK
+## signed channel
+developer_id_application_identities=1
+notarytool_history_exit=0
+## toolchain
+godot=4.7.stable.official.5b4e0cb0f
+makensis=v3.12
+macos=26.5.1
+/dev/disk3s5   926Gi   580Gi   309Gi    66%     30M  3.2G    1%   /System/Volumes/Data
+## installed operator app before
+app_short=0.3.1 app_build=1.3.10
+current_project=v0.3.1/godot-project
+current_v0.3.1_LOCAL_RELEASE_tag_commit=165f14aa0ce5bcbd884e4dfde137283a8010e863

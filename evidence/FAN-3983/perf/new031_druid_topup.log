@@ -1,0 +1,26 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver new031_druid_topup: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase p1_main_menu: 20 s, avg 145 FPS, 1% low 144, worst second 144, >50 ms 0, >100 ms 0, longest 11.0 ms, peak texture 172 MiB, objects peak 2234 min 2232 (first s 2234, last s 2234), resident packs 0 -> 0, alive first s 0 last s 0
+phase route_map_first_show: 8 s, avg 145 FPS, 1% low 144, worst second 144, >50 ms 0, >100 ms 0, longest 10.4 ms, peak texture 1396 MiB, objects peak 2757 min 2604 (first s 2746, last s 2746), resident packs 0 -> 28, alive first s 0 last s 0
+phase p2_48_enemies: 60 s, avg 141 FPS, 1% low 132, worst second 132, >50 ms 1, >100 ms 0, longest 70.0 ms, peak texture 1488 MiB, objects peak 3614 min 2625 (first s 3089, last s 3291), resident packs 28 -> 28, alive first s 43 last s 46
+phase route_map_after_p2: 3 s, avg 141 FPS, 1% low 134, worst second 134, >50 ms 1, >100 ms 0, longest 94.5 ms, peak texture 1439 MiB, objects peak 2640 min 2535 (first s 2539, last s 2621), resident packs 28 -> 28, alive first s 0 last s 0
+phase elite_night_stalker: 20 s, avg 136 FPS, 1% low 125, worst second 125, >50 ms 8, >100 ms 0, longest 60.7 ms, peak texture 1032 MiB, objects peak 3716 min 2776 (first s 3219, last s 3324), resident packs 19 -> 19, alive first s 41 last s 47
+phase route_map_after_elite: 3 s, avg 144 FPS, 1% low 141, worst second 141, >50 ms 0, >100 ms 0, longest 43.4 ms, peak texture 957 MiB, objects peak 2588 min 2507 (first s 2511, last s 2582), resident packs 19 -> 19, alive first s 0 last s 0
+phase p3_boss_act1_rift_warden: 60 s, avg 135 FPS, 1% low 124, worst second 124, >50 ms 13, >100 ms 0, longest 69.8 ms, peak texture 1001 MiB, objects peak 4184 min 2798 (first s 3217, last s 3950), resident packs 19 -> 19, alive first s 42 last s 42
+phase route_map_after_boss1: 3 s, avg 145 FPS, 1% low 145, worst second 145, >50 ms 0, >100 ms 0, longest 7.7 ms, peak texture 946 MiB, objects peak 2825 min 2593 (first s 2597, last s 2593), resident packs 19 -> 19, alive first s 0 last s 0
+phase boss_act2_disk_devourer: 20 s, avg 116 FPS, 1% low 99, worst second 99, >50 ms 29, >100 ms 0, longest 60.6 ms, peak texture 1049 MiB, objects peak 3797 min 2814 (first s 3199, last s 3244), resident packs 19 -> 19, alive first s 49 last s 44
+
+| build | phase | s | avg FPS | 1% low | worst second | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB | objects peak | objects min | objects first s | objects last s | resident packs start -> end |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| new031_druid_topup | p1_main_menu | 20 | 145 | 144 | 144 | 0 | 0 | 11.0 | 172 | 2234 | 2232 | 2234 | 2234 | 0 -> 0 |
+| new031_druid_topup | route_map_first_show | 8 | 145 | 144 | 144 | 0 | 0 | 10.4 | 1396 | 2757 | 2604 | 2746 | 2746 | 0 -> 28 |
+| new031_druid_topup | p2_48_enemies | 60 | 141 | 132 | 132 | 1 | 0 | 70.0 | 1488 | 3614 | 2625 | 3089 | 3291 | 28 -> 28 |
+| new031_druid_topup | route_map_after_p2 | 3 | 141 | 134 | 134 | 1 | 0 | 94.5 | 1439 | 2640 | 2535 | 2539 | 2621 | 28 -> 28 |
+| new031_druid_topup | elite_night_stalker | 20 | 136 | 125 | 125 | 8 | 0 | 60.7 | 1032 | 3716 | 2776 | 3219 | 3324 | 19 -> 19 |
+| new031_druid_topup | route_map_after_elite | 3 | 144 | 141 | 141 | 0 | 0 | 43.4 | 957 | 2588 | 2507 | 2511 | 2582 | 19 -> 19 |
+| new031_druid_topup | p3_boss_act1_rift_warden | 60 | 135 | 124 | 124 | 13 | 0 | 69.8 | 1001 | 4184 | 2798 | 3217 | 3950 | 19 -> 19 |
+| new031_druid_topup | route_map_after_boss1 | 3 | 145 | 145 | 145 | 0 | 0 | 7.7 | 946 | 2825 | 2593 | 2597 | 2593 | 19 -> 19 |
+| new031_druid_topup | boss_act2_disk_devourer | 20 | 116 | 99 | 99 | 29 | 0 | 60.6 | 1049 | 3797 | 2814 | 3199 | 3244 | 19 -> 19 |
+new031_druid_topup: menu texture 28 MiB -> after run 310 MiB; act-1 peak 1488 MiB; objects menu 1595 -> after run 2496 (resident packs 0); act-1 peak objects 4184; P2 click frame 179.0 ms, roster wait 0 ms; elite roster wait 212 ms

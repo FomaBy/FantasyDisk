@@ -1,0 +1,26 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver new031_berserk_natural: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase p1_main_menu: 20 s, avg 120 FPS, 1% low 119, worst second 119, >50 ms 0, >100 ms 0, longest 16.2 ms, peak texture 172 MiB, objects peak 2234 min 2232 (first s 2234, last s 2234), resident packs 0 -> 0, alive first s 0 last s 0
+phase route_map_first_show: 8 s, avg 119 FPS, 1% low 113, worst second 113, >50 ms 0, >100 ms 0, longest 18.0 ms, peak texture 1315 MiB, objects peak 2736 min 2604 (first s 2726, last s 2726), resident packs 0 -> 23, alive first s 0 last s 0
+phase p2_48_enemies: 60 s, avg 140 FPS, 1% low 110, worst second 110, >50 ms 1, >100 ms 0, longest 83.7 ms, peak texture 1407 MiB, objects peak 4051 min 2577 (first s 3125, last s 3700), resident packs 23 -> 23, alive first s 38 last s 48
+phase route_map_after_p2: 3 s, avg 141 FPS, 1% low 132, worst second 132, >50 ms 1, >100 ms 1, longest 106.1 ms, peak texture 1358 MiB, objects peak 2910 min 2499 (first s 2503, last s 2585), resident packs 23 -> 23, alive first s 0 last s 0
+phase elite_night_stalker: 20 s, avg 141 FPS, 1% low 138, worst second 138, >50 ms 0, >100 ms 0, longest 39.8 ms, peak texture 951 MiB, objects peak 3870 min 2738 (first s 3159, last s 3690), resident packs 14 -> 14, alive first s 46 last s 41
+phase route_map_after_elite: 3 s, avg 144 FPS, 1% low 141, worst second 141, >50 ms 0, >100 ms 0, longest 46.0 ms, peak texture 875 MiB, objects peak 2897 min 2485 (first s 2489, last s 2560), resident packs 14 -> 14, alive first s 0 last s 0
+phase p3_boss_act1_rift_warden: 60 s, avg 145 FPS, 1% low 144, worst second 144, >50 ms 0, >100 ms 0, longest 19.3 ms, peak texture 920 MiB, objects peak 3242 min 2764 (first s 2802, last s 3209), resident packs 14 -> 14, alive first s 3 last s 14
+phase route_map_after_boss1: 3 s, avg 145 FPS, 1% low 145, worst second 145, >50 ms 0, >100 ms 0, longest 8.1 ms, peak texture 865 MiB, objects peak 2957 min 2573 (first s 2577, last s 2573), resident packs 14 -> 14, alive first s 0 last s 0
+phase boss_act2_disk_devourer: 20 s, avg 145 FPS, 1% low 144, worst second 144, >50 ms 0, >100 ms 0, longest 16.8 ms, peak texture 968 MiB, objects peak 3383 min 2788 (first s 2824, last s 3134), resident packs 14 -> 14, alive first s 5 last s 24
+
+| build | phase | s | avg FPS | 1% low | worst second | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB | objects peak | objects min | objects first s | objects last s | resident packs start -> end |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| new031_berserk_natural | p1_main_menu | 20 | 120 | 119 | 119 | 0 | 0 | 16.2 | 172 | 2234 | 2232 | 2234 | 2234 | 0 -> 0 |
+| new031_berserk_natural | route_map_first_show | 8 | 119 | 113 | 113 | 0 | 0 | 18.0 | 1315 | 2736 | 2604 | 2726 | 2726 | 0 -> 23 |
+| new031_berserk_natural | p2_48_enemies | 60 | 140 | 110 | 110 | 1 | 0 | 83.7 | 1407 | 4051 | 2577 | 3125 | 3700 | 23 -> 23 |
+| new031_berserk_natural | route_map_after_p2 | 3 | 141 | 132 | 132 | 1 | 1 | 106.1 | 1358 | 2910 | 2499 | 2503 | 2585 | 23 -> 23 |
+| new031_berserk_natural | elite_night_stalker | 20 | 141 | 138 | 138 | 0 | 0 | 39.8 | 951 | 3870 | 2738 | 3159 | 3690 | 14 -> 14 |
+| new031_berserk_natural | route_map_after_elite | 3 | 144 | 141 | 141 | 0 | 0 | 46.0 | 875 | 2897 | 2485 | 2489 | 2560 | 14 -> 14 |
+| new031_berserk_natural | p3_boss_act1_rift_warden | 60 | 145 | 144 | 144 | 0 | 0 | 19.3 | 920 | 3242 | 2764 | 2802 | 3209 | 14 -> 14 |
+| new031_berserk_natural | route_map_after_boss1 | 3 | 145 | 145 | 145 | 0 | 0 | 8.1 | 865 | 2957 | 2573 | 2577 | 2573 | 14 -> 14 |
+| new031_berserk_natural | boss_act2_disk_devourer | 20 | 145 | 144 | 144 | 0 | 0 | 16.8 | 968 | 3383 | 2788 | 2824 | 3134 | 14 -> 14 |
+new031_berserk_natural: menu texture 28 MiB -> after run 310 MiB; act-1 peak 1407 MiB; objects menu 1593 -> after run 2496 (resident packs 0); act-1 peak objects 4051; P2 click frame 130.6 ms, roster wait 0 ms; elite roster wait 162 ms

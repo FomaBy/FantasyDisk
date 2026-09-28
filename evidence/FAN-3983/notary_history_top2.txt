@@ -1,0 +1,2 @@
+2026-09-28T11:40:58.953Z FantasyDisk-0.3.1-macos.dmg Accepted
+2026-09-28T11:38:23.005Z FantasyDisk-0.3.1-macos-notary.zip Accepted

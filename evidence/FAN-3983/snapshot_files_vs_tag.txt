@@ -1,0 +1,4 @@
+diff -rq --exclude=.godot <git archive v0.3.1> releases/v0.3.1/project : 0 differences
+tag_ls_tree_files=57798
+snapshot_files_excluding_.godot=57798
+snapshot_has_.godot=no
