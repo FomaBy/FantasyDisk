@@ -1,0 +1,16 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+object budget: core roster of 28 packs resident adds 217 engine objects (budget 672).
+WARNING: full_frame_animation_registry: elite/mini_scavenger_reaper needed res://assets/sprites/elites/full_frame/mini_scavenger_reaper_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] refresh_full_frame_visual (res://scripts/enemy.gd:1860)
+         [4] _apply_mini_elite_kind (res://scripts/combat_director.gd:660)
+         [5] _check_miss_fallback (res://tests/full_frame_combat_residency_test.gd:331)
+         [6] _run (res://tests/full_frame_combat_residency_test.gd:87)
+         [7] _check_gate_and_regular_spawns (res://tests/full_frame_combat_residency_test.gd:289)
+roster RGBA bytes: core 909 MiB, enemies+allies 453 MiB, largest single elite/boss pack 215 MiB.
+Full-frame combat residency test passed (roster covers every spawnable pack, combat start waits for residency, 0 synchronous loads across every enemy/mini-elite/elite/boss/ally spawn, miss falls back to the static body and swaps later, elite/boss fights drop the mini-elites).

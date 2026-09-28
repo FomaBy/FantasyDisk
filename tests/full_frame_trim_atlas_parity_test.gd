@@ -1,35 +1,46 @@
 extends SceneTree
 
 # FAN-3977: every full-frame actor pack (41 registry shards + the secret
-# boss) now ships as lossless trim atlases built by
+# boss) ships as lossless trim atlases built by
 # tools/build_full_frame_trim_atlases.py: each frame is trimmed to its alpha
-# bounding box (+PAD) and packed into pages; the SpriteFrames references an
-# AtlasTexture per unique frame whose `margin` restores the original canvas
-# offset and logical size. This suite is the visual-contract regression:
+# bounding box (+PAD) and packed into pages. FAN-3981 (0.3.1 release
+# blocker, FAN-3964 QA M3): the SpriteFrames no longer holds one
+# `AtlasTexture` per unique frame (~230 engine objects per resident pack);
+# every frame references the pack's single `FullFrameCanvasTexture` (canvas
+# size, draws nothing) and the geometry lives in a `FullFrameTrimAtlas`
+# table (`metadata/full_frame_trim_atlas`) that draws the page region from
+# the sprite's `draw` signal. This suite is the visual-contract regression:
 #
 #   A. SOURCE PIXELS: for every atlas entry the page region is byte-identical
 #      to the retained source PNG at the margin offset, and every frame of
-#      the shipped .tres is an AtlasTexture over a listed page with exactly
-#      the manifest region/margin and the original canvas size (get_size()).
+#      the shipped .tres resolves through the table to a listed page with
+#      exactly the manifest region/margin and the original canvas size
+#      (`get_size()` of the frame texture).
 #   B. METADATA: animation names, loop flags, speeds, frame counts, per-frame
 #      durations and per-frame source identity match the manifest model.
 #   C. NEGATIVE FIXTURES: a region shifted by one texel and a wrong margin
 #      must FAIL the same comparisons (the detector is not vacuous).
 #   D. CAPTURED RENDER (needs a real renderer — reported SKIPPED headless):
-#      an AnimatedSprite2D playing the trimmed pack is captured against the
-#      same sprite playing a reference SpriteFrames assembled from the
-#      retained source textures, at the registry scale x the combat camera
-#      zoom (1.12) and at a 4K-class 1.51 factor, with and without flip_h.
-#      The captures must agree within RENDER_TOLERANCE (4/255 per channel):
-#      the GPU interpolates texture coordinates over a different quad (the
-#      trim instead of the full canvas) and a different page size, which
-#      rounds bilinear weights differently on anti-aliased edge texels by at
-#      most a few levels; any larger difference (a shifted region, a
-#      wrong margin, resampling) fails. Pass `-- export=<dir>` to also write
-#      before/after/diff side-by-side PNGs per pack (AC4 evidence).
+#      an AnimatedSprite2D playing the shipped pack is captured against the
+#      same sprite playing (1) the FAN-3977 representation rebuilt from the
+#      manifest — one AtlasTexture per frame over the same pages — which
+#      must be BYTE-IDENTICAL (tolerance 0: same quad, same page, same UVs),
+#      and (2) a reference SpriteFrames assembled from the retained source
+#      textures, within RENDER_TOLERANCE (4/255 per channel: the GPU
+#      interpolates texture coordinates over a different quad and page
+#      size, which rounds bilinear weights differently on anti-aliased
+#      edge texels by at most a few levels). Cases: the registry scale x
+#      the combat camera zoom (1.12), the same flipped, and a 4K-class 1.51
+#      factor. Pass `-- export=<dir>` to also write before/after/diff
+#      side-by-side PNGs per pack (AC4 evidence; before = AtlasTexture
+#      representation, after = shipped table).
 #   E. IMPORT SETTINGS: each page .png.import is lossless (compress/mode=0)
 #      without mipmaps, like the source frames.
 #   F. LIFECYCLE: release, cold reload, repeat parity, orphan-free.
+#   G. OBJECT BUDGET (FAN-3981): a freshly loaded pack adds at most
+#      FullFrameTrimAtlas.RESIDENT_OBJECT_BUDGET engine objects
+#      (Performance.OBJECT_COUNT) — the whole catalog resident stays far
+#      below one FAN-3977 pack.
 #
 # Запуск: Godot --headless --path . --script res://tests/full_frame_trim_atlas_parity_test.gd
 #         Godot --path . --script res://tests/full_frame_trim_atlas_parity_test.gd -- export=/abs/dir
@@ -49,6 +60,8 @@ var _export_dir := ""
 var _render_checks := 0
 var _render_skipped := false
 var _render_max_diff := 0
+var _render_max_diff_vs_atlas_texture := 0
+var _object_budget_rows: Array = []
 
 
 func _initialize() -> void:
@@ -66,8 +79,12 @@ func _initialize() -> void:
 		push_error("Full-frame trim atlas parity test: %d ошибок." % _errors.size())
 		quit(1)
 		return
-	print("Full-frame trim atlas parity test passed (%d packs: source pixels, metadata, negative fixtures, import settings, lifecycle; render captures: %s)." % [
-		_pack_paths().size(), "SKIPPED (headless renderer)" if _render_skipped else "%d captures, max per-channel difference %d/255" % [_render_checks, _render_max_diff]])
+	var worst_objects := 0
+	for row in _object_budget_rows:
+		worst_objects = maxi(worst_objects, int(row["objects"]))
+	print("Full-frame trim atlas parity test passed (%d packs: source pixels, metadata, negative fixtures, import settings, lifecycle, object budget (worst pack %d objects, budget %d); render captures: %s)." % [
+		_pack_paths().size(), worst_objects, FullFrameTrimAtlas.RESIDENT_OBJECT_BUDGET,
+		"SKIPPED (headless renderer)" if _render_skipped else "%d captures, max per-channel difference vs AtlasTexture representation %d/255 (tolerance 0), vs source frames %d/255" % [_render_checks, _render_max_diff_vs_atlas_texture, _render_max_diff]])
 	quit(0)
 
 
@@ -101,7 +118,7 @@ func _run() -> void:
 		var manifest := _load_manifest(frames_path)
 		if manifest.is_empty():
 			continue
-		var frames := load(frames_path) as SpriteFrames
+		var frames := await _check_object_budget(frames_path, manifest)
 		if frames == null:
 			_fail("%s: does not load as SpriteFrames." % frames_path)
 			continue
@@ -206,26 +223,44 @@ func _check_source_pixels(manifest: Dictionary, frames: SpriteFrames, pages: Arr
 			var expected := source_image.get_region(Rect2i(margin.position, region.size))
 			if not _images_equal(expected, page_pixels):
 				_fail("%s: page pixels differ from source %s at %s." % [pack_id, source, region])
-	# Every frame texture of the shipped resource is one of those entries.
+	# Every frame of the shipped resource resolves through the trim table to
+	# one of those entries, and its texture is the pack's single canvas.
+	var atlas := FullFrameTrimAtlas.of(frames)
+	if atlas == null:
+		_fail("%s: SpriteFrames carries no FullFrameTrimAtlas (metadata/%s)." % [pack_id, FullFrameTrimAtlas.META_KEY])
+		return
+	if atlas.entry_count() != int(manifest.get("unique_frames", -1)):
+		_fail("%s: trim table has %d entries, manifest unique_frames %d." % [pack_id, atlas.entry_count(), int(manifest.get("unique_frames", -1))])
+	if atlas.pages.size() != pages.size():
+		_fail("%s: trim table lists %d pages, manifest %d." % [pack_id, atlas.pages.size(), pages.size()])
+	for page_index in range(atlas.pages.size()):
+		var page := atlas.pages[page_index]
+		if page == null or not page_paths.has(page.resource_path):
+			_fail("%s: trim table page %d (%s) is not a listed page." % [pack_id, page_index, page.resource_path if page != null else "null"])
+	var canvas_textures := {}
 	for animation_name in frames.get_animation_names():
 		for frame_index in range(frames.get_frame_count(animation_name)):
 			var texture := frames.get_frame_texture(animation_name, frame_index)
-			var atlas_texture := texture as AtlasTexture
-			if atlas_texture == null or atlas_texture.atlas == null:
-				_fail("%s: %s[%d] is not an AtlasTexture over a page." % [pack_id, animation_name, frame_index])
+			if not (texture is FullFrameCanvasTexture):
+				_fail("%s: %s[%d] texture is %s, expected the pack's FullFrameCanvasTexture." % [pack_id, animation_name, frame_index, texture.get_class() if texture != null else "null"])
 				continue
-			if not page_paths.has(atlas_texture.atlas.resource_path):
-				_fail("%s: %s[%d] atlas %s is not a listed page." % [pack_id, animation_name, frame_index, atlas_texture.atlas.resource_path])
+			canvas_textures[texture.get_instance_id()] = true
 			var source := _manifest_frame_source(manifest, str(animation_name), frame_index)
 			var entry: Dictionary = entry_by_source.get(source, {})
 			if entry.is_empty():
 				_fail("%s: %s[%d] source %s has no atlas entry." % [pack_id, animation_name, frame_index, source])
 				continue
-			if Rect2i(atlas_texture.region) != _rect_from(entry["region"]) or Rect2i(atlas_texture.margin) != _rect_from(entry["margin"]):
-				_fail("%s: %s[%d] region/margin %s/%s differ from the manifest entry." % [pack_id, animation_name, frame_index, atlas_texture.region, atlas_texture.margin])
+			var frame := atlas.frame_entry(animation_name, frame_index)
+			if frame.is_empty():
+				_fail("%s: %s[%d] has no trim table entry." % [pack_id, animation_name, frame_index])
+				continue
+			if int(frame["page"]) != int(entry["page"]) or Rect2i(frame["region"]) != _rect_from(entry["region"]) or Rect2i(frame["margin"]) != _rect_from(entry["margin"]):
+				_fail("%s: %s[%d] page/region/margin %d/%s/%s differ from the manifest entry." % [pack_id, animation_name, frame_index, int(frame["page"]), frame["region"], frame["margin"]])
 			var canvas := Vector2i(int(entry["canvas"][0]), int(entry["canvas"][1]))
-			if Vector2i(atlas_texture.get_size()) != canvas:
-				_fail("%s: %s[%d] logical size %s, expected the %s canvas." % [pack_id, animation_name, frame_index, atlas_texture.get_size(), canvas])
+			if Vector2i(texture.get_size()) != canvas or Vector2i(frame["canvas"]) != canvas:
+				_fail("%s: %s[%d] logical size %s / table canvas %s, expected the %s canvas." % [pack_id, animation_name, frame_index, texture.get_size(), frame["canvas"], canvas])
+	if canvas_textures.size() != 1:
+		_fail("%s: frames reference %d canvas textures, expected exactly one per pack." % [pack_id, canvas_textures.size()])
 
 
 func _manifest_frame_source(manifest: Dictionary, animation_name: String, frame_index: int) -> String:
@@ -246,6 +281,8 @@ func _max_channel_difference(a: Image, b: Image) -> int:
 	var data_b := b.get_data()
 	if data_a.size() != data_b.size():
 		return 255
+	if data_a == data_b:
+		return 0
 	var max_diff := 0
 	for index in range(data_a.size()):
 		var diff := absi(int(data_a[index]) - int(data_b[index]))
@@ -348,6 +385,29 @@ func _capture(viewport: SubViewport) -> Image:
 	return image
 
 
+# The FAN-3977 representation of the same pack: one AtlasTexture per unique
+# frame over the shipped pages with the manifest region/margin.
+func _atlas_texture_frames(manifest: Dictionary, atlas: FullFrameTrimAtlas) -> SpriteFrames:
+	var before := SpriteFrames.new()
+	before.remove_animation("default")
+	var by_source := {}
+	for entry in manifest.get("entries", []):
+		var texture := AtlasTexture.new()
+		texture.atlas = atlas.page_texture(int(entry["page"]))
+		texture.region = Rect2(_rect_from(entry["region"]))
+		texture.margin = Rect2(_rect_from(entry["margin"]))
+		for source in entry["sources"]:
+			by_source[str(source)] = texture
+	for animation in manifest.get("animations", []):
+		var name := str(animation["name"])
+		before.add_animation(name)
+		before.set_animation_loop(name, bool(animation["loop"]))
+		before.set_animation_speed(name, float(animation["speed"]))
+		for frame in animation["frames"]:
+			before.add_frame(name, by_source[str((frame as Dictionary)["source"])], float((frame as Dictionary)["duration"]))
+	return before
+
+
 func _reference_frames(manifest: Dictionary) -> SpriteFrames:
 	var reference := SpriteFrames.new()
 	reference.remove_animation("default")
@@ -377,9 +437,12 @@ func _registry_scale(frames_path: String) -> float:
 func _check_render(manifest: Dictionary, frames: SpriteFrames, viewport: SubViewport) -> void:
 	var pack_id := str(manifest["pack"])
 	var reference := _reference_frames(manifest)
+	var atlas_texture_frames := _atlas_texture_frames(manifest, FullFrameTrimAtlas.of(frames))
 	var sprite := AnimatedSprite2D.new()
 	sprite.position = Vector2(CAPTURE_SIZE) * 0.5
 	viewport.add_child(sprite)
+	if not FullFrameTrimAtlas.attach(sprite) or not FullFrameTrimAtlas.is_attached(sprite):
+		_fail("%s: FullFrameTrimAtlas.attach did not hook the sprite." % pack_id)
 	var base_scale := _registry_scale(str(manifest["tres"]))
 	var names := frames.get_animation_names()
 	var checked_names: Array = []
@@ -398,14 +461,19 @@ func _check_render(manifest: Dictionary, frames: SpriteFrames, viewport: SubView
 		for case in [[base_scale * COMBAT_CAMERA_ZOOM, false], [base_scale * COMBAT_CAMERA_ZOOM, true], [base_scale * HIGH_DPI_FACTOR, false]]:
 			var scale_factor: float = case[0]
 			var flip: bool = case[1]
-			var before := await _capture_frame(sprite, reference, name, frame_index, scale_factor, flip, viewport)
-			if before == null or before.is_empty():
+			var source_capture := await _capture_frame(sprite, reference, name, frame_index, scale_factor, flip, viewport)
+			if source_capture == null or source_capture.is_empty():
 				_render_skipped = true
 				sprite.queue_free()
 				return
+			var before := await _capture_frame(sprite, atlas_texture_frames, name, frame_index, scale_factor, flip, viewport)
 			var after := await _capture_frame(sprite, frames, name, frame_index, scale_factor, flip, viewport)
 			_render_checks += 1
-			var max_diff := _max_channel_difference(before, after)
+			var atlas_diff := _max_channel_difference(before, after)
+			_render_max_diff_vs_atlas_texture = maxi(_render_max_diff_vs_atlas_texture, atlas_diff)
+			if atlas_diff > 0:
+				_fail("%s: render of %s[%d] (scale %.3f, flip %s) differs from the AtlasTexture representation by up to %d/255 (must be identical)." % [pack_id, name, frame_index, scale_factor, flip, atlas_diff])
+			var max_diff := _max_channel_difference(source_capture, after)
 			_render_max_diff = maxi(_render_max_diff, max_diff)
 			if max_diff > RENDER_TOLERANCE:
 				_fail("%s: render of %s[%d] (scale %.3f, flip %s) differs from the source-frame reference by up to %d/255." % [pack_id, name, frame_index, scale_factor, flip, max_diff])
@@ -474,20 +542,38 @@ func _check_import_settings(manifest: Dictionary) -> void:
 func _check_lifecycle(frames_path: String) -> void:
 	var frames := load(frames_path) as SpriteFrames
 	var name := frames.get_animation_names()[0]
-	var texture := frames.get_frame_texture(name, 0) as AtlasTexture
-	var region_before := texture.region
-	var margin_before := texture.margin
+	var frame_before := FullFrameTrimAtlas.of(frames).frame_entry(name, 0)
 	frames = null
-	texture = null
 	await process_frame
 	await process_frame
 	var reloaded := load(frames_path) as SpriteFrames
 	if reloaded == null:
 		_fail("lifecycle: cold reload of %s failed." % frames_path)
 		return
-	var reloaded_texture := reloaded.get_frame_texture(name, 0) as AtlasTexture
-	if reloaded_texture == null or reloaded_texture.region != region_before or reloaded_texture.margin != margin_before:
+	var reloaded_atlas := FullFrameTrimAtlas.of(reloaded)
+	if reloaded_atlas == null or reloaded_atlas.frame_entry(name, 0) != frame_before or frame_before.is_empty():
 		_fail("lifecycle: reloaded frame geometry differs.")
 	var orphans := int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT))
 	if orphans != 0:
 		_fail("lifecycle: %d orphan nodes after reload." % orphans)
+
+
+# --- G. object budget (FAN-3981) ----------------------------------------------
+
+# Loads the pack with its pages already cached and returns it; the load may
+# add at most RESIDENT_OBJECT_BUDGET engine objects (the SpriteFrames, its
+# canvas texture, the trim table and the page textures — never one object
+# per frame).
+func _check_object_budget(frames_path: String, manifest: Dictionary) -> SpriteFrames:
+	var pages: Array = []
+	for page in manifest.get("pages", []):
+		pages.append(load(str(page["path"])))
+	await process_frame
+	var objects_before := int(Performance.get_monitor(Performance.OBJECT_COUNT))
+	var frames := load(frames_path) as SpriteFrames
+	await process_frame
+	var objects := int(Performance.get_monitor(Performance.OBJECT_COUNT)) - objects_before
+	_object_budget_rows.append({"pack": manifest["pack"], "objects": objects, "frames": int(manifest.get("frames_total", 0))})
+	if objects > FullFrameTrimAtlas.RESIDENT_OBJECT_BUDGET:
+		_fail("%s: loading the pack added %d engine objects (budget %d; %d frames)." % [manifest["pack"], objects, FullFrameTrimAtlas.RESIDENT_OBJECT_BUDGET, int(manifest.get("frames_total", 0))])
+	return frames

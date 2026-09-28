@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "packs": [
+    {
+      "captures": 984,
+      "frames": 328,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 297,
+      "pack": "disk_devourer",
+      "pages": 5,
+      "unique": 296
+    },
+    {
+      "captures": 1344,
+      "frames": 448,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 283,
+      "pack": "rift_warden",
+      "pages": 3,
+      "unique": 282
+    },
+    {
+      "captures": 618,
+      "frames": 206,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 207,
+      "pack": "homunculus_tank",
+      "pages": 2,
+      "unique": 206
+    },
+    {
+      "captures": 2736,
+      "frames": 912,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 428,
+      "pack": "secret_ascension_boss",
+      "pages": 14,
+      "unique": 427
+    }
+  ],
+  "renderer": "gl_compatibility"
+}

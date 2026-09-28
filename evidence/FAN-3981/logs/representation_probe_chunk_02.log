@@ -1,0 +1,12 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe mini_spark_wight: objects before 297 / after 3, 1464 captures, max diff before/after 0, vs source 3
+probe mini_swarm_sniper: objects before 297 / after 4, 1464 captures, max diff before/after 0, vs source 2
+
+| pack | frames | unique | pages | objects before (AtlasTexture) | objects after (trim table) | captures | max diff before/after | max diff vs source |
+|---|---|---|---|---|---|---|---|---|
+| mini_spark_wight | 488 | 296 | 3 | 297 | 3 | 1464 | 0 | 3 |
+| mini_swarm_sniper | 488 | 296 | 3 | 297 | 4 | 1464 | 0 | 2 |
+REPRESENTATION PROBE OK (2 packs)

@@ -1,0 +1,105 @@
+{
+  "errors": [],
+  "packs": [
+    {
+      "captures": 78,
+      "frames": 26,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 1,
+      "objects_after": 4,
+      "objects_before": 21,
+      "pack": "druid_wolf",
+      "pages": 1,
+      "unique": 20
+    },
+    {
+      "captures": 459,
+      "frames": 153,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 97,
+      "pack": "druid_ghost_bear",
+      "pages": 1,
+      "unique": 96
+    },
+    {
+      "captures": 459,
+      "frames": 153,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 3,
+      "objects_after": 4,
+      "objects_before": 89,
+      "pack": "druid_ghost_lion",
+      "pages": 1,
+      "unique": 88
+    },
+    {
+      "captures": 459,
+      "frames": 153,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 89,
+      "pack": "druid_ghost_panther",
+      "pages": 1,
+      "unique": 88
+    },
+    {
+      "captures": 459,
+      "frames": 153,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 89,
+      "pack": "druid_ghost_stag",
+      "pages": 1,
+      "unique": 88
+    },
+    {
+      "captures": 459,
+      "frames": 153,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 3,
+      "objects_after": 4,
+      "objects_before": 89,
+      "pack": "druid_ghost_wolf",
+      "pages": 1,
+      "unique": 88
+    },
+    {
+      "captures": 78,
+      "frames": 26,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 1,
+      "objects_after": 4,
+      "objects_before": 18,
+      "pack": "pack_spirit",
+      "pages": 1,
+      "unique": 17
+    },
+    {
+      "captures": 78,
+      "frames": 26,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 1,
+      "objects_after": 4,
+      "objects_before": 18,
+      "pack": "homunculus",
+      "pages": 1,
+      "unique": 17
+    },
+    {
+      "captures": 78,
+      "frames": 26,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 1,
+      "objects_after": 4,
+      "objects_before": 14,
+      "pack": "leadership_echo",
+      "pages": 1,
+      "unique": 13
+    }
+  ],
+  "renderer": "gl_compatibility"
+}

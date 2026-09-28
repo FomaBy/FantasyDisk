@@ -1,0 +1,3 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+Route map full-frame prefetch test passed (every row queues the core roster: enemies, mini-elites, allies; node elite/boss are left to the gated combat start; boss row keeps secret_boss_active; stale boss pack released).

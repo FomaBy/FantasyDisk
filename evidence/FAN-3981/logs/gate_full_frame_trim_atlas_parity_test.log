@@ -1,0 +1,45 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+  parity: ash_marksman ok (184 entries, 2 pages) at 598 ms
+  parity: bone_caller ok (184 entries, 2 pages) at 979 ms
+  parity: bone_shaman ok (183 entries, 3 pages) at 1396 ms
+  parity: rift_cutter ok (224 entries, 2 pages) at 1882 ms
+  parity: rift_shieldbearer ok (184 entries, 2 pages) at 2267 ms
+  parity: small_biter ok (184 entries, 3 pages) at 2705 ms
+  parity: spark_runner ok (193 entries, 2 pages) at 3228 ms
+  parity: stone_bruiser ok (216 entries, 2 pages) at 3665 ms
+  parity: venom_spitter ok (184 entries, 4 pages) at 4175 ms
+  parity: void_mage ok (184 entries, 3 pages) at 4584 ms
+  parity: winged_spark ok (224 entries, 4 pages) at 5114 ms
+  parity: iron_bastion ok (326 entries, 5 pages) at 5827 ms
+  parity: mini_bone_warden ok (296 entries, 4 pages) at 6507 ms
+  parity: mini_plague_bellringer ok (296 entries, 3 pages) at 7148 ms
+  parity: mini_plague_berserker ok (232 entries, 2 pages) at 7643 ms
+  parity: mini_rot_hound ok (245 entries, 4 pages) at 8239 ms
+  parity: mini_scavenger_reaper ok (295 entries, 3 pages) at 8792 ms
+  parity: mini_shadow_devourer ok (296 entries, 4 pages) at 9595 ms
+  parity: mini_siege_rammer ok (296 entries, 4 pages) at 10276 ms
+  parity: mini_spark_wight ok (296 entries, 3 pages) at 10849 ms
+  parity: mini_swarm_sniper ok (296 entries, 3 pages) at 11418 ms
+  parity: mini_void_phantom ok (295 entries, 3 pages) at 12158 ms
+  parity: night_stalker ok (352 entries, 6 pages) at 13128 ms
+  parity: plague_prophet ok (231 entries, 2 pages) at 13668 ms
+  parity: shard_marshal ok (304 entries, 3 pages) at 14266 ms
+  parity: ashen_colossus ok (284 entries, 3 pages) at 15110 ms
+  parity: bloodthorn_lion ok (300 entries, 5 pages) at 16014 ms
+  parity: bone_archon ok (275 entries, 3 pages) at 16846 ms
+  parity: brood_mother ok (295 entries, 4 pages) at 17748 ms
+  parity: disk_devourer ok (296 entries, 5 pages) at 18609 ms
+  parity: rift_warden ok (282 entries, 3 pages) at 19369 ms
+  parity: druid_wolf ok (20 entries, 1 pages) at 19409 ms
+  parity: druid_ghost_bear ok (96 entries, 1 pages) at 19506 ms
+  parity: druid_ghost_lion ok (88 entries, 1 pages) at 19609 ms
+  parity: druid_ghost_panther ok (88 entries, 1 pages) at 19703 ms
+  parity: druid_ghost_stag ok (88 entries, 1 pages) at 19813 ms
+  parity: druid_ghost_wolf ok (88 entries, 1 pages) at 19921 ms
+  parity: pack_spirit ok (17 entries, 1 pages) at 19955 ms
+  parity: homunculus ok (17 entries, 1 pages) at 19988 ms
+  parity: homunculus_tank ok (206 entries, 2 pages) at 20386 ms
+  parity: leadership_echo ok (13 entries, 1 pages) at 20413 ms
+  parity: secret_ascension_boss ok (427 entries, 14 pages) at 22192 ms
+Full-frame trim atlas parity test passed (42 packs: source pixels, metadata, negative fixtures, import settings, lifecycle, object budget (worst pack 21 objects, budget 24); render captures: SKIPPED (headless renderer)).

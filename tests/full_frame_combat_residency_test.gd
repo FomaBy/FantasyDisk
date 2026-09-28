@@ -82,6 +82,7 @@ func _run() -> void:
 	FullFrameAnimationRegistry.reset_synchronous_combat_load_count()
 
 	_check_roster_composition()
+	await _check_object_budget()
 	await _check_gate_and_regular_spawns()
 	await _check_miss_fallback()
 	await _check_elite_fights()
@@ -92,6 +93,43 @@ func _run() -> void:
 	FullFrameAnimationRegistry.release_prefetched()
 	_main.queue_free()
 	await process_frame
+
+
+# --- 0. object budget (FAN-3981) ------------------------------------------------
+
+# The core roster resident (the route-map state every regular fight starts
+# from) may cost at most RESIDENT_OBJECT_BUDGET engine objects per pack;
+# with the FAN-3977 AtlasTexture-per-frame packs the same roster cost
+# ~230 per pack (route map 7,606 objects, P2 8,643-8,719 on the fixed
+# 0.3.1 Windows review; checklist P2 target 5,000, red > 6,250).
+func _check_object_budget() -> void:
+	var progression = _main.get("PROGRESSION_DATA")
+	var roster: Array = FullFrameEncounterRoster.core_paths(progression, "druid")
+	FullFrameAnimationRegistry.release_prefetched()
+	await process_frame
+	await process_frame
+	var objects_before := int(Performance.get_monitor(Performance.OBJECT_COUNT))
+	for frames_path in roster:
+		FullFrameAnimationRegistry.queue_prefetch_path(str(frames_path))
+	for _frame in range(3000):
+		if FullFrameAnimationRegistry.all_resident(roster):
+			break
+		await process_frame
+	if not FullFrameAnimationRegistry.all_resident(roster):
+		_fail("object budget: the core roster did not become resident.")
+		return
+	await process_frame
+	var objects := int(Performance.get_monitor(Performance.OBJECT_COUNT)) - objects_before
+	var budget := roster.size() * FullFrameTrimAtlas.RESIDENT_OBJECT_BUDGET
+	print("object budget: core roster of %d packs resident adds %d engine objects (budget %d)." % [roster.size(), objects, budget])
+	if objects > budget:
+		_fail("object budget: the resident core roster (%d packs) added %d engine objects, over the %d budget." % [roster.size(), objects, budget])
+	FullFrameAnimationRegistry.release_prefetched()
+	await process_frame
+	await process_frame
+	var released := int(Performance.get_monitor(Performance.OBJECT_COUNT)) - objects_before
+	if released > roster.size():
+		_fail("object budget: %d engine objects remain after release_prefetched (expected the packs to be freed)." % released)
 
 
 # --- 1. roster composition -----------------------------------------------------

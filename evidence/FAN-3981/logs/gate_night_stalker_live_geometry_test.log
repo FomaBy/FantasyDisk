@@ -1,0 +1,4 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+night_stalker live geometry: rows=56 frames=368 height=255.192..255.192 feet=95.558..95.558 spreads=(0.000,0.000) contact_range=244.6527 collision_radius=68.0400
+Night Stalker live geometry test passed: 7 states x 8 directions x 368 frames.

@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "packs": [
+    {
+      "captures": 1464,
+      "frames": 488,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 296,
+      "pack": "mini_void_phantom",
+      "pages": 3,
+      "unique": 295
+    },
+    {
+      "captures": 1104,
+      "frames": 368,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 353,
+      "pack": "night_stalker",
+      "pages": 6,
+      "unique": 352
+    },
+    {
+      "captures": 744,
+      "frames": 248,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 232,
+      "pack": "plague_prophet",
+      "pages": 2,
+      "unique": 231
+    },
+    {
+      "captures": 1512,
+      "frames": 504,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 305,
+      "pack": "shard_marshal",
+      "pages": 3,
+      "unique": 304
+    }
+  ],
+  "renderer": "gl_compatibility"
+}

@@ -94,8 +94,7 @@ func _initialize() -> void:
 			var row_frame_count := frames.get_frame_count(row_name)
 			for frame_index in range(row_frame_count):
 				body.frame = frame_index
-				var texture := frames.get_frame_texture(row_name, frame_index)
-				var metrics := _live_frame_metrics(stalker, body, texture)
+				var metrics := _live_frame_metrics(stalker, body, frames, row_name, frame_index)
 				if metrics.is_empty():
 					errors.append("%s[%d] has no measurable alpha bbox" % [row_name, frame_index])
 					continue
@@ -158,10 +157,14 @@ func _initialize() -> void:
 	quit(0)
 
 
-func _live_frame_metrics(stalker: Node2D, body: AnimatedSprite2D, texture: Texture2D) -> Dictionary:
+var _page_images := {}
+
+
+func _live_frame_metrics(stalker: Node2D, body: AnimatedSprite2D, frames: SpriteFrames, row_name: String, frame_index: int) -> Dictionary:
+	var texture := frames.get_frame_texture(row_name, frame_index)
 	if texture == null:
 		return {}
-	var image := _canvas_image(texture)
+	var image := _canvas_image(frames, row_name, frame_index, texture)
 	if image == null or image.is_empty() or image.get_width() != CANVAS_SIZE or image.get_height() != CANVAS_SIZE:
 		return {}
 	var used_rect := image.get_used_rect()
@@ -186,10 +189,14 @@ func _fail(message: String) -> void:
 	quit(1)
 
 
-# FAN-3977: frames are AtlasTexture trims whose `margin` restores the 512
-# canvas; rebuild the canvas image so the feet/height math stays in canvas
-# coordinates (a plain texture is returned as-is).
-func _canvas_image(texture: Texture2D) -> Image:
+# FAN-3977/FAN-3981: frames are trim-atlas entries drawn through the pack's
+# FullFrameTrimAtlas; rebuild the 512 canvas image so the feet/height math
+# stays in canvas coordinates (an AtlasTexture or plain texture is handled
+# as before).
+func _canvas_image(frames: SpriteFrames, row_name: String, frame_index: int, texture: Texture2D) -> Image:
+	var atlas := FullFrameTrimAtlas.of(frames)
+	if atlas != null:
+		return atlas.frame_canvas_image(row_name, frame_index, _page_images)
 	var atlas_texture := texture as AtlasTexture
 	if atlas_texture == null or atlas_texture.atlas == null:
 		return texture.get_image()

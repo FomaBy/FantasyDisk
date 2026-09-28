@@ -1,0 +1,23 @@
+route_map_full_frame_prefetch_test EXIT=0
+full_frame_registry_lazy_load_test EXIT=0
+full_frame_registry_integrity_test EXIT=0
+full_frame_registry_shard_validation_test EXIT=0
+full_frame_eight_direction_contract_test EXIT=0
+animation_smoke_test EXIT=0
+fan2623_shard_marshal_directional_test EXIT=0
+secret_boss_animation_pack_smoke EXIT=0
+full_frame_row_scale_invariant_test EXIT=0
+night_stalker_live_geometry_test EXIT=3
+asset_reference_integrity_test EXIT=0
+runtime_smoke_combat_test EXIT=0
+runtime_smoke_boss_elite_test EXIT=0
+ally_minion_lifecycle_test EXIT=0
+summoner_strengthening_test EXIT=0
+feet_anchor_ground_circle_test EXIT=0
+enemy_animation_priority_test EXIT=0
+actors/night_stalker_smoke_test EXIT=0
+actors/rift_warden_smoke_test EXIT=0
+actors/mini_void_phantom_smoke_test EXIT=0
+actors/druid_beast_smoke_test EXIT=0
+actors/small_biter_smoke_test EXIT=0
+BATCH_DONE

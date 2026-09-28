@@ -80,6 +80,7 @@ func _capture_actor(entry: Dictionary) -> void:
 
 		var sprite := AnimatedSprite2D.new()
 		sprite.sprite_frames = frames
+		FullFrameTrimAtlas.attach(sprite)  # FAN-3981: trim-atlas packs draw through the table
 		sprite.animation = anim_name
 		sprite.position = origin + CELL * 0.5 - Vector2(0.0, 8.0)
 		var display_scale := config.get("scale", Vector2.ONE) as Vector2

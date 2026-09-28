@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "packs": [
+    {
+      "captures": 1344,
+      "frames": 448,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 285,
+      "pack": "ashen_colossus",
+      "pages": 3,
+      "unique": 284
+    },
+    {
+      "captures": 1344,
+      "frames": 448,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 301,
+      "pack": "bloodthorn_lion",
+      "pages": 5,
+      "unique": 300
+    },
+    {
+      "captures": 1344,
+      "frames": 448,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 276,
+      "pack": "bone_archon",
+      "pages": 3,
+      "unique": 275
+    },
+    {
+      "captures": 1344,
+      "frames": 448,
+      "max_diff_before_after": 0,
+      "max_diff_vs_source": 2,
+      "objects_after": 4,
+      "objects_before": 296,
+      "pack": "brood_mother",
+      "pages": 4,
+      "unique": 295
+    }
+  ],
+  "renderer": "gl_compatibility"
+}

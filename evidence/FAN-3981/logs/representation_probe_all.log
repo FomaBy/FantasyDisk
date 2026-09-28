@@ -1,0 +1,23 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe ash_marksman: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 2
+probe bone_caller: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 2
+probe bone_shaman: objects before 184 / after 4, 552 captures, max diff before/after 0, vs source 2
+probe rift_cutter: objects before 225 / after 4, 918 captures, max diff before/after 0, vs source 2
+probe rift_shieldbearer: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 2
+probe small_biter: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 2
+probe spark_runner: objects before 194 / after 4, 624 captures, max diff before/after 0, vs source 2
+probe stone_bruiser: objects before 217 / after 4, 648 captures, max diff before/after 0, vs source 2
+probe venom_spitter: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 2
+probe void_mage: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 3
+probe winged_spark: objects before 225 / after 4, 672 captures, max diff before/after 0, vs source 2
+probe iron_bastion: objects before 327 / after 4, 1032 captures, max diff before/after 0, vs source 2
+probe mini_bone_warden: objects before 297 / after 4, 1464 captures, max diff before/after 0, vs source 2
+probe mini_plague_bellringer: objects before 297 / after 4, 1464 captures, max diff before/after 0, vs source 2
+probe mini_plague_berserker: objects before 233 / after 4, 1272 captures, max diff before/after 0, vs source 2
+probe mini_rot_hound: objects before 246 / after 4, 792 captures, max diff before/after 0, vs source 3
+probe mini_scavenger_reaper: objects before 296 / after 4, 1464 captures, max diff before/after 0, vs source 2
+probe mini_shadow_devourer: objects before 297 / after 4, 1464 captures, max diff before/after 0, vs source 2
+probe mini_siege_rammer: objects before 297 / after 4, 1464 captures, max diff before/after 0, vs source 2

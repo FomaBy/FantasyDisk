@@ -19,12 +19,19 @@ This tool rewrites each pack losslessly:
   lossless RGBA pages of at most `PAGE_SIZE` x `PAGE_SIZE` with a `GUTTER`
   of transparent pixels between entries;
 * the SpriteFrames `.tres` keeps every animation name, order, loop flag,
-  speed and per-frame duration, but each frame becomes an `AtlasTexture`
-  whose `region` is the trim on its page and whose `margin` restores the
-  original canvas offset and logical size (`get_size()` still reports the
-  canvas), so `AnimatedSprite2D` draws every frame at the same on-screen
-  position and size, `flip_h` mirrors around the same axis, and consumers
-  that measure the frame texture see the unchanged canvas;
+  speed and per-frame duration; every frame references the pack's single
+  `FullFrameCanvasTexture` (reports the canvas size, draws nothing) and the
+  resource carries a `FullFrameTrimAtlas` table (`metadata/
+  full_frame_trim_atlas`): one entry per unique frame (page, region on the
+  page, canvas offset of the trim) and the entry index of every frame per
+  animation. `FullFrameTrimAtlas.attach` draws the current frame's region
+  at the canvas offset from the sprite's `draw` signal, so `AnimatedSprite2D`
+  places every frame at the same on-screen position and size, `flip_h`
+  mirrors around the same axis, and consumers that measure the frame
+  texture see the unchanged canvas. FAN-3977 shipped one `AtlasTexture`
+  per unique frame with the same region/margin; FAN-3981 replaced it with
+  this table because every resident pack cost ~230 engine objects
+  (perf checklist M3 red on the fixed 0.3.1 Windows review);
 * a manifest binds the source frames (path + SHA-256), the packing layout
   and the animation model, so `--check` can prove the committed pages and
   `.tres` are exactly what the retained sources produce.
@@ -76,6 +83,12 @@ SMALL_PAGE_SIZE = 1024
 PAGE_SUFFIX = "_trim_"
 MANIFEST_SUFFIX = "_trim_manifest.json"
 IMPORT_PARAMS_REQUIRED = {"compress/mode": "0", "mipmaps/generate": "false"}
+# FAN-3981 runtime representation (see the module docstring).
+CANVAS_TEXTURE_SCRIPT = "res://scripts/full_frame_canvas_texture.gd"
+TRIM_ATLAS_SCRIPT = "res://scripts/full_frame_trim_atlas.gd"
+TRIM_ATLAS_META = "full_frame_trim_atlas"
+CANVAS_SUB_ID = "Canvas"
+TRIM_ATLAS_SUB_ID = "TrimAtlas"
 
 
 # --- Godot text-resource subset parser ---------------------------------------
@@ -512,6 +525,8 @@ def render_tres(model: PackModel, trims_by_source: dict[str, Trim], page_count: 
     lines = ['[gd_resource type="SpriteFrames" format=3]', ""]
     for page in range(page_count):
         lines.append(f'[ext_resource type="Texture2D" path="{page_res_path(model.tres_path, page)}" id="page_{page}"]')
+    lines.append(f'[ext_resource type="Script" path="{CANVAS_TEXTURE_SCRIPT}" id="canvas_script"]')
+    lines.append(f'[ext_resource type="Script" path="{TRIM_ATLAS_SCRIPT}" id="trim_atlas_script"]')
     lines.append("")
     ordered_trims: list[Trim] = []
     seen = set()
@@ -521,25 +536,41 @@ def render_tres(model: PackModel, trims_by_source: dict[str, Trim], page_count: 
             if trim.key not in seen:
                 seen.add(trim.key)
                 ordered_trims.append(trim)
-    sub_ids = {}
-    for index, trim in enumerate(ordered_trims):
-        sub_id = f"Trim_{index}"
-        sub_ids[trim.key] = sub_id
-        canvas_w, canvas_h = trim.canvas
-        lines += [
-            f'[sub_resource type="AtlasTexture" id="{sub_id}"]',
-            f'atlas = ExtResource("page_{trim.page}")',
-            f"region = Rect2({trim.x}, {trim.y}, {trim.width}, {trim.height})",
-            f"margin = Rect2({trim.box[0]}, {trim.box[1]}, {canvas_w - trim.width}, {canvas_h - trim.height})",
-            "",
-        ]
-    lines.append("[resource]")
+    if not ordered_trims:
+        raise ValueError(f"{model.pack_id}: no frames")
+    canvases = {trim.canvas for trim in ordered_trims}
+    if len(canvases) != 1:
+        raise ValueError(f"{model.pack_id}: frames of different canvas sizes {sorted(canvases)} cannot share one pack")
+    canvas_w, canvas_h = ordered_trims[0].canvas
+    entry_index = {trim.key: index for index, trim in enumerate(ordered_trims)}
+    entries: list[int] = []
+    for trim in ordered_trims:
+        entries += [trim.page, trim.x, trim.y, trim.width, trim.height, trim.box[0], trim.box[1]]
+    lines += [
+        f'[sub_resource type="Texture2D" id="{CANVAS_SUB_ID}"]',
+        'script = ExtResource("canvas_script")',
+        f"size = Vector2i({canvas_w}, {canvas_h})",
+        "",
+        f'[sub_resource type="Resource" id="{TRIM_ATLAS_SUB_ID}"]',
+        'script = ExtResource("trim_atlas_script")',
+        f"canvas = Vector2i({canvas_w}, {canvas_h})",
+        "pages = Array[Texture2D]([" + ", ".join(f'ExtResource("page_{page}")' for page in range(page_count)) + "])",
+        "entries = PackedInt32Array(" + ", ".join(str(value) for value in entries) + ")",
+        "animations = {",
+    ]
+    animation_lines = []
+    for animation in model.animations:
+        indices = ", ".join(str(entry_index[trims_by_source[frame.source].key]) for frame in animation.frames)
+        animation_lines.append(f'"{animation.name}": PackedInt32Array({indices})')
+    lines.append(",\n".join(animation_lines))
+    lines += ["}", "", "[resource]"]
     for key, value in model.resource_props.items():
         lines.append(f"{key} = {_fmt_value(value)}")
+    lines.append(f'metadata/{TRIM_ATLAS_META} = SubResource("{TRIM_ATLAS_SUB_ID}")')
     animation_entries = []
     for animation in model.animations:
         frames = [
-            {"duration": frame.duration, "texture": ("SubResource", (sub_ids[trims_by_source[frame.source].key],))}
+            {"duration": frame.duration, "texture": ("SubResource", (CANVAS_SUB_ID,))}
             for frame in animation.frames
         ]
         animation_entries.append({

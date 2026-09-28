@@ -1,0 +1,46 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+  parity: ash_marksman ok (184 entries, 2 pages) at 3440 ms
+  parity: bone_caller ok (184 entries, 2 pages) at 6363 ms
+  parity: bone_shaman ok (183 entries, 3 pages) at 9303 ms
+  parity: rift_cutter ok (224 entries, 2 pages) at 12317 ms
+  parity: rift_shieldbearer ok (184 entries, 2 pages) at 15190 ms
+  parity: small_biter ok (184 entries, 3 pages) at 17995 ms
+  parity: spark_runner ok (193 entries, 2 pages) at 21014 ms
+  parity: stone_bruiser ok (216 entries, 2 pages) at 23957 ms
+  parity: venom_spitter ok (184 entries, 4 pages) at 26978 ms
+  parity: void_mage ok (184 entries, 3 pages) at 29928 ms
+  parity: winged_spark ok (224 entries, 4 pages) at 33013 ms
+  parity: iron_bastion ok (326 entries, 5 pages) at 36307 ms
+  parity: mini_bone_warden ok (296 entries, 4 pages) at 39506 ms
+  parity: mini_plague_bellringer ok (296 entries, 3 pages) at 42656 ms
+  parity: mini_plague_berserker ok (232 entries, 2 pages) at 45696 ms
+  parity: mini_rot_hound ok (245 entries, 4 pages) at 48841 ms
+  parity: mini_scavenger_reaper ok (295 entries, 3 pages) at 52024 ms
+  parity: mini_shadow_devourer ok (296 entries, 4 pages) at 55423 ms
+  parity: mini_siege_rammer ok (296 entries, 4 pages) at 58677 ms
+  parity: mini_spark_wight ok (296 entries, 3 pages) at 61802 ms
+  parity: mini_swarm_sniper ok (296 entries, 3 pages) at 64938 ms
+  parity: mini_void_phantom ok (295 entries, 3 pages) at 68300 ms
+  parity: night_stalker ok (352 entries, 6 pages) at 71944 ms
+  parity: plague_prophet ok (231 entries, 2 pages) at 75058 ms
+  parity: shard_marshal ok (304 entries, 3 pages) at 78164 ms
+  parity: ashen_colossus ok (284 entries, 3 pages) at 81614 ms
+  parity: bloodthorn_lion ok (300 entries, 5 pages) at 85176 ms
+  parity: bone_archon ok (275 entries, 3 pages) at 88659 ms
+  parity: brood_mother ok (295 entries, 4 pages) at 92267 ms
+  parity: disk_devourer ok (296 entries, 5 pages) at 95789 ms
+  parity: rift_warden ok (282 entries, 3 pages) at 99163 ms
+  parity: druid_wolf ok (20 entries, 1 pages) at 100866 ms
+  parity: druid_ghost_bear ok (96 entries, 1 pages) at 103462 ms
+  parity: druid_ghost_lion ok (88 entries, 1 pages) at 105961 ms
+  parity: druid_ghost_panther ok (88 entries, 1 pages) at 108509 ms
+  parity: druid_ghost_stag ok (88 entries, 1 pages) at 111049 ms
+  parity: druid_ghost_wolf ok (88 entries, 1 pages) at 113544 ms
+  parity: pack_spirit ok (17 entries, 1 pages) at 115272 ms
+  parity: homunculus ok (17 entries, 1 pages) at 117010 ms
+  parity: homunculus_tank ok (206 entries, 2 pages) at 119903 ms
+  parity: leadership_echo ok (13 entries, 1 pages) at 121623 ms
+  parity: secret_ascension_boss ok (427 entries, 14 pages) at 126234 ms
+Full-frame trim atlas parity test passed (42 packs: source pixels, metadata, negative fixtures, import settings, lifecycle, object budget (worst pack 21 objects, budget 24); render captures: 732 captures, max per-channel difference vs AtlasTexture representation 0/255 (tolerance 0), vs source frames 2/255).

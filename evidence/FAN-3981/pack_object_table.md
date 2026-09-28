@@ -1,0 +1,45 @@
+| pack | objects before (AtlasTexture per frame) | objects after (trim table) | captures compared | max diff before/after (0-255) | max diff vs source frame |
+|---|---|---|---|---|---|
+| ash_marksman | 185 | 4 | 552 | 0 | 2 |
+| ashen_colossus | 285 | 4 | 1344 | 0 | 2 |
+| bloodthorn_lion | 301 | 4 | 1344 | 0 | 2 |
+| bone_archon | 276 | 4 | 1344 | 0 | 2 |
+| bone_caller | 185 | 4 | 552 | 0 | 2 |
+| bone_shaman | 184 | 4 | 552 | 0 | 2 |
+| brood_mother | 296 | 4 | 1344 | 0 | 2 |
+| disk_devourer | 297 | 4 | 984 | 0 | 2 |
+| druid_ghost_bear | 97 | 4 | 459 | 0 | 2 |
+| druid_ghost_lion | 89 | 4 | 459 | 0 | 3 |
+| druid_ghost_panther | 89 | 4 | 459 | 0 | 2 |
+| druid_ghost_stag | 89 | 4 | 459 | 0 | 2 |
+| druid_ghost_wolf | 89 | 4 | 459 | 0 | 3 |
+| druid_wolf | 21 | 4 | 78 | 0 | 1 |
+| homunculus | 18 | 4 | 78 | 0 | 1 |
+| homunculus_tank | 207 | 4 | 618 | 0 | 2 |
+| iron_bastion | 327 | 4 | 1032 | 0 | 2 |
+| leadership_echo | 14 | 4 | 78 | 0 | 1 |
+| mini_bone_warden | 297 | 4 | 1464 | 0 | 2 |
+| mini_plague_bellringer | 297 | 4 | 1464 | 0 | 2 |
+| mini_plague_berserker | 233 | 4 | 1272 | 0 | 2 |
+| mini_rot_hound | 246 | 4 | 792 | 0 | 3 |
+| mini_scavenger_reaper | 296 | 4 | 1464 | 0 | 2 |
+| mini_shadow_devourer | 297 | 4 | 1464 | 0 | 2 |
+| mini_siege_rammer | 297 | 4 | 1464 | 0 | 2 |
+| mini_spark_wight | 297 | 3 | 1464 | 0 | 3 |
+| mini_swarm_sniper | 297 | 4 | 1464 | 0 | 2 |
+| mini_void_phantom | 296 | 4 | 1464 | 0 | 2 |
+| night_stalker | 353 | 4 | 1104 | 0 | 2 |
+| pack_spirit | 18 | 4 | 78 | 0 | 1 |
+| plague_prophet | 232 | 4 | 744 | 0 | 2 |
+| rift_cutter | 225 | 4 | 918 | 0 | 2 |
+| rift_shieldbearer | 185 | 4 | 552 | 0 | 2 |
+| rift_warden | 283 | 4 | 1344 | 0 | 2 |
+| secret_ascension_boss | 428 | 4 | 2736 | 0 | 2 |
+| shard_marshal | 305 | 4 | 1512 | 0 | 2 |
+| small_biter | 185 | 4 | 552 | 0 | 2 |
+| spark_runner | 194 | 4 | 624 | 0 | 2 |
+| stone_bruiser | 217 | 4 | 648 | 0 | 2 |
+| venom_spitter | 185 | 4 | 552 | 0 | 2 |
+| void_mage | 185 | 4 | 552 | 0 | 3 |
+| winged_spark | 225 | 4 | 672 | 0 | 2 |
+| **42 packs** | **9122** | **167** | **38559** | **0** | **3** |
