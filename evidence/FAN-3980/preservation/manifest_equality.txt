@@ -1,0 +1,8 @@
+# Preservation manifest equality (recursive SHA-256, 'find . -type f -print0 | sort -z | xargs -0 -n 500 shasum -a 256 | sort -k2' inside the package directory)
+preserve_v0.3.1_before.sha256 lines=114341 sha256=7632cea69623ab93f5c92550dd1a5e495f4c88d2d9b3fe81c63b7ea16badb513
+preserve_v0.3.1_after.sha256 lines=114341 sha256=7632cea69623ab93f5c92550dd1a5e495f4c88d2d9b3fe81c63b7ea16badb513
+preserve_v0.3.1_after2.sha256 lines=114341 sha256=7632cea69623ab93f5c92550dd1a5e495f4c88d2d9b3fe81c63b7ea16badb513
+preserve_v0.3.2_before.sha256 lines=114453 sha256=f6fbd8efda778fa9e4c7f4100c16c1739ea28933faec928819e1dd0a39708839
+preserve_v0.3.2_after.sha256 lines=114453 sha256=f6fbd8efda778fa9e4c7f4100c16c1739ea28933faec928819e1dd0a39708839
+v0.3.1_after = manifest of releases/archive/v0.3.1-attempt1-448a0cc1 right after the relocation; v0.3.1_after2 = same directory after the build, verify and perf runs; v0.3.2_after = releases/v0.3.2 after the build
+dirs_before_vs_after_equal=true

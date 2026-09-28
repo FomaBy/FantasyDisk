@@ -1,0 +1,135 @@
+{
+  "container": "FantasyDisk.exe",
+  "container_size": 850651688,
+  "pck_start": 109050880,
+  "pck_size": 741600796,
+  "pack_format": 4,
+  "engine": "4.7.0",
+  "flags": 2,
+  "file_count": 47137,
+  "payload_bytes": 735045521,
+  "top_level": {
+    ".godot": {
+      "files": 22633,
+      "bytes": 402248141
+    },
+    "<root>": {
+      "files": 5,
+      "bytes": 5753
+    },
+    "assets": {
+      "files": 22340,
+      "bytes": 20520188
+    },
+    "data": {
+      "files": 156,
+      "bytes": 602450
+    },
+    "evidence": {
+      "files": 1233,
+      "bytes": 308689852
+    },
+    "scenes": {
+      "files": 196,
+      "bytes": 271897
+    },
+    "scripts": {
+      "files": 572,
+      "bytes": 2704580
+    },
+    "skills": {
+      "files": 2,
+      "bytes": 2660
+    }
+  },
+  "root_files": [
+    "res://after_berserk_648p.png.import",
+    "res://before_berserk_648p.png.import",
+    "res://icon.svg",
+    "res://icon.svg.import",
+    "res://project.binary"
+  ],
+  "forbidden_count": 1237,
+  "forbidden_sample": [
+    [
+      "res://after_berserk_648p.png.import",
+      207
+    ],
+    [
+      "res://before_berserk_648p.png.import",
+      208
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/census_full.json",
+      297718
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/full.csv.import",
+      80
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/full.json",
+      5832
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/full.nodes.translation",
+      231474
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/full.objects.translation",
+      238432
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/full.orphans.translation",
+      217572
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_attacks.csv.import",
+      82
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_attacks.json",
+      5805
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_attacks.nodes.translation",
+      235226
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_attacks.objects.translation",
+      242336
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_attacks.orphans.translation",
+      221020
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_enemies.csv.import",
+      82
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_enemies.nodes.translation",
+      230350
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_enemies.objects.translation",
+      244748
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_enemies.orphans.translation",
+      223152
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_feedback.csv.import",
+      82
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_feedback.json",
+      5826
+    ],
+    [
+      "res://evidence/p3-object-budget-rework/attribution/no_feedback.nodes.translation",
+      235150
+    ]
+  ]
+}

@@ -1,0 +1,18 @@
+setup=FantasyDisk-0.3.1-windows-setup.exe bytes=438509199
+setup_sha256_retained=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e
+setup_sha256_in_SHA256SUMS=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e
+rejoin_sha256=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e
+rejoin_equal=true
+parts=9
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-aa
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ab
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ac
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ad
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ae
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-af
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ag
+50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ah
+38509199 FantasyDisk-0.3.1-windows-setup.exe.part-ai
+PARTS.sha256 bytes=990 sha256=353479c44416aa4d99ac917ccc7f23983eb76a36d00ad7cbcdac890a09fb904d
+SHA256SUMS.txt bytes=196 sha256=7775c739df9112c6dde6d26064cbd871fbf5252fde3bbed3f0270d82e394ea82
+update-manifest.json bytes=793 sha256=315821ff4b73ecbfcb17204d8d044bc8d829b6dade1ae380dba07543569e1ad1

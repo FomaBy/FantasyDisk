@@ -1,0 +1,24 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1new_pck_druid: renderer=gl_compatibility vsync=1 window=(2560, 1440)
+phase route_map_first_show: 8 s, avg 118 FPS, 1% low 113, worst second 113, >50 ms 0, >100 ms 0, longest 18.9 ms, peak texture 1396 MiB
+phase p2_48_enemies: 60 s, avg 115 FPS, 1% low 104, worst second 104, >50 ms 1, >100 ms 0, longest 75.2 ms, peak texture 1488 MiB
+phase route_map_after_p2: 3 s, avg 117 FPS, 1% low 112, worst second 112, >50 ms 1, >100 ms 0, longest 87.4 ms, peak texture 1439 MiB
+phase elite_night_stalker: 20 s, avg 112 FPS, 1% low 106, worst second 106, >50 ms 0, >100 ms 0, longest 47.0 ms, peak texture 1032 MiB
+phase route_map_after_elite: 3 s, avg 119 FPS, 1% low 118, worst second 118, >50 ms 0, >100 ms 0, longest 26.0 ms, peak texture 957 MiB
+phase boss_act1_rift_warden: 20 s, avg 114 FPS, 1% low 107, worst second 107, >50 ms 0, >100 ms 0, longest 33.8 ms, peak texture 1001 MiB
+phase route_map_after_boss1: 3 s, avg 120 FPS, 1% low 119, worst second 119, >50 ms 0, >100 ms 0, longest 16.9 ms, peak texture 946 MiB
+phase boss_act2_disk_devourer: 20 s, avg 91 FPS, 1% low 75, worst second 75, >50 ms 1, >100 ms 0, longest 52.9 ms, peak texture 1049 MiB
+
+| build | phase | seconds | avg FPS | 1%% low FPS | worst second FPS | frames >50 ms | frames >100 ms | longest frame ms | peak texture MiB |
+|---|---|---|---|---|---|---|---|---|---|
+| v0.3.1new_pck_druid | route_map_first_show | 8 | 118 | 113 | 113 | 0 | 0 | 18.9 | 1396 |
+| v0.3.1new_pck_druid | p2_48_enemies | 60 | 115 | 104 | 104 | 1 | 0 | 75.2 | 1488 |
+| v0.3.1new_pck_druid | route_map_after_p2 | 3 | 117 | 112 | 112 | 1 | 0 | 87.4 | 1439 |
+| v0.3.1new_pck_druid | elite_night_stalker | 20 | 112 | 106 | 106 | 0 | 0 | 47.0 | 1032 |
+| v0.3.1new_pck_druid | route_map_after_elite | 3 | 119 | 118 | 118 | 0 | 0 | 26.0 | 957 |
+| v0.3.1new_pck_druid | boss_act1_rift_warden | 20 | 114 | 107 | 107 | 0 | 0 | 33.8 | 1001 |
+| v0.3.1new_pck_druid | route_map_after_boss1 | 3 | 120 | 119 | 119 | 0 | 0 | 16.9 | 946 |
+| v0.3.1new_pck_druid | boss_act2_disk_devourer | 20 | 91 | 75 | 75 | 1 | 0 | 52.9 | 1049 |
+v0.3.1new_pck_druid: menu texture 28 MiB -> after run 310 MiB; act-1 peak 1488 MiB; P2 click frame 154.8 ms, roster wait 0 ms; elite roster wait 195 ms

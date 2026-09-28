@@ -1,0 +1,472 @@
+{
+  "pck_exclusion": {
+    "tool": "evidence/FAN-3980/list_pck.py (FAN-3973 list_pck_paths.py rule set + FAN-3976 embedded-PCK trailer support)",
+    "macos_installed_app_pck": {
+      "container": "FantasyDisk.pck",
+      "container_size": 424530212,
+      "pck_start": 0,
+      "pck_size": 424530212,
+      "pack_format": 4,
+      "engine": "4.7.0",
+      "flags": 2,
+      "file_count": 27013,
+      "payload_bytes": 420853259,
+      "top_level": {
+        ".godot": {
+          "files": 13062,
+          "bytes": 398862636
+        },
+        "assets": {
+          "files": 13020,
+          "bytes": 18393415
+        },
+        "data": {
+          "files": 156,
+          "bytes": 602450
+        },
+        "<root>": {
+          "files": 3,
+          "bytes": 5338
+        },
+        "scenes": {
+          "files": 196,
+          "bytes": 271897
+        },
+        "scripts": {
+          "files": 576,
+          "bytes": 2717523
+        }
+      },
+      "root_files": [
+        "res://icon.svg",
+        "res://icon.svg.import",
+        "res://project.binary"
+      ],
+      "forbidden_count": 0,
+      "forbidden_sample": []
+    },
+    "windows_exe_embedded_pck": {
+      "container": "FantasyDisk.exe",
+      "container_size": 533581104,
+      "pck_start": 109050880,
+      "pck_size": 424530212,
+      "pack_format": 4,
+      "engine": "4.7.0",
+      "flags": 2,
+      "file_count": 27013,
+      "payload_bytes": 420853259,
+      "top_level": {
+        ".godot": {
+          "files": 13062,
+          "bytes": 398862636
+        },
+        "assets": {
+          "files": 13020,
+          "bytes": 18393415
+        },
+        "data": {
+          "files": 156,
+          "bytes": 602450
+        },
+        "<root>": {
+          "files": 3,
+          "bytes": 5338
+        },
+        "scenes": {
+          "files": 196,
+          "bytes": 271897
+        },
+        "scripts": {
+          "files": 576,
+          "bytes": 2717523
+        }
+      },
+      "root_files": [
+        "res://icon.svg",
+        "res://icon.svg.import",
+        "res://project.binary"
+      ],
+      "forbidden_count": 0,
+      "forbidden_sample": []
+    },
+    "macos_windows_file_tables_identical": true,
+    "forbidden_paths_new_0.3.1": {
+      "macos": 0,
+      "windows": 0
+    },
+    "old_0.3.1_fan3963_windows_exe_pck_for_comparison": {
+      "file_count": 47137,
+      "payload_bytes": 735045521,
+      "forbidden_count": 1237
+    },
+    "macos_pck_sha256": "7767a9d1de01c4687d09cc6568b355796fcd17006ea0cc9df6587e107d54a906",
+    "installed_app_equals_dmg_app": true
+  },
+  "sizes_vs_fan3963_0.3.1": {
+    "windows_exe_inside_setup": {
+      "new": 533581104,
+      "old": 850651688,
+      "new_sha256": "05d7b6fa32ab0608ef0a34ebaf37f7d2cc3a3ce032bef984fd6fe6ff6af3ab07",
+      "old_sha256": "ce3bc7ff2ed4bd1cf5eaf599d5155a8b3c91e369cd8690a834793151e062fda0",
+      "extraction": "7z e <setup.exe> FantasyDisk.exe (read-only extraction from the retained installers)"
+    },
+    "windows_setup_exe": {
+      "new": 438509199,
+      "old": 535974634
+    },
+    "macos_dmg": {
+      "new": 463011379,
+      "old": 559696549
+    },
+    "pck_payload_bytes": {
+      "new": 420853259,
+      "old": 735045521
+    },
+    "pck_file_count": {
+      "new": 27013,
+      "old": 47137
+    },
+    "reference_fan3976_0.3.2": {
+      "setup": 439647264,
+      "dmg": 464183243,
+      "pck_file_count": 45648,
+      "pck_payload_bytes": 425346216,
+      "note": "0.3.2 predates FAN-3977 trim atlases; the new 0.3.1 PCK (27,013 files, 401.4 MiB) equals the FAN-3977 candidate export footprint"
+    }
+  },
+  "macos_cold_start": {
+    "method": "FAN-3973 measure_cold_start.sh method applied to the built app binaries (evidence/FAN-3980/measure_cold_start_app.sh, byte-equal to FAN-3976's): --print-fps --verbose --quit-after 600, first 'Project FPS' line minus 1 s; 5 back-to-back launches per build; each build launched with its own isolated HOME (build/FAN-3980/isolated_home_*) so neither app touches the owner's real user data; summary by evidence/FAN-3973/analyze_cold_start.py",
+    "builds": {
+      "v0.3.1new_app": "/Applications/FantasyDisk.app (installed by local_release.py from the new retained 0.3.1 DMG; bundle equals the DMG app file-for-file)",
+      "v0.3.0_app": "FantasyDisk.app copied from the retained v0.3.0 DMG (read-only mount)"
+    },
+    "runs": {
+      "v0.3.0_app": [
+        7.84,
+        5.47,
+        5.49,
+        5.47,
+        5.46
+      ],
+      "v0.3.1new_app": [
+        5.57,
+        5.54,
+        5.9,
+        5.7,
+        6.02
+      ]
+    },
+    "median_first_frame_s": {
+      "v0.3.0_app": 5.47,
+      "v0.3.1new_app": 5.7
+    },
+    "actor_spriteframes_before_first_frame_max": 1,
+    "reference_fan3976_app_medians_s": {
+      "v0.3.0_app": 5.56,
+      "v0.3.2_app": 5.7
+    },
+    "reference_fan3964_windows_old_0.3.1_median_s": 17.4
+  },
+  "combat_check_fan3977_metrics": {
+    "method": "unchanged evidence/FAN-3977/perf_driver.gd (SHA-256 aa25cf381b5c015e1ed499a2a087b961d0c61079f299445f0c3b7d27f1f948fa) run windowed by the Godot 4.7.stable editor engine binary with --main-pack on the built PCK of the installed app (the exported app binary does not run an external --script; probe hung and was killed), isolated HOME; evidence/FAN-3980/run_combat_check.sh",
+    "targets_fan3977": {
+      "synchronous_combat_loads": 0,
+      "act1_peak_texture_mib_max": 1536,
+      "p2_frames_over_100ms": 0,
+      "p2_low_1pct_fps_min": 60
+    },
+    "runs": {
+      "v0.3.1new_pck": {
+        "character_id": "berserk",
+        "weapon_id": "sword",
+        "renderer": "gl_compatibility",
+        "window": [
+          2560,
+          1440
+        ],
+        "menu_texture_mib": 28.1526212692261,
+        "menu_texture_after_run_mib": 310.229635238647,
+        "act1_peak_texture_mib": 1407.47837257385,
+        "roster_miss_warnings": 0,
+        "warning_lines": 0,
+        "phases": [
+          {
+            "phase": "route_map_first_show",
+            "seconds": 8,
+            "avg_fps": 118.625,
+            "low_1pct_fps": 114.0,
+            "worst_second_fps": 114.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 17.973,
+            "peak_texture_mib": 1314.77414035797
+          },
+          {
+            "phase": "p2_48_enemies",
+            "seconds": 60,
+            "avg_fps": 118.333333333333,
+            "low_1pct_fps": 112.0,
+            "worst_second_fps": 112.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 75.703,
+            "peak_texture_mib": 1407.47837257385,
+            "node_click_frame_ms": 117.928,
+            "finalize_wait_ms": 0.003
+          },
+          {
+            "phase": "route_map_after_p2",
+            "seconds": 3,
+            "avg_fps": 116.666666666667,
+            "low_1pct_fps": 111.0,
+            "worst_second_fps": 111.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 83.364,
+            "peak_texture_mib": 1357.76174926758
+          },
+          {
+            "phase": "elite_night_stalker",
+            "seconds": 20,
+            "avg_fps": 117.8,
+            "low_1pct_fps": 115.0,
+            "worst_second_fps": 115.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 26.98,
+            "peak_texture_mib": 950.520396232605,
+            "node_click_frame_ms": null,
+            "finalize_wait_ms": 143.639
+          },
+          {
+            "phase": "route_map_after_elite",
+            "seconds": 3,
+            "avg_fps": 118.666666666667,
+            "low_1pct_fps": 117.0,
+            "worst_second_fps": 117.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 25.706,
+            "peak_texture_mib": 875.473595619202
+          },
+          {
+            "phase": "boss_act1_rift_warden",
+            "seconds": 20,
+            "avg_fps": 117.85,
+            "low_1pct_fps": 115.0,
+            "worst_second_fps": 115.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 24.945,
+            "peak_texture_mib": 920.077302932739,
+            "node_click_frame_ms": null,
+            "finalize_wait_ms": 153.186
+          },
+          {
+            "phase": "route_map_after_boss1",
+            "seconds": 3,
+            "avg_fps": 117.333333333333,
+            "low_1pct_fps": 114.0,
+            "worst_second_fps": 114.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 17.031,
+            "peak_texture_mib": 864.613691329956
+          },
+          {
+            "phase": "boss_act2_disk_devourer",
+            "seconds": 20,
+            "avg_fps": 116.4,
+            "low_1pct_fps": 114.0,
+            "worst_second_fps": 114.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 31.123,
+            "peak_texture_mib": 968.134515762329,
+            "node_click_frame_ms": null,
+            "finalize_wait_ms": 82.031
+          }
+        ]
+      },
+      "v0.3.1new_pck_druid": {
+        "character_id": "druid",
+        "weapon_id": "staff",
+        "renderer": "gl_compatibility",
+        "window": [
+          2560,
+          1440
+        ],
+        "menu_texture_mib": 28.1526212692261,
+        "menu_texture_after_run_mib": 310.312967300415,
+        "act1_peak_texture_mib": 1488.46084213257,
+        "roster_miss_warnings": 0,
+        "warning_lines": 0,
+        "phases": [
+          {
+            "phase": "route_map_first_show",
+            "seconds": 8,
+            "avg_fps": 117.75,
+            "low_1pct_fps": 113.0,
+            "worst_second_fps": 113.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 18.894,
+            "peak_texture_mib": 1396.04827594757
+          },
+          {
+            "phase": "p2_48_enemies",
+            "seconds": 60,
+            "avg_fps": 115.416666666667,
+            "low_1pct_fps": 104.0,
+            "worst_second_fps": 104.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 75.207,
+            "peak_texture_mib": 1488.46084213257,
+            "node_click_frame_ms": 154.792,
+            "finalize_wait_ms": 0.004
+          },
+          {
+            "phase": "route_map_after_p2",
+            "seconds": 3,
+            "avg_fps": 117.333333333333,
+            "low_1pct_fps": 112.0,
+            "worst_second_fps": 112.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 87.387,
+            "peak_texture_mib": 1438.78588485718
+          },
+          {
+            "phase": "elite_night_stalker",
+            "seconds": 20,
+            "avg_fps": 112.5,
+            "low_1pct_fps": 106.0,
+            "worst_second_fps": 106.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 46.952,
+            "peak_texture_mib": 1031.5445318222,
+            "node_click_frame_ms": null,
+            "finalize_wait_ms": 194.985
+          },
+          {
+            "phase": "route_map_after_elite",
+            "seconds": 3,
+            "avg_fps": 119.333333333333,
+            "low_1pct_fps": 118.0,
+            "worst_second_fps": 118.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 25.956,
+            "peak_texture_mib": 956.831063270569
+          },
+          {
+            "phase": "boss_act1_rift_warden",
+            "seconds": 20,
+            "avg_fps": 113.6,
+            "low_1pct_fps": 107.0,
+            "worst_second_fps": 107.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 33.795,
+            "peak_texture_mib": 1001.43477058411,
+            "node_click_frame_ms": null,
+            "finalize_wait_ms": 186.564
+          },
+          {
+            "phase": "route_map_after_boss1",
+            "seconds": 3,
+            "avg_fps": 120.0,
+            "low_1pct_fps": 119.0,
+            "worst_second_fps": 119.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 16.948,
+            "peak_texture_mib": 945.971158981323
+          },
+          {
+            "phase": "boss_act2_disk_devourer",
+            "seconds": 20,
+            "avg_fps": 91.45,
+            "low_1pct_fps": 75.0,
+            "worst_second_fps": 75.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 52.933,
+            "peak_texture_mib": 1049.4919834137,
+            "node_click_frame_ms": null,
+            "finalize_wait_ms": 140.903
+          }
+        ]
+      }
+    },
+    "verdict": {
+      "v0.3.1new_pck": {
+        "synchronous_loads_0": true,
+        "act1_peak_within_1536_mib": true,
+        "p2_frames_over_100ms_0": true,
+        "p2_low_1pct_ge_60": true
+      },
+      "v0.3.1new_pck_druid": {
+        "synchronous_loads_0": true,
+        "act1_peak_within_1536_mib": true,
+        "p2_frames_over_100ms_0": true,
+        "p2_low_1pct_ge_60": true
+      }
+    },
+    "reference_fan3977_candidate": {
+      "berserk_act1_peak_mib": 1407,
+      "druid_act1_peak_mib": 1488,
+      "berserk_p2_longest_ms": 25.9,
+      "druid_p2_longest_ms": 31.0,
+      "v0.3.2_p2_frames_over_100ms": 12
+    }
+  },
+  "source_snapshot": {
+    "retained_project_vs_git_archive_v0.3.1": "diff -rq --exclude=.godot: 0 differences; file list equals git ls-tree -r v0.3.1 (57,631 files)",
+    "changelog_section_equals_tag": true,
+    "poster_sha256_equals_tag_blob": true
+  },
+  "operator_app_downgrade": {
+    "before": {
+      "CFBundleShortVersionString": "0.3.2",
+      "CFBundleVersion": "1.3.20"
+    },
+    "after": {
+      "CFBundleShortVersionString": "0.3.1",
+      "CFBundleVersion": "1.3.10"
+    },
+    "saves_dir": "~/Library/Application Support/Godot/app_userdata/FantasyDisk",
+    "save_cfg_files_unchanged": true,
+    "save_cfg_manifest": [
+      "5a908e2ad7a546182992eb5a9c85b13ee8c2a3588521b97ad0f74398c9d9d92f  ./_qa_stale_save.cfg",
+      "48aadfd2c1c478841f2295f246db2b401826b5bf4e1185cf7ec6826b25ac83a4  ./fantasydisk_meta.cfg",
+      "2e548d9e9e511d7ec182358b6b8a149c0e74c74148338c4a133f078f65d68993  ./settings.cfg",
+      "fae3f8b160b580e0e0d8df16aeb27eeb95970d1fdf9fd56e92786dfff8a35756  ./test_meta_skilltree.cfg",
+      "ad7baa458b7617bf23f081d5a6b37793ecb07eb15817a3b4cf72a2995dfb02e6  ./test_meta_skilltree_migration.cfg"
+    ],
+    "userdata_excluding_logs_shader_cache_vulkan_diff_lines": 0,
+    "note": "checked after local_release.py install + verify --launch-smoke (LaunchServices launch, --headless --quit-after 2); cold start and perf runs used isolated HOME dirs"
+  },
+  "transfer_fan3964": [
+    "setup=FantasyDisk-0.3.1-windows-setup.exe bytes=438509199",
+    "setup_sha256_retained=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e",
+    "setup_sha256_in_SHA256SUMS=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e",
+    "rejoin_sha256=6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e",
+    "rejoin_equal=true",
+    "parts=9",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-aa",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ab",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ac",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ad",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ae",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-af",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ag",
+    "50000000 FantasyDisk-0.3.1-windows-setup.exe.part-ah",
+    "38509199 FantasyDisk-0.3.1-windows-setup.exe.part-ai",
+    "PARTS.sha256 bytes=990 sha256=353479c44416aa4d99ac917ccc7f23983eb76a36d00ad7cbcdac890a09fb904d",
+    "SHA256SUMS.txt bytes=196 sha256=7775c739df9112c6dde6d26064cbd871fbf5252fde3bbed3f0270d82e394ea82",
+    "update-manifest.json bytes=793 sha256=315821ff4b73ecbfcb17204d8d044bc8d829b6dade1ae380dba07543569e1ad1"
+  ]
+}

@@ -1,0 +1,54 @@
+# FAN-3980 preflight — 2026-09-28T00:16:57Z
+## task worktree
+path=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3980-695448bc53e9/workdir/FantasyDisk
+branch=agent/fable/695448bc53e9
+HEAD=165f14aa0ce5bcbd884e4dfde137283a8010e863
+HEAD_tree=9dd96fa9cec99be330b638cdd04dfd1a42d4840d
+status_porcelain_lines=0
+## remote readback (git ls-remote origin)
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/heads/dev
+dafb99ea70af8ace6c2b866cd1fb57a52bda0a87	refs/heads/main
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/archive/v0.3.1-attempt1-448a0cc1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/archive/v0.3.1-attempt1-448a0cc1^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/v0.3.1
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/tags/v0.3.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}
+## local tag after 'git fetch --force origin +refs/tags/*:refs/tags/*'
+v0.3.1_object=c692d01973a7e4765807bd5fcae11c6bb74df5e6 type=tag
+v0.3.1_commit=165f14aa0ce5bcbd884e4dfde137283a8010e863
+v0.3.1_tree=9dd96fa9cec99be330b638cdd04dfd1a42d4840d
+object 165f14aa0ce5bcbd884e4dfde137283a8010e863
+type commit
+tag v0.3.1
+tagger <redacted line>
+FantasyDisk v0.3.1
+archive_tag_object=676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71 -> 448a0cc12f02eb05bc16becc69fde365021a9a17 tree 3e02df83290741b21d4de37c4fa03e356e20c591
+## dispatch contract pins
+approved_source_sha=165f14aa0ce5bcbd884e4dfde137283a8010e863 approved_tree=9dd96fa9cec99be330b638cdd04dfd1a42d4840d tag_object=c692d01973a7e4765807bd5fcae11c6bb74df5e6
+## refined AC1 tree equality: FAN-3978 PASSED candidate_sha=165f14aa0ce5bcbd884e4dfde137283a8010e863 candidate_tree_sha=9dd96fa9cec99be330b638cdd04dfd1a42d4840d (QA PASSED d7bc8435 run 01a0e4f9-e6c9-78d7-bf87-ed23f4965689); FAN-3979 done QA PASSED 8ceb4992 run 01a0e547-7c29-7f3c-8fb0-1ce488e03997
+tree_equal_S_vs_FAN3978=true
+## release inputs on exact S
+release_version_mapping: 0.3.1	1.3.10	0.3.1	0.3.1.0
+release_version_mapping_exit=0
+7:## [0.3.1] — 2026-09-28
+10:		"version": "0.3.1",
+11:		"date": "2026-09-28",
+poster_sha256=6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7 blob=51803688c0e2aa81a9255f94ca5214c0418d6242
+client_channel=signed
+release_scope_guard: release scope OK: 0.3.1, 0 entries
+exit=0
+visual_claims_guard: OK: 0.3.1 release notes carry no unbacked visual claims
+exit=0
+export_exclusions_test: OK
+## signed channel
+developer_id_application_identities=1
+notarytool_history_exit=0
+## toolchain
+godot=4.7.stable.official.5b4e0cb0f
+makensis=v3.12
+macos=26.5.1
+/dev/disk3s5   926Gi   536Gi   353Gi    61%     29M  3.7G    1%   /System/Volumes/Data
+## installed operator app before
+app_short=0.3.2 app_build=1.3.20
+current_project=v0.3.2/godot-project
