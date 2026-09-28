@@ -1,0 +1,53 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+WARNING: full_frame_animation_registry: enemy/small_biter needed res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _spawn_random_enemy (res://scripts/combat_director.gd:565)
+         [5] _spawn_enemy_wave (res://scripts/combat_director.gd:735)
+         [6] _process (res://scripts/main.gd:1444)
+WARNING: full_frame_animation_registry: enemy/spark_runner needed res://assets/sprites/enemies/full_frame/spark_runner_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _spawn_random_enemy (res://scripts/combat_director.gd:565)
+         [5] _spawn_enemy_wave (res://scripts/combat_director.gd:735)
+         [6] _process (res://scripts/main.gd:1444)
+WARNING: full_frame_animation_registry: enemy/rift_cutter needed res://assets/sprites/enemies/full_frame/rift_cutter_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _spawn_random_enemy (res://scripts/combat_director.gd:565)
+         [5] _spawn_enemy_wave (res://scripts/combat_director.gd:735)
+         [6] _process (res://scripts/main.gd:1444)
+WARNING: full_frame_animation_registry: enemy/stone_bruiser needed res://assets/sprites/enemies/full_frame/stone_bruiser_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _spawn_random_enemy (res://scripts/combat_director.gd:565)
+         [5] _spawn_enemy_wave (res://scripts/combat_director.gd:735)
+         [6] _process (res://scripts/main.gd:1444)
+WARNING: full_frame_animation_registry: enemy/winged_spark needed res://assets/sprites/enemies/full_frame/winged_spark_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _spawn_random_enemy (res://scripts/combat_director.gd:565)
+         [5] _spawn_enemy_wave (res://scripts/combat_director.gd:735)
+         [6] _process (res://scripts/main.gd:1444)
+Runtime combat smoke suite passed.

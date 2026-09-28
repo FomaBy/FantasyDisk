@@ -1,452 +1,60 @@
 [gd_resource type="SpriteFrames" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/allies/druid_ghost_wolf_trim_0.png" id="page_0"]
-
-[sub_resource type="AtlasTexture" id="Trim_0"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 1, 165, 165)
-margin = Rect2(45, 68, 91, 91)
-
-[sub_resource type="AtlasTexture" id="Trim_1"]
-atlas = ExtResource("page_0")
-region = Rect2(364, 487, 165, 158)
-margin = Rect2(45, 75, 91, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_2"]
-atlas = ExtResource("page_0")
-region = Rect2(1306, 956, 169, 151)
-margin = Rect2(43, 82, 87, 105)
-
-[sub_resource type="AtlasTexture" id="Trim_3"]
-atlas = ExtResource("page_0")
-region = Rect2(371, 958, 172, 148)
-margin = Rect2(42, 85, 84, 108)
-
-[sub_resource type="AtlasTexture" id="Trim_4"]
-atlas = ExtResource("page_0")
-region = Rect2(1295, 646, 172, 154)
-margin = Rect2(42, 79, 84, 102)
-
-[sub_resource type="AtlasTexture" id="Trim_5"]
-atlas = ExtResource("page_0")
-region = Rect2(1114, 803, 172, 151)
-margin = Rect2(42, 82, 84, 105)
-
-[sub_resource type="AtlasTexture" id="Trim_6"]
-atlas = ExtResource("page_0")
-region = Rect2(1583, 1, 170, 162)
-margin = Rect2(43, 71, 86, 94)
-
-[sub_resource type="AtlasTexture" id="Trim_7"]
-atlas = ExtResource("page_0")
-region = Rect2(1764, 327, 175, 158)
-margin = Rect2(40, 75, 81, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_8"]
-atlas = ExtResource("page_0")
-region = Rect2(1868, 1106, 179, 143)
-margin = Rect2(38, 90, 77, 113)
-
-[sub_resource type="AtlasTexture" id="Trim_9"]
-atlas = ExtResource("page_0")
-region = Rect2(1490, 487, 184, 156)
-margin = Rect2(36, 77, 72, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_10"]
-atlas = ExtResource("page_0")
-region = Rect2(168, 166, 193, 159)
-margin = Rect2(31, 74, 63, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_11"]
-atlas = ExtResource("page_0")
-region = Rect2(528, 1, 177, 163)
-margin = Rect2(39, 70, 79, 93)
-
-[sub_resource type="AtlasTexture" id="Trim_12"]
-atlas = ExtResource("page_0")
-region = Rect2(884, 1, 170, 163)
-margin = Rect2(43, 70, 86, 93)
-
-[sub_resource type="AtlasTexture" id="Trim_13"]
-atlas = ExtResource("page_0")
-region = Rect2(1406, 1, 175, 162)
-margin = Rect2(40, 71, 81, 94)
-
-[sub_resource type="AtlasTexture" id="Trim_14"]
-atlas = ExtResource("page_0")
-region = Rect2(349, 1, 177, 163)
-margin = Rect2(39, 70, 79, 93)
-
-[sub_resource type="AtlasTexture" id="Trim_15"]
-atlas = ExtResource("page_0")
-region = Rect2(707, 1, 175, 163)
-margin = Rect2(40, 70, 81, 93)
-
-[sub_resource type="AtlasTexture" id="Trim_16"]
-atlas = ExtResource("page_0")
-region = Rect2(1056, 1, 162, 163)
-margin = Rect2(47, 70, 94, 93)
-
-[sub_resource type="AtlasTexture" id="Trim_17"]
-atlas = ExtResource("page_0")
-region = Rect2(168, 1, 179, 163)
-margin = Rect2(38, 70, 77, 93)
-
-[sub_resource type="AtlasTexture" id="Trim_18"]
-atlas = ExtResource("page_0")
-region = Rect2(1220, 1, 184, 162)
-margin = Rect2(36, 71, 72, 94)
-
-[sub_resource type="AtlasTexture" id="Trim_19"]
-atlas = ExtResource("page_0")
-region = Rect2(961, 327, 187, 158)
-margin = Rect2(34, 75, 69, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_20"]
-atlas = ExtResource("page_0")
-region = Rect2(531, 487, 197, 156)
-margin = Rect2(29, 77, 59, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_21"]
-atlas = ExtResource("page_0")
-region = Rect2(730, 487, 195, 156)
-margin = Rect2(30, 77, 61, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_22"]
-atlas = ExtResource("page_0")
-region = Rect2(558, 166, 188, 159)
-margin = Rect2(34, 74, 68, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_23"]
-atlas = ExtResource("page_0")
-region = Rect2(1150, 328, 170, 158)
-margin = Rect2(43, 75, 86, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_24"]
-atlas = ExtResource("page_0")
-region = Rect2(1858, 802, 172, 152)
-margin = Rect2(42, 81, 84, 104)
-
-[sub_resource type="AtlasTexture" id="Trim_25"]
-atlas = ExtResource("page_0")
-region = Rect2(193, 958, 176, 148)
-margin = Rect2(40, 85, 80, 108)
-
-[sub_resource type="AtlasTexture" id="Trim_26"]
-atlas = ExtResource("page_0")
-region = Rect2(933, 802, 179, 154)
-margin = Rect2(38, 79, 77, 102)
-
-[sub_resource type="AtlasTexture" id="Trim_27"]
-atlas = ExtResource("page_0")
-region = Rect2(182, 646, 177, 155)
-margin = Rect2(39, 78, 79, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_28"]
-atlas = ExtResource("page_0")
-region = Rect2(1576, 165, 177, 159)
-margin = Rect2(39, 74, 79, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_29"]
-atlas = ExtResource("page_0")
-region = Rect2(745, 802, 186, 154)
-margin = Rect2(35, 79, 70, 102)
-
-[sub_resource type="AtlasTexture" id="Trim_30"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 956, 190, 151)
-margin = Rect2(33, 82, 66, 105)
-
-[sub_resource type="AtlasTexture" id="Trim_31"]
-atlas = ExtResource("page_0")
-region = Rect2(1295, 802, 187, 152)
-margin = Rect2(34, 81, 69, 104)
-
-[sub_resource type="AtlasTexture" id="Trim_32"]
-atlas = ExtResource("page_0")
-region = Rect2(733, 645, 193, 155)
-margin = Rect2(31, 78, 63, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_33"]
-atlas = ExtResource("page_0")
-region = Rect2(1755, 1, 181, 161)
-margin = Rect2(37, 72, 75, 95)
-
-[sub_resource type="AtlasTexture" id="Trim_34"]
-atlas = ExtResource("page_0")
-region = Rect2(927, 487, 188, 156)
-margin = Rect2(34, 77, 68, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_35"]
-atlas = ExtResource("page_0")
-region = Rect2(1474, 645, 188, 155)
-margin = Rect2(34, 78, 68, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_36"]
-atlas = ExtResource("page_0")
-region = Rect2(363, 166, 193, 159)
-margin = Rect2(31, 74, 63, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_37"]
-atlas = ExtResource("page_0")
-region = Rect2(567, 327, 200, 158)
-margin = Rect2(28, 75, 56, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_38"]
-atlas = ExtResource("page_0")
-region = Rect2(1755, 164, 180, 161)
-margin = Rect2(38, 72, 76, 95)
-
-[sub_resource type="AtlasTexture" id="Trim_39"]
-atlas = ExtResource("page_0")
-region = Rect2(184, 488, 176, 156)
-margin = Rect2(40, 77, 80, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_40"]
-atlas = ExtResource("page_0")
-region = Rect2(1117, 488, 180, 156)
-margin = Rect2(38, 77, 76, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_41"]
-atlas = ExtResource("page_0")
-region = Rect2(1576, 327, 186, 158)
-margin = Rect2(35, 75, 70, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_42"]
-atlas = ExtResource("page_0")
-region = Rect2(769, 327, 190, 158)
-margin = Rect2(33, 75, 66, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_43"]
-atlas = ExtResource("page_0")
-region = Rect2(1322, 328, 166, 158)
-margin = Rect2(45, 75, 90, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_44"]
-atlas = ExtResource("page_0")
-region = Rect2(1299, 488, 173, 156)
-margin = Rect2(41, 77, 83, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_45"]
-atlas = ExtResource("page_0")
-region = Rect2(1117, 646, 176, 155)
-margin = Rect2(40, 78, 80, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_46"]
-atlas = ExtResource("page_0")
-region = Rect2(1676, 487, 183, 156)
-margin = Rect2(36, 77, 73, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_47"]
-atlas = ExtResource("page_0")
-region = Rect2(1664, 645, 186, 155)
-margin = Rect2(35, 78, 70, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_48"]
-atlas = ExtResource("page_0")
-region = Rect2(183, 327, 179, 159)
-margin = Rect2(38, 74, 77, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_49"]
-atlas = ExtResource("page_0")
-region = Rect2(1852, 645, 180, 155)
-margin = Rect2(38, 78, 76, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_50"]
-atlas = ExtResource("page_0")
-region = Rect2(1673, 802, 183, 152)
-margin = Rect2(36, 81, 73, 104)
-
-[sub_resource type="AtlasTexture" id="Trim_51"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 488, 181, 156)
-margin = Rect2(37, 77, 75, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_52"]
-atlas = ExtResource("page_0")
-region = Rect2(933, 166, 181, 159)
-margin = Rect2(37, 74, 75, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_53"]
-atlas = ExtResource("page_0")
-region = Rect2(748, 166, 183, 159)
-margin = Rect2(36, 74, 73, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_54"]
-atlas = ExtResource("page_0")
-region = Rect2(553, 802, 190, 154)
-margin = Rect2(33, 79, 66, 102)
-
-[sub_resource type="AtlasTexture" id="Trim_55"]
-atlas = ExtResource("page_0")
-region = Rect2(734, 1107, 216, 144)
-margin = Rect2(20, 89, 40, 112)
-
-[sub_resource type="AtlasTexture" id="Trim_56"]
-atlas = ExtResource("page_0")
-region = Rect2(734, 1253, 216, 138)
-margin = Rect2(20, 95, 40, 118)
-
-[sub_resource type="AtlasTexture" id="Trim_57"]
-atlas = ExtResource("page_0")
-region = Rect2(1376, 1255, 226, 136)
-margin = Rect2(15, 97, 30, 120)
-
-[sub_resource type="AtlasTexture" id="Trim_58"]
-atlas = ExtResource("page_0")
-region = Rect2(1220, 165, 179, 161)
-margin = Rect2(38, 72, 77, 95)
-
-[sub_resource type="AtlasTexture" id="Trim_59"]
-atlas = ExtResource("page_0")
-region = Rect2(545, 1107, 187, 145)
-margin = Rect2(34, 88, 69, 111)
-
-[sub_resource type="AtlasTexture" id="Trim_60"]
-atlas = ExtResource("page_0")
-region = Rect2(952, 1109, 218, 143)
-margin = Rect2(19, 90, 38, 113)
-
-[sub_resource type="AtlasTexture" id="Trim_61"]
-atlas = ExtResource("page_0")
-region = Rect2(545, 958, 216, 147)
-margin = Rect2(20, 86, 40, 109)
-
-[sub_resource type="AtlasTexture" id="Trim_62"]
-atlas = ExtResource("page_0")
-region = Rect2(1477, 956, 204, 148)
-margin = Rect2(26, 85, 52, 108)
-
-[sub_resource type="AtlasTexture" id="Trim_63"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 646, 179, 155)
-margin = Rect2(38, 78, 77, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_64"]
-atlas = ExtResource("page_0")
-region = Rect2(1114, 956, 190, 151)
-margin = Rect2(33, 82, 66, 105)
-
-[sub_resource type="AtlasTexture" id="Trim_65"]
-atlas = ExtResource("page_0")
-region = Rect2(1477, 1106, 190, 147)
-margin = Rect2(33, 86, 66, 109)
-
-[sub_resource type="AtlasTexture" id="Trim_66"]
-atlas = ExtResource("page_0")
-region = Rect2(387, 1254, 204, 137)
-margin = Rect2(26, 96, 52, 119)
-
-[sub_resource type="AtlasTexture" id="Trim_67"]
-atlas = ExtResource("page_0")
-region = Rect2(193, 1108, 201, 144)
-margin = Rect2(27, 89, 55, 112)
-
-[sub_resource type="AtlasTexture" id="Trim_68"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 327, 180, 159)
-margin = Rect2(38, 74, 76, 97)
-
-[sub_resource type="AtlasTexture" id="Trim_69"]
-atlas = ExtResource("page_0")
-region = Rect2(361, 802, 190, 154)
-margin = Rect2(33, 79, 66, 102)
-
-[sub_resource type="AtlasTexture" id="Trim_70"]
-atlas = ExtResource("page_0")
-region = Rect2(763, 958, 198, 147)
-margin = Rect2(29, 86, 58, 109)
-
-[sub_resource type="AtlasTexture" id="Trim_71"]
-atlas = ExtResource("page_0")
-region = Rect2(1172, 1109, 207, 141)
-margin = Rect2(24, 92, 49, 115)
-
-[sub_resource type="AtlasTexture" id="Trim_72"]
-atlas = ExtResource("page_0")
-region = Rect2(952, 1254, 197, 137)
-margin = Rect2(29, 96, 59, 119)
-
-[sub_resource type="AtlasTexture" id="Trim_73"]
-atlas = ExtResource("page_0")
-region = Rect2(1401, 165, 173, 161)
-margin = Rect2(41, 72, 83, 95)
-
-[sub_resource type="AtlasTexture" id="Trim_74"]
-atlas = ExtResource("page_0")
-region = Rect2(928, 645, 187, 155)
-margin = Rect2(34, 78, 69, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_75"]
-atlas = ExtResource("page_0")
-region = Rect2(364, 327, 201, 158)
-margin = Rect2(27, 75, 55, 98)
-
-[sub_resource type="AtlasTexture" id="Trim_76"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 803, 219, 151)
-margin = Rect2(18, 82, 37, 105)
-
-[sub_resource type="AtlasTexture" id="Trim_77"]
-atlas = ExtResource("page_0")
-region = Rect2(1669, 1253, 211, 138)
-margin = Rect2(22, 95, 45, 118)
-
-[sub_resource type="AtlasTexture" id="Trim_78"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 168, 162, 156)
-margin = Rect2(47, 77, 94, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_79"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 1109, 187, 144)
-margin = Rect2(34, 89, 69, 112)
-
-[sub_resource type="AtlasTexture" id="Trim_80"]
-atlas = ExtResource("page_0")
-region = Rect2(1172, 1252, 202, 140)
-margin = Rect2(27, 93, 54, 116)
-
-[sub_resource type="AtlasTexture" id="Trim_81"]
-atlas = ExtResource("page_0")
-region = Rect2(387, 1393, 208, 134)
-margin = Rect2(24, 99, 48, 122)
-
-[sub_resource type="AtlasTexture" id="Trim_82"]
-atlas = ExtResource("page_0")
-region = Rect2(190, 1254, 195, 138)
-margin = Rect2(30, 95, 61, 118)
-
-[sub_resource type="AtlasTexture" id="Trim_83"]
-atlas = ExtResource("page_0")
-region = Rect2(1861, 487, 183, 156)
-margin = Rect2(36, 77, 73, 100)
-
-[sub_resource type="AtlasTexture" id="Trim_84"]
-atlas = ExtResource("page_0")
-region = Rect2(1484, 802, 187, 152)
-margin = Rect2(34, 81, 69, 104)
-
-[sub_resource type="AtlasTexture" id="Trim_85"]
-atlas = ExtResource("page_0")
-region = Rect2(1669, 1106, 197, 145)
-margin = Rect2(29, 88, 59, 111)
-
-[sub_resource type="AtlasTexture" id="Trim_86"]
-atlas = ExtResource("page_0")
-region = Rect2(531, 645, 200, 155)
-margin = Rect2(28, 78, 56, 101)
-
-[sub_resource type="AtlasTexture" id="Trim_87"]
-atlas = ExtResource("page_0")
-region = Rect2(1683, 956, 198, 148)
-margin = Rect2(29, 85, 58, 108)
+[ext_resource type="Script" path="res://scripts/full_frame_canvas_texture.gd" id="canvas_script"]
+[ext_resource type="Script" path="res://scripts/full_frame_trim_atlas.gd" id="trim_atlas_script"]
+
+[sub_resource type="Texture2D" id="Canvas"]
+script = ExtResource("canvas_script")
+size = Vector2i(256, 256)
+
+[sub_resource type="Resource" id="TrimAtlas"]
+script = ExtResource("trim_atlas_script")
+canvas = Vector2i(256, 256)
+pages = Array[Texture2D]([ExtResource("page_0")])
+entries = PackedInt32Array(0, 1, 1, 165, 165, 45, 68, 0, 364, 487, 165, 158, 45, 75, 0, 1306, 956, 169, 151, 43, 82, 0, 371, 958, 172, 148, 42, 85, 0, 1295, 646, 172, 154, 42, 79, 0, 1114, 803, 172, 151, 42, 82, 0, 1583, 1, 170, 162, 43, 71, 0, 1764, 327, 175, 158, 40, 75, 0, 1868, 1106, 179, 143, 38, 90, 0, 1490, 487, 184, 156, 36, 77, 0, 168, 166, 193, 159, 31, 74, 0, 528, 1, 177, 163, 39, 70, 0, 884, 1, 170, 163, 43, 70, 0, 1406, 1, 175, 162, 40, 71, 0, 349, 1, 177, 163, 39, 70, 0, 707, 1, 175, 163, 40, 70, 0, 1056, 1, 162, 163, 47, 70, 0, 168, 1, 179, 163, 38, 70, 0, 1220, 1, 184, 162, 36, 71, 0, 961, 327, 187, 158, 34, 75, 0, 531, 487, 197, 156, 29, 77, 0, 730, 487, 195, 156, 30, 77, 0, 558, 166, 188, 159, 34, 74, 0, 1150, 328, 170, 158, 43, 75, 0, 1858, 802, 172, 152, 42, 81, 0, 193, 958, 176, 148, 40, 85, 0, 933, 802, 179, 154, 38, 79, 0, 182, 646, 177, 155, 39, 78, 0, 1576, 165, 177, 159, 39, 74, 0, 745, 802, 186, 154, 35, 79, 0, 1, 956, 190, 151, 33, 82, 0, 1295, 802, 187, 152, 34, 81, 0, 733, 645, 193, 155, 31, 78, 0, 1755, 1, 181, 161, 37, 72, 0, 927, 487, 188, 156, 34, 77, 0, 1474, 645, 188, 155, 34, 78, 0, 363, 166, 193, 159, 31, 74, 0, 567, 327, 200, 158, 28, 75, 0, 1755, 164, 180, 161, 38, 72, 0, 184, 488, 176, 156, 40, 77, 0, 1117, 488, 180, 156, 38, 77, 0, 1576, 327, 186, 158, 35, 75, 0, 769, 327, 190, 158, 33, 75, 0, 1322, 328, 166, 158, 45, 75, 0, 1299, 488, 173, 156, 41, 77, 0, 1117, 646, 176, 155, 40, 78, 0, 1676, 487, 183, 156, 36, 77, 0, 1664, 645, 186, 155, 35, 78, 0, 183, 327, 179, 159, 38, 74, 0, 1852, 645, 180, 155, 38, 78, 0, 1673, 802, 183, 152, 36, 81, 0, 1, 488, 181, 156, 37, 77, 0, 933, 166, 181, 159, 37, 74, 0, 748, 166, 183, 159, 36, 74, 0, 553, 802, 190, 154, 33, 79, 0, 734, 1107, 216, 144, 20, 89, 0, 734, 1253, 216, 138, 20, 95, 0, 1376, 1255, 226, 136, 15, 97, 0, 1220, 165, 179, 161, 38, 72, 0, 545, 1107, 187, 145, 34, 88, 0, 952, 1109, 218, 143, 19, 90, 0, 545, 958, 216, 147, 20, 86, 0, 1477, 956, 204, 148, 26, 85, 0, 1, 646, 179, 155, 38, 78, 0, 1114, 956, 190, 151, 33, 82, 0, 1477, 1106, 190, 147, 33, 86, 0, 387, 1254, 204, 137, 26, 96, 0, 193, 1108, 201, 144, 27, 89, 0, 1, 327, 180, 159, 38, 74, 0, 361, 802, 190, 154, 33, 79, 0, 763, 958, 198, 147, 29, 86, 0, 1172, 1109, 207, 141, 24, 92, 0, 952, 1254, 197, 137, 29, 96, 0, 1401, 165, 173, 161, 41, 72, 0, 928, 645, 187, 155, 34, 78, 0, 364, 327, 201, 158, 27, 75, 0, 1, 803, 219, 151, 18, 82, 0, 1669, 1253, 211, 138, 22, 95, 0, 1, 168, 162, 156, 47, 77, 0, 1, 1109, 187, 144, 34, 89, 0, 1172, 1252, 202, 140, 27, 93, 0, 387, 1393, 208, 134, 24, 99, 0, 190, 1254, 195, 138, 30, 95, 0, 1861, 487, 183, 156, 36, 77, 0, 1484, 802, 187, 152, 34, 81, 0, 1669, 1106, 197, 145, 29, 88, 0, 531, 645, 200, 155, 28, 78, 0, 1683, 956, 198, 148, 29, 85)
+animations = {
+"idle": PackedInt32Array(0),
+"move": PackedInt32Array(0, 1, 2, 3, 4, 5),
+"attack": PackedInt32Array(0, 6, 7, 8, 9, 10),
+"walk": PackedInt32Array(0, 1, 2, 3, 4, 5),
+"idle_east": PackedInt32Array(11),
+"idle_south_east": PackedInt32Array(12),
+"idle_south": PackedInt32Array(0),
+"idle_south_west": PackedInt32Array(13),
+"idle_west": PackedInt32Array(14),
+"idle_north_west": PackedInt32Array(15),
+"idle_north": PackedInt32Array(16),
+"idle_north_east": PackedInt32Array(17),
+"move_east": PackedInt32Array(11, 18, 19, 20, 21, 22),
+"move_south_east": PackedInt32Array(12, 23, 24, 25, 26, 27),
+"move_south": PackedInt32Array(0, 1, 2, 3, 4, 5),
+"move_south_west": PackedInt32Array(13, 28, 29, 30, 31, 32),
+"move_west": PackedInt32Array(14, 33, 34, 35, 36, 37),
+"move_north_west": PackedInt32Array(15, 38, 39, 40, 41, 42),
+"move_north": PackedInt32Array(16, 43, 44, 45, 46, 47),
+"move_north_east": PackedInt32Array(17, 48, 49, 50, 51, 52),
+"attack_east": PackedInt32Array(11, 53, 54, 55, 56, 57),
+"attack_south_east": PackedInt32Array(12, 58, 59, 60, 61, 62),
+"attack_south": PackedInt32Array(0, 6, 7, 8, 9, 10),
+"attack_south_west": PackedInt32Array(13, 63, 64, 65, 66, 67),
+"attack_west": PackedInt32Array(14, 68, 69, 70, 71, 72),
+"attack_north_west": PackedInt32Array(15, 73, 74, 75, 76, 77),
+"attack_north": PackedInt32Array(16, 78, 79, 80, 81, 82),
+"attack_north_east": PackedInt32Array(17, 83, 84, 85, 86, 87),
+"move_left": PackedInt32Array(14, 33, 34, 35, 36, 37),
+"move_right": PackedInt32Array(11, 18, 19, 20, 21, 22),
+"attack_left": PackedInt32Array(14, 68, 69, 70, 71, 72),
+"attack_right": PackedInt32Array(11, 53, 54, 55, 56, 57),
+"attack_primary": PackedInt32Array(0, 6, 7, 8, 9, 10)
+}
 
 [resource]
+metadata/full_frame_trim_atlas = SubResource("TrimAtlas")
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle",
@@ -454,22 +62,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_1")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_2")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_3")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_4")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_5")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move",
@@ -477,22 +85,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_6")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_7")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_8")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_9")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_10")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack",
@@ -500,22 +108,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_1")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_2")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_3")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_4")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_5")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"walk",
@@ -523,7 +131,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_11")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_east",
@@ -531,7 +139,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_south_east",
@@ -539,7 +147,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_south",
@@ -547,7 +155,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_13")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_south_west",
@@ -555,7 +163,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_14")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_west",
@@ -563,7 +171,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_15")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_north_west",
@@ -571,7 +179,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_16")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_north",
@@ -579,7 +187,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_17")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"idle_north_east",
@@ -587,22 +195,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_11")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_18")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_19")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_20")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_21")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_22")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_east",
@@ -610,22 +218,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_23")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_24")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_25")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_26")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_27")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_south_east",
@@ -633,22 +241,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_1")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_2")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_3")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_4")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_5")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_south",
@@ -656,22 +264,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_13")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_28")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_29")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_30")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_31")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_32")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_south_west",
@@ -679,22 +287,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_14")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_33")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_34")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_35")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_36")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_37")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_west",
@@ -702,22 +310,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_15")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_38")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_39")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_40")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_41")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_42")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_north_west",
@@ -725,22 +333,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_16")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_43")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_44")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_45")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_46")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_47")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_north",
@@ -748,22 +356,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_17")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_48")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_49")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_50")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_51")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_52")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_north_east",
@@ -771,22 +379,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_11")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_53")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_54")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_55")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_56")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_57")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_east",
@@ -794,22 +402,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_58")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_59")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_60")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_61")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_62")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_south_east",
@@ -817,22 +425,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_6")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_7")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_8")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_9")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_10")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_south",
@@ -840,22 +448,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_13")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_63")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_64")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_65")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_66")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_67")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_south_west",
@@ -863,22 +471,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_14")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_68")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_69")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_70")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_71")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_72")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_west",
@@ -886,22 +494,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_15")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_73")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_74")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_75")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_76")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_77")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_north_west",
@@ -909,22 +517,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_16")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_78")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_79")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_80")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_81")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_82")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_north",
@@ -932,22 +540,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_17")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_83")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_84")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_85")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_86")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_87")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_north_east",
@@ -955,22 +563,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_14")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_33")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_34")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_35")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_36")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_37")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_left",
@@ -978,22 +586,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_11")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_18")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_19")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_20")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_21")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_22")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move_right",
@@ -1001,22 +609,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_14")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_68")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_69")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_70")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_71")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_72")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_left",
@@ -1024,22 +632,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_11")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_53")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_54")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_55")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_56")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_57")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_right",
@@ -1047,22 +655,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_6")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_7")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_8")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_9")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_10")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_primary",

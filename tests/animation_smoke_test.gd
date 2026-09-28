@@ -1446,7 +1446,13 @@ func _check_elite_strike_pose(_rig: Node2D) -> void:
 var _trim_manifest_cache := {}
 
 
-func _full_frame_trim_sources(frames: SpriteFrames, texture: Texture2D) -> Array:
+func _full_frame_trim_sources(frames: SpriteFrames, texture: Texture2D, animation_name := "", frame_index := 0) -> Array:
+	# FAN-3981: trim-atlas packs resolve the frame through their table.
+	var trim_atlas := FullFrameTrimAtlas.of(frames)
+	if trim_atlas != null and animation_name != "":
+		if not _trim_manifest_cache.has(frames.resource_path):
+			_trim_manifest_cache[frames.resource_path] = FullFrameTrimAtlas.load_manifest(frames.resource_path)
+		return trim_atlas.frame_sources(frames.resource_path, animation_name, frame_index, _trim_manifest_cache[frames.resource_path])
 	var atlas_texture := texture as AtlasTexture
 	if atlas_texture == null or atlas_texture.atlas == null:
 		return [texture.resource_path] if texture != null else []
@@ -1523,7 +1529,7 @@ func _assert_druid_ghost_pack(ghost_id: String, check_cast_alias: bool, check_si
 			if animation_name == "walk":
 				expected_kind = "move"
 			var expected_prefix := "res://assets/sprites/allies/%s/runtime/%s_%s_%s_" % [ghost_id, ghost_id, expected_kind, expected_direction]
-			var frame_sources := _full_frame_trim_sources(frames, texture)
+			var frame_sources := _full_frame_trim_sources(frames, texture, animation_name, frame_index)
 			var source_matches := false
 			for source in frame_sources:
 				if str(source).begins_with(expected_prefix):
@@ -1547,7 +1553,8 @@ func _assert_druid_ghost_pack(ghost_id: String, check_cast_alias: bool, check_si
 		var largest_alpha_area := 0
 		for frame_index in range(frames.get_frame_count(&"move_right")):
 			var texture := frames.get_frame_texture(&"move_right", frame_index)
-			var image := texture.get_image() if texture != null else null
+			var trim_atlas := FullFrameTrimAtlas.of(frames)
+			var image := trim_atlas.frame_canvas_image(&"move_right", frame_index) if trim_atlas != null else (texture.get_image() if texture != null else null)
 			var meaningful_alpha_area := _meaningful_alpha_pixel_count(image, 4.0 / 255.0)
 			if meaningful_alpha_area <= 0:
 				_fail("Expected %s move_right frame %d to contain meaningful alpha." % [ghost_id, frame_index])

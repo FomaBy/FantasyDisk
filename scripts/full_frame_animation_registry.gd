@@ -641,6 +641,10 @@ static func configure_entity_visual(owner: Node2D, entity_kind: String, entity_i
 		animated_body.name = animated_body_name
 		owner.add_child(animated_body)
 	animated_body.sprite_frames = frames
+	# FAN-3981: a trim-atlas pack draws its frames from the sprite's `draw`
+	# signal (one canvas texture per pack instead of one AtlasTexture per
+	# frame); idempotent, no-op for an ordinary SpriteFrames.
+	FullFrameTrimAtlas.attach(animated_body)
 	animated_body.scale = config.get("scale", Vector2.ONE)
 	animated_body.position = config.get("position", Vector2.ZERO)
 	animated_body.visible = true

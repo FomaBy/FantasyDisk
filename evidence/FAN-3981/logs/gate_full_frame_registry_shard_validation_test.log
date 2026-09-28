@@ -1,0 +1,68 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+WARNING: Case mismatch opening requested file '/Users/sergeyfomin/Library/Application Support/Godot/app_userdata/FantasyDisk/fan3669_shard_validation_fixture/testkind/Duplicate_Actor.json', stored as '/Users/sergeyfomin/Library/Application Support/Godot/app_userdata/FantasyDisk/fan3669_shard_validation_fixture/testkind/duplicate_actor.json' in the filesystem. This file will not open when exported to other case-sensitive platforms.
+     at: open_internal (drivers/unix/file_access_unix.cpp:112)
+     GDScript backtrace (most recent call first):
+         [0] <anonymous lambda> (res://tests/full_frame_registry_shard_validation_test.gd:94)
+         [1] _load_shards (res://scripts/full_frame_animation_registry.gd:117)
+         [2] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: testkind/Invalid_First_Duplicate.json has a non-numeric 'scale.x' — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _vector2_from_document (res://scripts/full_frame_animation_registry.gd:195)
+         [1] _entry_from_document (res://scripts/full_frame_animation_registry.gd:145)
+         [2] _load_shards (res://scripts/full_frame_animation_registry.gd:123)
+         [3] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: duplicate actor identity 'duplicate_actor' — testkind/duplicate_actor.json conflicts with already-loaded testkind/Duplicate_Actor.json; both excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _load_shards (res://scripts/full_frame_animation_registry.gd:105)
+         [1] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: duplicate actor identity 'invalid_first_duplicate' — testkind/invalid_first_duplicate.json conflicts with already-loaded testkind/Invalid_First_Duplicate.json; both excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _load_shards (res://scripts/full_frame_animation_registry.gd:105)
+         [1] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: testkind/invalid_scale_type.json has a non-numeric 'scale.x' — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _vector2_from_document (res://scripts/full_frame_animation_registry.gd:195)
+         [1] _entry_from_document (res://scripts/full_frame_animation_registry.gd:145)
+         [2] _load_shards (res://scripts/full_frame_animation_registry.gd:123)
+         [3] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+ERROR: Parse JSON failed. Error at line 0: Expected key
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] <anonymous lambda> (res://tests/full_frame_registry_shard_validation_test.gd:94)
+       [1] _load_shards (res://scripts/full_frame_animation_registry.gd:117)
+       [2] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: malformed JSON in testkind/malformed_json.json — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _load_shards (res://scripts/full_frame_animation_registry.gd:121)
+         [1] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: testkind/missing_frames.json has a missing/invalid 'frames' path — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _entry_from_document (res://scripts/full_frame_animation_registry.gd:137)
+         [1] _load_shards (res://scripts/full_frame_animation_registry.gd:123)
+         [2] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: testkind/missing_source_faces_left.json has a missing/invalid 'source_faces_left' flag — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _entry_from_document (res://scripts/full_frame_animation_registry.gd:150)
+         [1] _load_shards (res://scripts/full_frame_animation_registry.gd:123)
+         [2] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: testkind/nonexistent_frames.json references a nonexistent 'frames' resource — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _entry_from_document (res://scripts/full_frame_animation_registry.gd:140)
+         [1] _load_shards (res://scripts/full_frame_animation_registry.gd:123)
+         [2] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+WARNING: full_frame_animation_registry: testkind/wrong_type_frames.json references a 'frames' resource that is not SpriteFrames — actor excluded (safe fallback).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _entry_from_document (res://scripts/full_frame_animation_registry.gd:143)
+         [1] _load_shards (res://scripts/full_frame_animation_registry.gd:123)
+         [2] _initialize (res://tests/full_frame_registry_shard_validation_test.gd:96)
+Full-frame registry shard validation test passed (malformed JSON, missing field, invalid type, nonexistent/wrong-type frames, and duplicate identity — including invalid-first order — all fail closed; valid shard unaffected).

@@ -1,0 +1,10 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+probe: renderer=gl_compatibility headless=false
+probe ash_marksman: objects before 185 / after 4, 552 captures, max diff before/after 0, vs source 2
+
+| pack | frames | unique | pages | objects before (AtlasTexture) | objects after (trim table) | captures | max diff before/after | max diff vs source |
+|---|---|---|---|---|---|---|---|---|
+| ash_marksman | 184 | 184 | 2 | 185 | 4 | 552 | 0 | 2 |
+REPRESENTATION PROBE OK (1 packs)

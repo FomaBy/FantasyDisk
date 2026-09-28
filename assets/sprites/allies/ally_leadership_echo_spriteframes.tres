@@ -1,92 +1,46 @@
 [gd_resource type="SpriteFrames" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/allies/leadership_echo_trim_0.png" id="page_0"]
+[ext_resource type="Script" path="res://scripts/full_frame_canvas_texture.gd" id="canvas_script"]
+[ext_resource type="Script" path="res://scripts/full_frame_trim_atlas.gd" id="trim_atlas_script"]
 
-[sub_resource type="AtlasTexture" id="Trim_0"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 213, 203, 210)
-margin = Rect2(26, 23, 53, 46)
+[sub_resource type="Texture2D" id="Canvas"]
+script = ExtResource("canvas_script")
+size = Vector2i(256, 256)
 
-[sub_resource type="AtlasTexture" id="Trim_1"]
-atlas = ExtResource("page_0")
-region = Rect2(206, 213, 202, 210)
-margin = Rect2(27, 23, 54, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_2"]
-atlas = ExtResource("page_0")
-region = Rect2(413, 1, 203, 210)
-margin = Rect2(26, 23, 53, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_3"]
-atlas = ExtResource("page_0")
-region = Rect2(823, 1, 199, 210)
-margin = Rect2(28, 23, 57, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_4"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 1, 204, 210)
-margin = Rect2(26, 23, 52, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_5"]
-atlas = ExtResource("page_0")
-region = Rect2(618, 1, 203, 210)
-margin = Rect2(26, 23, 53, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_6"]
-atlas = ExtResource("page_0")
-region = Rect2(832, 213, 121, 210)
-margin = Rect2(67, 23, 135, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_7"]
-atlas = ExtResource("page_0")
-region = Rect2(410, 213, 146, 210)
-margin = Rect2(55, 23, 110, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_8"]
-atlas = ExtResource("page_0")
-region = Rect2(558, 213, 143, 210)
-margin = Rect2(56, 23, 113, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_9"]
-atlas = ExtResource("page_0")
-region = Rect2(703, 213, 127, 210)
-margin = Rect2(64, 23, 129, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_10"]
-atlas = ExtResource("page_0")
-region = Rect2(114, 425, 109, 210)
-margin = Rect2(73, 23, 147, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_11"]
-atlas = ExtResource("page_0")
-region = Rect2(1, 425, 111, 210)
-margin = Rect2(72, 23, 145, 46)
-
-[sub_resource type="AtlasTexture" id="Trim_12"]
-atlas = ExtResource("page_0")
-region = Rect2(207, 1, 204, 210)
-margin = Rect2(26, 23, 52, 46)
+[sub_resource type="Resource" id="TrimAtlas"]
+script = ExtResource("trim_atlas_script")
+canvas = Vector2i(256, 256)
+pages = Array[Texture2D]([ExtResource("page_0")])
+entries = PackedInt32Array(0, 1, 213, 203, 210, 26, 23, 0, 206, 213, 202, 210, 27, 23, 0, 413, 1, 203, 210, 26, 23, 0, 823, 1, 199, 210, 28, 23, 0, 1, 1, 204, 210, 26, 23, 0, 618, 1, 203, 210, 26, 23, 0, 832, 213, 121, 210, 67, 23, 0, 410, 213, 146, 210, 55, 23, 0, 558, 213, 143, 210, 56, 23, 0, 703, 213, 127, 210, 64, 23, 0, 114, 425, 109, 210, 73, 23, 0, 1, 425, 111, 210, 72, 23, 0, 207, 1, 204, 210, 26, 23)
+animations = {
+"attack": PackedInt32Array(0, 1, 2, 3, 4, 5),
+"attack_primary": PackedInt32Array(0, 1, 2, 3, 4, 5),
+"death": PackedInt32Array(6, 7, 8, 9, 10, 11),
+"move": PackedInt32Array(12, 12, 12, 12, 12, 12, 12, 12)
+}
 
 [resource]
+metadata/full_frame_trim_atlas = SubResource("TrimAtlas")
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_1")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_2")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_3")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_4")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_5")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack",
@@ -94,22 +48,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_0")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_1")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_2")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_3")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_4")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_5")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"attack_primary",
@@ -117,22 +71,22 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_6")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_7")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_8")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_9")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_10")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_11")
+"texture": SubResource("Canvas")
 }],
 "loop": false,
 "name": &"death",
@@ -140,28 +94,28 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }, {
 "duration": 1.0,
-"texture": SubResource("Trim_12")
+"texture": SubResource("Canvas")
 }],
 "loop": true,
 "name": &"move",

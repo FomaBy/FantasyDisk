@@ -254,6 +254,36 @@ Animator ownership описан в `docs/process/agent_role_boundaries_and_hando
   never loads a pack on the main thread (miss → static/rig fallback, one
   warning, background queue, deferred swap, counted by
   `synchronous_combat_load_count`; `tests/full_frame_combat_residency_test.gd`).
+- FAN-3981 (0.3.1 release blocker, FAN-3964 QA M3): the trim-atlas
+  SpriteFrames no longer holds one `AtlasTexture` per unique frame — that
+  cost ~230 engine objects per resident pack, so the core roster on the
+  route map read 7,606 `Performance.OBJECT_COUNT` and P2 8,643-8,719
+  against the perf checklist's 5,000 target / 6,250 red line. Every frame
+  now references the pack's single `FullFrameCanvasTexture`
+  (`scripts/full_frame_canvas_texture.gd`: reports the 512/256 canvas,
+  draws nothing) and the geometry lives in a `FullFrameTrimAtlas` table
+  (`scripts/full_frame_trim_atlas.gd`, `metadata/full_frame_trim_atlas` of
+  the SpriteFrames: one entry per unique frame — page, region, canvas
+  offset — and per animation the entry index of every frame; plain arrays,
+  no objects). `FullFrameTrimAtlas.attach(sprite)` connects the sprite's
+  `draw` signal and draws the current frame's page region at exactly the
+  destination the AtlasTexture produced (offset/centered/flip/pixel snap);
+  `configure_entity_visual` attaches every body it configures, and a tool
+  or test that assigns a pack to its own `AnimatedSprite2D` must call
+  `attach` (the frames are otherwise invisible, by design). A resident
+  pack costs the SpriteFrames + canvas + table + one texture per page
+  (≤ `FullFrameTrimAtlas.RESIDENT_OBJECT_BUDGET` = 24; 4-17 in practice).
+  Animation names/order/loop/speed/durations, `get_size()` of frame
+  textures, registry scale/position/flags and every spawn/residency rule
+  are unchanged; `tests/full_frame_trim_atlas_parity_test.gd` proves the
+  table matches the manifest, the render is byte-identical to the
+  AtlasTexture representation, and the per-pack object budget;
+  `tests/full_frame_combat_residency_test.gd` asserts the core-roster
+  object budget. Tests/tools that need a frame's pixels or its retained
+  source PNGs use `FullFrameTrimAtlas.frame_canvas_image` /
+  `frame_sources` (the editor's SpriteFrames panel shows the canvas
+  placeholder, not the art — inspect packs with
+  `tools/animation_gallery.gd`).
 
 - SCRUM-363 integrated the first SCRUM-352 enemy pilot: `rift_cutter` now has
   padded full-frame SpriteFrames at

@@ -1,0 +1,85 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+WARNING: full_frame_animation_registry: elite/night_stalker needed res://assets/sprites/elites/full_frame/night_stalker_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _spawn_elite_enemy (res://scripts/combat_director.gd:935)
+         [5] _test_elite_boss_presentation (res://tests/runtime_smoke_test.gd:1843)
+WARNING: full_frame_animation_registry: boss/rift_warden needed res://assets/sprites/bosses/full_frame/rift_warden_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1667)
+WARNING: full_frame_animation_registry: enemy/small_biter needed res://assets/sprites/enemies/full_frame/small_biter_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _summon_riftlings (res://scripts/boss.gd:888)
+         [5] _update_boss_attacks (res://scripts/boss.gd:245)
+         [6] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1700)
+WARNING: full_frame_animation_registry: boss/disk_devourer needed res://assets/sprites/bosses/full_frame/disk_devourer_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1667)
+WARNING: full_frame_animation_registry: boss/bone_archon needed res://assets/sprites/bosses/full_frame/bone_archon_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1667)
+WARNING: full_frame_animation_registry: boss/brood_mother needed res://assets/sprites/bosses/full_frame/brood_mother_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1667)
+WARNING: full_frame_animation_registry: boss/ashen_colossus needed res://assets/sprites/bosses/full_frame/ashen_colossus_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1667)
+WARNING: full_frame_animation_registry: boss/secret_ascension_boss needed res://assets/sprites/bosses/full_frame/secret_ascension_boss_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_new_boss_roster (res://tests/runtime_smoke_test.gd:1667)
+WARNING: full_frame_animation_registry: boss/bloodthorn_lion needed res://assets/sprites/bosses/full_frame/bloodthorn_lion_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _configure_full_frame_animation (res://scripts/enemy.gd:1847)
+         [3] _ready (res://scripts/enemy.gd:233)
+         [4] _ready (res://scripts/boss.gd:86)
+         [5] _test_bloodthorn_lion_boss (res://tests/runtime_smoke_boss_elite_test.gd:161)
+Runtime boss/elite smoke suite passed.
