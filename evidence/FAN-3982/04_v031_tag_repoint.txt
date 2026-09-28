@@ -1,0 +1,31 @@
+# 4c v0.3.1 tag re-point (lease-bound)
+at_utc=2026-09-28T10:53:29Z
+new tag object built with git mktag = 8c2cbdf89f07f8d63417303fb35387a29250b446
+object f4d05fea91a5ce8b3fb858a5035df1fe54236369
+type commit
+tag v0.3.1
+tagger Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790592809 +0300
+
+FantasyDisk v0.3.1
+
+local verification: ^{commit}=f4d05fea91a5ce8b3fb858a5035df1fe54236369 ^{tree}=e659e92afdd2dad1a3aec8ca7bce49cfac250ec6
+remote refs/tags/v0.3.1 immediately before push = c692d01973a7e4765807bd5fcae11c6bb74df5e6
+archive/v0.3.1-attempt2-165f14aa still = c692d01973a7e4765807bd5fcae11c6bb74df5e6
+$ git push origin 8c2cbdf89f07f8d63417303fb35387a29250b446:refs/tags/v0.3.1 --force-with-lease=refs/tags/v0.3.1:c692d01973a7e4765807bd5fcae11c6bb74df5e6
+To https://github.com/FomaBy/FantasyDisk.git
+ + c692d0197...8c2cbdf89 8c2cbdf89f07f8d63417303fb35387a29250b446 -> v0.3.1 (forced update)
+exit=0
+
+## readback
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/heads/dev
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/archive/v0.3.1-attempt1-448a0cc1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/archive/v0.3.1-attempt1-448a0cc1^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/archive/v0.3.1-attempt2-165f14aa
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/tags/archive/v0.3.1-attempt2-165f14aa^{}
+d7e516cde235adf347d511e922ab19667bf82f65	refs/tags/v0.3.0
+fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb	refs/tags/v0.3.0^{}
+8c2cbdf89f07f8d63417303fb35387a29250b446	refs/tags/v0.3.1
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/tags/v0.3.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}

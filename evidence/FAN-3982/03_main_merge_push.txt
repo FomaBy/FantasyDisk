@@ -1,0 +1,22 @@
+# 4b main merge push
+at_utc=2026-09-28T10:53:01Z
+merge commit built with git commit-tree = 953f3615f267d2a5d187eea2dd0ce05ba795377b
+tree e659e92afdd2dad1a3aec8ca7bce49cfac250ec6
+parent dafb99ea70af8ace6c2b866cd1fb57a52bda0a87
+parent f4d05fea91a5ce8b3fb858a5035df1fe54236369
+author Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790592781 +0300
+committer Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790592781 +0300
+
+release: FantasyDisk v0.3.1 (merge dev)
+
+local verification: tree=e659e92afdd2dad1a3aec8ca7bce49cfac250ec6 parents=dafb99ea70af8ace6c2b866cd1fb57a52bda0a87 f4d05fea91a5ce8b3fb858a5035df1fe54236369
+diff merge vs S: 0 lines (expect 0)
+remote main immediately before push = dafb99ea70af8ace6c2b866cd1fb57a52bda0a87
+$ git push origin 953f3615f267d2a5d187eea2dd0ce05ba795377b:refs/heads/main
+To https://github.com/FomaBy/FantasyDisk.git
+   dafb99ea7..953f3615f  953f3615f267d2a5d187eea2dd0ce05ba795377b -> main
+exit=0
+
+## readback
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/heads/dev
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main

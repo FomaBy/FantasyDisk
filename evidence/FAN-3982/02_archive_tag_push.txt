@@ -1,0 +1,15 @@
+# 4a archive tag push
+at_utc=2026-09-28T10:51:51Z
+remote refs/tags/v0.3.1 immediately before push = c692d01973a7e4765807bd5fcae11c6bb74df5e6
+remote archive/v0.3.1-attempt2-165f14aa exists before push: 0
+$ git push origin c692d01973a7e4765807bd5fcae11c6bb74df5e6:refs/tags/archive/v0.3.1-attempt2-165f14aa
+To https://github.com/FomaBy/FantasyDisk.git
+ * [new tag]             c692d01973a7e4765807bd5fcae11c6bb74df5e6 -> archive/v0.3.1-attempt2-165f14aa
+exit=0
+
+## readback
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/archive/v0.3.1-attempt1-448a0cc1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/archive/v0.3.1-attempt1-448a0cc1^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/archive/v0.3.1-attempt2-165f14aa
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/tags/archive/v0.3.1-attempt2-165f14aa^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/v0.3.1

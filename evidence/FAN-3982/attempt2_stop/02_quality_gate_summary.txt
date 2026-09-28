@@ -1,0 +1,138 @@
+# Certifying quality gate on exact S (AC3) — RESULT: QUALITY FAILED (2 static checks + 3 Godot suites red)
+command=python3 tools/quality_gate.py --profile changed --changed-ref dafb99ea70af8ace6c2b866cd1fb57a52bda0a87 --report quality_gate_report.json
+started_utc=2026-09-28T05:27:33Z finished_utc=2026-09-28T06:36:36Z host=macOS 26.5.1 arm64, Godot 4.7.stable.official.5b4e0cb0f
+git_sha=338fb7bf4d0cfcf9bd9a896fc0afcf0e5c4e816a changed_ref=dafb99ea70af8ace6c2b866cd1fb57a52bda0a87 profile=changed certifying=False worktree_clean=False worktree_status=["?? evidence/FAN-3982/00_preflight.txt"]
+final log line: QUALITY FAILED: 16 static, 560 Godot; report=../gate/quality_gate_report.json
+
+## Static checks: 16 (2 failed)
+  repository-invariants            passed exit=0
+  repository-storage-policy        passed exit=0
+  python-unit                      passed exit=0
+  python-unit:tests/tools          passed exit=0
+  python-syntax                    passed exit=0
+  asset-audit                      passed exit=0
+  constellation-validator          passed exit=0
+  runtime-manifest-validator       passed exit=0
+  git-diff-check                   passed exit=0
+  git-index-check                  passed exit=0
+  git-head-check                   failed exit=2
+  git-range-check                  failed exit=2
+  shell-syntax                     passed exit=0
+  client-secret-scan               passed exit=0
+  windows-export-config            passed exit=0
+  test-discovery                   passed exit=0
+
+### git-head-check = `git show --check --format= HEAD` (exit 2) and git-range-check = `git diff --check dafb99ea...HEAD` (exit 2) — identical findings, reproduced at 2026-09-28T06:39:45Z:
+  evidence/FAN-3981/logs/pck_start_candidate.stdout.log:3: new blank line at EOF.
+  evidence/FAN-3981/logs/pck_start_v0.3.1.stdout.log:3: new blank line at EOF.
+  => two FAN-3981 evidence log files committed in 338fb7bf end with an extra blank line; whitespace-only, but the certifying static profile is fail-closed.
+
+## Godot suites: selected 560, executed 560, passed 557, failed 3
+  FAIL assassin_certification_capture_test exit=1 fatal_diagnostic=push_error
+  FAIL doctor_certification_capture_test exit=1 fatal_diagnostic=push_error
+  FAIL druid_certification_capture_test exit=1 fatal_diagnostic=push_error
+
+## Python unit: Ran 795 tests in 298.166s — OK (skipped=3); nested tools discovery Ran 4 tests OK
+
+## The seven runtime smoke suites (six core smokes + umbrella runtime_smoke_test), all PASS
+  PASS runtime_smoke_test
+  PASS runtime_smoke_boss_elite_test
+  PASS runtime_smoke_combat_test
+  PASS runtime_smoke_progression_economy_test
+  PASS runtime_smoke_triggered_artifacts_test
+  PASS runtime_smoke_ui_test
+  PASS runtime_smoke_weapon_mechanics_test
+
+## Godot failure diagnostics (identical rule for the three suites)
+
+### assassin_certification_capture_test — 21 non-allowlisted paths changed since capture source 289699b9509311364f9c4d93004c1560bbd79437
+  evidence/FAN-3981/perf/v0.3.1_natural.json
+  evidence/FAN-3981/perf_driver.gd
+  evidence/FAN-3981/perf_table.py
+  evidence/FAN-3981/perf_tables.md
+  evidence/FAN-3981/probe/chunk_02/representation_probe.json
+  evidence/FAN-3981/probe/chunk_03/representation_probe.json
+  evidence/FAN-3981/probe/chunk_04/representation_probe.json
+  evidence/FAN-3981/probe/chunk_05/representation_probe.json
+  evidence/FAN-3981/probe/chunk_06/representation_probe.json
+  evidence/FAN-3981/representation_probe.gd
+  scripts/full_frame_animation_registry.gd
+  scripts/full_frame_canvas_texture.gd
+  scripts/full_frame_canvas_texture.gd.uid
+  scripts/full_frame_trim_atlas.gd
+  scripts/full_frame_trim_atlas.gd.uid
+  tests/animation_smoke_test.gd
+  tests/full_frame_combat_residency_test.gd
+  tests/full_frame_trim_atlas_parity_test.gd
+  tests/night_stalker_live_geometry_test.gd
+  tools/animation_gallery.gd
+  tools/build_full_frame_trim_atlases.py
+
+### doctor_certification_capture_test — 21 non-allowlisted paths changed since capture source 289699b9509311364f9c4d93004c1560bbd79437
+  evidence/FAN-3981/perf/v0.3.1_natural.json
+  evidence/FAN-3981/perf_driver.gd
+  evidence/FAN-3981/perf_table.py
+  evidence/FAN-3981/perf_tables.md
+  evidence/FAN-3981/probe/chunk_02/representation_probe.json
+  evidence/FAN-3981/probe/chunk_03/representation_probe.json
+  evidence/FAN-3981/probe/chunk_04/representation_probe.json
+  evidence/FAN-3981/probe/chunk_05/representation_probe.json
+  evidence/FAN-3981/probe/chunk_06/representation_probe.json
+  evidence/FAN-3981/representation_probe.gd
+  scripts/full_frame_animation_registry.gd
+  scripts/full_frame_canvas_texture.gd
+  scripts/full_frame_canvas_texture.gd.uid
+  scripts/full_frame_trim_atlas.gd
+  scripts/full_frame_trim_atlas.gd.uid
+  tests/animation_smoke_test.gd
+  tests/full_frame_combat_residency_test.gd
+  tests/full_frame_trim_atlas_parity_test.gd
+  tests/night_stalker_live_geometry_test.gd
+  tools/animation_gallery.gd
+  tools/build_full_frame_trim_atlases.py
+
+### druid_certification_capture_test — 21 non-allowlisted paths changed since capture source 289699b9509311364f9c4d93004c1560bbd79437
+  evidence/FAN-3981/perf/v0.3.1_natural.json
+  evidence/FAN-3981/perf_driver.gd
+  evidence/FAN-3981/perf_table.py
+  evidence/FAN-3981/perf_tables.md
+  evidence/FAN-3981/probe/chunk_02/representation_probe.json
+  evidence/FAN-3981/probe/chunk_03/representation_probe.json
+  evidence/FAN-3981/probe/chunk_04/representation_probe.json
+  evidence/FAN-3981/probe/chunk_05/representation_probe.json
+  evidence/FAN-3981/probe/chunk_06/representation_probe.json
+  evidence/FAN-3981/representation_probe.gd
+  scripts/full_frame_animation_registry.gd
+  scripts/full_frame_canvas_texture.gd
+  scripts/full_frame_canvas_texture.gd.uid
+  scripts/full_frame_trim_atlas.gd
+  scripts/full_frame_trim_atlas.gd.uid
+  tests/animation_smoke_test.gd
+  tests/full_frame_combat_residency_test.gd
+  tests/full_frame_trim_atlas_parity_test.gd
+  tests/night_stalker_live_geometry_test.gd
+  tools/animation_gallery.gd
+  tools/build_full_frame_trim_atlases.py
+
+## Reading
+- tests/ultimates/presentation/{assassin,doctor,druid}_certification_capture_test.gd `_source_violations`: the capture manifest's
+  source.commit_sha (289699b9, recorded by the FAN-3978 recapture commit 165f14aa) must be an ancestor of HEAD and every path in
+  `git diff --name-only 289699b9..HEAD` must be an evidence-only path per `_is_evidence_only_path`. FAN-3981 (35d3aed2, 338fb7bf)
+  changed the live capture path (scripts/full_frame_animation_registry.gd, new scripts/full_frame_canvas_texture.gd and
+  scripts/full_frame_trim_atlas.gd, tools/build_full_frame_trim_atlases.py, tools/animation_gallery.gd, four tests) and added
+  evidence/FAN-3981/** (not allowlisted; only evidence/FAN-3966 and evidence/FAN-3967 are). So the three strict certification
+  captures are stale by the repository's own ratchet — the same condition FAN-3978 fixed after FAN-3977 by re-shooting the
+  three classes (commit 165f14aa: 144 samples each, manifests + readability reports + LFS frames re-recorded).
+- Reproduced without Godot: `git diff --name-only 289699b9..338fb7bf` = 262 paths, of which the 20 listed above are outside the
+  allowlist. Deterministic; not an environment flake.
+- The two QUALITY NON-CERTIFYING labels are procedural: the diff base was current `main` (dafb99ea, a strict superset of the
+  configured `origin/dev` base, which would be an empty diff because S == origin/dev) and the worktree held this card's
+  untracked evidence/FAN-3982/00_preflight.txt. Neither creates or removes any of the five failures.
+- Everything else is green: 14 of 16 static checks, 557 of 560 Godot suites (all seven runtime_smoke suites included), 795 Python
+  tests (3 skipped).
+
+## Run 1 (aborted, not used as evidence)
+Started 2026-09-28T05:05Z on the fresh worktree with all 1538 Git LFS files still pointers; 12 capture/timeline suites went red on
+lfs_pointer / file_absent / hash-mismatch diagnostics. Aborted at 301/560 (05:27:03Z); `git lfs pull` hydrated 1538/1538 objects
+from the shared LFS cache in 9 s (worktree still clean); run 2 above was then started from scratch. Run 1 log kept outside the
+repository.

@@ -1,0 +1,45 @@
+# Post-push readback (AC5)
+read_at_utc=2026-09-28T10:54:29Z
+
+## git ls-remote FomaBy/FantasyDisk
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/heads/dev
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/archive/v0.3.1-attempt1-448a0cc1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/archive/v0.3.1-attempt1-448a0cc1^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/archive/v0.3.1-attempt2-165f14aa
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/tags/archive/v0.3.1-attempt2-165f14aa^{}
+d7e516cde235adf347d511e922ab19667bf82f65	refs/tags/v0.3.0
+fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb	refs/tags/v0.3.0^{}
+8c2cbdf89f07f8d63417303fb35387a29250b446	refs/tags/v0.3.1
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/tags/v0.3.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}
+
+## GitHub API: commit on main
+{"author":"Claude (FantasyDisk agent)","committer":"Claude (FantasyDisk agent)","date":"2026-09-28T10:53:01Z","message":"release: FantasyDisk v0.3.1 (merge dev)","parents":["dafb99ea70af8ace6c2b866cd1fb57a52bda0a87","f4d05fea91a5ce8b3fb858a5035df1fe54236369"],"sha":"953f3615f267d2a5d187eea2dd0ce05ba795377b","tree":"e659e92afdd2dad1a3aec8ca7bce49cfac250ec6"}
+
+## GitHub API: refs/heads/main
+{"ref":"refs/heads/main","sha":"953f3615f267d2a5d187eea2dd0ce05ba795377b","type":"commit"}
+
+## GitHub API: refs/tags/v0.3.1 and new tag object
+{"ref":"refs/tags/v0.3.1","sha":"8c2cbdf89f07f8d63417303fb35387a29250b446","type":"tag"}
+{"date":"2026-09-28T10:53:29Z","message":"FantasyDisk v0.3.1\n","sha":"8c2cbdf89f07f8d63417303fb35387a29250b446","tag":"v0.3.1","tagger":"Claude (FantasyDisk agent)","target":"f4d05fea91a5ce8b3fb858a5035df1fe54236369","target_type":"commit"}
+
+## GitHub API: archive tag refs and the preserved (old) tag object
+{"ref":"refs/tags/archive/v0.3.1-attempt2-165f14aa","sha":"c692d01973a7e4765807bd5fcae11c6bb74df5e6","type":"tag"}
+{"date":"2026-09-27T23:43:00Z","message":"FantasyDisk v0.3.1\n","sha":"c692d01973a7e4765807bd5fcae11c6bb74df5e6","tag":"v0.3.1","tagger":"Claude (FantasyDisk agent)","target":"165f14aa0ce5bcbd884e4dfde137283a8010e863","target_type":"commit"}
+{"ref":"refs/tags/archive/v0.3.1-attempt1-448a0cc1","sha":"676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71","type":"tag"}
+
+## GitHub API: refs/tags/v0.3.2 (must be unchanged)
+{"ref":"refs/tags/v0.3.2","sha":"90279733311632aec88a70317e18afc67518e6d2","type":"tag"}
+
+## GitHub API: tree of S
+{"sha":"f4d05fea91a5ce8b3fb858a5035df1fe54236369","tree":"e659e92afdd2dad1a3aec8ca7bce49cfac250ec6"}
+
+## FomaBy/FantasyDisk-Releases (all refs) and releases
+162ac9f886a7c4deaa05d6c70c23779f406c7080	HEAD
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/heads/main
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/tags/v0.2.4
+FantasyDisk v0.2.4	Latest	v0.2.4	2026-07-16T13:23:48Z
+## FomaBy/FantasyDisk releases
+FantasyDisk v0.2.3	Latest	v0.2.3	2026-07-16T09:41:35Z
