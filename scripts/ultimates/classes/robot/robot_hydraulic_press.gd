@@ -59,7 +59,7 @@ static func crush(activation, index: int) -> void:
 	for raw_target in activation.targets_in_corridor(
 		activation.origin(), axis, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), 0
 	):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var lateral: float = (target.global_position - activation.origin()).dot(perpendicular)
@@ -87,7 +87,7 @@ static func release(activation) -> void:
 	for raw_target in activation.targets_in_corridor(
 		activation.origin(), direction as Vector2, activation.param_float("length", 430.0), activation.param_float("half_width", 150.0), 0
 	):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(target, activation.scaled_damage("release_damage", 7.50),
 				{"source": "robot_hydraulic_release"}, "release", true)

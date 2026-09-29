@@ -133,7 +133,7 @@ static func detonate(activation, state: Dictionary, index: int) -> void:
 	var event_id := "soldier_grenade_chain:%d" % index
 	var victims: Array = []
 	for raw_target in activation.targets(activation.origin(), 99999.0, 0):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		activation.deal_damage(
@@ -156,7 +156,7 @@ static func detonate(activation, state: Dictionary, index: int) -> void:
 	})
 	var nodes := state.get("nodes", []) as Array
 	if index < nodes.size():
-		var node := nodes[index] as Node
+		var node := (nodes[index] if is_instance_valid(nodes[index]) else null) as Node
 		if node != null and is_instance_valid(node):
 			node.queue_free()
 
@@ -170,7 +170,7 @@ static func crater_tick(activation, tick: int) -> void:
 	for raw_target in activation.targets(
 		center as Vector2, activation.param_float("crater_radius", 190.0), 0
 	):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(
 				target,
@@ -196,7 +196,7 @@ static func _last_spawns(activation, count: int) -> Array[Node]:
 	var result: Array[Node] = []
 	var spawned: Array = activation.spawned_for_tests()
 	for index in range(maxi(spawned.size() - count, 0), spawned.size()):
-		var node := spawned[index] as Node
+		var node := (spawned[index] if is_instance_valid(spawned[index]) else null) as Node
 		if node != null and is_instance_valid(node):
 			result.append(node)
 	return result
@@ -204,7 +204,7 @@ static func _last_spawns(activation, count: int) -> Array[Node]:
 
 static func _place(nodes: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(nodes.size(), points.size()):
-		var node := nodes[index] as Node2D
+		var node := (nodes[index] if is_instance_valid(nodes[index]) else null) as Node2D
 		if node != null and is_instance_valid(node):
 			node.global_position = points[index]
 

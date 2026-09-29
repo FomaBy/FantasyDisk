@@ -138,7 +138,7 @@ func cast_beat(beat: int) -> void:
 		_shock_chain(targets)
 		return
 	for raw_target in targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		_activation.record_target_value(
@@ -188,7 +188,7 @@ func combined_nova() -> void:
 	})
 	var victims: Array = _activation.targets(center, radius)
 	for raw_target in victims:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var statuses := 0
@@ -206,7 +206,7 @@ func _shock_chain(targets: Array) -> void:
 	var limit := mini(targets.size(), _activation.param_int("shock_chain_count", 6))
 	var chained: Array = []
 	for hop in limit:
-		var target := targets[hop] as Node
+		var target := (targets[hop] if is_instance_valid(targets[hop]) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		_activation.record_target_value(target, "conclave_shock", true, "conclave_mark:shock")

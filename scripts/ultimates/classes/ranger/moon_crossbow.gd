@@ -78,7 +78,7 @@ static func execute(activation) -> float:
 func configure(activation, prey) -> void:
 	_activation = activation
 	global_position = activation.origin()
-	var marked := prey as Node2D
+	var marked := (prey if is_instance_valid(prey) else null) as Node2D
 	if marked == null or not is_instance_valid(marked) \
 			or not activation.record_target_value(marked, MARK_KEY, 1.0, "moon_hunt:mark"):
 		return
@@ -97,7 +97,7 @@ func configure(activation, prey) -> void:
 func fire(wave: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
-	var prey := marked_target_for_tests as Node2D
+	var prey := (marked_target_for_tests if is_instance_valid(marked_target_for_tests) else null) as Node2D
 	if prey == null or not is_instance_valid(prey) \
 			or _activation.target_value(prey, MARK_KEY) == null:
 		return
@@ -110,8 +110,11 @@ func fire(wave: int) -> void:
 	)
 	var split: float = bolt * _activation.param_float("split_ratio", 0.1)
 	for index in neighbours.size():
+		var neighbour := (neighbours[index] if is_instance_valid(neighbours[index]) else null) as Node
+		if neighbour == null:
+			continue
 		_deal(
-			neighbours[index] as Node, split, "moon_hunt:split:%d" % wave, true,
+			neighbour, split, "moon_hunt:split:%d" % wave, true,
 			{"ultimate_mechanic": "moon_split", "wave": wave, "split_index": index}
 		)
 		split_count_for_tests += 1
@@ -133,7 +136,7 @@ func _neighbours(prey: Node2D) -> Array:
 		wanted + 1,
 		"nearest"
 	):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target) or target == prey:
 			continue
 		neighbours.append(target)
@@ -148,7 +151,7 @@ func _neighbours(prey: Node2D) -> Array:
 ## survivor releases the mark instead of parking it on a corpse.
 func _transfer_mark(prey: Node2D, neighbours: Array, wave: int) -> void:
 	for raw_target in neighbours:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if not _alive(target):
 			continue
 		if not _activation.transfer_target_value(

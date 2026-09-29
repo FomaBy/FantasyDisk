@@ -136,7 +136,7 @@ func _lanes(step: int) -> void:
 	# membership is attribution, so the beat itself walks every live enemy.
 	var crushed: Array[Node] = []
 	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		lane_hits_for_tests += 1
@@ -160,7 +160,7 @@ func _central_quake() -> void:
 		"position": center, "radius": radius, "shape": "quake_ring",
 	})
 	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		crushed.append(target)

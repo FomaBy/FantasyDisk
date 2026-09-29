@@ -18,8 +18,17 @@ INSIDE the exported app — the exported binary, the exported PCK, the remapped
   must fail for that class, and with one executor remap removed the pair must
   fall back to ``legacy_class_fallback`` and fail — so a green probe is never
   vacuous;
-* optionally (``--captures``) a windowed run of the exported app screenshots
-  one weapon per class at its ``active`` beat.
+* player path (default on, ``--skip-player-path`` to skip): every pair is
+  played through the shipped path — ``Main._start_combat()`` ->
+  ``Player.activate_ultimate()`` -> executor, enemy deaths, victim impacts,
+  authored presentation — in its own fresh process of the exported app with
+  an isolated user directory, and kept running past the presentation's
+  declared cancel. A release build that touches a freed enemy dies by signal
+  here (the first FAN-3985 QA found 10 of 51 pairs segfaulting); any
+  non-zero exit, signal, timeout or failed pair record fails the gate. One
+  weapon per class is then replayed windowed to capture a real game frame.
+* optionally (``--captures``) a windowed run of the presentation-runtime
+  probe screenshots one weapon per class at its ``active`` beat.
 
 Official export templates are built with ``disable_path_overrides``, so the
 probe cannot be injected with ``--script`` or a scene argument.  Instead the
@@ -44,11 +53,18 @@ import struct
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 GATE = ROOT / "tools" / "godot_gate.py"
 PROBE_SCRIPT = ROOT / "tools" / "ultimate_export_probe.gd"
+PLAYER_PATH_SCRIPT = ROOT / "tools" / "ultimate_player_path_probe.gd"
+# The probe clones never share the player's user directory (saves, settings)
+# and never contact the update check.
+PROBE_USER_DIR_NAME = "FantasyDiskFan3985Probe"
+PLAYER_PATH_TIMEOUT = 240.0
+PLAYER_PATH_WORKERS = 3
 DEFAULT_OUTPUT = ROOT / "build" / "ultimate_export_probe"
 PRESET = "macOS"
 APP_NAME = "FantasyDisk.app"
@@ -248,11 +264,11 @@ def clone_app(app: Path, destination: Path) -> Path:
     return destination
 
 
-def write_probe_scene(output_dir: Path) -> Path:
-    scene = output_dir / "ultimate_export_probe.tscn"
+def write_probe_scene(output_dir: Path, script: Path = PROBE_SCRIPT, name: str = "ultimate_export_probe.tscn") -> Path:
+    scene = output_dir / name
     scene.write_text(
         "[gd_scene load_steps=2 format=3]\n\n"
-        f'[ext_resource type="Script" path="{PROBE_SCRIPT}" id="1_probe"]\n\n'
+        f'[ext_resource type="Script" path="{script}" id="1_probe"]\n\n'
         '[node name="Fan3985ExportProbe" type="Node2D"]\n'
         'script = ExtResource("1_probe")\n',
         encoding="utf-8",
@@ -262,7 +278,157 @@ def write_probe_scene(output_dir: Path) -> Path:
 
 def install_override(app: Path, scene: Path) -> None:
     override = app_binary(app).parent / "override.cfg"
-    override.write_text(f'[application]\nrun/main_scene="{scene}"\n', encoding="utf-8")
+    override.write_text(
+        "[application]\n"
+        f'run/main_scene="{scene}"\n'
+        "config/use_custom_user_dir=true\n"
+        f'config/custom_user_dir_name="{PROBE_USER_DIR_NAME}"\n\n'
+        "[updates]\n"
+        "check_on_startup=false\n",
+        encoding="utf-8",
+    )
+
+
+def run_player_path_pair(
+    app: Path, pair: str, report_path: Path, log_path: Path, *, windowed: bool, capture_dir: Path | None
+) -> dict:
+    """One fresh exported-app process playing *pair* through the player path."""
+    binary = app_binary(app)
+    command = [str(binary)]
+    if windowed:
+        command += ["--windowed", "--resolution", "1280x720"]
+    else:
+        command += ["--headless"]
+    command += ["--fixed-fps", "60", "--", f"--report={report_path}", f"--pair={pair}"]
+    if capture_dir is not None:
+        command.append(f"--captures={capture_dir}")
+    if report_path.exists():
+        report_path.unlink()
+    started = time.time()
+    result: dict = {"key": pair, "command": command, "exit_code": None, "timed_out": False, "report": None}
+    try:
+        completed = run(command, cwd=binary.parent, timeout=PLAYER_PATH_TIMEOUT, log_path=log_path)
+        result["exit_code"] = completed.returncode
+    except subprocess.TimeoutExpired:
+        result["timed_out"] = True
+    result["seconds"] = round(time.time() - started, 1)
+    if report_path.is_file():
+        try:
+            result["report"] = json.loads(report_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            result["report_error"] = str(exc)
+    return result
+
+
+def judge_player_path_result(result: dict) -> list[str]:
+    key = result["key"]
+    problems: list[str] = []
+    if result["timed_out"]:
+        problems.append(f"{key}: exported app timed out after {PLAYER_PATH_TIMEOUT:.0f}s")
+        return problems
+    code = result["exit_code"]
+    if code is None or code < 0:
+        problems.append(f"{key}: exported app died by signal {abs(code) if code is not None else '?'} (crash)")
+    elif code != 0:
+        problems.append(f"{key}: exported app exited {code}")
+    report = result.get("report")
+    if not isinstance(report, dict):
+        problems.append(f"{key}: no probe report ({result.get('report_error', 'missing')})")
+        return problems
+    pairs = report.get("pairs", [])
+    if len(pairs) != 1 or pairs[0].get("key") != key:
+        problems.append(f"{key}: report covers {[p.get('key') for p in pairs]}")
+        return problems
+    entry = pairs[0]
+    if not entry.get("pass"):
+        problems.append(f"{key}: {entry.get('failures')}")
+    if report.get("environment", {}).get("editor_feature") is not False:
+        problems.append(f"{key}: probe did not run in an exported binary")
+    return problems
+
+
+def player_path_stage(app: Path, output_dir: Path, pairs: list[str], class_order: list[str]) -> dict:
+    """Headless player path for every pair, then windowed captures for one weapon per class."""
+    stage_dir = output_dir / "player_path"
+    if stage_dir.exists():
+        shutil.rmtree(stage_dir)
+    stage_dir.mkdir(parents=True)
+    scene = write_probe_scene(output_dir, PLAYER_PATH_SCRIPT, "ultimate_player_path_probe.tscn")
+    probe_app = clone_app(app, stage_dir / APP_NAME)
+    install_override(probe_app, scene)
+    problems: list[str] = []
+
+    def run_headless(pair: str) -> dict:
+        slug = pair.replace("/", "__")
+        return run_player_path_pair(
+            probe_app, pair, stage_dir / f"{slug}.json", stage_dir / f"{slug}.log", windowed=False, capture_dir=None
+        )
+
+    with ThreadPoolExecutor(max_workers=PLAYER_PATH_WORKERS) as pool:
+        results = list(pool.map(run_headless, pairs))
+    per_pair = []
+    for result in results:
+        pair_problems = judge_player_path_result(result)
+        problems.extend(pair_problems)
+        entry = (result.get("report") or {}).get("pairs", [{}])[0] if isinstance(result.get("report"), dict) else {}
+        per_pair.append({
+            "key": result["key"],
+            "exit_code": result["exit_code"],
+            "timed_out": result["timed_out"],
+            "seconds": result["seconds"],
+            "resolution_source": entry.get("resolution_source"),
+            "activate_ultimate": entry.get("activate_ultimate"),
+            "instantiated_scene": entry.get("instantiated_scene"),
+            "survived_game_seconds": entry.get("survived_game_seconds"),
+            "wait_seconds": entry.get("wait_seconds"),
+            "failures": entry.get("failures"),
+            "pass": not pair_problems,
+        })
+    if len(pairs) != EXPECTED_PAIRS:
+        problems.append(f"player path covered {len(pairs)} pairs, expected {EXPECTED_PAIRS}")
+
+    capture_dir = stage_dir / "captures"
+    capture_dir.mkdir()
+    captures = []
+    for class_id in class_order:
+        pair = next((key for key in pairs if key.startswith(f"{class_id}/")), None)
+        if pair is None:
+            problems.append(f"no pair for class {class_id}")
+            continue
+        slug = pair.replace("/", "__")
+        result = run_player_path_pair(
+            probe_app, pair, stage_dir / f"capture_{slug}.json", stage_dir / f"capture_{slug}.log",
+            windowed=True, capture_dir=capture_dir,
+        )
+        pair_problems = judge_player_path_result(result)
+        entry = (result.get("report") or {}).get("pairs", [{}])[0] if isinstance(result.get("report"), dict) else {}
+        capture = Path(str(entry.get("capture", "")))
+        if not capture.is_file():
+            pair_problems.append(f"{pair}: windowed run produced no capture")
+        else:
+            width, height = png_size(capture)
+            if width < 640 or height < 360:
+                pair_problems.append(f"{pair}: capture is only {width}x{height}")
+        problems.extend(pair_problems)
+        captures.append({
+            "key": pair,
+            "exit_code": result["exit_code"],
+            "capture": capture.name if capture.is_file() else "",
+            "capture_seconds_after_activation": entry.get("capture_seconds_after_activation"),
+            "pass": not pair_problems,
+        })
+    if len([c for c in captures if c["pass"]]) != EXPECTED_CLASSES:
+        problems.append(f"player-path captures passed for {len([c for c in captures if c['pass']])} classes, expected {EXPECTED_CLASSES}")
+    return {
+        "app": str(probe_app),
+        "user_dir_name": PROBE_USER_DIR_NAME,
+        "pairs": per_pair,
+        "pairs_passing": sum(1 for p in per_pair if p["pass"]),
+        "crashes": [p["key"] for p in per_pair if p["exit_code"] is not None and p["exit_code"] < 0],
+        "captures": captures,
+        "capture_directory": str(capture_dir),
+        "problems": problems,
+    }
 
 
 def run_probe(app: Path, report_path: Path, log_path: Path, *, windowed: bool, capture_dir: Path | None) -> subprocess.CompletedProcess:
@@ -400,6 +566,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-mutations", action="store_true")
     parser.add_argument("--captures", action="store_true", help="also run windowed and screenshot one weapon per class")
     parser.add_argument("--capture-all", action="store_true", help="screenshot all 51 pairs (implies --captures)")
+    parser.add_argument("--skip-player-path", action="store_true", help="skip the per-pair player-path stage on the exported app")
     args = parser.parse_args(argv)
     if sys.platform != "darwin":
         print("ultimate_export_probe: the macOS preset export needs a macOS host", file=sys.stderr)
@@ -482,6 +649,18 @@ def main(argv: list[str] | None = None) -> int:
                 problems.extend(mutation_problems)
                 log(f"mutation {mutation['name']}: exit {mutated_result.returncode}, {summary['mutations'][-1]['pairs_passing']} pairs pass, problems {len(mutation_problems)}")
 
+        if not args.skip_player_path:
+            pair_keys = [str(pair.get("key")) for pair in report.get("pairs", [])]
+            class_order: list[str] = []
+            for key in pair_keys:
+                class_id = key.split("/", 1)[0]
+                if class_id not in class_order:
+                    class_order.append(class_id)
+            player_path = player_path_stage(app, output_dir, pair_keys, class_order)
+            summary["player_path"] = player_path
+            problems.extend(player_path["problems"])
+            log(f"player path: {player_path['pairs_passing']}/{len(player_path['pairs'])} pairs pass, crashes {player_path['crashes']}, captures {len([c for c in player_path['captures'] if c['pass']])}, problems {len(player_path['problems'])}")
+
         if args.captures or args.capture_all:
             capture_dir = output_dir / "captures"
             if capture_dir.exists():
@@ -521,6 +700,15 @@ def main(argv: list[str] | None = None) -> int:
             report_file = Path(mutation["report"])
             if report_file.is_file():
                 shutil.copy2(report_file, evidence / f"export_probe_mutation_{mutation['name']}.json")
+        if "player_path" in summary:
+            (evidence / "export_probe_player_path.json").write_text(
+                json.dumps(summary["player_path"], indent=2) + "\n", encoding="utf-8"
+            )
+            capture_evidence = evidence / "exported_app_player_path_captures"
+            capture_evidence.mkdir(exist_ok=True)
+            for capture in summary["player_path"]["captures"]:
+                if capture["capture"]:
+                    shutil.copy2(Path(summary["player_path"]["capture_directory"]) / capture["capture"], capture_evidence / capture["capture"])
         if "captures" in summary:
             capture_evidence = evidence / "exported_app_captures"
             capture_evidence.mkdir(exist_ok=True)

@@ -77,7 +77,7 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 		return
 	var crossings := {}
 	for raw_target in activation.select_targets(activation.origin(), INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target != null and is_instance_valid(target):
 			crossings[target.get_instance_id()] = {"target": target, "hits": 0}
 	for chord in 3:
@@ -91,7 +91,7 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 			activation.param_float("corridor_half_width", 76.0),
 			0
 		):
-			var target := raw_target as Node2D
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 			if target == null or not crossings.has(target.get_instance_id()):
 				continue
 			var crossed := crossings[target.get_instance_id()] as Dictionary
@@ -108,7 +108,7 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 	var victims: Array = []
 	for target_id in crossings:
 		var crossed := crossings[target_id] as Dictionary
-		var target := crossed["target"] as Node
+		var target := (crossed["target"] if is_instance_valid(crossed["target"]) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		deal_damage_with_accessibility(
@@ -129,7 +129,7 @@ static func fire_volley(activation, points: PackedVector2Array, volley: int) -> 
 
 static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(devices.size(), points.size()):
-		var device := devices[index] as Node2D
+		var device := (devices[index] if is_instance_valid(devices[index]) else null) as Node2D
 		if device == null or not is_instance_valid(device):
 			continue
 		device.global_position = points[index]

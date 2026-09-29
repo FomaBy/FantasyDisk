@@ -70,7 +70,7 @@ static func _priority_target(rail: Array) -> Node2D:
 	var selected: Node2D = null
 	var highest_hp := -INF
 	for raw_target in rail:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var health_value = target.get("health")
@@ -97,7 +97,7 @@ func fire() -> void:
 	var shot: float = _activation.scaled_damage("shot_damage", 0.0)
 	var victims: Array[Node2D] = []
 	for index in _rail.size():
-		var target := _rail[index] as Node2D
+		var target := (_rail[index] if is_instance_valid(_rail[index]) else null) as Node2D
 		if not _alive(target):
 			continue
 		var amount := shot

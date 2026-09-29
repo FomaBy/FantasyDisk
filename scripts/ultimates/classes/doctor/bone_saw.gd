@@ -52,7 +52,7 @@ static func tick(activation, state: Dictionary, tick_index: int) -> void:
 		activation.origin(),
 		activation.param_float("orbit_radius", 240.0)
 	):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = activation.deal_damage(
@@ -71,9 +71,9 @@ static func tick(activation, state: Dictionary, tick_index: int) -> void:
 			struck.append(target)
 	state["vitality"] = float(state.get("vitality", 0.0)) + removed \
 		* activation.param_float("vitality_ratio", 0.4)
-	var host := activation.get("host") as Node
+	var host := (activation.get("host") if is_instance_valid(activation.get("host")) else null) as Node
 	if host != null and is_instance_valid(host):
-		var player := host.get("player") as Node
+		var player := (host.get("player") if is_instance_valid(host.get("player")) else null) as Node
 		activation.repair(
 			player if player != null and is_instance_valid(player) else host,
 			removed * activation.param_float("drain_ratio", 0.4),

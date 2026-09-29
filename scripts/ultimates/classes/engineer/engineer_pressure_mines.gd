@@ -181,7 +181,7 @@ static func detonate_mine(
 	(state.get("trace", []) as Array).append({"phase": phase, "index": index, "position": points[index]})
 	var victims: Array = []
 	for raw_target in activation.select_targets(points[index], INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			deal_damage_with_accessibility(
 				activation,
@@ -198,7 +198,7 @@ static func detonate_mine(
 	})
 	var nodes := state.get("nodes", []) as Array
 	if index < nodes.size():
-		var node := nodes[index] as Node
+		var node := (nodes[index] if is_instance_valid(nodes[index]) else null) as Node
 		if node != null and is_instance_valid(node):
 			node.queue_free()
 
@@ -218,7 +218,7 @@ static func outer_to_inner_order(points: PackedVector2Array, center: Vector2) ->
 
 static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(devices.size(), points.size()):
-		var device := devices[index] as Node2D
+		var device := (devices[index] if is_instance_valid(devices[index]) else null) as Node2D
 		if device == null or not is_instance_valid(device):
 			continue
 		device.global_position = points[index]

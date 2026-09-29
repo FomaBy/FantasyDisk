@@ -148,12 +148,12 @@ func launch() -> void:
 	for _lane in compass_directions().size():
 		fan.append([])
 	for raw_target in _activation.select_targets(origin, INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if _alive(target):
 			fan[lane_for(origin, target.global_position)].append(target)
 	for lane in fan.size():
 		for raw_target in fan[lane]:
-			var target := raw_target as Node2D
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 			if _outbound_hit_ids.has(target.get_instance_id()):
 				continue
 			_outbound_hit_ids[target.get_instance_id()] = true
@@ -197,7 +197,7 @@ func return_step(step: int) -> void:
 			_activation.param_float("lane_half_width", 48.0),
 			0
 		):
-			var target := raw_target as Node2D
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 			if not _alive(target) or _return_hit_ids.has(target.get_instance_id()):
 				continue
 			var damage_ratio = _activation.consume_target_value(target, MARK_KEY, "return_consume", null)

@@ -40,6 +40,6 @@ static func _targets_for_volley(
 	var targets: Array[Node2D] = []
 	var source: Array = planned if shot_index == 0 else activation.targets(activation.origin(), radius, 0)
 	for raw_target in source:
-		if raw_target is Node2D and is_instance_valid(raw_target):
+		if is_instance_valid(raw_target) and raw_target is Node2D:
 			targets.append(raw_target as Node2D)
 	return targets

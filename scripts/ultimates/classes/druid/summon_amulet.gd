@@ -127,7 +127,7 @@ func _live_targets() -> Array:
 	if _activation == null:
 		return live
 	for raw_target in _activation.select_targets(_activation.origin(), INF, 0, "highest_hp"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target) \
 				and (target.get("health") == null or float(target.get("health")) > 0.0):
 			live.append(target)
@@ -144,7 +144,7 @@ func _strike(
 	splash_neighbors: Dictionary
 ) -> void:
 	_deal(target, amount, event_id, feedback)
-	var anchor := target as Node2D
+	var anchor := (target if is_instance_valid(target) else null) as Node2D
 	if anchor == null:
 		return
 	var target_id := target.get_instance_id()
@@ -153,8 +153,8 @@ func _strike(
 	var splash_feedback := feedback.duplicate(true)
 	splash_feedback["ultimate_mechanic"] = "wild_hunt_splash"
 	for raw_neighbor in splash_neighbors[target_id]:
-		var neighbor := raw_neighbor as Node
-		var neighbor_anchor := neighbor as Node2D
+		var neighbor := (raw_neighbor if is_instance_valid(raw_neighbor) else null) as Node
+		var neighbor_anchor := (neighbor if is_instance_valid(neighbor) else null) as Node2D
 		if neighbor_anchor == null or neighbor == target or not is_instance_valid(neighbor):
 			continue
 		_deal(neighbor, amount * _activation.param_float("splash_damage_ratio", 0.65),
@@ -165,7 +165,7 @@ func _splash_index(candidates: Array, radius: float) -> Dictionary:
 	var index: Dictionary = {}
 	var cell_size := maxf(radius, 0.001)
 	for raw_candidate in candidates:
-		var candidate := raw_candidate as Node2D
+		var candidate := (raw_candidate if is_instance_valid(raw_candidate) else null) as Node2D
 		if candidate == null or not is_instance_valid(candidate):
 			continue
 		var cell := _splash_cell(candidate.global_position, cell_size)

@@ -115,7 +115,7 @@ func propagate(wave: int) -> void:
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null:
 			continue
 		_ensure_infected(target)
@@ -169,7 +169,7 @@ func _secondary_bloom(source: Node2D, wave: int, victims: Array) -> void:
 	for raw_neighbor in neighbors:
 		if raw_neighbor == null or not is_instance_valid(raw_neighbor):
 			continue
-		var neighbor := raw_neighbor as Node2D
+		var neighbor := (raw_neighbor if is_instance_valid(raw_neighbor) else null) as Node2D
 		if neighbor == null or neighbor == source:
 			continue
 		_deal(
@@ -227,7 +227,7 @@ func _remove_leased_status(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if raw_target == null or not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if target == null or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)
