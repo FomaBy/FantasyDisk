@@ -55,6 +55,9 @@ jobs:
             assets
             changelog.d
             data
+            # FAN-3986: only the tracked marker, not the evidence tree —
+            # tests/test_export_presets_exclusions.py asserts it exists.
+            evidence/.gdignore
             references
             scenes
             scripts
