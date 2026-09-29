@@ -3,8 +3,8 @@
 Evidence for the exported-build regression fix. Everything below was produced on
 the macOS development host with Godot `4.7.stable.official.5b4e0cb0f` and the
 official 4.7 export templates, from the candidate code commit
-`c16085f7e6c9fe797efee6c6fa1bf091b4055edd` (tree
-`b305eae77bbfe2f4cdf886debd0cfb4a7a75aa4f`), based on `dev` =
+`09d692b5ea687fc870931dd26c616192bc3518ab` (tree
+`0610635d64421bd4ba124c325abd60234985affa`), based on `dev` =
 `f4d05fea91a5ce8b3fb858a5035df1fe54236369`. The evidence commit that carries
 this directory changes nothing the export reads (`evidence/*` is excluded from
 both presets), so the exported PCK of the review candidate is byte-identical to
