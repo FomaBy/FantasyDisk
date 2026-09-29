@@ -43,7 +43,10 @@ could not see it. The rules below keep the runtime export-safe.
   audio (`.png`, `.ogg`) and converted scenes/scripts (`.tscn`, `.gd`) are not
   present as raw files in an export; `FileAccess.file_exists` on them is false
   there and true in the editor. Only plain data files (`.json`) may be checked
-  with `FileAccess`.
+  with `FileAccess`. The one exception is a manifest asset's `source_path`:
+  it is authoring provenance (typically a raw reference PNG under `docs/`
+  that is never imported or exported), so the schema accepts either a raw
+  file or a loadable resource there, while `runtime_path` must be loadable.
 - **Gates.** `tests/ultimates/export_runtime_paths_test.gd` fails when any
   runtime-read path matches an `exclude_filter` of the macOS or Windows
   Desktop preset. `tools/ultimate_export_probe.py` exports the macOS preset,

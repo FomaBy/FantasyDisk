@@ -386,10 +386,16 @@ static func _validate_asset(
 			continue
 		if _contains_placeholder(path):
 			_add_error(errors, "presentation.asset.%s.placeholder" % channel, path)
-		# FAN-3985: imported textures/audio and converted scenes/scripts exist
-		# in an export only through their import or remap entry, which
-		# ResourceLoader resolves and a raw file check does not.
-		if not ResourceLoader.exists(path):
+		# FAN-3985: the runtime path must be loadable where the game runs;
+		# imported textures/audio and converted scenes/scripts exist in an
+		# export only through their import or remap entry, which
+		# ResourceLoader resolves and a raw file check does not. The source
+		# path is authoring provenance (a raw reference file that is never
+		# imported or exported, or the runtime resource itself), so either
+		# form of presence satisfies it.
+		var present: bool = ResourceLoader.exists(path) \
+			or (path_field == "source_path" and FileAccess.file_exists(path))
+		if not present:
 			var kind := "source_missing" if path_field == "source_path" else "runtime_missing"
 			_add_error(errors, "presentation.asset.%s.%s" % [channel, kind], path)
 
