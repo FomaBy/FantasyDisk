@@ -96,7 +96,7 @@ static func _priority_target(targets: Array) -> Node2D:
 	var selected: Node2D = null
 	var highest_hp := -INF
 	for raw_target in targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var health_value = target.get("health")
@@ -159,7 +159,7 @@ func extract() -> void:
 	)
 	_activation.present(EXECUTOR_ID + ".extract", {
 		"shape": "beam", "from": global_position,
-		"to": (primary_target_for_tests as Node2D).global_position,
+		"to": (primary_target_for_tests as Node2D).global_position if is_instance_valid(primary_target_for_tests) else global_position,
 		"victims": [primary_target_for_tests],
 	})
 
@@ -180,7 +180,7 @@ func analysis_pulse(pulse: int) -> void:
 	)
 	var victims: Array = [primary_target_for_tests]
 	for raw_target in _corridor_targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target) or target == primary_target_for_tests:
 			continue
 		_deal(
@@ -193,7 +193,7 @@ func analysis_pulse(pulse: int) -> void:
 		victims.append(target)
 	_activation.present(EXECUTOR_ID + ".analysis:%d" % pulse, {
 		"shape": "ring_pulse",
-		"position": (primary_target_for_tests as Node2D).global_position,
+		"position": (primary_target_for_tests as Node2D).global_position if is_instance_valid(primary_target_for_tests) else global_position,
 		"radius": 240.0,
 		"victims": victims,
 	})
@@ -252,7 +252,7 @@ func _remove_leased_status(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if raw_target == null or not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if target == null or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

@@ -157,7 +157,7 @@ func _resolve_targets(turn_index: int, radius: float, final_turn: bool) -> void:
 	var seen := {}
 	var victims: Array = []
 	for raw_target in _activation.select_targets(center, radius, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var target_id := target.get_instance_id()
@@ -244,7 +244,7 @@ func _exit_tree() -> void:
 
 
 static func _remove_leased_status(lease: Dictionary) -> void:
-	var target = lease.get("target") as Node
+	var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 	if target == null or not is_instance_valid(target) \
 			or not target.has_meta(StatusEffects.META_KEY):
 		return

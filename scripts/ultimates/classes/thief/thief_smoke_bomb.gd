@@ -68,7 +68,7 @@ func configure(activation, outlined: Array) -> void:
 	global_position = activation.origin()
 	_activation.apply_modifier("dodge_flat", _activation.param_float("evasion_bonus", 0.34), "add")
 	for raw_target in _outlined:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var status_id := "thief_ultimate_smoke_%d_%d" % [get_instance_id(), target.get_instance_id()]
@@ -95,7 +95,7 @@ func collapse() -> void:
 		# fallback; validity must be read before the cast, or it errors.
 		if not is_instance_valid(_outlined[index]):
 			continue
-		var target := _outlined[index] as Node
+		var target := (_outlined[index] if is_instance_valid(_outlined[index]) else null) as Node
 		collapse_count_for_tests += 1
 		_deal(target, _activation.scaled_damage("pressure_damage", 0.0), "smoke_collapse:%d" % index, {
 			"ultimate_mechanic": "stolen_pressure", "outline_index": index,
@@ -182,7 +182,7 @@ func _remove_lease(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)
@@ -204,7 +204,7 @@ func _remove_lease(lease: Dictionary) -> void:
 func _impact_markers(victims: Array) -> Array:
 	var markers: Array = []
 	for raw_victim in victims:
-		var victim := raw_victim as Node2D
+		var victim := (raw_victim if is_instance_valid(raw_victim) else null) as Node2D
 		if victim == null or not is_instance_valid(victim):
 			continue
 		var marker := Node2D.new()

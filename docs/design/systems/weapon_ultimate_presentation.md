@@ -47,6 +47,17 @@ could not see it. The rules below keep the runtime export-safe.
   it is authoring provenance (typically a raw reference PNG under `docs/`
   that is never imported or exported), so the schema accepts either a raw
   file or a loadable resource there, while `runtime_path` must be loadable.
+- **Stored enemy references are validated before any use.** An executor,
+  lease or victim-impact record that keeps an enemy across frames must call
+  `is_instance_valid(raw)` *before* `raw is Node2D`, `raw as Node2D` or any
+  method call: the editor only prints `Trying to cast a freed object` /
+  `previously freed instance`, but an exported release build dereferences the
+  freed enemy and dies by signal (first FAN-3985 QA: 10 of 51 pairs). The
+  idiom is `var target := (raw if is_instance_valid(raw) else null) as Node2D`
+  followed by the usual null check. `tests/ultimates/
+  player_path_release_safety_test.gd` plays all 51 pairs through the shipped
+  player path in the editor and fails through `godot_gate.py` on any such
+  error; the exported counterpart is the player-path stage below.
 - **Gates.** `tests/ultimates/export_runtime_paths_test.gd` fails when any
   runtime-read path matches an `exclude_filter` of the macOS or Windows
   Desktop preset. `tools/ultimate_export_probe.py` exports the macOS preset,
@@ -55,9 +66,16 @@ could not see it. The rules below keep the runtime export-safe.
   `--script`), and requires for all 51 pairs `resolution_source =
   weapon_profile`, executor admission, the class-owned scene and a successful
   `begin()`; it also proves the gate is not vacuous by removing one class
-  document and one executor remap from a copy of the PCK, and can screenshot
-  one weapon per class from the exported app (`--captures`). Run it for any
-  change to export presets, package discovery, the bridge or the runtime data.
+  document and one executor remap from a copy of the PCK, then plays every
+  pair through the shipped player path (`Main._start_combat()` ->
+  `Player.activate_ultimate()` -> executor, enemy deaths, victim impacts,
+  presentation, past the declared cancel) in its own fresh exported-app
+  process with an isolated user directory (`tools/ultimate_player_path_probe.gd`;
+  any signal, non-zero exit or failed pair fails the gate) and captures one
+  real game frame per class; `--captures` additionally screenshots the
+  presentation-runtime probe. Run it for any change to export presets,
+  package discovery, the bridge, the runtime data, executors or the victim
+  impact player.
 
 ## Combat VFX art standard (v1.2, owner mandate 2026-08-18)
 

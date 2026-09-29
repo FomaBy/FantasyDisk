@@ -113,7 +113,7 @@ func strike(index: int) -> void:
 		return
 	var victims: Array[Node2D] = []
 	for raw_target in _locks:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if not _strikeable(target):
 			continue
 		strike_count_for_tests += 1
@@ -149,7 +149,7 @@ func _strikeable(target: Node2D) -> bool:
 func _suppress() -> void:
 	var seen := {}
 	for raw_target in _locks:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target) or seen.has(target.get_instance_id()):
 			continue
 		seen[target.get_instance_id()] = true

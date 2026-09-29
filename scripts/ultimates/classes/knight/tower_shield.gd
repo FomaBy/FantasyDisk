@@ -116,7 +116,7 @@ func counter_burst() -> void:
 	for raw_target in _activation.select_targets(
 		global_position, _activation.param_float("counter_radius", 195.0), 0, "nearest"
 	):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target) or not _inside_counter_arc(target):
 			continue
 		counter_target_count_for_tests += 1
@@ -175,7 +175,7 @@ func _exit_tree() -> void:
 
 
 static func _remove_leased_status(lease: Dictionary) -> void:
-	var target = lease.get("target") as Node
+	var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 	if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

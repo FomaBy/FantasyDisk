@@ -107,7 +107,7 @@ static func _corrode(activation: Activation, centre: Vector2, tick_index: int) -
 	var owner_id := charge_owner_id(activation)
 	var struck: Array = []
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var stacks := float(activation.target_value(target, DISSOLVE_KEY, 0.0))
@@ -150,6 +150,6 @@ static func _pillars(activation: Activation, centre: Vector2, radius: float) -> 
 	})
 	var share := stored / float(targets.size())
 	for raw_target in targets:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(target, share, {"damage_type": "dot"}, PILLAR_EVENT)

@@ -207,7 +207,7 @@ func ultimate_host_summons(group_id: String) -> Array:
 		return []
 	var result: Array = []
 	for raw_node in player.get_tree().get_nodes_in_group(group_id):
-		var node := raw_node as Node
+		var node := (raw_node if is_instance_valid(raw_node) else null) as Node
 		if node != null and is_instance_valid(node) and node.get("owner_node") == player:
 			result.append(node)
 	return result

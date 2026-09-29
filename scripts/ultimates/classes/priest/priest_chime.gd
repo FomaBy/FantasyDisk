@@ -106,7 +106,7 @@ func first_toll() -> void:
 		"nearest"
 	)
 	for raw_target in targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var status_id := "priest_ultimate_chime_%d_%d" % [get_instance_id(), target.get_instance_id()]
@@ -144,7 +144,7 @@ func second_toll() -> void:
 		"nearest"
 	)
 	for index in targets.size():
-		var target := targets[index] as Node2D
+		var target := (targets[index] if is_instance_valid(targets[index]) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var amount: float = _activation.scaled_damage("chain_damage", 0.0) \
@@ -204,7 +204,7 @@ func _player() -> Node:
 	if _activation == null or _activation.host == null or not is_instance_valid(_activation.host):
 		return null
 	var player = _activation.host.get("player")
-	return player as Node if player is Node and is_instance_valid(player) else null
+	return player as Node if is_instance_valid(player) and player is Node else null
 
 
 func _exit_tree() -> void:
@@ -213,7 +213,7 @@ func _exit_tree() -> void:
 	_impacts = null
 	_impacts_started = false
 	for lease in _leased_statuses:
-		var target = lease.get("target") as Node
+		var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 		if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
 			continue
 		var statuses = target.get_meta(StatusEffects.META_KEY)

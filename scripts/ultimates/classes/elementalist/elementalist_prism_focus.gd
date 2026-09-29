@@ -137,7 +137,7 @@ func fire_sweep(sweep: int) -> void:
 			_activation.param_float("half_width", 74.0),
 			0
 		):
-			var target := raw_target as Node
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 			if target == null or not is_instance_valid(target) or seen.has(target.get_instance_id()):
 				continue
 			seen[target.get_instance_id()] = true
@@ -145,7 +145,7 @@ func fire_sweep(sweep: int) -> void:
 	var focus_points := _focus_points(angle)
 	var struck: Array = []
 	for raw_target in targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		var hits := int(_activation.target_value(target, "prism_lattice_hits", 0))
 		if hits >= _activation.param_int("lattice_hit_cap", 3):
 			continue
@@ -181,7 +181,7 @@ func shatter() -> void:
 	})
 	var victims: Array = _activation.select_targets(_focus, radius, 0, "nearest")
 	for raw_target in victims:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		_deal(target, _activation.scaled_damage("shatter_damage", 3.5),

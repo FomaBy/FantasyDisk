@@ -28,7 +28,7 @@ static func execute(activation) -> float:
 	var infected: Array = activation.select_targets(activation.origin(), INF, 0, "highest_hp")
 	if infected.is_empty() or not activation.configure_repair(activation.scaled_damage("repair_total", 9.0)):
 		return 0.0
-	var patient := infected[0] as Node2D
+	var patient := (infected[0] if is_instance_valid(infected[0]) else null) as Node2D
 	if patient == null:
 		return 0.0
 	var state := {"infected": infected, "patient": patient}
@@ -51,7 +51,7 @@ static func execute(activation) -> float:
 
 
 static func direct_hit(activation, state: Dictionary) -> void:
-	var patient := state.get("patient") as Node
+	var patient := (state.get("patient") if is_instance_valid(state.get("patient")) else null) as Node
 	if activation == null or activation.is_finished() or patient == null or not is_instance_valid(patient):
 		return
 	var result = activation.deal_damage(
@@ -64,7 +64,7 @@ static func direct_hit(activation, state: Dictionary) -> void:
 	# Only patient zero is pierced here, and only when the pierce landed, so the
 	# authored scene bursts on that one enemy and on nothing else.
 	activation.present(EXECUTOR_ID + ".veins", {
-		"position": (patient as Node2D).global_position,
+		"position": (patient as Node2D).global_position if is_instance_valid(patient) else activation.origin(),
 		"radius": 90.0,
 		"shape": "ring_pulse",
 		"victims": [patient] if float(result.applied) > 0.0 else [],
@@ -78,7 +78,7 @@ static func wave(activation, state: Dictionary, wave_index: int) -> void:
 	var removed := 0.0
 	var struck: Array = []
 	for raw_target in infected:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = activation.deal_damage(
@@ -105,7 +105,7 @@ static func wave(activation, state: Dictionary, wave_index: int) -> void:
 static func finale(activation, state: Dictionary) -> void:
 	if activation == null or activation.is_finished():
 		return
-	var patient := state.get("patient") as Node2D
+	var patient := (state.get("patient") if is_instance_valid(state.get("patient")) else null) as Node2D
 	activation.present(EXECUTOR_ID + ".mask", {
 		"position": patient.global_position if patient != null and is_instance_valid(patient) else activation.origin(),
 		"radius": 150.0, "shape": "orb_burst",
@@ -113,10 +113,10 @@ static func finale(activation, state: Dictionary) -> void:
 
 
 static func _repair(activation, removed: float, event_id: String) -> void:
-	var host := activation.get("host") as Node
+	var host := (activation.get("host") if is_instance_valid(activation.get("host")) else null) as Node
 	if host == null or not is_instance_valid(host):
 		return
-	var player := host.get("player") as Node
+	var player := (host.get("player") if is_instance_valid(host.get("player")) else null) as Node
 	activation.repair(
 		player if player != null and is_instance_valid(player) else host,
 		removed * activation.param_float("heal_ratio", 0.15),

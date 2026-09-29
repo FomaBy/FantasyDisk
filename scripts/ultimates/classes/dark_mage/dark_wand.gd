@@ -50,7 +50,7 @@ static func execute(activation) -> float:
 	var focus_targets: Array = activation.select_targets(
 		activation.origin(), INF, 1, "aimed", {"point": aim.get("target", activation.origin())}
 	)
-	var focus_target = focus_targets[0] as Node if not focus_targets.is_empty() else null
+	var focus_target = (focus_targets[0] if is_instance_valid(focus_targets[0]) else null) as Node if not focus_targets.is_empty() else null
 	var effect = activation.spawn(EFFECT_SCENE)
 	if effect == null or not effect.has_method("configure"):
 		return 0.0
@@ -87,7 +87,7 @@ func configure(activation, targets: Array, focus_target: Node = null) -> void:
 func mark_node(index: int) -> void:
 	if _activation == null or _activation.is_finished() or index < 0 or index >= _nodes.size():
 		return
-	var target := _nodes[index] as Node2D
+	var target := (_nodes[index] if is_instance_valid(_nodes[index]) else null) as Node2D
 	if target == null or not is_instance_valid(target):
 		return
 	var ramp: float = 1.0
@@ -107,7 +107,7 @@ func collapse() -> void:
 		return
 	var victims: Array = []
 	for index in _nodes.size():
-		var target := _nodes[index] as Node
+		var target := (_nodes[index] if is_instance_valid(_nodes[index]) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var ramp: Variant = _activation.target_value(target, NODE_KEY, null)

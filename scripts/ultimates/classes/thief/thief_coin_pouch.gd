@@ -73,7 +73,7 @@ func hit(index: int) -> void:
 	_hit_claims[index] = true
 	if not is_instance_valid(_targets[index]):
 		return
-	var target := _targets[index] as Node
+	var target := (_targets[index] if is_instance_valid(_targets[index]) else null) as Node
 	var amount: float = _activation.scaled_damage("coin_damage", 0.0) \
 		* pow(_activation.param_float("damage_falloff", 0.90), float(index))
 	_deal(target, amount, "jackpot_coin:%d" % index, {
@@ -184,7 +184,7 @@ func _exit_tree() -> void:
 func _impact_markers(victims: Array) -> Array:
 	var markers: Array = []
 	for raw_victim in victims:
-		var victim := raw_victim as Node2D
+		var victim := (raw_victim if is_instance_valid(raw_victim) else null) as Node2D
 		if victim == null or not is_instance_valid(victim):
 			continue
 		var marker := Node2D.new()

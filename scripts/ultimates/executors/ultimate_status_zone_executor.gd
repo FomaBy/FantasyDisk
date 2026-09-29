@@ -41,7 +41,7 @@ static func execute(activation: Activation) -> float:
 		tween.tween_callback(func() -> void:
 			var center := activation.origin() if follow_host else anchor
 			for raw_target in activation.targets(center, radius, 0):
-				var target := raw_target as Node
+				var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 				activation.deal_damage(target, tick_damage, {"damage_type": "dot"})
 				if not status_id.is_empty():
 					StatusEffects.apply_status(target, status_id, status_config)

@@ -100,7 +100,7 @@ func advance_row(row: int) -> void:
 	for index in _targets.size():
 		if index % rows != row:
 			continue
-		var target := _targets[index] as Node2D
+		var target := (_targets[index] if is_instance_valid(_targets[index]) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		if not _activation.record_target_value(target, HIT_KEY, row + 1, "phalanx_hit"):
@@ -172,7 +172,7 @@ func _remove_leased_status(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if raw_target == null or not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if target == null or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

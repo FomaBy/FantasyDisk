@@ -56,7 +56,7 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 	# Ultimate Direction v2: the outer pool is map-wide; its radius remains a
 	# presentation shape, not a reach or count limit.
 	for raw_target in activation.targets(activation.origin(), INF):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = activation.deal_damage(
@@ -97,8 +97,8 @@ static func pulse(activation, point: Vector2, pulse_index: int) -> void:
 
 
 static func _hero(activation) -> Node:
-	var host := activation.get("host") as Node
+	var host := (activation.get("host") if is_instance_valid(activation.get("host")) else null) as Node
 	if host == null or not is_instance_valid(host):
 		return null
-	var player := host.get("player") as Node
+	var player := (host.get("player") if is_instance_valid(host.get("player")) else null) as Node
 	return player if player != null and is_instance_valid(player) else host

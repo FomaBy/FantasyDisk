@@ -91,7 +91,7 @@ static func feedback_pulse(activation, state: Dictionary, pulse_index: int) -> v
 		return
 	var victims: Array = []
 	for raw_target in _live_targets(activation):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		activation.deal_damage(
@@ -119,7 +119,7 @@ static func overload(activation, state: Dictionary) -> void:
 		return
 	var victims: Array = []
 	for raw_target in _live_targets(activation):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var away: Vector2 = target.global_position - activation.origin()

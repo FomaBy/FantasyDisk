@@ -73,7 +73,7 @@ func configure(activation, marks: Array) -> void:
 	_marks = marks.duplicate()
 	global_position = activation.origin()
 	for raw_target in _marks:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var status_id := "thief_ultimate_shadow_%d_%d" % [get_instance_id(), target.get_instance_id()]
@@ -98,7 +98,7 @@ func stab(index: int) -> void:
 		# validity must be read before the cast, or the cast itself errors.
 		if not is_instance_valid(raw_target):
 			continue
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		strike_count_for_tests += 1
 		_deal(target, amount, "shadow_stab:%d:%d" % [index, target.get_instance_id()], {
 			"ultimate_mechanic": "shadow_backstab", "strike_index": index,
@@ -192,7 +192,7 @@ func _remove_lease(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)
@@ -214,7 +214,7 @@ func _remove_lease(lease: Dictionary) -> void:
 func _impact_markers(victims: Array) -> Array:
 	var markers: Array = []
 	for raw_victim in victims:
-		var victim := raw_victim as Node2D
+		var victim := (raw_victim if is_instance_valid(raw_victim) else null) as Node2D
 		if victim == null or not is_instance_valid(victim):
 			continue
 		var marker := Node2D.new()
