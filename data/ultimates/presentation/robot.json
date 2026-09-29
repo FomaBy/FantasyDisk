@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "class_id": "robot",
+  "generated_from": "docs/design/references/weapon_ultimates/robot/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "robot_magnetic_anchor",
+      "scene_path": "res://scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn",
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.8,
+        "active": 1.25,
+        "recovery": 3.05,
+        "cancel": 3.65
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 9,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 105,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.robot.magnetic_lock",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_magnetic_anchor.png",
+        "class_palette_id": "palette.robot.cyan_induction"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      }
+    },
+    {
+      "weapon_id": "robot_hydraulic_press",
+      "scene_path": "res://scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn",
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.85,
+        "active": 1.3,
+        "recovery": 3.2,
+        "cancel": 3.8
+      },
+      "performance": {
+        "max_visual_nodes": 3,
+        "crowd_cap": 9,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.robot.hydraulic_brace",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_hydraulic_press.png",
+        "class_palette_id": "palette.robot.brass_hydraulic"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      }
+    },
+    {
+      "weapon_id": "robot_reactor_core",
+      "scene_path": "res://scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn",
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.9,
+        "active": 1.35,
+        "recovery": 3.35,
+        "cancel": 3.95
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 9,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.robot.reactor_overdrive",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_robot_reactor_core.png",
+        "class_palette_id": "palette.robot.red_heat"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      }
+    }
+  ]
+}

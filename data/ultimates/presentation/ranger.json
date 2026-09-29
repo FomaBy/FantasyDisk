@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "class_id": "ranger",
+  "generated_from": "docs/design/references/weapon_ultimates/ranger/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "moon_crossbow",
+      "scene_path": "res://scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.05,
+        "recovery": 2.6,
+        "cancel": 3.1
+      },
+      "performance": {
+        "max_visual_nodes": 7,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3736: five split-bolt elements plus the backdrop veil and the hero cast pose; the veil gradient is the only full-screen surface and no CanvasItem material is authored"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 95,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.ranger.hunter_draw",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_moon_crossbow.png",
+        "class_palette_id": "palette.ranger.moonlit_hunt"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the moon mark bloom, the aimed bolt and the four split bolts carry the beat on their own on the unchanged timing; the backdrop veil still swells to 0.30 and the 95 ms hitstop still freezes the drawn pose on the first impact",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0041 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    },
+    {
+      "weapon_id": "storm_longbow",
+      "scene_path": "res://scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.95,
+        "recovery": 2.85,
+        "cancel": 3.45
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3736: seven corridor beats plus the backdrop veil and the hero cast pose; the veil gradient is the only full-screen surface and no CanvasItem material is authored"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.ranger.hunter_draw",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_storm_longbow.png",
+        "class_palette_id": "palette.ranger.moonlit_hunt"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the corridor draw and the seven tail-to-tip lightning beats carry the beat as sequential contrast steps on the unchanged timing; the release-beat veil flash and the 120 ms hitstop stay as shipped",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a single-shot full-viewport flash peaking at 0.28 with one rise per cast (0 Hz repetition, coverage 1.0); it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    },
+    {
+      "weapon_id": "hunter_trap",
+      "scene_path": "res://scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.95,
+        "active": 1.4,
+        "recovery": 2.7,
+        "cancel": 3.8
+      },
+      "performance": {
+        "max_visual_nodes": 5,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3736: three jaw rings plus the backdrop veil and the hero cast pose; the veil gradient is the only full-screen surface and no CanvasItem material is authored"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 145,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.ranger.hunter_draw",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_hunter_trap.png",
+        "class_palette_id": "palette.ranger.moonlit_hunt"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.02,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the three closing jaw rings and the chain-net closure carry the beat as a shrinking silhouette on the unchanged timing; the backdrop veil still thickens to 0.34 and the 145 ms hitstop still freezes the drawn pose on the snap",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0116 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.34 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    }
+  ]
+}

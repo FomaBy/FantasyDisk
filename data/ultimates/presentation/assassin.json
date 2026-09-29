@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "class_id": "assassin",
+  "generated_from": "docs/design/references/weapon_ultimates/assassin/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "chakrams",
+      "scene_path": "res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.8,
+        "active": 1.0,
+        "recovery": 3.0,
+        "cancel": 3.6
+      },
+      "performance": {
+        "max_visual_nodes": 14,
+        "crowd_cap": 24,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "return_pass_damage_owner": "mechanics FAN-1473",
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.45,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.moonlit_orbit_stance",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/chakrams.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the eight moon discs hold their compass bearings while alpha and radius preserve every phase; orbit rotation and flipbook stepping are disabled",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json.",
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing"
+      }
+    },
+    {
+      "weapon_id": "shadow_daggers",
+      "scene_path": "res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.75,
+        "active": 1.1,
+        "recovery": 2.7,
+        "cancel": 3.5
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "marked_damage_owner": "mechanics FAN-1473",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.silent_execution",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/fan2542_shadow_daggers_ultimate/shadow_daggers_ultimate_04.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.14,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the four dagger afterimages hold their authored frames and positions while phase scale and alpha preserve the execution silhouette",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json.",
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing"
+      }
+    },
+    {
+      "weapon_id": "venom_wire",
+      "scene_path": "res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.65,
+        "active": 1.2,
+        "recovery": 3.0,
+        "cancel": 3.7
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "toxin_burst_owner": "mechanics FAN-1473",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.assassin.silent_execution",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/venom_wire.png",
+        "class_palette_id": "assassin_violet_moonlight_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.24,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the six anchors hold their hex bearings while the web's phase scale and alpha preserve the trap read without fast travel",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "class_id": "priest",
+  "generated_from": "docs/design/references/weapon_ultimates/priest/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "priest_reliquary",
+      "scene_path": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.9,
+        "active": 1.2,
+        "recovery": 3.3,
+        "cancel": 3.9
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 22,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "heal_overheal_shield_owner": "mechanics FAN-1485",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.priest.reliquary_benediction",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_reliquary.png",
+        "class_palette_id": "palette.priest.ivory_gold"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      }
+    },
+    {
+      "weapon_id": "priest_censer",
+      "scene_path": "res://scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn",
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.8,
+        "active": 1.3,
+        "recovery": 3,
+        "cancel": 3.7
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "mitigation_cap_and_counter_owner": "mechanics FAN-1485",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 105,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.priest.censer_vow",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_censer.png",
+        "class_palette_id": "palette.priest.smoke_gold"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      }
+    },
+    {
+      "weapon_id": "priest_chime",
+      "scene_path": "res://scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn",
+      "timing_seconds": {
+        "windup": 0,
+        "release": 0.75,
+        "active": 1.4,
+        "recovery": 2.7,
+        "cancel": 3.5
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "lethal_prevention_window_owner": "mechanics FAN-1485",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "one shared authored-effect material plus a node-local fullscreen backdrop; no screen-space layer or gameplay allocation"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.priest.triple_toll",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_priest_chime.png",
+        "class_palette_id": "palette.priest.silver_dawn"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the shipped screen_shake toggle holds the camera still and clamps the backdrop to a calm fade while preserving every release, active, and recovery beat",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0,
+        "max_flash_coverage_ratio": 1,
+        "flash_note": "darkening backdrop only; no repeated fullscreen flash"
+      }
+    }
+  ]
+}

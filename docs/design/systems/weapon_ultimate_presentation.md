@@ -11,6 +11,51 @@ selected weapon-owned scene separately from normal attacks.
 for the existing profile, presentation, animation, VFX, SFX, and Cast lifecycle
 IDs. This package derives from those IDs and must not rename them.
 
+## Runtime data location and export safety (FAN-3985)
+
+The 0.3.1 macOS and Windows builds shipped without the new weapon ultimate
+presentations: the bridge read `docs/design/references/weapon_ultimates/
+<class>/manifest.json` at runtime while both export presets exclude `docs/*`,
+and package discovery listed `scripts/ultimates/classes/**` for `.gd` names
+that an export only carries as `x.gd.remap` + `x.gdc`. Every pair therefore
+resolved to `legacy_class_fallback` in the exported game and the editor suites
+could not see it. The rules below keep the runtime export-safe.
+
+- **Authored source stays in `docs/`.** Class packages author and certify
+  `docs/design/references/weapon_ultimates/<class>/manifest.json`; every
+  contract, capture and evidence gate keeps reading it there.
+- **The runtime reads `data/ultimates/presentation/<class>.json` only.**
+  `tools/build_ultimate_presentation_runtime_data.py` derives that document
+  from the authored manifest (per weapon: `weapon_id`, `scene_path`,
+  `timing_seconds`, `performance`, and `pivot`/`presence`/`identity`/`quality`
+  when declared — nothing else). Re-run it after editing a class manifest.
+  `tests/test_ultimate_presentation_runtime_data.py` fails on any byte of
+  drift, a missing or orphan document, and
+  `tests/ultimates/presentation_runtime_data_test.gd` re-proves the mirror
+  through Godot for all 51 pairs. `WeaponUltimatePresentationManifest`
+  (`PRESENTATION_ROOT`) and the Dark Mage v2 driver are the only runtime
+  readers; no runtime script may open the docs manifests.
+- **Exported listings are remapped.** `WeaponUltimatePackageDiscovery`
+  strips `.remap` from directory listings (`exported_file_name`) so a package
+  is keyed by its source name in the editor and in the PCK alike, and loads it
+  through `ResourceLoader`, which follows the remap.
+- **Existence checks use `ResourceLoader.exists`.** Imported textures and
+  audio (`.png`, `.ogg`) and converted scenes/scripts (`.tscn`, `.gd`) are not
+  present as raw files in an export; `FileAccess.file_exists` on them is false
+  there and true in the editor. Only plain data files (`.json`) may be checked
+  with `FileAccess`.
+- **Gates.** `tests/ultimates/export_runtime_paths_test.gd` fails when any
+  runtime-read path matches an `exclude_filter` of the macOS or Windows
+  Desktop preset. `tools/ultimate_export_probe.py` exports the macOS preset,
+  runs `tools/ultimate_export_probe.gd` inside the exported app (through an
+  `override.cfg` main-scene override, because official templates disable
+  `--script`), and requires for all 51 pairs `resolution_source =
+  weapon_profile`, executor admission, the class-owned scene and a successful
+  `begin()`; it also proves the gate is not vacuous by removing one class
+  document and one executor remap from a copy of the PCK, and can screenshot
+  one weapon per class from the exported app (`--captures`). Run it for any
+  change to export presets, package discovery, the bridge or the runtime data.
+
 ## Combat VFX art standard (v1.2, owner mandate 2026-08-18)
 
 Companion to Ultimate Direction v2 (FAN-2944); mandate history and retrofit

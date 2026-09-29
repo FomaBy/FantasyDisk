@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "class_id": "elementalist",
+  "generated_from": "docs/design/references/weapon_ultimates/elementalist/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "elementalist_orb_ring",
+      "scene_path": "res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 3.05,
+        "cancel": 3.7
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 24,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "sequential_status_nova_owner": "mechanics FAN-1477"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.elementalist.fourfold_conclave",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/elementalist/orb_ring/orb_ring_f04.png",
+        "class_palette_id": "palette.elementalist.prismatic_arcana"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "camera motion is suppressed and the steady elemental veil is alpha-damped without changing beat timing",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3943 live four-mode certification matrix; the elemental orbit remains centered between HUD bands"
+      }
+    },
+    {
+      "weapon_id": "elementalist_prism_focus",
+      "scene_path": "res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.65,
+        "active": 0.9,
+        "recovery": 2.75,
+        "cancel": 3.4
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "triple_hit_cap_owner": "mechanics FAN-1477"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.elementalist.fourfold_conclave",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/elementalist/prism_focus/prism_focus_f04.png",
+        "class_palette_id": "palette.elementalist.prismatic_arcana"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.29,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "camera motion is suppressed and the steady violet veil is alpha-damped without changing the refraction beats",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3943 live four-mode certification matrix; the aimed prism remains readable against hazards and HUD"
+      }
+    },
+    {
+      "weapon_id": "elementalist_meteor_core",
+      "scene_path": "res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.95,
+        "active": 1.2,
+        "recovery": 3.4,
+        "cancel": 3.9
+      },
+      "performance": {
+        "max_visual_nodes": 6,
+        "crowd_cap": 20,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "boss_damage_cap_owner": "mechanics FAN-1477"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.elementalist.fourfold_conclave",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/elementalist/meteor_core/meteor_core_f04.png",
+        "class_palette_id": "palette.elementalist.prismatic_arcana"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "camera motion is suppressed and the steady ember veil is alpha-damped while the meteor telegraph keeps its timing",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3943 live four-mode certification matrix; the meteor silhouette remains local and leaves HUD bands clear"
+      }
+    }
+  ]
+}

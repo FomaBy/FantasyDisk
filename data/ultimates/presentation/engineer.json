@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "class_id": "engineer",
+  "generated_from": "docs/design/references/weapon_ultimates/engineer/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "engineer_sentry_wrench",
+      "scene_path": "res://scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.8,
+        "active": 1.15,
+        "recovery": 3.1,
+        "cancel": 3.8
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 16,
+        "max_unique_materials": 4,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "budget ceiling retained from the accepted declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.85
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.engineer.wrench_overhead_brace",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_sentry_wrench.png",
+        "class_palette_id": "class_palette.engineer.workshop_teal"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.1,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the six pylons hold their deployed frame with a steady lens glow, the wrench sigil hovers static over the hero, and the backdrop holds one steady dim instead of the firing cycle, camera shake and hitstop",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.06
+      }
+    },
+    {
+      "weapon_id": "engineer_repair_drone",
+      "scene_path": "res://scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.2,
+        "recovery": 3.35,
+        "cancel": 4.0
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "budget ceiling retained from the accepted declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.engineer.canister_release_crouch",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_repair_drone.png",
+        "class_palette_id": "class_palette.engineer.workshop_teal"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the swarm flipbook holds its deployed frame with a steady rotor glow while the backdrop keeps one constant dim instead of the helix sweep, camera shake and hitstop",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
+    },
+    {
+      "weapon_id": "engineer_pressure_mines",
+      "scene_path": "res://scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.9,
+        "active": 1.7,
+        "recovery": 3.1,
+        "cancel": 3.6
+      },
+      "performance": {
+        "max_visual_nodes": 16,
+        "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "budget ceiling retained from the accepted declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.75
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.engineer.detonator_kneel",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_engineer_pressure_mines.png",
+        "class_palette_id": "class_palette.engineer.workshop_teal"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the lattice flipbook holds its armed frame with steady proximity lenses while the backdrop keeps one constant dim instead of the detonation cycle, camera shake and hitstop",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0
+      }
+    }
+  ]
+}
