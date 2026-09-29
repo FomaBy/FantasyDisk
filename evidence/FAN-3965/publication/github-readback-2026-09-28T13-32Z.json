@@ -1,0 +1,99 @@
+{
+  "observed_at": "2026-09-28T13:32:36.895930Z",
+  "publisher_login": {
+    "login": "FomaBy",
+    "type": "User"
+  },
+  "repository": {
+    "full_name": "FomaBy/FantasyDisk-Releases",
+    "owner": "FomaBy",
+    "owner_type": "User",
+    "private": false,
+    "default_branch": "main",
+    "permissions": {
+      "admin": true,
+      "maintain": true,
+      "push": true,
+      "triage": true,
+      "pull": true
+    }
+  },
+  "collaborators": [
+    {
+      "login": "FomaBy",
+      "role": "admin",
+      "permissions": {
+        "admin": true,
+        "maintain": true,
+        "push": true,
+        "triage": true,
+        "pull": true
+      }
+    }
+  ],
+  "invitations_count": 0,
+  "deploy_keys_count": 0,
+  "immutable_releases": {
+    "enabled": true,
+    "enforced_by_owner": false
+  },
+  "rulesets": [
+    {
+      "id": 20810935,
+      "name": "Protect immutable release tags v*",
+      "target": "tag",
+      "enforcement": "active"
+    }
+  ],
+  "ruleset_details": [
+    {
+      "id": 20810935,
+      "name": "Protect immutable release tags v*",
+      "target": "tag",
+      "enforcement": "active",
+      "bypass_actors": [],
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "refs/tags/v*"
+          ]
+        }
+      },
+      "rules": [
+        "update",
+        "deletion"
+      ]
+    }
+  ],
+  "releases": [
+    {
+      "tag": "v0.2.4",
+      "draft": false,
+      "prerelease": false,
+      "immutable": false,
+      "published_at": "2026-07-16T13:23:48Z"
+    }
+  ],
+  "distribution_tag_v0.3.1": {
+    "_http": 404
+  },
+  "distribution_release_v0.3.1": {
+    "_http": 404
+  },
+  "distribution_tags": [
+    "v0.2.4"
+  ],
+  "default_branch_head": "162ac9f886a7c4deaa05d6c70c23779f406c7080",
+  "default_tree": {
+    "truncated": false,
+    "paths": [
+      "README.md"
+    ]
+  },
+  "source_tag_v0.3.1": {
+    "sha": "8c2cbdf89f07f8d63417303fb35387a29250b446",
+    "type": "tag",
+    "target": "f4d05fea91a5ce8b3fb858a5035df1fe54236369"
+  }
+}

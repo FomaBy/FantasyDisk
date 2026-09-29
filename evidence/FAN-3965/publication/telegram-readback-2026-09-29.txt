@@ -1,0 +1,16 @@
+channel: FantasyAgents id: 4452439686 username: FantasyAgents
+msg 148 2026-09-29T15:28:40+00:00 | grouped: 14325565765458018 | photo: False | doc: SHA256SUMS.txt 196 | text: 
+msg 147 2026-09-29T15:28:40+00:00 | grouped: 14325565765458018 | photo: False | doc: FantasyDisk-0.3.1-windows-setup.exe 438427863 | text: 
+msg 146 2026-09-29T15:28:40+00:00 | grouped: 14325565765458018 | photo: False | doc: FantasyDisk-0.3.1-macos.dmg 462967900 | text: FantasyDisk v0.3.1 — DMG, Windows Setup и SHA256. https://t.me/+ByVTScmUaJMzZDJi
+msg 144 2026-09-17T14:15:35+00:00 | grouped: None | photo: False | doc: FantasyDisk-Stories.html 53988213 | text: Я учу моих агентов играть в мою игру и давать отзыв на нее. Уже что-то получается, зацените:
+msg 143 2026-09-17T09:06:54+00:00 | grouped: None | photo: True | doc: None None | text: Давненько не было новостей от меня.  Сейчас полирую версию 0.3.1 и скоро выложу ее для доступа здесь, пока агенты трудят
+msg 141 2026-09-04T20:12:12+00:00 | grouped: None | photo: True | doc: None None | text: сегодня у нас ночь полного рефакторинга игры)))
+msg 145 -> None (deleted/absent)
+msg 149 -> None (deleted/absent)
+msg 150 -> None (deleted/absent)
+photo msg 141 2026-09-04T20:12:12+00:00 | text: сегодня у нас ночь полного рефакторинга игры)))
+photo msg 140 2026-09-04T09:47:14+00:00 | text: Тут на работе скинули неплохую статейку про Харнесс, для новичков. 
+Если вы все еще не сильно опытны
+photo msg 135 2026-08-30T11:39:48+00:00 | text: 
+adminlog 2026-09-29T15:22:16+00:00 by FomaBy ChannelAdminLogEventActionDeleteMessage msg 145 | FantasyDisk v0.3.1 — проверенные сборки macOS + Windows.
+admin log events: 1
