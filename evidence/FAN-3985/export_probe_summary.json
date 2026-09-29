@@ -2,10 +2,34 @@
   "gate": "tools/ultimate_export_probe.py",
   "preset": "macOS",
   "source": {
-    "commit": "c16085f7e6c9fe797efee6c6fa1bf091b4055edd",
-    "tree": "b305eae77bbfe2f4cdf886debd0cfb4a7a75aa4f",
+    "commit": "09d692b5ea687fc870931dd26c616192bc3518ab",
+    "tree": "0610635d64421bd4ba124c325abd60234985affa",
     "dirty_paths": [
-      "?? evidence/FAN-3985/"
+      "M evidence/FAN-3985/README.md",
+      " D evidence/FAN-3985/export_probe_capture_report.json",
+      " D evidence/FAN-3985/export_probe_mutation_executor_remap_removed.json",
+      " D evidence/FAN-3985/export_probe_mutation_presentation_document_removed.json",
+      " D evidence/FAN-3985/export_probe_pck_listing.json",
+      " D evidence/FAN-3985/export_probe_probe.log",
+      " D evidence/FAN-3985/export_probe_probe_report.json",
+      " D evidence/FAN-3985/export_probe_summary.json",
+      " D evidence/FAN-3985/exported_app_captures/assassin__chakrams.png",
+      " D evidence/FAN-3985/exported_app_captures/berserk__sword.png",
+      " D evidence/FAN-3985/exported_app_captures/biologist__biologist_spore_lens.png",
+      " D evidence/FAN-3985/exported_app_captures/chemist__blast_powder.png",
+      " D evidence/FAN-3985/exported_app_captures/dark_mage__dark_book.png",
+      " D evidence/FAN-3985/exported_app_captures/doctor__restore_potion.png",
+      " D evidence/FAN-3985/exported_app_captures/druid__summon_amulet.png",
+      " D evidence/FAN-3985/exported_app_captures/elementalist__elementalist_orb_ring.png",
+      " D evidence/FAN-3985/exported_app_captures/engineer__engineer_sentry_wrench.png",
+      " D evidence/FAN-3985/exported_app_captures/guitarist__electric_guitar.png",
+      " D evidence/FAN-3985/exported_app_captures/knight__long_spear.png",
+      " D evidence/FAN-3985/exported_app_captures/priest__priest_reliquary.png",
+      " D evidence/FAN-3985/exported_app_captures/ranger__moon_crossbow.png",
+      " D evidence/FAN-3985/exported_app_captures/robot__robot_magnetic_anchor.png",
+      " D evidence/FAN-3985/exported_app_captures/sniper__sniper_deadeye_rifle.png",
+      " D evidence/FAN-3985/exported_app_captures/soldier__soldier_rifle.png",
+      " D evidence/FAN-3985/exported_app_captures/thief__thief_coin_pouch.png"
     ]
   },
   "problems": [],
@@ -13,8 +37,8 @@
     "app": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/export/FantasyDisk.app",
     "binary": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/export/FantasyDisk.app/Contents/MacOS/FantasyDisk",
     "pck": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/export/FantasyDisk.app/Contents/Resources/FantasyDisk.pck",
-    "pck_size": 423939728,
-    "pck_sha256": "4a47c1dadedbacd6704890b491b2b0a8915fb4eba4162d55c5dbe45d155fb87a"
+    "pck_size": 423939744,
+    "pck_sha256": "3bbfff6ce9214e9adb6e2a9d4b6087b4af1d6592d74b1e42e9c8c5f887fa472c"
   },
   "pck": {
     "format_version": 4,
@@ -117,5 +141,5 @@
     "problems": []
   },
   "pass": true,
-  "duration_seconds": 55.7
+  "duration_seconds": 57.1
 }
