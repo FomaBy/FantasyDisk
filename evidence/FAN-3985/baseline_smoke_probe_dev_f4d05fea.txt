@@ -1,0 +1,17 @@
+# Baseline reproduction: exported macOS build of dev @ f4d05fea91a5ce8b3fb858a5035df1fe54236369 (unfixed), probe main scene injected through override.cfg
+# command: FantasyDisk.app/Contents/MacOS/FantasyDisk --headless -- --probe=1
+ERROR: Couldn't open directory at path "res://data/ultimates/presentation".
+   at: get_files_at (core/io/dir_access.cpp:578)
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+SMOKE editor_feature=false template=true exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/fan3985_export/override_test/FantasyDisk.app/Contents/MacOS/FantasyDisk
+SMOKE user_args=["--probe=1"]
+SMOKE docs_manifest_exists=false
+SMOKE data_dir=[]
+SMOKE knight_dir=["holy_flail.gd.remap", "holy_flail.gdc", "holy_flail.tscn.remap", "long_spear.gd.remap", "long_spear.gdc", "long_spear.tscn.remap", "tower_shield.gd.remap", "tower_shield.gdc", "tower_shield.tscn.remap"]
+SMOKE scene_dir=["KnightHolyFlailHeavenlySpiral.tscn.remap", "KnightLongSpearSpearWall.tscn.remap", "KnightTowerShieldImpassableLine.tscn.remap"]
+SMOKE scene FileAccess=false ResourceLoader=true
+SMOKE png FileAccess=false ResourceLoader=true
+SMOKE ogg FileAccess=false ResourceLoader=true
+SMOKE gd FileAccess=false ResourceLoader=true load=(res://scripts/ultimates/classes/knight/long_spear.gd):<GDScript#-9223372009776347800>
+SMOKE registry_valid=true pairs=0 source=legacy_class_fallback pkg_errors=["package.pair.executor_missing: assassin/chakrams.json", "package.pair.executor_missing: assassin/shadow_daggers.json", "package.pair.executor_missing: assassin/venom_wire.json"]
+SMOKE record={  }

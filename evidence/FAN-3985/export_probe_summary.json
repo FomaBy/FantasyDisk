@@ -1,0 +1,121 @@
+{
+  "gate": "tools/ultimate_export_probe.py",
+  "preset": "macOS",
+  "source": {
+    "commit": "c16085f7e6c9fe797efee6c6fa1bf091b4055edd",
+    "tree": "b305eae77bbfe2f4cdf886debd0cfb4a7a75aa4f",
+    "dirty_paths": [
+      "?? evidence/FAN-3985/"
+    ]
+  },
+  "problems": [],
+  "export": {
+    "app": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/export/FantasyDisk.app",
+    "binary": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/export/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "pck": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/export/FantasyDisk.app/Contents/Resources/FantasyDisk.pck",
+    "pck_size": 423939728,
+    "pck_sha256": "4a47c1dadedbacd6704890b491b2b0a8915fb4eba4162d55c5dbe45d155fb87a"
+  },
+  "pck": {
+    "format_version": 4,
+    "engine_version": "4.7.0",
+    "entry_count": 27034,
+    "entries_by_top_level": {
+      ".godot": 13062,
+      "assets": 13020,
+      "data": 173,
+      "icon.svg": 1,
+      "icon.svg.import": 1,
+      "project.binary": 1,
+      "scenes": 196,
+      "scripts": 580
+    },
+    "ultimate_class_package_files_by_extension": {
+      "gd.remap": 51,
+      "gdc": 51,
+      "tscn.remap": 36
+    },
+    "forbidden_entries": [],
+    "presentation_document_count": 17
+  },
+  "headless_probe": {
+    "exit_code": 0,
+    "report": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/probe_report.json",
+    "pairs": 51,
+    "pairs_passing": 51,
+    "problems": []
+  },
+  "mutations": [
+    {
+      "name": "presentation_document_removed",
+      "removed_entry": "data/ultimates/presentation/knight.json",
+      "exit_code": 1,
+      "report": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/mutations/presentation_document_removed/probe_report.json",
+      "pairs_passing": 48,
+      "affected": {
+        "knight/long_spear": {
+          "resolution_source": "weapon_profile",
+          "record_found": false,
+          "begin_ok": false,
+          "pass": false
+        },
+        "knight/tower_shield": {
+          "resolution_source": "weapon_profile",
+          "record_found": false,
+          "begin_ok": false,
+          "pass": false
+        },
+        "knight/holy_flail": {
+          "resolution_source": "weapon_profile",
+          "record_found": false,
+          "begin_ok": false,
+          "pass": false
+        }
+      },
+      "problems": []
+    },
+    {
+      "name": "executor_remap_removed",
+      "removed_entry": "scripts/ultimates/classes/knight/long_spear.gd.remap",
+      "exit_code": 1,
+      "report": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/mutations/executor_remap_removed/probe_report.json",
+      "pairs_passing": 50,
+      "affected": {
+        "knight/long_spear": {
+          "resolution_source": "legacy_class_fallback",
+          "record_found": true,
+          "begin_ok": true,
+          "pass": false
+        }
+      },
+      "problems": []
+    }
+  ],
+  "captures": {
+    "exit_code": 0,
+    "report": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/capture_report.json",
+    "directory": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/captures",
+    "files": [
+      "assassin__chakrams.png",
+      "berserk__sword.png",
+      "biologist__biologist_spore_lens.png",
+      "chemist__blast_powder.png",
+      "dark_mage__dark_book.png",
+      "doctor__restore_potion.png",
+      "druid__summon_amulet.png",
+      "elementalist__elementalist_orb_ring.png",
+      "engineer__engineer_sentry_wrench.png",
+      "guitarist__electric_guitar.png",
+      "knight__long_spear.png",
+      "priest__priest_reliquary.png",
+      "ranger__moon_crossbow.png",
+      "robot__robot_magnetic_anchor.png",
+      "sniper__sniper_deadeye_rifle.png",
+      "soldier__soldier_rifle.png",
+      "thief__thief_coin_pouch.png"
+    ],
+    "problems": []
+  },
+  "pass": true,
+  "duration_seconds": 55.7
+}
