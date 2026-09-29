@@ -2,13 +2,33 @@
 
 Evidence for the exported-build regression fix. Everything below was produced on
 the macOS development host with Godot `4.7.stable.official.5b4e0cb0f` and the
-official 4.7 export templates, from the candidate code commit
-`09d692b5ea687fc870931dd26c616192bc3518ab` (tree
-`0610635d64421bd4ba124c325abd60234985affa`), based on `dev` =
+official 4.7 export templates, from the rework code commit
+`9583158819f6965a86d3e288d1a46a80a62d54d1` (tree
+`e5b1756a663963081f8da2abd2ccde0dc7b871bf`; the first-review candidate was
+`09d692b5ea687fc870931dd26c616192bc3518ab`), based on `dev` =
 `f4d05fea91a5ce8b3fb858a5035df1fe54236369`. The evidence commit that carries
 this directory changes nothing the export reads (`evidence/*` is excluded from
-both presets), so the exported PCK of the review candidate is byte-identical to
-the one recorded here (`pck_sha256` in `export_probe_summary.json`).
+both presets), so the exported PCK of the review candidate has the same
+directory and the same `.gdc`/remap/JSON bytes as the one recorded here.
+`pck_sha256` in `export_probe_summary.json` is reproducible only with the same
+import cache: the first independent review showed that converted binary scenes
+(`.godot/exported/**/*.scn`) carry 8 bytes of import-cache-dependent
+`node_ids`, so a fresh checkout yields a different PCK hash with an identical
+file table and identical script/data entries. Compare file tables and the
+script/data entries, not the whole-file hash.
+
+## Rework after the first review (QA FAILED, 10 of 51 pairs crashed)
+
+The first review found that the fix made the new executors reachable in the
+release build for the first time, and 10 of 51 pairs then died by SIGSEGV
+1–4 s after activation: stored enemy references were cast (`raw as Node2D`,
+`victim is Node2D`) or called after the enemy was freed. The editor only
+prints `Trying to cast a freed object`; the release template dereferences the
+freed object. The rework validates every stored reference with
+`is_instance_valid` before any cast, type test or call (executors, leases,
+the shared victim impact player, the activation, the Priest censer host
+proxy and `scripts/combat_feedback_timeline.gd`), and adds the player-path
+gates recorded below.
 
 ## Files
 
@@ -23,6 +43,8 @@ the one recorded here (`pck_sha256` in `export_probe_summary.json`).
 | `export_probe_capture_report.json` | Windowed probe run (1280x720, fixed 60 fps) that produced the captures; same 51/51 checks. |
 | `exported_app_captures/<class>__<weapon>.png` | One weapon per class, screenshotted inside the exported app at its `active` beat (+ a settle offset). The label burned into each frame names the pair, the resolved scene and the exported executable that rendered it. |
 | `export_probe_probe.log` | stdout of the headless probe run. |
+| `export_probe_player_path.json` | Player-path stage of the exported app: every one of the 51 pairs played in its own fresh process of the exported release build (isolated user directory `FantasyDiskFan3985Probe`, update check off) through `Main._start_combat()` → real `Player.activate_ultimate()` → executor, enemy deaths, victim impacts, authored presentation, and kept running past the declared cancel (`wait_seconds`). `exit_code` per pair (a signal such as −11 is a crash), `crashes` list, `resolution_source`, instantiated scene, survived game seconds; then one windowed replay per class with a real game frame. |
+| `exported_app_player_path_captures/<class>__<weapon>.png` | One real game frame per class from the exported app during the ultimate (HUD, arena, enemies), taken by the windowed player-path replay. |
 
 ## How the probe runs inside the exported app
 
@@ -38,9 +60,13 @@ is never modified; mutations rename one directory entry in a copy of the PCK.
 
 ## Reproduce
 
+Check out the review candidate (the SHA recorded on the card as
+`candidate_sha`), then:
+
 ```bash
 python3 tools/build_ultimate_presentation_runtime_data.py --check
 python3 tools/ultimate_export_probe.py --captures --evidence-dir evidence/FAN-3985
+python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/player_path_release_safety_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/export_runtime_paths_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation_runtime_data_test.gd
 python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/registry_package_discovery_test.gd
