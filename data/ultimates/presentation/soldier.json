@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "class_id": "soldier",
+  "generated_from": "docs/design/references/weapon_ultimates/soldier/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "soldier_rifle",
+      "scene_path": "res://scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 0.9,
+        "recovery": 2.6,
+        "cancel": 3.2
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 22,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "total_boss_cap_split_owner": "mechanics FAN-1469",
+        "v2_presence_note": "FAN-3941: the authored formation plus the backdrop veil and hero cast pose; the veil is a gradient sprite with no material"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "time_scale_dip": 0.45,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/soldier_rifle.png",
+        "class_palette_id": "soldier_olive_gold_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.04,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the scene driver applies no camera shake, so the authored AnimationPlayer timeline's war banner, spectral rifle rank, volley lane and three muzzle-flash waves carry the beat as alpha steps and the rank's aim rotation on the unchanged timing; the backdrop veil still darkens to 0.30 and the first-impact hitstop still pauses the authored timeline",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0300 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    },
+    {
+      "weapon_id": "soldier_grenade",
+      "scene_path": "res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 2.9,
+        "cancel": 3.5
+      },
+      "performance": {
+        "max_visual_nodes": 13,
+        "crowd_cap": 26,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "chain_detonation_damage_owner": "mechanics FAN-1469",
+        "v2_presence_note": "FAN-3941: the authored formation plus the backdrop veil and hero cast pose; the veil is a gradient sprite with no material"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/soldier_grenade.png",
+        "class_palette_id": "soldier_olive_gold_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.05,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the scene driver applies no camera shake, so the authored lob arc, the seven seeded grenades, the shrinking fuse ring and the executor-driven detonation rings and crater column carry the beat on the unchanged timing; the release-beat veil flash and the first-impact hitstop stay as shipped",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0357 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a single-shot full-viewport flash peaking at 0.28 with one rise per cast (0 Hz repetition, coverage 1.0); it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    },
+    {
+      "weapon_id": "soldier_bayonet",
+      "scene_path": "res://scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.8,
+        "active": 1.1,
+        "recovery": 3.2,
+        "cancel": 3.8
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "pin_stagger_and_frontal_guard_owner": "mechanics FAN-1469",
+        "v2_presence_note": "FAN-3941: the authored formation plus the backdrop veil and hero cast pose; the veil is a gradient sprite with no material"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "time_scale_dip": 0.35,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "weapon_ultimate.cast_pose.soldier.raised_banner",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/soldier_bayonet.png",
+        "class_palette_id": "soldier_olive_gold_palette"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.03,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the scene driver applies no camera shake, so the three ghost-infantry ranks' charge down the corridor, the frontal guard and the crossed-bayonet pin carry the beat as positional steps and a contrast cross on the unchanged timing; the backdrop veil still darkens to 0.30 and the first-impact hitstop still pauses the authored timeline",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0226 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    }
+  ]
+}

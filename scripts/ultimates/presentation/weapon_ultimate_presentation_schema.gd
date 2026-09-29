@@ -320,7 +320,7 @@ static func _v2_check_identity(
 
 	var silhouette := str(identity.get("weapon_silhouette_asset", ""))
 	if not _is_valid_resource_path(silhouette) or _contains_placeholder(silhouette) \
-			or not FileAccess.file_exists(silhouette):
+			or not ResourceLoader.exists(silhouette):
 		_add_error(violations, "presentation.v2.weapon_silhouette", "%s: %s" % [profile_key_value, silhouette])
 	elif catalog_scope:
 		# A generic burst asset reused across two (class_id, weapon_id) keys
@@ -386,7 +386,10 @@ static func _validate_asset(
 			continue
 		if _contains_placeholder(path):
 			_add_error(errors, "presentation.asset.%s.placeholder" % channel, path)
-		if not FileAccess.file_exists(path):
+		# FAN-3985: imported textures/audio and converted scenes/scripts exist
+		# in an export only through their import or remap entry, which
+		# ResourceLoader resolves and a raw file check does not.
+		if not ResourceLoader.exists(path):
 			var kind := "source_missing" if path_field == "source_path" else "runtime_missing"
 			_add_error(errors, "presentation.asset.%s.%s" % [channel, kind], path)
 

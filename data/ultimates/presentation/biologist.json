@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "class_id": "biologist",
+  "generated_from": "docs/design/references/weapon_ultimates/biologist/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "biologist_spore_lens",
+      "scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.8,
+        "active": 1.1,
+        "recovery": 2.8,
+        "cancel": 3.4
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 18,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "secondary_bloom_cap": 3,
+        "secondary_bloom_recursion": false,
+        "runtime_enforcement_owner": "FAN-1541",
+        "mechanics_owner": "FAN-2526: map-wide infection waves; three local non-recursive blooms remain a bonus",
+        "v2_budget_note": "budget ceiling retained from the accepted v2 declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "pivot": {
+        "x": 0.28,
+        "y": 0.56
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.biologist.mycelium_inoculation",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_00.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/biologist_spore_lens.png",
+        "class_palette_id": "palette.biologist.mycelium_green"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "screen shake may be disabled while the dark mycelium veil and branching pulse preserve the same beats",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "flash_note": "darken-only backdrop; no full-screen flash"
+      }
+    },
+    {
+      "weapon_id": "biologist_sample_injector",
+      "scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.0,
+        "recovery": 2.5,
+        "cancel": 3.0
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 16,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "analysis_pulse_cap": 3,
+        "sample_window_seconds": 10.0,
+        "runtime_enforcement_owner": "FAN-1541",
+        "mechanics_owner": "FAN-2526: aimed priority extraction plus three map-wide analysis pulses",
+        "v2_budget_note": "budget ceiling retained from the accepted v2 declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "pivot": {
+        "x": 0.18,
+        "y": 0.52
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.biologist.perfect_extraction",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_02.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/biologist_sample_injector.png",
+        "class_palette_id": "palette.biologist.sample_cyan"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "screen shake may be disabled while the cyan extraction beam and DNA pulse retain the same timing",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 1.0,
+        "flash_note": "one non-repeating extraction flash at 0 Hz"
+      }
+    },
+    {
+      "weapon_id": "biologist_symbiote_seed",
+      "scene_path": "res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.9,
+        "active": 1.3,
+        "recovery": 3.2,
+        "cancel": 3.8
+      },
+      "performance": {
+        "max_visual_nodes": 17,
+        "crowd_cap": 22,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "tendril_cap": 6,
+        "larva_cap": 6,
+        "runtime_enforcement_owner": "FAN-1541",
+        "mechanics_owner": "FAN-2526: map-wide pod control and hatch; six larvae remain focused bonus shots",
+        "v2_budget_note": "budget ceiling retained from the accepted v2 declaration; the assembled scene draws one integrated nine-frame flipbook plus the bounded shared per-victim impact pool"
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.biologist.symbiote_gestation",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/biologist/biologist_attack_primary_04.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/biologist_symbiote_seed.png",
+        "class_palette_id": "palette.biologist.symbiote_magenta"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.34,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "screen shake may be disabled while the magenta pod swell, tendril snap and hatch ring keep the same timing",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "flash_note": "darken-only backdrop; hatch reads through the world-space ring"
+      }
+    }
+  ]
+}

@@ -355,6 +355,16 @@ static func is_reserved_data_file(relative_path: String) -> bool:
 	return RESERVED_DATA_FILES.has(relative_path.get_file())
 
 
+## FAN-3985: an exported build carries scripts and scenes as remaps
+## (`x.gd.remap` → `x.gdc`, `x.tscn.remap` → binary scene), so a directory
+## listing never shows the source name a package is keyed by. The remap
+## suffix is stripped and the pair is keyed by the source name, which
+## ResourceLoader resolves through the same remap; the editor tree has no
+## remaps and is listed unchanged.
+static func exported_file_name(file_name: String) -> String:
+	return file_name.trim_suffix(".remap") if file_name.ends_with(".remap") else file_name
+
+
 static func _relative_files(root: String, extension: String) -> Array[String]:
 	var files: Array[String] = []
 	if DirAccess.open(root) == null:
@@ -373,9 +383,13 @@ static func _collect_relative_files(
 	var directory_path := root if relative_directory.is_empty() else "%s/%s" % [root, relative_directory]
 	var file_names := DirAccess.get_files_at(directory_path)
 	file_names.sort()
-	for file_name in file_names:
-		if file_name.ends_with(extension):
-			files.append(file_name if relative_directory.is_empty() else "%s/%s" % [relative_directory, file_name])
+	var seen := {}
+	for raw_name in file_names:
+		var file_name := exported_file_name(raw_name)
+		if not file_name.ends_with(extension) or seen.has(file_name):
+			continue
+		seen[file_name] = true
+		files.append(file_name if relative_directory.is_empty() else "%s/%s" % [relative_directory, file_name])
 	var directory_names := DirAccess.get_directories_at(directory_path)
 	directory_names.sort()
 	for directory_name in directory_names:
