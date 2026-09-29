@@ -3,10 +3,11 @@
 Evidence for the exported-build regression fix. Everything below was produced on
 the macOS development host with Godot `4.7.stable.official.5b4e0cb0f` and the
 official 4.7 export templates, from the rework code commit
-`9583158819f6965a86d3e288d1a46a80a62d54d1` (tree
-`e5b1756a663963081f8da2abd2ccde0dc7b871bf`; the first-review candidate was
-`09d692b5ea687fc870931dd26c616192bc3518ab`), based on `dev` =
-`f4d05fea91a5ce8b3fb858a5035df1fe54236369`. The evidence commit that carries
+`5a4f82131` (tree `a85b9c9bda02fb8330f5e0c437fef946430016ec`), the cherry-pick of
+the QA-approved candidate `aef466937522f2788b13bf1d67f66ba63c570802` onto
+`dev` = `81d384e688e7bc7388b7ae24770565b2df51957e` (the only difference is
+FAN-3986's `.github/workflows/quality.yml`). The first-review candidate was
+`09d692b5ea687fc870931dd26c616192bc3518ab`. The evidence commit that carries
 this directory changes nothing the export reads (`evidence/*` is excluded from
 both presets), so the exported PCK of the review candidate has the same
 directory and the same `.gdc`/remap/JSON bytes as the one recorded here.
@@ -29,6 +30,17 @@ freed object. The rework validates every stored reference with
 the shared victim impact player, the activation, the Priest censer host
 proxy and `scripts/combat_feedback_timeline.gd`), and adds the player-path
 gates recorded below.
+
+## Third candidate: rebased on dev 81d384e6, FAN-3942 certification packages re-shot
+
+The required PR check `static-quality` rejected the second candidate because the
+runtime change staled the three strict FAN-3942 certification packages
+(Assassin, Doctor, Druid): their capture manifests named a source commit that
+predates the ultimate runtime fix. This candidate re-shoots those three packages
+with the existing live capture scripts on the commit that carries this
+directory (the clean source commit recorded in each
+`certification_capture_manifest.json`), and commits only their evidence on top.
+The exported-build evidence below was regenerated from the rebased code.
 
 ## Files
 

@@ -5,7 +5,7 @@
     "docs_manifest_present": false,
     "editor_feature": false,
     "engine_version": "4.7-stable (official)",
-    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/mutations/presentation_document_removed/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-6e62becedbb9/workdir/FantasyDisk/build/ultimate_export_probe/mutations/presentation_document_removed/FantasyDisk.app/Contents/MacOS/FantasyDisk",
     "presentation_documents": [
       "assassin.json",
       "berserk.json",
@@ -28,7 +28,7 @@
     "release_feature": true,
     "template_feature": true,
     "user_args": [
-      "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-ab48363b0711/workdir/FantasyDisk/build/ultimate_export_probe/mutations/presentation_document_removed/probe_report.json"
+      "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3985-6e62becedbb9/workdir/FantasyDisk/build/ultimate_export_probe/mutations/presentation_document_removed/probe_report.json"
     ]
   },
   "errors": [
