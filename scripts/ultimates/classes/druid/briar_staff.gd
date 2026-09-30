@@ -92,7 +92,7 @@ func grow_lattice() -> void:
 		"nearest"
 	)
 	for raw_target in _targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var status_id := "druid_ultimate_briar_%d" % get_instance_id()
@@ -113,7 +113,7 @@ func impale(pulse: int) -> void:
 	impale_count_for_tests += 1
 	var victims: Array = []
 	for raw_target in _targets:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var damage_key := "thorn_crown_damage" if pulse == _activation.param_int("impale_pulses", 3) - 1 else "impale_damage"
@@ -152,7 +152,7 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary) 
 
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
-		var target = lease.get("target") as Node
+		var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 		if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
 			continue
 		var statuses = target.get_meta(StatusEffects.META_KEY)

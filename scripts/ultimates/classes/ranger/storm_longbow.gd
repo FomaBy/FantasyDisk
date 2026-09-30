@@ -126,7 +126,7 @@ func strike(index: int) -> void:
 	var strike_damage: float = _activation.scaled_damage("beat_damage", 11.2)
 	var falloff: float = _activation.param_float("beat_falloff", 0.46)
 	for rank in ranked.size():
-		var target := ranked[rank] as Node2D
+		var target := (ranked[rank] if is_instance_valid(ranked[rank]) else null) as Node2D
 		_deal(
 			target,
 			strike_damage * pow(falloff, float(rank)),
@@ -148,7 +148,7 @@ func strike(index: int) -> void:
 func _ranked_by_front(front: float) -> Array:
 	var ordered: Array[Dictionary] = []
 	for raw_target in _rail:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var offset := target.global_position - _start
@@ -219,7 +219,7 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
-		var target = lease.get("target") as Node
+		var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 		if target == null or not is_instance_valid(target) \
 				or not target.has_meta(StatusEffects.META_KEY):
 			continue

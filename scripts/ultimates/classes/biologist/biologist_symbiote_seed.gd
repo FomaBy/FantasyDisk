@@ -68,7 +68,7 @@ static func execute(activation) -> float:
 	var pod = activation.spawn(EFFECT_SCENE)
 	if pod == null or not pod.has_method("configure"):
 		return 0.0
-	if pod is Node2D:
+	if is_instance_valid(pod) and pod is Node2D:
 		(pod as Node2D).global_position = target_point as Vector2
 	pod.call("configure", activation)
 	var tween: Tween = activation.track_tween()
@@ -135,7 +135,7 @@ func pull_and_root() -> void:
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null:
 			continue
 		var toward := global_position - target.global_position
@@ -177,7 +177,7 @@ func launch_larva(index: int) -> void:
 	for raw_target in _targets:
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target != null \
 				and (target.get("health") == null or float(target.get("health")) > 0.0):
 			live_targets.append(target)
@@ -187,7 +187,7 @@ func launch_larva(index: int) -> void:
 		)
 	if live_targets.is_empty():
 		return
-	var target := live_targets[index % live_targets.size()] as Node
+	var target := (live_targets[index % live_targets.size()] if is_instance_valid(live_targets[index % live_targets.size()]) else null) as Node
 	_deal(
 		target,
 		_activation.scaled_damage("larva_damage", 0.0),
@@ -211,7 +211,7 @@ func hatch() -> void:
 	):
 		if raw_target == null or not is_instance_valid(raw_target):
 			continue
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null:
 			continue
 		_deal(
@@ -270,7 +270,7 @@ func _remove_leased_status(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if raw_target == null or not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if target == null or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

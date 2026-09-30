@@ -225,7 +225,7 @@ func _ordered_victims(victims: Array, cast_position: Vector2) -> Array[Node2D]:
 	var targets: Array[Node2D] = []
 	var seen := {}
 	for victim in victims:
-		if victim is Node2D and is_instance_valid(victim) \
+		if is_instance_valid(victim) and victim is Node2D \
 				and not seen.has((victim as Node2D).get_instance_id()):
 			seen[(victim as Node2D).get_instance_id()] = true
 			targets.append(victim as Node2D)
@@ -240,7 +240,7 @@ func _ordered_victims(victims: Array, cast_position: Vector2) -> Array[Node2D]:
 ## it away. Callers that already drew it on their damage path turn it off with
 ## `extra_hit_flash = false` — the burst is still acquired and played.
 func _spawn(victim: Variant) -> void:
-	if not (victim is Node2D) or not is_instance_valid(victim):
+	if not is_instance_valid(victim) or not (victim is Node2D):
 		return
 	var target := victim as Node2D
 	if extra_hit_flash and _flash(target):

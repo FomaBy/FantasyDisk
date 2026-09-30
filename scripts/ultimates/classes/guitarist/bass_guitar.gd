@@ -81,7 +81,7 @@ static func fire_wave(activation, state: Dictionary, stage: String) -> void:
 	var duration: float = activation.param_float("%s_duration" % stage, 0.0)
 	var victims: Array = []
 	for raw_target in activation.targets(activation.origin(), radius):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var away: Vector2 = target.global_position - activation.origin()

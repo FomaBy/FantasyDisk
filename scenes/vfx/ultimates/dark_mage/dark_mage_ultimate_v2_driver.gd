@@ -21,7 +21,9 @@ extends Node2D
 ##   and SFX ducking are identical in every mode.
 
 const ACCESSIBILITY := preload("res://scripts/settings/ultimate_accessibility_settings.gd")
-const MANIFEST_PATH := "res://docs/design/references/weapon_ultimates/dark_mage/manifest.json"
+## FAN-3985: the exported runtime document (derived from the class reference
+## manifest, which the `docs/*` export exclusion keeps out of the build).
+const MANIFEST_PATH := "res://data/ultimates/presentation/dark_mage.json"
 const BACKDROP_OVERSCAN := 1.08
 const SFX_DUCK_DB := -8.0
 const TIMELINE_NODE := "Timeline"

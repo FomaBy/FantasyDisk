@@ -150,7 +150,7 @@ func _bite(
 ) -> void:
 	var net_ratio: float = _activation.param_float("net_ratio", 0.11)
 	for index in caught.size():
-		var target := caught[index] as Node2D
+		var target := (caught[index] if is_instance_valid(caught[index]) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var payload := feedback.duplicate(true)
@@ -215,7 +215,7 @@ func _deal(target: Node, amount: float, event_id: String, secondary: bool, feedb
 
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
-		var target = lease.get("target") as Node
+		var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 		if target == null or not is_instance_valid(target) \
 				or not target.has_meta(StatusEffects.META_KEY):
 			continue

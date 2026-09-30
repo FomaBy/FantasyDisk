@@ -104,7 +104,7 @@ func impact(wave: int) -> void:
 		return
 	var victims: Array[Node2D] = []
 	for raw_target in _pool:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if not _alive(target):
 			continue
 		impact_count_for_tests += 1

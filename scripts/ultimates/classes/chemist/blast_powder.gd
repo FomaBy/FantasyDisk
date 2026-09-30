@@ -118,7 +118,7 @@ static func _crystallize(activation: Activation, origin: Vector2, crystallized: 
 	var pull_force := activation.param_float("pull_force", 0.0)
 	var status := activation.param_dictionary("crystal_status")
 	for raw_target in crystallized:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var inward := origin - target.global_position
@@ -138,7 +138,7 @@ static func _transmute(activation: Activation, origin: Vector2, crystallized: Ar
 	})
 	var struck: Array = []
 	for raw_target in crystallized:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		if activation.consume_target_value(target, CRYSTAL_KEY, TRANSMUTE_EVENT) == null:

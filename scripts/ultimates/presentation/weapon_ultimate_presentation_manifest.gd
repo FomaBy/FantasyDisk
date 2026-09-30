@@ -10,8 +10,13 @@ extends RefCounted
 
 const Schema := preload("res://scripts/ultimates/presentation/weapon_ultimate_presentation_schema.gd")
 const DEFAULT_SFX_PATH := "res://assets/audio/sfx/sfx_hit_magic.ogg"
-const REFERENCE_ROOT := "res://docs/design/references/weapon_ultimates"
-const SCENE_ROOT := "res://scenes/vfx/ultimates"
+## FAN-3985: the runtime reads only the derived class documents under
+## `data/ultimates/presentation/<class>.json`. The authored source stays
+## `docs/design/references/weapon_ultimates/<class>/manifest.json`, but
+## `docs/*` is excluded from every export preset, so the exported build never
+## sees it; `tools/build_ultimate_presentation_runtime_data.py` derives the
+## runtime documents and the Python unit gate fails when they drift.
+const PRESENTATION_ROOT := "res://data/ultimates/presentation"
 
 
 static func catalog_for_registry(registry) -> Dictionary:
@@ -101,19 +106,13 @@ static func _asset(id: String, path: String) -> Dictionary:
 static func class_weapon_record(class_id: String, weapon_id: String) -> Dictionary:
 	if class_id.is_empty() or weapon_id.is_empty():
 		return {}
-	var document_path := "%s/%s/manifest.json" % [REFERENCE_ROOT, class_id]
-	if not FileAccess.file_exists(document_path):
+	var document := class_document(class_id)
+	if document.is_empty():
 		return {}
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(document_path))
-	if not parsed is Dictionary or str((parsed as Dictionary).get("class_id", "")) != class_id:
-		return {}
-	var document: Dictionary = parsed as Dictionary
 	var weapon: Dictionary = _weapon_record(document, weapon_id)
+	if weapon.is_empty():
+		return {}
 	var scene_path: String = _resource_path(str(weapon.get("scene_path", "")))
-	if scene_path.is_empty():
-		scene_path = _resource_path(_provenance_scene(document, weapon_id))
-	if scene_path.is_empty():
-		scene_path = _scene_for_exported_weapon(class_id, weapon_id)
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		return {}
 	var performance: Dictionary = weapon.get("performance", {}) as Dictionary
@@ -142,50 +141,32 @@ static func class_weapon_record(class_id: String, weapon_id: String) -> Dictiona
 	return record
 
 
+## The runtime document of one class: `{}` when it is absent, unparsable or
+## declares another class. Every runtime read of presentation data goes
+## through this path, so a document missing from an export fails closed here.
+static func class_document(class_id: String) -> Dictionary:
+	if class_id.is_empty():
+		return {}
+	var document_path := class_document_path(class_id)
+	if not FileAccess.file_exists(document_path):
+		return {}
+	var parsed = JSON.parse_string(FileAccess.get_file_as_string(document_path))
+	if not parsed is Dictionary or str((parsed as Dictionary).get("class_id", "")) != class_id:
+		return {}
+	return parsed as Dictionary
+
+
+static func class_document_path(class_id: String) -> String:
+	return "%s/%s.json" % [PRESENTATION_ROOT, class_id]
+
+
 static func _weapon_record(document: Dictionary, weapon_id: String) -> Dictionary:
 	var weapons = document.get("weapons", [])
 	if weapons is Array:
 		for raw_weapon in weapons as Array:
 			if raw_weapon is Dictionary and str((raw_weapon as Dictionary).get("weapon_id", "")) == weapon_id:
 				return (raw_weapon as Dictionary).duplicate(true)
-	var assets = document.get("assets", [])
-	if assets is Array:
-		for raw_asset in assets as Array:
-			if raw_asset is Dictionary and str((raw_asset as Dictionary).get("weapon_id", "")) == weapon_id:
-				return {"weapon_id": weapon_id}
 	return {}
-
-
-static func _provenance_scene(document: Dictionary, weapon_id: String) -> String:
-	var provenance = document.get("generator_provenance", {})
-	if provenance is Dictionary:
-		var sources = (provenance as Dictionary).get("reused_sources", {})
-		if sources is Dictionary:
-			var source = (sources as Dictionary).get(weapon_id, {})
-			if source is Dictionary:
-				return str((source as Dictionary).get("runtime_scene", ""))
-	return ""
-
-
-static func _scene_for_exported_weapon(class_id: String, weapon_id: String) -> String:
-	var directory_path := "%s/%s" % [SCENE_ROOT, class_id]
-	if DirAccess.open(directory_path) == null:
-		return ""
-	var names := DirAccess.get_files_at(directory_path)
-	names.sort()
-	for name in names:
-		if not name.ends_with(".tscn"):
-			continue
-		var path := "%s/%s" % [directory_path, name]
-		var scene := load(path) as PackedScene
-		if scene == null:
-			continue
-		var node := scene.instantiate()
-		var matches := str(node.get("weapon_id")) == weapon_id
-		node.free()
-		if matches:
-			return path
-	return ""
 
 
 static func _resource_path(path: String) -> String:

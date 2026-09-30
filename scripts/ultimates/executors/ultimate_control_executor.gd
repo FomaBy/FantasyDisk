@@ -19,7 +19,7 @@ static func execute(activation: Activation) -> float:
 	status_config.erase("dot_damage")
 	activation.present(STRATEGY_ID, {"shape": "ring_pulse", "position": origin, "radius": radius})
 	for raw_target in activation.targets(origin, radius, activation.param_int("target_limit", 0)):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var away := target.global_position - origin

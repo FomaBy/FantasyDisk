@@ -209,7 +209,7 @@ func targets(center: Vector2, radius: float, limit := 0) -> Array:
 	if _primitive_state.has("targets"):
 		var selected: Array = []
 		for raw_target in _primitive_state["targets"] as Array:
-			var target := raw_target as Node2D
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 			if target != null and is_instance_valid(target) \
 					and target.global_position.distance_to(center) <= maxf(radius, 0.0):
 				selected.append(target)
@@ -240,7 +240,7 @@ func select_targets(
 	if priority == "marked" and not _valid_mark_hint(hint):
 		return []
 	for raw_target in raw_targets:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var target_id := target.get_instance_id()
@@ -294,7 +294,7 @@ func targets_in_corridor(
 	var candidates: Array[Dictionary] = []
 	var seen := {}
 	for raw_target in _host_targets(start, query_radius, 0):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var target_id := target.get_instance_id()
@@ -670,7 +670,7 @@ func configure_summon_interaction(
 	var snapshots: Array = []
 	var seen := {}
 	for raw_node in found as Array:
-		var node := raw_node as Node
+		var node := (raw_node if is_instance_valid(raw_node) else null) as Node
 		if node == null or not is_instance_valid(node):
 			continue
 		var node_id := node.get_instance_id()
@@ -798,7 +798,7 @@ func spawn(scene_path: String) -> Node:
 			and _spawned.size() >= int(_summon_contract["temporary_cap"]):
 		return null
 	var parent = host.call("ultimate_host_effect_parent")
-	if not parent is Node or not is_instance_valid(parent):
+	if not is_instance_valid(parent) or not parent is Node:
 		return null
 	var scene = load(scene_path)
 	if not scene is PackedScene:
@@ -846,7 +846,7 @@ func deploy_temporary(scene: PackedScene, init: Dictionary = {}, count := 1) -> 
 			and _spawned.size() + count > int(_summon_contract["temporary_cap"]):
 		return created
 	var parent = host.call("ultimate_host_effect_parent")
-	if not parent is Node or not is_instance_valid(parent):
+	if not is_instance_valid(parent) or not parent is Node:
 		return created
 	for _index in count:
 		var node := scene.instantiate()
@@ -904,7 +904,7 @@ func present(event_id: String, payload: Dictionary = {}) -> Node:
 	if _finished or host == null or not is_instance_valid(host):
 		return null
 	var node = host.call("ultimate_host_present", event_id, payload)
-	if node is Node and is_instance_valid(node):
+	if is_instance_valid(node) and node is Node:
 		_presentation.append(node)
 		return node
 	return null
@@ -1047,7 +1047,7 @@ func _target_tier(target: Node) -> String:
 func _restore_summons() -> void:
 	for snapshot in _summon_snapshots:
 		var node = snapshot.get("node")
-		if not node is Node or not is_instance_valid(node):
+		if not is_instance_valid(node) or not node is Node:
 			continue
 		var summon := node as Node
 		for raw_property in (snapshot.get("properties", {}) as Dictionary).keys():
@@ -1094,7 +1094,7 @@ static func _neighbor_count(target: Node2D, raw_targets: Array, radius: float) -
 	var radius_squared := radius * radius
 	var seen := {}
 	for raw_neighbor in raw_targets:
-		var neighbor := raw_neighbor as Node2D
+		var neighbor := (raw_neighbor if is_instance_valid(raw_neighbor) else null) as Node2D
 		if neighbor == null or not is_instance_valid(neighbor):
 			continue
 		var neighbor_id := neighbor.get_instance_id()

@@ -71,7 +71,7 @@ func configure(activation, targets: Array) -> void:
 	_targets = targets.duplicate()
 	global_position = activation.origin()
 	for raw_target in _targets:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target) \
 				and activation.record_target_value(target, STORED_DAMAGE_KEY, 0.0, "mark"):
 			marked_count_for_tests += 1
@@ -93,7 +93,7 @@ func backstab_wave(wave: int, waves: int) -> void:
 func backstab(index: int) -> void:
 	if _activation == null or _activation.is_finished() or index < 0 or index >= _targets.size():
 		return
-	var target := _targets[index] as Node
+	var target := (_targets[index] if is_instance_valid(_targets[index]) else null) as Node
 	if target == null or not is_instance_valid(target):
 		return
 	var ratio: float = 1.0 if index == 0 else _activation.param_float("secondary_damage_ratio", 0.1)
@@ -111,7 +111,7 @@ func reveal() -> void:
 		return
 	var struck: Array[Node] = []
 	for index in _targets.size():
-		var target := _targets[index] as Node
+		var target := (_targets[index] if is_instance_valid(_targets[index]) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var stored = _activation.consume_target_value(
@@ -148,7 +148,7 @@ func _lease_owner_untargetable(duration: float) -> void:
 	if host == null or not is_instance_valid(host) or not "player" in host:
 		return
 	var player = host.get("player")
-	if not player is Node or not is_instance_valid(player) or not "_shadow_invisible_left" in player:
+	if not is_instance_valid(player) or not player is Node or not "_shadow_invisible_left" in player:
 		return
 	_leased_player = player as Node
 	_previous_invisibility = float(_leased_player.get("_shadow_invisible_left"))

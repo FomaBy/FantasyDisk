@@ -7,6 +7,13 @@ extends RefCounted
 
 const PATCH_NOTES := [
 	{
+		"version": "0.3.1.1",
+		"date": "2026-09-30",
+		"highlights": [
+			"Новые анимации ультимейтов теперь появляются в установленной игре на macOS и Windows: в первой сборке 0.3.1 вместо них по ошибке показывались прежние.",
+		],
+	},
+	{
 		"version": "0.3.1",
 		"date": "2026-09-28",
 		"highlights": [
@@ -301,19 +308,20 @@ static func has_new_since(last_seen_version: String) -> bool:
 
 
 static func _version_greater(a: String, b: String) -> bool:
-	# Сравнение semver-подобных строк «MAJOR.MINOR.PATCH»; нечисловые части (как
-	# «в разработке») игнорируются как 0. Возвращает a > b.
+	# Сравнение версий «MAJOR.MINOR.PATCH» и технических «MAJOR.MINOR.PATCH.HOTFIX»
+	# (0.3.1.1 > 0.3.1); отсутствующая или нечисловая часть (как «в разработке»)
+	# считается 0. Возвращает a > b.
 	var pa := _version_parts(a)
 	var pb := _version_parts(b)
-	for i in range(3):
+	for i in range(4):
 		if pa[i] != pb[i]:
 			return pa[i] > pb[i]
 	return false
 
 
 static func _version_parts(v: String) -> Array:
-	var parts := [0, 0, 0]
+	var parts := [0, 0, 0, 0]
 	var split := v.split(".")
-	for i in range(min(split.size(), 3)):
+	for i in range(min(split.size(), 4)):
 		parts[i] = int(split[i]) if str(split[i]).is_valid_int() else 0
 	return parts

@@ -78,7 +78,7 @@ static func execute(activation) -> float:
 	activation.composition_step("control")
 	var guard: float = activation.param_float("guard_defense", 0.25)
 	activation.apply_modifier("defense_flat", guard, "add")
-	var guard_owner := activation.host as Node
+	var guard_owner := (activation.host if is_instance_valid(activation.host) else null) as Node
 	if guard_owner != null:
 		activation.record_target_value(
 			guard_owner, GUARD_KEY, guard, "soldier_bayonet_guard_open"
@@ -116,7 +116,7 @@ func charge_rank(rank: int) -> void:
 	for index in _targets.size():
 		if index % rank_count != rank:
 			continue
-		var target := _targets[index] as Node2D
+		var target := (_targets[index] if is_instance_valid(_targets[index]) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		if not _activation.record_target_value(
@@ -171,7 +171,7 @@ func _remove_leased_status(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if raw_target == null or not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if target == null or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

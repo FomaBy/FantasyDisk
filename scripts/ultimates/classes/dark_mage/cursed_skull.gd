@@ -112,7 +112,7 @@ func crown_targets() -> void:
 	_marked.clear()
 	var newly_marked: Array = []
 	for raw_target in pending:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if _mark(target):
 			newly_marked.append(target)
 	_play_impacts(newly_marked)
@@ -127,7 +127,7 @@ func curse_pulse(pulse: int) -> void:
 	if _activation == null or _activation.is_finished():
 		return
 	for raw_target in _marked.duplicate():
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		if not _alive(target):
@@ -149,7 +149,7 @@ func harvest() -> void:
 		return
 	harvest_count_for_tests += 1
 	for raw_target in _marked:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target) or not _alive(target as Node2D):
 			continue
 		_deal(
@@ -194,7 +194,7 @@ func _transfer_curse(source: Node2D, pulse: int) -> void:
 		0,
 		"nearest"
 	):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target) or not _alive(target) \
 			or _marked_ids.has(target.get_instance_id()):
 			continue
@@ -269,7 +269,7 @@ func _exit_tree() -> void:
 
 
 func _remove_leased_status(lease: Dictionary) -> void:
-	var target := lease.get("target") as Node
+	var target := (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 	if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

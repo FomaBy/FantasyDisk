@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "class_id": "thief",
+  "generated_from": "docs/design/references/weapon_ultimates/thief/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "thief_coin_pouch",
+      "scene_path": "res://scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.1,
+        "recovery": 2.3,
+        "cancel": 3.05
+      },
+      "performance": {
+        "max_visual_nodes": 15,
+        "crowd_cap": 15,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "thief_ultimate_crouched_toss",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_coin_pouch.png",
+        "class_palette_id": "thief_gold_violet_smoke"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the staggered thirteen-coin ricochet hops and the crown-burst return carry the beat as position and scale steps on the unchanged timing; the backdrop veil still swells to 0.30 and the first-impact hitstop still freezes the drawn formation",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0044 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.30 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    },
+    {
+      "weapon_id": "thief_shadow_cloak",
+      "scene_path": "res://scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.82,
+        "active": 1.22,
+        "recovery": 2.57,
+        "cancel": 3.2
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 13,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "thief_ultimate_crouched_toss",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_shadow_cloak.png",
+        "class_palette_id": "thief_gold_violet_smoke"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so each sequential phantom-stab arrival is a scale-and-alpha pulse on its mark and the red-line collapse a positional close on the unchanged timing; the backdrop veil still swells to 0.32 and the first-impact hitstop still freezes the drawn formation",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0043 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.32 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    },
+    {
+      "weapon_id": "thief_smoke_bomb",
+      "scene_path": "res://scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.94,
+        "active": 1.34,
+        "recovery": 2.84,
+        "cancel": 3.42
+      },
+      "performance": {
+        "max_visual_nodes": 9,
+        "crowd_cap": 13,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_presence_note": "FAN-3941: the formation plus the authored backdrop veil and hero cast pose; the veil is a gradient sprite with no material, so the material budget is headroom"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "thief_ultimate_crouched_toss",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/vfx_weapon_thief_smoke_bomb.png",
+        "class_palette_id": "thief_gold_violet_smoke"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.01,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with ultimate_reduced_motion on (the persisted ultimate_accessibility_settings preference, read by the scene driver itself; the shipped screen_shake toggle also holds it) the timeline scene applies no camera shake, so the smoke dome's growth and its snap collapse carry the beat as scale steps of a translucent silhouette on the unchanged timing; the backdrop veil still swells to 0.28 and the first-impact hitstop still freezes the drawn formation",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "FAN-3941 real-runtime certification capture: peak authored-scene opaque coverage 0.0074 of the viewport (alpha >= 0.5 on a paused scene-only render of the live cast started through UltimatePlayerHost, stride 2; the 1152x648 normal cast is swept every frame at 60 fixed fps and every committed frame is measured); the arena-wide veil is a translucent darken tint peaking at 0.28 that rises once per cast and is excluded from opaque coverage; it is layered at absolute z 2, above the arena floor and the actors but below every enemy hazard telegraph (z 6-9) and enemy projectile (z 12), so telegraphs and bolts keep their native contrast under it; with ultimate_photosensitivity_safe on the driver never lights it; the live cast moves the Player camera on the first impact with the preferences off and 0 px with ultimate_reduced_motion on (per-frame traces in the capture manifest)"
+      }
+    }
+  ]
+}
