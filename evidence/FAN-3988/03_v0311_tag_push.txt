@@ -1,0 +1,46 @@
+# FAN-3988 annotated tag v0.3.1.1 on S, create and push (UTC) 2026-09-30T06:54:46Z
+
+$ git tag -a v0.3.1.1 -m FantasyDisk v0.3.1.1 01ee13687da712342964bcafebdb79c8a38b7d1e
+[exit 0]
+TAGOBJ=a9e08364c0aaa0e588744d1dbc30b68e233da694
+
+$ git cat-file -t a9e08364c0aaa0e588744d1dbc30b68e233da694
+tag
+[exit 0]
+
+$ git cat-file -p a9e08364c0aaa0e588744d1dbc30b68e233da694
+object 01ee13687da712342964bcafebdb79c8a38b7d1e
+type commit
+tag v0.3.1.1
+tagger Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790751286 +0300
+
+FantasyDisk v0.3.1.1
+[exit 0]
+
+$ git rev-parse refs/tags/v0.3.1.1^{commit} refs/tags/v0.3.1.1^{tree}
+01ee13687da712342964bcafebdb79c8a38b7d1e
+039b17c52480bb27c28d723248a8b85d4418bb58
+[exit 0]
+
+# immediate recheck: no v0.3.1.1 in either repository before the push
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/tags/v0.3.1.1 refs/tags/v0.3.1 refs/heads/dev
+01ee13687da712342964bcafebdb79c8a38b7d1e	refs/heads/dev
+8c2cbdf89f07f8d63417303fb35387a29250b446	refs/tags/v0.3.1
+[exit 0]
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk-Releases.git refs/tags/v0.3.1.1
+[exit 0]
+
+$ git push origin refs/tags/v0.3.1.1:refs/tags/v0.3.1.1
+To https://github.com/FomaBy/FantasyDisk.git
+ * [new tag]             v0.3.1.1 -> v0.3.1.1
+[exit 0]
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/tags/v0.3.1.1 refs/tags/v0.3.1.1^{} refs/tags/v0.3.1 refs/tags/v0.3.1^{}
+8c2cbdf89f07f8d63417303fb35387a29250b446	refs/tags/v0.3.1
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/tags/v0.3.1^{}
+a9e08364c0aaa0e588744d1dbc30b68e233da694	refs/tags/v0.3.1.1
+01ee13687da712342964bcafebdb79c8a38b7d1e	refs/tags/v0.3.1.1^{}
+[exit 0]
+# finished 2026-09-30T06:54:53Z

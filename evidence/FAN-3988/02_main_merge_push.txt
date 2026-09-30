@@ -1,0 +1,71 @@
+# FAN-3988 main merge build and push (UTC) 2026-09-30T06:54:09Z
+
+$ MERGE=$(git commit-tree 039b17c52480bb27c28d723248a8b85d4418bb58 -p 953f3615f267d2a5d187eea2dd0ce05ba795377b -p 01ee13687da712342964bcafebdb79c8a38b7d1e -m "release: FantasyDisk v0.3.1.1 (merge dev)")
+MERGE=0a8381170731b62e569d88ef34892af1b3a54ba4
+
+$ git cat-file -p 0a8381170731b62e569d88ef34892af1b3a54ba4
+tree 039b17c52480bb27c28d723248a8b85d4418bb58
+parent 953f3615f267d2a5d187eea2dd0ce05ba795377b
+parent 01ee13687da712342964bcafebdb79c8a38b7d1e
+author Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790751249 +0300
+committer Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790751249 +0300
+
+release: FantasyDisk v0.3.1.1 (merge dev)
+[exit 0]
+
+$ git rev-parse 0a8381170731b62e569d88ef34892af1b3a54ba4^{tree} 0a8381170731b62e569d88ef34892af1b3a54ba4^1 0a8381170731b62e569d88ef34892af1b3a54ba4^2
+039b17c52480bb27c28d723248a8b85d4418bb58
+953f3615f267d2a5d187eea2dd0ce05ba795377b
+01ee13687da712342964bcafebdb79c8a38b7d1e
+[exit 0]
+
+$ git diff --stat 01ee13687da712342964bcafebdb79c8a38b7d1e 0a8381170731b62e569d88ef34892af1b3a54ba4
+[exit 0]
+
+$ git diff --quiet 01ee13687da712342964bcafebdb79c8a38b7d1e 0a8381170731b62e569d88ef34892af1b3a54ba4
+[exit 0]
+
+$ git merge-base --is-ancestor 953f3615f267d2a5d187eea2dd0ce05ba795377b 0a8381170731b62e569d88ef34892af1b3a54ba4
+[exit 0]
+
+$ git merge-base --is-ancestor 01ee13687da712342964bcafebdb79c8a38b7d1e 0a8381170731b62e569d88ef34892af1b3a54ba4
+[exit 0]
+
+# immediate recheck of the target ref before the push
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main
+[exit 0]
+
+$ git push origin 0a8381170731b62e569d88ef34892af1b3a54ba4efs/heads/main
+error: src refspec 0a8381170731b62e569d88ef34892af1b3a54ba4efs/heads/main does not match any
+error: failed to push some refs to 'https://github.com/FomaBy/FantasyDisk.git'
+[exit 1]
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main
+[exit 0]
+# finished 2026-09-30T06:54:11Z
+
+# NOTE: the first push above never reached the remote. The zsh wrapper expanded "$MERGE:refs/heads/main" with the :r history modifier,
+# producing the malformed refspec "...4ba4efs/heads/main"; git rejected it locally ("src refspec ... does not match any").
+# origin/main still equalled 953f3615 (readback above). Retry with ${MERGE}:refs/heads/main after a fresh recheck.
+# retry 2026-09-30T06:54:26Z
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main
+953f3615f267d2a5d187eea2dd0ce05ba795377b	refs/heads/main
+[exit 0]
+
+$ git push origin 0a8381170731b62e569d88ef34892af1b3a54ba4:refs/heads/main
+To https://github.com/FomaBy/FantasyDisk.git
+   953f3615f..0a8381170  0a8381170731b62e569d88ef34892af1b3a54ba4 -> main
+[exit 0]
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main
+0a8381170731b62e569d88ef34892af1b3a54ba4	refs/heads/main
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/branches/main --jq {sha:.commit.sha, protected:.protected}
+{"protected":false,"sha":"0a8381170731b62e569d88ef34892af1b3a54ba4"}
+[exit 0]
+# finished 2026-09-30T06:54:32Z

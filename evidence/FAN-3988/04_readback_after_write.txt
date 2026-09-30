@@ -1,0 +1,123 @@
+# FAN-3988 readback after the two writes (UTC) 2026-09-30T06:55:13Z
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main refs/heads/dev
+01ee13687da712342964bcafebdb79c8a38b7d1e	refs/heads/dev
+0a8381170731b62e569d88ef34892af1b3a54ba4	refs/heads/main
+[exit 0]
+
+$ git ls-remote --tags https://github.com/FomaBy/FantasyDisk.git
+676c0f6fdc6d6edd64ad7a2429d0ad5edb6e7c71	refs/tags/archive/v0.3.1-attempt1-448a0cc1
+448a0cc12f02eb05bc16becc69fde365021a9a17	refs/tags/archive/v0.3.1-attempt1-448a0cc1^{}
+c692d01973a7e4765807bd5fcae11c6bb74df5e6	refs/tags/archive/v0.3.1-attempt2-165f14aa
+165f14aa0ce5bcbd884e4dfde137283a8010e863	refs/tags/archive/v0.3.1-attempt2-165f14aa^{}
+fd00a4cb1b44d5c943aa794c42959cf6339651f7	refs/tags/v0.1.0
+596ecc0cb41c374d6f1eaeb3f93ce53b3d638d13	refs/tags/v0.1.1
+76f970aa8abd1ea041817364e85563d81621134b	refs/tags/v0.1.2
+759463d446440c7006a58bdb68f7670177163423	refs/tags/v0.1.3
+481d56785ab3c814c0545d00bcd57da531d4aba5	refs/tags/v0.1.4
+69bb76312888589a526c6e3b7e709d6638d4b376	refs/tags/v0.1.5
+e8f80f21b8dcdefd52d55b905fdf50ab64b19eb0	refs/tags/v0.1.6
+0faca20ff913b895150ea86b263e4367fdc9c7aa	refs/tags/v0.1.7
+7f3a174c2627d48de4284be8faec4a3e94bb4c35	refs/tags/v0.1.7^{}
+a5960ad0c488c26927aa266b6224413f42f3ed12	refs/tags/v0.2.0
+8fe46c14e0b23145a95b45f6760811c8434e87ec	refs/tags/v0.2.0^{}
+d43c6c8f294b17cab675815f36a526926bac0eb2	refs/tags/v0.2.1
+0b20b0532aef82502b9c5dd585b0cf0bc98ad8cf	refs/tags/v0.2.1^{}
+f0ed728d769aca68889d3de90e392d9fbb9560b6	refs/tags/v0.2.2
+014215ca11fb2fa59845867fb78b62283ea0f725	refs/tags/v0.2.2^{}
+3a9553e3430d8012a12da1d8b1d1800da94b5699	refs/tags/v0.2.3
+8d65f75aec3043fd0fb8c507e38337d1e38011f3	refs/tags/v0.2.3^{}
+f49f90861c1dbdcc59a706d3f3a139a886f59db5	refs/tags/v0.2.4
+71da64d148708b80160abd6d7caf4f75529dba54	refs/tags/v0.2.4^{}
+d7e516cde235adf347d511e922ab19667bf82f65	refs/tags/v0.3.0
+fd9fd1a4fa16f3f6ebc8eba063eb03871513cecb	refs/tags/v0.3.0^{}
+8c2cbdf89f07f8d63417303fb35387a29250b446	refs/tags/v0.3.1
+f4d05fea91a5ce8b3fb858a5035df1fe54236369	refs/tags/v0.3.1^{}
+a9e08364c0aaa0e588744d1dbc30b68e233da694	refs/tags/v0.3.1.1
+01ee13687da712342964bcafebdb79c8a38b7d1e	refs/tags/v0.3.1.1^{}
+90279733311632aec88a70317e18afc67518e6d2	refs/tags/v0.3.2
+36340c473772781edafffb61ff1d8cc7caa42024	refs/tags/v0.3.2^{}
+[exit 0]
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk-Releases.git
+162ac9f886a7c4deaa05d6c70c23779f406c7080	HEAD
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/heads/main
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/tags/v0.2.4
+162ac9f886a7c4deaa05d6c70c23779f406c7080	refs/tags/v0.3.1
+[exit 0]
+
+$ git fetch origin --no-tags refs/heads/main:refs/remotes/origin/main refs/tags/v0.3.1.1:refs/tags/v0.3.1.1
+[exit 0]
+
+$ git cat-file -p refs/remotes/origin/main
+tree 039b17c52480bb27c28d723248a8b85d4418bb58
+parent 953f3615f267d2a5d187eea2dd0ce05ba795377b
+parent 01ee13687da712342964bcafebdb79c8a38b7d1e
+author Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790751249 +0300
+committer Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790751249 +0300
+
+release: FantasyDisk v0.3.1.1 (merge dev)
+[exit 0]
+
+$ git rev-parse refs/remotes/origin/main^{tree} refs/remotes/origin/main^1 refs/remotes/origin/main^2
+039b17c52480bb27c28d723248a8b85d4418bb58
+953f3615f267d2a5d187eea2dd0ce05ba795377b
+01ee13687da712342964bcafebdb79c8a38b7d1e
+[exit 0]
+
+$ git cat-file -p refs/tags/v0.3.1.1
+object 01ee13687da712342964bcafebdb79c8a38b7d1e
+type commit
+tag v0.3.1.1
+tagger Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790751286 +0300
+
+FantasyDisk v0.3.1.1
+[exit 0]
+
+$ git rev-parse refs/tags/v0.3.1.1^{commit} refs/tags/v0.3.1.1^{tree}
+01ee13687da712342964bcafebdb79c8a38b7d1e
+039b17c52480bb27c28d723248a8b85d4418bb58
+[exit 0]
+
+$ git diff --quiet 01ee13687da712342964bcafebdb79c8a38b7d1e refs/remotes/origin/main
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/branches/main --jq {sha:.commit.sha, protected:.protected, message:.commit.commit.message, parents:[.commit.parents[].sha], tree:.commit.commit.tree.sha}
+{"message":"release: FantasyDisk v0.3.1.1 (merge dev)","parents":["953f3615f267d2a5d187eea2dd0ce05ba795377b","01ee13687da712342964bcafebdb79c8a38b7d1e"],"protected":false,"sha":"0a8381170731b62e569d88ef34892af1b3a54ba4","tree":"039b17c52480bb27c28d723248a8b85d4418bb58"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/git/ref/tags/v0.3.1.1 --jq {ref, type:.object.type, sha:.object.sha}
+{"ref":"refs/tags/v0.3.1.1","sha":"a9e08364c0aaa0e588744d1dbc30b68e233da694","type":"tag"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/git/tags/a9e08364c0aaa0e588744d1dbc30b68e233da694 --jq {tag, message, object:.object.sha, type:.object.type, tagger:.tagger.name, date:.tagger.date}
+{"date":"2026-09-30T06:54:46Z","message":"FantasyDisk v0.3.1.1\n","object":"01ee13687da712342964bcafebdb79c8a38b7d1e","tag":"v0.3.1.1","tagger":"Claude (FantasyDisk agent)","type":"commit"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/git/ref/tags/v0.3.1 --jq {ref, type:.object.type, sha:.object.sha}
+{"ref":"refs/tags/v0.3.1","sha":"8c2cbdf89f07f8d63417303fb35387a29250b446","type":"tag"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/git/tags/8c2cbdf89f07f8d63417303fb35387a29250b446 --jq {tag, object:.object.sha}
+{"object":"f4d05fea91a5ce8b3fb858a5035df1fe54236369","tag":"v0.3.1"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/rulesets --jq .[] | {id,name,target,enforcement}
+{"enforcement":"active","id":21860507,"name":"dev-protection","target":"branch"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/releases --jq .[] | {tag_name,draft,prerelease}
+{"draft":false,"prerelease":false,"tag_name":"v0.2.3"}
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk-Releases/releases --jq .[] | {tag_name,draft,prerelease}
+{"draft":false,"prerelease":false,"tag_name":"v0.3.1"}
+{"draft":false,"prerelease":false,"tag_name":"v0.2.4"}
+[exit 0]
+
+$ git log --oneline --decorate -3 refs/remotes/origin/main
+0a8381170 (origin/main) release: FantasyDisk v0.3.1.1 (merge dev)
+01ee13687 (HEAD -> agent/claude-dev-fable/9830eb6a3526, tag: v0.3.1.1, origin/dev, origin/HEAD) Merge pull request #370 from FomaBy/agent/claude-dev-opus-b/ac4c20c5487d
+826109f32 (origin/agent/claude-dev-opus-b/ac4c20c5487d, agent/qa-claude/d00536bbc117, agent/claude-dev-opus-b/ac4c20c5487d) Recapture Assassin, Doctor and Druid certification for 0.3.1.1
+[exit 0]
+# finished 2026-09-30T06:55:21Z

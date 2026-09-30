@@ -1,0 +1,213 @@
+# FAN-3988 preflight on exact S from the clean task worktree (all timestamps UTC)
+# started 2026-09-30T06:53:04Z host=Darwin arm64 git=2.50.1
+
+$ git rev-parse HEAD HEAD^{tree}
+01ee13687da712342964bcafebdb79c8a38b7d1e
+039b17c52480bb27c28d723248a8b85d4418bb58
+[exit 0]
+
+$ git branch --show-current
+agent/claude-dev-fable/9830eb6a3526
+[exit 0]
+
+$ git status --porcelain
+?? evidence/FAN-3988/
+[exit 0]
+
+$ git cat-file -p 01ee13687da712342964bcafebdb79c8a38b7d1e
+tree 039b17c52480bb27c28d723248a8b85d4418bb58
+parent ee3435a7b78968c248bc6cae86f34421ddf89541
+parent 826109f32f0d2707cc60000c94cd935628875169
+author SF <50719788+FomaBy@users.noreply.github.com> 1790750587 +0300
+committer GitHub <noreply@github.com> 1790750587 +0300
+gpgsig -----BEGIN PGP SIGNATURE-----
+
+ wsFcBAABCAAQBQJqvK97CRC1aQ7uu5UhlAAAZAoQAGgf/zrEZoMWQmrgvOcT9ihQ
+ ZIq8Axfy1rq8bc7McZg2LSg2S+UqZQqNk1xsdPz5xhKmbaGOvFbFISfbzqymUXpg
+ EJln+h9X7ah2LbzUz2qRQajgyzC8cvaJ00QkM1j4f7lhSGJeZgOchMXuighGqkWX
+ x5JwgMf3jY66vm2fgvIp528N9URJo/Tg57Ov1LGGaYG/Or0O7R5sSTH7iAi93SWP
+ SPceqz7cPdgoiBhqVhhOljyAFVw59FdlrZVUMj1hEVvZYZHm/5s7ujq/VYwLocaL
+ DmMpSBywXd+E7yczyBdD6Wgp72Xd4+wCrlcr6iEcIS7rXEoQZc3OAKtwQsA2wcKP
+ /boYjzU3/Hi+Q9/j5Wx1e9BoYpO8f4uSios36KqacN7W1+HDNAyhvt0GdeaOh/cy
+ MkebKsprjcGicI1wQrM2VtptycX4lCt2d6lY5YxRBxiCZ2nc5betPuSYTSkWvxGs
+ 0AHYQ56/v6QNyiAwKN4qwFoapeB6kS3Lu6uphDp1LUSfy0dBXR2HSMPpJskatRa9
+ v4GiqNbMfsO1Pk7/O9NIeXWzt9Z+J09dcfsMvJE3zK6qWyvnPvgfhtUWVXKke5TY
+ ra/NsOFlJOWiGOCoDXYJLGd8xFL3WitMbLdqm+KvCrA0odfF1SoPuuMPOKn80pEH
+ FokeRZLODSaOYmw3rqV6
+ =De15
+ -----END PGP SIGNATURE-----
+
+
+Merge pull request #370 from FomaBy/agent/claude-dev-opus-b/ac4c20c5487d
+
+RELEASE 0.3.1.1: technical-rebuild release inputs (FAN-3987)[exit 0]
+
+$ git rev-parse 826109f32f0d2707cc60000c94cd935628875169^{tree} ee3435a7b78968c248bc6cae86f34421ddf89541^{tree}
+039b17c52480bb27c28d723248a8b85d4418bb58
+955423c5e96503deda686a0c7ab83c930f376a26
+[exit 0]
+
+$ git lfs pull
+[exit 0]
+
+$ sh -c git lfs ls-files | wc -l
+    1538
+[exit 0]
+
+$ sh -c git lfs ls-files | grep -vc "^[0-9a-f]* \*" || true
+0
+[exit 0]
+
+$ python3 tools/release_version_mapping.py --version 0.3.1.1 --project project.godot --export-presets export_presets.cfg
+0.3.1	1.3.11	0.3.1.1	0.3.1.1
+[exit 0]
+
+$ grep -n config/version= project.godot
+18:config/version="0.3.1.1"
+[exit 0]
+
+$ grep -n -E ^(name|application/short_version|application/version|application/file_version|application/product_version)= export_presets.cfg
+3:name="macOS"
+29:application/short_version="0.3.1"
+30:application/version="1.3.11"
+71:name="Windows Desktop"
+100:application/file_version="0.3.1.1"
+101:application/product_version="0.3.1.1"
+[exit 0]
+
+$ grep -n -E ^## \[ CHANGELOG.md
+5:## [Unreleased] — ветка dev
+7:## [0.3.1.1] — 2026-09-30
+13:## [0.3.1] — 2026-09-28
+48:## [0.3.0] — 2026-08-13
+169:## [0.2.4] — 2026-07-16
+186:## [0.2.3] — 2026-07-16
+251:## [0.2.2] — 2026-07-14
+294:## [0.2.1] — 2026-07-12
+322:## [0.2.0] — 2026-07-02
+355:## [0.1.7] — 2026-06-29
+780:## [0.1.6] — 2026-06-17
+798:## [0.1.5] — 2026-06-15
+1267:## [0.1.4] — 2026-06-13
+1405:## [0.1.3] — 2026-06-12
+1455:## [0.1.2] — 2026-06-12
+1485:## [0.1.1] — 2026-06-11
+1518:## [0.1.0] — 2026-06-11
+1530:## [Development archive] — 0.3.1 source cycle
+[exit 0]
+
+$ sed -n 5,10p CHANGELOG.md
+## [Unreleased] — ветка dev
+
+## [0.3.1.1] — 2026-09-30
+
+### Главное
+
+[exit 0]
+
+$ sed -n 8,19p scripts/patch_notes_data.gd
+const PATCH_NOTES := [
+	{
+		"version": "0.3.1.1",
+		"date": "2026-09-30",
+		"highlights": [
+			"Новые анимации ультимейтов теперь появляются в установленной игре на macOS и Windows: в первой сборке 0.3.1 вместо них по ошибке показывались прежние.",
+		],
+	},
+	{
+		"version": "0.3.1",
+		"date": "2026-09-28",
+		"highlights": [
+[exit 0]
+
+$ shasum -a 256 assets/marketing/fantasydisk_031_announcement.png assets/marketing/fantasydisk_0311_announcement.png
+6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7  assets/marketing/fantasydisk_031_announcement.png
+6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7  assets/marketing/fantasydisk_0311_announcement.png
+[exit 0]
+
+$ git rev-parse HEAD:assets/marketing/fantasydisk_031_announcement.png HEAD:assets/marketing/fantasydisk_0311_announcement.png
+51803688c0e2aa81a9255f94ca5214c0418d6242
+51803688c0e2aa81a9255f94ca5214c0418d6242
+[exit 0]
+
+$ python3 tools/release_notes_visual_claims_guard.py --version 0.3.1.1
+OK: 0.3.1.1 release notes carry no unbacked visual claims
+[exit 0]
+
+$ python3 tools/release_scope_guard.py --version 0.3.1.1
+release scope OK: 0.3.1.1, 0 entries
+[exit 0]
+
+$ python3 tools/assemble_changelog.py --check
+OK: canonical changelog region matches 3 fragments
+[exit 0]
+
+$ python3 -m pytest tests/test_export_presets_exclusions.py -q
+.....                                                                    [100%]
+5 passed in 0.03s
+[exit 0]
+
+$ python3 -
+preset.0 macOS: include_filter=''
+    docs/* excluded
+    evidence/* excluded
+    skills/* excluded
+    tools/* excluded
+    tests/* excluded
+    tokens touching data/ or presentation: none (data/ultimates/presentation/** stays included)
+preset.1 Windows Desktop: include_filter=''
+    docs/* excluded
+    evidence/* excluded
+    skills/* excluded
+    tools/* excluded
+    tests/* excluded
+    tokens touching data/ or presentation: none (data/ultimates/presentation/** stays included)
+[exit 0]
+
+$ sh -c find docs evidence skills tools tests -maxdepth 1 -name .gdignore; echo "presentation .gdignore: $(find data/ultimates/presentation -name .gdignore | wc -l | tr -d " ")"; echo "presentation documents: $(find data/ultimates/presentation -type f -name "*.json" | wc -l | tr -d " ")"
+docs/.gdignore
+evidence/.gdignore
+skills/.gdignore
+presentation .gdignore: 0
+presentation documents: 17
+[exit 0]
+
+$ python3 tools/build_ultimate_presentation_runtime_data.py --check
+17 runtime presentation documents are up to date
+[exit 0]
+
+$ git diff --check 953f3615f267d2a5d187eea2dd0ce05ba795377b 01ee13687da712342964bcafebdb79c8a38b7d1e
+[exit 0]
+
+$ git merge-base 953f3615f267d2a5d187eea2dd0ce05ba795377b 01ee13687da712342964bcafebdb79c8a38b7d1e
+f4d05fea91a5ce8b3fb858a5035df1fe54236369
+[exit 0]
+
+$ git merge-base --is-ancestor 953f3615f267d2a5d187eea2dd0ce05ba795377b 01ee13687da712342964bcafebdb79c8a38b7d1e
+[exit 1]
+
+$ git log --format=%h %ci %s 953f3615f267d2a5d187eea2dd0ce05ba795377b..01ee13687da712342964bcafebdb79c8a38b7d1e
+01ee13687 2026-09-30 09:43:07 +0300 Merge pull request #370 from FomaBy/agent/claude-dev-opus-b/ac4c20c5487d
+826109f32 2026-09-30 05:20:22 +0300 Recapture Assassin, Doctor and Druid certification for 0.3.1.1
+d98caedf3 2026-09-30 05:11:00 +0300 evidence(FAN-3987): 0.3.1.1 release-input validation
+8873160dc 2026-09-30 04:28:01 +0300 Prepare FantasyDisk 0.3.1.1 technical-rebuild release source on dev
+ee3435a7b 2026-09-30 03:57:15 +0300 Merge pull request #369 from FomaBy/agent/fable/fan3985-recapture
+dfcae7b44 2026-09-30 02:22:31 +0300 Recapture Assassin, Doctor and Druid certification after FAN-3985
+125c5b8c1 2026-09-30 02:17:22 +0300 evidence(FAN-3985): regenerate exported-build evidence on dev 81d384e6
+ad27c5597 2026-09-30 02:10:09 +0300 evidence(FAN-3985): exported-build player-path gate, 51/51 pairs survive the release build
+5a4f82131 2026-09-30 02:10:09 +0300 fix(FAN-3985): validate stored enemy references before use in the release build
+5983a8495 2026-09-30 02:10:08 +0300 evidence(FAN-3985): regenerate exported-build evidence from 09d692b5
+bbf5d5de1 2026-09-30 02:10:08 +0300 fix(FAN-3985): keep source_path provenance checks accepting raw files
+79855c38b 2026-09-30 02:10:08 +0300 evidence(FAN-3985): exported-build probe, PCK listing and per-class captures
+055d1b290 2026-09-30 02:10:08 +0300 fix(FAN-3985): ship weapon ultimate presentations in exported builds
+81d384e68 2026-09-30 00:29:36 +0300 Merge pull request #368 from FomaBy/fan-3986-static-quality-evidence-gdignore
+1d73863d8 2026-09-29 23:35:24 +0300 FAN-3986: materialize evidence/.gdignore in the static-quality sparse checkout
+[exit 0]
+
+$ git diff --shortstat 953f3615f267d2a5d187eea2dd0ce05ba795377b 01ee13687da712342964bcafebdb79c8a38b7d1e
+ 199 files changed, 13166 insertions(+), 1719 deletions(-)
+[exit 0]
+# finished 2026-09-30T06:53:09Z
+
+# NOTE: two signature-continuation lines inside the two gpgsig blocks above (git cat-file output) were a single space in the raw object;
+# they are stored here as empty lines so this evidence file carries no trailing whitespace. The object hashes are unaffected.
