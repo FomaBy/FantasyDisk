@@ -1,0 +1,14 @@
+GODOT warming import cache via semaphore gate
+PASS  Godot import cache pre-pass
+GODOT running 5 test(s) via semaphore gate
+GODOT 1/5 tests/fan3987_four_component_version_test.gd
+PASS  fan3987_four_component_version_test
+GODOT 2/5 tests/patch_notes_composition_test.gd
+PASS  patch_notes_composition_test
+GODOT 3/5 tests/patch_notes_data_smoke_test.gd
+PASS  patch_notes_data_smoke_test
+GODOT 4/5 tests/patch_notes_smoke_test.gd
+PASS  patch_notes_smoke_test
+GODOT 5/5 tests/update_manager_test.gd
+PASS  update_manager_test
+QUALITY PARTIAL_PASS: 1 static, 5 Godot; report=build/quality_gate_report.json
