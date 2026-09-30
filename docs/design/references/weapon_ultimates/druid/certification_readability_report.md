@@ -7,17 +7,17 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `d98caedf3f8e2d368c308e54035e2ecf20cc026f`; source tree:
-`06da254593065308185b5cd04d53f9eea7078811`. Godot 4.7 stable used the
+Source commit: `2168497f69b69f8defae34bacc3b23a8b1bd0fba`; source tree:
+`66bc8cfdd6916441d8de2e2b00f86b7580cd18aa`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
 
 | Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Summon amulet | 0.0353 | 0.569 | 0.360 | 0.0002 | 24 | 2 |
-| Briar staff | 0.0482 | 0.545 | 0.256 | 0.0002 | 20 | 2 |
-| Raven totem | 0.0510 | 0.546 | 0.376 | 0.0002 | 22 | 2 |
+| Summon amulet | 0.0353 | 0.569 | 0.365 | 0.0002 | 24 | 2 |
+| Briar staff | 0.0482 | 0.545 | 0.328 | 0.0002 | 20 | 2 |
+| Raven totem | 0.0510 | 0.546 | 0.413 | 0.0002 | 22 | 2 |
 
 ## Beat observations
 
@@ -32,11 +32,12 @@ PNG SHA-256 hashes.
 Result: PASS. All 144 activations started through the real Player entry point,
 all 144 runtime scenes bound a real cast pose, all required beat nodes were
 present, the backdrop covered the full viewport, and every HUD band remained
-clear. Briar Staff is the tightest player-contrast case at 0.256, still above
+clear. Briar Staff is the tightest player-contrast case at 0.328, above
 the unchanged 0.25 floor; that margin should remain a focused review point.
-The reading is not repeatable: eight captures of unchanged FAN-3987 code
-measured 0.213 to 0.266 for crowded 1152×648 active, with identical seed, beat,
-extent and node counts, and three of the eight met the floor.
+The reading is not repeatable across captures of unchanged code: the FAN-3987
+batch measured 0.213 to 0.266 for crowded 1152×648 active (three of eight met
+the floor) and this FAN-3991 capture measured 0.328 with identical seed, beat,
+extent and node counts.
 The deterministic crowd fixture reaches each weapon's declared hazard cap, and
 the resulting images are representative evidence rather than a performance
 benchmark.

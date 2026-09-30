@@ -1,0 +1,9 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+ultimate_session_lifecycle_probe: dark_mage/dark_book pass=true scene=res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn cast_frames=426 failures=[]
+ultimate_session_lifecycle_probe: dark_mage/cursed_skull pass=true scene=res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn cast_frames=489 failures=[]
+ultimate_session_lifecycle_probe: dark_mage/dark_wand pass=true scene=res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn cast_frames=538 failures=[]
+ultimate_session_lifecycle_probe: doctor/restore_potion pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn cast_frames=561 failures=[]
+ultimate_session_lifecycle_probe: doctor/plague_syringe pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn cast_frames=821 failures=[]
+ultimate_session_lifecycle_probe: doctor/bone_saw pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn cast_frames=533 failures=[]
+ultimate_session_lifecycle_probe: 6/6 pairs pass in one process (peak objects 4046)

@@ -1,0 +1,8 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+ultimate_session_lifecycle_probe: berserk/sword crowd=48 peak_objects=3987 alive=0..50 casts=1/12 failures=[]
+ultimate_session_lifecycle_probe: dark_mage/cursed_skull crowd=48 peak_objects=4887 alive=0..50 casts=1/12 failures=[]
+ultimate_session_lifecycle_probe: druid/briar_staff crowd=48 peak_objects=5138 alive=0..51 casts=12/12 failures=[]
+ultimate_session_lifecycle_probe: sniper/sniper_spotter_scope crowd=48 peak_objects=5530 alive=0..52 casts=12/12 failures=[]
+ultimate_session_lifecycle_probe: 4/4 pairs pass in one process (peak objects 5530)

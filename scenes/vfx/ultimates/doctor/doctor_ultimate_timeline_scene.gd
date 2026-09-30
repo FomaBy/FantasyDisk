@@ -869,11 +869,31 @@ func _end_sfx_ducking() -> void:
 
 
 ## The impact service pools its own bursts, so releasing it is what returns the
-## scene to zero children — the same immediate free the drawn visuals get.
+## scene to zero children — the same immediate free the drawn visuals get when
+## the service is this scene's own child.
+##
+## FAN-3991: in the shipped game the service lives beside this scene, under the
+## effect parent (`present`), and `finish()` runs inside that parent's own
+## exit-tree propagation when the fight ends — `UltimatePlayerHost._exit_tree`
+## fires while `Main.remove_child(player)` holds `Main` blocked. A synchronous
+## `free()` there is refused by `remove_child()` ("Parent node is busy adding/
+## removing children"), the node is destroyed while `Main` still lists it
+## (`~Node: data.parent`), and the dangling child corrupts the heap (the
+## 0.3.1.1 Windows crash after Doctor ultimates, FAN-3990). A node placed
+## outside this scene is therefore stopped and hidden now and released by the
+## scene tree at the end of the frame, the only point at which its parent is
+## guaranteed not to be busy. Regression gate:
+## `tests/ultimates/multi_class_session_lifecycle_test.gd`.
 func _clear_impacts() -> void:
 	if _impacts != null and is_instance_valid(_impacts):
 		_impacts.finish()
-		_impacts.free()
+		var parent := _impacts.get_parent()
+		if parent == null or parent == self:
+			_impacts.free()
+		else:
+			_impacts.visible = false
+			_impacts.set_process(false)
+			_impacts.queue_free()
 	_impacts = null
 
 
