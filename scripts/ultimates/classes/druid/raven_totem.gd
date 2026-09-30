@@ -100,7 +100,7 @@ func mark() -> void:
 		return
 	_marked = _activation.select_targets(global_position, INF, 0, "nearest")
 	for raw_target in _marked:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var status_id := "druid_ultimate_raven_%d" % get_instance_id()
@@ -122,7 +122,7 @@ func dive(wave: int) -> void:
 	dive_count_for_tests += 1
 	var victims: Array = []
 	for raw_target in _marked:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = _deal(
@@ -142,7 +142,7 @@ func collapse() -> void:
 		return
 	var victims: Array = []
 	for raw_target in _marked:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var result = _deal(
@@ -183,7 +183,7 @@ func _deal(target: Node, amount: float, event_id: String, feedback: Dictionary):
 
 func _exit_tree() -> void:
 	for lease in _leased_statuses:
-		var target = lease.get("target") as Node
+		var target = (lease.get("target") if is_instance_valid(lease.get("target")) else null) as Node
 		if target == null or not is_instance_valid(target) or not target.has_meta(StatusEffects.META_KEY):
 			continue
 		var statuses = target.get_meta(StatusEffects.META_KEY)

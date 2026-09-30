@@ -162,7 +162,7 @@ static func _target_ledger(activation: Activation, params: Dictionary) -> bool:
 		return false
 	var applied := false
 	for raw_target in selected:
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		match str(params["operation"]):

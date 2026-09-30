@@ -140,7 +140,7 @@ func impact() -> void:
 		_impact_point, radius, 0, "nearest"
 	)
 	for raw_target in victims:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var direction := _impact_point - target.global_position
@@ -178,7 +178,7 @@ func crater_pulse(pulse: int) -> void:
 		"nearest"
 	)
 	for raw_target in victims:
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var direction := _impact_point - target.global_position

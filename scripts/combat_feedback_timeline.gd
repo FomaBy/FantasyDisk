@@ -122,7 +122,7 @@ func flash_body(body: CanvasItem, original_modulate: Color) -> void:
 	if body == null or not is_instance_valid(body):
 		return
 	for record in _active_bodies:
-		if (record["body"] as CanvasItem) == body:
+		if is_instance_valid(record["body"]) and (record["body"] as CanvasItem) == body:
 			record["from"] = body.modulate
 			record["restore"] = original_modulate
 			record["elapsed"] = 0.0

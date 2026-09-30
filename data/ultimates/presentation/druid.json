@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "class_id": "druid",
+  "generated_from": "docs/design/references/weapon_ultimates/druid/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "summon_amulet",
+      "scene_path": "res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.85,
+        "active": 1.15,
+        "recovery": 2.85,
+        "cancel": 3.6
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "summon_cap_and_persistence_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/summon_amulet/summon_amulet_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the Wild Hunt holds one accepted source frame while phase scale and alpha preserve the summon envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    },
+    {
+      "weapon_id": "briar_staff",
+      "scene_path": "res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.95,
+        "active": 1.45,
+        "recovery": 3.0,
+        "cancel": 3.75
+      },
+      "performance": {
+        "max_visual_nodes": 12,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "boss_control_cap_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 130,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/briar_staff/briar_staff_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the briar lattice holds one accepted source frame while phase scale and alpha preserve the growth envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    },
+    {
+      "weapon_id": "raven_totem",
+      "scene_path": "res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.6,
+        "active": 1.25,
+        "recovery": 2.65,
+        "cancel": 3.4
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 22,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "accuracy_slow_and_wisp_return_owner": "mechanics FAN-1495",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.druid.primal_invocation",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/druid/raven_totem/raven_totem_f04.png",
+        "class_palette_id": "palette.druid.moss_moonlight"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.32,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the raven vortex holds one accepted source frame while phase scale and alpha preserve the gathering envelope",
+        "reduced_motion_preserves_timing": true,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    }
+  ]
+}

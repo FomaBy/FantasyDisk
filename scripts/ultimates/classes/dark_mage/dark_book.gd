@@ -72,7 +72,7 @@ func configure(activation, targets: Array) -> void:
 func detonate_pair(index: int) -> void:
 	if _activation == null or _activation.is_finished() or index < 0 or index >= _targets.size():
 		return
-	var original := _targets[index] as Node2D
+	var original := (_targets[index] if is_instance_valid(_targets[index]) else null) as Node2D
 	if not _alive(original):
 		return
 	var mirror_point := _origin * 2.0 - original.global_position

@@ -45,7 +45,7 @@ static func execute(activation: Activation) -> float:
 static func _next_target(activation: Activation, chain: Dictionary, radius: float) -> Node2D:
 	var hit: Dictionary = chain["hit"]
 	for raw_target in activation.targets(chain["position"], radius, 0):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target) or hit.has(target.get_instance_id()):
 			continue
 		return target

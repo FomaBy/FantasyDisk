@@ -108,7 +108,7 @@ static func fire_riff_strip(
 	var damage: float = activation.scaled_damage("strip_damage", 10.0)
 	var victims: Array = []
 	for raw_target in activation.select_targets(center, INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		activation.record_target_value(target, RIFF_LEDGER_KEY, 1.0, "riff:%d" % strip_index)
@@ -135,7 +135,7 @@ static func fire_final_chord(activation, state: Dictionary, center: Vector2, dir
 		activation.param_float("strip_half_width", 46.0),
 		0
 	):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		activation.deal_damage(

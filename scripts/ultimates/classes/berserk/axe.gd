@@ -142,7 +142,7 @@ func launch() -> void:
 		"shape": "axe_pass",
 	})
 	for raw_target in _activation.select_targets(source, INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target) or not _claim_pass(target, "outbound"):
 			continue
 		_mark(target)
@@ -179,7 +179,7 @@ func catch() -> void:
 	var threshold: float = _activation.param_float("execute_threshold", 0.3)
 	var caught: Array[Node] = []
 	for raw_target in _corridor(edge_for_tests, source - edge_for_tests):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target) or not _claim_pass(target, "return"):
 			continue
 		_deal(

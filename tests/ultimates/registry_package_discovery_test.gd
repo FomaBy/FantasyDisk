@@ -97,6 +97,7 @@ func _initialize() -> void:
 	_test_invalid_pair_admission(discovery, base_profile)
 	_test_invalid_discovery_set(base_profile)
 	_test_reserved_data_file_is_not_a_package(base_profile)
+	_test_exported_remap_pair(base_profile)
 	await _test_controller_executes_discovered_pair(discovery)
 	_holder.queue_free()
 	await process_frame
@@ -215,6 +216,58 @@ func _test_reserved_data_file_is_not_a_package(base_profile: Dictionary) -> void
 	_check(_has_error(without_overlay.validation_errors(), "package.pair.data_missing: %s/%s.gd" % [CLASS_ID, WEAPON_ID]),
 		"reserved shards must not stand in for a missing weapon overlay: %s" % [without_overlay.validation_errors()])
 	_check(without_overlay.pair_keys().is_empty(), "no pair may be admitted from shards alone")
+
+
+## FAN-3985: an exported build lists executors as `x.gd.remap` (+ `x.gdc`),
+## never as `x.gd`. Discovery keys the pair by the source name behind the
+## remap and admission loads it through ResourceLoader's remap resolution, so
+## the exported PCK admits exactly the pairs the editor tree does. The fixture
+## remap points at the committed fixture executor, which is the same
+## indirection an export writes.
+func _test_exported_remap_pair(base_profile: Dictionary) -> void:
+	_check(Discovery.exported_file_name("fixture_weapon.gd.remap") == "fixture_weapon.gd",
+		"a .remap listing must be keyed by its source name")
+	_check(Discovery.exported_file_name("fixture_weapon.gdc") == "fixture_weapon.gdc",
+		"a compiled script listing keeps its own name")
+	_check(Discovery.exported_file_name("fixture_weapon.gd") == "fixture_weapon.gd",
+		"an editor-tree listing is unchanged")
+	var data_root := _scratch_root("remap/data")
+	var script_root := _scratch_root("remap/scripts")
+	_write_fixture_file("%s/%s/%s.json" % [data_root, CLASS_ID, WEAPON_ID], FileAccess.get_file_as_string(DOCUMENT_PATH))
+	_write_fixture_file("%s/%s/%s.gd.remap" % [script_root, CLASS_ID, WEAPON_ID],
+		'[remap]\n\npath="%s"\n' % EXECUTOR_PATH)
+	for lazy in [false, true]:
+		var exported := Discovery.new(data_root, script_root)
+		exported.discover({KEY: base_profile}, lazy)
+		_check(exported.validation_errors().is_empty(),
+			"a remapped executor must pair like a source executor (lazy=%s): %s" % [lazy, exported.validation_errors()])
+		_check(exported.pair_keys() == {KEY: true}, "the remapped pair must be admitted (lazy=%s)" % lazy)
+		var executor = exported.admit_executor(KEY) if lazy else exported.executor_for(KEY)
+		_check(executor is GDScript and str((executor as GDScript).get_script_constant_map().get("PROFILE_ID", "")) == "weapon_ultimate.profile.fixture_class.fixture_weapon",
+			"the executor must load through the remap (lazy=%s): %s" % [lazy, exported.admission_errors_for(KEY) if lazy else exported.validation_errors()])
+	# A remap beside its own source name is one executor, not two.
+	_write_fixture_file("%s/%s/%s.gd" % [script_root, CLASS_ID, WEAPON_ID], FileAccess.get_file_as_string(EXECUTOR_PATH))
+	var both := Discovery.new(data_root, script_root)
+	both.discover({KEY: base_profile}, true)
+	_check(both.validation_errors().is_empty() and both.pair_keys() == {KEY: true},
+		"a source beside its remap must not duplicate the pair: %s" % [both.validation_errors()])
+
+
+func _scratch_root(name: String) -> String:
+	var root := "user://fan3985_export_discovery/%s" % name
+	var absolute := ProjectSettings.globalize_path(root)
+	if DirAccess.dir_exists_absolute(absolute):
+		OS.move_to_trash(absolute) if false else _remove_tree(absolute)
+	DirAccess.make_dir_recursive_absolute(absolute)
+	return root
+
+
+func _remove_tree(absolute: String) -> void:
+	for file_name in DirAccess.get_files_at(absolute):
+		DirAccess.remove_absolute("%s/%s" % [absolute, file_name])
+	for directory_name in DirAccess.get_directories_at(absolute):
+		_remove_tree("%s/%s" % [absolute, directory_name])
+	DirAccess.remove_absolute(absolute)
 
 
 func _scratch_data_root(name: String) -> String:

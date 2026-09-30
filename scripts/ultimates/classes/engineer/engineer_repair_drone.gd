@@ -96,7 +96,7 @@ static func ram_wave(activation, devices: Array[Node], wave: int) -> void:
 	var center: Vector2 = activation.origin()
 	var victims: Array = []
 	for raw_target in activation.select_targets(center, INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var direction: Vector2 = target.global_position - center
@@ -156,7 +156,7 @@ static func ring_points(
 
 static func place(devices: Array[Node], points: PackedVector2Array) -> void:
 	for index in mini(devices.size(), points.size()):
-		var device := devices[index] as Node2D
+		var device := (devices[index] if is_instance_valid(devices[index]) else null) as Node2D
 		if device != null and is_instance_valid(device):
 			device.global_position = points[index]
 
@@ -164,7 +164,7 @@ static func place(devices: Array[Node], points: PackedVector2Array) -> void:
 static func decorate_and_place(activation, devices: Array[Node], points: PackedVector2Array) -> void:
 	place(devices, points)
 	for raw_device in devices:
-		var device := raw_device as Node2D
+		var device := (raw_device if is_instance_valid(raw_device) else null) as Node2D
 		if device == null or not is_instance_valid(device):
 			continue
 		device.set_meta("engineer_ultimate_device", "microdrone")
@@ -181,19 +181,19 @@ static func decorate_and_place(activation, devices: Array[Node], points: PackedV
 ## activation primitive, which owns eligibility, caps and actual-HP accounting.
 static func repair_targets(activation) -> Array[Node]:
 	var targets: Array[Node] = []
-	var host := activation.get("host") as Node
+	var host := (activation.get("host") if is_instance_valid(activation.get("host")) else null) as Node
 	if host == null or not is_instance_valid(host):
 		return targets
 	# `player` is the Player adapter's own field, not part of the host contract, so
 	# a host that stands in for the hero itself must still be offered the pulse —
 	# ultimate_host_repair() is what decides eligibility, and it fails closed.
-	var hero := host.get("player") as Node
+	var hero := (host.get("player") if is_instance_valid(host.get("player")) else null) as Node
 	if hero == null or not is_instance_valid(hero):
 		hero = host
 	targets.append(hero)
 	if host.has_method("ultimate_host_summons"):
 		for raw_device in host.call("ultimate_host_summons", "engineer_devices") as Array:
-			var device := raw_device as Node
+			var device := (raw_device if is_instance_valid(raw_device) else null) as Node
 			if device != null and is_instance_valid(device) and not targets.has(device):
 				targets.append(device)
 	return targets

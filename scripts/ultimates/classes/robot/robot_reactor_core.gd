@@ -62,7 +62,7 @@ static func vent_wave(activation, wave: int) -> void:
 		for raw_target in activation.targets_in_corridor(
 			activation.origin(), direction, activation.param_float("range", 300.0), activation.param_float("half_width", 90.0), 1
 		):
-			var target := raw_target as Node
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 			if target != null and is_instance_valid(target):
 				activation.deal_damage(target, activation.scaled_damage("vent_damage", 6.50),
 					{"source": "robot_reactor_vent", "wave": wave, "vent": index}, "vent:%d:%d" % [wave, index])
@@ -75,7 +75,7 @@ static func final_vent(activation) -> void:
 		return
 	var victims: Array = []
 	for raw_target in activation.targets(activation.origin(), activation.param_float("range", 300.0), 0):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(target, activation.scaled_damage("final_damage", 10.0),
 				{"source": "robot_reactor_final_vent"}, "final", true)

@@ -148,7 +148,7 @@ func sweep_blade(index: int) -> void:
 	var ledger_key := "whirlwind_blade_%d" % blade
 	var bitten: Array[Node2D] = []
 	for raw_target in _activation.select_targets(center, INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		# The orbit passes over the target on every sweep; only the blade whose
@@ -189,7 +189,7 @@ func cross_slash() -> void:
 		for raw_target in _activation.targets_in_corridor(
 			center, arm, length, half_width, 0
 		):
-			var target := raw_target as Node
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 			if target == null or not is_instance_valid(target) \
 					or seen.has(target.get_instance_id()):
 				continue

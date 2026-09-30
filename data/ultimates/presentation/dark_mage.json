@@ -1,0 +1,143 @@
+{
+  "schema_version": 1,
+  "class_id": "dark_mage",
+  "generated_from": "docs/design/references/weapon_ultimates/dark_mage/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "dark_book",
+      "scene_path": "res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.7,
+        "active": 1.2,
+        "recovery": 2.5,
+        "cancel": 3.1
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 12,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "mechanics_note": "every live enemy receives one original hit; the reflected point is a presentation signature only",
+        "runtime_enforcement_owner": "FAN-1541"
+      },
+      "pivot": [
+        0.5,
+        0.56
+      ],
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "dark_mage.abyss_mirror_cast",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_00.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/dark_book.png",
+        "class_palette_id": "dark_mage.abyssal_violet"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "keep the mirror and paired silhouettes while replacing the lens detonation with one low-contrast pulse",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.15
+      }
+    },
+    {
+      "weapon_id": "cursed_skull",
+      "scene_path": "res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.85,
+        "active": 1.3,
+        "recovery": 2.9,
+        "cancel": 3.6
+      },
+      "performance": {
+        "max_visual_nodes": 11,
+        "crowd_cap": 14,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "mechanics_note": "all live enemies receive the crown curse and three pulses before one harvest",
+        "runtime_enforcement_owner": "FAN-1541"
+      },
+      "pivot": [
+        0.5,
+        0.72
+      ],
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "flash",
+        "camera_shake": true,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "dark_mage.cursed_crown_cast",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_02.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/cursed_skull.png",
+        "class_palette_id": "dark_mage.abyssal_violet"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "hold the crown and three chains while using a single non-flashing harvest contraction",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.15
+      }
+    },
+    {
+      "weapon_id": "dark_wand",
+      "scene_path": "res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.95,
+        "active": 1.45,
+        "recovery": 2.9,
+        "cancel": 3.9
+      },
+      "performance": {
+        "max_visual_nodes": 10,
+        "crowd_cap": 10,
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "mechanics_note": "every live enemy receives the collapse floor; one aim-selected target gains the bounded focus bonus",
+        "runtime_enforcement_owner": "FAN-1541"
+      },
+      "pivot": [
+        0.18,
+        0.55
+      ],
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 90.0,
+        "time_scale_dip": 0.4,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "dark_mage.vanishing_thread_cast",
+        "cast_pose_asset": "res://assets/sprites/characters/full_frame/dark_mage/dark_mage_attack_primary_04.png",
+        "weapon_silhouette_asset": "res://assets/sprites/weapons/dark_wand.png",
+        "class_palette_id": "dark_mage.abyssal_violet"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "keep the wand silhouette and one persistent thread while collapsing all marks with reduced particle motion",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.15
+      }
+    }
+  ]
+}

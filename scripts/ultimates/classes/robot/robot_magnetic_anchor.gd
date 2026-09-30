@@ -57,7 +57,7 @@ static func release(activation, center: Vector2) -> void:
 	for raw_target in activation.targets(
 		center, activation.param_float("radius", 250.0), 0
 	):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		activation.apply_control(
@@ -80,7 +80,7 @@ static func implode(activation, center: Vector2) -> void:
 	for raw_target in activation.targets(
 		center, activation.param_float("radius", 250.0), 0
 	):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(
 				target, activation.scaled_damage("implosion_damage", 16.0),
@@ -92,7 +92,7 @@ static func implode(activation, center: Vector2) -> void:
 	for raw_target in activation.targets(
 		center, activation.param_float("emp_radius", 300.0), 0
 	):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target != null and is_instance_valid(target):
 			activation.deal_damage(
 				target, activation.scaled_damage("emp_damage", 6.0),

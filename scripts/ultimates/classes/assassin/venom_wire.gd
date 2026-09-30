@@ -124,7 +124,7 @@ func cut_pulse(pulse: int) -> void:
 	var hits_by_target: Dictionary = {}
 	var struck: Array[Node2D] = []
 	for raw_target in _activation.select_targets(global_position, INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if _alive(target):
 			hits_by_target[target.get_instance_id()] = {"target": target, "crossings": 0}
 	for segment in web_segments_for_tests:
@@ -136,14 +136,14 @@ func cut_pulse(pulse: int) -> void:
 			_activation.param_float("wire_half_width", 32.0),
 			0
 		):
-			var target := raw_target as Node2D
+			var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 			if target == null or not hits_by_target.has(target.get_instance_id()):
 				continue
 			var crossed := hits_by_target[target.get_instance_id()] as Dictionary
 			crossed["crossings"] = int(crossed["crossings"]) + 1
 	for target_id in hits_by_target:
 		var entry := hits_by_target[target_id] as Dictionary
-		var target := entry["target"] as Node2D
+		var target := (entry["target"] if is_instance_valid(entry["target"]) else null) as Node2D
 		var cuts := clampi(
 			int(entry["crossings"]), 1, _activation.param_int("max_cuts_per_pulse", 3)
 		)
@@ -168,7 +168,7 @@ func toxin_burst() -> void:
 		return
 	var struck: Array[Node] = []
 	for target_id in _affected.keys():
-		var target := _affected[target_id] as Node
+		var target := (_affected[target_id] if is_instance_valid(_affected[target_id]) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var stacks = _activation.consume_target_value(target, STACK_KEY, "toxin_burst", null)
@@ -250,7 +250,7 @@ func _remove_leased_status(lease: Dictionary) -> void:
 	var raw_target = lease.get("target")
 	if raw_target == null or not is_instance_valid(raw_target):
 		return
-	var target := raw_target as Node
+	var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 	if target == null or not target.has_meta(StatusEffects.META_KEY):
 		return
 	var statuses = target.get_meta(StatusEffects.META_KEY)

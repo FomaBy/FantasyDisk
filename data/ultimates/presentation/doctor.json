@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "class_id": "doctor",
+  "generated_from": "docs/design/references/weapon_ultimates/doctor/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "restore_potion",
+      "scene_path": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.85,
+        "active": 1.35,
+        "recovery": 2.85,
+        "cancel": 3.4
+      },
+      "performance": {
+        "max_visual_nodes": 5,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 100,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.doctor.clinical_focus",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/restore_potion/cast_flash/cast_flash_04.png",
+        "class_palette_id": "palette.doctor.viridian_ivory"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.12,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the flask, pool and shield hold one representative pose in each phase while the exact phase envelope continues",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    },
+    {
+      "weapon_id": "plague_syringe",
+      "scene_path": "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.75,
+        "active": 1.2,
+        "recovery": 3.3,
+        "cancel": 3.9
+      },
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.doctor.clinical_focus",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/plague_syringe/cast_flash/cast_flash_04.png",
+        "class_palette_id": "palette.doctor.viridian_ivory"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the syringe and infection waves hold one representative pose in each phase instead of rapidly expanding across the arena",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    },
+    {
+      "weapon_id": "bone_saw",
+      "scene_path": "res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.65,
+        "active": 1.05,
+        "recovery": 2.35,
+        "cancel": 2.8
+      },
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 12,
+        "runtime_enforcement_owner": "FAN-1541",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3942 measured the shipped class scene under the strict runtime budget; one authored material at most and one screen-space darken surface."
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.doctor.clinical_focus",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/doctor/bone_saw/cast_flash/cast_flash_04.png",
+        "class_palette_id": "palette.doctor.viridian_ivory"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.1,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "the surgical orbit holds one representative phase pose instead of spinning while the phase envelope continues unchanged",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "photosensitivity_safe_substitute": "the class-authored bright impact surface and victim feedback are suppressed or dimmed while the darken backdrop and weapon silhouette retain the phase read",
+        "combined_accessibility_substitute": "reduced-motion track holds and photosensitivity-safe flash suppression apply together without changing release, active, recovery or cancel timing",
+        "measurement": "Fresh live measurements are recorded for every mode, viewport and release/active/recovery beat in certification_capture_manifest.json."
+      }
+    }
+  ]
+}

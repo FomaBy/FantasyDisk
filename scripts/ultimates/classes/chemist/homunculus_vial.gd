@@ -75,7 +75,7 @@ static func fuse(activation: Activation) -> Node:
 	if not configured:
 		return null
 	var avatar := activation.spawn(activation.param_string("avatar_scene"))
-	if avatar is Node2D:
+	if is_instance_valid(avatar) and avatar is Node2D:
 		(avatar as Node2D).global_position = activation.origin()
 	return avatar
 
@@ -108,7 +108,7 @@ static func execute(activation: Activation) -> float:
 ## beats fall back to the caster so a freed VFX node cannot silently stop the
 ## cast half-way.
 static func _centre(activation: Activation, avatar: Node) -> Vector2:
-	if avatar is Node2D and is_instance_valid(avatar):
+	if is_instance_valid(avatar) and avatar is Node2D:
 		return (avatar as Node2D).global_position
 	return activation.origin()
 
@@ -121,7 +121,7 @@ static func _taunt(activation: Activation, avatar: Node) -> void:
 	var force := activation.param_float("taunt_force", 0.0)
 	var status := activation.param_dictionary("taunt_status")
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
-		var target := raw_target as Node2D
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		var inward := centre - target.global_position
@@ -146,7 +146,7 @@ static func _beat(activation: Activation, avatar: Node, beat_index: int) -> void
 	})
 	var struck: Array = []
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		var stacks := float(activation.target_value(target, TOXIN_KEY, 0.0))
@@ -157,7 +157,7 @@ static func _beat(activation: Activation, avatar: Node, beat_index: int) -> void
 	# scene plays one victim burst per hit enemy and none anywhere else.
 	activation.present(EXECUTOR_ID + ".stomp", {"position": centre, "victims": struck})
 	for raw_target in activation.select_targets(centre, INF, 0, "nearest"):
-		var target := raw_target as Node
+		var target := (raw_target if is_instance_valid(raw_target) else null) as Node
 		if target == null or not is_instance_valid(target):
 			continue
 		if float(activation.target_value(target, TOXIN_KEY, 0.0)) >= stack_cap:

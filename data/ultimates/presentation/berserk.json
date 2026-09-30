@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "class_id": "berserk",
+  "generated_from": "docs/design/references/weapon_ultimates/berserk/manifest.json",
+  "generator": "tools/build_ultimate_presentation_runtime_data.py",
+  "weapons": [
+    {
+      "weapon_id": "sword",
+      "scene_path": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.75,
+        "active": 1.0,
+        "recovery": 3.1,
+        "cancel": 3.8
+      },
+      "performance": {
+        "max_visual_nodes": 8,
+        "crowd_cap": 24,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "per_blade_hit_cooldown_owner": "mechanics FAN-1462",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3012 rebuild: 7 drawn nodes (backdrop veil, cast flash, looping whirlwind core, three orbiting blade ghosts, collapse flare) under an 8-node cap; one shared additive CanvasItemMaterial is the whole material budget"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 120,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.berserk.warcry_overhead",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/berserk/sword/whirlwind/whirlwind_04.png",
+        "class_palette_id": "palette.berserk.scarlet_rage"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.3,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still and the backdrop veil keeps every beat at a damped peak, so the whirlwind reads as a calm spin",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn box 0.30 of a 1152x648 viewport at t=2.2s on the regenerated berserk_ultimate_timelines_648p.png contact sheet; HUD bands untouched (ultimates draw between them)"
+      }
+    },
+    {
+      "weapon_id": "axe",
+      "scene_path": "res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.65,
+        "active": 0.9,
+        "recovery": 2.7,
+        "cancel": 3.4
+      },
+      "performance": {
+        "max_visual_nodes": 5,
+        "crowd_cap": 18,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "boss_double_pass_cap_owner": "mechanics FAN-1462",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3012 rebuild: 4 drawn nodes (backdrop veil, cast flash, spinning execution-slash ghost, turn burst) under a 5-node cap; one shared additive CanvasItemMaterial is the whole material budget"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 110,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.berserk.warcry_overhead",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/berserk/axe/execution_slash/execution_slash_04.png",
+        "class_palette_id": "palette.berserk.scarlet_rage"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.26,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still and the backdrop veil keeps every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn box 0.26 of a 1152x648 viewport at t=1.9s on the regenerated berserk_ultimate_timelines_648p.png contact sheet"
+      }
+    },
+    {
+      "weapon_id": "hammer",
+      "scene_path": "res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
+      "timing_seconds": {
+        "windup": 0.0,
+        "release": 0.9,
+        "active": 1.15,
+        "recovery": 2.35,
+        "cancel": 2.95
+      },
+      "performance": {
+        "max_visual_nodes": 6,
+        "crowd_cap": 20,
+        "crowd_budget_enforcement_owner": "runtime enforcement FAN-1541",
+        "stagger_launch_displacement_owner": "mechanics FAN-1462",
+        "max_unique_materials": 1,
+        "max_fullscreen_materials": 1,
+        "v2_budget_note": "FAN-3012 rebuild: 5 drawn nodes (backdrop veil, cast flash, two rift pulses, central quake) under a 6-node cap; one shared additive CanvasItemMaterial is the whole material budget"
+      },
+      "presence": {
+        "fullscreen_footprint": true,
+        "backdrop": "darken",
+        "camera_shake": true,
+        "hitstop_ms": 140,
+        "sfx_ducking": true
+      },
+      "identity": {
+        "cast_pose_id": "cast_pose.berserk.warcry_overhead",
+        "weapon_silhouette_asset": "res://assets/sprites/effects/berserk/hammer/rift_shockwave/rift_shockwave_04.png",
+        "class_palette_id": "palette.berserk.scarlet_rage"
+      },
+      "quality": {
+        "max_viewport_coverage_ratio": 0.28,
+        "hud_bands_clear": true,
+        "reduced_motion_substitute": "with the player's screen_shake setting off the driver holds the camera perfectly still and the backdrop veil keeps every beat at a damped peak",
+        "reduced_motion_preserves_timing": true,
+        "full_screen_flash_hz": 0.0,
+        "max_flash_coverage_ratio": 0.0,
+        "measurement": "peak drawn box 0.28 of a 1152x648 viewport at t=2.45s on the regenerated berserk_ultimate_timelines_648p.png contact sheet"
+      }
+    }
+  ]
+}

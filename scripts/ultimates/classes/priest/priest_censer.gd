@@ -63,7 +63,7 @@ func configure(activation) -> void:
 		return
 	_ultimate_host = activation.host
 	var active_weapon = _player.get("equipped_weapon")
-	if active_weapon is Node and is_instance_valid(active_weapon) and active_weapon != self:
+	if is_instance_valid(active_weapon) and active_weapon is Node and active_weapon != self:
 		_equipped_weapon = active_weapon
 		_sync_weapon_direction()
 		_player.set("equipped_weapon", self)
@@ -72,53 +72,64 @@ func configure(activation) -> void:
 	activation.host = self
 
 
+## FAN-3985: the proxy outlives its host on the teardown path (the activation
+## unwinds modifiers while this node is leaving the tree, and the player may
+## still route one late owner event here). A release build dereferences a
+## null/freed host and dies by signal, so every forward is guarded.
+func _host_alive() -> bool:
+	return _ultimate_host != null and is_instance_valid(_ultimate_host)
+
+
 func ultimate_host_context() -> Dictionary:
-	return _ultimate_host.call("ultimate_host_context")
+	return _ultimate_host.call("ultimate_host_context") if _host_alive() else {}
 
 
 func ultimate_host_position() -> Vector2:
-	return _ultimate_host.call("ultimate_host_position")
+	return _ultimate_host.call("ultimate_host_position") if _host_alive() else global_position
 
 
 func ultimate_host_aim(max_range: float) -> Dictionary:
-	return _ultimate_host.call("ultimate_host_aim", max_range)
+	return _ultimate_host.call("ultimate_host_aim", max_range) if _host_alive() else {}
 
 
 func ultimate_host_targets(center: Vector2, radius: float, limit: int) -> Array:
-	return _ultimate_host.call("ultimate_host_targets", center, radius, limit)
+	return _ultimate_host.call("ultimate_host_targets", center, radius, limit) if _host_alive() else []
 
 
 func ultimate_host_summons(group_id: String) -> Array:
-	return _ultimate_host.call("ultimate_host_summons", group_id)
+	return _ultimate_host.call("ultimate_host_summons", group_id) if _host_alive() else []
 
 
 func ultimate_host_apply_damage(target: Node, amount: float, feedback: Dictionary) -> void:
-	_ultimate_host.call("ultimate_host_apply_damage", target, amount, feedback)
+	if _host_alive():
+		_ultimate_host.call("ultimate_host_apply_damage", target, amount, feedback)
 
 
 func ultimate_host_modifier(key: String, value: float, op: String) -> void:
-	_ultimate_host.call("ultimate_host_modifier", key, value, op)
+	if _host_alive():
+		_ultimate_host.call("ultimate_host_modifier", key, value, op)
 	if key == "absorb_flat" and _erase_zero_absorb_key():
 		_restore_equipped_weapon()
 
 
 func ultimate_host_effect_parent() -> Node:
-	return _ultimate_host.call("ultimate_host_effect_parent")
+	return _ultimate_host.call("ultimate_host_effect_parent") if _host_alive() else get_parent()
 
 
 func ultimate_host_present(event_id: String, payload: Dictionary) -> Node:
-	return _ultimate_host.call("ultimate_host_present", event_id, payload)
+	return _ultimate_host.call("ultimate_host_present", event_id, payload) if _host_alive() else null
 
 
 ## Optional host channel, so the proxy forwards it only when the real host
 ## exposes it and reports no presentation otherwise.
 func ultimate_host_presentation_active() -> bool:
-	return _ultimate_host.has_method("ultimate_host_presentation_active") \
+	return _host_alive() and _ultimate_host.has_method("ultimate_host_presentation_active") \
 		and bool(_ultimate_host.call("ultimate_host_presentation_active"))
 
 
 func ultimate_host_set_active(active: bool) -> void:
-	_ultimate_host.call("ultimate_host_set_active", active)
+	if _host_alive():
+		_ultimate_host.call("ultimate_host_set_active", active)
 
 
 ## Player routes every measured prevention through the equipped weapon's generic
@@ -180,7 +191,7 @@ func counter_burst() -> void:
 		"nearest"
 	)
 	for index in targets.size():
-		var target := targets[index] as Node2D
+		var target := (targets[index] if is_instance_valid(targets[index]) else null) as Node2D
 		if target == null or not is_instance_valid(target):
 			continue
 		_deal(
@@ -217,7 +228,7 @@ func _player_from_host() -> Node:
 	if _activation == null or _activation.host == null or not is_instance_valid(_activation.host):
 		return null
 	var player = _activation.host.get("player")
-	return player as Node if player is Node and is_instance_valid(player) else null
+	return player as Node if is_instance_valid(player) and player is Node else null
 
 
 func _exit_tree() -> void:
