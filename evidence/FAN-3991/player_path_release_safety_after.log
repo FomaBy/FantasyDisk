@@ -1,0 +1,126 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+ultimate_player_path_probe: berserk/sword pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn survived=4.801s failures=[]
+ultimate_player_path_probe: berserk/axe pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn survived=4.401s failures=[]
+ultimate_player_path_probe: berserk/hammer pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn survived=4.007s failures=[]
+ultimate_player_path_probe: soldier/soldier_rifle pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn survived=4.205s failures=[]
+ultimate_player_path_probe: soldier/soldier_grenade pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn survived=4.504s failures=[]
+ultimate_player_path_probe: soldier/soldier_bayonet pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn survived=4.802s failures=[]
+ultimate_player_path_probe: thief/thief_coin_pouch pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn survived=4.053s failures=[]
+ultimate_player_path_probe: thief/thief_shadow_cloak pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn survived=4.201s failures=[]
+ultimate_player_path_probe: thief/thief_smoke_bomb pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn survived=4.422s failures=[]
+ERROR: Lambda capture at index 0 was freed. Passed "null" instead.
+   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)
+ultimate_player_path_probe: elementalist/elementalist_orb_ring pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn survived=4.705s failures=[]
+ultimate_player_path_probe: elementalist/elementalist_prism_focus pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn survived=4.402s failures=[]
+ultimate_player_path_probe: elementalist/elementalist_meteor_core pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn survived=4.904s failures=[]
+ultimate_player_path_probe: sniper/sniper_deadeye_rifle pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn survived=4.006s failures=[]
+ultimate_player_path_probe: sniper/sniper_spotter_scope pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn survived=4.405s failures=[]
+ultimate_player_path_probe: sniper/sniper_shatter_rounds pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn survived=4.105s failures=[]
+ultimate_player_path_probe: priest/priest_reliquary pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn survived=4.906s failures=[]
+ultimate_player_path_probe: priest/priest_censer pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn survived=4.7s failures=[]
+ultimate_player_path_probe: priest/priest_chime pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn survived=4.503s failures=[]
+ultimate_player_path_probe: biologist/biologist_spore_lens pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn survived=4.405s failures=[]
+ultimate_player_path_probe: biologist/biologist_sample_injector pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn survived=4.001s failures=[]
+ultimate_player_path_probe: biologist/biologist_symbiote_seed pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn survived=4.806s failures=[]
+ultimate_player_path_probe: robot/robot_magnetic_anchor pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn survived=4.65s failures=[]
+ultimate_player_path_probe: robot/robot_hydraulic_press pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn survived=4.807s failures=[]
+ultimate_player_path_probe: robot/robot_reactor_core pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn survived=4.951s failures=[]
+ultimate_player_path_probe: engineer/engineer_sentry_wrench pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn survived=4.806s failures=[]
+ultimate_player_path_probe: engineer/engineer_repair_drone pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn survived=5.006s failures=[]
+ultimate_player_path_probe: engineer/engineer_pressure_mines pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn survived=4.604s failures=[]
+ultimate_player_path_probe: dark_mage/dark_book pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn survived=4.102s failures=[]
+ultimate_player_path_probe: dark_mage/cursed_skull pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn survived=4.601s failures=[]
+ultimate_player_path_probe: dark_mage/dark_wand pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn survived=4.906s failures=[]
+ultimate_player_path_probe: guitarist/electric_guitar pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn survived=4.4s failures=[]
+ultimate_player_path_probe: guitarist/bass_guitar pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn survived=4.707s failures=[]
+ultimate_player_path_probe: guitarist/sound_amp pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn survived=4.802s failures=[]
+ultimate_player_path_probe: assassin/chakrams pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn survived=4.604s failures=[]
+ultimate_player_path_probe: assassin/shadow_daggers pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn survived=4.5s failures=[]
+ultimate_player_path_probe: assassin/venom_wire pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn survived=4.705s failures=[]
+ultimate_player_path_probe: ranger/moon_crossbow pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn survived=4.104s failures=[]
+ultimate_player_path_probe: ranger/storm_longbow pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn survived=4.452s failures=[]
+ultimate_player_path_probe: ranger/hunter_trap pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn survived=4.806s failures=[]
+ultimate_player_path_probe: doctor/restore_potion pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn survived=4.407s failures=[]
+ultimate_player_path_probe: doctor/plague_syringe pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn survived=4.906s failures=[]
+ultimate_player_path_probe: doctor/bone_saw pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn survived=4.006s failures=[]
+ultimate_player_path_probe: chemist/blast_powder pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn survived=4.607s failures=[]
+ultimate_player_path_probe: chemist/acid_flask pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn survived=4.954s failures=[]
+WARNING: full_frame_animation_registry: ally/druid_beast needed res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] _ready (res://scripts/ally_minion.gd:100)
+         [4] _spawn_pair_tank (res://scripts/summoner_weapon.gd:553)
+         [5] _update_homunculus_pair (res://scripts/summoner_weapon.gd:497)
+         [6] _process (res://scripts/summoner_weapon.gd:178)
+WARNING: full_frame_animation_registry: ally/homunculus_tank needed res://assets/sprites/allies/homunculus_tank_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] set_visual_id (res://scripts/ally_minion.gd:105)
+         [4] _spawn_pair_tank (res://scripts/summoner_weapon.gd:559)
+         [5] _update_homunculus_pair (res://scripts/summoner_weapon.gd:497)
+         [6] _process (res://scripts/summoner_weapon.gd:178)
+ultimate_player_path_probe: chemist/homunculus_vial pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn survived=4.805s failures=[]
+ultimate_player_path_probe: knight/long_spear pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn survived=4.406s failures=[]
+ultimate_player_path_probe: knight/tower_shield pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn survived=4.805s failures=[]
+ultimate_player_path_probe: knight/holy_flail pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn survived=4.701s failures=[]
+WARNING: full_frame_animation_registry: ally/druid_beast needed res://assets/sprites/allies/ally_druid_wolf_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] _ready (res://scripts/ally_minion.gd:100)
+         [4] _summon (res://scripts/summoner_weapon.gd:228)
+         [5] _prefill_starting_summons (res://scripts/summoner_weapon.gd:203)
+         [6] _process (res://scripts/summoner_weapon.gd:181)
+WARNING: full_frame_animation_registry: ally/druid_ghost_stag needed res://assets/sprites/allies/ally_druid_ghost_stag_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] set_visual_id (res://scripts/ally_minion.gd:105)
+         [4] _summon (res://scripts/summoner_weapon.gd:243)
+         [5] _prefill_starting_summons (res://scripts/summoner_weapon.gd:203)
+         [6] _process (res://scripts/summoner_weapon.gd:181)
+WARNING: full_frame_animation_registry: ally/druid_ghost_panther needed res://assets/sprites/allies/ally_druid_ghost_panther_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] set_visual_id (res://scripts/ally_minion.gd:105)
+         [4] _summon (res://scripts/summoner_weapon.gd:243)
+         [5] _prefill_starting_summons (res://scripts/summoner_weapon.gd:203)
+         [6] _process (res://scripts/summoner_weapon.gd:181)
+WARNING: full_frame_animation_registry: ally/druid_ghost_wolf needed res://assets/sprites/allies/ally_druid_ghost_wolf_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] set_visual_id (res://scripts/ally_minion.gd:105)
+         [4] _summon (res://scripts/summoner_weapon.gd:243)
+         [5] _prefill_starting_summons (res://scripts/summoner_weapon.gd:203)
+         [6] _process (res://scripts/summoner_weapon.gd:181)
+WARNING: full_frame_animation_registry: ally/druid_ghost_lion needed res://assets/sprites/allies/ally_druid_ghost_lion_spriteframes.tres during a fight but the pack is not resident — static body until the background load lands (encounter roster miss).
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _frames_for_path (res://scripts/full_frame_animation_registry.gd:264)
+         [1] configure_entity_visual (res://scripts/full_frame_animation_registry.gd:630)
+         [2] _apply_visual (res://scripts/ally_minion.gd:260)
+         [3] set_visual_id (res://scripts/ally_minion.gd:105)
+         [4] _summon (res://scripts/summoner_weapon.gd:243)
+         [5] _prefill_starting_summons (res://scripts/summoner_weapon.gd:203)
+         [6] _process (res://scripts/summoner_weapon.gd:181)
+ultimate_player_path_probe: druid/summon_amulet pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn survived=4.605s failures=[]
+ultimate_player_path_probe: druid/briar_staff pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn survived=4.752s failures=[]
+ultimate_player_path_probe: druid/raven_totem pass=true source=weapon_profile scene=res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn survived=4.405s failures=[]
+Player path release safety test passed: 51 pairs activated through the shipped player path and survived past their declared cancel.

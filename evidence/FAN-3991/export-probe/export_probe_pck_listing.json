@@ -1,0 +1,91 @@
+{
+  "format_version": 4,
+  "engine_version": "4.7.0",
+  "entry_count": 27034,
+  "entries_by_top_level": {
+    ".godot": 13062,
+    "assets": 13020,
+    "data": 173,
+    "icon.svg": 1,
+    "icon.svg.import": 1,
+    "project.binary": 1,
+    "scenes": 196,
+    "scripts": 580
+  },
+  "presentation_documents": [
+    {
+      "path": "data/ultimates/presentation/assassin.json",
+      "size": 6761
+    },
+    {
+      "path": "data/ultimates/presentation/berserk.json",
+      "size": 5759
+    },
+    {
+      "path": "data/ultimates/presentation/biologist.json",
+      "size": 6076
+    },
+    {
+      "path": "data/ultimates/presentation/chemist.json",
+      "size": 6745
+    },
+    {
+      "path": "data/ultimates/presentation/dark_mage.json",
+      "size": 5011
+    },
+    {
+      "path": "data/ultimates/presentation/doctor.json",
+      "size": 6421
+    },
+    {
+      "path": "data/ultimates/presentation/druid.json",
+      "size": 6815
+    },
+    {
+      "path": "data/ultimates/presentation/elementalist.json",
+      "size": 4952
+    },
+    {
+      "path": "data/ultimates/presentation/engineer.json",
+      "size": 5083
+    },
+    {
+      "path": "data/ultimates/presentation/guitarist.json",
+      "size": 4963
+    },
+    {
+      "path": "data/ultimates/presentation/knight.json",
+      "size": 4775
+    },
+    {
+      "path": "data/ultimates/presentation/priest.json",
+      "size": 5291
+    },
+    {
+      "path": "data/ultimates/presentation/ranger.json",
+      "size": 8400
+    },
+    {
+      "path": "data/ultimates/presentation/robot.json",
+      "size": 5059
+    },
+    {
+      "path": "data/ultimates/presentation/sniper.json",
+      "size": 4742
+    },
+    {
+      "path": "data/ultimates/presentation/soldier.json",
+      "size": 8859
+    },
+    {
+      "path": "data/ultimates/presentation/thief.json",
+      "size": 8414
+    }
+  ],
+  "ultimate_class_package_files_by_extension": {
+    "gd.remap": 51,
+    "gdc": 51,
+    "tscn.remap": 36
+  },
+  "forbidden_entries": []
+}
