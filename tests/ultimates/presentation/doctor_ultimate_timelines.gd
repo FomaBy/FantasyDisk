@@ -669,7 +669,14 @@ func _check_victim_impacts(registry, weapon_id: String, errors: Array[String]) -
 
 	scene.finish("cancel")
 	_expect(scene.get_child_count() == 0, "%s must release every impact node with the scene" % weapon_id, errors)
-	_expect(impacts == null or not is_instance_valid(impacts), "%s must release its sibling victim-impact service" % weapon_id, errors)
+	# FAN-3991: the sibling lives under the effect parent, and `finish()` can run
+	# while that parent is busy removing the player (a fight ending mid-cast), so
+	# the scene must never free it synchronously: it is stopped, hidden and
+	# queued for the scene tree to free at the end of the frame.
+	_expect(impacts == null or not is_instance_valid(impacts) \
+			or ((impacts as Node).is_queued_for_deletion() and not (impacts as CanvasItem).visible \
+				and not (impacts as Node).is_processing()),
+		"%s must release its sibling victim-impact service (queued for deletion, hidden and stopped, never a synchronous free)" % weapon_id, errors)
 	for victim in victims:
 		victim.free()
 	scene.free()
