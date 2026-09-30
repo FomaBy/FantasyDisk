@@ -1,0 +1,44 @@
+perf2 start 2026-09-30T08:01:39Z
+clone re-sealed ad-hoc; PCK sha256 0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917 identical to /Applications/FantasyDisk.app
+==> v0.3.1.1_installed_rerun berserk/sword
+    driver v0.3.1.1_installed_rerun: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=3707
+    cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=4218
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=4673
+    cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=5300
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=6079
+    cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=6636
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=7317
+    cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=7754
+    phase p2_48_enemies_ultimates: 60 s, avg 112 FPS, 1% low 99, worst second 99, >50 ms 2, >100 ms 0, longest 53.6 ms, peak texture 1404 MiB, objects peak 8391 min 2958 (first s 3054, last s 8021), resident packs 23 -> 23, alive first s 38 last s 7
+    | v0.3.1.1_installed_rerun | berserk/sword | 60 | 112 | 99 | 99 | 2 | 0 | 53.6 | 1404 | 8391 | 2958 | 3054 | 8021 | 23 -> 23 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1.1_installed_rerun berserk/sword pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"] failures=[]
+    exit 0 timed_out=False in 67.9s
+==> v0.3.1.1_installed_rerun druid/summon_amulet
+    driver v0.3.1.1_installed_rerun: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=3086
+    cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=4092
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=5184
+    cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=6134
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=7163
+    cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=8195
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=9226
+    cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=10142
+    phase p2_48_enemies_ultimates: 60 s, avg 107 FPS, 1% low 85, worst second 85, >50 ms 0, >100 ms 0, longest 45.7 ms, peak texture 1476 MiB, objects peak 10710 min 2955 (first s 3256, last s 10708), resident packs 28 -> 28, alive first s 40 last s 18
+    | v0.3.1.1_installed_rerun | druid/summon_amulet | 60 | 107 | 85 | 85 | 0 | 0 | 45.7 | 1476 | 10710 | 2955 | 3256 | 10708 | 28 -> 28 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1.1_installed_rerun druid/summon_amulet pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"] failures=[]
+    exit 0 timed_out=False in 65.5s
+rerun exit=0
+clone re-sealed ad-hoc; PCK sha256 0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917 identical to /Applications/FantasyDisk.app
+==> v0.3.1.1_installed_priest16 priest/priest_reliquary
+    driver v0.3.1.1_installed_priest16: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_priest16/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=3669
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=3509
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=3850
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=4385
+    phase p2_48_enemies_ultimates: 60 s, avg 106 FPS, 1% low 95, worst second 95, >50 ms 0, >100 ms 0, longest 36.8 ms, peak texture 1419 MiB, objects peak 5765 min 3356 (first s 3979, last s 4576), resident packs 23 -> 23, alive first s 38 last s 47
+    | v0.3.1.1_installed_priest16 | priest/priest_reliquary | 60 | 106 | 95 | 95 | 0 | 0 | 36.8 | 1419 | 5765 | 3356 | 3979 | 4576 | 23 -> 23 | casts 4/4 |
+    perf_ultimate_driver: v0.3.1.1_installed_priest16 priest/priest_reliquary pass=true source=weapon_profile casts=4/4 scenes=["res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"] failures=[]
+    exit 0 timed_out=False in 68.5s
+priest16 exit=0
+perf2 end 2026-09-30T08:05:08Z

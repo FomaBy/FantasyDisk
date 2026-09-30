@@ -1,0 +1,48 @@
+=== installed app
+/Applications/FantasyDisk.app: valid on disk
+/Applications/FantasyDisk.app: satisfies its Designated Requirement
+Identifier=com.fantasydisk.game
+Format=app bundle with Mach-O universal (x86_64 arm64)
+CodeDirectory v=20500 size=160768 flags=0x10000(runtime) hashes=5017+3 location=embedded
+Authority=Developer ID Application: <redacted>
+Timestamp=30 Sep 2026 at 10:32:12
+Runtime Version=26.1.0
+The validate action worked!
+/Applications/FantasyDisk.app: accepted
+source=Notarized Developer ID
+universal x86_64+arm64 OK
+=== DMG
+verified   CRC32 $0DE8F206
+hdiutil: verify: checksum of "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1/FantasyDisk-0.3.1.1-macos.dmg" is VALID
+/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1/FantasyDisk-0.3.1.1-macos.dmg: valid on disk
+/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1/FantasyDisk-0.3.1.1-macos.dmg: satisfies its Designated Requirement
+The validate action worked!
+/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1/FantasyDisk-0.3.1.1-macos.dmg: accepted
+source=Notarized Developer ID
+drwxr-xr-x@  5 sergeyfomin  staff    160 Sep 30 10:34 .
+drwxr-xr-x@ 12 sergeyfomin  staff    384 Sep 30 10:46 ..
+-rw-r--r--@  1 sergeyfomin  staff  10244 Sep 30 10:34 .DS_Store
+lrwxr-xr-x@  1 sergeyfomin  staff     13 Sep 30 10:34 Applications -> /Applications
+drwxr-xr-x@  3 sergeyfomin  staff     96 Sep 30 10:32 FantasyDisk.app
+/Applications
+/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/mnt_new/FantasyDisk.app: valid on disk
+/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/mnt_new/FantasyDisk.app: satisfies its Designated Requirement
+The validate action worked!
+/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/mnt_new/FantasyDisk.app: accepted
+source=Notarized Developer ID
+0.3.1
+1.3.11
+=== DMG app vs installed app (recursive sha256)
+       9 /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/trust/dmg_app.sha256
+       9 /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/trust/installed_app.sha256
+      18 total
+DMG app == installed app (all files)
+23ca4a3aa280b907a9f5d09e9dccb9fc49f66debc9b99cd2ffc76afe60d09e1c  ./Contents/CodeResources
+a7df37471a31f02ed774348a1179043832b0eae09e4f6b3a36cb05190b4de5f6  ./Contents/Info.plist
+520ced984afc804fc31fb1a3efb86dc78c6ab283195695c60b946c002da590e9  ./Contents/MacOS/FantasyDisk
+7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb  ./Contents/PkgInfo
+0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917  ./Contents/Resources/FantasyDisk.pck
+dfad497a307c57c436845358b5323053703385ac132d276a25e7da0e098b71b3  ./Contents/Resources/FantasyDiskDmgBackground.png
+0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3  ./Contents/Resources/PrivacyInfo.xcprivacy
+c6114f1389b6fd5fc66d70a5a28e3d8b3b332001768390bb10aef1e35337c63f  ./Contents/Resources/icon.icns
+b19766dca50607f114ba2efe3ae4b48a66f322eec8040e4b0bc9b2f8d3e4018a  ./Contents/_CodeSignature/CodeResources

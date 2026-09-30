@@ -1,0 +1,189 @@
+{
+  "app": "/Applications/FantasyDisk.app",
+  "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/clone/FantasyDisk.app",
+  "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+  "source_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+  "clone_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+  "runs": [
+    {
+      "pair": "berserk/sword",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/v0.3.1.1_installed__berserk__sword.json",
+        "--label=v0.3.1.1_installed",
+        "--class=berserk",
+        "--weapon=sword",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 67.7,
+      "report": "v0.3.1.1_installed__berserk__sword.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 110.233333333333,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 2,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1048.293,
+        "peak_texture_mib": 1404.04119968414,
+        "objects_peak": 8213,
+        "objects_min": 2953,
+        "objects_first_second": 3056,
+        "objects_last_second": 8008,
+        "alive_at_end": 11,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures/v0.3.1.1_installed__berserk__sword.png"
+      }
+    },
+    {
+      "pair": "druid/summon_amulet",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/v0.3.1.1_installed__druid__summon_amulet.json",
+        "--label=v0.3.1.1_installed",
+        "--class=druid",
+        "--weapon=summon_amulet",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 65.2,
+      "report": "v0.3.1.1_installed__druid__summon_amulet.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 108.966666666667,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 1,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1116.613,
+        "peak_texture_mib": 1476.13079738617,
+        "objects_peak": 10671,
+        "objects_min": 2965,
+        "objects_first_second": 3252,
+        "objects_last_second": 10621,
+        "alive_at_end": 0,
+        "resident_packs_start": 28,
+        "resident_packs_end": 28,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures/v0.3.1.1_installed__druid__summon_amulet.png"
+      }
+    },
+    {
+      "pair": "knight/long_spear",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/v0.3.1.1_installed__knight__long_spear.json",
+        "--label=v0.3.1.1_installed",
+        "--class=knight",
+        "--weapon=long_spear",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 65.3,
+      "report": "v0.3.1.1_installed__knight__long_spear.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 94.7166666666667,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 2,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1160.028,
+        "peak_texture_mib": 1395.06208705902,
+        "objects_peak": 3787,
+        "objects_min": 2946,
+        "objects_first_second": 2960,
+        "objects_last_second": 3428,
+        "alive_at_end": 47,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures/v0.3.1.1_installed__knight__long_spear.png"
+      }
+    },
+    {
+      "pair": "priest/priest_reliquary",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/v0.3.1.1_installed__priest__priest_reliquary.json",
+        "--label=v0.3.1.1_installed",
+        "--class=priest",
+        "--weapon=priest_reliquary",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures"
+      ],
+      "exit_code": 1,
+      "timed_out": false,
+      "seconds": 65.4,
+      "report": "v0.3.1.1_installed__priest__priest_reliquary.json",
+      "pass": false,
+      "resolution_source": "weapon_profile",
+      "casts": "4/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 104.15,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 1,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1142.288,
+        "peak_texture_mib": 1419.51881885529,
+        "objects_peak": 5837,
+        "objects_min": 3356,
+        "objects_first_second": 3892,
+        "objects_last_second": 5531,
+        "alive_at_end": 48,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures/v0.3.1.1_installed__priest__priest_reliquary.png"
+      }
+    }
+  ]
+}

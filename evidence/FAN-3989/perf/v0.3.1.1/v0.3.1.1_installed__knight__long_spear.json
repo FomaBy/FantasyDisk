@@ -1,0 +1,564 @@
+{
+  "alive_before_window": 39,
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 337,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 1160.028,
+      "objects_before": 3345,
+      "presentation_active": true,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1068,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 27.865,
+      "objects_before": 3319,
+      "presentation_active": true,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1832,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 34.622,
+      "objects_before": 3208,
+      "presentation_active": true,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2578,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 28.184,
+      "objects_before": 3129,
+      "presentation_active": true,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3333,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 28.308,
+      "objects_before": 3533,
+      "presentation_active": true,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4087,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 32.095,
+      "objects_before": 3324,
+      "presentation_active": true,
+      "second": 43,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4830,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 32.866,
+      "objects_before": 3296,
+      "presentation_active": true,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 5586,
+      "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 31.116,
+      "objects_before": 3490,
+      "presentation_active": true,
+      "second": 59,
+      "time_scale": 1.0
+    }
+  ],
+  "casts_activated": 8,
+  "casts_total": 8,
+  "character_id": "knight",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3989/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1.1",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3989Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [],
+  "finalize_wait_ms": 522.471,
+  "instantiated_scenes": [
+    "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"
+  ],
+  "label": "v0.3.1.1_installed",
+  "menu_objects_after_run": 2289,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 218.900053977966,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 2952,
+  "pass": true,
+  "phase": {
+    "alive_at_end": 47,
+    "alive_per_second": [
+      45,
+      38,
+      41,
+      38,
+      38,
+      41,
+      38,
+      41,
+      43,
+      46,
+      42,
+      48,
+      45,
+      48,
+      46,
+      48,
+      44,
+      45,
+      45,
+      48,
+      49,
+      48,
+      48,
+      47,
+      47,
+      48,
+      47,
+      48,
+      48,
+      45,
+      48,
+      48,
+      49,
+      47,
+      48,
+      45,
+      48,
+      47,
+      50,
+      47,
+      48,
+      45,
+      48,
+      46,
+      48,
+      47,
+      47,
+      49,
+      48,
+      48,
+      48,
+      44,
+      46,
+      47,
+      48,
+      48,
+      48,
+      48,
+      47,
+      47
+    ],
+    "avg_fps": 94.7166666666667,
+    "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/captures/v0.3.1.1_installed__knight__long_spear.png",
+    "frames_over_100ms": 1,
+    "frames_over_50ms": 2,
+    "frames_total": 5683,
+    "longest_frame_ms": 1160.028,
+    "low_1pct_fps": 24.0,
+    "objects_first_second": 2960,
+    "objects_last_second": 3428,
+    "objects_min": 2946,
+    "objects_peak": 3787,
+    "objects_per_second": [
+      2960,
+      3125,
+      3289,
+      3317,
+      3379,
+      3182,
+      3265,
+      3373,
+      3172,
+      3277,
+      3271,
+      3360,
+      3165,
+      3154,
+      3115,
+      3158,
+      3196,
+      3230,
+      3184,
+      3238,
+      3208,
+      3185,
+      3217,
+      3420,
+      3217,
+      3144,
+      3121,
+      3220,
+      3258,
+      3225,
+      3193,
+      3211,
+      3237,
+      3242,
+      3533,
+      3315,
+      3242,
+      3234,
+      3237,
+      3308,
+      3308,
+      3263,
+      3324,
+      3294,
+      3379,
+      3370,
+      3380,
+      3311,
+      3294,
+      3288,
+      3296,
+      3734,
+      3476,
+      3375,
+      3380,
+      3341,
+      3384,
+      3437,
+      3482,
+      3428
+    ],
+    "peak_texture_mib": 1395.06208705902,
+    "per_second_fps": [
+      110,
+      113,
+      114,
+      24,
+      63,
+      99,
+      103,
+      107,
+      114,
+      113,
+      108,
+      108,
+      93,
+      92,
+      94,
+      96,
+      92,
+      96,
+      93,
+      99,
+      95,
+      89,
+      91,
+      95,
+      99,
+      87,
+      91,
+      99,
+      94,
+      92,
+      97,
+      91,
+      91,
+      95,
+      96,
+      98,
+      92,
+      92,
+      95,
+      102,
+      88,
+      96,
+      91,
+      90,
+      92,
+      90,
+      92,
+      93,
+      98,
+      95,
+      93,
+      95,
+      97,
+      94,
+      96,
+      94,
+      94,
+      91,
+      95,
+      97
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 23,
+    "resident_packs_start": 23,
+    "seconds": 60,
+    "time_scale_at_end": 1.0,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Node2D",
+          249
+        ],
+        [
+          "Sprite2D",
+          221
+        ],
+        [
+          "CollisionShape2D",
+          62
+        ],
+        [
+          "AnimatedSprite2D",
+          57
+        ],
+        [
+          "Polygon2D",
+          54
+        ],
+        [
+          "CharacterBody2D",
+          52
+        ],
+        [
+          "Label",
+          44
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          10
+        ],
+        [
+          "Node",
+          9
+        ],
+        [
+          "TextureRect",
+          7
+        ],
+        [
+          "Area2D",
+          6
+        ],
+        [
+          "Line2D",
+          5
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "Control",
+          5
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "CanvasLayer",
+          3
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "Camera2D",
+          1
+        ],
+        [
+          "AnimationPlayer",
+          1
+        ],
+        [
+          "LineEdit",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas2491081031684": 3,
+        "_root_canvas335007449088": 53,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24528291159": 3,
+        "_vp_unhandled_key_input24528291159": 1,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_flashes": 2,
+        "combat_feedback_labels": 11,
+        "elite_enemies": 2,
+        "enemies": 47,
+        "enemy_projectiles": 6,
+        "pickups": 125,
+        "player": 1,
+        "player_weapons": 1,
+        "summoned_enemies": 1
+      },
+      "nodes_total": 820,
+      "objects_now": 3428,
+      "scenes_top": [
+        [
+          "res://scenes/Pickup.tscn",
+          125
+        ],
+        [
+          "res://scenes/Enemy.tscn",
+          31
+        ],
+        [
+          "res://scenes/EnemyProjectile.tscn",
+          6
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemyShooter.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemyFlyingRunner.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          2
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1/fan3989_perf_driver.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "res://scenes/LongSpear.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/ElitePoisoned.tscn",
+          1
+        ],
+        [
+          "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+          1
+        ],
+        [
+          "res://scripts/ultimates/classes/knight/long_spear.tscn",
+          1
+        ],
+        [
+          "res://scenes/EliteArmored.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          1
+        ],
+        [
+          "res://scenes/Main.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 24.0
+  },
+  "player_character_id": "knight",
+  "player_weapon_id": "long_spear",
+  "resolution_source": "weapon_profile",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "long_spear"
+}

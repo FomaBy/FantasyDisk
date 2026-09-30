@@ -1,0 +1,71 @@
+{
+  "new_package": {
+    "CHANGELOG-0.3.1.1.md": "77539de8c1f16beca308de215a1f7c3f92971185a7deeb0f58ed65eb1c386f4b",
+    "FantasyDisk-0.3.1.1-macos.dmg": "b57845e7a4f0cf0d78df1cea7b46da3ce92b193d12f228ed5d35241953fd8163",
+    "FantasyDisk-0.3.1.1-windows-setup.exe": "c981cb533ae45de620ee2b760bc19b687add8772689aab7cb78fa805cf6050eb",
+    "SHA256SUMS.txt": "622d8f5ccc7fe8fcb072f02a4173fa49d25ec4f169b17786a1d6a9c7cb479ad5",
+    "fantasydisk_0311_announcement.png": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7",
+    "update-manifest.json": "b77d8887a2d5718729e09e5a679423f3d44d99e1de0759da9887cff279b2e6b7"
+  },
+  "retained_packages": {
+    "./v0.3.1": {
+      "CHANGELOG-0.3.1.md": "9f3b1c6d0fcfe92c908ec12f74cf74308d8f3f52555fc0b743e7074918c89975",
+      "FantasyDisk-0.3.1-macos.dmg": "f391b86f3bd26494723264ad017f8991aa8fd3cb920d60d08b0506b6ac6760ca",
+      "FantasyDisk-0.3.1-windows-setup.exe": "db99a9298a6acbdc545f8545e66b8455c8798351cfc4ba96147af490180c67de",
+      "LOCAL_RELEASE.json": "1807c88de192297b14fab14d94dbebb183bf05d8d6b28ce91a591bdc418b267d",
+      "SHA256SUMS.txt": "ac2e0424ecf26e4de7ba40aef96481a2175387ad0096abb996d702fb7620cbe9",
+      "fantasydisk_031_announcement.png": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7",
+      "update-manifest.json": "6fb982a86c1fdbcbbdb6065b5900404e64cdcf2063ec596658ff818a6ca009bf"
+    },
+    "./archive/v0.3.1-attempt2-165f14aa": {
+      "CHANGELOG-0.3.1.md": "9f3b1c6d0fcfe92c908ec12f74cf74308d8f3f52555fc0b743e7074918c89975",
+      "FantasyDisk-0.3.1-macos.dmg": "d6fc182c82a37545f36ed203f416d0c1385a24d18fc98e8da42ad21121945872",
+      "FantasyDisk-0.3.1-windows-setup.exe": "6d11ae1fe8190c45774bc02d8435d7eb34ccd305f13d3372bc58c6ad7e46e29e",
+      "LOCAL_RELEASE.json": "a264215d6123c86b05dfffc9d3e2e483020fcf6741ca7f1c8b76d29601d0a213",
+      "SHA256SUMS.txt": "7775c739df9112c6dde6d26064cbd871fbf5252fde3bbed3f0270d82e394ea82",
+      "fantasydisk_031_announcement.png": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7",
+      "update-manifest.json": "315821ff4b73ecbfcb17204d8d044bc8d829b6dade1ae380dba07543569e1ad1"
+    },
+    "./archive/v0.3.1-attempt1-448a0cc1": {
+      "CHANGELOG-0.3.1.md": "399dceb48a0d76644eaaa4110b9ffd46223862aee4fafc01f3c8588b0901e09c",
+      "FantasyDisk-0.3.1-macos.dmg": "6465fb7c436668b981fc668e1b7683d4b755cff80d13e886e5c37e12e37a9d0a",
+      "FantasyDisk-0.3.1-windows-setup.exe": "375c5290040ac349a1e75cd2e09e3ddd520216b3ddeadfab758d413fb12dafed",
+      "LOCAL_RELEASE.json": "a39d705dcb1f49e0cd3626b47c7894eeef5b2a9412c86eebc054787d615f060f",
+      "SHA256SUMS.txt": "a1cc64e84dad49e7f4267e98167326cd0ece5a8c230d60673e11e0427c0f5206",
+      "fantasydisk_031_announcement.png": "d9ac6ea81de2fbdee68eb2ba849287078c32e9fd3cda04332bdcfaee1a03de9e",
+      "update-manifest.json": "a81d1149044c9ce8371f4260d8449829df52de5358cfb66378174a924fc1e1f6"
+    },
+    "./v0.3.2": {
+      "CHANGELOG-0.3.2.md": "f110592906eacccc625f0ed47518eac3b1b0eccc539ec8f25ab0339397646cb2",
+      "FantasyDisk-0.3.2-macos.dmg": "d981f7f2b8a27f1fd564ca10d36c135d1211f61af8caa96080c67adfe761eab5",
+      "FantasyDisk-0.3.2-windows-setup.exe": "8b7b3e7d1ce3ce6d935e50ff7b16962606772d416e5957e4847eceb305c8131f",
+      "LOCAL_RELEASE.json": "f5a16d18790be9c10e1ca7f6f17b4def5aa1c5e0b35c13127e00b9f01aedf632",
+      "SHA256SUMS.txt": "00d198dc8809868aae742d2cab575ff2314cc4e6fb7ff9e04d0bb72d000160e6",
+      "fantasydisk_032_announcement.png": "7a890effc71460cda7769902c4adb7f8da217ccf4f7f2a935ed7d30e580c0867",
+      "update-manifest.json": "1bbb0c9bea4720d338683f4a1099862c97ce52c79266c415ca75d777a74f623f"
+    },
+    "./v0.3.0": {
+      "CANDIDATE_PROVENANCE.json": "f43e9ae7d9912de86530e1acabadf02f531919a206a31bcbd866df7ea1ef3808",
+      "CHANGELOG-0.3.0.md": "64bb498494c5e8d00f829bca28a479a3a634670abe5c22a645b9b8c63cbf9b6e",
+      "FantasyDisk-0.3.0-macos.dmg": "3864b4f8b72eef88f3ebad060732015a0536d7539ab3ff6ececeae98ac21d995",
+      "FantasyDisk-0.3.0-windows-setup.exe": "adafb91f1f6e72578c1f2379cefdd636a2de133fa534b3e5be1a765e27082a53",
+      "LOCAL_RELEASE.json": "8e938ab43d7f668041d94cf70e69c1a3a0beb9e217108289c820ddea43ce5b0c",
+      "SHA256SUMS.txt": "aa6338aacee636ce665dea4cb24b3368dc6e6f162d1a88219c32ecdf59d25c52",
+      "fantasydisk_030_announcement.png": "ad2e8bf1789fccc9139cde2218cd0f68840fb8a6d32bcb071e3f97639dab824c",
+      "update-manifest.json": "f5beb3f29be917fc5cc72e6e7c66e605579b90d2a76fbdf40b618f3859eee5e4"
+    }
+  },
+  "collisions": [
+    {
+      "retained": "./v0.3.1/fantasydisk_031_announcement.png",
+      "new": "fantasydisk_0311_announcement.png",
+      "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+    },
+    {
+      "retained": "./archive/v0.3.1-attempt2-165f14aa/fantasydisk_031_announcement.png",
+      "new": "fantasydisk_0311_announcement.png",
+      "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+    }
+  ],
+  "all_built_artifacts_differ": true
+}

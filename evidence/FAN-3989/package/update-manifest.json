@@ -1,0 +1,20 @@
+{
+  "assets": {
+    "macos": {
+      "name": "FantasyDisk-0.3.1.1-macos.dmg",
+      "sha256": "b57845e7a4f0cf0d78df1cea7b46da3ce92b193d12f228ed5d35241953fd8163",
+      "size": 462905398,
+      "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1.1/FantasyDisk-0.3.1.1-macos.dmg"
+    },
+    "windows": {
+      "name": "FantasyDisk-0.3.1.1-windows-setup.exe",
+      "sha256": "c981cb533ae45de620ee2b760bc19b687add8772689aab7cb78fa805cf6050eb",
+      "size": 438457157,
+      "url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/download/v0.3.1.1/FantasyDisk-0.3.1.1-windows-setup.exe"
+    }
+  },
+  "minimum_supported_version": "0.2.2",
+  "release_url": "https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.1.1",
+  "schema_version": 1,
+  "version": "0.3.1.1"
+}

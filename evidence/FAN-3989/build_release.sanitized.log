@@ -1,0 +1,256 @@
+==> Worktree из tag v0.3.1.1
+Preparing worktree (detached HEAD 01ee13687)
+Updating files:   6% (3484/57881)
+Updating files:   7% (4052/57881)
+Updating files:   8% (4631/57881)
+Updating files:   9% (5210/57881)
+Updating files:  10% (5789/57881)
+Updating files:  11% (6367/57881)
+Updating files:  12% (6946/57881)
+Updating files:  13% (7525/57881)
+Updating files:  14% (8104/57881)
+Updating files:  15% (8683/57881)
+Updating files:  16% (9261/57881)
+Updating files:  16% (9660/57881)
+Updating files:  17% (9840/57881)
+Updating files:  18% (10419/57881)
+Updating files:  19% (10998/57881)
+Updating files:  20% (11577/57881)
+Updating files:  21% (12156/57881)
+Updating files:  22% (12734/57881)
+Updating files:  23% (13313/57881)
+Updating files:  24% (13892/57881)
+Updating files:  25% (14471/57881)
+Updating files:  26% (15050/57881)
+Updating files:  27% (15628/57881)
+Updating files:  28% (16207/57881)
+Updating files:  29% (16786/57881)
+Updating files:  29% (17364/57881)
+Updating files:  30% (17365/57881)
+Updating files:  31% (17944/57881)
+Updating files:  32% (18522/57881)
+Updating files:  33% (19101/57881)
+Updating files:  34% (19680/57881)
+Updating files:  35% (20259/57881)
+Updating files:  36% (20838/57881)
+Updating files:  37% (21416/57881)
+Updating files:  38% (21995/57881)
+Updating files:  39% (22574/57881)
+Updating files:  40% (23153/57881)
+Updating files:  41% (23732/57881)
+Updating files:  42% (24311/57881)
+Updating files:  43% (24889/57881)
+Updating files:  44% (25468/57881)
+Updating files:  45% (26047/57881)
+Updating files:  46% (26626/57881)
+Updating files:  46% (26795/57881)
+Updating files:  47% (27205/57881)
+Updating files:  48% (27783/57881)
+Updating files:  49% (28362/57881)
+Updating files:  50% (28941/57881)
+Updating files:  51% (29520/57881)
+Updating files:  52% (30099/57881)
+Updating files:  53% (30677/57881)
+Updating files:  54% (31256/57881)
+Updating files:  55% (31835/57881)
+Updating files:  56% (32414/57881)
+Updating files:  57% (32993/57881)
+Updating files:  58% (33571/57881)
+Updating files:  59% (34150/57881)
+Updating files:  60% (34729/57881)
+Updating files:  61% (35308/57881)
+Updating files:  62% (35887/57881)
+Updating files:  63% (36466/57881)
+Updating files:  64% (37044/57881)
+Updating files:  65% (37623/57881)
+Updating files:  66% (38202/57881)
+Updating files:  66% (38552/57881)
+Updating files:  67% (38781/57881)
+Updating files:  68% (39360/57881)
+Updating files:  69% (39938/57881)
+Updating files:  70% (40517/57881)
+Updating files:  71% (41096/57881)
+Updating files:  72% (41675/57881)
+Updating files:  73% (42254/57881)
+Updating files:  74% (42832/57881)
+Updating files:  75% (43411/57881)
+Updating files:  76% (43990/57881)
+Updating files:  77% (44569/57881)
+Updating files:  78% (45148/57881)
+Updating files:  79% (45726/57881)
+Updating files:  79% (45852/57881)
+Updating files:  80% (46305/57881)
+Updating files:  81% (46884/57881)
+Updating files:  82% (47463/57881)
+Updating files:  83% (48042/57881)
+Updating files:  83% (48063/57881)
+Updating files:  83% (48546/57881)
+Updating files:  84% (48621/57881)
+Updating files:  84% (48845/57881)
+Updating files:  85% (49199/57881)
+Updating files:  86% (49778/57881)
+Updating files:  86% (49959/57881)
+Updating files:  87% (50357/57881)
+Updating files:  87% (50816/57881)
+Updating files:  88% (50936/57881)
+Updating files:  88% (51263/57881)
+Updating files:  89% (51515/57881)
+Updating files:  89% (51652/57881)
+Updating files:  89% (51986/57881)
+Updating files:  90% (52093/57881)
+Updating files:  91% (52672/57881)
+Updating files:  92% (53251/57881)
+Updating files:  92% (53822/57881)
+Updating files:  93% (53830/57881)
+Updating files:  94% (54409/57881)
+Updating files:  95% (54987/57881)
+Updating files:  95% (55448/57881)
+Updating files:  96% (55566/57881)
+Updating files:  97% (56145/57881)
+Updating files:  98% (56724/57881)
+Updating files:  99% (57303/57881)
+Updating files: 100% (57881/57881)
+Updating files: 100% (57881/57881), done.
+HEAD is now at 01ee13687 Merge pull request #370 from FomaBy/agent/claude-dev-opus-b/ac4c20c5487d
+==> Проверка точных build inputs внутри tag v0.3.1.1
+==> Assembling canonical release notes from source-pinned fragments
+OK: assembled canonical changelog from 3 fragments
+==> Проверка версии tag v0.3.1.1 и export presets
+==> Проверка release scope tag v0.3.1.1
+release scope OK: 0.3.1.1, 0 entries
+==> Проверка визуальных утверждений release notes tag v0.3.1.1
+OK: 0.3.1.1 release notes carry no unbacked visual claims
+==> Проверка честной маркировки macOS-канала в клиенте tag v0.3.1.1
+==> Feedback delivery
+    production relay не задан; player feedback сохраняется в user://feedback
+==> Импорт ресурсов (headless)
+==> Экспорт macOS (.app в zip; подпись будет последним изменением bundle)
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] export | Started Exporting for macOS (3 steps)
+[   0% ] export | Creating app bundle
+[  25% ] export | Making PKG
+[   0% ] savepack | Started Packing (102 steps)
+    [27034 savepack 'Storing File' lines omitted]
+[ DONE ] savepack
+
+[  75% ] export | Making ZIP
+[ DONE ] export
+
+==> Финализация и подпись готового .app
+==> Минималистичный Finder layout: две системные иконки и одна стрелка
+<CGColor 0x104c32420> [<CGColorSpace 0x104c241f0> (kCGColorSpaceDeviceRGB)] headroom = 1.000000 ( 0.968627 0.968627 0.968627 1 )
+    Подпись Developer ID Application (hardened runtime + timestamp)
+/tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app: replacing existing signature
+/tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app: valid on disk
+/tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement
+==> Apple notarization + stapling приложения
+    Apple notarization accepted FantasyDisk.app
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app
+The staple and validate action worked!
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app
+The validate action worked!
+/tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app: valid on disk
+/tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement
+/tmp/fantasydisk-build-NhXp45/src/build/macos-stage/FantasyDisk.app: accepted
+source=Notarized Developer ID
+==> Создание DMG с ярлыком Applications и стрелкой
+
+hdiutil: verify: checksum of "/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg" is VALID
+DMG layout OK: only FantasyDisk.app -> Applications, with one arrow (FantasyDisk 0.3.1.1)
+/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg: valid on disk
+/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg: satisfies its Designated Requirement
+==> Apple notarization + stapling DMG
+    Apple notarization accepted FantasyDisk DMG
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg
+The staple and validate action worked!
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg
+The validate action worked!
+/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg: valid on disk
+/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg: satisfies its Designated Requirement
+/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-macos.dmg: accepted
+source=Notarized Developer ID
+==> Экспорт Windows (x86_64, embed_pck)
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] savepack | Started Packing (102 steps)
+    [27034 savepack 'Storing File' lines omitted]
+[ DONE ] savepack
+
+==> NSIS-инсталлер
+Command line defined: "VERSION=0.3.1.1"
+Command line defined: "SRC_EXE=/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-Windows.exe"
+Command line defined: "OUT_FILE=/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-windows-setup.exe"
+Processing script file: "/tmp/fantasydisk-build-NhXp45/src/tools/windows_installer.nsi" (UTF8)
+
+Processed 1 file, writing output (x86-unicode):
+
+Output: "/tmp/fantasydisk-build-NhXp45/src/build/FantasyDisk-0.3.1.1-windows-setup.exe"
+Install: 2 pages (128 bytes), 1 section (4120 bytes), 13 instructions (364 bytes), 68 strings (2690 bytes), 1 language table (230 bytes).
+Uninstall: 2 pages (192 bytes), 1 section (4120 bytes), 9 instructions (252 bytes), 58 strings (2010 bytes), 1 language table (218 bytes).
+
+Using zlib compression.
+
+EXE header size:               38912 / 39936 bytes
+Install code:                   1276 / 5876 bytes
+Install data:              438415654 / 532993708 bytes
+Uninstall code+data:            1311 / 1808 bytes
+CRC (0xCADE8F88):                  4 / 4 bytes
+
+Total size:                438457157 / 533041332 bytes (82.2%)
+==> Верификация NSIS CRC (точный алгоритм exehead: crc32 файла с байта 512 до поля CRC)
+NSIS CRC OK (firstheader @ 38912, crc @ 438457153)
+==> Read-only mount macOS DMG для проверки подписи, layout и secret scan
+/tmp/fantasydisk-build-NhXp45/src/build/secret-scan-dmg/FantasyDisk.app: valid on disk
+/tmp/fantasydisk-build-NhXp45/src/build/secret-scan-dmg/FantasyDisk.app: satisfies its Designated Requirement
+Processing: /tmp/fantasydisk-build-NhXp45/src/build/secret-scan-dmg/FantasyDisk.app
+The validate action worked!
+/tmp/fantasydisk-build-NhXp45/src/build/secret-scan-dmg/FantasyDisk.app: accepted
+source=Notarized Developer ID
+==> Secret scan staged player payloads до публикации
+Release secret scan passed (3 artifact root(s)).
+==> Публикация проверенных staged artifacts
+==> SHA256SUMS.txt (контроль порчи при передаче файлов)
+b57845e7a4f0cf0d78df1cea7b46da3ce92b193d12f228ed5d35241953fd8163  FantasyDisk-0.3.1.1-macos.dmg
+c981cb533ae45de620ee2b760bc19b687add8772689aab7cb78fa805cf6050eb  FantasyDisk-0.3.1.1-windows-setup.exe
+==> Публичный update-manifest.json для клиента 0.2.2+
+/private/tmp/fantasydisk-build-NhXp45/src/build/release-package/update-manifest.json
+==> Постоянная локальная копия, Godot snapshot и установка macOS
+{
+  "status": "verified",
+  "version": "0.3.1.1",
+  "local_release": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1",
+  "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+  "macos_app": "/Applications/FantasyDisk.app",
+  "tag_commit": "01ee13687da712342964bcafebdb79c8a38b7d1e",
+  "candidate": null,
+  "macos_channel": "signed"
+}
+==> Готово:
+total 1760704
+-rw-r--r--@ 1 sergeyfomin  wheel   313B Sep 30 10:38 CHANGELOG-0.3.1.1.md
+-rw-r--r--@ 1 sergeyfomin  wheel    94K Sep 30 10:38 fantasydisk_0311_announcement.png
+-rw-r--r--@ 1 sergeyfomin  wheel   441M Sep 30 10:38 FantasyDisk-0.3.1.1-macos.dmg
+-rw-r--r--@ 1 sergeyfomin  wheel   418M Sep 30 10:38 FantasyDisk-0.3.1.1-windows-setup.exe
+-rw-r--r--@ 1 sergeyfomin  wheel   200B Sep 30 10:38 SHA256SUMS.txt
+-rw-r--r--@ 1 sergeyfomin  wheel   809B Sep 30 10:38 update-manifest.json

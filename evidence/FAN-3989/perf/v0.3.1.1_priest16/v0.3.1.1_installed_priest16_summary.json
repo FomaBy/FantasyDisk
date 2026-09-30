@@ -1,0 +1,53 @@
+{
+  "app": "/Applications/FantasyDisk.app",
+  "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_priest16/clone/FantasyDisk.app",
+  "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+  "source_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+  "clone_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+  "runs": [
+    {
+      "pair": "priest/priest_reliquary",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_priest16/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_priest16/v0.3.1.1_installed_priest16__priest__priest_reliquary.json",
+        "--label=v0.3.1.1_installed_priest16",
+        "--class=priest",
+        "--weapon=priest_reliquary",
+        "--seconds=60",
+        "--cast-every=16"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 68.5,
+      "report": "v0.3.1.1_installed_priest16__priest__priest_reliquary.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "4/4",
+      "scenes": [
+        "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 105.75,
+        "low_1pct_fps": 95.0,
+        "worst_second_fps": 95.0,
+        "frames_over_50ms": 0,
+        "frames_over_100ms": 0,
+        "longest_frame_ms": 36.794,
+        "peak_texture_mib": 1419.43548488617,
+        "objects_peak": 5765,
+        "objects_min": 3356,
+        "objects_first_second": 3979,
+        "objects_last_second": 4576,
+        "alive_at_end": 47,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": ""
+      }
+    }
+  ]
+}

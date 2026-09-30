@@ -1,0 +1,326 @@
+{
+  "issue": "FAN-3989",
+  "version": "0.3.1.1",
+  "source": {
+    "tag": "v0.3.1.1",
+    "tag_object": "a9e08364c0aaa0e588744d1dbc30b68e233da694",
+    "tag_commit": "01ee13687da712342964bcafebdb79c8a38b7d1e",
+    "tag_tree": "039b17c52480bb27c28d723248a8b85d4418bb58",
+    "ls_remote_unchanged_across_build": true,
+    "ls_remote": [
+      "01ee13687da712342964bcafebdb79c8a38b7d1e\trefs/heads/dev",
+      "0a8381170731b62e569d88ef34892af1b3a54ba4\trefs/heads/main",
+      "a9e08364c0aaa0e588744d1dbc30b68e233da694\trefs/tags/v0.3.1.1",
+      "01ee13687da712342964bcafebdb79c8a38b7d1e\trefs/tags/v0.3.1.1^{}"
+    ]
+  },
+  "build": {
+    "command": "tools/build_release.sh 0.3.1.1 (FANTASYDISK_MACOS_CHANNEL=signed, MACOS_NOTARY_PROFILE=FantasyDiskRelease, MACOS_SIGN_IDENTITY resolved locally) via evidence/FAN-3989/run_build.sh",
+    "started_utc": "2026-09-30T07:29:29Z",
+    "ended_utc": "2026-09-30T07:41:02Z",
+    "exit_code": 0,
+    "sanitized_log": "build_release.sanitized.log",
+    "sanitized_log_sha256": "792a0aefbb899f011634421ab75ade6809483f10e852383783f931495b89ce7c"
+  },
+  "retained_package": {
+    "path": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1",
+    "macos_channel": "signed",
+    "tag_commit": "01ee13687da712342964bcafebdb79c8a38b7d1e",
+    "source_tree_sha256": "0613fb782fa04d483556ab2e6b84e288fb8272b316c3af434c93e02e7066d8d1",
+    "inventory": {
+      "CHANGELOG-0.3.1.1.md": {
+        "size": 313,
+        "sha256": "77539de8c1f16beca308de215a1f7c3f92971185a7deeb0f58ed65eb1c386f4b"
+      },
+      "FantasyDisk-0.3.1.1-macos.dmg": {
+        "size": 462905398,
+        "sha256": "b57845e7a4f0cf0d78df1cea7b46da3ce92b193d12f228ed5d35241953fd8163"
+      },
+      "FantasyDisk-0.3.1.1-windows-setup.exe": {
+        "size": 438457157,
+        "sha256": "c981cb533ae45de620ee2b760bc19b687add8772689aab7cb78fa805cf6050eb"
+      },
+      "LOCAL_RELEASE.json": {
+        "size": 1965,
+        "sha256": "c267d322ce06b86e8673b086e238564ab1f11b82df112f0eefebd4522846191c"
+      },
+      "SHA256SUMS.txt": {
+        "size": 200,
+        "sha256": "622d8f5ccc7fe8fcb072f02a4173fa49d25ec4f169b17786a1d6a9c7cb479ad5"
+      },
+      "fantasydisk_0311_announcement.png": {
+        "size": 95930,
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      },
+      "update-manifest.json": {
+        "size": 809,
+        "sha256": "b77d8887a2d5718729e09e5a679423f3d44d99e1de0759da9887cff279b2e6b7"
+      }
+    },
+    "inventory_matches_LOCAL_RELEASE": true,
+    "LOCAL_RELEASE_sha256": "c267d322ce06b86e8673b086e238564ab1f11b82df112f0eefebd4522846191c",
+    "project_snapshot_equals_git_archive": true,
+    "local_release_verify": {
+      "status": "verified",
+      "version": "0.3.1.1",
+      "local_release": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.1",
+      "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+      "macos_app": "/Applications/FantasyDisk.app",
+      "tag_commit": "01ee13687da712342964bcafebdb79c8a38b7d1e",
+      "candidate": null,
+      "macos_channel": "signed"
+    }
+  },
+  "hash_difference": {
+    "all_built_artifacts_differ_from_every_retained_package": true,
+    "collisions": [
+      {
+        "retained": "./v0.3.1/fantasydisk_031_announcement.png",
+        "new": "fantasydisk_0311_announcement.png",
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      },
+      {
+        "retained": "./archive/v0.3.1-attempt2-165f14aa/fantasydisk_031_announcement.png",
+        "new": "fantasydisk_0311_announcement.png",
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      }
+    ]
+  },
+  "preservation": {
+    "summary": "# Retained-release preservation (recursive SHA-256 of every file under $local_root/releases except .DS_Store)\nbefore build: 590497 files, manifest sha256 32b326f71d894513fbe9d31cc742437ff18ad9e571cce4bd164cfc2649760349\nafter build (excluding the new v0.3.1.1/): 590497 files, manifest sha256 32b326f71d894513fbe9d31cc742437ff18ad9e571cce4bd164cfc2649760349\ndiff before/after: 0 bytes (0 = byte-identical)\n\nper-package file counts and per-package manifest sha256 (before):\n  v0.3.1: 160109 files, d9e2005d34777fcac19f61295733d489c392c3e48d4b0da40942ce4d8bdb09f8\n  v0.3.2: 114453 files, 14e215e897ebafc632d5a72e9c88d6d587dd55f635939235620f5ddfd1a4c773\n  v0.3.0: 43165 files, ca7189a44a6047134e88c84daaeadd90979d95b1359886255a88d002890abbd0\n  archive/v0.3.1-attempt1-448a0cc1: 114341 files, bc4b945dd262b82e55dac070f90da7654e734991443474c4785148a5daafbbd0\n  archive/v0.3.1-attempt2-165f14aa: 115269 files, f1c8f8cc22056781de99b2dad198a53651cb1b2099dc901c261d4b849b66ce9b\n  v0.3.0-godot-registration-20260908T0537Z: 3 files, 3bf72ce3e921a214497d040600edab473514221af41c26fc1ed361d85c5501f7\n  v0.3.0-rejected-7f35f010: 43154 files, c94d87fcb1940a1b03dd0b83e075ac467cb9cda508f3c0e23f4576addcc4b88b\n  v0.3.0-snapshot-quarantine-20260907T0358Z: 2 files, 606fb892e0e402ab08eb83e808c48e76325147add23ee9aca7d8b955d8bfc178\n",
+    "diff_after_build_bytes": 0,
+    "diff_final_bytes": 0
+  },
+  "installed_app": {
+    "path": "/Applications/FantasyDisk.app",
+    "files": {
+      "./Contents/CodeResources": "23ca4a3aa280b907a9f5d09e9dccb9fc49f66debc9b99cd2ffc76afe60d09e1c",
+      "./Contents/Info.plist": "a7df37471a31f02ed774348a1179043832b0eae09e4f6b3a36cb05190b4de5f6",
+      "./Contents/MacOS/FantasyDisk": "520ced984afc804fc31fb1a3efb86dc78c6ab283195695c60b946c002da590e9",
+      "./Contents/PkgInfo": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "./Contents/Resources/FantasyDisk.pck": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+      "./Contents/Resources/FantasyDiskDmgBackground.png": "dfad497a307c57c436845358b5323053703385ac132d276a25e7da0e098b71b3",
+      "./Contents/Resources/PrivacyInfo.xcprivacy": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "./Contents/Resources/icon.icns": "c6114f1389b6fd5fc66d70a5a28e3d8b3b332001768390bb10aef1e35337c63f",
+      "./Contents/_CodeSignature/CodeResources": "b19766dca50607f114ba2efe3ae4b48a66f322eec8040e4b0bc9b2f8d3e4018a"
+    },
+    "equals_dmg_app": true,
+    "trust_checks": "package/trust_checks.txt",
+    "main_menu": {
+      "saved": true,
+      "project_version": "0.3.1.1",
+      "executable": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/menu/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+      "labels": "[\"/root/Main/@CanvasLayer@21/MainMenuScreen/MainMenuVersionLabel: v0.3.1.1\"]",
+      "capture": "main_menu/main_menu_v0.3.1.1_installed.png",
+      "pck_sha256_of_clone": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917"
+    }
+  },
+  "pck": {
+    "macos_installed_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+    "macos_entries": 27034,
+    "presentation_documents": 17,
+    "forbidden_entries_macos": 0,
+    "forbidden_entries_windows": 0,
+    "windows_embedded": {
+      "exe_size": 532993696,
+      "pck_offset": 109050880,
+      "pck_size": 423942804,
+      "pck_sha256": "4d7d6923f2ee12e5ad2db941abcc941db8426d062400e54996d28d99174d1df8",
+      "entry_count": 27034
+    },
+    "windows_exe_sha256": "9dba8666dfba1fb46d47273fb20ecccc0ec6b4f4a8c4194f1181ab4f50e3f8b4",
+    "tables_identical_by_path": true,
+    "content_sample_md5_mismatches": []
+  },
+  "installed_app_probe": {
+    "pass": true,
+    "duration_seconds": 159.5,
+    "probe_input_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+    "headless_pairs_passing": "51/51",
+    "resolution_sources": {
+      "weapon_profile": 51
+    },
+    "begin_ok_all": true,
+    "scene_paths_class_owned_all": true,
+    "mutations": [
+      {
+        "name": "presentation_document_removed",
+        "exit_code": 1,
+        "pairs_passing": 48,
+        "problems": []
+      },
+      {
+        "name": "executor_remap_removed",
+        "exit_code": 1,
+        "pairs_passing": 50,
+        "problems": []
+      }
+    ],
+    "player_path": {
+      "pairs_passing": 51,
+      "pairs": 51,
+      "crashes": [],
+      "captures": 17
+    },
+    "presentation_captures": [
+      "assassin__chakrams.png",
+      "berserk__sword.png",
+      "biologist__biologist_spore_lens.png",
+      "chemist__blast_powder.png",
+      "dark_mage__dark_book.png",
+      "doctor__restore_potion.png",
+      "druid__summon_amulet.png",
+      "elementalist__elementalist_orb_ring.png",
+      "engineer__engineer_sentry_wrench.png",
+      "guitarist__electric_guitar.png",
+      "knight__long_spear.png",
+      "priest__priest_reliquary.png",
+      "ranger__moon_crossbow.png",
+      "robot__robot_magnetic_anchor.png",
+      "sniper__sniper_deadeye_rifle.png",
+      "soldier__soldier_rifle.png",
+      "thief__thief_coin_pouch.png"
+    ]
+  },
+  "perf": {},
+  "cold_start": {
+    "v0.3.1.1_installed": {
+      "runs": [
+        {
+          "run": 1,
+          "log": "v0.3.1.1_installed_run1.log",
+          "first_frame_s": 7.698
+        },
+        {
+          "run": 2,
+          "log": "v0.3.1.1_installed_run2.log",
+          "first_frame_s": 5.888
+        },
+        {
+          "run": 3,
+          "log": "v0.3.1.1_installed_run3.log",
+          "first_frame_s": 6.16
+        },
+        {
+          "run": 4,
+          "log": "v0.3.1.1_installed_run4.log",
+          "first_frame_s": 6.088
+        },
+        {
+          "run": 5,
+          "log": "v0.3.1.1_installed_run5.log",
+          "first_frame_s": 5.884
+        }
+      ],
+      "median_s": 6.088,
+      "min_s": 5.884,
+      "max_s": 7.698
+    },
+    "v0.3.1_reference": {
+      "runs": [
+        {
+          "run": 1,
+          "log": "v0.3.1_reference_run1.log",
+          "first_frame_s": 8.229
+        },
+        {
+          "run": 2,
+          "log": "v0.3.1_reference_run2.log",
+          "first_frame_s": 5.839
+        },
+        {
+          "run": 3,
+          "log": "v0.3.1_reference_run3.log",
+          "first_frame_s": 6.334
+        },
+        {
+          "run": 4,
+          "log": "v0.3.1_reference_run4.log",
+          "first_frame_s": 5.725
+        },
+        {
+          "run": 5,
+          "log": "v0.3.1_reference_run5.log",
+          "first_frame_s": 5.852
+        }
+      ],
+      "median_s": 5.852,
+      "min_s": 5.725,
+      "max_s": 8.229
+    }
+  },
+  "saves": {
+    "user_data_dir": "~/Library/Application Support/Godot/app_userdata/FantasyDisk (logs/, shader_cache/, vulkan/ excluded)",
+    "files": 5628,
+    "unchanged_after_install_and_launch_smoke": true,
+    "unchanged_after_all_measurements": true
+  },
+  "transfer_fan3990": {
+    "issue": "FAN-3990",
+    "issue_id": "01a0efe2-6f5e-7376-aaf9-32ac11c08f09",
+    "comment_id": "01a0f146-6947-72b8-bf27-491c999bbd4d",
+    "created_at": "2026-09-30T07:45:18Z",
+    "attachments": [
+      {
+        "id": "01a0f144-9520-7c62-a3bf-ee97d040e39c",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-aa",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f144-b822-7d57-b20b-187d1b3802af",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ab",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f144-de6d-7af5-b16d-fa2b39645ed3",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ac",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f145-1946-7e7f-aa50-d9c3ba01c051",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ad",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f145-5904-7887-98d3-cc6b80d05a4b",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ae",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f145-9c6a-7467-9dc1-dfd118edb43d",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-af",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f145-e48c-78c3-baef-7cde9ddfed05",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ag",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f146-2fb2-7b1e-8278-d4b12966952b",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ah",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f146-6414-72bc-9069-c12bea0243b5",
+        "filename": "FantasyDisk-0.3.1.1-windows-setup.exe.part-ai",
+        "content_type": "application/octet-stream"
+      },
+      {
+        "id": "01a0f146-666d-76a0-948f-ee04fe868ba9",
+        "filename": "PARTS.sha256",
+        "content_type": "text/plain; charset=utf-8"
+      },
+      {
+        "id": "01a0f146-676b-72b0-ba0b-816c7f55c74e",
+        "filename": "SHA256SUMS.txt",
+        "content_type": "text/plain; charset=utf-8"
+      },
+      {
+        "id": "01a0f146-684e-7990-b1b4-c1fd9812e017",
+        "filename": "update-manifest.json",
+        "content_type": "application/json"
+      }
+    ]
+  }
+}

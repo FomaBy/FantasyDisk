@@ -1,0 +1,2 @@
+b57845e7a4f0cf0d78df1cea7b46da3ce92b193d12f228ed5d35241953fd8163  FantasyDisk-0.3.1.1-macos.dmg
+c981cb533ae45de620ee2b760bc19b687add8772689aab7cb78fa805cf6050eb  FantasyDisk-0.3.1.1-windows-setup.exe

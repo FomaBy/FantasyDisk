@@ -1,0 +1,66 @@
+{
+  "v0.3.1.1_installed": {
+    "runs": [
+      {
+        "run": 1,
+        "log": "v0.3.1.1_installed_run1.log",
+        "first_frame_s": 7.698
+      },
+      {
+        "run": 2,
+        "log": "v0.3.1.1_installed_run2.log",
+        "first_frame_s": 5.888
+      },
+      {
+        "run": 3,
+        "log": "v0.3.1.1_installed_run3.log",
+        "first_frame_s": 6.16
+      },
+      {
+        "run": 4,
+        "log": "v0.3.1.1_installed_run4.log",
+        "first_frame_s": 6.088
+      },
+      {
+        "run": 5,
+        "log": "v0.3.1.1_installed_run5.log",
+        "first_frame_s": 5.884
+      }
+    ],
+    "median_s": 6.088,
+    "min_s": 5.884,
+    "max_s": 7.698
+  },
+  "v0.3.1_reference": {
+    "runs": [
+      {
+        "run": 1,
+        "log": "v0.3.1_reference_run1.log",
+        "first_frame_s": 8.229
+      },
+      {
+        "run": 2,
+        "log": "v0.3.1_reference_run2.log",
+        "first_frame_s": 5.839
+      },
+      {
+        "run": 3,
+        "log": "v0.3.1_reference_run3.log",
+        "first_frame_s": 6.334
+      },
+      {
+        "run": 4,
+        "log": "v0.3.1_reference_run4.log",
+        "first_frame_s": 5.725
+      },
+      {
+        "run": 5,
+        "log": "v0.3.1_reference_run5.log",
+        "first_frame_s": 5.852
+      }
+    ],
+    "median_s": 5.852,
+    "min_s": 5.725,
+    "max_s": 8.229
+  }
+}

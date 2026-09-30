@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1_reference: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+cast @3s: activated=true failure= scene= alive=48 objects=3235
+cast @11s: activated=true failure= scene= alive=48 objects=3205
+cast @19s: activated=true failure= scene= alive=48 objects=3057
+cast @27s: activated=true failure= scene= alive=48 objects=3089
+cast @35s: activated=true failure= scene= alive=48 objects=3136
+cast @43s: activated=true failure= scene= alive=48 objects=3113
+cast @51s: activated=true failure= scene= alive=48 objects=3161
+cast @59s: activated=true failure= scene= alive=48 objects=3191
+phase p2_48_enemies_ultimates: 60 s, avg 102 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1078.8 ms, peak texture 1473 MiB, objects peak 3563 min 2955 (first s 3237, last s 3558), resident packs 28 -> 28, alive first s 40 last s 47
+| v0.3.1_reference | druid/summon_amulet | 60 | 102 | 24 | 24 | 1 | 1 | 1078.8 | 1473 | 3563 | 2955 | 3237 | 3558 | 28 -> 28 | casts 8/8 |
+perf_ultimate_driver: v0.3.1_reference druid/summon_amulet pass=true source=legacy_class_fallback casts=8/8 scenes=[""] failures=[]

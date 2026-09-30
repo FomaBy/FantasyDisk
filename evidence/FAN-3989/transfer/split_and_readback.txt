@@ -1,0 +1,12 @@
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-aa
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-ab
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-ac
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-ad
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-ae
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-af
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-ag
+50000000 FantasyDisk-0.3.1.1-windows-setup.exe.part-ah
+38457157 FantasyDisk-0.3.1.1-windows-setup.exe.part-ai
+rejoin sha256: c981cb533ae45de620ee2b760bc19b687add8772689aab7cb78fa805cf6050eb
+readback PARTS.sha256: 56ac0d13992dcda704cc1c91a37a2e85f858bd2240c748e5c1e4b0ef0d67d63a
+readback part-ai: a1b4bccbf7b48fedce76c2224b15424e5438c8b03ab3103eda17f0a842774422

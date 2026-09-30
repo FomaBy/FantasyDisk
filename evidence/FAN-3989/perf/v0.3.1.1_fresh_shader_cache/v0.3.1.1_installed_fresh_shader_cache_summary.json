@@ -1,0 +1,53 @@
+{
+  "app": "/Applications/FantasyDisk.app",
+  "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_fresh_shader_cache/clone/FantasyDisk.app",
+  "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+  "source_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+  "clone_pck_sha256": "0e4162544fe36ef62037278f58d9f3efd78a788dc85f54f2259723de47dff917",
+  "runs": [
+    {
+      "pair": "berserk/sword",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_fresh_shader_cache/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3989-4391ee2b2092/workdir/scratch/perf/v0.3.1.1_fresh_shader_cache/v0.3.1.1_installed_fresh_shader_cache__berserk__sword.json",
+        "--label=v0.3.1.1_installed_fresh_shader_cache",
+        "--class=berserk",
+        "--weapon=sword",
+        "--seconds=30",
+        "--cast-every=8"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 38.0,
+      "report": "v0.3.1.1_installed_fresh_shader_cache__berserk__sword.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "4/4",
+      "scenes": [
+        "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"
+      ],
+      "phase": {
+        "seconds": 30,
+        "avg_fps": 107.566666666667,
+        "low_1pct_fps": 99.0,
+        "worst_second_fps": 99.0,
+        "frames_over_50ms": 0,
+        "frames_over_100ms": 0,
+        "longest_frame_ms": 38.729,
+        "peak_texture_mib": 1403.95786571503,
+        "objects_peak": 6251,
+        "objects_min": 2953,
+        "objects_first_second": 3071,
+        "objects_last_second": 5588,
+        "alive_at_end": 0,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": ""
+      }
+    }
+  ]
+}
