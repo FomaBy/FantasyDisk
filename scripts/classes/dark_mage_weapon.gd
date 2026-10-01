@@ -100,8 +100,12 @@ func _fire_dark_chain_burst(owner_node: Node2D, target: Node2D, direction: Vecto
 func _launch_dark_chain_hop(from_position: Vector2, chain: Array, hop_index: int, damage_value: float) -> void:
 	if _effects_shutdown or hop_index >= chain.size():
 		return
-	var enemy_node := chain[hop_index] as Node2D
-	if enemy_node == null or not is_instance_valid(enemy_node):
+	# FAN-3992: цепь хранит узлы между твинами; цель могла быть освобождена.
+	# Проверять сырую запись до каста: каст освобождённого объекта в
+	# release-шаблоне разыменовывает висячий указатель (FAN-3985).
+	var hop_entry: Variant = chain[hop_index]
+	var enemy_node: Node2D = hop_entry as Node2D if is_instance_valid(hop_entry) else null
+	if enemy_node == null:
 		# Цель умерла в полёте — цепь продолжает к следующей из той же точки.
 		_launch_dark_chain_hop(from_position, chain, hop_index + 1, damage_value)
 		return
@@ -123,8 +127,9 @@ func _resolve_dark_chain_hit(orb_id: int, chain: Array, hop_index: int, damage_v
 	var impact_position := orb.global_position
 	_release_effect(orb)
 	var falloff := clampf(pierce_damage_falloff, 0.1, 1.0)
-	var enemy_node := chain[hop_index] as Node2D
-	if enemy_node != null and is_instance_valid(enemy_node):
+	var hit_entry: Variant = chain[hop_index]
+	var enemy_node: Node2D = hit_entry as Node2D if is_instance_valid(hit_entry) else null
+	if enemy_node != null:
 		impact_position = enemy_node.global_position
 		var hit_damage := damage_value * pow(falloff, float(hop_index))
 		_damage_enemy(enemy_node, hit_damage)

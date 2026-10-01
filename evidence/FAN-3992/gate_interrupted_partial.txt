@@ -1,0 +1,116 @@
+STATIC repository-invariants
+STATIC repository-storage-policy
+STATIC python-unit
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-4080511005/quality-empty-selection-8hgghpio/quality_gate_report.json
+STATIC repository-storage-policy
+STATIC python-unit
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC repository-invariants
+STATIC repository-storage-policy
+STATIC python-unit
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+GODOT running 2 test(s) via semaphore gate
+GODOT 1/2 tests/a5_balance_report_integrity_test.gd
+GODOT 2/2 tests/runtime_smoke_test.gd
+QUALITY PARTIAL_PASS: 1 static, 2 Godot; report=/tmp/multica-task-4080511005/quality-import-report-ui9p299m/report.json
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-4080511005/quality-godot-only-wgk0lvaa/report.json
+GODOT running 1 test(s) via semaphore gate
+GODOT 1/1 tests/runtime_smoke_test.gd
+QUALITY NON-CERTIFYING: changed ref HEAD^ is not the configured integration ref origin/dev (resolves to 2b8026387bdb9cb7db3a65ef5c3a877984540b1b)
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-4080511005/quality-changed-ref-report-ebjfhf6d/report.json
+PASS  berserk_dps_runaway_gate
+PASS  pool_dot_runaway_gate
+PASS  runtime_smoke_test
+STATIC repository-storage-policy
+STATIC python-unit
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC shell-syntax
+QUALITY FAILED: 1 static, 0 Godot; report=/tmp/multica-task-4080511005/quality-empty-yz4go4m3/report.json
+GODOT running 18 test(s) via semaphore gate
+GODOT 1/18 tests/runtime_smoke_test.gd
+GODOT 2/18 tests/ultimates/mechanics/assassin_live_test.gd
+GODOT 3/18 tests/ultimates/mechanics/berserk_live_test.gd
+GODOT 4/18 tests/ultimates/mechanics/biologist_live_test.gd
+GODOT 5/18 tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd
+GODOT 6/18 tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd
+GODOT 7/18 tests/ultimates/mechanics/doctor_live_test.gd
+GODOT 8/18 tests/ultimates/mechanics/druid_live_test.gd
+GODOT 9/18 tests/ultimates/mechanics/elementalist_live_test.gd
+GODOT 10/18 tests/ultimates/mechanics/engineer_ultimate_live_test.gd
+GODOT 11/18 tests/ultimates/mechanics/guitarist_ultimate_live_test.gd
+GODOT 12/18 tests/ultimates/mechanics/knight_trio_integration_test.gd
+GODOT 13/18 tests/ultimates/mechanics/priest_live_test.gd
+GODOT 14/18 tests/ultimates/mechanics/ranger_live_test.gd
+GODOT 15/18 tests/ultimates/mechanics/robot_ultimate_live_test.gd
+GODOT 16/18 tests/ultimates/mechanics/sniper_live_test.gd
+GODOT 17/18 tests/ultimates/mechanics/thief_live_test.gd
+GODOT 18/18 tests/ultimates/soldier_runtime_test.gd
+QUALITY PASSED: 2 static, 18 Godot; report=/tmp/multica-task-4080511005/quality-feature-list-hm43hly8/report.json
+GODOT running 18 test(s) via semaphore gate
+GODOT 1/18 tests/runtime_smoke_test.gd
+GODOT 2/18 tests/ultimates/mechanics/assassin_live_test.gd
+GODOT 3/18 tests/ultimates/mechanics/berserk_live_test.gd
+GODOT 4/18 tests/ultimates/mechanics/biologist_live_test.gd
+GODOT 5/18 tests/ultimates/mechanics/chemist_ultimate_mechanics_test.gd
+GODOT 6/18 tests/ultimates/mechanics/dark_mage_ultimate_live_test.gd
+GODOT 7/18 tests/ultimates/mechanics/doctor_live_test.gd
+GODOT 8/18 tests/ultimates/mechanics/druid_live_test.gd
+GODOT 9/18 tests/ultimates/mechanics/elementalist_live_test.gd
+GODOT 10/18 tests/ultimates/mechanics/engineer_ultimate_live_test.gd
+GODOT 11/18 tests/ultimates/mechanics/guitarist_ultimate_live_test.gd
+GODOT 12/18 tests/ultimates/mechanics/knight_trio_integration_test.gd
+GODOT 13/18 tests/ultimates/mechanics/priest_live_test.gd
+GODOT 14/18 tests/ultimates/mechanics/ranger_live_test.gd
+GODOT 15/18 tests/ultimates/mechanics/robot_ultimate_live_test.gd
+GODOT 16/18 tests/ultimates/mechanics/sniper_live_test.gd
+GODOT 17/18 tests/ultimates/mechanics/thief_live_test.gd
+GODOT 18/18 tests/ultimates/soldier_runtime_test.gd
+QUALITY FAILED: 2 static, 18 Godot; report=/tmp/multica-task-4080511005/quality-feature-list-o93p1tw0/report.json
+GODOT running 1 test(s) via semaphore gate
+GODOT 1/1 tests/runtime_smoke_test.gd
+QUALITY NON-CERTIFYING: the ultimate feature-list checker was owed but skipped
+QUALITY PARTIAL_PASS: 2 static, 1 Godot; report=/tmp/multica-task-4080511005/quality-feature-list-d5s47zee/report.json
+GODOT running 1 test(s) via semaphore gate
+GODOT 1/1 tests/runtime_smoke_test.gd
+QUALITY PASSED: 2 static, 1 Godot; report=/tmp/multica-task-4080511005/quality-feature-list-qe48sspt/report.json
+STATIC python-unit:tests/tools
+STATIC python-syntax
+STATIC asset-audit
+STATIC constellation-validator
+STATIC runtime-manifest-validator
+STATIC git-diff-check
+STATIC git-index-check
+STATIC git-head-check
+STATIC git-range-check
+STATIC shell-syntax
+GODOT warming import cache via semaphore gate
+PASS  Godot import cache pre-pass
+GODOT running 565 test(s) via semaphore gate
+GODOT 1/565 tests/a5_balance_report_digest_memory_test.gd
+PASS  a5_balance_report_digest_memory_test
+GODOT 2/565 tests/a5_balance_report_druid_full_determinism_test.gd
+PASS  a5_balance_report_druid_full_determinism_test
+GODOT 3/565 tests/a5_balance_report_integrity_test.gd

@@ -7,17 +7,17 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `7616060b18750fd891f68c1b0b0457b01b629d3f`; source tree:
-`f89eefd2e7205d13124b3b8ed5ff7cb3c9fea5c3`. Godot 4.7 stable used the
+Source commit: `a2aa9468837510f01e733dbbbd63a7fb17ef194c`; source tree:
+`b0189ba23775993dde37fd1e5052e691eda14af5`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
 
 | Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Chakrams | 0.2867 | 0.504 | 0.638 | 0.0047 | 24 | 13 |
-| Shadow daggers | 0.0339 | 0.578 | 0.404 | 0.0002 | 20 | 9 |
-| Venom wire | 0.0240 | 0.567 | 0.612 | 0.0037 | 24 | 11 |
+| Chakrams | 0.2867 | 0.504 | 0.638 | 0.0048 | 24 | 13 |
+| Shadow daggers | 0.0339 | 0.567 | 0.340 | 0.0003 | 20 | 9 |
+| Venom wire | 0.0240 | 0.546 | 0.612 | 0.0037 | 24 | 11 |
 
 ## Beat observations
 

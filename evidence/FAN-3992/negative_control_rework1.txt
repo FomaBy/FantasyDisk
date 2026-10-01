@@ -1,0 +1,10 @@
+GODOT warming import cache via semaphore gate
+PASS  Godot import cache pre-pass
+GODOT running 1 test(s) via semaphore gate
+GODOT 1/1 tests/fan3992_dark_chain_freed_target_test.gd
+FAIL  fan3992_dark_chain_freed_target_test (exit 3, fatal diagnostic: SCRIPT ERROR)
+SCRIPT ERROR: Trying to cast a freed object.
+SCRIPT ERROR: Trying to cast a freed object.
+ERROR: FAN-3992 dark chain: hop: a freed first target must be skipped and the live one hit once, got 0 hits
+ERROR: FAN-3992 dark chain: hit: the chain must continue past a freed target to the live one, got 0 hits
+godot_gate: fatal Godot diagnostic detected: SCRIPT ERROR
