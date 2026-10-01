@@ -1,0 +1,52 @@
+# FAN-3993 main merge build and push (UTC) 2026-10-01T14:04:37Z
+
+$ MERGE=$(git commit-tree 05fc714ce1599d85ee01fc13dc8afbfca449d157 -p 0a8381170731b62e569d88ef34892af1b3a54ba4 -p 9a19870a15d71bc2b63e622c7895519bd84dafb4 -m "release: FantasyDisk v0.3.1.2 (merge dev)")
+MERGE=7d5117f2ed16c67884ae3cd4dab1b73c315b3f42
+
+$ git cat-file -p 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42
+tree 05fc714ce1599d85ee01fc13dc8afbfca449d157
+parent 0a8381170731b62e569d88ef34892af1b3a54ba4
+parent 9a19870a15d71bc2b63e622c7895519bd84dafb4
+author Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790863477 +0300
+committer Claude (FantasyDisk agent) <fomamoney@gmail.com> 1790863477 +0300
+
+release: FantasyDisk v0.3.1.2 (merge dev)
+[exit 0]
+
+$ git rev-parse 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42^{tree} 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42^1 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42^2
+05fc714ce1599d85ee01fc13dc8afbfca449d157
+0a8381170731b62e569d88ef34892af1b3a54ba4
+9a19870a15d71bc2b63e622c7895519bd84dafb4
+[exit 0]
+
+$ git diff --stat 9a19870a15d71bc2b63e622c7895519bd84dafb4 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42
+[exit 0]
+
+$ git diff --quiet 9a19870a15d71bc2b63e622c7895519bd84dafb4 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42
+[exit 0]
+
+$ git merge-base --is-ancestor 0a8381170731b62e569d88ef34892af1b3a54ba4 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42
+[exit 0]
+
+$ git merge-base --is-ancestor 9a19870a15d71bc2b63e622c7895519bd84dafb4 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42
+[exit 0]
+# immediate recheck of the target ref before the push
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main refs/heads/dev
+9a19870a15d71bc2b63e622c7895519bd84dafb4	refs/heads/dev
+0a8381170731b62e569d88ef34892af1b3a54ba4	refs/heads/main
+[exit 0]
+
+$ git push origin 7d5117f2ed16c67884ae3cd4dab1b73c315b3f42:refs/heads/main
+To https://github.com/FomaBy/FantasyDisk.git
+   0a8381170..7d5117f2e  7d5117f2ed16c67884ae3cd4dab1b73c315b3f42 -> main
+[exit 0]
+
+$ git ls-remote https://github.com/FomaBy/FantasyDisk.git refs/heads/main
+7d5117f2ed16c67884ae3cd4dab1b73c315b3f42	refs/heads/main
+[exit 0]
+
+$ gh api repos/FomaBy/FantasyDisk/branches/main --jq {sha:.commit.sha, protected:.protected}
+{"protected":false,"sha":"7d5117f2ed16c67884ae3cd4dab1b73c315b3f42"}
+[exit 0]
+# finished 2026-10-01T14:04:43Z
