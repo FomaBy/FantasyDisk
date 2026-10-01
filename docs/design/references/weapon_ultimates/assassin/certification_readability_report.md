@@ -7,25 +7,25 @@ crowded, reduced-motion, and photosensitivity-safe modes at 1152×648,
 1280×720, 1920×1080, and 2560×1440. Release, active, and recovery are measured
 for every combination: 144 samples and 12 native-size beat sheets.
 
-Source commit: `7616060b18750fd891f68c1b0b0457b01b629d3f`; source tree:
-`f89eefd2e7205d13124b3b8ed5ff7cb3c9fea5c3`. Godot 4.7 stable used the
+Source commit: `e1d71c2409670090ac7a2de5d8061de853148fca`; source tree:
+`bfe16f9411633588d0916f2a38591799c295ef22`. Godot 4.7 stable used the
 Compatibility renderer on Apple M4 Pro. The capture manifest records the exact
 command, configuration, seed, mode state, dimensions, record attestations, and
 PNG SHA-256 hashes.
 
 | Weapon | Max effect box | Min HUD contrast | Min player contrast | Max near-white share | Crowded hazards | Max drawn nodes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Chakrams | 0.2867 | 0.504 | 0.638 | 0.0047 | 24 | 13 |
-| Shadow daggers | 0.0339 | 0.578 | 0.404 | 0.0002 | 20 | 9 |
-| Venom wire | 0.0240 | 0.567 | 0.612 | 0.0037 | 24 | 11 |
+| Chakrams | 0.2867 | 0.504 | 0.642 | 0.0045 | 24 | 13 |
+| Shadow daggers | 0.0339 | 0.546 | 0.364 | 0.0002 | 20 | 9 |
+| Venom wire | 0.0240 | 0.567 | 0.623 | 0.0033 | 24 | 11 |
 
 ## Beat observations
 
 | Weapon | Release | Active | Recovery |
 | --- | --- | --- | --- |
-| Chakrams | At 0.90s the windup moon, impact flash, and eight-point compass are present; player contrast stays at least 0.638. | At 2.40s the orbit and returning crescents remain readable. Normal, crowded, and photosensitivity-safe captures observe the declared 0.45 impact time-scale dip; reduced motion suppresses it and holds all eight bearings at 0.1083 coverage. | At 3.20s the static reduced-motion compass remains at 0.1083 coverage while the normal crescents and moons recede; all modes have restored the global time scale. |
+| Chakrams | At 0.90s the windup moon, impact flash, and eight-point compass are present; player contrast stays at least 0.642. | At 2.40s the orbit and returning crescents remain readable. Normal, crowded, and photosensitivity-safe captures observe the declared 0.45 impact time-scale dip; reduced motion suppresses it and holds all eight bearings at 0.1083 coverage. | At 3.20s the static reduced-motion compass remains at 0.1083 coverage while the normal crescents and moons recede; all modes have restored the global time scale. |
 | Shadow daggers | At 0.90s the freeze marks and first backstab image establish the silhouette. | At 2.05s the separated afterimages and final reveal identify the attack in all modes; the live scene remains at the canonical `1.0` time scale. | At 3.00s the marks and reveal decay without obscuring any measured HUD band. |
-| Venom wire | At 0.80s six anchors and the hex web are present. | At 2.80s the web and snap-collapse distinguish the impact without an undeclared global slowdown; the safe mode limits the photosensitive node. | At 3.25s the anchors and collapse remain legible while player contrast stays at least 0.612. |
+| Venom wire | At 0.80s six anchors and the hex web are present. | At 2.80s the web and snap-collapse distinguish the impact without an undeclared global slowdown; the safe mode limits the photosensitive node. | At 3.25s the anchors and collapse remain legible while player contrast stays at least 0.623. |
 
 ## Result and limitations
 

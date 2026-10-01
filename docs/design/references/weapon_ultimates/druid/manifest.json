@@ -276,9 +276,9 @@
     "authored_focused_test": "tests/ultimates/presentation/druid_ultimate_timelines.gd",
     "live_capture": {
       "issue": "FAN-3942",
-      "source_ref": "agent/fable/60ecce737844",
-      "source_commit_sha": "2168497f69b69f8defae34bacc3b23a8b1bd0fba",
-      "source_tree_sha": "66bc8cfdd6916441d8de2e2b00f86b7580cd18aa",
+      "source_ref": "agent/claude-dev-opus-b/1d7858933176",
+      "source_commit_sha": "360227ee6b31436dd54d5b0286d1215130b25d7e",
+      "source_tree_sha": "5fff038fc7be56ee974055e37df1f1c8b2d733c6",
       "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",
