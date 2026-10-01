@@ -1,0 +1,49 @@
+FAN-3992 rework 1: deferred callbacks in scripts/classes/** (Callable(self, ...), .bind, tween_callback/connect/call_deferred, tween lambdas).
+Verdict per site: how each stored node is re-validated before a cast or member access.
+
+scripts/classes/dark_mage_weapon.gd::_apply_skull_curse_zone  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/class_weapon_combat.gd::_apply_weapon_dot_tick  -> safe: enemy bound as typed Node arg; a freed arg is rejected by the call validation before the body runs (the pre-existing "Cannot convert argument 1" log line); body checks is_instance_valid
+scripts/classes/soldier_weapon.gd::_arm_grenade_fuse  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/assassin_weapon.gd::_begin_boomerang_return_arc  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/biologist_weapon.gd::_bio_spore_pulse  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/soldier_weapon.gd::_constellation_grenade_second_wave  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/elementalist_weapon.gd::_constellation_meteor_recall  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/elementalist_weapon.gd::_constellation_prism_rift_tick  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/priest_weapon.gd::_constellation_reliquary_expire_by_id  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/sniper_weapon.gd::_constellation_spotter_reserved_beam  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/engineer_weapon.gd::_detonate_engineer_mine  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/thief_weapon.gd::_detonate_smoke_bomb  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/elementalist_weapon.gd::_elemental_square_scheduled_tick  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/doctor_weapon.gd::_end_plague_infection  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/soldier_weapon.gd::_explode_arquebus_bullet  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/soldier_weapon.gd::_explode_grenade_fuse  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/class_weapon_core.gd::_fire_action_echo  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/priest_weapon.gd::_fire_bell_echo_toll  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/robot_weapon.gd::_fire_reactor_vent_step  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/biologist_weapon.gd::_germinate_symbiote_seed  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/ranger_weapon.gd::_hunter_trap_check  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/sniper_weapon.gd::_impact_shatter_bullet  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/sniper_weapon.gd::_land_spotter_shell  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/elementalist_weapon.gd::_meteor_zone_tick  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/doctor_weapon.gd::_plague_dart_arrive  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/doctor_weapon.gd::_plague_tick  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/class_weapon_combat.gd::_release_effect  -> safe: effect bound as typed Node arg (rejected if freed); body checks is_instance_valid
+scripts/classes/class_weapon_shared_api.gd::_release_effect  -> safe: effect bound as typed Node arg (rejected if freed); body checks is_instance_valid
+scripts/classes/class_weapon_core.gd::_release_effect_by_id  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/soldier_weapon.gd::_resolve_bayonet_brace_countershot  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/dark_mage_weapon.gd::_resolve_dark_chain_hit  -> FIXED (FAN-3992): stored chain entry checked with is_instance_valid before the cast
+scripts/classes/dark_mage_weapon.gd::_resolve_dark_mirror_blast  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/dark_mage_weapon.gd::_resolve_dark_mirror_echo  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/elementalist_weapon.gd::_resolve_meteor_impact  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/elementalist_weapon.gd::_resolve_prism_rift  -> safe: the bound Array holds instance ids (telegraph_ids) released via _release_effect_by_id; enemies come from a fresh TARGET_QUERY in the same call
+scripts/classes/druid_weapon.gd::_resolve_raven_impact  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/robot_weapon.gd::_resolve_robot_anchor  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/robot_weapon.gd::_resolve_robot_press  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/sniper_weapon.gd::_resolve_sniper_lockshot  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/priest_weapon.gd::_sanctify_burst_tick  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/assassin_weapon.gd::_step_orb_along_return_arc  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/druid_weapon.gd::_step_raven_flight  -> safe: nodes re-resolved via instance_from_id (null when freed) and/or a fresh TARGET_QUERY in the same call
+scripts/classes/dark_mage_weapon.gd::_launch_dark_chain_hop  -> FIXED (FAN-3992): called from _resolve_dark_chain_hit with the stored chain; entry checked before the cast
+
+Tween lambdas (func() -> void:) in assassin:47, class_weapon_core:332/549/563/606/771/782, doctor:263, priest:97, thief:63 -> safe: every captured node is an instance id resolved with instance_from_id and checked before use.
+Synchronous chain/fan-out loops (e.g. thief_weapon.gd:95, class_weapon_combat.gd:535/570/625/634, biologist_weapon.gd:76/83/184) run in the same call as their query; enemies die via queue_free (no immediate free() on enemies in scripts/**), so entries stay valid for that call.
