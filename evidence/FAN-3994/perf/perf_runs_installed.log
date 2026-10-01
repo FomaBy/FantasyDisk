@@ -1,0 +1,57 @@
+clone re-sealed ad-hoc; PCK sha256 43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41 identical to /Applications/FantasyDisk.app
+==> v0.3.1.2_installed berserk/sword
+    driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=3213
+    cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=3910
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=4726
+    cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=5510
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=6081
+    cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=6611
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=7194
+    cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=7829
+    phase p2_48_enemies_ultimates: 60 s, avg 115 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1041.6 ms, peak texture 1404 MiB, objects peak 8499 min 2910 (first s 2971, last s 8316), resident packs 23 -> 23, alive first s 40 last s 8
+    | v0.3.1.2_installed | berserk/sword | 60 | 115 | 24 | 24 | 1 | 1 | 1041.6 | 1404 | 8499 | 2910 | 2971 | 8316 | 23 -> 23 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1.2_installed berserk/sword pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"] failures=[]
+    exit 0 timed_out=False in 67.8s
+==> v0.3.1.2_installed druid/summon_amulet
+    driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=3193
+    cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=4121
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=5019
+    cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=6310
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=6988
+    cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=8113
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=9098
+    cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=10083
+    phase p2_48_enemies_ultimates: 60 s, avg 113 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1123.2 ms, peak texture 1476 MiB, objects peak 10594 min 2960 (first s 3227, last s 10492), resident packs 28 -> 28, alive first s 39 last s 0
+    | v0.3.1.2_installed | druid/summon_amulet | 60 | 113 | 24 | 24 | 1 | 1 | 1123.2 | 1476 | 10594 | 2960 | 3227 | 10492 | 28 -> 28 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1.2_installed druid/summon_amulet pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"] failures=[]
+    exit 0 timed_out=False in 65.1s
+==> v0.3.1.2_installed knight/long_spear
+    driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3302
+    cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3436
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3192
+    cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3173
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3444
+    cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3251
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3293
+    cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn alive=48 objects=3417
+    phase p2_48_enemies_ultimates: 60 s, avg 116 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1144.0 ms, peak texture 1395 MiB, objects peak 3728 min 2949 (first s 2990, last s 3469), resident packs 23 -> 23, alive first s 45 last s 48
+    | v0.3.1.2_installed | knight/long_spear | 60 | 116 | 24 | 24 | 1 | 1 | 1144.0 | 1395 | 3728 | 2949 | 2990 | 3469 | 23 -> 23 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1.2_installed knight/long_spear pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"] failures=[]
+    exit 0 timed_out=False in 65.1s
+==> v0.3.1.2_installed doctor/restore_potion
+    driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=3497
+    cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4335
+    cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4680
+    cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4868
+    cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=5716
+    cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=6317
+    cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=6907
+    cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=7883
+    phase p2_48_enemies_ultimates: 60 s, avg 115 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1148.6 ms, peak texture 1404 MiB, objects peak 7950 min 3135 (first s 3135, last s 7547), resident packs 23 -> 23, alive first s 42 last s 24
+    | v0.3.1.2_installed | doctor/restore_potion | 60 | 115 | 24 | 24 | 1 | 1 | 1148.6 | 1404 | 7950 | 3135 | 3135 | 7547 | 23 -> 23 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1.2_installed doctor/restore_potion pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"] failures=[]
+    exit 0 timed_out=False in 65.1s

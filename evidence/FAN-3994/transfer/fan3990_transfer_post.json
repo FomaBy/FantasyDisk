@@ -1,0 +1,80 @@
+{
+  "issue": "FAN-3990",
+  "issue_id": "01a0efe2-6f5e-7376-aaf9-32ac11c08f09",
+  "comment_id": "01a0f7f2-7591-79f4-88b1-e8702bee8672",
+  "created_at": "2026-10-01T14:50:57Z",
+  "attachments": [
+    {
+      "id": "01a0f7f1-1d13-73b2-8772-50090e1782b1",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-aa",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f1-3dc9-712e-80a2-a7ceaf7ecfb8",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ab",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f1-63e6-7aae-8d6f-f45e5d238d7c",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ac",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f1-9bf0-7e08-a14f-44aeeafd6ca5",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ad",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f1-d20a-778a-8ce1-9b5fba76054f",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ae",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-060b-718f-b5e7-1984ec6ae028",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-af",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-3f0a-7828-ab43-065a913559b8",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ag",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-5cba-7130-af1f-2ff551f55e2d",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ah",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-7040-73b9-9977-8e9deaf65600",
+      "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ai",
+      "content_type": "application/octet-stream",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-72bb-76bd-9bf9-e6523ef85074",
+      "filename": "PARTS.sha256",
+      "content_type": "text/plain; charset=utf-8",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-73b7-7d5c-86ce-546e647eb86f",
+      "filename": "SHA256SUMS.txt",
+      "content_type": "text/plain; charset=utf-8",
+      "size": null
+    },
+    {
+      "id": "01a0f7f2-74a1-7929-88c6-23e454185ae1",
+      "filename": "update-manifest.json",
+      "content_type": "application/json",
+      "size": null
+    }
+  ]
+}

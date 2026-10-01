@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1.2_installed_rerun: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=3536
+cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4497
+cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4847
+cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4992
+cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=6200
+cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=6430
+cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=7069
+cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=7433
+phase p2_48_enemies_ultimates: 60 s, avg 118 FPS, 1% low 112, worst second 112, >50 ms 0, >100 ms 0, longest 33.8 ms, peak texture 1404 MiB, objects peak 8049 min 3132 (first s 3262, last s 7519), resident packs 23 -> 23, alive first s 42 last s 24
+| v0.3.1.2_installed_rerun | doctor/restore_potion | 60 | 118 | 112 | 112 | 0 | 0 | 33.8 | 1404 | 8049 | 3132 | 3262 | 7519 | 23 -> 23 | casts 8/8 |
+perf_ultimate_driver: v0.3.1.2_installed_rerun doctor/restore_potion pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"] failures=[]

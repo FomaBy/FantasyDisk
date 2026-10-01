@@ -1,0 +1,66 @@
+{
+  "v0.3.1.2_installed": {
+    "runs": [
+      {
+        "run": 1,
+        "log": "v0.3.1.2_installed_run1.log",
+        "first_frame_s": 6.917
+      },
+      {
+        "run": 2,
+        "log": "v0.3.1.2_installed_run2.log",
+        "first_frame_s": 5.512
+      },
+      {
+        "run": 3,
+        "log": "v0.3.1.2_installed_run3.log",
+        "first_frame_s": 5.494
+      },
+      {
+        "run": 4,
+        "log": "v0.3.1.2_installed_run4.log",
+        "first_frame_s": 5.522
+      },
+      {
+        "run": 5,
+        "log": "v0.3.1.2_installed_run5.log",
+        "first_frame_s": 5.533
+      }
+    ],
+    "median_s": 5.522,
+    "min_s": 5.494,
+    "max_s": 6.917
+  },
+  "v0.3.1_reference": {
+    "runs": [
+      {
+        "run": 1,
+        "log": "v0.3.1_reference_run1.log",
+        "first_frame_s": 7.631
+      },
+      {
+        "run": 2,
+        "log": "v0.3.1_reference_run2.log",
+        "first_frame_s": 6.473
+      },
+      {
+        "run": 3,
+        "log": "v0.3.1_reference_run3.log",
+        "first_frame_s": 5.571
+      },
+      {
+        "run": 4,
+        "log": "v0.3.1_reference_run4.log",
+        "first_frame_s": 5.567
+      },
+      {
+        "run": 5,
+        "log": "v0.3.1_reference_run5.log",
+        "first_frame_s": 5.571
+      }
+    ],
+    "median_s": 5.571,
+    "min_s": 5.567,
+    "max_s": 7.631
+  }
+}

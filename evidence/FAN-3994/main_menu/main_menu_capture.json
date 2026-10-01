@@ -1,0 +1,9 @@
+{
+  "app": "/Applications/FantasyDisk.app",
+  "pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "clone_pck_identical": true,
+  "exit_code": 0,
+  "capture": "main_menu_v0.3.1.2_installed.png",
+  "capture_sha256": "43028f987de66931b304d00fe8578f1c5a793c8c39e29fade5e44d0ac9b8e42a",
+  "result_line": "main_menu_capture: saved=true version=0.3.1.2 executable=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/main_menu/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk labels=[\"/root/Main/@CanvasLayer@21/MainMenuScreen/MainMenuVersionLabel: v0.3.1.2\"]"
+}

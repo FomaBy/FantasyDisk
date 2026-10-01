@@ -1,0 +1,10 @@
+clone re-sealed ad-hoc; PCK sha256 43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41 identical to /Applications/FantasyDisk.app; mode=wrapper probe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd
+==> v0.3.1.2_installed_windowed dark_mage_then_doctor (6 pairs, timeout 300 s)
+    exit 0 timed_out=False 23.3s pairs 6/6 engine-log errors 0 stdout errors 0 problems []
+==> v0.3.1.2_installed_windowed chemist_then_doctor (6 pairs, timeout 300 s)
+    exit 0 timed_out=False 20.9s pairs 6/6 engine-log errors 0 stdout errors 0 problems []
+==> v0.3.1.2_installed_windowed dark_mage_then_doctor_natural_end (6 pairs, timeout 300 s)
+    exit 0 timed_out=False 35.3s pairs 6/6 engine-log errors 0 stdout errors 0 problems []
+==> v0.3.1.2_installed_windowed all_17_classes (51 pairs, timeout 1650 s)
+    exit 0 timed_out=False 161.5s pairs 51/51 engine-log errors 0 stdout errors 0 problems []
+session probe v0.3.1.2_installed_windowed: pass=True (4/4 sequences)

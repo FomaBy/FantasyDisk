@@ -1,0 +1,2 @@
+188d187
+< 42a598449ee119c1582eb1a95cbad62d77f343359d796bbd75095df571d8c02f  ./fantasydisk_autosave.cfg

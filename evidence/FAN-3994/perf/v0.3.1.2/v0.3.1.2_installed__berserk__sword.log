@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=3213
+cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=3910
+cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=4726
+cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=5510
+cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=6081
+cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=6611
+cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=7194
+cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn alive=48 objects=7829
+phase p2_48_enemies_ultimates: 60 s, avg 115 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1041.6 ms, peak texture 1404 MiB, objects peak 8499 min 2910 (first s 2971, last s 8316), resident packs 23 -> 23, alive first s 40 last s 8
+| v0.3.1.2_installed | berserk/sword | 60 | 115 | 24 | 24 | 1 | 1 | 1041.6 | 1404 | 8499 | 2910 | 2971 | 8316 | 23 -> 23 | casts 8/8 |
+perf_ultimate_driver: v0.3.1.2_installed berserk/sword pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"] failures=[]

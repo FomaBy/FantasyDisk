@@ -1,0 +1,567 @@
+{
+  "alive_before_window": 42,
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 361,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 1069.066,
+      "objects_before": 3060,
+      "presentation_active": false,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1160,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 28.025,
+      "objects_before": 3160,
+      "presentation_active": false,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2091,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 16.807,
+      "objects_before": 3057,
+      "presentation_active": false,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2996,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 19.357,
+      "objects_before": 3132,
+      "presentation_active": false,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3908,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 21.328,
+      "objects_before": 3082,
+      "presentation_active": false,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4805,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 20.774,
+      "objects_before": 3170,
+      "presentation_active": false,
+      "second": 43,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 5696,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 31.955,
+      "objects_before": 3174,
+      "presentation_active": false,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 6573,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 30.065,
+      "objects_before": 3226,
+      "presentation_active": false,
+      "second": 59,
+      "time_scale": 1.0
+    }
+  ],
+  "casts_activated": 8,
+  "casts_total": 8,
+  "character_id": "druid",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3994/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3994Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [],
+  "finalize_wait_ms": 641.36,
+  "instantiated_scenes": [
+    ""
+  ],
+  "label": "v0.3.1_reference",
+  "menu_objects_after_run": 2321,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 215.608399391174,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 2957,
+  "pass": true,
+  "phase": {
+    "alive_at_end": 46,
+    "alive_per_second": [
+      41,
+      40,
+      47,
+      43,
+      40,
+      40,
+      43,
+      42,
+      41,
+      41,
+      45,
+      46,
+      44,
+      45,
+      49,
+      46,
+      48,
+      48,
+      48,
+      47,
+      46,
+      47,
+      44,
+      48,
+      47,
+      47,
+      46,
+      45,
+      46,
+      45,
+      48,
+      49,
+      45,
+      47,
+      48,
+      45,
+      48,
+      49,
+      46,
+      47,
+      46,
+      48,
+      48,
+      46,
+      45,
+      48,
+      49,
+      48,
+      46,
+      47,
+      48,
+      47,
+      46,
+      42,
+      47,
+      47,
+      46,
+      47,
+      48,
+      46
+    ],
+    "avg_fps": 111.366666666667,
+    "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures/v0.3.1_reference__druid__summon_amulet.png",
+    "frames_over_100ms": 1,
+    "frames_over_50ms": 1,
+    "frames_total": 6682,
+    "longest_frame_ms": 1069.066,
+    "low_1pct_fps": 24.0,
+    "objects_first_second": 3271,
+    "objects_last_second": 3275,
+    "objects_min": 2957,
+    "objects_peak": 3504,
+    "objects_per_second": [
+      3271,
+      3177,
+      3052,
+      3124,
+      3194,
+      3306,
+      3137,
+      3198,
+      3356,
+      3156,
+      3136,
+      3294,
+      3139,
+      3414,
+      3169,
+      3109,
+      3093,
+      3120,
+      3057,
+      3114,
+      3148,
+      3361,
+      3176,
+      3158,
+      3130,
+      3409,
+      3116,
+      3132,
+      3128,
+      3134,
+      3371,
+      3141,
+      3170,
+      3136,
+      3082,
+      3144,
+      3152,
+      3120,
+      3266,
+      3157,
+      3144,
+      3144,
+      3170,
+      3185,
+      3173,
+      3434,
+      3173,
+      3182,
+      3185,
+      3204,
+      3174,
+      3235,
+      3222,
+      3190,
+      3183,
+      3465,
+      3229,
+      3179,
+      3226,
+      3275
+    ],
+    "peak_texture_mib": 1473.04454898834,
+    "per_second_fps": [
+      121,
+      120,
+      120,
+      24,
+      88,
+      117,
+      118,
+      118,
+      108,
+      116,
+      110,
+      111,
+      117,
+      112,
+      117,
+      115,
+      120,
+      120,
+      119,
+      118,
+      113,
+      114,
+      111,
+      113,
+      111,
+      115,
+      110,
+      117,
+      115,
+      111,
+      117,
+      117,
+      110,
+      115,
+      110,
+      114,
+      115,
+      114,
+      111,
+      111,
+      114,
+      111,
+      107,
+      107,
+      112,
+      117,
+      113,
+      105,
+      112,
+      114,
+      111,
+      109,
+      111,
+      109,
+      111,
+      111,
+      109,
+      108,
+      109,
+      109
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 28,
+    "resident_packs_start": 28,
+    "seconds": 60,
+    "time_scale_at_end": 1.0,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Sprite2D",
+          155
+        ],
+        [
+          "Node2D",
+          144
+        ],
+        [
+          "CollisionShape2D",
+          69
+        ],
+        [
+          "CharacterBody2D",
+          61
+        ],
+        [
+          "AnimatedSprite2D",
+          61
+        ],
+        [
+          "Label",
+          58
+        ],
+        [
+          "Polygon2D",
+          51
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          10
+        ],
+        [
+          "Node",
+          8
+        ],
+        [
+          "TextureRect",
+          7
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "Control",
+          5
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "Area2D",
+          4
+        ],
+        [
+          "CanvasLayer",
+          3
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "Line2D",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "LineEdit",
+          1
+        ],
+        [
+          "RichTextLabel",
+          1
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "Camera2D",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas2491081031684": 3,
+        "_root_canvas335007449088": 81,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24528291159": 3,
+        "_vp_unhandled_key_input24528291159": 1,
+        "allies": 11,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_flashes": 9,
+        "combat_feedback_labels": 35,
+        "elite_enemies": 2,
+        "enemies": 46,
+        "enemy_hazards": 2,
+        "enemy_projectiles": 4,
+        "pickups": 17,
+        "player": 1,
+        "player_weapon_effects": 11,
+        "player_weapons": 1,
+        "summoned_enemies": 1
+      },
+      "nodes_total": 673,
+      "objects_now": 3275,
+      "scenes_top": [
+        [
+          "res://scenes/Enemy.tscn",
+          21
+        ],
+        [
+          "res://scenes/Pickup.tscn",
+          17
+        ],
+        [
+          "res://scenes/AllyMinion.tscn",
+          11
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          6
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyProjectile.tscn",
+          4
+        ],
+        [
+          "res://scenes/EnemyFlyingRunner.tscn",
+          4
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemySpitter.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemyMage.tscn",
+          2
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/fan3994_perf_driver.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "res://scenes/SummonAmulet.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/EliteArmored.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          1
+        ],
+        [
+          "res://scenes/ElitePoisoned.tscn",
+          1
+        ],
+        [
+          "res://scenes/Main.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 24.0
+  },
+  "player_character_id": "druid",
+  "player_weapon_id": "summon_amulet",
+  "resolution_source": "legacy_class_fallback",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "summon_amulet"
+}

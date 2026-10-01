@@ -1,0 +1,26 @@
+cd4c5879bf2b35d9183ecd93e751b876cc1f0c945164b35436ac40cf10eb3380  FantasyDisk-0.3.1.2-windows-setup.exe.part-aa
+f8c7852ba9f5d732e6d4d64f65c1803b071fe10b28f67c91a18c10b87c396abd  FantasyDisk-0.3.1.2-windows-setup.exe.part-ab
+6f113a40869263b48cde7d4fa4eadf084c0d5fd76f67cd95d4b004003d5ded2d  FantasyDisk-0.3.1.2-windows-setup.exe.part-ac
+a0f14ae2554fd4de268f8e8796525150240d889aed8096d8d0dd9ce4f82e85eb  FantasyDisk-0.3.1.2-windows-setup.exe.part-ad
+677ffa258520460f5f248ba0359fcdbe3fc41d9c283cbc4ecbfc1e3000a70414  FantasyDisk-0.3.1.2-windows-setup.exe.part-ae
+b3fc77e7694053e6000645cd86f9da644844052bb0b3d94adfe0bcaa76d64d40  FantasyDisk-0.3.1.2-windows-setup.exe.part-af
+e42a70a72c6145653790e79f49f9ecb2cdeef07f0fadfd4e71aeeefe62273205  FantasyDisk-0.3.1.2-windows-setup.exe.part-ag
+d2009e24e93318c7914efe640f5ce2d7465908339663b88b10ab5705c6e27585  FantasyDisk-0.3.1.2-windows-setup.exe.part-ah
+8d446f231c9b16c43d855a7edb026a6e21c03ab71cffc6db8720c7c887960515  FantasyDisk-0.3.1.2-windows-setup.exe.part-ai
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-aa
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-ab
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-ac
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-ad
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-ae
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-af
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-ag
+50000000 FantasyDisk-0.3.1.2-windows-setup.exe.part-ah
+38450173 FantasyDisk-0.3.1.2-windows-setup.exe.part-ai
+rejoin sha256: 162740c47c8b0c32e068d454909d8dd68e9e0871ab427c7b1af7301bfac74bd5  -
+c720ed832ab6353a42aac75e7ed66d2062a7256af1d346e33b40e6ff0bc19023  PARTS.sha256
+d7b19b4fc7da2dfa74da7940c3b9d514250ad9aa6e4500ebc87456ab1714d763  SHA256SUMS.txt
+e70d0e593e944df0392695ed588326070ce01a0e8770880ae2fed6277350e936  update-manifest.json
+readback (multica attachment download, comment 01a0f7f2-7591-79f4-88b1-e8702bee8672):
+readback c720ed832ab6353a42aac75e7ed66d2062a7256af1d346e33b40e6ff0bc19023  PARTS.sha256
+readback 8d446f231c9b16c43d855a7edb026a6e21c03ab71cffc6db8720c7c887960515  FantasyDisk-0.3.1.2-windows-setup.exe.part-ai
+readback files byte-equal to local: yes

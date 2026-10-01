@@ -1,0 +1,899 @@
+{
+  "probe": "tools/ultimate_session_lifecycle_probe.gd",
+  "mode": "wrapper",
+  "windowed": true,
+  "app": "/Applications/FantasyDisk.app",
+  "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app",
+  "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+  "source_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "clone_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "user_dir_name": "FantasyDiskFan3994Session",
+  "lifecycle_error_patterns": [
+    "Parent node is busy adding/removing children",
+    "Parent node is busy setting up children",
+    "Condition \"data.parent\" is true",
+    "Condition \"!data.tree\" is true",
+    "Condition \"p_node->data.tree != data.tree\" is true",
+    "Parameter \"canvas_item\" is null",
+    "previously freed",
+    "Trying to cast a freed object",
+    "SCRIPT ERROR"
+  ],
+  "sequences": [
+    {
+      "sequence": "dark_mage_then_doctor",
+      "args": [
+        "--classes=dark_mage,doctor",
+        "--end=during_cast"
+      ],
+      "expected_pairs": 6,
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--disable-crash-handler",
+        "--log-file",
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__dark_mage_then_doctor.engine.log",
+        "--windowed",
+        "--resolution",
+        "1280x720",
+        "--",
+        "--classes=dark_mage,doctor",
+        "--end=during_cast",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__dark_mage_then_doctor.json",
+        "--probe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "problems": [],
+      "seconds": 23.3,
+      "engine_log_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "stdout_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "report": "v0.3.1.2_installed_windowed__dark_mage_then_doctor.json",
+      "pairs_total": 6,
+      "pairs_passing": 6,
+      "report_pass": true,
+      "display_server": "macOS",
+      "engine_version": "4.7-stable (official)",
+      "peak_object_count": 3506,
+      "pairs": [
+        {
+          "key": "dark_mage/dark_book",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+          "cast_frames": 345,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/cursed_skull",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+          "cast_frames": 351,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/dark_wand",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+          "cast_frames": 359,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/restore_potion",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+          "cast_frames": 361,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/plague_syringe",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+          "cast_frames": 359,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/bone_saw",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+          "cast_frames": 364,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        }
+      ],
+      "pass": true
+    },
+    {
+      "sequence": "chemist_then_doctor",
+      "args": [
+        "--classes=chemist,doctor",
+        "--end=during_cast"
+      ],
+      "expected_pairs": 6,
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--disable-crash-handler",
+        "--log-file",
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__chemist_then_doctor.engine.log",
+        "--windowed",
+        "--resolution",
+        "1280x720",
+        "--",
+        "--classes=chemist,doctor",
+        "--end=during_cast",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__chemist_then_doctor.json",
+        "--probe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "problems": [],
+      "seconds": 20.9,
+      "engine_log_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "stdout_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "report": "v0.3.1.2_installed_windowed__chemist_then_doctor.json",
+      "pairs_total": 6,
+      "pairs_passing": 6,
+      "report_pass": true,
+      "display_server": "macOS",
+      "engine_version": "4.7-stable (official)",
+      "peak_object_count": 3591,
+      "pairs": [
+        {
+          "key": "chemist/blast_powder",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+          "cast_frames": 300,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "chemist/acid_flask",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+          "cast_frames": 292,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "chemist/homunculus_vial",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+          "cast_frames": 295,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/restore_potion",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+          "cast_frames": 295,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/plague_syringe",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/bone_saw",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        }
+      ],
+      "pass": true
+    },
+    {
+      "sequence": "dark_mage_then_doctor_natural_end",
+      "args": [
+        "--classes=dark_mage,doctor",
+        "--end=natural"
+      ],
+      "expected_pairs": 6,
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--disable-crash-handler",
+        "--log-file",
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__dark_mage_then_doctor_natural_end.engine.log",
+        "--windowed",
+        "--resolution",
+        "1280x720",
+        "--",
+        "--classes=dark_mage,doctor",
+        "--end=natural",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__dark_mage_then_doctor_natural_end.json",
+        "--probe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "problems": [],
+      "seconds": 35.3,
+      "engine_log_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "stdout_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "report": "v0.3.1.2_installed_windowed__dark_mage_then_doctor_natural_end.json",
+      "pairs_total": 6,
+      "pairs_passing": 6,
+      "report_pass": true,
+      "display_server": "macOS",
+      "engine_version": "4.7-stable (official)",
+      "peak_object_count": 3588,
+      "pairs": [
+        {
+          "key": "dark_mage/dark_book",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+          "cast_frames": 353,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": false,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/cursed_skull",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+          "cast_frames": 404,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": false,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/dark_wand",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+          "cast_frames": 446,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": false,
+          "failures": []
+        },
+        {
+          "key": "doctor/restore_potion",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+          "cast_frames": 465,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": false,
+          "failures": []
+        },
+        {
+          "key": "doctor/plague_syringe",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+          "cast_frames": 679,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": false,
+          "failures": []
+        },
+        {
+          "key": "doctor/bone_saw",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+          "cast_frames": 440,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": false,
+          "failures": []
+        }
+      ],
+      "pass": true
+    },
+    {
+      "sequence": "all_17_classes",
+      "args": [
+        "--all",
+        "--end=during_cast"
+      ],
+      "expected_pairs": 51,
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--disable-crash-handler",
+        "--log-file",
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__all_17_classes.engine.log",
+        "--windowed",
+        "--resolution",
+        "1280x720",
+        "--",
+        "--all",
+        "--end=during_cast",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/v0.3.1.2_installed_windowed__all_17_classes.json",
+        "--probe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "problems": [],
+      "seconds": 161.5,
+      "engine_log_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "stdout_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "report": "v0.3.1.2_installed_windowed__all_17_classes.json",
+      "pairs_total": 51,
+      "pairs_passing": 51,
+      "report_pass": true,
+      "display_server": "macOS",
+      "engine_version": "4.7-stable (official)",
+      "peak_object_count": 7665,
+      "pairs": [
+        {
+          "key": "berserk/sword",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+          "cast_frames": 299,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "berserk/axe",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn",
+          "cast_frames": 286,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "berserk/hammer",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "soldier/soldier_rifle",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "soldier/soldier_grenade",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "soldier/soldier_bayonet",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "thief/thief_coin_pouch",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn",
+          "cast_frames": 295,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "thief/thief_shadow_cloak",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "thief/thief_smoke_bomb",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "elementalist/elementalist_orb_ring",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "elementalist/elementalist_prism_focus",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "elementalist/elementalist_meteor_core",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "sniper/sniper_deadeye_rifle",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn",
+          "cast_frames": 296,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "sniper/sniper_spotter_scope",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "sniper/sniper_shatter_rounds",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "priest/priest_reliquary",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "priest/priest_censer",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "priest/priest_chime",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn",
+          "cast_frames": 296,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "biologist/biologist_spore_lens",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn",
+          "cast_frames": 295,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "biologist/biologist_sample_injector",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn",
+          "cast_frames": 285,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "biologist/biologist_symbiote_seed",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn",
+          "cast_frames": 295,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "robot/robot_magnetic_anchor",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn",
+          "cast_frames": 300,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "robot/robot_hydraulic_press",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "robot/robot_reactor_core",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "engineer/engineer_sentry_wrench",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn",
+          "cast_frames": 296,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "engineer/engineer_repair_drone",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn",
+          "cast_frames": 293,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "engineer/engineer_pressure_mines",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn",
+          "cast_frames": 285,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/dark_book",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+          "cast_frames": 262,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/cursed_skull",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+          "cast_frames": 298,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/dark_wand",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+          "cast_frames": 280,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "guitarist/electric_guitar",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn",
+          "cast_frames": 277,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "guitarist/bass_guitar",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn",
+          "cast_frames": 259,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "guitarist/sound_amp",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn",
+          "cast_frames": 271,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "assassin/chakrams",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn",
+          "cast_frames": 281,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "assassin/shadow_daggers",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+          "cast_frames": 290,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "assassin/venom_wire",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+          "cast_frames": 280,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "ranger/moon_crossbow",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn",
+          "cast_frames": 289,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "ranger/storm_longbow",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn",
+          "cast_frames": 292,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "ranger/hunter_trap",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn",
+          "cast_frames": 288,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/restore_potion",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+          "cast_frames": 282,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/plague_syringe",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+          "cast_frames": 299,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/bone_saw",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+          "cast_frames": 274,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "chemist/blast_powder",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn",
+          "cast_frames": 294,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "chemist/acid_flask",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn",
+          "cast_frames": 277,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "chemist/homunculus_vial",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "knight/long_spear",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn",
+          "cast_frames": 291,
+          "ultimate_active_at_end": false,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "knight/tower_shield",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn",
+          "cast_frames": 297,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "knight/holy_flail",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn",
+          "cast_frames": 293,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "druid/summon_amulet",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn",
+          "cast_frames": 286,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "druid/briar_staff",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn",
+          "cast_frames": 289,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "druid/raven_totem",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn",
+          "cast_frames": 296,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "pass": true
+}

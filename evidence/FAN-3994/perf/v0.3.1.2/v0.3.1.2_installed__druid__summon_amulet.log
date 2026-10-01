@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=3193
+cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=4121
+cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=5019
+cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=6310
+cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=6988
+cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=8113
+cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=9098
+cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn alive=48 objects=10083
+phase p2_48_enemies_ultimates: 60 s, avg 113 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1123.2 ms, peak texture 1476 MiB, objects peak 10594 min 2960 (first s 3227, last s 10492), resident packs 28 -> 28, alive first s 39 last s 0
+| v0.3.1.2_installed | druid/summon_amulet | 60 | 113 | 24 | 24 | 1 | 1 | 1123.2 | 1476 | 10594 | 2960 | 3227 | 10492 | 28 -> 28 | casts 8/8 |
+perf_ultimate_driver: v0.3.1.2_installed druid/summon_amulet pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"] failures=[]

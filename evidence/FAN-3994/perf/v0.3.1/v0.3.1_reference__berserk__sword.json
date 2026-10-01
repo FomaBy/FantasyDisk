@@ -1,0 +1,550 @@
+{
+  "alive_before_window": 43,
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 353,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 1070.113,
+      "objects_before": 3454,
+      "presentation_active": false,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1178,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.835,
+      "objects_before": 3436,
+      "presentation_active": false,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2138,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.647,
+      "objects_before": 3527,
+      "presentation_active": false,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3096,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 13.748,
+      "objects_before": 3646,
+      "presentation_active": false,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4045,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 13.782,
+      "objects_before": 3708,
+      "presentation_active": false,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4988,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.242,
+      "objects_before": 3820,
+      "presentation_active": false,
+      "second": 43,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 5931,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 16.63,
+      "objects_before": 3933,
+      "presentation_active": false,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 49,
+      "frame_index": 6869,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 21.477,
+      "objects_before": 4036,
+      "presentation_active": false,
+      "second": 59,
+      "time_scale": 1.0
+    }
+  ],
+  "casts_activated": 8,
+  "casts_total": 8,
+  "character_id": "berserk",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3994/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3994Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [],
+  "finalize_wait_ms": 510.383,
+  "instantiated_scenes": [
+    ""
+  ],
+  "label": "v0.3.1_reference",
+  "menu_objects_after_run": 2324,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 215.900065422058,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 2912,
+  "pass": true,
+  "phase": {
+    "alive_at_end": 48,
+    "alive_per_second": [
+      39,
+      37,
+      39,
+      41,
+      26,
+      34,
+      36,
+      40,
+      43,
+      40,
+      46,
+      48,
+      46,
+      48,
+      48,
+      48,
+      48,
+      48,
+      48,
+      48,
+      48,
+      47,
+      48,
+      48,
+      46,
+      48,
+      47,
+      47,
+      48,
+      48,
+      47,
+      48,
+      46,
+      48,
+      48,
+      47,
+      48,
+      48,
+      48,
+      48,
+      48,
+      48,
+      48,
+      46,
+      47,
+      48,
+      47,
+      47,
+      45,
+      48,
+      47,
+      40,
+      43,
+      45,
+      47,
+      42,
+      48,
+      48,
+      49,
+      48
+    ],
+    "avg_fps": 116.433333333333,
+    "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures/v0.3.1_reference__berserk__sword.png",
+    "frames_over_100ms": 1,
+    "frames_over_50ms": 1,
+    "frames_total": 6986,
+    "longest_frame_ms": 1070.113,
+    "low_1pct_fps": 24.0,
+    "objects_first_second": 2980,
+    "objects_last_second": 4211,
+    "objects_min": 2912,
+    "objects_peak": 4458,
+    "objects_per_second": [
+      2980,
+      3310,
+      3382,
+      3568,
+      3557,
+      3338,
+      3227,
+      3549,
+      3386,
+      3437,
+      3420,
+      3736,
+      3519,
+      3515,
+      3509,
+      3532,
+      3550,
+      3533,
+      3527,
+      3548,
+      3661,
+      3608,
+      3570,
+      3562,
+      3611,
+      3624,
+      3638,
+      3687,
+      3973,
+      3715,
+      3706,
+      3773,
+      3812,
+      3667,
+      3708,
+      3746,
+      3741,
+      3783,
+      3731,
+      3827,
+      3793,
+      3906,
+      3820,
+      3816,
+      3824,
+      4243,
+      3942,
+      3960,
+      3916,
+      3905,
+      3925,
+      4139,
+      4036,
+      4444,
+      4012,
+      4285,
+      4174,
+      3925,
+      4036,
+      4211
+    ],
+    "peak_texture_mib": 1392.06207942963,
+    "per_second_fps": [
+      119,
+      115,
+      119,
+      24,
+      85,
+      119,
+      120,
+      119,
+      120,
+      118,
+      120,
+      119,
+      120,
+      120,
+      120,
+      121,
+      120,
+      120,
+      120,
+      120,
+      119,
+      120,
+      120,
+      120,
+      120,
+      120,
+      119,
+      119,
+      116,
+      121,
+      118,
+      119,
+      118,
+      120,
+      118,
+      119,
+      118,
+      117,
+      118,
+      117,
+      118,
+      118,
+      118,
+      120,
+      117,
+      120,
+      113,
+      118,
+      118,
+      118,
+      119,
+      117,
+      118,
+      116,
+      118,
+      118,
+      115,
+      119,
+      117,
+      117
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 23,
+    "resident_packs_start": 23,
+    "seconds": 60,
+    "time_scale_at_end": 1.0,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Sprite2D",
+          509
+        ],
+        [
+          "Node2D",
+          508
+        ],
+        [
+          "CollisionShape2D",
+          60
+        ],
+        [
+          "Label",
+          58
+        ],
+        [
+          "Polygon2D",
+          52
+        ],
+        [
+          "CharacterBody2D",
+          51
+        ],
+        [
+          "AnimatedSprite2D",
+          51
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          10
+        ],
+        [
+          "Node",
+          8
+        ],
+        [
+          "TextureRect",
+          7
+        ],
+        [
+          "Area2D",
+          5
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "Control",
+          5
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "CanvasLayer",
+          3
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "Line2D",
+          2
+        ],
+        [
+          "LineEdit",
+          1
+        ],
+        [
+          "RichTextLabel",
+          1
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "Camera2D",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas2491081031684": 3,
+        "_root_canvas335007449088": 81,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24528291159": 3,
+        "_vp_unhandled_key_input24528291159": 1,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_flashes": 29,
+        "combat_feedback_labels": 42,
+        "elite_enemies": 1,
+        "enemies": 48,
+        "enemy_hazards": 3,
+        "enemy_projectiles": 5,
+        "pickups": 377,
+        "player": 1,
+        "player_weapon_effects": 2,
+        "player_weapons": 1,
+        "summoned_enemies": 3
+      },
+      "nodes_total": 1364,
+      "objects_now": 4211,
+      "scenes_top": [
+        [
+          "res://scenes/Pickup.tscn",
+          377
+        ],
+        [
+          "res://scenes/Enemy.tscn",
+          26
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyProjectile.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemySpitter.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          2
+        ],
+        [
+          "res://scenes/Main.tscn",
+          1
+        ],
+        [
+          "res://scenes/ElitePoisoned.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/TwoHandedSword.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/fan3994_perf_driver.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 24.0
+  },
+  "player_character_id": "berserk",
+  "player_weapon_id": "sword",
+  "resolution_source": "legacy_class_fallback",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "sword"
+}

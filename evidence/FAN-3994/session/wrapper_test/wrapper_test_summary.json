@@ -1,0 +1,129 @@
+{
+  "probe": "tools/ultimate_session_lifecycle_probe.gd",
+  "mode": "wrapper",
+  "windowed": false,
+  "app": "/Applications/FantasyDisk.app",
+  "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_wrapper_test/clone/FantasyDisk.app",
+  "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+  "source_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "clone_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "user_dir_name": "FantasyDiskFan3994Session",
+  "lifecycle_error_patterns": [
+    "Parent node is busy adding/removing children",
+    "Parent node is busy setting up children",
+    "Condition \"data.parent\" is true",
+    "Condition \"!data.tree\" is true",
+    "Condition \"p_node->data.tree != data.tree\" is true",
+    "Parameter \"canvas_item\" is null",
+    "previously freed",
+    "Trying to cast a freed object",
+    "SCRIPT ERROR"
+  ],
+  "sequences": [
+    {
+      "sequence": "dark_mage_then_doctor",
+      "args": [
+        "--classes=dark_mage,doctor",
+        "--end=during_cast"
+      ],
+      "expected_pairs": 6,
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_wrapper_test/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--disable-crash-handler",
+        "--log-file",
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_wrapper_test/wrapper_test__dark_mage_then_doctor.engine.log",
+        "--headless",
+        "--",
+        "--classes=dark_mage,doctor",
+        "--end=during_cast",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_wrapper_test/wrapper_test__dark_mage_then_doctor.json",
+        "--probe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "problems": [],
+      "seconds": 22.4,
+      "engine_log_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "stdout_scan": {
+        "counts": {},
+        "total": 0,
+        "offending": []
+      },
+      "report": "wrapper_test__dark_mage_then_doctor.json",
+      "pairs_total": 6,
+      "pairs_passing": 6,
+      "report_pass": true,
+      "display_server": "headless",
+      "engine_version": "4.7-stable (official)",
+      "peak_object_count": 3884,
+      "pairs": [
+        {
+          "key": "dark_mage/dark_book",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn",
+          "cast_frames": 361,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/cursed_skull",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn",
+          "cast_frames": 351,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "dark_mage/dark_wand",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn",
+          "cast_frames": 361,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/restore_potion",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+          "cast_frames": 360,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/plague_syringe",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn",
+          "cast_frames": 360,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        },
+        {
+          "key": "doctor/bone_saw",
+          "pass": true,
+          "activated_by_input_action": true,
+          "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn",
+          "cast_frames": 359,
+          "ultimate_active_at_end": true,
+          "presentation_active_at_end": true,
+          "failures": []
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "pass": true
+}

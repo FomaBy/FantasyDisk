@@ -1,0 +1,144 @@
+# sanitized build log: 54325 raw lines, 54181 'Storing File'/'Updating files' lines collapsed; signing identity, team ID and Apple ID replaced with placeholders
+==> Worktree из tag v0.3.1.2
+Preparing worktree (detached HEAD 9a19870a1)
+HEAD is now at 9a19870a1 Merge pull request #372 from FomaBy/agent/claude-dev-opus-b/1d7858933176
+==> Проверка точных build inputs внутри tag v0.3.1.2
+==> Assembling canonical release notes from source-pinned fragments
+OK: assembled canonical changelog from 3 fragments
+==> Проверка версии tag v0.3.1.2 и export presets
+==> Проверка release scope tag v0.3.1.2
+release scope OK: 0.3.1.2, 0 entries
+==> Проверка визуальных утверждений release notes tag v0.3.1.2
+OK: 0.3.1.2 release notes carry no unbacked visual claims
+==> Проверка честной маркировки macOS-канала в клиенте tag v0.3.1.2
+==> Feedback delivery
+    production relay не задан; player feedback сохраняется в user://feedback
+==> Импорт ресурсов (headless)
+==> Экспорт macOS (.app в zip; подпись будет последним изменением bundle)
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mexport[22m | Started Exporting for macOS (3 steps)[39m[0m
+[   0% ] [90m[1mexport[22m | Creating app bundle[39m[0m
+[  25% ] [90m[1mexport[22m | Making PKG[39m[0m
+[   0% ] [90m[1msavepack[22m | Started Packing (102 steps)[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m
+[  75% ] [90m[1mexport[22m | Making ZIP[39m[0m
+[92m[ DONE ][39m [1mexport[22m
+[0m
+==> Финализация и подпись готового .app
+==> Минималистичный Finder layout: две системные иконки и одна стрелка
+<CGColor 0x104f9e000> [<CGColorSpace 0x104f901f0> (kCGColorSpaceDeviceRGB)] headroom = 1.000000 ( 0.968627 0.968627 0.968627 1 )
+    Подпись Developer ID Application (hardened runtime + timestamp)
+/tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app: replacing existing signature
+/tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app: valid on disk
+/tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement
+==> Apple notarization + stapling приложения
+    Apple notarization accepted FantasyDisk.app
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app
+The staple and validate action worked!
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app
+The validate action worked!
+/tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app: valid on disk
+/tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app: satisfies its Designated Requirement
+/tmp/fantasydisk-build-1tyLKY/src/build/macos-stage/FantasyDisk.app: accepted
+source=Notarized Developer ID
+==> Создание DMG с ярлыком Applications и стрелкой
+
+hdiutil: verify: checksum of "/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg" is VALID
+DMG layout OK: only FantasyDisk.app -> Applications, with one arrow (FantasyDisk 0.3.1.2)
+/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg: valid on disk
+/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg: satisfies its Designated Requirement
+==> Apple notarization + stapling DMG
+    Apple notarization accepted FantasyDisk DMG
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg
+The staple and validate action worked!
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg
+The validate action worked!
+/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg: valid on disk
+/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg: satisfies its Designated Requirement
+/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-macos.dmg: accepted
+source=Notarized Developer ID
+==> Экспорт Windows (x86_64, embed_pck)
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started Packing (102 steps)[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m
+==> NSIS-инсталлер
+Command line defined: "VERSION=0.3.1.2"
+Command line defined: "SRC_EXE=/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-Windows.exe"
+Command line defined: "OUT_FILE=/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-windows-setup.exe"
+Processing script file: "/tmp/fantasydisk-build-1tyLKY/src/tools/windows_installer.nsi" (UTF8)
+
+Processed 1 file, writing output (x86-unicode):
+
+Output: "/tmp/fantasydisk-build-1tyLKY/src/build/FantasyDisk-0.3.1.2-windows-setup.exe"
+Install: 2 pages (128 bytes), 1 section (4120 bytes), 13 instructions (364 bytes), 68 strings (2690 bytes), 1 language table (230 bytes).
+Uninstall: 2 pages (192 bytes), 1 section (4120 bytes), 9 instructions (252 bytes), 58 strings (2010 bytes), 1 language table (218 bytes).
+
+Using zlib compression.
+
+EXE header size:               38912 / 39936 bytes
+Install code:                   1280 / 5876 bytes
+Install data:              438408664 / 532994140 bytes
+Uninstall code+data:            1313 / 1810 bytes
+CRC (0x961FC264):                  4 / 4 bytes
+
+Total size:                438450173 / 533041766 bytes (82.2%)
+==> Верификация NSIS CRC (точный алгоритм exehead: crc32 файла с байта 512 до поля CRC)
+NSIS CRC OK (firstheader @ 38912, crc @ 438450169)
+==> Read-only mount macOS DMG для проверки подписи, layout и secret scan
+/tmp/fantasydisk-build-1tyLKY/src/build/secret-scan-dmg/FantasyDisk.app: valid on disk
+/tmp/fantasydisk-build-1tyLKY/src/build/secret-scan-dmg/FantasyDisk.app: satisfies its Designated Requirement
+Processing: /tmp/fantasydisk-build-1tyLKY/src/build/secret-scan-dmg/FantasyDisk.app
+The validate action worked!
+/tmp/fantasydisk-build-1tyLKY/src/build/secret-scan-dmg/FantasyDisk.app: accepted
+source=Notarized Developer ID
+==> Secret scan staged player payloads до публикации
+Release secret scan passed (3 artifact root(s)).
+==> Публикация проверенных staged artifacts
+==> SHA256SUMS.txt (контроль порчи при передаче файлов)
+3a803d9ff79515594a5b89ab9ca4bf3d19e913cc27dd44ef28c75f8e0ae67dd0  FantasyDisk-0.3.1.2-macos.dmg
+162740c47c8b0c32e068d454909d8dd68e9e0871ab427c7b1af7301bfac74bd5  FantasyDisk-0.3.1.2-windows-setup.exe
+==> Публичный update-manifest.json для клиента 0.2.2+
+/private/tmp/fantasydisk-build-1tyLKY/src/build/release-package/update-manifest.json
+==> Постоянная локальная копия, Godot snapshot и установка macOS
+{
+  "status": "verified",
+  "version": "0.3.1.2",
+  "local_release": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2",
+  "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+  "macos_app": "/Applications/FantasyDisk.app",
+  "tag_commit": "9a19870a15d71bc2b63e622c7895519bd84dafb4",
+  "candidate": null,
+  "macos_channel": "signed"
+}
+==> Готово:
+total 1760560
+-rw-r--r--@ 1 sergeyfomin  wheel   697B Oct  1 17:39 CHANGELOG-0.3.1.2.md
+-rw-r--r--@ 1 sergeyfomin  wheel    94K Oct  1 17:39 fantasydisk_0312_announcement.png
+-rw-r--r--@ 1 sergeyfomin  wheel   441M Oct  1 17:39 FantasyDisk-0.3.1.2-macos.dmg
+-rw-r--r--@ 1 sergeyfomin  wheel   418M Oct  1 17:39 FantasyDisk-0.3.1.2-windows-setup.exe
+-rw-r--r--@ 1 sergeyfomin  wheel   200B Oct  1 17:39 SHA256SUMS.txt
+-rw-r--r--@ 1 sergeyfomin  wheel   809B Oct  1 17:39 update-manifest.json

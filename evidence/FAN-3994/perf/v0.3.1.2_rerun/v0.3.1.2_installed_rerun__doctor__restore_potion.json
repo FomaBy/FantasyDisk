@@ -1,0 +1,565 @@
+{
+  "alive_before_window": 41,
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 358,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 26.839,
+      "objects_before": 3536,
+      "presentation_active": true,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1306,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 19.95,
+      "objects_before": 4497,
+      "presentation_active": true,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2255,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 18.751,
+      "objects_before": 4847,
+      "presentation_active": true,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3200,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 21.335,
+      "objects_before": 4992,
+      "presentation_active": true,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4136,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 18.923,
+      "objects_before": 6200,
+      "presentation_active": true,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 5076,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 31.893,
+      "objects_before": 6430,
+      "presentation_active": true,
+      "second": 43,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 6014,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 17.667,
+      "objects_before": 7069,
+      "presentation_active": true,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 6953,
+      "instantiated_scene": "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 25.253,
+      "objects_before": 7433,
+      "presentation_active": true,
+      "second": 59,
+      "time_scale": 1.0
+    }
+  ],
+  "casts_activated": 8,
+  "casts_total": 8,
+  "character_id": "doctor",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3994/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1.2",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3994Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [],
+  "finalize_wait_ms": 616.231,
+  "instantiated_scenes": [
+    "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"
+  ],
+  "label": "v0.3.1.2_installed_rerun",
+  "menu_objects_after_run": 2402,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 219.337550163269,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 3283,
+  "pass": true,
+  "phase": {
+    "alive_at_end": 24,
+    "alive_per_second": [
+      42,
+      40,
+      43,
+      0,
+      10,
+      0,
+      44,
+      37,
+      44,
+      42,
+      39,
+      17,
+      17,
+      0,
+      45,
+      48,
+      48,
+      44,
+      40,
+      0,
+      23,
+      22,
+      46,
+      45,
+      48,
+      45,
+      48,
+      18,
+      19,
+      0,
+      48,
+      43,
+      48,
+      48,
+      42,
+      0,
+      21,
+      0,
+      48,
+      47,
+      48,
+      46,
+      48,
+      18,
+      20,
+      22,
+      47,
+      46,
+      48,
+      48,
+      48,
+      1,
+      21,
+      0,
+      45,
+      40,
+      48,
+      48,
+      43,
+      24
+    ],
+    "avg_fps": 117.783333333333,
+    "capture": "",
+    "frames_over_100ms": 0,
+    "frames_over_50ms": 0,
+    "frames_total": 7067,
+    "longest_frame_ms": 33.795,
+    "low_1pct_fps": 112.0,
+    "objects_first_second": 3262,
+    "objects_last_second": 7519,
+    "objects_min": 3132,
+    "objects_peak": 8049,
+    "objects_per_second": [
+      3262,
+      3419,
+      3496,
+      3668,
+      3259,
+      3427,
+      3840,
+      3960,
+      3984,
+      4172,
+      4425,
+      4338,
+      3900,
+      4199,
+      4505,
+      4301,
+      4679,
+      4434,
+      4783,
+      4685,
+      4530,
+      4872,
+      4893,
+      4996,
+      5065,
+      5081,
+      4992,
+      5260,
+      5046,
+      5551,
+      5724,
+      6195,
+      5698,
+      5524,
+      6152,
+      5950,
+      5569,
+      5785,
+      6009,
+      6160,
+      6140,
+      6626,
+      6430,
+      6460,
+      6082,
+      6478,
+      6666,
+      6603,
+      6579,
+      6463,
+      7069,
+      6910,
+      6621,
+      6842,
+      7464,
+      7232,
+      7033,
+      7793,
+      7393,
+      7519
+    ],
+    "peak_texture_mib": 1404.49952793121,
+    "per_second_fps": [
+      120,
+      119,
+      119,
+      117,
+      119,
+      119,
+      117,
+      120,
+      120,
+      117,
+      119,
+      117,
+      120,
+      118,
+      120,
+      119,
+      117,
+      120,
+      118,
+      115,
+      118,
+      116,
+      121,
+      119,
+      118,
+      119,
+      119,
+      116,
+      119,
+      117,
+      119,
+      117,
+      119,
+      117,
+      112,
+      118,
+      116,
+      119,
+      119,
+      118,
+      116,
+      116,
+      118,
+      115,
+      119,
+      116,
+      119,
+      119,
+      119,
+      118,
+      113,
+      119,
+      119,
+      120,
+      114,
+      117,
+      117,
+      114,
+      119,
+      114
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 23,
+    "resident_packs_start": 23,
+    "seconds": 60,
+    "time_scale_at_end": 1.0,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Sprite2D",
+          2074
+        ],
+        [
+          "Node2D",
+          2064
+        ],
+        [
+          "AnimatedSprite2D",
+          87
+        ],
+        [
+          "CollisionShape2D",
+          71
+        ],
+        [
+          "Polygon2D",
+          67
+        ],
+        [
+          "CharacterBody2D",
+          64
+        ],
+        [
+          "Label",
+          59
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          11
+        ],
+        [
+          "Node",
+          8
+        ],
+        [
+          "TextureRect",
+          8
+        ],
+        [
+          "Control",
+          6
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "CanvasLayer",
+          4
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "Line2D",
+          3
+        ],
+        [
+          "Area2D",
+          3
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "RichTextLabel",
+          1
+        ],
+        [
+          "LineEdit",
+          1
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "Camera2D",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas167907451469827": 1,
+        "_root_canvas2491081031684": 4,
+        "_root_canvas335007449088": 101,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24528291159": 3,
+        "_vp_unhandled_key_input24528291159": 1,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_flashes": 10,
+        "elite_enemies": 1,
+        "enemies": 24,
+        "enemy_projectiles": 3,
+        "level_up_effects": 2,
+        "pickups": 1917,
+        "player": 1,
+        "player_weapon_effects": 2,
+        "player_weapons": 1
+      },
+      "nodes_total": 4564,
+      "objects_now": 7519,
+      "scenes_top": [
+        [
+          "res://scenes/Pickup.tscn",
+          1917
+        ],
+        [
+          "res://scenes/Enemy.tscn",
+          20
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          11
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          9
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyFlyingRunner.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyProjectile.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemyBoneShaman.tscn",
+          2
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/fan3994_perf_driver.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpToast.tscn",
+          1
+        ],
+        [
+          "res://scenes/RestorePotion.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/ElitePoisoned.tscn",
+          1
+        ],
+        [
+          "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpEffect.tscn",
+          1
+        ],
+        [
+          "res://scenes/Main.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 112.0
+  },
+  "player_character_id": "doctor",
+  "player_weapon_id": "restore_potion",
+  "resolution_source": "weapon_profile",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "restore_potion"
+}

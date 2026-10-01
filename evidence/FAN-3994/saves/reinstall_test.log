@@ -1,0 +1,10 @@
+{
+  "reinstall": "install_macos_from_dmg(launch_smoke=True) from the retained DMG over the installed 0.3.1.2",
+  "expected_versions": [
+    "0.3.1",
+    "1.3.12"
+  ],
+  "installed_app_files_identical_after_reinstall": true,
+  "files": 9
+}
+user data unchanged across reinstall + launch smoke (    5635 files)

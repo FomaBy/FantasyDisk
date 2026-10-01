@@ -1,0 +1,11 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+session_probe_wrapper: installed /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd on <SceneTree#24461182294> (exe /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk)
+ultimate_session_lifecycle_probe: chemist/blast_powder pass=true scene=res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn cast_frames=300 failures=[]
+ultimate_session_lifecycle_probe: chemist/acid_flask pass=true scene=res://scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn cast_frames=292 failures=[]
+ultimate_session_lifecycle_probe: chemist/homunculus_vial pass=true scene=res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn cast_frames=295 failures=[]
+ultimate_session_lifecycle_probe: doctor/restore_potion pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn cast_frames=295 failures=[]
+ultimate_session_lifecycle_probe: doctor/plague_syringe pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: doctor/bone_saw pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: 6/6 pairs pass in one process (peak objects 3591)

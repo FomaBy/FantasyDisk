@@ -1,0 +1,546 @@
+{
+  "alive_before_window": 41,
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 353,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 1070.417,
+      "objects_before": 3440,
+      "presentation_active": false,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1166,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.614,
+      "objects_before": 3931,
+      "presentation_active": false,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2123,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 17.807,
+      "objects_before": 3384,
+      "presentation_active": false,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3076,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.016,
+      "objects_before": 3293,
+      "presentation_active": false,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4028,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.178,
+      "objects_before": 3658,
+      "presentation_active": false,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4978,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 13.84,
+      "objects_before": 3836,
+      "presentation_active": false,
+      "second": 43,
+      "time_scale": 0.34
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 5917,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 13.651,
+      "objects_before": 3767,
+      "presentation_active": false,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 6855,
+      "instantiated_scene": "",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.667,
+      "objects_before": 3862,
+      "presentation_active": false,
+      "second": 59,
+      "time_scale": 0.34
+    }
+  ],
+  "casts_activated": 8,
+  "casts_total": 8,
+  "character_id": "doctor",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3994/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3994Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [],
+  "finalize_wait_ms": 663.507,
+  "instantiated_scenes": [
+    ""
+  ],
+  "label": "v0.3.1_reference",
+  "menu_objects_after_run": 2402,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 219.587550163269,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 3267,
+  "pass": true,
+  "phase": {
+    "alive_at_end": 48,
+    "alive_per_second": [
+      42,
+      40,
+      46,
+      15,
+      47,
+      38,
+      46,
+      35,
+      43,
+      45,
+      42,
+      48,
+      48,
+      47,
+      49,
+      47,
+      43,
+      48,
+      48,
+      48,
+      45,
+      48,
+      47,
+      48,
+      48,
+      48,
+      48,
+      48,
+      47,
+      48,
+      48,
+      48,
+      48,
+      45,
+      48,
+      48,
+      47,
+      48,
+      51,
+      45,
+      49,
+      49,
+      44,
+      47,
+      49,
+      45,
+      47,
+      48,
+      44,
+      44,
+      48,
+      48,
+      46,
+      48,
+      46,
+      45,
+      48,
+      43,
+      48,
+      48
+    ],
+    "avg_fps": 116.216666666667,
+    "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures/v0.3.1_reference__doctor__restore_potion.png",
+    "frames_over_100ms": 1,
+    "frames_over_50ms": 1,
+    "frames_total": 6973,
+    "longest_frame_ms": 1070.417,
+    "low_1pct_fps": 24.0,
+    "objects_first_second": 3152,
+    "objects_last_second": 3585,
+    "objects_min": 3131,
+    "objects_peak": 4238,
+    "objects_per_second": [
+      3152,
+      3412,
+      3424,
+      3586,
+      3260,
+      3440,
+      3239,
+      3819,
+      3524,
+      3407,
+      3883,
+      3390,
+      3248,
+      3375,
+      3349,
+      3335,
+      3740,
+      3293,
+      3384,
+      3259,
+      3403,
+      3397,
+      3482,
+      3411,
+      3557,
+      3344,
+      3293,
+      3395,
+      3345,
+      3375,
+      3311,
+      3513,
+      3384,
+      3667,
+      3658,
+      3687,
+      3457,
+      3485,
+      3404,
+      3649,
+      3513,
+      3441,
+      3804,
+      3653,
+      3563,
+      3765,
+      3620,
+      3475,
+      4027,
+      3924,
+      3767,
+      3843,
+      3666,
+      3403,
+      3862,
+      3586,
+      3496,
+      4160,
+      3862,
+      3585
+    ],
+    "peak_texture_mib": 1395.70789813995,
+    "per_second_fps": [
+      121,
+      114,
+      118,
+      24,
+      89,
+      118,
+      120,
+      113,
+      116,
+      118,
+      115,
+      120,
+      120,
+      120,
+      119,
+      120,
+      118,
+      121,
+      119,
+      117,
+      120,
+      120,
+      118,
+      120,
+      118,
+      120,
+      120,
+      120,
+      120,
+      118,
+      120,
+      121,
+      119,
+      116,
+      118,
+      120,
+      117,
+      120,
+      119,
+      119,
+      118,
+      119,
+      118,
+      120,
+      118,
+      115,
+      118,
+      120,
+      114,
+      118,
+      116,
+      117,
+      118,
+      120,
+      115,
+      118,
+      118,
+      115,
+      117,
+      118
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 23,
+    "resident_packs_start": 23,
+    "seconds": 60,
+    "time_scale_at_end": 1.0,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Sprite2D",
+          292
+        ],
+        [
+          "Node2D",
+          240
+        ],
+        [
+          "Label",
+          59
+        ],
+        [
+          "CollisionShape2D",
+          53
+        ],
+        [
+          "Polygon2D",
+          50
+        ],
+        [
+          "CharacterBody2D",
+          49
+        ],
+        [
+          "AnimatedSprite2D",
+          49
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          11
+        ],
+        [
+          "Node",
+          8
+        ],
+        [
+          "TextureRect",
+          7
+        ],
+        [
+          "Control",
+          6
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "CanvasLayer",
+          3
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Line2D",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "Camera2D",
+          1
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "LineEdit",
+          1
+        ],
+        [
+          "RichTextLabel",
+          1
+        ],
+        [
+          "Window",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas2491081031684": 4,
+        "_root_canvas335007449088": 81,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24528291159": 3,
+        "_vp_unhandled_key_input24528291159": 1,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_labels": 23,
+        "enemies": 48,
+        "level_up_effects": 2,
+        "pickups": 121,
+        "player": 1,
+        "player_weapons": 1,
+        "summoned_enemies": 3
+      },
+      "nodes_total": 864,
+      "objects_now": 3585,
+      "scenes_top": [
+        [
+          "res://scenes/Pickup.tscn",
+          121
+        ],
+        [
+          "res://scenes/Enemy.tscn",
+          20
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          11
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyFlyingRunner.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          3
+        ],
+        [
+          "res://scenes/Main.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpEffect.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/RestorePotion.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpToast.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/fan3994_perf_driver.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 24.0
+  },
+  "player_character_id": "doctor",
+  "player_weapon_id": "restore_potion",
+  "resolution_source": "legacy_class_fallback",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "restore_potion"
+}

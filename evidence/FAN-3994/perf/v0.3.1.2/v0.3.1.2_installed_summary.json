@@ -1,0 +1,189 @@
+{
+  "app": "/Applications/FantasyDisk.app",
+  "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app",
+  "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+  "source_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "clone_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+  "runs": [
+    {
+      "pair": "berserk/sword",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__berserk__sword.json",
+        "--label=v0.3.1.2_installed",
+        "--class=berserk",
+        "--weapon=sword",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 67.8,
+      "report": "v0.3.1.2_installed__berserk__sword.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 114.866666666667,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 1,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1041.623,
+        "peak_texture_mib": 1404.04119968414,
+        "objects_peak": 8499,
+        "objects_min": 2910,
+        "objects_first_second": 2971,
+        "objects_last_second": 8316,
+        "alive_at_end": 8,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__berserk__sword.png"
+      }
+    },
+    {
+      "pair": "druid/summon_amulet",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__druid__summon_amulet.json",
+        "--label=v0.3.1.2_installed",
+        "--class=druid",
+        "--weapon=summon_amulet",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 65.1,
+      "report": "v0.3.1.2_installed__druid__summon_amulet.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 112.7,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 1,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1123.167,
+        "peak_texture_mib": 1476.13079738617,
+        "objects_peak": 10594,
+        "objects_min": 2960,
+        "objects_first_second": 3227,
+        "objects_last_second": 10492,
+        "alive_at_end": 0,
+        "resident_packs_start": 28,
+        "resident_packs_end": 28,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__druid__summon_amulet.png"
+      }
+    },
+    {
+      "pair": "knight/long_spear",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__knight__long_spear.json",
+        "--label=v0.3.1.2_installed",
+        "--class=knight",
+        "--weapon=long_spear",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 65.1,
+      "report": "v0.3.1.2_installed__knight__long_spear.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 116.466666666667,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 1,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1144.038,
+        "peak_texture_mib": 1395.06206798553,
+        "objects_peak": 3728,
+        "objects_min": 2949,
+        "objects_first_second": 2990,
+        "objects_last_second": 3469,
+        "alive_at_end": 48,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__knight__long_spear.png"
+      }
+    },
+    {
+      "pair": "doctor/restore_potion",
+      "command": [
+        "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+        "--windowed",
+        "--resolution",
+        "2560x1440",
+        "--",
+        "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__doctor__restore_potion.json",
+        "--label=v0.3.1.2_installed",
+        "--class=doctor",
+        "--weapon=restore_potion",
+        "--seconds=60",
+        "--cast-every=8",
+        "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+      ],
+      "exit_code": 0,
+      "timed_out": false,
+      "seconds": 65.1,
+      "report": "v0.3.1.2_installed__doctor__restore_potion.json",
+      "pass": true,
+      "resolution_source": "weapon_profile",
+      "casts": "8/8",
+      "scenes": [
+        "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"
+      ],
+      "phase": {
+        "seconds": 60,
+        "avg_fps": 115.2,
+        "low_1pct_fps": 24.0,
+        "worst_second_fps": 24.0,
+        "frames_over_50ms": 1,
+        "frames_over_100ms": 1,
+        "longest_frame_ms": 1148.551,
+        "peak_texture_mib": 1404.49952793121,
+        "objects_peak": 7950,
+        "objects_min": 3135,
+        "objects_first_second": 3135,
+        "objects_last_second": 7547,
+        "alive_at_end": 24,
+        "resident_packs_start": 23,
+        "resident_packs_end": 23,
+        "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__doctor__restore_potion.png"
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1.2_installed: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=3497
+cast @11s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4335
+cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4680
+cast @27s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=4868
+cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=5716
+cast @43s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=6317
+cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=6907
+cast @59s: activated=true failure= scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn alive=48 objects=7883
+phase p2_48_enemies_ultimates: 60 s, avg 115 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1148.6 ms, peak texture 1404 MiB, objects peak 7950 min 3135 (first s 3135, last s 7547), resident packs 23 -> 23, alive first s 42 last s 24
+| v0.3.1.2_installed | doctor/restore_potion | 60 | 115 | 24 | 24 | 1 | 1 | 1148.6 | 1404 | 7950 | 3135 | 3135 | 7547 | 23 -> 23 | casts 8/8 |
+perf_ultimate_driver: v0.3.1.2_installed doctor/restore_potion pass=true source=weapon_profile casts=8/8 scenes=["res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"] failures=[]

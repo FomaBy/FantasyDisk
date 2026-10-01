@@ -1,0 +1,92 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+session_probe_wrapper: installed /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/FantasyDisk/tools/ultimate_session_lifecycle_probe.gd on <SceneTree#24461182294> (exe /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/session_windowed/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk)
+ultimate_session_lifecycle_probe: berserk/sword pass=true scene=res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn cast_frames=299 failures=[]
+ultimate_session_lifecycle_probe: berserk/axe pass=true scene=res://scenes/vfx/ultimates/berserk/BerserkAxeExecutionLoop.tscn cast_frames=286 failures=[]
+ultimate_session_lifecycle_probe: berserk/hammer pass=true scene=res://scenes/vfx/ultimates/berserk/BerserkHammerFourfoldRift.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: soldier/soldier_rifle pass=true scene=res://scenes/vfx/ultimates/soldier/SoldierRifleSuppressiveOrder.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: soldier/soldier_grenade pass=true scene=res://scenes/vfx/ultimates/soldier/SoldierGrenadeSevenSeconds.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: soldier/soldier_bayonet pass=true scene=res://scenes/vfx/ultimates/soldier/SoldierBayonetLastCharge.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: thief/thief_coin_pouch pass=true scene=res://scenes/vfx/ultimates/thief/ThiefCoinPouchUltimate.tscn cast_frames=295 failures=[]
+ultimate_session_lifecycle_probe: thief/thief_shadow_cloak pass=true scene=res://scenes/vfx/ultimates/thief/ThiefShadowCloakUltimate.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: thief/thief_smoke_bomb pass=true scene=res://scenes/vfx/ultimates/thief/ThiefSmokeBombUltimate.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: elementalist/elementalist_orb_ring pass=true scene=res://scenes/vfx/ultimates/elementalist/ElementalistOrbRingGrandConclave.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: elementalist/elementalist_prism_focus pass=true scene=res://scenes/vfx/ultimates/elementalist/ElementalistPrismFocusPrismaticVerdict.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: elementalist/elementalist_meteor_core pass=true scene=res://scenes/vfx/ultimates/elementalist/ElementalistMeteorCoreStarfall.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: sniper/sniper_deadeye_rifle pass=true scene=res://scenes/vfx/ultimates/sniper/sniper_deadeye_rifle_ultimate.tscn cast_frames=296 failures=[]
+ultimate_session_lifecycle_probe: sniper/sniper_spotter_scope pass=true scene=res://scenes/vfx/ultimates/sniper/sniper_spotter_scope_ultimate.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: sniper/sniper_shatter_rounds pass=true scene=res://scenes/vfx/ultimates/sniper/sniper_shatter_rounds_ultimate.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: priest/priest_reliquary pass=true scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: priest/priest_censer pass=true scene=res://scenes/vfx/ultimates/priest/PriestCenserUnbreakableVow.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: priest/priest_chime pass=true scene=res://scenes/vfx/ultimates/priest/PriestChimeThreeBellsOfDawn.tscn cast_frames=296 failures=[]
+ultimate_session_lifecycle_probe: biologist/biologist_spore_lens pass=true scene=res://scenes/vfx/ultimates/biologist/BiologistSporeLensWorldMycelium.tscn cast_frames=295 failures=[]
+ultimate_session_lifecycle_probe: biologist/biologist_sample_injector pass=true scene=res://scenes/vfx/ultimates/biologist/BiologistSampleInjectorPerfectSample.tscn cast_frames=285 failures=[]
+ultimate_session_lifecycle_probe: biologist/biologist_symbiote_seed pass=true scene=res://scenes/vfx/ultimates/biologist/BiologistSymbioteSeedMatriarch.tscn cast_frames=295 failures=[]
+ultimate_session_lifecycle_probe: robot/robot_magnetic_anchor pass=true scene=res://scenes/vfx/ultimates/robot/RobotMagneticAnchorSingularity.tscn cast_frames=300 failures=[]
+ultimate_session_lifecycle_probe: robot/robot_hydraulic_press pass=true scene=res://scenes/vfx/ultimates/robot/RobotHydraulicPressProtocol.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: robot/robot_reactor_core pass=true scene=res://scenes/vfx/ultimates/robot/RobotReactorCoreRedZone.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: engineer/engineer_sentry_wrench pass=true scene=res://scenes/vfx/ultimates/engineer/EngineerSentryWrenchUltimate.tscn cast_frames=296 failures=[]
+ultimate_session_lifecycle_probe: engineer/engineer_repair_drone pass=true scene=res://scenes/vfx/ultimates/engineer/EngineerRepairDroneUltimate.tscn cast_frames=293 failures=[]
+ultimate_session_lifecycle_probe: engineer/engineer_pressure_mines pass=true scene=res://scenes/vfx/ultimates/engineer/EngineerPressureMinesUltimate.tscn cast_frames=285 failures=[]
+ultimate_session_lifecycle_probe: dark_mage/dark_book pass=true scene=res://scenes/vfx/ultimates/dark_mage/DarkMageBookAbyssMirror.tscn cast_frames=262 failures=[]
+ultimate_session_lifecycle_probe: dark_mage/cursed_skull pass=true scene=res://scenes/vfx/ultimates/dark_mage/DarkMageSkullCursedCrown.tscn cast_frames=298 failures=[]
+ultimate_session_lifecycle_probe: dark_mage/dark_wand pass=true scene=res://scenes/vfx/ultimates/dark_mage/DarkMageWandVanishingThread.tscn cast_frames=280 failures=[]
+ultimate_session_lifecycle_probe: guitarist/electric_guitar pass=true scene=res://scenes/vfx/ultimates/guitarist/GuitaristElectricGuitarLastChord.tscn cast_frames=277 failures=[]
+ultimate_session_lifecycle_probe: guitarist/bass_guitar pass=true scene=res://scenes/vfx/ultimates/guitarist/GuitaristBassGuitarHellSubwoofer.tscn cast_frames=259 failures=[]
+ultimate_session_lifecycle_probe: guitarist/sound_amp pass=true scene=res://scenes/vfx/ultimates/guitarist/GuitaristSoundAmpWallOfSound.tscn cast_frames=271 failures=[]
+ultimate_session_lifecycle_probe: assassin/chakrams pass=true scene=res://scenes/vfx/ultimates/assassin/AssassinChakramsEightMoons.tscn cast_frames=281 failures=[]
+ultimate_session_lifecycle_probe: assassin/shadow_daggers pass=true scene=res://scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn cast_frames=290 failures=[]
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ERROR: Error calling method from CallbackTweener: 'Node2D(class_weapon.gd)::_apply_weapon_dot_tick': Cannot convert argument 1 from Object to Object.
+   at: step (scene/animation/tween.cpp:771)
+ultimate_session_lifecycle_probe: assassin/venom_wire pass=true scene=res://scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn cast_frames=280 failures=[]
+ultimate_session_lifecycle_probe: ranger/moon_crossbow pass=true scene=res://scenes/vfx/ultimates/ranger/RangerMoonCrossbowMoonHunt.tscn cast_frames=289 failures=[]
+ultimate_session_lifecycle_probe: ranger/storm_longbow pass=true scene=res://scenes/vfx/ultimates/ranger/RangerStormLongbowStormEye.tscn cast_frames=292 failures=[]
+ultimate_session_lifecycle_probe: ranger/hunter_trap pass=true scene=res://scenes/vfx/ultimates/ranger/RangerHunterTrapGrandTrap.tscn cast_frames=288 failures=[]
+ultimate_session_lifecycle_probe: doctor/restore_potion pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn cast_frames=282 failures=[]
+ultimate_session_lifecycle_probe: doctor/plague_syringe pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn cast_frames=299 failures=[]
+ultimate_session_lifecycle_probe: doctor/bone_saw pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn cast_frames=274 failures=[]
+ultimate_session_lifecycle_probe: chemist/blast_powder pass=true scene=res://scenes/vfx/ultimates/chemist/ChemistBlastPowderPhilosophersExplosion.tscn cast_frames=294 failures=[]
+ultimate_session_lifecycle_probe: chemist/acid_flask pass=true scene=res://scenes/vfx/ultimates/chemist/ChemistAcidFlaskTsarFlask.tscn cast_frames=277 failures=[]
+ultimate_session_lifecycle_probe: chemist/homunculus_vial pass=true scene=res://scenes/vfx/ultimates/chemist/ChemistHomunculusVialPerfectHomunculus.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: knight/long_spear pass=true scene=res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn cast_frames=291 failures=[]
+ultimate_session_lifecycle_probe: knight/tower_shield pass=true scene=res://scenes/vfx/ultimates/knight/KnightTowerShieldImpassableLine.tscn cast_frames=297 failures=[]
+ultimate_session_lifecycle_probe: knight/holy_flail pass=true scene=res://scenes/vfx/ultimates/knight/KnightHolyFlailHeavenlySpiral.tscn cast_frames=293 failures=[]
+ultimate_session_lifecycle_probe: druid/summon_amulet pass=true scene=res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn cast_frames=286 failures=[]
+ultimate_session_lifecycle_probe: druid/briar_staff pass=true scene=res://scenes/vfx/ultimates/druid/DruidBriarStaffForestInOneBreath.tscn cast_frames=289 failures=[]
+ultimate_session_lifecycle_probe: druid/raven_totem pass=true scene=res://scenes/vfx/ultimates/druid/DruidRavenTotemNightOfThousandWings.tscn cast_frames=296 failures=[]
+ultimate_session_lifecycle_probe: 51/51 pairs pass in one process (peak objects 7665)

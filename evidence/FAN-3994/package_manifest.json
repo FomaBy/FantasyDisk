@@ -1,0 +1,1050 @@
+{
+  "issue": "FAN-3994",
+  "version": "0.3.1.2",
+  "source": {
+    "tag": "v0.3.1.2",
+    "tag_object": "eaf68a1d335e577087e2c570c19e84792bdbb332",
+    "tag_commit": "9a19870a15d71bc2b63e622c7895519bd84dafb4",
+    "tag_tree": "05fc714ce1599d85ee01fc13dc8afbfca449d157",
+    "ls_remote_unchanged_across_build": true,
+    "ls_remote": [
+      "9a19870a15d71bc2b63e622c7895519bd84dafb4\trefs/heads/dev",
+      "7d5117f2ed16c67884ae3cd4dab1b73c315b3f42\trefs/heads/main",
+      "eaf68a1d335e577087e2c570c19e84792bdbb332\trefs/tags/v0.3.1.2",
+      "9a19870a15d71bc2b63e622c7895519bd84dafb4\trefs/tags/v0.3.1.2^{}"
+    ]
+  },
+  "build": {
+    "command": "tools/build_release.sh 0.3.1.2 (FANTASYDISK_MACOS_CHANNEL=signed, MACOS_NOTARY_PROFILE=FantasyDiskRelease, MACOS_SIGN_IDENTITY resolved locally) via evidence/FAN-3994/run_build.sh",
+    "started_utc": "2026-10-01T14:30:49Z",
+    "ended_utc": "2026-10-01T14:42:01Z",
+    "exit_code": 0,
+    "sanitized_log": "build_release.sanitized.log",
+    "sanitized_log_sha256": "d5085c7c0e5efa84d7fa9ae8dc0d3f2b485cdeefe7f401d69884e5efb6d7366f"
+  },
+  "retained_package": {
+    "path": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2",
+    "macos_channel": "signed",
+    "tag_commit": "9a19870a15d71bc2b63e622c7895519bd84dafb4",
+    "source_tree_sha256": "8c0bb1ba7ab91e1b9532eb96b5543cbd0aec734bdefa45bbf307df75e2e2c89b",
+    "inventory": {
+      "CHANGELOG-0.3.1.2.md": {
+        "size": 697,
+        "sha256": "c9b588f056740fb884a1ee081bd0dc3d45b04b2ae36964f68652b9ea44fe9d45"
+      },
+      "FantasyDisk-0.3.1.2-macos.dmg": {
+        "size": 462843679,
+        "sha256": "3a803d9ff79515594a5b89ab9ca4bf3d19e913cc27dd44ef28c75f8e0ae67dd0"
+      },
+      "FantasyDisk-0.3.1.2-windows-setup.exe": {
+        "size": 438450173,
+        "sha256": "162740c47c8b0c32e068d454909d8dd68e9e0871ab427c7b1af7301bfac74bd5"
+      },
+      "LOCAL_RELEASE.json": {
+        "size": 1965,
+        "sha256": "3b5da617cdfaadc2ab26129ae97a84cdb174a45dd60ccf673c315a61c17c04a7"
+      },
+      "SHA256SUMS.txt": {
+        "size": 200,
+        "sha256": "d7b19b4fc7da2dfa74da7940c3b9d514250ad9aa6e4500ebc87456ab1714d763"
+      },
+      "fantasydisk_0312_announcement.png": {
+        "size": 95930,
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      },
+      "update-manifest.json": {
+        "size": 809,
+        "sha256": "e70d0e593e944df0392695ed588326070ce01a0e8770880ae2fed6277350e936"
+      }
+    },
+    "inventory_matches_LOCAL_RELEASE": true,
+    "LOCAL_RELEASE_sha256": "3b5da617cdfaadc2ab26129ae97a84cdb174a45dd60ccf673c315a61c17c04a7",
+    "project_snapshot_equals_git_archive": true,
+    "update_manifest_consistent": true,
+    "local_release_verify": {
+      "status": "verified",
+      "version": "0.3.1.2",
+      "local_release": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2",
+      "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+      "macos_app": "/Applications/FantasyDisk.app",
+      "tag_commit": "9a19870a15d71bc2b63e622c7895519bd84dafb4",
+      "candidate": null,
+      "macos_channel": "signed"
+    }
+  },
+  "hash_difference": {
+    "all_built_artifacts_differ_from_every_retained_package": true,
+    "installer_collisions": [],
+    "collisions": [
+      {
+        "package": "archive/v0.3.1-attempt2-165f14aa",
+        "file": "fantasydisk_031_announcement.png",
+        "new_file": "fantasydisk_0312_announcement.png",
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      },
+      {
+        "package": "v0.3.1",
+        "file": "fantasydisk_031_announcement.png",
+        "new_file": "fantasydisk_0312_announcement.png",
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      },
+      {
+        "package": "v0.3.1.1",
+        "file": "fantasydisk_0311_announcement.png",
+        "new_file": "fantasydisk_0312_announcement.png",
+        "sha256": "6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7"
+      }
+    ]
+  },
+  "preservation": {
+    "summary": "# Retained-release preservation (recursive SHA-256 of every regular file under $local_root/releases except .DS_Store; symlinks are not followed)\nbefore build: 706269 files, manifest sha256 d6352ac5f40070f6bdbafa4ce59d0fa9dc8ce77bea8865cc76a2db2fb69fc491\nafter build (excluding the new v0.3.1.2/): 706269 files, manifest sha256 d6352ac5f40070f6bdbafa4ce59d0fa9dc8ce77bea8865cc76a2db2fb69fc491\ndiff before/after: 0 bytes (0 = byte-identical)\n\nper-package file counts and per-package manifest sha256 (before / after):\n  .gdignore: 1 files, c04a2f634421604dee3a2edfe2a8a101e3187a690679bdcdac945680b61ab5a5 / c04a2f634421604dee3a2edfe2a8a101e3187a690679bdcdac945680b61ab5a5\n  archive/v0.3.1-attempt1-448a0cc1: 114341 files, 74f48f8746f8b8d3972dbb4c5ad60b1d9c30316d93f26578537581085d37e80d / 74f48f8746f8b8d3972dbb4c5ad60b1d9c30316d93f26578537581085d37e80d\n  archive/v0.3.1-attempt2-165f14aa: 115269 files, 7da5ed5a5fde2c790cb165514691e5a6abd4670b773916e99baacfb101552783 / 7da5ed5a5fde2c790cb165514691e5a6abd4670b773916e99baacfb101552783\n  v0.3.0: 43165 files, e2f2b7e3e8cf3d80d53a52e0dd14d4ebb91d81623cb7e2b1bec07c5ffef43b7e / e2f2b7e3e8cf3d80d53a52e0dd14d4ebb91d81623cb7e2b1bec07c5ffef43b7e\n  v0.3.0-godot-registration-20260908T0537Z: 3 files, 00c17611ff1437ebccd3d4eae8ee6a55129218c10cbbe4b609617de2986dc169 / 00c17611ff1437ebccd3d4eae8ee6a55129218c10cbbe4b609617de2986dc169\n  v0.3.0-rejected-7f35f010: 43154 files, 202f38b66744a564991db82be9523c5b947b8e2233806eadfd72a853432080e8 / 202f38b66744a564991db82be9523c5b947b8e2233806eadfd72a853432080e8\n  v0.3.0-snapshot-quarantine-20260907T0358Z: 2 files, a799c5c059913fe428f47e4e7d501d2cdb93142f5861353d3d908375086b8261 / a799c5c059913fe428f47e4e7d501d2cdb93142f5861353d3d908375086b8261\n  v0.3.1: 160112 files, 3a71d0b66ebc6e6ec7b8390224458ca1b849700dd3722c9da3870777430191bc / 3a71d0b66ebc6e6ec7b8390224458ca1b849700dd3722c9da3870777430191bc\n  v0.3.1.1: 115769 files, 8ffbc8d80b36c4971cf2aa04f0e1c867a961f68d64965f6f909d6b5882c36aa2 / 8ffbc8d80b36c4971cf2aa04f0e1c867a961f68d64965f6f909d6b5882c36aa2\n  v0.3.2: 114453 files, 5f290ece9735d7f13c2ff03b7ce15042d24348e6130a024913782868e44a7274 / 5f290ece9735d7f13c2ff03b7ce15042d24348e6130a024913782868e44a7274\n\ncurrent-project pointer: before build -> v0.3.1.1/godot-project; after build -> v0.3.1.2/godot-project (the only intended change under releases/ besides the new v0.3.1.2/ directory; .gdignore touched with unchanged empty content)\n",
+    "diff_after_build_bytes": 0,
+    "diff_final_bytes": 0
+  },
+  "installed_app": {
+    "path": "/Applications/FantasyDisk.app",
+    "files": {
+      "./Contents/CodeResources": "c21714ebc7f10d7aff691b4ff2f3dc65bcf86421c55e36602497198590c3eeb4",
+      "./Contents/Info.plist": "f3007e543772c96533df0330127113a7f8aa299008ee0a08bdec5682fb668873",
+      "./Contents/MacOS/FantasyDisk": "609f5a6593e8b4ff8cee5b2f0425785e034eabce6476a784a9a33f5cee6bd59d",
+      "./Contents/PkgInfo": "7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb",
+      "./Contents/Resources/FantasyDisk.pck": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "./Contents/Resources/FantasyDiskDmgBackground.png": "dfad497a307c57c436845358b5323053703385ac132d276a25e7da0e098b71b3",
+      "./Contents/Resources/PrivacyInfo.xcprivacy": "0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3",
+      "./Contents/Resources/icon.icns": "c6114f1389b6fd5fc66d70a5a28e3d8b3b332001768390bb10aef1e35337c63f",
+      "./Contents/_CodeSignature/CodeResources": "1596ff33524cc6e0e5388735a615b219799bb5c63e419df5f3529716e2844e1b"
+    },
+    "equals_dmg_app": true,
+    "trust_checks": "package/trust_checks.txt",
+    "main_menu": {
+      "app": "/Applications/FantasyDisk.app",
+      "pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "clone_pck_identical": true,
+      "exit_code": 0,
+      "capture": "main_menu_v0.3.1.2_installed.png",
+      "capture_sha256": "43028f987de66931b304d00fe8578f1c5a793c8c39e29fade5e44d0ac9b8e42a",
+      "result_line": "main_menu_capture: saved=true version=0.3.1.2 executable=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/main_menu/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk labels=[\"/root/Main/@CanvasLayer@21/MainMenuScreen/MainMenuVersionLabel: v0.3.1.2\"]"
+    }
+  },
+  "pck": {
+    "macos_installed_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+    "macos_entries": 27034,
+    "presentation_documents": 17,
+    "forbidden_entries_macos": 0,
+    "forbidden_entries_windows": 0,
+    "windows_embedded": {
+      "exe_size": 532994128,
+      "pck_offset": 109050880,
+      "pck_size": 423943236,
+      "pck_sha256": "bed39a3fef6071a38553d33e0fb878dddba714c629d05e23f9c6f01a915cdca6",
+      "entry_count": 27034
+    },
+    "windows_exe_sha256": "6dd7631e6dd851e0544f2a629b437698d41fa93ab3fa7ccb8812de2e0a5642ce",
+    "tables_identical_by_path": true,
+    "content_sample_md5_mismatches": []
+  },
+  "installed_app_probe": {
+    "pass": true,
+    "duration_seconds": 151.2,
+    "probe_input_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+    "headless_pairs_passing": "51/51",
+    "resolution_sources": {
+      "weapon_profile": 51
+    },
+    "begin_ok_all": true,
+    "scene_paths_class_owned_all": true,
+    "mutations": [
+      {
+        "name": "presentation_document_removed",
+        "exit_code": 1,
+        "pairs_passing": 48,
+        "problems": []
+      },
+      {
+        "name": "executor_remap_removed",
+        "exit_code": 1,
+        "pairs_passing": 50,
+        "problems": []
+      }
+    ],
+    "player_path": {
+      "pairs_passing": 51,
+      "pairs": 51,
+      "crashes": [],
+      "captures": 17
+    },
+    "presentation_captures": [
+      "assassin__chakrams.png",
+      "berserk__sword.png",
+      "biologist__biologist_spore_lens.png",
+      "chemist__blast_powder.png",
+      "dark_mage__dark_book.png",
+      "doctor__restore_potion.png",
+      "druid__summon_amulet.png",
+      "elementalist__elementalist_orb_ring.png",
+      "engineer__engineer_sentry_wrench.png",
+      "guitarist__electric_guitar.png",
+      "knight__long_spear.png",
+      "priest__priest_reliquary.png",
+      "ranger__moon_crossbow.png",
+      "robot__robot_magnetic_anchor.png",
+      "sniper__sniper_deadeye_rifle.png",
+      "soldier__soldier_rifle.png",
+      "thief__thief_coin_pouch.png"
+    ]
+  },
+  "long_session_fan3991": {
+    "headless": {
+      "pass": true,
+      "mode": "wrapper",
+      "windowed": false,
+      "probe": "tools/ultimate_session_lifecycle_probe.gd",
+      "clone_pck_identical": true,
+      "sequences": [
+        {
+          "sequence": "dark_mage_then_doctor",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 22.3,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "headless",
+          "peak_object_count": 3879,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "chemist_then_doctor",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 19.9,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "headless",
+          "peak_object_count": 3808,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "dark_mage_then_doctor_natural_end",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 34.2,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "headless",
+          "peak_object_count": 3913,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "dark_mage_then_doctor_force",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 19.9,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "headless",
+          "peak_object_count": 3860,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "all_17_classes",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 156.4,
+          "pairs_total": 51,
+          "pairs_passing": 51,
+          "report_pass": true,
+          "display_server": "headless",
+          "peak_object_count": 9383,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        }
+      ]
+    },
+    "windowed": {
+      "pass": true,
+      "mode": "wrapper",
+      "windowed": true,
+      "probe": "tools/ultimate_session_lifecycle_probe.gd",
+      "clone_pck_identical": true,
+      "sequences": [
+        {
+          "sequence": "dark_mage_then_doctor",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 23.3,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "macOS",
+          "peak_object_count": 3506,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "chemist_then_doctor",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 20.9,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "macOS",
+          "peak_object_count": 3591,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "dark_mage_then_doctor_natural_end",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 35.3,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "macOS",
+          "peak_object_count": 3588,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        },
+        {
+          "sequence": "all_17_classes",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 161.5,
+          "pairs_total": 51,
+          "pairs_passing": 51,
+          "report_pass": true,
+          "display_server": "macOS",
+          "peak_object_count": 7665,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        }
+      ]
+    },
+    "wrapper_test": {
+      "pass": true,
+      "mode": "wrapper",
+      "windowed": false,
+      "probe": "tools/ultimate_session_lifecycle_probe.gd",
+      "clone_pck_identical": true,
+      "sequences": [
+        {
+          "sequence": "dark_mage_then_doctor",
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 22.4,
+          "pairs_total": 6,
+          "pairs_passing": 6,
+          "report_pass": true,
+          "display_server": "headless",
+          "peak_object_count": 3884,
+          "problems": [],
+          "lifecycle_errors_engine_log": 0,
+          "lifecycle_errors_stdout": 0
+        }
+      ]
+    }
+  },
+  "perf": {
+    "v0.3.1_reference": {
+      "app": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/ref_v0.3.1/FantasyDisk.app",
+      "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app",
+      "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+      "source_pck_sha256": "85dce876f1c85f6d7ad14504fb8c17e7e19c8d557be8ce9c31c8af010b183790",
+      "clone_pck_sha256": "85dce876f1c85f6d7ad14504fb8c17e7e19c8d557be8ce9c31c8af010b183790",
+      "runs": [
+        {
+          "pair": "berserk/sword",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/v0.3.1_reference__berserk__sword.json",
+            "--label=v0.3.1_reference",
+            "--class=berserk",
+            "--weapon=sword",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 67.7,
+          "report": "v0.3.1_reference__berserk__sword.json",
+          "pass": true,
+          "resolution_source": "legacy_class_fallback",
+          "casts": "8/8",
+          "scenes": [
+            ""
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 116.433333333333,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1070.113,
+            "peak_texture_mib": 1392.06207942963,
+            "objects_peak": 4458,
+            "objects_min": 2912,
+            "objects_first_second": 2980,
+            "objects_last_second": 4211,
+            "alive_at_end": 48,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures/v0.3.1_reference__berserk__sword.png"
+          }
+        },
+        {
+          "pair": "druid/summon_amulet",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/v0.3.1_reference__druid__summon_amulet.json",
+            "--label=v0.3.1_reference",
+            "--class=druid",
+            "--weapon=summon_amulet",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 65.2,
+          "report": "v0.3.1_reference__druid__summon_amulet.json",
+          "pass": true,
+          "resolution_source": "legacy_class_fallback",
+          "casts": "8/8",
+          "scenes": [
+            ""
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 111.366666666667,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1069.066,
+            "peak_texture_mib": 1473.04454898834,
+            "objects_peak": 3504,
+            "objects_min": 2957,
+            "objects_first_second": 3271,
+            "objects_last_second": 3275,
+            "alive_at_end": 46,
+            "resident_packs_start": 28,
+            "resident_packs_end": 28,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures/v0.3.1_reference__druid__summon_amulet.png"
+          }
+        },
+        {
+          "pair": "doctor/restore_potion",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/v0.3.1_reference__doctor__restore_potion.json",
+            "--label=v0.3.1_reference",
+            "--class=doctor",
+            "--weapon=restore_potion",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 65.2,
+          "report": "v0.3.1_reference__doctor__restore_potion.json",
+          "pass": true,
+          "resolution_source": "legacy_class_fallback",
+          "casts": "8/8",
+          "scenes": [
+            ""
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 116.216666666667,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1070.417,
+            "peak_texture_mib": 1395.70789813995,
+            "objects_peak": 4238,
+            "objects_min": 3131,
+            "objects_first_second": 3152,
+            "objects_last_second": 3585,
+            "alive_at_end": 48,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/captures/v0.3.1_reference__doctor__restore_potion.png"
+          }
+        }
+      ]
+    },
+    "v0.3.1.2_installed": {
+      "app": "/Applications/FantasyDisk.app",
+      "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app",
+      "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+      "source_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "clone_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "runs": [
+        {
+          "pair": "berserk/sword",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__berserk__sword.json",
+            "--label=v0.3.1.2_installed",
+            "--class=berserk",
+            "--weapon=sword",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 67.8,
+          "report": "v0.3.1.2_installed__berserk__sword.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "8/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 114.866666666667,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1041.623,
+            "peak_texture_mib": 1404.04119968414,
+            "objects_peak": 8499,
+            "objects_min": 2910,
+            "objects_first_second": 2971,
+            "objects_last_second": 8316,
+            "alive_at_end": 8,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__berserk__sword.png"
+          }
+        },
+        {
+          "pair": "druid/summon_amulet",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__druid__summon_amulet.json",
+            "--label=v0.3.1.2_installed",
+            "--class=druid",
+            "--weapon=summon_amulet",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 65.1,
+          "report": "v0.3.1.2_installed__druid__summon_amulet.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "8/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/druid/DruidSummonAmuletWildHunt.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 112.7,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1123.167,
+            "peak_texture_mib": 1476.13079738617,
+            "objects_peak": 10594,
+            "objects_min": 2960,
+            "objects_first_second": 3227,
+            "objects_last_second": 10492,
+            "alive_at_end": 0,
+            "resident_packs_start": 28,
+            "resident_packs_end": 28,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__druid__summon_amulet.png"
+          }
+        },
+        {
+          "pair": "knight/long_spear",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__knight__long_spear.json",
+            "--label=v0.3.1.2_installed",
+            "--class=knight",
+            "--weapon=long_spear",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 65.1,
+          "report": "v0.3.1.2_installed__knight__long_spear.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "8/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/knight/KnightLongSpearSpearWall.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 116.466666666667,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1144.038,
+            "peak_texture_mib": 1395.06206798553,
+            "objects_peak": 3728,
+            "objects_min": 2949,
+            "objects_first_second": 2990,
+            "objects_last_second": 3469,
+            "alive_at_end": 48,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__knight__long_spear.png"
+          }
+        },
+        {
+          "pair": "doctor/restore_potion",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/v0.3.1.2_installed__doctor__restore_potion.json",
+            "--label=v0.3.1.2_installed",
+            "--class=doctor",
+            "--weapon=restore_potion",
+            "--seconds=60",
+            "--cast-every=8",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 65.1,
+          "report": "v0.3.1.2_installed__doctor__restore_potion.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "8/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 115.2,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1148.551,
+            "peak_texture_mib": 1404.49952793121,
+            "objects_peak": 7950,
+            "objects_min": 3135,
+            "objects_first_second": 3135,
+            "objects_last_second": 7547,
+            "alive_at_end": 24,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__doctor__restore_potion.png"
+          }
+        }
+      ]
+    },
+    "v0.3.1.2_installed_priest16": {
+      "app": "/Applications/FantasyDisk.app",
+      "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_priest16/clone/FantasyDisk.app",
+      "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+      "source_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "clone_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "runs": [
+        {
+          "pair": "priest/priest_reliquary",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_priest16/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_priest16/v0.3.1.2_installed_priest16__priest__priest_reliquary.json",
+            "--label=v0.3.1.2_installed_priest16",
+            "--class=priest",
+            "--weapon=priest_reliquary",
+            "--seconds=60",
+            "--cast-every=16",
+            "--captures=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_priest16/captures"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 67.8,
+          "report": "v0.3.1.2_installed_priest16__priest__priest_reliquary.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "4/4",
+          "scenes": [
+            "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 114.483333333333,
+            "low_1pct_fps": 24.0,
+            "worst_second_fps": 24.0,
+            "frames_over_50ms": 1,
+            "frames_over_100ms": 1,
+            "longest_frame_ms": 1114.647,
+            "peak_texture_mib": 1419.56048488617,
+            "objects_peak": 6350,
+            "objects_min": 3295,
+            "objects_first_second": 3581,
+            "objects_last_second": 4995,
+            "alive_at_end": 43,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_priest16/captures/v0.3.1.2_installed_priest16__priest__priest_reliquary.png"
+          }
+        }
+      ]
+    },
+    "v0.3.1.2_installed_rerun": {
+      "app": "/Applications/FantasyDisk.app",
+      "clone": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app",
+      "clone_reseal": "ad-hoc (codesign --force --deep --sign -) after override.cfg",
+      "source_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "clone_pck_sha256": "43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41",
+      "runs": [
+        {
+          "pair": "berserk/sword",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/v0.3.1.2_installed_rerun__berserk__sword.json",
+            "--label=v0.3.1.2_installed_rerun",
+            "--class=berserk",
+            "--weapon=sword",
+            "--seconds=60",
+            "--cast-every=8"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 68.0,
+          "report": "v0.3.1.2_installed_rerun__berserk__sword.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "8/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 117.25,
+            "low_1pct_fps": 113.0,
+            "worst_second_fps": 113.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 30.091,
+            "peak_texture_mib": 1403.95786571503,
+            "objects_peak": 8790,
+            "objects_min": 2926,
+            "objects_first_second": 2991,
+            "objects_last_second": 8501,
+            "alive_at_end": 24,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": ""
+          }
+        },
+        {
+          "pair": "doctor/restore_potion",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/v0.3.1.2_installed_rerun__doctor__restore_potion.json",
+            "--label=v0.3.1.2_installed_rerun",
+            "--class=doctor",
+            "--weapon=restore_potion",
+            "--seconds=60",
+            "--cast-every=8"
+          ],
+          "exit_code": 0,
+          "timed_out": false,
+          "seconds": 65.2,
+          "report": "v0.3.1.2_installed_rerun__doctor__restore_potion.json",
+          "pass": true,
+          "resolution_source": "weapon_profile",
+          "casts": "8/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 117.783333333333,
+            "low_1pct_fps": 112.0,
+            "worst_second_fps": 112.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 33.795,
+            "peak_texture_mib": 1404.49952793121,
+            "objects_peak": 8049,
+            "objects_min": 3132,
+            "objects_first_second": 3262,
+            "objects_last_second": 7519,
+            "alive_at_end": 24,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": ""
+          }
+        },
+        {
+          "pair": "priest/priest_reliquary",
+          "command": [
+            "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+            "--windowed",
+            "--resolution",
+            "2560x1440",
+            "--",
+            "--report=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/v0.3.1.2_installed_rerun__priest__priest_reliquary.json",
+            "--label=v0.3.1.2_installed_rerun",
+            "--class=priest",
+            "--weapon=priest_reliquary",
+            "--seconds=60",
+            "--cast-every=8"
+          ],
+          "exit_code": 1,
+          "timed_out": false,
+          "seconds": 64.9,
+          "report": "v0.3.1.2_installed_rerun__priest__priest_reliquary.json",
+          "pass": false,
+          "resolution_source": "weapon_profile",
+          "casts": "4/8",
+          "scenes": [
+            "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"
+          ],
+          "phase": {
+            "seconds": 60,
+            "avg_fps": 133.0,
+            "low_1pct_fps": 112.0,
+            "worst_second_fps": 112.0,
+            "frames_over_50ms": 0,
+            "frames_over_100ms": 0,
+            "longest_frame_ms": 47.152,
+            "peak_texture_mib": 1419.39381885529,
+            "objects_peak": 5814,
+            "objects_min": 3299,
+            "objects_first_second": 3561,
+            "objects_last_second": 4985,
+            "alive_at_end": 47,
+            "resident_packs_start": 23,
+            "resident_packs_end": 23,
+            "capture": ""
+          }
+        }
+      ]
+    }
+  },
+  "cold_start": {
+    "v0.3.1.2_installed": {
+      "runs": [
+        {
+          "run": 1,
+          "log": "v0.3.1.2_installed_run1.log",
+          "first_frame_s": 6.917
+        },
+        {
+          "run": 2,
+          "log": "v0.3.1.2_installed_run2.log",
+          "first_frame_s": 5.512
+        },
+        {
+          "run": 3,
+          "log": "v0.3.1.2_installed_run3.log",
+          "first_frame_s": 5.494
+        },
+        {
+          "run": 4,
+          "log": "v0.3.1.2_installed_run4.log",
+          "first_frame_s": 5.522
+        },
+        {
+          "run": 5,
+          "log": "v0.3.1.2_installed_run5.log",
+          "first_frame_s": 5.533
+        }
+      ],
+      "median_s": 5.522,
+      "min_s": 5.494,
+      "max_s": 6.917
+    },
+    "v0.3.1_reference": {
+      "runs": [
+        {
+          "run": 1,
+          "log": "v0.3.1_reference_run1.log",
+          "first_frame_s": 7.631
+        },
+        {
+          "run": 2,
+          "log": "v0.3.1_reference_run2.log",
+          "first_frame_s": 6.473
+        },
+        {
+          "run": 3,
+          "log": "v0.3.1_reference_run3.log",
+          "first_frame_s": 5.571
+        },
+        {
+          "run": 4,
+          "log": "v0.3.1_reference_run4.log",
+          "first_frame_s": 5.567
+        },
+        {
+          "run": 5,
+          "log": "v0.3.1_reference_run5.log",
+          "first_frame_s": 5.571
+        }
+      ],
+      "median_s": 5.571,
+      "min_s": 5.567,
+      "max_s": 7.631
+    }
+  },
+  "saves": {
+    "user_data_dir": "~/Library/Application Support/Godot/app_userdata/FantasyDisk (logs/, shader_cache/, vulkan/ excluded)",
+    "files_before_build": 5636,
+    "unchanged_after_install_and_launch_smoke": false,
+    "difference_after_install": "188d187\n< 42a598449ee119c1582eb1a95cbad62d77f343359d796bbd75095df571d8c02f  ./fantasydisk_autosave.cfg\n",
+    "controlled_reinstall_test": "saves/reinstall_test.log",
+    "unchanged_across_controlled_reinstall_and_launch_smoke": true,
+    "unchanged_after_all_measurements_vs_reinstall_baseline": true
+  },
+  "transfer_fan3990": {
+    "issue": "FAN-3990",
+    "issue_id": "01a0efe2-6f5e-7376-aaf9-32ac11c08f09",
+    "comment_id": "01a0f7f2-7591-79f4-88b1-e8702bee8672",
+    "created_at": "2026-10-01T14:50:57Z",
+    "attachments": [
+      {
+        "id": "01a0f7f1-1d13-73b2-8772-50090e1782b1",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-aa",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f1-3dc9-712e-80a2-a7ceaf7ecfb8",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ab",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f1-63e6-7aae-8d6f-f45e5d238d7c",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ac",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f1-9bf0-7e08-a14f-44aeeafd6ca5",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ad",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f1-d20a-778a-8ce1-9b5fba76054f",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ae",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-060b-718f-b5e7-1984ec6ae028",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-af",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-3f0a-7828-ab43-065a913559b8",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ag",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-5cba-7130-af1f-2ff551f55e2d",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ah",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-7040-73b9-9977-8e9deaf65600",
+        "filename": "FantasyDisk-0.3.1.2-windows-setup.exe.part-ai",
+        "content_type": "application/octet-stream",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-72bb-76bd-9bf9-e6523ef85074",
+        "filename": "PARTS.sha256",
+        "content_type": "text/plain; charset=utf-8",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-73b7-7d5c-86ce-546e647eb86f",
+        "filename": "SHA256SUMS.txt",
+        "content_type": "text/plain; charset=utf-8",
+        "size": null
+      },
+      {
+        "id": "01a0f7f2-74a1-7929-88c6-23e454185ae1",
+        "filename": "update-manifest.json",
+        "content_type": "application/json",
+        "size": null
+      }
+    ]
+  }
+}

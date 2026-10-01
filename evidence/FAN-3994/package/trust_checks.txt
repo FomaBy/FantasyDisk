@@ -1,0 +1,51 @@
+=== installed app
+/Applications/FantasyDisk.app: valid on disk
+/Applications/FantasyDisk.app: satisfies its Designated Requirement
+Identifier=com.fantasydisk.game
+Format=app bundle with Mach-O universal (x86_64 arm64)
+CodeDirectory v=20500 size=160768 flags=0x10000(runtime) hashes=5017+3 location=embedded
+Authority=Developer ID Application: <redacted>
+Timestamp=1 Oct 2026 at 17:34:19
+Runtime Version=26.1.0
+The validate action worked!
+/Applications/FantasyDisk.app: accepted
+source=Notarized Developer ID
+universal x86_64+arm64 OK
+0.3.1
+1.3.12
+=== DMG
+verified   CRC32 $62E94CC2
+hdiutil: verify: checksum of "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2/FantasyDisk-0.3.1.2-macos.dmg" is VALID
+/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2/FantasyDisk-0.3.1.2-macos.dmg: valid on disk
+/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2/FantasyDisk-0.3.1.2-macos.dmg: satisfies its Designated Requirement
+The validate action worked!
+/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2/FantasyDisk-0.3.1.2-macos.dmg: accepted
+source=Notarized Developer ID
+total 24
+drwxr-xr-x@ 5 sergeyfomin  staff    160 Oct  1 17:36 .
+drwxr-xr-x@ 3 sergeyfomin  staff     96 Oct  1 17:43 ..
+-rw-r--r--@ 1 sergeyfomin  staff  10244 Oct  1 17:36 .DS_Store
+lrwxr-xr-x@ 1 sergeyfomin  staff     13 Oct  1 17:36 Applications -> /Applications
+drwxr-xr-x@ 3 sergeyfomin  staff     96 Oct  1 17:34 FantasyDisk.app
+/Applications
+scratch/trust/mnt_new/FantasyDisk.app: valid on disk
+scratch/trust/mnt_new/FantasyDisk.app: satisfies its Designated Requirement
+The validate action worked!
+scratch/trust/mnt_new/FantasyDisk.app: accepted
+source=Notarized Developer ID
+0.3.1
+1.3.12
+=== DMG app vs installed app (recursive sha256)
+       9 FantasyDisk/evidence/FAN-3994/package/dmg_app.sha256
+       9 FantasyDisk/evidence/FAN-3994/package/installed_app.sha256
+      18 total
+DMG app == installed app (all files)
+c21714ebc7f10d7aff691b4ff2f3dc65bcf86421c55e36602497198590c3eeb4  ./Contents/CodeResources
+f3007e543772c96533df0330127113a7f8aa299008ee0a08bdec5682fb668873  ./Contents/Info.plist
+609f5a6593e8b4ff8cee5b2f0425785e034eabce6476a784a9a33f5cee6bd59d  ./Contents/MacOS/FantasyDisk
+7e50a30efad50208a173203ced60818d693bb61266b75aa10927d1a2adce80cb  ./Contents/PkgInfo
+43a02b4b8af894cf7bce21098f78d3542db39c2e66c7b91d8ba37739b6ab7d41  ./Contents/Resources/FantasyDisk.pck
+dfad497a307c57c436845358b5323053703385ac132d276a25e7da0e098b71b3  ./Contents/Resources/FantasyDiskDmgBackground.png
+0535353bb08c25b8ce5ed9ac7e442a5994f402e0f6cbc4bed668cfc63c2ceac3  ./Contents/Resources/PrivacyInfo.xcprivacy
+c6114f1389b6fd5fc66d70a5a28e3d8b3b332001768390bb10aef1e35337c63f  ./Contents/Resources/icon.icns
+1596ff33524cc6e0e5388735a615b219799bb5c63e419df5f3529716e2844e1b  ./Contents/_CodeSignature/CodeResources

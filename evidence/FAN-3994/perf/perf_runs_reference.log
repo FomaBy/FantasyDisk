@@ -1,0 +1,43 @@
+clone re-sealed ad-hoc; PCK sha256 85dce876f1c85f6d7ad14504fb8c17e7e19c8d557be8ce9c31c8af010b183790 identical to /Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/ref_v0.3.1/FantasyDisk.app
+==> v0.3.1_reference berserk/sword
+    driver v0.3.1_reference: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene= alive=48 objects=3454
+    cast @11s: activated=true failure= scene= alive=48 objects=3436
+    cast @19s: activated=true failure= scene= alive=48 objects=3527
+    cast @27s: activated=true failure= scene= alive=48 objects=3646
+    cast @35s: activated=true failure= scene= alive=48 objects=3708
+    cast @43s: activated=true failure= scene= alive=48 objects=3820
+    cast @51s: activated=true failure= scene= alive=48 objects=3933
+    cast @59s: activated=true failure= scene= alive=49 objects=4036
+    phase p2_48_enemies_ultimates: 60 s, avg 116 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1070.1 ms, peak texture 1392 MiB, objects peak 4458 min 2912 (first s 2980, last s 4211), resident packs 23 -> 23, alive first s 39 last s 48
+    | v0.3.1_reference | berserk/sword | 60 | 116 | 24 | 24 | 1 | 1 | 1070.1 | 1392 | 4458 | 2912 | 2980 | 4211 | 23 -> 23 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1_reference berserk/sword pass=true source=legacy_class_fallback casts=8/8 scenes=[""] failures=[]
+    exit 0 timed_out=False in 67.7s
+==> v0.3.1_reference druid/summon_amulet
+    driver v0.3.1_reference: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene= alive=48 objects=3060
+    cast @11s: activated=true failure= scene= alive=48 objects=3160
+    cast @19s: activated=true failure= scene= alive=48 objects=3057
+    cast @27s: activated=true failure= scene= alive=48 objects=3132
+    cast @35s: activated=true failure= scene= alive=48 objects=3082
+    cast @43s: activated=true failure= scene= alive=48 objects=3170
+    cast @51s: activated=true failure= scene= alive=48 objects=3174
+    cast @59s: activated=true failure= scene= alive=48 objects=3226
+    phase p2_48_enemies_ultimates: 60 s, avg 111 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1069.1 ms, peak texture 1473 MiB, objects peak 3504 min 2957 (first s 3271, last s 3275), resident packs 28 -> 28, alive first s 41 last s 46
+    | v0.3.1_reference | druid/summon_amulet | 60 | 111 | 24 | 24 | 1 | 1 | 1069.1 | 1473 | 3504 | 2957 | 3271 | 3275 | 28 -> 28 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1_reference druid/summon_amulet pass=true source=legacy_class_fallback casts=8/8 scenes=[""] failures=[]
+    exit 0 timed_out=False in 65.2s
+==> v0.3.1_reference doctor/restore_potion
+    driver v0.3.1_reference: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+    cast @3s: activated=true failure= scene= alive=48 objects=3440
+    cast @11s: activated=true failure= scene= alive=48 objects=3931
+    cast @19s: activated=true failure= scene= alive=48 objects=3384
+    cast @27s: activated=true failure= scene= alive=48 objects=3293
+    cast @35s: activated=true failure= scene= alive=48 objects=3658
+    cast @43s: activated=true failure= scene= alive=48 objects=3836
+    cast @51s: activated=true failure= scene= alive=48 objects=3767
+    cast @59s: activated=true failure= scene= alive=48 objects=3862
+    phase p2_48_enemies_ultimates: 60 s, avg 116 FPS, 1% low 24, worst second 24, >50 ms 1, >100 ms 1, longest 1070.4 ms, peak texture 1396 MiB, objects peak 4238 min 3131 (first s 3152, last s 3585), resident packs 23 -> 23, alive first s 42 last s 48
+    | v0.3.1_reference | doctor/restore_potion | 60 | 116 | 24 | 24 | 1 | 1 | 1070.4 | 1396 | 4238 | 3131 | 3152 | 3585 | 23 -> 23 | casts 8/8 |
+    perf_ultimate_driver: v0.3.1_reference doctor/restore_potion pass=true source=legacy_class_fallback casts=8/8 scenes=[""] failures=[]
+    exit 0 timed_out=False in 65.2s

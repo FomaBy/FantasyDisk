@@ -1,0 +1,15 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 4.1 Metal - 90.5 - Compatibility - Using Device: Apple - Apple M4 Pro
+
+driver v0.3.1.2_installed_rerun: renderer=gl_compatibility vsync=1 window=(2560, 1440) exe=/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk
+cast @3s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=4026
+cast @11s: activated=false failure=ready_runtime_rejected scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=3865
+cast @19s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=3670
+cast @27s: activated=false failure=ready_runtime_rejected scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=4457
+cast @35s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=4240
+cast @43s: activated=false failure=ready_runtime_rejected scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=4910
+cast @51s: activated=true failure= scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=4074
+cast @59s: activated=false failure=ready_runtime_rejected scene=res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn alive=48 objects=5500
+phase p2_48_enemies_ultimates: 60 s, avg 133 FPS, 1% low 112, worst second 112, >50 ms 0, >100 ms 0, longest 47.2 ms, peak texture 1419 MiB, objects peak 5814 min 3299 (first s 3561, last s 4985), resident packs 23 -> 23, alive first s 37 last s 47
+| v0.3.1.2_installed_rerun | priest/priest_reliquary | 60 | 133 | 112 | 112 | 0 | 0 | 47.2 | 1419 | 5814 | 3299 | 3561 | 4985 | 23 -> 23 | casts 4/8 |
+perf_ultimate_driver: v0.3.1.2_installed_rerun priest/priest_reliquary pass=false source=weapon_profile casts=4/8 scenes=["res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"] failures=["4 of 8 casts did not activate"]

@@ -1,0 +1,10 @@
+{
+  "status": "verified",
+  "version": "0.3.1.2",
+  "local_release": "/Users/sergeyfomin/FantasyDisk/releases/v0.3.1.2",
+  "current_project": "/Users/sergeyfomin/FantasyDisk/releases/current-project",
+  "macos_app": "/Applications/FantasyDisk.app",
+  "tag_commit": "9a19870a15d71bc2b63e622c7895519bd84dafb4",
+  "candidate": null,
+  "macos_channel": "signed"
+}

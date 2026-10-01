@@ -1,0 +1,567 @@
+{
+  "alive_before_window": 42,
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 350,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 1041.623,
+      "objects_before": 3213,
+      "presentation_active": true,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 1168,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 23.876,
+      "objects_before": 3910,
+      "presentation_active": true,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2106,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 25.024,
+      "objects_before": 4726,
+      "presentation_active": true,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3044,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 22.095,
+      "objects_before": 5510,
+      "presentation_active": true,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 3977,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 19.19,
+      "objects_before": 6081,
+      "presentation_active": true,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4915,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 39.413,
+      "objects_before": 6611,
+      "presentation_active": true,
+      "second": 43,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 5845,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 20.211,
+      "objects_before": 7194,
+      "presentation_active": true,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 6777,
+      "instantiated_scene": "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 21.504,
+      "objects_before": 7829,
+      "presentation_active": true,
+      "second": 59,
+      "time_scale": 1.0
+    }
+  ],
+  "casts_activated": 8,
+  "casts_total": 8,
+  "character_id": "berserk",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3994/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1.2",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3994Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [],
+  "finalize_wait_ms": 493.437,
+  "instantiated_scenes": [
+    "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn"
+  ],
+  "label": "v0.3.1.2_installed",
+  "menu_objects_after_run": 2337,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 218.900053977966,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 2910,
+  "pass": true,
+  "phase": {
+    "alive_at_end": 8,
+    "alive_per_second": [
+      40,
+      35,
+      40,
+      47,
+      0,
+      13,
+      14,
+      42,
+      43,
+      45,
+      41,
+      14,
+      0,
+      0,
+      47,
+      43,
+      46,
+      47,
+      40,
+      0,
+      0,
+      0,
+      48,
+      43,
+      45,
+      48,
+      44,
+      1,
+      27,
+      0,
+      46,
+      48,
+      46,
+      46,
+      48,
+      4,
+      32,
+      3,
+      48,
+      48,
+      45,
+      45,
+      47,
+      7,
+      1,
+      24,
+      40,
+      46,
+      48,
+      47,
+      48,
+      7,
+      27,
+      0,
+      48,
+      48,
+      47,
+      47,
+      48,
+      8
+    ],
+    "avg_fps": 114.866666666667,
+    "capture": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/captures/v0.3.1.2_installed__berserk__sword.png",
+    "frames_over_100ms": 1,
+    "frames_over_50ms": 1,
+    "frames_total": 6892,
+    "longest_frame_ms": 1041.623,
+    "low_1pct_fps": 24.0,
+    "objects_first_second": 2971,
+    "objects_last_second": 8316,
+    "objects_min": 2910,
+    "objects_peak": 8499,
+    "objects_per_second": [
+      2971,
+      3264,
+      3149,
+      3475,
+      3282,
+      3348,
+      3400,
+      3681,
+      3834,
+      3860,
+      3854,
+      4541,
+      4066,
+      4242,
+      4425,
+      4545,
+      4882,
+      4689,
+      4662,
+      5439,
+      4884,
+      5128,
+      5181,
+      5486,
+      5390,
+      5475,
+      5478,
+      5823,
+      5671,
+      5657,
+      5807,
+      6002,
+      6053,
+      6054,
+      6081,
+      6396,
+      6311,
+      6263,
+      6352,
+      6507,
+      6707,
+      6735,
+      6603,
+      7067,
+      6856,
+      6953,
+      6962,
+      7113,
+      7227,
+      7196,
+      7194,
+      7799,
+      7328,
+      7581,
+      7589,
+      7841,
+      7924,
+      7884,
+      7829,
+      8316
+    ],
+    "peak_texture_mib": 1404.04119968414,
+    "per_second_fps": [
+      119,
+      114,
+      117,
+      24,
+      88,
+      118,
+      118,
+      117,
+      118,
+      119,
+      116,
+      118,
+      119,
+      120,
+      117,
+      117,
+      117,
+      115,
+      115,
+      114,
+      118,
+      120,
+      120,
+      115,
+      117,
+      117,
+      117,
+      116,
+      118,
+      119,
+      119,
+      116,
+      116,
+      114,
+      115,
+      114,
+      119,
+      117,
+      120,
+      118,
+      116,
+      117,
+      117,
+      114,
+      116,
+      117,
+      119,
+      117,
+      113,
+      117,
+      117,
+      117,
+      116,
+      120,
+      117,
+      116,
+      114,
+      116,
+      116,
+      115
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 23,
+    "resident_packs_start": 23,
+    "seconds": 60,
+    "time_scale_at_end": 0.34,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Sprite2D",
+          2473
+        ],
+        [
+          "Node2D",
+          2471
+        ],
+        [
+          "AnimatedSprite2D",
+          83
+        ],
+        [
+          "CollisionShape2D",
+          77
+        ],
+        [
+          "Polygon2D",
+          72
+        ],
+        [
+          "CharacterBody2D",
+          71
+        ],
+        [
+          "Label",
+          59
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          11
+        ],
+        [
+          "Node",
+          8
+        ],
+        [
+          "TextureRect",
+          7
+        ],
+        [
+          "Control",
+          6
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "CanvasLayer",
+          3
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Line2D",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "Area2D",
+          2
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "Camera2D",
+          1
+        ],
+        [
+          "AnimationPlayer",
+          1
+        ],
+        [
+          "LineEdit",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas2491081031684": 4,
+        "_root_canvas335007449088": 88,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24494736727": 3,
+        "_vp_unhandled_key_input24494736727": 1,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_flashes": 36,
+        "combat_feedback_labels": 29,
+        "enemies": 8,
+        "enemy_projectiles": 2,
+        "level_up_effects": 2,
+        "pickups": 2305,
+        "player": 1,
+        "player_weapons": 1
+      },
+      "nodes_total": 5381,
+      "objects_now": 8316,
+      "scenes_top": [
+        [
+          "res://scenes/Pickup.tscn",
+          2305
+        ],
+        [
+          "res://scenes/Enemy.tscn",
+          26
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          10
+        ],
+        [
+          "res://scenes/EnemyFlyingRunner.tscn",
+          10
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemySpitter.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemyProjectile.tscn",
+          2
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2/fan3994_perf_driver.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpToast.tscn",
+          1
+        ],
+        [
+          "res://scenes/TwoHandedSword.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemyShooter.tscn",
+          1
+        ],
+        [
+          "res://scenes/EliteStalker.tscn",
+          1
+        ],
+        [
+          "res://scenes/vfx/ultimates/berserk/BerserkSwordScarletWhirlwind.tscn",
+          1
+        ],
+        [
+          "res://scripts/ultimates/classes/berserk/sword.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpEffect.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 24.0
+  },
+  "player_character_id": "berserk",
+  "player_weapon_id": "sword",
+  "resolution_source": "weapon_profile",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "sword"
+}

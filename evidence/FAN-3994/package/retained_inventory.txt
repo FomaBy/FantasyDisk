@@ -1,0 +1,16 @@
+c9b588f056740fb884a1ee081bd0dc3d45b04b2ae36964f68652b9ea44fe9d45  CHANGELOG-0.3.1.2.md
+6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7  fantasydisk_0312_announcement.png
+d7b19b4fc7da2dfa74da7940c3b9d514250ad9aa6e4500ebc87456ab1714d763  SHA256SUMS.txt
+e70d0e593e944df0392695ed588326070ce01a0e8770880ae2fed6277350e936  update-manifest.json
+3b5da617cdfaadc2ab26129ae97a84cdb174a45dd60ccf673c315a61c17c04a7  LOCAL_RELEASE.json
+3a803d9ff79515594a5b89ab9ca4bf3d19e913cc27dd44ef28c75f8e0ae67dd0  FantasyDisk-0.3.1.2-macos.dmg
+162740c47c8b0c32e068d454909d8dd68e9e0871ab427c7b1af7301bfac74bd5  FantasyDisk-0.3.1.2-windows-setup.exe
+697 CHANGELOG-0.3.1.2.md
+462843679 FantasyDisk-0.3.1.2-macos.dmg
+438450173 FantasyDisk-0.3.1.2-windows-setup.exe
+1965 LOCAL_RELEASE.json
+200 SHA256SUMS.txt
+95930 fantasydisk_0312_announcement.png
+1184 godot-project
+1184 project
+809 update-manifest.json

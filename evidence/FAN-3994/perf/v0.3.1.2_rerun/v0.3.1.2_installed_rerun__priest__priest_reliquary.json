@@ -1,0 +1,575 @@
+{
+  "alive_before_window": 40,
+  "battle_prayer_button": true,
+  "battle_prayer_selected": "prayer_wrath",
+  "cast_every": 8,
+  "casts": [
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 352,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 27.198,
+      "objects_before": 4026,
+      "presentation_active": true,
+      "second": 3,
+      "time_scale": 1.0
+    },
+    {
+      "activated": false,
+      "activation_failure": "ready_runtime_rejected",
+      "alive": 48,
+      "frame_index": 1293,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 14.519,
+      "objects_before": 3865,
+      "presentation_active": true,
+      "second": 11,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 2322,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 11.349,
+      "objects_before": 3670,
+      "presentation_active": true,
+      "second": 19,
+      "time_scale": 1.0
+    },
+    {
+      "activated": false,
+      "activation_failure": "ready_runtime_rejected",
+      "alive": 48,
+      "frame_index": 3467,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 23.364,
+      "objects_before": 4457,
+      "presentation_active": true,
+      "second": 27,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 4597,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 23.122,
+      "objects_before": 4240,
+      "presentation_active": true,
+      "second": 35,
+      "time_scale": 1.0
+    },
+    {
+      "activated": false,
+      "activation_failure": "ready_runtime_rejected",
+      "alive": 48,
+      "frame_index": 5745,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 16.637,
+      "objects_before": 4910,
+      "presentation_active": true,
+      "second": 43,
+      "time_scale": 1.0
+    },
+    {
+      "activated": true,
+      "activation_failure": "",
+      "alive": 48,
+      "frame_index": 6739,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 16.23,
+      "objects_before": 4074,
+      "presentation_active": true,
+      "second": 51,
+      "time_scale": 1.0
+    },
+    {
+      "activated": false,
+      "activation_failure": "ready_runtime_rejected",
+      "alive": 48,
+      "frame_index": 7842,
+      "instantiated_scene": "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn",
+      "ledger_begin_encounter": true,
+      "longest_frame_ms_within_60_frames": 29.623,
+      "objects_before": 5500,
+      "presentation_active": true,
+      "second": 59,
+      "time_scale": 1.0
+    }
+  ],
+  "casts_activated": 4,
+  "casts_total": 8,
+  "character_id": "priest",
+  "combat_finalized": true,
+  "driver": "evidence/FAN-3994/perf_ultimate_driver.gd",
+  "environment": {
+    "editor_feature": false,
+    "engine_version": "4.7-stable (official)",
+    "executable_path": "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/clone/FantasyDisk.app/Contents/MacOS/FantasyDisk",
+    "project_version": "0.3.1.2",
+    "renderer": "gl_compatibility",
+    "template_feature": true,
+    "user_data_dir": "/Users/sergeyfomin/Library/Application Support/FantasyDiskFan3994Perf",
+    "vsync": 1,
+    "window": [
+      2560,
+      1440
+    ]
+  },
+  "failures": [
+    "4 of 8 casts did not activate"
+  ],
+  "finalize_wait_ms": 661.801,
+  "instantiated_scenes": [
+    "res://scenes/vfx/ultimates/priest/PriestReliquarySanctumJudgment.tscn"
+  ],
+  "label": "v0.3.1.2_installed_rerun",
+  "menu_objects_after_run": 2434,
+  "menu_objects_before_main": 1494,
+  "menu_resident_packs_after_run": 0,
+  "menu_texture_after_run_mib": 243.231785774231,
+  "menu_texture_mib": 28.1526212692261,
+  "objects_before_window": 3481,
+  "pass": false,
+  "phase": {
+    "alive_at_end": 47,
+    "alive_per_second": [
+      37,
+      39,
+      36,
+      43,
+      29,
+      44,
+      41,
+      37,
+      42,
+      48,
+      45,
+      47,
+      48,
+      48,
+      47,
+      48,
+      47,
+      48,
+      48,
+      47,
+      23,
+      46,
+      48,
+      48,
+      48,
+      44,
+      47,
+      48,
+      41,
+      47,
+      47,
+      44,
+      46,
+      48,
+      46,
+      47,
+      48,
+      47,
+      48,
+      48,
+      46,
+      48,
+      45,
+      40,
+      47,
+      48,
+      47,
+      48,
+      48,
+      49,
+      48,
+      47,
+      22,
+      47,
+      45,
+      45,
+      48,
+      44,
+      45,
+      47
+    ],
+    "avg_fps": 133.0,
+    "capture": "",
+    "frames_over_100ms": 0,
+    "frames_over_50ms": 0,
+    "frames_total": 7980,
+    "longest_frame_ms": 47.152,
+    "low_1pct_fps": 112.0,
+    "objects_first_second": 3561,
+    "objects_last_second": 4985,
+    "objects_min": 3299,
+    "objects_peak": 5814,
+    "objects_per_second": [
+      3561,
+      3727,
+      3930,
+      3741,
+      3537,
+      3695,
+      3889,
+      4090,
+      4077,
+      4326,
+      3841,
+      4214,
+      4224,
+      3774,
+      3730,
+      3916,
+      3604,
+      3657,
+      3670,
+      3673,
+      3982,
+      3946,
+      4262,
+      4274,
+      4258,
+      4658,
+      4449,
+      4211,
+      4196,
+      4310,
+      4069,
+      4292,
+      4150,
+      3993,
+      4224,
+      4315,
+      4022,
+      3914,
+      4034,
+      4035,
+      4102,
+      3938,
+      4886,
+      4638,
+      4705,
+      4151,
+      4114,
+      4176,
+      4125,
+      4021,
+      4074,
+      4408,
+      4017,
+      4332,
+      4822,
+      4869,
+      4905,
+      5639,
+      5476,
+      4985
+    ],
+    "peak_texture_mib": 1419.39381885529,
+    "per_second_fps": [
+      120,
+      118,
+      114,
+      115,
+      119,
+      119,
+      120,
+      117,
+      115,
+      117,
+      119,
+      116,
+      115,
+      119,
+      119,
+      126,
+      145,
+      144,
+      145,
+      145,
+      144,
+      145,
+      142,
+      144,
+      143,
+      141,
+      141,
+      140,
+      139,
+      141,
+      143,
+      143,
+      142,
+      142,
+      140,
+      140,
+      145,
+      145,
+      145,
+      144,
+      144,
+      145,
+      140,
+      141,
+      133,
+      112,
+      115,
+      115,
+      118,
+      116,
+      144,
+      142,
+      141,
+      142,
+      138,
+      139,
+      136,
+      131,
+      134,
+      138
+    ],
+    "phase": "p2_48_enemies_ultimates",
+    "resident_packs_end": 23,
+    "resident_packs_start": 23,
+    "seconds": 60,
+    "time_scale_at_end": 1.0,
+    "tree_breakdown": {
+      "classes_top": [
+        [
+          "Sprite2D",
+          602
+        ],
+        [
+          "Node2D",
+          445
+        ],
+        [
+          "CollisionShape2D",
+          61
+        ],
+        [
+          "Label",
+          59
+        ],
+        [
+          "Polygon2D",
+          54
+        ],
+        [
+          "CharacterBody2D",
+          53
+        ],
+        [
+          "AnimatedSprite2D",
+          53
+        ],
+        [
+          "AudioStreamPlayer",
+          11
+        ],
+        [
+          "PanelContainer",
+          11
+        ],
+        [
+          "Node",
+          8
+        ],
+        [
+          "TextureRect",
+          7
+        ],
+        [
+          "Control",
+          6
+        ],
+        [
+          "ProgressBar",
+          5
+        ],
+        [
+          "VBoxContainer",
+          4
+        ],
+        [
+          "Area2D",
+          4
+        ],
+        [
+          "StaticBody2D",
+          4
+        ],
+        [
+          "CanvasLayer",
+          3
+        ],
+        [
+          "Line2D",
+          2
+        ],
+        [
+          "HBoxContainer",
+          2
+        ],
+        [
+          "Panel",
+          2
+        ],
+        [
+          "ColorRect",
+          2
+        ],
+        [
+          "Camera2D",
+          1
+        ],
+        [
+          "Button",
+          1
+        ],
+        [
+          "LineEdit",
+          1
+        ],
+        [
+          "RichTextLabel",
+          1
+        ]
+      ],
+      "groups": {
+        "__cameras_339302416384": 1,
+        "__cameras_c335007449088": 1,
+        "_picking_viewports": 1,
+        "_root_canvas1520418422786": 1,
+        "_root_canvas2491081031684": 4,
+        "_root_canvas335007449088": 81,
+        "_root_canvas377957122049": 1,
+        "_viewports": 1,
+        "_vp_input24528291159": 3,
+        "_vp_unhandled_key_input24528291159": 1,
+        "arena_backgrounds": 2,
+        "arena_border_visuals": 1,
+        "arena_boundaries": 4,
+        "arena_obstacles": 4,
+        "combat_feedback_flashes": 20,
+        "combat_feedback_labels": 32,
+        "elite_enemies": 2,
+        "enemies": 47,
+        "enemy_hazards": 3,
+        "enemy_projectiles": 4,
+        "level_up_effects": 2,
+        "pickups": 296,
+        "player": 1,
+        "player_weapon_effects": 1,
+        "player_weapons": 1,
+        "summoned_enemies": 3
+      },
+      "nodes_total": 1403,
+      "objects_now": 4985,
+      "scenes_top": [
+        [
+          "res://scenes/Pickup.tscn",
+          296
+        ],
+        [
+          "res://scenes/Enemy.tscn",
+          18
+        ],
+        [
+          "res://scenes/EnemyBiter.tscn",
+          7
+        ],
+        [
+          "res://scenes/EnemyRunner.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyShield.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyBruiser.tscn",
+          5
+        ],
+        [
+          "res://scenes/EnemyProjectile.tscn",
+          4
+        ],
+        [
+          "res://scenes/EnemyFlyingRunner.tscn",
+          3
+        ],
+        [
+          "res://scenes/EnemySummoner.tscn",
+          2
+        ],
+        [
+          "res://scenes/EnemyBoneShaman.tscn",
+          2
+        ],
+        [
+          "/Users/sergeyfomin/multica_workspaces_desktop-api.multica.ai/fantasydisk-41b361a8bb84/fan-3994-859a71b90152/workdir/scratch/perf/v0.3.1.2_rerun/fan3994_perf_driver.tscn",
+          1
+        ],
+        [
+          "res://scenes/ui/ultimate_hud/ultimate_hud_widget.tscn",
+          1
+        ],
+        [
+          "res://scenes/LevelUpToast.tscn",
+          1
+        ],
+        [
+          "res://scenes/PriestReliquary.tscn",
+          1
+        ],
+        [
+          "res://scenes/Player.tscn",
+          1
+        ],
+        [
+          "res://scenes/EliteCommander.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemyShooter.tscn",
+          1
+        ],
+        [
+          "res://scenes/ElitePoisoned.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemySpitter.tscn",
+          1
+        ],
+        [
+          "res://scenes/EnemyMage.tscn",
+          1
+        ]
+      ]
+    },
+    "worst_second_fps": 112.0
+  },
+  "player_character_id": "priest",
+  "player_weapon_id": "priest_reliquary",
+  "resolution_source": "weapon_profile",
+  "seconds_requested": 60,
+  "ultimate_max_charge": 100.0,
+  "weapon_id": "priest_reliquary"
+}
