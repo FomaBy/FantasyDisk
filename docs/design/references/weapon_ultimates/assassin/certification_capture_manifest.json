@@ -3,10 +3,10 @@
   "issue": "FAN-3942",
   "class_id": "assassin",
   "source": {
-    "ref": "agent/fable/60ecce737844",
-    "commit_sha": "7616060b18750fd891f68c1b0b0457b01b629d3f",
-    "tree_sha": "f89eefd2e7205d13124b3b8ed5ff7cb3c9fea5c3",
-    "base_sha": "01ee13687da712342964bcafebdb79c8a38b7d1e",
+    "ref": "agent/claude-dev-opus-b/1d7858933176",
+    "commit_sha": "e1d71c2409670090ac7a2de5d8061de853148fca",
+    "tree_sha": "bfe16f9411633588d0916f2a38591799c295ef22",
+    "base_sha": "2b8026387bdb9cb7db3a65ef5c3a877984540b1b",
     "worktree_clean": true
   },
   "canonical_weapon_ids": [
@@ -100,18 +100,18 @@
       370.0
     ],
     "beat_source": "scripts/ultimates/presentation/contact_sheet_beats_contract.gd",
-    "captured_at": "2026-09-30 11:57:10"
+    "captured_at": "2026-10-01 07:23:26"
   },
   "commands": {
     "live_capture": "FSD_GODOT_EXCLUSIVE=1 python3 tools/godot_gate.py --path . --windowed --fixed-fps 60 --script res://tests/ultimates/presentation/assassin_certification_live_capture.gd",
     "focused_test": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/assassin_certification_capture_test.gd",
     "class_timelines": "python3 tools/godot_gate.py --headless --path . --script res://tests/ultimates/presentation/assassin_ultimate_timelines.gd",
-    "static_guard": "python3 tools/quality_static_guard.py --changed-ref 01ee13687da712342964bcafebdb79c8a38b7d1e",
+    "static_guard": "python3 tools/quality_static_guard.py --changed-ref 2b8026387bdb9cb7db3a65ef5c3a877984540b1b",
     "lfs_integrity": "git lfs fsck"
   },
   "sheets": [
     {
-      "sha256": "d37326dc1668694ddf56f5fca8e6de99da195181e8dcd71078005cfa8b68a3a0",
+      "sha256": "3f0c5b77c4a5744b941174e5efcfb7abe54b09a64852046f2f7be792baa639ec",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -131,7 +131,7 @@
       ]
     },
     {
-      "sha256": "602f593c77b640e5f6b2f57a97c9c1bfa0794ca2b8cec241b6e84dc8ce251b41",
+      "sha256": "1302809dd283efd9c92b438577acc57a8e050176511fcbf93153cf1e2a0b5172",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -151,7 +151,7 @@
       ]
     },
     {
-      "sha256": "3c6a20db7b6cb3c013ad521fbcdb7b4bd6fb2d20bcf9e902a2a1ee9b9ac8d2c8",
+      "sha256": "91d4b70a70a715906ddf7a777f87ed784daba3de0ea38b79a543abc67aedffc3",
       "kind": "beat_mode_matrix",
       "viewport": "648p",
       "width": 1152,
@@ -171,7 +171,7 @@
       ]
     },
     {
-      "sha256": "99d6f66c1488ad211de7d901048bb6ae491bf837cab231924c4f331ca410621f",
+      "sha256": "01419a83aebe851a8185ff811f79a2854310413a23bfe64a0128aea6663b089e",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -191,7 +191,7 @@
       ]
     },
     {
-      "sha256": "85508641a92a2986655f575094c9c43bee4364c26e4e20c0943ee68ba13ef374",
+      "sha256": "6fae62aa4d94afdc5b31c91424986ae45ae311712a757b2dd7ec4b7a771f4e4e",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -211,7 +211,7 @@
       ]
     },
     {
-      "sha256": "c5d4eb27623e0dcb463fe604c410c4d911f514c57ab06ae2a9f072f6de697c53",
+      "sha256": "fa83e9fd811ab4349be1fb47b49341f86229633a1bec26f0201395357d4cd774",
       "kind": "beat_mode_matrix",
       "viewport": "720p",
       "width": 1280,
@@ -231,7 +231,7 @@
       ]
     },
     {
-      "sha256": "b9e3a70a184553f4bb1b74e9edc72b58ca921b2c4a0d49624b66468e34be8a73",
+      "sha256": "3f3db32037c5e07c488b14d736835cb84343383f67e52c6b2df4e09db1de3469",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -251,7 +251,7 @@
       ]
     },
     {
-      "sha256": "e6e3ab6d95f9f301c7fee56499a9bea6437f70b025ca8cfd4bed0119b342fd5e",
+      "sha256": "686c6a13743adee326566697363fa26545f563771df4825280107f2a41486516",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -271,7 +271,7 @@
       ]
     },
     {
-      "sha256": "2a25ffda21d3ede3ff5435aed9d1eeb5d5c1f5e255e8ca73952fc8dcf79989ff",
+      "sha256": "ed520717fa41b91515b57d36be20c111a2bef253bb39af98ad73173140371179",
       "kind": "beat_mode_matrix",
       "viewport": "1080p",
       "width": 1920,
@@ -291,7 +291,7 @@
       ]
     },
     {
-      "sha256": "c01447a23d09bf71a12f41ee71d781c47f8a9fd0fd501d12b50b9e600138f5a6",
+      "sha256": "6bd9b213e4c340ca83e7532fb7cfd287f1933775734cba6377307e2c4a1ebed5",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -311,7 +311,7 @@
       ]
     },
     {
-      "sha256": "1930fbc63b063186c2d44d84a745f040e13054e5e94a20031d6561cb03102edd",
+      "sha256": "5f9ca06751d0986dfb3da670637dbf2cb4a50af8fb471f3665664b6343cdb253",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -331,7 +331,7 @@
       ]
     },
     {
-      "sha256": "c7ef40142433d3b6fd38b786196170197f6f43294a9717d0e9bf6848d9bae959",
+      "sha256": "2d80b14431082eefa748bc0f6c74182e904163147b2aef86b662ec58b52b3c4a",
       "kind": "beat_mode_matrix",
       "viewport": "2k",
       "width": 2560,
@@ -355,13 +355,13 @@
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7257,
+      "changed_pixel_ratio": 0.5811,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.578,
-      "player_contrast": 0.638,
+      "player_contrast": 0.65,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 13,
       "weapon_id": "chakrams",
@@ -394,13 +394,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c36a9c487140277a624cc3be3b35878a820f237b4107ff36d343900c86952dc7"
+      "record_sha256": "04f39a78c5f17283491351ec73d7334a6f67bd16d07a3703bd8ec96d763bb705"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2688,
-      "flash_pixel_ratio": 0.004,
+      "changed_pixel_ratio": 0.1295,
+      "flash_pixel_ratio": 0.0042,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -438,18 +438,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d7e57111c125b88f5422d1ea00816506ac757ba43d9631a2600e106242d8f937"
+      "record_sha256": "f3be03752b2d02fc3dcbd399f44bfbe393cdc0e19a563a0c6f7b910e72de06d5"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2155,
-      "flash_pixel_ratio": 0.0024,
+      "changed_pixel_ratio": 0.0682,
+      "flash_pixel_ratio": 0.0018,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.93,
+      "player_contrast": 0.903,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -482,18 +482,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e2bf8739dbfba40226ddec00c242d8f102ad516b5202527517cc7b13fcd1e5ee"
+      "record_sha256": "0217aaf43277b38db1e2972740d94404e79ab74a90c6ae3fd965f6a554dc9682"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7348,
+      "changed_pixel_ratio": 0.5742,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.578,
-      "player_contrast": 0.65,
+      "player_contrast": 0.642,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 13,
       "weapon_id": "chakrams",
@@ -526,18 +526,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "70050255c723064ebc2cb8cf3e318ae74da838940932b1e4bad3bddc5d66cf85"
+      "record_sha256": "2b62992dba19f21ae8abf60693f599ba0f9137c84013fe5518392ec6e448b0c8"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.293,
+      "changed_pixel_ratio": 0.1489,
       "flash_pixel_ratio": 0.004,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.845,
+      "player_contrast": 0.9,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -570,18 +570,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8a41af6c13c33cfeb4d53e37ffd4d11b40ceffa9fc6faa1d57d261e0ae8ef4f5"
+      "record_sha256": "e9cbecc4959150087b12e4338919b5d78656d5da9fa4e2c47a88ded7d34fe51b"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2081,
-      "flash_pixel_ratio": 0.0038,
+      "changed_pixel_ratio": 0.1026,
+      "flash_pixel_ratio": 0.0025,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.723,
-      "player_contrast": 0.959,
+      "hud_band_min_contrast": 0.678,
+      "player_contrast": 0.881,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -614,12 +614,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ff7b2e9d43ab421e217c501a2d820389f4ce8b6921d972db32784f3f06df630f"
+      "record_sha256": "2ee7a2cb4866e5ada8a75ff0b3e63a188041e7884c2f026f98ef2c46d32e7aa9"
     },
     {
       "effect_box_ratio": 0.1383,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7301,
+      "changed_pixel_ratio": 0.5637,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -658,18 +658,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "608d02e904f880be98cfe886d1c83c5047ffa91b266c83f349543b6745b88891"
+      "record_sha256": "297475e8e06375773adc51baa463e3ec898352628b41cb2c7a5b36d1637e32c6"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1827,
-      "flash_pixel_ratio": 0.0047,
+      "changed_pixel_ratio": 0.07,
+      "flash_pixel_ratio": 0.0045,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.723,
-      "player_contrast": 0.942,
+      "player_contrast": 0.969,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -702,18 +702,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "183f6038ca45ef0c0b3c8bf029160d8e611da6eb11bfb1e660a4d5465aedff65"
+      "record_sha256": "4411673a1738759197f12503cd59ec0fb7623be912e308f32d31ccca148534a8"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7185,
+      "changed_pixel_ratio": 0.5443,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.578,
-      "player_contrast": 0.792,
+      "player_contrast": 0.717,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -746,12 +746,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b3291cfce4b4e29b541865cadb33c521c4d67783ac80dd484b3919aad5db02c2"
+      "record_sha256": "6974fed86b79b6cdd4fdba82099486e34cd6dd7f8450a0b55dfedfdb52d4e086"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7234,
+      "changed_pixel_ratio": 0.6362,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -790,18 +790,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "097b42d87f4646cd781821db0c0c80f6f48ee935571503c2a361b8e84da3d970"
+      "record_sha256": "78013ec33acf3a9f726bac82671cfa401895c1d921516f804ff22710baabe8cf"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1877,
-      "flash_pixel_ratio": 0.0042,
+      "changed_pixel_ratio": 0.1256,
+      "flash_pixel_ratio": 0.0041,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.901,
+      "player_contrast": 0.93,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -834,18 +834,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "30379d5f530665acf82bb813d39d9cc0a9d82c65f74ccb86bafcf14990321bf9"
+      "record_sha256": "698ba03a3d11d5c2f3d87b2079949cf67169566db34f277ea28ce770ed483663"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1292,
-      "flash_pixel_ratio": 0.0031,
+      "changed_pixel_ratio": 0.0618,
+      "flash_pixel_ratio": 0.0017,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.877,
+      "player_contrast": 0.93,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -878,18 +878,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "757dffad0c025da5d4a542a5ee4ea7546666c38d78eca092be90a9b534aef436"
+      "record_sha256": "867a4244198632950053bb584b417a3657b20ebe2c2aedab22157995e4988263"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1212,
+      "changed_pixel_ratio": 0.0437,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.641,
+      "player_contrast": 0.645,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 8,
       "weapon_id": "shadow_daggers",
@@ -922,18 +922,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "67b044522108e498f3fb04ef7f535d27c2e7c57c087350fe4ef0dfa07fae664f"
+      "record_sha256": "7ad19529c16844d0729b2d260749fbbafff88ad5ca619d849ecb34ab6ff5c1a4"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1192,
+      "changed_pixel_ratio": 0.0493,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.612,
+      "player_contrast": 0.72,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -966,18 +966,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6447a7b29e8340b69ec8b4fb072bb324d505d1655102b6b18859095ceb2c10ac"
+      "record_sha256": "bddf555efd84928e4de41a1bd5a7bcc2bcfbfba50e15db90253111a9d1ada0e5"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1566,
+      "changed_pixel_ratio": 0.0478,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.459,
+      "player_contrast": 0.525,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1010,18 +1010,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "46aeaf10cdc959d9b3bba6fb9af8140771d6f10bdeacd70adb71be41c7a025af"
+      "record_sha256": "7fc7ea525424a2cb4f02cdfb29c595c71684575692775f544e22c9807e1837dc"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1912,
+      "changed_pixel_ratio": 0.0765,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.643,
+      "player_contrast": 0.646,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 8,
       "weapon_id": "shadow_daggers",
@@ -1054,18 +1054,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5b442d98a8167a2f758454ce8d758e2d1c408f1efb3bb3908008142c1106cbf0"
+      "record_sha256": "dceba1803f0f35acd0bcd26c5365699429cc79c2b2fe54120e9fb023db82972e"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1916,
+      "changed_pixel_ratio": 0.0754,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.724,
+      "player_contrast": 0.633,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1098,18 +1098,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e75e41e0647d83d6f80614948df3f08d2d70c79817e1404b175232a56a1a3935"
+      "record_sha256": "b2dac08eecfea1ed131821780e4c690f215d899358bc691d92d2dcd1adfdcf93"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7184,
+      "changed_pixel_ratio": 0.071,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.578,
-      "player_contrast": 0.539,
+      "hud_band_min_contrast": 0.706,
+      "player_contrast": 0.645,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1142,12 +1142,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "55f12dcd3ad56a4cf9aa5e39267d1d21100805ae4cf7ab292922319b7813f0c7"
+      "record_sha256": "22c39838c3c3f8fedb808c779661fcad433a69a7b9fa3a69029796ebeb1060d9"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1517,
+      "changed_pixel_ratio": 0.0425,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1186,18 +1186,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "474ecd273cc8a9c555a71220d80d1af05cc9caf663f1ee44640f26ff59fc6ddb"
+      "record_sha256": "d925d13298cdf7db4dc0183ad533aaaffda33b77d3514c76104811214bf4a7ee"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1556,
+      "changed_pixel_ratio": 0.5312,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.475,
+      "hud_band_min_contrast": 0.578,
+      "player_contrast": 0.364,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1230,18 +1230,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "35e9c5c0a6bed5629ba24d8fe73f86c884726432ed7b16308d2a8e01bc564481"
+      "record_sha256": "49e682a49cc67086e04c0892052989def51461e38b88fe317941ffa888a0b988"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1987,
-      "flash_pixel_ratio": 0.0001,
+      "changed_pixel_ratio": 0.0448,
+      "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.44,
+      "player_contrast": 0.675,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1274,12 +1274,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "46a8eb54efb4b5e211aeda619d21aed69aa0cf7fabd82d7a2a52d901a299ce00"
+      "record_sha256": "272ea2a5c43d85621ee001e5fe8a44669d1de1426a27b8a7ea747a7a48e0c895"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1366,
+      "changed_pixel_ratio": 0.0405,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1318,18 +1318,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "de4277937bbf4da5a965eb0e65b693b62f49d60980f8f274fc56c98c16dc2b35"
+      "record_sha256": "6e3146834b9f7405919d4b03cb899895b5c8ea481fe72a4c7606c81147f3f9b4"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1383,
+      "changed_pixel_ratio": 0.0445,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.613,
+      "player_contrast": 0.374,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1362,18 +1362,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "00f026b5144c448216201c709b423c2b465f3841d68b36732bc072b93e58627f"
+      "record_sha256": "cee61b4bb48c1ccd9d79c24e030949ca060f39b3f4f7ec0e960f8f365d36e720"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2055,
+      "changed_pixel_ratio": 0.0442,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.678,
-      "player_contrast": 0.404,
+      "player_contrast": 0.415,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -1406,7 +1406,7 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f15dfe745b981a64f32d2e8e0aed54adb6fcc3f3765690706f322ea38918ae8c"
+      "record_sha256": "879845141db03822cc605e0210669009adc83712c7803b37287021f10db2659b"
     },
     {
       "effect_box_ratio": 0.024,
@@ -1455,13 +1455,13 @@
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0393,
-      "flash_pixel_ratio": 0.0004,
+      "changed_pixel_ratio": 0.0424,
+      "flash_pixel_ratio": 0.003,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.859,
+      "player_contrast": 0.904,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1494,18 +1494,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "241b5ed429f48d4aedeb37154540e0eeaf956c5408ce01baef5063412b1de88e"
+      "record_sha256": "d445466eb3e18aed14c710fccc678d78762ef21e852e05170bbf2d75736460bd"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0429,
+      "changed_pixel_ratio": 0.0472,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.687,
+      "player_contrast": 0.737,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1538,18 +1538,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7fec8dea8cf8e1d38c6e4a3d0b7c3d843ceddaa6923691c7965e453c1cec9304"
+      "record_sha256": "8f03e92294d288649ba3b4167866f878a284e8cfe7e1498d07f9db6ee98a056a"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1193,
+      "changed_pixel_ratio": 0.1162,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.803,
+      "player_contrast": 0.84,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -1582,18 +1582,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ce5c23504da925588090cfa12d7a73861c343e8d919db3d6bc4eaa5baf20dfd1"
+      "record_sha256": "799e9dc2967269055b3e2ce30658b2eaeff9db2a365ddc923303cf1f333079cd"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5429,
+      "changed_pixel_ratio": 0.5573,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.742,
+      "player_contrast": 0.755,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1626,18 +1626,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "bbb636f0b2adccde4fca8258e36af433c7748dbc0b67222724b1adb537a5067c"
+      "record_sha256": "3cc2fa3c5bf3fb64f0ec5443305753514fd11f9d68260be35c11a5695736ef2c"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0822,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.08,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.91,
+      "player_contrast": 0.718,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1670,18 +1670,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a0813b3853566f341005b52dc83412f27b33726498fc6659fb523ee79d91bb9a"
+      "record_sha256": "6956930888fb091016a39e7b027187787cd84e3328b63ee7521d1ce8fe79aecd"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0462,
+      "changed_pixel_ratio": 0.0488,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.655,
+      "player_contrast": 0.678,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -1714,18 +1714,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9ae17328899a820c77f8390f268dcac8df615c11f96c4e7a51118b82aa08249d"
+      "record_sha256": "93aed7c8d64c5af9d83cd48ed005270d94159a97e3ebd5c94bc045c0ba64b9ed"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0409,
-      "flash_pixel_ratio": 0.0003,
+      "changed_pixel_ratio": 0.0465,
+      "flash_pixel_ratio": 0.0033,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.858,
+      "player_contrast": 0.89,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1758,18 +1758,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6453b00cf08538f807b2259792c00571e74ace28c5704d657d90156e00e19799"
+      "record_sha256": "ae870e875dda60d34c6bcb21e5cee66e32a03ebcdfbf20666a5b7d7a76ae12f6"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0449,
+      "changed_pixel_ratio": 0.045,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.717,
+      "player_contrast": 0.722,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1802,18 +1802,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "86cc2f386153a77be49c9755d7b389cdd8b3c7de31b14deb4b3c38f4c05b43d7"
+      "record_sha256": "1de4f2d614220c9ce3074eef5411b56565a52a02e5862585ca8fc2aab8fbd247"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0318,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.0392,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.763,
+      "player_contrast": 0.771,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -1846,18 +1846,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a675ae8465b238440fbfeb5736f39cf193bc3456be2d83d92ea47aee67b03bf4"
+      "record_sha256": "714fa4d289c7895120f0a25ce4baf75e3fed668282c062f4f9aa6baecee8b87c"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0365,
-      "flash_pixel_ratio": 0.0005,
+      "changed_pixel_ratio": 0.0378,
+      "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.921,
+      "player_contrast": 0.843,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1890,18 +1890,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8e9baf91a24936a53842cd5f52ec332fe826f623555b5b0ac91d62da56cc3387"
+      "record_sha256": "6e185a82d094725740a5c4db05aecdf6cc980d0ad2da1d6178f0355c22f82c02"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0359,
+      "changed_pixel_ratio": 0.038,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.829,
+      "player_contrast": 0.766,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -1934,12 +1934,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6f4ecd761f7034385fff397e9b213c739ef8a7446ce920fe1bf1bef521170714"
+      "record_sha256": "44e196312d2bbe4337db67dea15f6df04aa50e8f9dd727463d13f8f89c65ef14"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5585,
+      "changed_pixel_ratio": 0.5821,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -1978,13 +1978,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2df531aa9fb6c40094ac3fb76ef87dc5da0d6bf9c8e16f0cfd21b5c68d1abdb5"
+      "record_sha256": "5cdddd17808a8f14b3721d88deebb6884a2f617f7cce5208c868510b62dc26d0"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1295,
-      "flash_pixel_ratio": 0.0036,
+      "changed_pixel_ratio": 0.1286,
+      "flash_pixel_ratio": 0.0033,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -2022,12 +2022,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f2a7406e708338759576a7f91e156ae3fcc15ce25c8cf8b9b1b912bd479bf089"
+      "record_sha256": "627e3c2fb188d414ebcae418af35d5acac2d80d8bbb1ca3ea4d15a6ffb37ae04"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0626,
+      "changed_pixel_ratio": 0.0663,
       "flash_pixel_ratio": 0.002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2066,12 +2066,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "3b380703fd21da3f5d15a1ebaaaac3d2f073426364511f59d57efbce3e304462"
+      "record_sha256": "53fc8d59fe3264cbf918aaf2d1bcbf2722c13b4a27b30c644fd79c06fd5265bd"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5733,
+      "changed_pixel_ratio": 0.596,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2110,13 +2110,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "615bba7f3c537075841b0f91a8b8394fc6a8ea934cd3bf026bf38ab1ef5d1f14"
+      "record_sha256": "2259d94e4f175d179eeecd6e7803ae150388a60a18288eb1dd247aa733cb5129"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1469,
-      "flash_pixel_ratio": 0.0035,
+      "changed_pixel_ratio": 0.1473,
+      "flash_pixel_ratio": 0.0031,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -2154,18 +2154,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d61cd18e8c864a837ac92c4f94741dd71668bc608f90f4230dd8bd584a078d8b"
+      "record_sha256": "97f76919e6022fc6700ac90672a7388c0b1b3605be5d1b28b1ea85f5567b2e07"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0956,
-      "flash_pixel_ratio": 0.0017,
+      "changed_pixel_ratio": 0.0974,
+      "flash_pixel_ratio": 0.0008,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.504,
-      "player_contrast": 0.934,
+      "player_contrast": 0.931,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -2198,12 +2198,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e984f831486a6a74ebf6f82144b26293e65cc887be8f635bd48014cb1bf08039"
+      "record_sha256": "b3dffc981dcdda83e8d6f74923b406bc93c5a3860f4f16a5e88bb9869b406276"
     },
     {
       "effect_box_ratio": 0.1383,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5608,
+      "changed_pixel_ratio": 0.5769,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2242,18 +2242,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "967109912998d1a72f1bace40df112aca61835451a9b4370b7e2002df123af0c"
+      "record_sha256": "5bbcfd9407a6bf451015490e56e4066096e0cd20d99d7157a5831d134d01e2e2"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0648,
-      "flash_pixel_ratio": 0.004,
+      "changed_pixel_ratio": 0.5543,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.504,
-      "player_contrast": 0.997,
+      "player_contrast": 0.798,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -2286,12 +2286,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9914c3adcbd9272ada8aea6811b024704defc0b55e4eda178a7e96c61f9c84f4"
+      "record_sha256": "3e3c9bc230f02694991d9c06095b83100426ba1bc0ca744f80f21aab6ad344b7"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5354,
+      "changed_pixel_ratio": 0.5553,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2330,12 +2330,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "60954c74e44892c97a726c47bcc89c9a635e221e69750eb2d367bf0c430be1bf"
+      "record_sha256": "cbb496da5c8a0dfb0721edd5572b2c5118b77b9d8cb4e651398349ee9b86706b"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6401,
+      "changed_pixel_ratio": 0.6481,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2374,13 +2374,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6a24cff968b43c9def1f4cd5ae3b0a0e1d17186dacd82c36daacd178e8cf00f6"
+      "record_sha256": "0bff99e422192c446be730c33184cb8719dcf2debd478d62654345ca2bb661db"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1237,
-      "flash_pixel_ratio": 0.0034,
+      "changed_pixel_ratio": 0.1235,
+      "flash_pixel_ratio": 0.0033,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -2418,13 +2418,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8a2b337372e3427df4bae7ac557f7de07c58a41efe5a1f825e0e0717c6dc3bb8"
+      "record_sha256": "cb75f744f40af56223cebd7331941c51ba3e56dea72356384778aac2d0f7e951"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.06,
-      "flash_pixel_ratio": 0.0017,
+      "changed_pixel_ratio": 0.0579,
+      "flash_pixel_ratio": 0.002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -2462,12 +2462,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "557847dea15883da96bcfdb67f1a1d3e442e00e3842c4056cc8f3dfe14c81247"
+      "record_sha256": "37917b8db9215acd516091bbd0ee01bcf7711948f7947e62f3d91715c02a4abf"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.042,
+      "changed_pixel_ratio": 0.0457,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2506,18 +2506,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "73e4fb793b66d04520ea3305bb06699de7c681854d5c2e48decc7f4aa6d07517"
+      "record_sha256": "5d0f2bd78fbb751853164d960a956317a2afe58388245e6a142141bf3b4fc13c"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0472,
+      "changed_pixel_ratio": 0.5495,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.597,
+      "hud_band_min_contrast": 0.567,
+      "player_contrast": 0.509,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -2550,18 +2550,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1e3e3aa490e77e9b495e700c34d3edf8bacb49e0df018e962ab7c7cfb1b15e6f"
+      "record_sha256": "fa8cc1f7770bf28c5921ff2fd69c3a660b346c2a09f7673cca7c5a87772c8ead"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0458,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.048,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.661,
-      "player_contrast": 0.675,
+      "player_contrast": 0.597,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -2594,18 +2594,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b6f5d35d024fd0bd09992bcfa4b66edffdf6bc0aab3766e6b4ebf6a1f068b696"
+      "record_sha256": "15a1f85062f01bc6438aaa3336a82a07c229390d93be553bb0148a09b6c614b8"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0756,
+      "changed_pixel_ratio": 0.0786,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.646,
+      "player_contrast": 0.648,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 8,
       "weapon_id": "shadow_daggers",
@@ -2638,18 +2638,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0b5ddf0954232dfe08c02b2752274c83eebae5fbaff2e55607ed2b56832ef1b6"
+      "record_sha256": "e5c05dbbffd4efb471bc174d270d2c6100b30dcc771eda2ff640e4f942dfc3c7"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0733,
+      "changed_pixel_ratio": 0.0748,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.663,
+      "player_contrast": 0.664,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -2682,18 +2682,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d546d5658bf9f67984492f7226ae96b6695ffe38f1739c42a0769c8dd1a39447"
+      "record_sha256": "c6fbe879018d2731568646fca54ee6b2a239648e7892029991ccb2df270c0713"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.07,
+      "changed_pixel_ratio": 0.564,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.669,
+      "hud_band_min_contrast": 0.567,
+      "player_contrast": 0.776,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -2726,18 +2726,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f9afb8ed43aacd4452a1348ecf35094e33dbe754671f75c0582144b785eab7ca"
+      "record_sha256": "020ecc90003ea6fece2cbbaa2568c8952bb0d1c4cb81a6be7ebbc330c378ef0f"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0424,
+      "changed_pixel_ratio": 0.0425,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.648,
+      "player_contrast": 0.627,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 8,
       "weapon_id": "shadow_daggers",
@@ -2770,12 +2770,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b20bbebbd32050d65933b2bc7c16780e977162e6bd8d89301d355d24276faf7c"
+      "record_sha256": "ac76f44390f1f84295bbc7f57f39f6302037a69a556709e11863a3b60b0abf94"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0477,
+      "changed_pixel_ratio": 0.0475,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2814,18 +2814,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "609f5332453f661613e9b8bfb6a996020cc169b5ea036efa44f5fff50967712b"
+      "record_sha256": "ef7018f07d3740674a0731d090a846bf1dd3d3bfaa345260da87b5a65323aa8b"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0451,
+      "changed_pixel_ratio": 0.0472,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.661,
-      "player_contrast": 0.571,
+      "player_contrast": 0.569,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -2858,12 +2858,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "cc0ae6ba9f33174751ae504b593c9324b4e2a5d195d76bf17233522f808b0728"
+      "record_sha256": "a63404cb44be999b42f8d1ca7dd285e876b6dbb2748b9e963d1250b980b5961a"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.041,
+      "changed_pixel_ratio": 0.0418,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2902,18 +2902,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "fa98eac4fd641f52ff3eb98365fb6494204dc2021f8ed0f94094630b89d2bc2e"
+      "record_sha256": "8fd35667dd796026148c90592444424c0761cddd5eaba07344baf9fb32a74dc9"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.044,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.0406,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.583,
+      "player_contrast": 0.692,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -2946,12 +2946,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c36026a76331a16b2632fd6b260834acb09f0f6d25953ddd496f7f080f2ba29a"
+      "record_sha256": "dff15507ee8d8c350cfdabf2e9a24cdb69b471ea2474e066151542e01a01c6fe"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0438,
+      "changed_pixel_ratio": 0.0462,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -2990,22 +2990,154 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "52b621df5a34f969fc78fcf5cf365c14e43142d46d49c1d05668da348cc85e75"
+      "record_sha256": "2d55690b897a85ee2ebd95e29ad54d1d7b6da038d94e5c49ee3700b8ba89bf09"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0447,
+      "changed_pixel_ratio": 0.0464,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.661,
+      "player_contrast": 0.841,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 10,
+      "weapon_id": "venom_wire",
+      "mode": "normal",
+      "viewport": "720p",
+      "width": 1280,
+      "height": 720,
+      "beat": "release",
+      "beat_seconds": 0.8,
+      "declared_beat_seconds": 0.8,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 0.8,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "8494f32914d48db522991c58191b3bf260b58838a5cd2f6c230c1a84777d957c"
+    },
+    {
+      "effect_box_ratio": 0.024,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0436,
+      "flash_pixel_ratio": 0.0027,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.706,
+      "player_contrast": 0.931,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 11,
+      "weapon_id": "venom_wire",
+      "mode": "normal",
+      "viewport": "720p",
+      "width": 1280,
+      "height": 720,
+      "beat": "active",
+      "beat_seconds": 2.8,
+      "declared_beat_seconds": 2.8,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 2.8,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "1c0a0613fcd4a8238ec2234cfa6505fbb86759426b0434a3eae60fd6f9bd15bf"
+    },
+    {
+      "effect_box_ratio": 0.024,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.043,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.706,
+      "player_contrast": 0.708,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 11,
+      "weapon_id": "venom_wire",
+      "mode": "normal",
+      "viewport": "720p",
+      "width": 1280,
+      "height": 720,
+      "beat": "recovery",
+      "beat_seconds": 3.25,
+      "declared_beat_seconds": 3.25,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 3.25,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "652f1d440c1be4d63a56d41c769b79d5bb40a31960d142205c5d8b08f8d212e3"
+    },
+    {
+      "effect_box_ratio": 0.024,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.1124,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.661,
       "player_contrast": 0.82,
-      "hazards_in_frame": 6,
+      "hazards_in_frame": 24,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
-      "mode": "normal",
+      "mode": "crowded",
       "viewport": "720p",
       "width": 1280,
       "height": 720,
@@ -3014,7 +3146,7 @@
       "declared_beat_seconds": 0.8,
       "required_nodes_present": true,
       "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 6,
+      "hazards_placed": 24,
       "activation_started": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
@@ -3034,22 +3166,22 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e2324c9de6f7d740cf40e10992627fc5a6b4b6321fdcdf13d9920f94bf16ec30"
+      "record_sha256": "5806db5ffd10e589d1a60774340e97cec4e2e2fe9c809b58163f18faec42e603"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0393,
-      "flash_pixel_ratio": 0.0007,
+      "changed_pixel_ratio": 0.5597,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.661,
-      "player_contrast": 0.9,
-      "hazards_in_frame": 6,
+      "hud_band_min_contrast": 0.567,
+      "player_contrast": 0.743,
+      "hazards_in_frame": 24,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
-      "mode": "normal",
+      "mode": "crowded",
       "viewport": "720p",
       "width": 1280,
       "height": 720,
@@ -3058,7 +3190,7 @@
       "declared_beat_seconds": 2.8,
       "required_nodes_present": true,
       "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 6,
+      "hazards_placed": 24,
       "activation_started": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
@@ -3078,22 +3210,22 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "26f50bcbc52d351ec59f1506082c23cecb2991b607234f3a019d52d43630a3dd"
+      "record_sha256": "f19e93cd6350409e119f836fccd984f564e5036164b5d89d961477e96a91e069"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0422,
+      "changed_pixel_ratio": 0.079,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.722,
-      "hazards_in_frame": 6,
+      "hud_band_min_contrast": 0.661,
+      "player_contrast": 0.667,
+      "hazards_in_frame": 24,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
-      "mode": "normal",
+      "mode": "crowded",
       "viewport": "720p",
       "width": 1280,
       "height": 720,
@@ -3102,7 +3234,7 @@
       "declared_beat_seconds": 3.25,
       "required_nodes_present": true,
       "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 6,
+      "hazards_placed": 24,
       "activation_started": true,
       "accessibility": {
         "ultimate_reduced_motion": false,
@@ -3122,282 +3254,150 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7281c673c667afdfd4e8a77a4b0c5a708d70a525b5a538a67c83dd5f1341738d"
+      "record_sha256": "29772261f70c454bfdedc128bc49dafa92d908d3d7d9f764279e444572c702d9"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1135,
+      "changed_pixel_ratio": 0.0469,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.661,
+      "player_contrast": 0.623,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 10,
+      "weapon_id": "venom_wire",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "width": 1280,
+      "height": 720,
+      "beat": "release",
+      "beat_seconds": 0.8,
+      "declared_beat_seconds": 0.8,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 2,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 0.8,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "a4d916281e447f49b0ce08e9b0a668687df5958e3770cd4cd8cf0d020e8c5dc6"
+    },
+    {
+      "effect_box_ratio": 0.024,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0465,
+      "flash_pixel_ratio": 0.0004,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.661,
+      "player_contrast": 0.876,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 11,
+      "weapon_id": "venom_wire",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "width": 1280,
+      "height": 720,
+      "beat": "active",
+      "beat_seconds": 2.8,
+      "declared_beat_seconds": 2.8,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 2,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 2.8,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "67a7961f5c4999f1bba33b051d07d5bd5100dbc66deefc7c2a217ed0facba4f5"
+    },
+    {
+      "effect_box_ratio": 0.024,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0456,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.706,
+      "player_contrast": 0.721,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 11,
+      "weapon_id": "venom_wire",
+      "mode": "reduced_motion",
+      "viewport": "720p",
+      "width": 1280,
+      "height": 720,
+      "beat": "recovery",
+      "beat_seconds": 3.25,
+      "declared_beat_seconds": 3.25,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 2,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 120.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 3.25,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "d36dd2e642d3c9a1b97fdd1df12acae8a349f7f625b8dfc1bee772b68e92f8c4"
+    },
+    {
+      "effect_box_ratio": 0.024,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0358,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.661,
       "player_contrast": 0.83,
-      "hazards_in_frame": 24,
-      "effect_nodes_drawn": 10,
-      "weapon_id": "venom_wire",
-      "mode": "crowded",
-      "viewport": "720p",
-      "width": 1280,
-      "height": 720,
-      "beat": "release",
-      "beat_seconds": 0.8,
-      "declared_beat_seconds": 0.8,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 24,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 120.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 0.8,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "9f0133c8013fd4ad519ffef5b03c80d6a24ee464071bdac28a7a6410cc6ed1cd"
-    },
-    {
-      "effect_box_ratio": 0.024,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.5488,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.567,
-      "player_contrast": 0.77,
-      "hazards_in_frame": 24,
-      "effect_nodes_drawn": 11,
-      "weapon_id": "venom_wire",
-      "mode": "crowded",
-      "viewport": "720p",
-      "width": 1280,
-      "height": 720,
-      "beat": "active",
-      "beat_seconds": 2.8,
-      "declared_beat_seconds": 2.8,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 24,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 120.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 2.8,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "2254e83e446bc36872d516837accd74b4d7e1898bd0277694cb7b24834e7ceff"
-    },
-    {
-      "effect_box_ratio": 0.024,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0829,
-      "flash_pixel_ratio": 0.0005,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.661,
-      "player_contrast": 0.913,
-      "hazards_in_frame": 24,
-      "effect_nodes_drawn": 11,
-      "weapon_id": "venom_wire",
-      "mode": "crowded",
-      "viewport": "720p",
-      "width": 1280,
-      "height": 720,
-      "beat": "recovery",
-      "beat_seconds": 3.25,
-      "declared_beat_seconds": 3.25,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 24,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 120.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 3.25,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "6b70c07c17dc9d18102f606546b04f800697e5fe9e88d24b20f7d06249f34c3d"
-    },
-    {
-      "effect_box_ratio": 0.024,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0465,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.661,
-      "player_contrast": 0.612,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 10,
-      "weapon_id": "venom_wire",
-      "mode": "reduced_motion",
-      "viewport": "720p",
-      "width": 1280,
-      "height": 720,
-      "beat": "release",
-      "beat_seconds": 0.8,
-      "declared_beat_seconds": 0.8,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 2,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 120.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 0.8,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "ec081e37d8a33190d4587406274fc136960cef22d3d757900fdf3b7f3705fe2c"
-    },
-    {
-      "effect_box_ratio": 0.024,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0414,
-      "flash_pixel_ratio": 0.0026,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.923,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 11,
-      "weapon_id": "venom_wire",
-      "mode": "reduced_motion",
-      "viewport": "720p",
-      "width": 1280,
-      "height": 720,
-      "beat": "active",
-      "beat_seconds": 2.8,
-      "declared_beat_seconds": 2.8,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 2,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 120.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 2.8,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "6b16f2d90225c92aee6755e34358c7b00946fa414cbc4693b8816d206bcefdd0"
-    },
-    {
-      "effect_box_ratio": 0.024,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0438,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.713,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 11,
-      "weapon_id": "venom_wire",
-      "mode": "reduced_motion",
-      "viewport": "720p",
-      "width": 1280,
-      "height": 720,
-      "beat": "recovery",
-      "beat_seconds": 3.25,
-      "declared_beat_seconds": 3.25,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinVenomWireBlackWeb.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 2,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 120.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 3.25,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "a3e1cbb8cc53e57d39ef3724e22dead7810d98990dd9dd6ec5a4ef6d23ff1a1d"
-    },
-    {
-      "effect_box_ratio": 0.024,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0338,
-      "flash_pixel_ratio": 0.0003,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.881,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -3430,13 +3430,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "484a62b681e3f1437201151cf2fcede8f58b5c5e8fafbf269f786ce43c2f4d94"
+      "record_sha256": "ed3872c7a427d65294a9101ca9d0aeac0f8bb6212c5f447fd44df83115130a7a"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0358,
-      "flash_pixel_ratio": 0.0003,
+      "changed_pixel_ratio": 0.0375,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -3474,18 +3474,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "bbdbc50467722d1f552663ad3a47ec62685304063ca1b106006f4a7b7e485aab"
+      "record_sha256": "c2522425beaf71b42ce2842f4fa61fecb0eed2663b69bb5b60ecfb1596bfe48f"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0347,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.0358,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.706,
-      "player_contrast": 0.849,
+      "player_contrast": 0.737,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -3518,12 +3518,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8bd6043dcaacb7452e638cb7bd0164343d57a60172f0e7fd0d8942cf17093afe"
+      "record_sha256": "8f82c949cfa3a5dcd9474d432b0cd45cb641b39a3b1f0629dc3cbf19494bbfc8"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.715,
+      "changed_pixel_ratio": 0.5773,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3562,13 +3562,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "59e3fc53beb4e559e349ff0a9a76c8fd6a4ab1c1e25f745ec05c9a19de1f3593"
+      "record_sha256": "7bbce529f744055f533062061bdab7db85b0c08203288c99d641b2f94cea0a1c"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2556,
-      "flash_pixel_ratio": 0.0035,
+      "changed_pixel_ratio": 0.1287,
+      "flash_pixel_ratio": 0.0036,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -3606,13 +3606,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a9f5371fdb0e236569d54fdfaba0161324f443810cc16b5c4de7291ffd201c22"
+      "record_sha256": "ed4503a641a9732db925de3dcb40eb027b5e2a36cff37abca17de1e1bff545a7"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2036,
-      "flash_pixel_ratio": 0.002,
+      "changed_pixel_ratio": 0.0643,
+      "flash_pixel_ratio": 0.0025,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -3650,12 +3650,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ba87122eb80847e4d66ef958f2e324bbfad7b90b339868a2115044a034534c15"
+      "record_sha256": "ea18670dc61140c88327d10e683e39db2641b8493c553e989d8e18c530bfcc5a"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7215,
+      "changed_pixel_ratio": 0.5765,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3694,13 +3694,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "75d7db621a70b39be4073138728c887a464e0dd0e776b44cd3f29b18c52ecd94"
+      "record_sha256": "0a4b289ef88834ac085e15e788be3ac48e896bafe626e105fca246cfdd2a33d9"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2721,
-      "flash_pixel_ratio": 0.0037,
+      "changed_pixel_ratio": 0.1477,
+      "flash_pixel_ratio": 0.0036,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -3738,18 +3738,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "72a8d47dc03942a2d27a637e8b292928f7f212b2b1b79a4e438a8887601077ad"
+      "record_sha256": "cf1e579342541356c006f3b73fac23bdb95cf5c350a0ce61a9480bfa54b8f058"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1915,
-      "flash_pixel_ratio": 0.0031,
+      "changed_pixel_ratio": 0.098,
+      "flash_pixel_ratio": 0.0016,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.682,
-      "player_contrast": 1.0,
+      "hud_band_min_contrast": 0.636,
+      "player_contrast": 0.934,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -3782,12 +3782,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "8a04c76aba91975360e43c681159f158c9ea65cb7490ff6736c6476f17a0ba42"
+      "record_sha256": "ab5e67f7a1eef269a7bff0c6a1c9df91c1ea335368d9892d923feb136b7784a3"
     },
     {
       "effect_box_ratio": 0.1383,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7221,
+      "changed_pixel_ratio": 0.5656,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3826,12 +3826,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "b38878c4820f5032233156693d75eab4f38c3df5528ea33ff745064e9e69c348"
+      "record_sha256": "200ebed00b79373b759f0a264b442b0d66c3e251e300a7859ba149d2c4d0a7ef"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7113,
+      "changed_pixel_ratio": 0.5435,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3870,12 +3870,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9b4f796a164f9218a85101e8988413e4cb59ec18e15745796a2fc0571a157b3a"
+      "record_sha256": "19a18fc6b9387040b93ca6e0f1a497ea5150bb7464ae756832fd1d90c7ef7278"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7116,
+      "changed_pixel_ratio": 0.5442,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3914,12 +3914,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7a9a336ed58609222e3ed868cc5be5f68befc3304d6a1749bb5b79aed44b27c1"
+      "record_sha256": "3090ec52aaaefc894f702daf0aabb0f4d6c3fc738b95421a315dd29f25c1bf18"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7715,
+      "changed_pixel_ratio": 0.6411,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -3958,13 +3958,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "77556e6db91827939d94af247b811f9b08a90be0114263f737198099f555b368"
+      "record_sha256": "b9e5314d3c1ea879d5c9e8e8fb82743d33572ed077f2df59a59f827d7004c0c0"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2819,
-      "flash_pixel_ratio": 0.0035,
+      "changed_pixel_ratio": 0.1223,
+      "flash_pixel_ratio": 0.0036,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -4002,13 +4002,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "ede25c69c6db2c2b8a7e58fb0bf987e59cd723e128818c7fd6f4239c75385f2f"
+      "record_sha256": "3e29c364178f874ddbe8007d0ad4d221f0c7b1f337063be37dcf37849217ece1"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2342,
-      "flash_pixel_ratio": 0.0027,
+      "changed_pixel_ratio": 0.0602,
+      "flash_pixel_ratio": 0.0019,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -4046,12 +4046,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a8aab65b440af17d2c68bb8b31f1b06d6e86115c879b884f0b5d5e95cf2ca923"
+      "record_sha256": "da85b4ce7076a7fc6554d74dc22ab4f3b288b504c0fde34b0a4a7c15532c5edd"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0782,
+      "changed_pixel_ratio": 0.0425,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4090,18 +4090,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d625185b36b26e4671d4d758989993caedab9ae63971dd26ed53cf03ba2ecd34"
+      "record_sha256": "f53b7ede84e7f3e9ca250e2e6c6cba9dc54a578d8ac8a717b6dc59a7e12db7df"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0828,
+      "changed_pixel_ratio": 0.0481,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.853,
-      "player_contrast": 0.661,
+      "player_contrast": 0.691,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -4134,18 +4134,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5edec34c7306415e31fbf62bab9dab1562eb1b2a58c16201c0a2c9364925b3ff"
+      "record_sha256": "d1b2a9c04db498dc553a9620ce5e2e832bd90b3b95c097e1eb65182f02324faf"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1033,
+      "changed_pixel_ratio": 0.0455,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.772,
+      "player_contrast": 0.786,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -4178,12 +4178,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "92f2fd4c88b2d6285bd8b594c83d6bc8bafa7d4df1a8b7cca7ed3ca83dffe9e8"
+      "record_sha256": "35d4eb8d78c9efa8c6bd2d7e13fa0d12f43746a2bf9672c346a584a1c846698e"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2109,
+      "changed_pixel_ratio": 0.0817,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4222,18 +4222,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5345af9797700d93aa98e88451e9af599e9271f041ee5b7f48d1da83e50d4ba1"
+      "record_sha256": "dfb98991e560b15eb7c5a8cc05421f1226c4f040da718e1281f4a1a42866360b"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7312,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.078,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.685,
-      "player_contrast": 0.614,
+      "hud_band_min_contrast": 0.853,
+      "player_contrast": 0.865,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -4266,18 +4266,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "75bca5293fd2dda1ece1d42f12ccf469b6beec1c2b80d19e3a922a4dc5649ce0"
+      "record_sha256": "ae024a2a4c4b1343d425ca47ef95bc3ea7c9f3881978616b625407dc34df3489"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2043,
+      "changed_pixel_ratio": 0.5828,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.72,
+      "hud_band_min_contrast": 0.546,
+      "player_contrast": 0.543,
       "hazards_in_frame": 20,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -4310,12 +4310,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9ef80afe50f08cb4246df642d0d8c692921ec02b507f8e9715fe01466c269126"
+      "record_sha256": "4998461b1a84e212c69e8d2e8e7fbc5cb1f5137d4782dfe832c532810baeb481"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0781,
+      "changed_pixel_ratio": 0.0432,
       "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4354,18 +4354,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d6d6f89ebbf9eaa23c28e813dbd88dc9ea865da765214c42ff74c4fb58b8b257"
+      "record_sha256": "e7207860e5f1fd35d415ff673674004b72e023d34e31dbfbae5ea3ce686b4030"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0834,
-      "flash_pixel_ratio": 0.0001,
+      "changed_pixel_ratio": 0.048,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.853,
-      "player_contrast": 0.932,
+      "player_contrast": 0.661,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -4398,13 +4398,145 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "193a085c576918382967a248af9bdffff434c3d90e53b6a88404e8bdcb4d8b12"
+      "record_sha256": "c0fec3bf9b9609775819c7990f26a8a769deb5eb2277ac3e973a28a525eaf35c"
     },
     {
       "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1034,
+      "changed_pixel_ratio": 0.0451,
       "flash_pixel_ratio": 0.0001,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.636,
+      "player_contrast": 0.785,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 9,
+      "weapon_id": "shadow_daggers",
+      "mode": "reduced_motion",
+      "viewport": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "beat": "recovery",
+      "beat_seconds": 3.0,
+      "declared_beat_seconds": 3.0,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": true,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": true,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 6,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 3.0,
+        "camera_shake": false,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "7e1c215553369c16b7f9e23fcf044577ed542050d05fd6742308b22c380b1c05"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0403,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.857,
+      "player_contrast": 0.661,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 8,
+      "weapon_id": "shadow_daggers",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "declared_beat_seconds": 0.9,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": true,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 0.9,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "b4afcf7fb7e243fe31281b9989ebc42bbfa4022bbfa83f46c785264f61c092a3"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0435,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.853,
+      "player_contrast": 0.661,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 9,
+      "weapon_id": "shadow_daggers",
+      "mode": "photosensitivity_safe",
+      "viewport": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "declared_beat_seconds": 2.05,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": true
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": true,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 2.05,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "f51dd9631a55af7866c5aa6382adda1d6bcef471a9a388f1d8c9d1ada9beb3ce"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0435,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -4413,138 +4545,6 @@
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
-      "mode": "reduced_motion",
-      "viewport": "1080p",
-      "width": 1920,
-      "height": 1080,
-      "beat": "recovery",
-      "beat_seconds": 3.0,
-      "declared_beat_seconds": 3.0,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 6,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 3.0,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "72042d974b3a389ace3c393da2bfd17ff4a69c029224104a216ae5186c437238"
-    },
-    {
-      "effect_box_ratio": 0.0322,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1122,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.857,
-      "player_contrast": 0.661,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 8,
-      "weapon_id": "shadow_daggers",
-      "mode": "photosensitivity_safe",
-      "viewport": "1080p",
-      "width": 1920,
-      "height": 1080,
-      "beat": "release",
-      "beat_seconds": 0.9,
-      "declared_beat_seconds": 0.9,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": true,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 0.9,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "09667f99d77d6cd3003d28de8072445d0215b457f79b2d1a1fcd829c6b91d308"
-    },
-    {
-      "effect_box_ratio": 0.0322,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.11,
-      "flash_pixel_ratio": 0.0001,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.853,
-      "player_contrast": 0.661,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 9,
-      "weapon_id": "shadow_daggers",
-      "mode": "photosensitivity_safe",
-      "viewport": "1080p",
-      "width": 1920,
-      "height": 1080,
-      "beat": "active",
-      "beat_seconds": 2.05,
-      "declared_beat_seconds": 2.05,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": true
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": true,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 2.05,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "464e718e379cec86acf412c6abf98875d7ba2ded71477bdf77690a25e376d3e2"
-    },
-    {
-      "effect_box_ratio": 0.0322,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1688,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.636,
-      "player_contrast": 0.695,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 9,
-      "weapon_id": "shadow_daggers",
       "mode": "photosensitivity_safe",
       "viewport": "1080p",
       "width": 1920,
@@ -4574,18 +4574,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2ac0604a2991969d7e0379044b0cfa1ef8ed0f8819f2ac03d60651d434faa0df"
+      "record_sha256": "d6121b708dc195ad94648debdbbd398ad35a2ff32517352857912dc16a064ad9"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2406,
+      "changed_pixel_ratio": 0.0465,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.899,
+      "player_contrast": 0.879,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -4618,18 +4618,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f4fe8ff65fcbfc08caa5620c49c7d28a2c93d069c3437803a660ea77414e0339"
+      "record_sha256": "5c7d57ceb5ffc0de646f3c9f9aff7d9af4707ed362cc1cecd97b83d583f6144b"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1839,
-      "flash_pixel_ratio": 0.0037,
+      "changed_pixel_ratio": 0.0402,
+      "flash_pixel_ratio": 0.0004,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.853,
-      "player_contrast": 0.971,
+      "hud_band_min_contrast": 0.799,
+      "player_contrast": 0.898,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -4662,18 +4662,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "733177c8f548dcf5bad2a5ba0906444e54e9d1c176c39c9cdfd6cfd21176d1df"
+      "record_sha256": "3e90cd4dba91a6398a5e047ea674c1f6363aa744b232d3e7381e92ea96c327c5"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1842,
+      "changed_pixel_ratio": 0.0438,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.794,
+      "player_contrast": 0.924,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -4706,18 +4706,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "02bfd28cdd0ffd65f38903cfc6cebf9180db07ad73ec7d8bda7b859cdc3d17bf"
+      "record_sha256": "a4d23bc71d1e7e2ba8d42b6f381bfb52d114158be32e05e8230aa8d8a197c9b5"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2422,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.1187,
+      "flash_pixel_ratio": 0.0008,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.863,
+      "hud_band_min_contrast": 0.861,
+      "player_contrast": 0.962,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -4750,12 +4750,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6a62fffc684d0910576debb19812d6cdabc601cdba1b19ad676eedcde29dd0a3"
+      "record_sha256": "742ce2d7c0a8b9393ef57774fafa46f108c47490ecde333c68c0612a7ed269ec"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7079,
+      "changed_pixel_ratio": 0.5871,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4794,13 +4794,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9b35cc43542eb45671f9b88c687a5d0aa7f131727fa8384e2f4429903a446c49"
+      "record_sha256": "30754486a23df31444f3806d4962dc04c22ee6cc55d30ad65e3e2d6dda38c07f"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2153,
-      "flash_pixel_ratio": 0.0006,
+      "changed_pixel_ratio": 0.0927,
+      "flash_pixel_ratio": 0.0003,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -4838,12 +4838,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5f6580f4de5fead1c97a34238996d2446062d5a402f0dcae2766937d39d6998a"
+      "record_sha256": "7f856377e119e47e76bcc5ecfbe032e90219b0c27a928ecce9bdede2f95ed6c2"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1063,
+      "changed_pixel_ratio": 0.0457,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4882,12 +4882,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e9e7799d29bbd5c55a48b5355ac441bac12676a675b6fe22d19597697f1165be"
+      "record_sha256": "f7b365dc52a46f461fccb57d94dfa1a6bb049726251f6c21366190ef1ee1e97b"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1002,
+      "changed_pixel_ratio": 0.0405,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -4926,18 +4926,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c5578a7ead3ce9c7f053b1cd3f087f7abdd985850f92968e451517021461f143"
+      "record_sha256": "ddd5e56c207b8c690e6a22b16fd22b373ba5c11a1dc57ffa68029c0f2444c6dc"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0813,
+      "changed_pixel_ratio": 0.0434,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.778,
+      "player_contrast": 0.756,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -4970,18 +4970,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "21aa447ce2a4720224943c427a48ed90ac30d2cbfdf815d92fcb151c70acbd2e"
+      "record_sha256": "4281250b31b4d3de417fb4d5e82c3c4c66b505e8bde755d6761d9a1e377a82c3"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.209,
+      "changed_pixel_ratio": 0.0329,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.803,
-      "player_contrast": 0.874,
+      "player_contrast": 0.858,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -5014,18 +5014,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7981ab9c91dd6977a603a4f67696bb04c036104b7e6de19b44e3bce03f1cef91"
+      "record_sha256": "f9daa3032fef52184b0df9bb9a2fa175a20d8e0ffb226a0f7239d4749036fc00"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2096,
+      "changed_pixel_ratio": 0.0358,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.799,
-      "player_contrast": 0.825,
+      "player_contrast": 0.865,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -5058,18 +5058,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5fba1291f5401cd2b1d4d58873d637a8824a41cb6aaf0d196f52fbd796ff6d19"
+      "record_sha256": "617227af0cd8b7bbed88f17eb3aab5290dd83f060aded36e085c173f3de68eef"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1419,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.0349,
+      "flash_pixel_ratio": 0.0001,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.682,
-      "player_contrast": 0.969,
+      "player_contrast": 0.906,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -5102,12 +5102,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "6a67d0e9a9f09544b6ed5771db33eb23ca605557f298153828b399afab7a27b6"
+      "record_sha256": "6a6a3b46a5a2c5fcaba9556b263e52d28c1b327a411d79c04d43f6da98ff2f03"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7421,
+      "changed_pixel_ratio": 0.5632,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5146,12 +5146,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5d6dde9e958e8e9f53f107bcb2d36c10076717318804f75f1aa7b0b76cfa1a02"
+      "record_sha256": "85329596c66cc5d289272e5e674ed09189fa36698e184162be30f15940329183"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2989,
+      "changed_pixel_ratio": 0.1299,
       "flash_pixel_ratio": 0.0036,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5190,13 +5190,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "368b01d6737878e7c0a0d53f637c6f92f399254bec4e6ea70e66b02694430fa1"
+      "record_sha256": "0c26d8859e4148b3b705d80d959b70250e7e34736b3c6029bb80f3e89d1c8f1d"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2482,
-      "flash_pixel_ratio": 0.0028,
+      "changed_pixel_ratio": 0.0647,
+      "flash_pixel_ratio": 0.0029,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -5234,12 +5234,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "513dbafbe2c783fc1006c36f6bada0c01e1328aae4ec8419ae3a6b7d8e6c6fb9"
+      "record_sha256": "35fd5bf9ce3cb34ecedbc0d205884ed5ee952ba419a4ae7da5bfc41e0c0bacf2"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.724,
+      "changed_pixel_ratio": 0.5842,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5278,13 +5278,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2e69cab4819a3589c9b12727e4017c3b1b2b46a92cf27483c455d3a96eea46b8"
+      "record_sha256": "70c6564b881066b3610edf7fd35ba70833e39e0950b42c9f2d9baf2ad0836831"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2738,
-      "flash_pixel_ratio": 0.0036,
+      "changed_pixel_ratio": 0.1476,
+      "flash_pixel_ratio": 0.0035,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -5322,18 +5322,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "35279b1dc7e19569fa4ce476f17ac6e9c13150bc10ae319e65ba5fe6a53989f6"
+      "record_sha256": "3f336373c3593007a71da2ba57217f9b05e2042fb8521864726d272805982213"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7151,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.0965,
+      "flash_pixel_ratio": 0.002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.67,
-      "player_contrast": 0.8,
+      "hud_band_min_contrast": 0.779,
+      "player_contrast": 0.933,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 12,
       "weapon_id": "chakrams",
@@ -5366,12 +5366,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "717ff6906a092f98314dea55f6a349d3c80fad3f0da6171ac727082a1d02bc7a"
+      "record_sha256": "6b0ed27b18f40c629f68959095cc17d4653983284425cdae4c993265ed38fb7a"
     },
     {
       "effect_box_ratio": 0.1383,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7431,
+      "changed_pixel_ratio": 0.5685,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5410,13 +5410,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7a0afeb8088d3926647770387ec3797cfe2095b864b1d73a56e6ae67437eed79"
+      "record_sha256": "638f8dfd2b39f257f3b7c07d1f55af232a2006df6436ea1b02ba300a7dfa891d"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2028,
-      "flash_pixel_ratio": 0.0047,
+      "changed_pixel_ratio": 0.0664,
+      "flash_pixel_ratio": 0.0043,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -5454,12 +5454,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "9637ba12270be63502a8ada0ea5e5bc301954ba6c64e12e28326731eaadd5a98"
+      "record_sha256": "8a973195ff36357fdedd69342f07f3c406bd96d93995e2b67b749f5f17d57270"
     },
     {
       "effect_box_ratio": 0.1083,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7329,
+      "changed_pixel_ratio": 0.5463,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5498,12 +5498,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "eb96cbeaa81da4ee37e4fb9dcf140965ddb91e200c22fd08b89bc7c11788d618"
+      "record_sha256": "445e36dd10eeebd843ec2ff002ef9a2a81939bdda55bd4fa1ecf4142afdec2dc"
     },
     {
       "effect_box_ratio": 0.1029,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7863,
+      "changed_pixel_ratio": 0.6431,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5542,12 +5542,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "25ea3a31e752dc3c6d5f12dddf59dc9839da1dc37ffb126a3a4cee7e4440f963"
+      "record_sha256": "346e598e30bf65bc4834879047a0927b5c29a5ab703842950ee8ea5665b0c5da"
     },
     {
       "effect_box_ratio": 0.2867,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.3148,
+      "changed_pixel_ratio": 0.124,
       "flash_pixel_ratio": 0.0035,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5586,13 +5586,13 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0d729c4104582673fdbf43a454624e2cb196a265b825164c7c0db30bd2fcfd5d"
+      "record_sha256": "eab30ef5fb3bf9f1b8902f3b6eda34c9aabbecb71307d26dc7899c98e9f386d8"
     },
     {
       "effect_box_ratio": 0.1067,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2661,
-      "flash_pixel_ratio": 0.0026,
+      "changed_pixel_ratio": 0.0597,
+      "flash_pixel_ratio": 0.0022,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
@@ -5630,12 +5630,276 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "0a40fae7a0d66d2780491b4ad8fbce13fae4d45eb16b7e2d91605bfd9eedcedc"
+      "record_sha256": "8c7ccbb394fdfd53b69fb4a2dd89be97de531fe232780d0f0ddc8d39fe0132b4"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1231,
+      "changed_pixel_ratio": 0.0424,
+      "flash_pixel_ratio": 0.0002,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.836,
+      "player_contrast": 0.762,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 8,
+      "weapon_id": "shadow_daggers",
+      "mode": "normal",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "declared_beat_seconds": 0.9,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 0.9,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "d532892c90fc36375ab511787b82ace7f1eec4ed5ef504413edf5c6a8059da7e"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.541,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.67,
+      "player_contrast": 0.691,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 9,
+      "weapon_id": "shadow_daggers",
+      "mode": "normal",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "declared_beat_seconds": 2.05,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 2.05,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "5970ac91dc670c096935fbf8c94846a0c27154a540f9ed060de938a4037ef336"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0465,
+      "flash_pixel_ratio": 0.0,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.779,
+      "player_contrast": 0.769,
+      "hazards_in_frame": 6,
+      "effect_nodes_drawn": 9,
+      "weapon_id": "shadow_daggers",
+      "mode": "normal",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "recovery",
+      "beat_seconds": 3.0,
+      "declared_beat_seconds": 3.0,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 6,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 3.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "bc3f2e437fe30394d36eec99af8fecd400a3a79149fad70082f9784c557e84d5"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0766,
+      "flash_pixel_ratio": 0.0002,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.836,
+      "player_contrast": 0.761,
+      "hazards_in_frame": 20,
+      "effect_nodes_drawn": 8,
+      "weapon_id": "shadow_daggers",
+      "mode": "crowded",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "release",
+      "beat_seconds": 0.9,
+      "declared_beat_seconds": 0.9,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 20,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 0.9,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "f3672f700dac60f5a642b20d45d80811077af43a9f247764d32ee818e3d913ff"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0745,
+      "flash_pixel_ratio": 0.0002,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.836,
+      "player_contrast": 0.646,
+      "hazards_in_frame": 20,
+      "effect_nodes_drawn": 9,
+      "weapon_id": "shadow_daggers",
+      "mode": "crowded",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "active",
+      "beat_seconds": 2.05,
+      "declared_beat_seconds": 2.05,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 20,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 2.05,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "fa6aaacd674c5d2630b4447b8a4f5c4afefca4312d4c15b6fac84b1848164d2c"
+    },
+    {
+      "effect_box_ratio": 0.0322,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0698,
+      "flash_pixel_ratio": 0.0002,
+      "hud_bands_measured": 4,
+      "hud_bands_clear": true,
+      "hud_band_overlap_px": 0.0,
+      "hud_band_min_contrast": 0.836,
+      "player_contrast": 0.776,
+      "hazards_in_frame": 20,
+      "effect_nodes_drawn": 9,
+      "weapon_id": "shadow_daggers",
+      "mode": "crowded",
+      "viewport": "2k",
+      "width": 2560,
+      "height": 1440,
+      "beat": "recovery",
+      "beat_seconds": 3.0,
+      "declared_beat_seconds": 3.0,
+      "required_nodes_present": true,
+      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
+      "hazards_placed": 20,
+      "activation_started": true,
+      "accessibility": {
+        "ultimate_reduced_motion": false,
+        "ultimate_photosensitivity_safe": false
+      },
+      "presentation_state": {
+        "reduced_motion": false,
+        "photosensitivity_safe": false,
+        "motion_tracks_disabled": 0,
+        "photosensitive_nodes": 1,
+        "hitstop_ms": 100.0,
+        "time_scale_dip": 0.0,
+        "minimum_time_scale_observed": 1.0,
+        "elapsed_seconds": 3.0,
+        "camera_shake": true,
+        "sfx_ducking": true,
+        "cast_pose_bound": true,
+        "cast_pose_binding_error": ""
+      },
+      "record_sha256": "0ebb4680a9d2ed51d12e3c70f73fbd9a9a7376b9a2a5771bd0d8553861c52281"
+    },
+    {
+      "effect_box_ratio": 0.0339,
+      "backdrop_box_ratio": 1.0,
+      "changed_pixel_ratio": 0.0459,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -5645,7 +5909,7 @@
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 8,
       "weapon_id": "shadow_daggers",
-      "mode": "normal",
+      "mode": "reduced_motion",
       "viewport": "2k",
       "width": 2560,
       "height": 1440,
@@ -5657,39 +5921,39 @@
       "hazards_placed": 6,
       "activation_started": true,
       "accessibility": {
-        "ultimate_reduced_motion": false,
+        "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
       },
       "presentation_state": {
-        "reduced_motion": false,
+        "reduced_motion": true,
         "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
+        "motion_tracks_disabled": 6,
         "photosensitive_nodes": 1,
         "hitstop_ms": 100.0,
         "time_scale_dip": 0.0,
         "minimum_time_scale_observed": 1.0,
         "elapsed_seconds": 0.9,
-        "camera_shake": true,
+        "camera_shake": false,
         "sfx_ducking": true,
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "34c44046d41a45d51ee46953fcdd3328ecc815628d3a02d6cc33f6f88e01ab3b"
+      "record_sha256": "c3a868e74f7b27c9f7f07dc0f120e938f77c44aee4b902cdce61b71eafbe8610"
     },
     {
-      "effect_box_ratio": 0.0322,
+      "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1213,
+      "changed_pixel_ratio": 0.046,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.818,
+      "player_contrast": 0.576,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
-      "mode": "normal",
+      "mode": "reduced_motion",
       "viewport": "2k",
       "width": 2560,
       "height": 1440,
@@ -5701,299 +5965,35 @@
       "hazards_placed": 6,
       "activation_started": true,
       "accessibility": {
-        "ultimate_reduced_motion": false,
+        "ultimate_reduced_motion": true,
         "ultimate_photosensitivity_safe": false
       },
       "presentation_state": {
-        "reduced_motion": false,
+        "reduced_motion": true,
         "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
+        "motion_tracks_disabled": 6,
         "photosensitive_nodes": 1,
         "hitstop_ms": 100.0,
         "time_scale_dip": 0.0,
         "minimum_time_scale_observed": 1.0,
         "elapsed_seconds": 2.05,
-        "camera_shake": true,
+        "camera_shake": false,
         "sfx_ducking": true,
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "1364ade8da6a78de632ef5f8c34fcdbcbcdf30d16dda2424886bbb5387990c7e"
+      "record_sha256": "988f59829e7b052043160c3a635f1a00aaf1794ccb74074384f5f195200a406d"
     },
     {
-      "effect_box_ratio": 0.0322,
+      "effect_box_ratio": 0.0339,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1615,
+      "changed_pixel_ratio": 0.0483,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.779,
-      "player_contrast": 0.675,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 9,
-      "weapon_id": "shadow_daggers",
-      "mode": "normal",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "recovery",
-      "beat_seconds": 3.0,
-      "declared_beat_seconds": 3.0,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 3.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "5b51fe04872aca25dab4de44c4bab1bfc06668d0ebe26084d617487f0b51c4b7"
-    },
-    {
-      "effect_box_ratio": 0.0322,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0969,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.74,
-      "hazards_in_frame": 20,
-      "effect_nodes_drawn": 8,
-      "weapon_id": "shadow_daggers",
-      "mode": "crowded",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "release",
-      "beat_seconds": 0.9,
-      "declared_beat_seconds": 0.9,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 20,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 0.9,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "1df938702cadae460fb0d3b076d89d6827941c0669dab798751a49cbd87d1b76"
-    },
-    {
-      "effect_box_ratio": 0.0322,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0944,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.773,
-      "hazards_in_frame": 20,
-      "effect_nodes_drawn": 9,
-      "weapon_id": "shadow_daggers",
-      "mode": "crowded",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "active",
-      "beat_seconds": 2.05,
-      "declared_beat_seconds": 2.05,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 20,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 2.05,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "62d91cb47306f507ce4a2c4b3a485e61a44ba98e73b9115dd07c7dcf19d8ce71"
-    },
-    {
-      "effect_box_ratio": 0.0322,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.6233,
-      "flash_pixel_ratio": 0.0,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.67,
-      "player_contrast": 0.693,
-      "hazards_in_frame": 20,
-      "effect_nodes_drawn": 9,
-      "weapon_id": "shadow_daggers",
-      "mode": "crowded",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "recovery",
-      "beat_seconds": 3.0,
-      "declared_beat_seconds": 3.0,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 20,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": false,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": false,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 0,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 3.0,
-        "camera_shake": true,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "30d19ab41e8c9d012ec4718da2809652919792b249b520eaa02167d1d96a8c78"
-    },
-    {
-      "effect_box_ratio": 0.0339,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1862,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.761,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 8,
-      "weapon_id": "shadow_daggers",
-      "mode": "reduced_motion",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "release",
-      "beat_seconds": 0.9,
-      "declared_beat_seconds": 0.9,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 6,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 0.9,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "f7d500b431c663017ecc5606ae3ed05c1243315a81a2779e7dcc9f76068fdc01"
-    },
-    {
-      "effect_box_ratio": 0.0339,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1903,
-      "flash_pixel_ratio": 0.0002,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.599,
-      "hazards_in_frame": 6,
-      "effect_nodes_drawn": 9,
-      "weapon_id": "shadow_daggers",
-      "mode": "reduced_motion",
-      "viewport": "2k",
-      "width": 2560,
-      "height": 1440,
-      "beat": "active",
-      "beat_seconds": 2.05,
-      "declared_beat_seconds": 2.05,
-      "required_nodes_present": true,
-      "presentation_scene": "scenes/vfx/ultimates/assassin/AssassinShadowDaggersMomentBeforeDeath.tscn",
-      "hazards_placed": 6,
-      "activation_started": true,
-      "accessibility": {
-        "ultimate_reduced_motion": true,
-        "ultimate_photosensitivity_safe": false
-      },
-      "presentation_state": {
-        "reduced_motion": true,
-        "photosensitivity_safe": false,
-        "motion_tracks_disabled": 6,
-        "photosensitive_nodes": 1,
-        "hitstop_ms": 100.0,
-        "time_scale_dip": 0.0,
-        "minimum_time_scale_observed": 1.0,
-        "elapsed_seconds": 2.05,
-        "camera_shake": false,
-        "sfx_ducking": true,
-        "cast_pose_bound": true,
-        "cast_pose_binding_error": ""
-      },
-      "record_sha256": "10efef32feb22d2e03eda7a131cebc932df9e785f9bce847749ccdfd743fc422"
-    },
-    {
-      "effect_box_ratio": 0.0339,
-      "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2423,
-      "flash_pixel_ratio": 0.0001,
-      "hud_bands_measured": 4,
-      "hud_bands_clear": true,
-      "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.779,
-      "player_contrast": 0.555,
+      "player_contrast": 0.682,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -6026,12 +6026,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "74e5e620db78db3f10c4b9a5be9c82aeb66b30ff88154bbb6afbd612fbaa8f2f"
+      "record_sha256": "8bcbbcfddd9867c135c2e95e7a63c791c5500841b4feca0960cc2ebf80be7bc1"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0581,
+      "changed_pixel_ratio": 0.0399,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6070,18 +6070,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5bb7eb4b5024d65c1456ce28a89fc7082578d993b1312d12e023376f401b0617"
+      "record_sha256": "b8f8f1749fb7d912975f62ff1eb030c36b6011248a1c738bc38a682d63db705c"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0624,
+      "changed_pixel_ratio": 0.0427,
       "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.704,
+      "player_contrast": 0.473,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -6114,18 +6114,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "f93a092964594440bd0ac6c5028fcec4f4105803dc227bb9e111a7dfd43dfe50"
+      "record_sha256": "af23fb628e589751bbec294c6e35f531fe6d65f19d4c6f93fa47c5b45bd4e3bf"
     },
     {
       "effect_box_ratio": 0.0322,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0865,
+      "changed_pixel_ratio": 0.0423,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.779,
-      "player_contrast": 0.755,
+      "player_contrast": 0.669,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 9,
       "weapon_id": "shadow_daggers",
@@ -6158,12 +6158,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "220e6c70d6f4b1b25696908b6cde4bf4a710f67cab0ceed1aec7f6385601f294"
+      "record_sha256": "b0a0e01484f49ffed6547a16163d5cbdedd1fc6ee2c4294238969a91be303c4a"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1883,
+      "changed_pixel_ratio": 0.0457,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6202,18 +6202,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "088dffc92bc91ffce4427182e59494192e10ba6d69f058133ea06f825f8a7b1d"
+      "record_sha256": "b64371db1641148f10731e3e98f8480905839b030aa3f6579e14ebe612c0e33c"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1858,
-      "flash_pixel_ratio": 0.0012,
+      "changed_pixel_ratio": 0.0406,
+      "flash_pixel_ratio": 0.0006,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.779,
-      "player_contrast": 0.908,
+      "player_contrast": 0.905,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6246,18 +6246,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "415ed1569abe567e8500fc78244bbc64ef53aad4550a2eb1a07e01a32a69f49e"
+      "record_sha256": "c095344d9f1cea0b5c8c28e0660704a255fd485dacab62a51fb42d9c95730380"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1424,
-      "flash_pixel_ratio": 0.0002,
+      "changed_pixel_ratio": 0.0441,
+      "flash_pixel_ratio": 0.0003,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.826,
+      "player_contrast": 0.947,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6290,18 +6290,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "7f261435d8cdf6611b74bfe41c849a9c197631bd164a313e1e2d0a049c8ce755"
+      "record_sha256": "316c0390a7eeb5b4042f0a9c1008feffa86f98e51c417b6852c49ab52f783d00"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.2444,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.115,
+      "flash_pixel_ratio": 0.0003,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.779,
-      "player_contrast": 0.877,
+      "hud_band_min_contrast": 0.836,
+      "player_contrast": 0.941,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 10,
       "weapon_id": "venom_wire",
@@ -6334,12 +6334,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "439a4d5f73aea023d7130d20f1b2ad74935485428a752a160b16cd719241711d"
+      "record_sha256": "f5eeb3390c8693209f324a2c73469fa4ff87e167aa36067337b53270358464f7"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7108,
+      "changed_pixel_ratio": 0.5704,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6378,18 +6378,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "497b7c7448d7239ab319d595418b70c9c110d4fed18d8699951ea177d0dbc037"
+      "record_sha256": "e449093329be5adccbc965abdfec28c2e431f00b462d26816b3ae61151144414"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.7105,
-      "flash_pixel_ratio": 0.0,
+      "changed_pixel_ratio": 0.0847,
+      "flash_pixel_ratio": 0.0007,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.67,
-      "player_contrast": 0.789,
+      "hud_band_min_contrast": 0.779,
+      "player_contrast": 0.924,
       "hazards_in_frame": 24,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6422,12 +6422,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "2e04fa5ead4ba622831a9d56decbec76f30171941d4fab4a298e215a3115f75e"
+      "record_sha256": "9360477f7c6faf44f874a86cc0440fff7e3e6ac6865ff67962cac57f42b0f389"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.1248,
+      "changed_pixel_ratio": 0.0458,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6466,18 +6466,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "c8370768b15ed24d6b9f4796955a89fabf66bd7389a4e064656bb857162ba3a3"
+      "record_sha256": "4533aae6f1ce8d3766ffe944e3c4ffab7e928fe21fcf93eb20cbddea903d201b"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0906,
-      "flash_pixel_ratio": 0.003,
+      "changed_pixel_ratio": 0.0397,
+      "flash_pixel_ratio": 0.0023,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.944,
+      "player_contrast": 0.942,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6510,18 +6510,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "e09697ce78fa00bb87f32d0377d1780fff9d1e69c6ccb93fbda5992269169806"
+      "record_sha256": "26df59a27370b5e84cef7ccfdf9e90802038dda3513517b77efc6420ded015e4"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0957,
-      "flash_pixel_ratio": 0.0003,
+      "changed_pixel_ratio": 0.0459,
+      "flash_pixel_ratio": 0.0002,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.933,
+      "player_contrast": 0.916,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6554,12 +6554,12 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "a9a289c33e1d0a51524ea285fe85e5ee585393f7244781e6178850d18872c79f"
+      "record_sha256": "2bf17d536c4344ad1390dce40bcea47ced1d777902557efcc26217922f6efdd2"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0758,
+      "changed_pixel_ratio": 0.0348,
       "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
@@ -6598,18 +6598,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d247d93f91c5e0c25fe681fcd595c2b1ba21a300b69eeaab3fe5b655cfd7eb60"
+      "record_sha256": "0ddef690c080f5dbd2033d764d9db92b13f75a107f748ec189912c68a2b90380"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0524,
-      "flash_pixel_ratio": 0.0005,
+      "changed_pixel_ratio": 0.0364,
+      "flash_pixel_ratio": 0.0,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
-      "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.959,
+      "hud_band_min_contrast": 0.779,
+      "player_contrast": 0.889,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6642,18 +6642,18 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "5887e51d1281a5d22fbc8ba5705b57437bc567ff388f6cd4a369d0ed49432acd"
+      "record_sha256": "587847c4d3c4fb8758182a7fce67e4a9fc17ba61937959d9194942e466800cc3"
     },
     {
       "effect_box_ratio": 0.024,
       "backdrop_box_ratio": 1.0,
-      "changed_pixel_ratio": 0.0523,
+      "changed_pixel_ratio": 0.0343,
       "flash_pixel_ratio": 0.0003,
       "hud_bands_measured": 4,
       "hud_bands_clear": true,
       "hud_band_overlap_px": 0.0,
       "hud_band_min_contrast": 0.836,
-      "player_contrast": 0.941,
+      "player_contrast": 0.959,
       "hazards_in_frame": 6,
       "effect_nodes_drawn": 11,
       "weapon_id": "venom_wire",
@@ -6686,8 +6686,8 @@
         "cast_pose_bound": true,
         "cast_pose_binding_error": ""
       },
-      "record_sha256": "d639b46db1711c4443a90841d2d46f4639e2872745c18926e1e30d176648f3ba"
+      "record_sha256": "9d52ceda196aa2e7d10ec84fe24d8ebe831c4f68b17637a81d3958c64c16017d"
     }
   ],
-  "attestation_sha256": "2226d90389783d8876ec64fe261fb37e313d9a214691124fc58fadb9ff994462"
+  "attestation_sha256": "ffd2e5235588a711d439a4a747ff960e5582be85553655b7a45952c1b78ccd8b"
 }
