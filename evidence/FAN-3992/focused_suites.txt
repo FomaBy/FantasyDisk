@@ -1,0 +1,23 @@
+GODOT warming import cache via semaphore gate
+godot_gate: import cache missing, running headless import first
+PASS  Godot import cache pre-pass
+GODOT running 5 test(s) via semaphore gate
+GODOT 1/5 tests/fan3987_four_component_version_test.gd
+PASS  fan3987_four_component_version_test
+GODOT 2/5 tests/patch_notes_composition_test.gd
+PASS  patch_notes_composition_test
+GODOT 3/5 tests/patch_notes_data_smoke_test.gd
+PASS  patch_notes_data_smoke_test
+GODOT 4/5 tests/patch_notes_smoke_test.gd
+PASS  patch_notes_smoke_test
+GODOT 5/5 tests/update_manager_test.gd
+PASS  update_manager_test
+QUALITY NON-CERTIFYING: worktree is not clean
+   M CHANGELOG.md
+   M export_presets.cfg
+   M project.godot
+   M scripts/patch_notes_data.gd
+   M tests/fan3987_four_component_version_test.gd
+  ?? assets/marketing/fantasydisk_0312_announcement.png
+  ?? assets/marketing/fantasydisk_0312_announcement.png.import
+QUALITY PARTIAL_PASS: 1 static, 5 Godot; report=build/quality_gate_report.json

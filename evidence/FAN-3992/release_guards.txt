@@ -1,0 +1,5 @@
+OK: 0.3.1.2 release notes carry no unbacked visual claims
+release scope OK: 0.3.1.2, 0 entries
+OK: canonical changelog region matches 3 fragments
+6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7  assets/marketing/fantasydisk_031_announcement.png
+6d0267c7f56adae7b2cf9c2b6a19b91c180d68d8cd4b21b293331f3e77c5e5a7  assets/marketing/fantasydisk_0312_announcement.png
