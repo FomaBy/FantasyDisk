@@ -1,0 +1,6 @@
+PASS  Godot import cache pre-pass
+FAIL  fan3987_four_component_version_test (exit 1, fatal diagnostic: push_error)
+ERROR: FAN-3987/FAN-3992: the unpublished 0.3.1.1 patch-notes entry must be replaced by 0.3.1.2
+ERROR: FAN-3987/FAN-3992: expected exactly one 0.3.1.2 patch-notes entry, got 0
+QUALITY NON-CERTIFYING: worktree is not clean
+QUALITY FAILED: 1 static, 1 Godot; report=build/quality_gate_report.json

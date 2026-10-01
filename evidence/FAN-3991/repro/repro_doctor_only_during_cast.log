@@ -1,0 +1,191 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+ERROR: Parent node is busy adding/removing children, `remove_child()` can't be called at this time. Consider using `remove_child.call_deferred(child)` instead.
+   at: remove_child (scene/main/node.cpp:1750)
+   GDScript backtrace (most recent call first):
+       [0] _clear_impacts (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:876)
+       [1] finish (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:203)
+       [2] finish (res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd:117)
+       [3] ultimate_host_finish_presentation (res://scripts/ultimates/controller/ultimate_player_host.gd:280)
+       [4] _shutdown (res://scripts/ultimates/controller/ultimate_controller.gd:161)
+       [5] cancel (res://scripts/ultimates/controller/ultimate_controller.gd:134)
+       [6] _exit_tree (res://scripts/ultimates/controller/ultimate_player_host.gd:125)
+       [7] _retire_owned_player_node (res://scripts/main.gd:1715)
+       [8] _clear_world (res://scripts/main.gd:1619)
+       [9] _end_combat (res://scripts/combat_director.gd:414)
+       [10] _play_pair (res://tools/ultimate_session_lifecycle_probe.gd:241)
+ERROR: Condition "data.parent" is true.
+   at: ~Node (scene/main/node.cpp:4140)
+   GDScript backtrace (most recent call first):
+       [0] _clear_impacts (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:876)
+       [1] finish (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:203)
+       [2] finish (res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd:117)
+       [3] ultimate_host_finish_presentation (res://scripts/ultimates/controller/ultimate_player_host.gd:280)
+       [4] _shutdown (res://scripts/ultimates/controller/ultimate_controller.gd:161)
+       [5] cancel (res://scripts/ultimates/controller/ultimate_controller.gd:134)
+       [6] _exit_tree (res://scripts/ultimates/controller/ultimate_player_host.gd:125)
+       [7] _retire_owned_player_node (res://scripts/main.gd:1715)
+       [8] _clear_world (res://scripts/main.gd:1619)
+       [9] _end_combat (res://scripts/combat_director.gd:414)
+       [10] _play_pair (res://tools/ultimate_session_lifecycle_probe.gd:241)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ultimate_session_lifecycle_probe: doctor/restore_potion pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorRestorePotionElixir.tscn cast_frames=364 failures=[]
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parent node is busy adding/removing children, `remove_child()` can't be called at this time. Consider using `remove_child.call_deferred(child)` instead.
+   at: remove_child (scene/main/node.cpp:1750)
+   GDScript backtrace (most recent call first):
+       [0] _clear_impacts (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:876)
+       [1] finish (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:203)
+       [2] finish (res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd:117)
+       [3] ultimate_host_finish_presentation (res://scripts/ultimates/controller/ultimate_player_host.gd:280)
+       [4] _shutdown (res://scripts/ultimates/controller/ultimate_controller.gd:161)
+       [5] cancel (res://scripts/ultimates/controller/ultimate_controller.gd:134)
+       [6] _exit_tree (res://scripts/ultimates/controller/ultimate_player_host.gd:125)
+       [7] _retire_owned_player_node (res://scripts/main.gd:1715)
+       [8] _clear_world (res://scripts/main.gd:1619)
+       [9] _end_combat (res://scripts/combat_director.gd:414)
+       [10] _play_pair (res://tools/ultimate_session_lifecycle_probe.gd:241)
+ERROR: Condition "data.parent" is true.
+   at: ~Node (scene/main/node.cpp:4140)
+   GDScript backtrace (most recent call first):
+       [0] _clear_impacts (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:876)
+       [1] finish (res://scenes/vfx/ultimates/doctor/doctor_ultimate_timeline_scene.gd:203)
+       [2] finish (res://scripts/ultimates/presentation/weapon_ultimate_presentation_runtime.gd:117)
+       [3] ultimate_host_finish_presentation (res://scripts/ultimates/controller/ultimate_player_host.gd:280)
+       [4] _shutdown (res://scripts/ultimates/controller/ultimate_controller.gd:161)
+       [5] cancel (res://scripts/ultimates/controller/ultimate_controller.gd:134)
+       [6] _exit_tree (res://scripts/ultimates/controller/ultimate_player_host.gd:125)
+       [7] _retire_owned_player_node (res://scripts/main.gd:1715)
+       [8] _clear_world (res://scripts/main.gd:1619)
+       [9] _end_combat (res://scripts/combat_director.gd:414)
+       [10] _play_pair (res://tools/ultimate_session_lifecycle_probe.gd:241)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ultimate_session_lifecycle_probe: doctor/plague_syringe pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorPlagueSyringeBlackEpidemic.tscn cast_frames=347 failures=[]
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Condition "!data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2168)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Condition "p_node->data.tree != data.tree" is true. Returning: false
+   at: is_greater_than (scene/main/node.cpp:2169)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ERROR: Parameter "canvas_item" is null.
+   at: canvas_item_set_draw_index (servers/rendering/renderer_canvas_cull.cpp:1960)
+ultimate_session_lifecycle_probe: doctor/bone_saw pass=true scene=res://scenes/vfx/ultimates/doctor/DoctorBoneSawEmergencySurgery.tscn cast_frames=357 failures=[]

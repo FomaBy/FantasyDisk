@@ -76,6 +76,28 @@ could not see it. The rules below keep the runtime export-safe.
   presentation-runtime probe. Run it for any change to export presets,
   package discovery, the bridge, the runtime data, executors or the victim
   impact player.
+- **Nothing a scene placed outside itself is freed synchronously (FAN-3991).**
+  `finish()` runs inside an exit-tree propagation when a fight ends: the
+  host's `_exit_tree` fires while `Main.remove_child(player)` holds `Main`
+  blocked. A `free()` of a node whose parent is that busy ancestor — the
+  Doctor victim-impact service under the effect parent — is refused by
+  `remove_child()` ("Parent node is busy adding/removing children"), the node
+  is destroyed while its parent still lists it (`~Node: Condition
+  "data.parent" is true`) and the dangling child corrupts the heap (0.3.1.1
+  Windows: 7 of 7 long sessions with Doctor after another class crashed,
+  FAN-3990). A scene may `free()` only its own children; anything it added
+  elsewhere (effect parent, player `VisualRoot`) is stopped, hidden and
+  `queue_free()`d, so the scene tree removes it at the end of the frame, the
+  only point at which its parent is guaranteed not to be busy.
+  `tests/ultimates/multi_class_session_lifecycle_test.gd` is the gate: it runs
+  `tools/ultimate_session_lifecycle_probe.gd` in a child Godot process — one
+  `Main`, combat after combat through `_start_combat()`, the `ultimate`
+  InputMap action and `_end_combat()`, for dark_mage -> doctor, chemist ->
+  doctor (fight ended mid-cast and after a natural cast end) and all 17
+  classes in registry order — and fails on any engine lifecycle error in the
+  child's log, a freed-object access, a crash or a non-zero exit. The FAN-3985
+  gates cannot see this state: they play each pair in a fresh process and
+  finish the presentation explicitly before tearing the game down.
 
 ## Combat VFX art standard (v1.2, owner mandate 2026-08-18)
 
