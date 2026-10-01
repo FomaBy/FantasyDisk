@@ -413,8 +413,8 @@
     "live_capture": {
       "issue": "FAN-3942",
       "source_ref": "agent/claude-dev-opus-b/1d7858933176",
-      "source_commit_sha": "d74cf591ae88495e765e2bdf3f4b4d2dab4fd630",
-      "source_tree_sha": "a1fed61745ac2fc0a55bd6e3428d19ff624549ca",
+      "source_commit_sha": "bddde1ef2c31fe22af92f4d9672438e1ca703ccd",
+      "source_tree_sha": "287cbbe4c9c3508da3b33064faf23f19d8293a14",
       "capture_manifest": "docs/design/references/weapon_ultimates/doctor/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/doctor/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/doctor_certification_live_capture.gd",

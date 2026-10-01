@@ -277,8 +277,8 @@
     "live_capture": {
       "issue": "FAN-3942",
       "source_ref": "agent/claude-dev-opus-b/1d7858933176",
-      "source_commit_sha": "360227ee6b31436dd54d5b0286d1215130b25d7e",
-      "source_tree_sha": "5fff038fc7be56ee974055e37df1f1c8b2d733c6",
+      "source_commit_sha": "3ea50d26f1c504e68d56994e9673c75d9de9b21a",
+      "source_tree_sha": "66df23559b3a2787d87df43f11ef124c76558652",
       "capture_manifest": "docs/design/references/weapon_ultimates/druid/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/druid/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/druid_certification_live_capture.gd",

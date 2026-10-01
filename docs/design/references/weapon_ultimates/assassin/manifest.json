@@ -249,8 +249,8 @@
     "live_capture": {
       "issue": "FAN-3942",
       "source_ref": "agent/claude-dev-opus-b/1d7858933176",
-      "source_commit_sha": "e1d71c2409670090ac7a2de5d8061de853148fca",
-      "source_tree_sha": "bfe16f9411633588d0916f2a38591799c295ef22",
+      "source_commit_sha": "a2aa9468837510f01e733dbbbd63a7fb17ef194c",
+      "source_tree_sha": "b0189ba23775993dde37fd1e5052e691eda14af5",
       "capture_manifest": "docs/design/references/weapon_ultimates/assassin/certification_capture_manifest.json",
       "readability_report": "docs/design/references/weapon_ultimates/assassin/certification_readability_report.md",
       "capture_script": "tests/ultimates/presentation/assassin_certification_live_capture.gd",
