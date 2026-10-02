@@ -1,0 +1,54 @@
+{
+  "stage": "second",
+  "observed_at": "2026-10-02T18:16:57.018923+00:00",
+  "method": "Agent live Chrome DOM reads through AppleScript under owner delegation; owner personal observation not claimed",
+  "captures": [
+    {
+      "page": "installed-apps",
+      "observed_at": "2026-10-02T18:16:54.085324+00:00",
+      "sha256": "e4e175d17f2e66fb5fb3843d810fce4dccd43aa8b7adaf985f781fea83ecf12a"
+    },
+    {
+      "page": "123586555",
+      "observed_at": "2026-10-02T18:16:55.534046+00:00",
+      "sha256": "0d8756ab9555f1bee8dab493b23aebb3f56da97f3da78fc4a13d68eed0f47743"
+    },
+    {
+      "page": "146027224",
+      "observed_at": "2026-10-02T18:16:57.018846+00:00",
+      "sha256": "cdfca543e269b911bed270b62deacef2e30c3d2f170c43eac3c9dbf5783b0641"
+    }
+  ],
+  "apps": [
+    {
+      "name": "ChatGPT Codex Connector",
+      "id": 123586555,
+      "permissions": {
+        "checks": "read",
+        "statuses": "read",
+        "metadata": "read",
+        "actions": "write",
+        "contents": "write",
+        "issues": "write",
+        "pull_requests": "write",
+        "workflows": "write"
+      },
+      "repository_selection": "selected",
+      "covers_release_repository": false,
+      "selected_repository_count": 5
+    },
+    {
+      "name": "Multica AI",
+      "id": 146027224,
+      "permissions": {
+        "checks": "read",
+        "statuses": "read",
+        "metadata": "read",
+        "pull_requests": "read"
+      },
+      "repository_selection": "selected",
+      "covers_release_repository": true,
+      "selected_repository_count": 6
+    }
+  ]
+}

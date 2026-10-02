@@ -1,0 +1,2 @@
+Draft assets verified. Refresh the second writer inventory now, then press Enter:
+https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.1.2

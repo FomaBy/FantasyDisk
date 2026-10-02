@@ -1,0 +1,45 @@
+{
+  "issue": "FAN-3965",
+  "run_id": "01a0fdcc-bb51-7193-bc8d-639e1619234d",
+  "implementation_owner_id": "0d1f7faf-7aaa-4fc4-91e6-6e9451a5842c",
+  "owned_write_set": [
+    "evidence/FAN-3965/publication-0312/**"
+  ],
+  "resource": "release:FomaBy/FantasyDisk-Releases:v0.3.1.2:publication",
+  "source_tag": "v0.3.1.2",
+  "source_tag_object": "eaf68a1d335e577087e2c570c19e84792bdbb332",
+  "source_sha": "9a19870a15d71bc2b63e622c7895519bd84dafb4",
+  "source_tree_sha": "05fc714ce1599d85ee01fc13dc8afbfca449d157",
+  "publisher_blob": "2fa675358de24db8540e916d7011c85392652e11",
+  "accepted_package_qa": {
+    "issue": "FAN-3994",
+    "verdict": "PASSED",
+    "reviewer": "8ceb4992-a213-4090-8db0-51eb9c8fdb94",
+    "comment_id": "01a0f846-336c-7a0a-a125-121f23f55da1"
+  },
+  "accepted_windows_qa": {
+    "issue": "FAN-3990",
+    "verdict": "PASSED",
+    "reviewer": "de1d7d4f-e233-4d54-b743-f689f206b438",
+    "comment_id": "01a0f832-294b-7dd8-8bec-4a106a8d14c1"
+  },
+  "owner_delegation_comment": "01a0fd1c-c8e2-7bc1-9679-2f58517215b2",
+  "codex_recovery_comment": "01a0fdbf-8845-7520-be58-e408431c59b9",
+  "owner_delivery_policy": "GitHub + public verification + one Russian Multica owner notification; no Telegram or Discord; v0.3.1 untouched",
+  "observations": [
+    "Initial Chrome App configuration showed a sudo/verification-code prompt; no credentials were entered and no tag claim occurred then.",
+    "At 2026-10-02T18:12:05Z the same task tab had become readable without credentials. Both App pages were subsequently fully readable. The cause of authentication restoration is not attributed to the agent.",
+    "First complete live inventory independently rebuilt from three live page reads immediately before the unchanged publisher; evidence never claims the owner personally viewed those pages."
+  ],
+  "publisher_execution": {
+    "run_owned_pty_session_id": 84763,
+    "interactive_proof_refresh": "1",
+    "macos_channel": "signed",
+    "source_worktree_clean_before_start": true,
+    "first_inventory_observed_at": "2026-10-02T18:14:35.192312+00:00",
+    "exit_code": 0,
+    "second_inventory_observed_at": "2026-10-02T18:16:57.018923+00:00",
+    "public_release_id": 402050629,
+    "published_at": "2026-10-02T18:17:11Z"
+  }
+}

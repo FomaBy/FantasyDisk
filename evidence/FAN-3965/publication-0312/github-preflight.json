@@ -1,0 +1,16 @@
+{
+  "observed_at": "2026-10-02T18:14:04.198729+00:00",
+  "account": "FomaBy",
+  "repository": "FomaBy/FantasyDisk-Releases",
+  "default_branch": "main",
+  "target_commit": "162ac9f886a7c4deaa05d6c70c23779f406c7080",
+  "public_binary_only": true,
+  "immutable_releases_enabled": true,
+  "active_v_tag_ruleset_update_deletion_no_bypass": true,
+  "other_collaborators": 0,
+  "pending_invitations": 0,
+  "writable_deploy_keys": 0,
+  "tag_unclaimed": true,
+  "release_unclaimed": true,
+  "app_inventory": "not yet attested; complete live browser read is the remaining preclaim check"
+}

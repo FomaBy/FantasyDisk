@@ -1,0 +1,8 @@
+[dry-run] public release: https://github.com/FomaBy/FantasyDisk-Releases/releases/tag/v0.3.1.2
+  • FantasyDisk-0.3.1.2-macos.dmg
+  • FantasyDisk-0.3.1.2-windows-setup.exe
+  • SHA256SUMS.txt
+  • CHANGELOG-0.3.1.2.md
+  • fantasydisk_0312_announcement.png
+  • update-manifest.json
+[dry-run] local verification passed; the release goes public only after every draft asset, including the manifest, verifies byte-exact; nothing was published.
