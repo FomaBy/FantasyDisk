@@ -1,0 +1,16 @@
+{
+  "stage": "early_publication_preflight",
+  "candidate_sha": "cdca5f43b793a45dbdc1000908cfaa7e59e612ef",
+  "candidate_tree_sha": "0e5d3817a576a200495ff658af97e7ece88a6ea0",
+  "candidate_base_sha": "e33bded444e301919dc93c8c9b9f0257e640a1ea",
+  "candidate_ref": "refs/heads/agent/claude-dev-fable/f2e905b1ad18",
+  "author": "1cba3f6b-908a-4ba0-9baa-a849880b5682",
+  "paths": [
+    "evidence/FAN-3965/preflight/README.md",
+    "evidence/FAN-3965/preflight/qa-finding-repro-2026-09-24.log"
+  ],
+  "published_at": "2026-09-23T23:20:34Z",
+  "qa": "PASSED run 01a0d0a2-86a6-7b21-834a-6bef6d9248ac by 8ceb4992 comment 01a0d0a5-4f48-7ce0-a04a-38b4eeba52c6",
+  "prior_failed": "75e6785e9486d4ae343af7a793b5c5db303ae035 run 01a0d041-b827-7f0e-aaaf-9bfb034f4b9d comment 01a0d04a-7c87-743d-aafd-1c18e868754b",
+  "qa_failed_count": 1
+}

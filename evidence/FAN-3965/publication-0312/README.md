@@ -87,3 +87,13 @@ No PR or repository integration is required for this evidence-only publication
 stage (`post_qa_integration_required=false`). The exact pushed candidate awaits
 independent same-card qa_high review; the implementer does not assign QA or mark
 the deliverable done. The current PM lifecycle binding receives one handoff.
+
+## Platform evidence storage
+
+The live issue metadata reached its 8 KB server limit while recording the new
+candidate pins. The full previous `history_preflight_stage` is preserved in
+`history-preflight-stage.json`; the live field now points here. Prior failed and
+passed preflight SHA/tree, runs, reviewers, and report comments remain intact.
+No release authority, dispatch contract, source pin, package hash, or author
+exclusion was removed. The final candidate base is the source tag commit; review
+the complete evidence diff from that base.
