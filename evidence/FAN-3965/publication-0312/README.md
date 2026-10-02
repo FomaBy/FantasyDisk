@@ -92,7 +92,8 @@ the deliverable done. The current PM lifecycle binding receives one handoff.
 
 The live issue metadata reached its 8 KB server limit while recording the new
 candidate pins. The full previous `history_preflight_stage` is preserved in
-`history-preflight-stage.json`; the live field now points here. Prior failed and
+`history-preflight-stage.json`. The obsolete live field was removed only after
+archival because the server also limits metadata to 50 keys. Prior failed and
 passed preflight SHA/tree, runs, reviewers, and report comments remain intact.
 No release authority, dispatch contract, source pin, package hash, or author
 exclusion was removed. The final candidate base is the source tag commit; review
