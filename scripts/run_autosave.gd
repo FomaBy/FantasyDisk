@@ -20,6 +20,7 @@ const DEFAULT_SAVE_PATH := "user://fantasydisk_autosave.cfg"
 const SCHEMA_VERSION := 1
 const META_SECTION := "meta"
 const RUN_SECTION := "run"
+const ATOMIC_CONFIG := preload("res://scripts/atomic_config_file.gd")
 
 
 # Атомарно сохранить произвольное run-состояние. Возвращает true при успехе.
@@ -28,38 +29,7 @@ static func save_run(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> bool:
 	config.set_value(META_SECTION, "schema_version", SCHEMA_VERSION)
 	for key in state.keys():
 		config.set_value(RUN_SECTION, str(key), state[key])
-	# Атомарность: сначала во временный файл, затем переименование поверх цели.
-	var tmp_path := save_path + ".tmp"
-	var err := config.save(tmp_path)
-	if err != OK:
-		return false
-	var dir := DirAccess.open("user://")
-	if dir == null:
-		return false
-	var backup_path := save_path + ".bak"
-	# Recover an interrupted old→backup swap before attempting another save.
-	if not dir.file_exists(save_path) and dir.file_exists(backup_path):
-		if dir.rename(backup_path, save_path) != OK:
-			_cleanup_file(dir, tmp_path)
-			return false
-	elif dir.file_exists(save_path) and dir.file_exists(backup_path):
-		if dir.remove(backup_path) != OK:
-			_cleanup_file(dir, tmp_path)
-			return false
-
-	var had_previous := dir.file_exists(save_path)
-	if had_previous and dir.rename(save_path, backup_path) != OK:
-		_cleanup_file(dir, tmp_path)
-		return false
-	if dir.rename(tmp_path, save_path) != OK:
-		# Roll back the known-good checkpoint if new-file placement fails.
-		if had_previous and dir.file_exists(backup_path):
-			dir.rename(backup_path, save_path)
-		_cleanup_file(dir, tmp_path)
-		return false
-	if had_previous:
-		_cleanup_file(dir, backup_path)
-	return true
+	return ATOMIC_CONFIG.save(config, save_path)
 
 
 # Загрузить run-состояние. {} если файла нет / повреждён / несовместимая схема.

@@ -502,6 +502,7 @@ var dev_console: CanvasLayer = null
 var update_manager = null
 var meta_state := {}
 var meta_save_path := META_PROGRESSION.DEFAULT_SAVE_PATH
+var _meta_save_failure_logged := false
 # Подача боя: тряска камеры (тумблер в настройках, умеренная по умолчанию).
 var screen_shake_enabled := true
 var combat_feedback_enabled := true
@@ -1047,22 +1048,22 @@ func advance_to_next_act() -> bool:
 	save_run_autosave("act_transition")
 	return true
 
-
 func _apply_audio_settings() -> void:
 	var audio := get_node_or_null("/root/AudioManager")
 	if audio != null and audio.has_method("apply_volume_settings"):
 		audio.apply_volume_settings(audio_settings)
-
 
 func _load_meta_progression() -> void:
 	meta_state = META_PROGRESSION.load_state(meta_save_path)
 	meta_points = int(meta_state.get("meta_points", 0))
 	berserk_ascension_unlocked = ascension_level_for("berserk") >= 1
 
-
-func save_meta_progression() -> void:
-	META_PROGRESSION.save_state(meta_state, meta_save_path)
-
+func save_meta_progression() -> bool:
+	var saved := META_PROGRESSION.save_state(meta_state, meta_save_path)
+	if not saved and not _meta_save_failure_logged:
+		push_warning("Could not save meta progression; progress remains in memory. Further save failures will not be logged.")
+		_meta_save_failure_logged = true
+	return saved
 
 func record_codex_discovery(category: String, content_id: String) -> void:
 	if not run_progression_eligible():
