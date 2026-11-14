@@ -58,10 +58,12 @@ explicit failure through the existing checkpoint contract.
   zones at 1280×720, 1920×1080 and 2560×1440 and active-time timeout decline.
 
 Run automated engine commands through `tools/godot_gate.py`. The lifetime suite
-requires `PROBE_SCRATCH` and refuses to instantiate Main unless the actual
-`OS.get_user_data_dir()` lies inside it. Set child `HOME`, `XDG_DATA_HOME`,
-`APPDATA` and `LOCALAPPDATA` to scratch before imports as well as tests; an
-ignored `--user-data-dir` argument does not isolate the profile. Use
+accepts either an explicit `PROBE_SCRATCH` or the canonical quality runner's
+matching `HOME`, `XDG_DATA_HOME`, `APPDATA` and `LOCALAPPDATA` scratch roots.
+It refuses to instantiate Main unless the actual `OS.get_user_data_dir()` lies
+inside that absolute root. Set the child profile roots to scratch before
+imports as well as tests; an ignored `--user-data-dir` argument does not
+isolate the profile. Use
 `--fixed-fps 60`. For windowed inspection, set `FSD_CONTRACT_CAPTURE=1` and
 `FSD_CONTRACT_ARTIFACT_DIR` to a writable evidence directory. This captures the
 existing marked label, captain label and offer after the level-up operations.

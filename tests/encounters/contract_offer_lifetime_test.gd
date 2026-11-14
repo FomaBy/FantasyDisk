@@ -13,8 +13,17 @@ var completed := 0
 
 func _initialize() -> void:
 	var scratch := OS.get_environment("PROBE_SCRATCH")
-	if scratch.is_empty() or not OS.get_user_data_dir().begins_with(scratch + "/"):
-		push_error("contract-lifetime: isolated PROBE_SCRATCH profile required")
+	if scratch.is_empty():
+		# quality_gate.py sets all four profile roots to the same scratch directory.
+		# Require that complete contract before using HOME as containment evidence.
+		scratch = OS.get_environment("HOME")
+		for variable in ["XDG_DATA_HOME", "APPDATA", "LOCALAPPDATA"]:
+			if OS.get_environment(variable) != scratch:
+				scratch = ""
+				break
+	if scratch.is_empty() or not scratch.is_absolute_path() \
+			or not OS.get_user_data_dir().begins_with(scratch + "/"):
+		push_error("contract-lifetime: isolated profile roots and user-data containment required")
 		quit(1)
 		return
 	print("contract-lifetime user data: ", OS.get_user_data_dir())
