@@ -11,6 +11,14 @@ extends "res://scripts/ui/screens/battle_prayer.gd"
 
 
 func _create_hud() -> void:
+	# Level-up pick/defer rebuilds the HUD. Encounter controls belong to the
+	# active feature: retain their instances (and timers) until feature cleanup.
+	var encounter_controls: Array[Control] = []
+	if is_instance_valid(game.hud_layer):
+		for control in game.get_tree().get_nodes_in_group("encounter_hud"):
+			if control is Control and game.hud_layer.is_ancestor_of(control) and not control.is_queued_for_deletion():
+				control.get_parent().remove_child(control)
+				encounter_controls.append(control)
 	game._clear_hud()
 	game.hud_layer = CanvasLayer.new()
 	game.hud_layer.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -37,6 +45,8 @@ func _create_hud() -> void:
 	UltimateHudRuntimeAdapter.attach(root, game)
 	_update_level_up_button()
 	_update_hud()
+	for control in encounter_controls:
+		root.add_child(control)
 
 
 

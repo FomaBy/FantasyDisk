@@ -61,11 +61,17 @@ func on_trigger(context, beat_def: Dictionary) -> bool:
 
 
 func on_tick(_context_ref, _delta: float) -> void:
-	if _resolved or _mode != "risk":
+	if _resolved:
 		return
-	for enemy in _risk_enemies:
-		if enemy == null or not is_instance_valid(enemy) \
-				or (enemy.is_queued_for_deletion() and _pending_enemy_ids.has(enemy.get_instance_id())):
+	if _mode == "offer":
+		if not is_instance_valid(_offer) or _offer.is_queued_for_deletion() or not _offer.is_inside_tree():
+			_on_offer_decision("declined", "offer_lost")
+		return
+	if _mode != "risk":
+		return
+	for enemy_id in _pending_enemy_ids:
+		var enemy := instance_from_id(int(enemy_id)) as Node2D
+		if enemy == null or enemy.is_queued_for_deletion() or not enemy.is_inside_tree():
 			_finish_risk(false, "risk_interrupted")
 			return
 
@@ -112,8 +118,10 @@ func _show_offer() -> bool:
 
 
 func _on_offer_decision(decision: String, reason: String) -> void:
-	if _resolved or _context == null:
+	if _resolved or _context == null or _mode != "offer":
 		return
+	if is_instance_valid(_offer):
+		_offer.queue_free()
 	_offer = null
 	if decision != "accepted":
 		if _checkpoint("declined", "", 0, "decline:contract"):
@@ -130,6 +138,9 @@ func _on_offer_decision(decision: String, reason: String) -> void:
 func _begin_risk_phase() -> bool:
 	if _context == null or _context.game == null:
 		return false
+	if _context.combat == null or not _context.combat.has_method("_scale_enemy_for_current_wave"):
+		_finish_risk(false, "risk_scaler_missing")
+		return false
 	_mode = "risk"
 	var count := LEDGER.risk_enemy_count(_settings, int(_context.route_scaling_stage))
 	for index in range(count):
@@ -139,12 +150,18 @@ func _begin_risk_phase() -> bool:
 			return false
 		enemy.name = "ContractRiskEnemy%d" % (index + 1)
 		enemy.set_meta(RISK_META, true)
-		enemy.set("reward_xp", 0)
-		enemy.set("reward_money", 0)
-		enemy.set("max_health", float(enemy.get("max_health")) * float(_settings["risk_multiplier"]))
-		enemy.set("contact_damage", float(enemy.get("contact_damage")) * float(_settings["risk_multiplier"]))
 		enemy.global_position = _risk_position(index, count)
 		_context.game.add_child(enemy)
+		# Match a current ordinary spawn (including wave/stage/ascension pressure)
+		# before adding the advertised risk. The scaler also sets drop rewards.
+		_context.combat._scale_enemy_for_current_wave(enemy)
+		enemy.set("max_health", float(enemy.get("max_health")) * float(_settings["risk_multiplier"]))
+		enemy.set("health", enemy.get("max_health"))
+		enemy.set("contact_damage", float(enemy.get("contact_damage")) * float(_settings["risk_multiplier"]))
+		enemy.set("reward_xp", 0)
+		enemy.set("reward_money", 0)
+		if enemy.has_method("refresh_health_bar"):
+			enemy.refresh_health_bar()
 		if not enemy.has_signal("died"):
 			enemy.queue_free()
 			_finish_risk(false, "risk_signal_missing")
@@ -163,7 +180,12 @@ func _risk_position(index: int, count: int) -> Vector2:
 func _on_risk_enemy_died(enemy: Node2D) -> void:
 	if _resolved or _mode != "risk" or enemy == null:
 		return
+	if not _pending_enemy_ids.has(enemy.get_instance_id()):
+		return
 	_pending_enemy_ids.erase(enemy.get_instance_id())
+	_risk_enemies.erase(enemy)
+	if enemy.died.is_connected(_on_risk_enemy_died):
+		enemy.died.disconnect(_on_risk_enemy_died)
 	if _pending_enemy_ids.is_empty():
 		_finish_risk(true, "risk_cleared")
 

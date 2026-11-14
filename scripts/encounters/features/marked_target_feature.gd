@@ -183,6 +183,7 @@ func _build_hud(context) -> void:
 		return
 	var label := Label.new()
 	label.name = "MarkedTargetHudLabel"
+	label.add_to_group("encounter_hud")
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	label.position = Vector2(-140.0, 92.0)

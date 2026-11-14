@@ -299,6 +299,7 @@ func _build_presentation(context) -> void:
 	if hud != null:
 		_hud_label = Label.new()
 		_hud_label.name = "CaptainHudLabel"
+		_hud_label.add_to_group("encounter_hud")
 		_hud_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_hud_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
 		_hud_label.position = Vector2(-220.0, 122.0)
