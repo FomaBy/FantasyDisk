@@ -6,12 +6,14 @@ const CODEX_DATA := preload("res://scripts/codex_data.gd")
 # FAN-1447: Encounter Beat Director — вся логика в scripts/encounters/**.
 const ENCOUNTER_ADAPTER := preload("res://scripts/encounters/encounter_adapter.gd")
 const ENCOUNTER_CONTEXT := preload("res://scripts/encounters/encounter_context.gd")
+const COMBAT_PICKUPS := preload("res://scripts/combat_pickups.gd")  # FAN-4003
 
 # Боевой цикл: старт/конец боя, спавн волн, баланс врагов/элиток/боссов,
 # арена, pickups и снапшот игрока между узлами.
 
 var game
 var _encounters := ENCOUNTER_ADAPTER.new()
+var _pickups: RefCounted
 
 const TRANSIENT_RUN_MODIFIER_KEYS := [
 	"dodge_rush_active",
@@ -79,6 +81,7 @@ var _combat_start_generation := 0
 
 func _init(game_ref) -> void:
 	game = game_ref
+	_pickups = COMBAT_PICKUPS.new(game_ref)
 
 
 # SCRUM-785: достоверный сигнал «элитка убита в этом бою» (для win-by-kill в _process).
@@ -402,6 +405,9 @@ func _end_combat(victory: bool) -> void:
 			var room_clear_heal := float((game.current_player.get("run_modifiers") as Dictionary).get("room_clear_heal_percent", 0.0))
 			if room_clear_heal > 0.0 and game.current_player.has_method("heal_percent"):
 				game.current_player.heal_percent(room_clear_heal)
+			# FAN-4003: only a won fight banks drops still on the ground; on defeat
+			# _clear_world below discards them.
+			_collect_all_ground_pickups()
 			if was_boss_fight:
 				_grant_boss_completion_rewards()
 			else:
@@ -1124,48 +1130,18 @@ func _on_enemy_died(enemy: Node2D) -> void:
 		_spawn_pickup("money", int(enemy.get("reward_money")), enemy.global_position + Vector2(10.0, 0.0))
 
 
+# FAN-4003: drop spawn/merge, per-frame collection and the victory sweep live
+# in scripts/combat_pickups.gd.
 func _spawn_pickup(pickup_type: String, amount: int, position: Vector2) -> void:
-	if game.pickup_scene == null or amount <= 0:
-		return
-	var pickup := SCENE_CONTRACTS.instantiate_node_2d(game.pickup_scene, "CombatDirector pickup spawn")
-	if pickup == null:
-		return
-	game.add_child(pickup)
-	pickup.global_position = position
-	if pickup.has_method("setup"):
-		pickup.setup(pickup_type, amount)
+	_pickups.spawn(pickup_type, amount, position)
 
 
 func _update_pickups(delta: float) -> void:
-	if game.current_player == null or not is_instance_valid(game.current_player):
-		return
-
-	var raw_pickup_radius = game.current_player.get("pickup_radius")
-	var pickup_radius := 0.0
-	if typeof(raw_pickup_radius) == TYPE_INT or typeof(raw_pickup_radius) == TYPE_FLOAT:
-		pickup_radius = float(raw_pickup_radius)
-	for pickup in game.get_tree().get_nodes_in_group("pickups"):
-		var pickup_node := pickup as Node2D
-		if pickup_node == null or not is_instance_valid(pickup_node):
-			continue
-
-		var distance = pickup_node.global_position.distance_to(game.current_player.global_position)
-		if distance <= pickup_radius:
-			_collect_pickup(pickup_node)
-		elif distance <= pickup_radius * 1.75:
-			pickup_node.global_position = pickup_node.global_position.lerp(game.current_player.global_position, 8.0 * delta)
+	_pickups.update(delta)
 
 
-func _collect_pickup(pickup: Node) -> void:
-	var pickup_type := str(pickup.get("pickup_type"))
-	var amount := int(pickup.get("amount"))
-	if pickup_type == "money":
-		game.current_player.gain_money(amount)
-		game._play_sfx("pickup_money")
-	else:
-		game.current_player.gain_xp(amount)
-		game._play_sfx("pickup_xp")
-	pickup.queue_free()
+func _collect_all_ground_pickups() -> void:
+	_pickups.collect_all_ground()
 
 
 func _setup_arena_world(is_boss_fight: bool) -> void:
