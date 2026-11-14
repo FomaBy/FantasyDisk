@@ -749,6 +749,40 @@ func _show_settings_menu(requested_return_origin := "") -> void:
 	tabs.tab_changed.connect(update_settings_footer_visibility)
 	update_settings_footer_visibility.call(tabs.current_tab)
 
+	# FAN-4010: direction-reachable Back (above the tab row) and Update (below the
+	# last control of the active tab); geometry search alone misses both.
+	var tab_row_buttons: Array[Button] = []
+	for tab_index in range(4):
+		var tab_button := root.find_child("SettingsTabButton_%d" % tab_index, true, false) as Button
+		if tab_button != null:
+			tab_row_buttons.append(tab_button)
+	var wire_back_and_update := func(active_tab: int) -> void:
+		if tab_row_buttons.size() == 4:
+			back_button.focus_neighbor_bottom = tab_row_buttons[active_tab].get_path()
+			for top_tab in tab_row_buttons.slice(0, 2 if vp.y <= 760.0 else 4):
+				top_tab.focus_neighbor_top = back_button.get_path()
+		if active_tab == 3:
+			return
+		var tab_control := tabs.get_current_tab_control()
+		if tab_control == null:
+			return
+		var last_focusable: Control = null
+		for candidate in tab_control.find_children("*", "Control", true, false):
+			var candidate_control := candidate as Control
+			if candidate_control.focus_mode == Control.FOCUS_ALL and candidate_control.is_visible_in_tree() \
+					and not (candidate_control is BaseButton and (candidate_control as BaseButton).disabled):
+				last_focusable = candidate_control
+		if last_focusable != null:
+			last_focusable.focus_neighbor_bottom = update_button.get_path()
+		if last_focusable != null:
+			update_button.focus_neighbor_top = last_focusable.get_path()
+		elif tab_row_buttons.size() == 4:
+			update_button.focus_neighbor_top = tab_row_buttons[active_tab].get_path()
+	tabs.tab_changed.connect(func(active_tab: int) -> void:
+		wire_back_and_update.call_deferred(active_tab)
+	)
+	wire_back_and_update.call_deferred(tabs.current_tab)
+
 	# Полая рама frame_border ПОВЕРХ всего контента — строго последним слоем.
 	_unified_add_frame(root, "Settings")
 

@@ -1087,6 +1087,8 @@ func _buy_shop_item_at(index: int) -> bool:
 	if not _buy_shop_item(item):
 		return false
 	game.current_shop_purchased[index] = true
+	# FAN-4010: the rebuilt shop keeps keyboard/gamepad focus near this slot.
+	set_meta("shop_focus_hint", index)
 	_show_shop_screen()
 	return true
 

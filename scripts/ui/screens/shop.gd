@@ -451,7 +451,7 @@ func _show_shop_screen() -> void:
 		if slot is Button and not (slot as Button).disabled:
 			shop_focus_items.append(slot)
 	_wire_run_ui_focus(shop_focus_items, true, [skip_button],
-		shop_focus_items[0] if not shop_focus_items.is_empty() else skip_button)
+		_shop_initial_focus(shop_focus_items, skip_button))
 
 	_layout_shop_gold_shell(root)
 	root.resized.connect(func() -> void:
@@ -461,6 +461,30 @@ func _show_shop_screen() -> void:
 	# Visual-only hollow frame must remain the final UI child.
 	var frame := _unified_add_frame(root, "ShopGold")
 	frame.z_index = 100
+
+
+
+
+# FAN-4010: after a purchase focus stays on the bought slot if it is still
+# focusable, else the nearest remaining slot (lower index wins a tie), else leave.
+func _shop_initial_focus(focus_items: Array, leave_button: Control) -> Control:
+	var hint := -1
+	if has_meta("shop_focus_hint"):
+		hint = int(get_meta("shop_focus_hint"))
+		remove_meta("shop_focus_hint")
+	if focus_items.is_empty():
+		return leave_button
+	if hint < 0:
+		return focus_items[0]
+	var best: Control = null
+	var best_distance := 0
+	for slot in focus_items:
+		var slot_index := int(String((slot as Control).name).trim_prefix("ShopItemButton"))
+		var distance := absi(slot_index - hint)
+		if best == null or distance < best_distance:
+			best = slot
+			best_distance = distance
+	return best
 
 
 
