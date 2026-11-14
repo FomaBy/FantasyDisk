@@ -64,6 +64,12 @@ Use `tools/godot_gate.py` for focused automated Godot execution. Use a
 above or an explicit acceptance criterion requires it. Never substitute a
 different platform for a platform-specific acceptance criterion.
 
+The gate prints the player profile each run used (`godot_gate: player
+profile: ...`). Focused evidence must come from a `scratch` or `caller
+scratch` profile; a run that reports the `REAL machine profile`
+(`FSD_GODOT_REAL_PROFILE=1`) depends on that machine's saves and settings and
+can change them, so it is not acceptance evidence.
+
 ## Gate evidence contract
 
 `tools/quality_gate.py` fails closed on an empty scope and names the failure in

@@ -9,6 +9,19 @@ Usage:
     python3 tools/godot_gate.py --headless --path . \
         --script res://tests/runtime_smoke_test.gd
 
+Player profile:
+    Godot derives ``user://`` from the platform data directory, so a plain run
+    would read and rewrite the machine's real FantasyDisk saves and settings.
+    Every run therefore gets a fresh scratch profile: the child's ``HOME``,
+    ``XDG_DATA_HOME``, ``APPDATA`` and ``LOCALAPPDATA`` point at a temporary
+    directory, ``-- --user-data-dir=<dir>`` is appended for suites that verify
+    their scratch root, and the directory is removed after the run, including
+    on failure and timeout.  A caller that passes its own
+    ``--user-data-dir=<dir>`` keeps that directory (it is never removed) and
+    the child environment points at it.  Export runs keep the real data
+    directory because the editor's export templates live there; they do not
+    run the game.  The profile in use is printed to stderr.
+
 Environment:
     FSD_GODOT_SLOTS       concurrent slots (default: 3)
     GODOT_BIN / GODOT     executable path or command name
@@ -19,21 +32,26 @@ Environment:
     FSD_GODOT_MAXWAIT     maximum slot wait in seconds (default: 2400)
     FSD_GODOT_RUN_TIMEOUT maximum Godot runtime in seconds (default: 3600)
     FSD_GODOT_BYPASS_ON_TIMEOUT=1 allows an explicit emergency bypass
+    FSD_GODOT_REAL_PROFILE=1 runs against the machine's real player profile
+                          (no isolation); only for a manual run that needs it
 
 Exit status 3 means the requested run printed a fatal Godot diagnostic even
 when the engine process itself exited successfully.
 """
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from pathlib import Path
-from typing import BinaryIO, Sequence
+from typing import BinaryIO, Iterator, Mapping, Sequence
 
 
 FATAL_OUTPUT_RE = re.compile(r"\bSCRIPT ERROR\b|\bFATAL\b", re.IGNORECASE)
@@ -53,6 +71,12 @@ PLAYER_TEXTURE_IMPORTS = (
     "assets/sprites/characters/berserk_walk_sheet_v2.png",
 )
 MACHINE_RUN_TOKENS = 64
+REAL_PROFILE_ENV = "FSD_GODOT_REAL_PROFILE"
+USER_DATA_DIR_ARG = "--user-data-dir="
+# Godot resolves user:// from these: HOME on macOS, XDG_DATA_HOME (or HOME) on
+# Linux, APPDATA on Windows; LOCALAPPDATA keeps its Windows cache alongside.
+PROFILE_ENV_KEYS = ("HOME", "XDG_DATA_HOME", "APPDATA", "LOCALAPPDATA")
+EXPORT_ARGS = frozenset({"--export-release", "--export-debug", "--export-pack", "--export-patch"})
 
 
 def _positive_int_env(name: str, default: int) -> int:
@@ -80,7 +104,11 @@ def _resolve_godot() -> str:
     if explicit:
         expanded = os.path.expanduser(explicit)
         return shutil.which(expanded) or expanded
+    return _default_godot()
 
+
+def _default_godot() -> str:
+    """Find an unconfigured engine; the macOS default lives under the real HOME."""
     candidates = ["godot4", "godot"]
     if sys.platform == "darwin":
         candidates.insert(0, os.path.expanduser("~/Downloads/Godot.app/Contents/MacOS/Godot"))
@@ -91,6 +119,104 @@ def _resolve_godot() -> str:
         if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
             return candidate
     return ""
+
+
+def isolated_profile_env(user_data: Path, *, godot_bin: str = "") -> dict[str, str]:
+    """Return a child environment whose Godot ``user://`` lives under ``user_data``.
+
+    The engine is pinned in ``GODOT_BIN`` before ``HOME`` moves, so a nested
+    gate call inside the run still finds it.  Shared with ``quality_gate.py``.
+    """
+    env = os.environ.copy()
+    if godot_bin:
+        env["GODOT_BIN"] = godot_bin
+    elif not env.get("GODOT_BIN") and not env.get("GODOT"):
+        resolved = _default_godot()
+        if resolved:
+            env["GODOT_BIN"] = resolved
+    for key in PROFILE_ENV_KEYS:
+        env[key] = str(user_data)
+    return env
+
+
+def _requested_user_data_dir(args: Sequence[str]) -> str | None:
+    for arg in args:
+        if arg.startswith(USER_DATA_DIR_ARG):
+            return arg[len(USER_DATA_DIR_ARG):]
+    return None
+
+
+def _is_export_run(args: Sequence[str]) -> bool:
+    engine_args = args[: args.index("--")] if "--" in args else args
+    return any(arg in EXPORT_ARGS for arg in engine_args)
+
+
+def _remove_profile(root: Path) -> None:
+    error: OSError | None = None
+    # Windows can hold a just-killed child's files open for a moment.
+    for attempt in range(5):
+        try:
+            shutil.rmtree(root)
+            return
+        except FileNotFoundError:
+            return
+        except OSError as exc:
+            error = exc
+            time.sleep(0.2 * (attempt + 1))
+    sys.stderr.write(f"godot_gate: warning: could not remove scratch player profile {root}: {error}\n")
+
+
+@contextlib.contextmanager
+def _player_profile(
+    args: list[str], godot: str
+) -> Iterator[tuple[list[str], dict[str, str] | None]]:
+    """Yield the Godot arguments and child environment for this run's profile."""
+    if os.getenv(REAL_PROFILE_ENV, "") == "1":
+        sys.stderr.write(
+            f"godot_gate: player profile: REAL machine profile ({REAL_PROFILE_ENV}=1); "
+            "this run can change saves and settings\n"
+        )
+        yield args, None
+        return
+    requested = _requested_user_data_dir(args)
+    if requested is not None:
+        root = Path(requested).expanduser().resolve()
+        root.mkdir(parents=True, exist_ok=True)
+        sys.stderr.write(f"godot_gate: player profile: caller scratch {root}\n")
+        yield args, isolated_profile_env(root, godot_bin=godot)
+        return
+    if _is_export_run(args):
+        sys.stderr.write(
+            "godot_gate: player profile: not isolated for an export run "
+            "(export templates live in the real editor data directory)\n"
+        )
+        yield args, None
+        return
+    root = Path(tempfile.mkdtemp(prefix="fsd-godot-profile-")).resolve()
+    sys.stderr.write(f"godot_gate: player profile: scratch {root} (removed after the run)\n")
+    run_args = [*args] if "--" in args else [*args, "--"]
+    run_args.append(f"{USER_DATA_DIR_ARG}{root}")
+    try:
+        yield run_args, isolated_profile_env(root, godot_bin=godot)
+    finally:
+        _remove_profile(root)
+
+
+@contextlib.contextmanager
+def _sigterm_as_exit() -> Iterator[None]:
+    """Let SIGTERM unwind through cleanup (child kill, profile removal)."""
+    if threading.current_thread() is not threading.main_thread():
+        yield
+        return
+
+    def _exit(signum: int, _frame: object) -> None:
+        raise SystemExit(128 + signum)
+
+    previous = signal.signal(signal.SIGTERM, _exit)
+    try:
+        yield
+    finally:
+        signal.signal(signal.SIGTERM, previous)
 
 
 def _assert_requested_build(godot: str) -> None:
@@ -144,7 +270,13 @@ def _needs_import_cache(args: Sequence[str], *, require_script: bool = True) -> 
     return False
 
 
-def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False) -> int:
+def _ensure_import_cache(
+    args: Sequence[str],
+    godot: str,
+    *,
+    force: bool = False,
+    env: Mapping[str, str] | None = None,
+) -> int:
     project_path = _project_path(args)
     needs_import = _needs_import_cache(args, require_script=not force)
     if needs_import:
@@ -152,7 +284,9 @@ def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False
         # The import pre-pass is intentionally diagnostic-tolerant: existing green
         # suites can emit unrelated import/resource warnings while warming the
         # cache. The Player probe below is the certifying call site.
-        code = _run_godot([godot, "--headless", "--path", project_path, "--import", "--quit"])
+        code = _run_godot(
+            [godot, "--headless", "--path", project_path, "--import", "--quit"], env=env
+        )
         if code != 0 or _needs_import_cache(args, require_script=False):
             return code or 1
     probe_path = os.path.join(project_path, PLAYER_IMPORT_PROBE.removeprefix("res://"))
@@ -160,6 +294,7 @@ def _ensure_import_cache(args: Sequence[str], godot: str, *, force: bool = False
         return _run_godot(
             [godot, "--headless", "--path", project_path, "--script", PLAYER_IMPORT_PROBE],
             fail_on_fatal_output=True,
+            env=env,
         )
     return 0
 
@@ -193,6 +328,7 @@ def _run_godot(
     command: Sequence[str],
     *,
     fail_on_fatal_output: bool = False,
+    env: Mapping[str, str] | None = None,
 ) -> int:
     try:
         timeout = _positive_float_env("FSD_GODOT_RUN_TIMEOUT", 3600.0)
@@ -203,6 +339,7 @@ def _run_godot(
         list(command),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        env=None if env is None else dict(env),
     )
     assert process.stdout is not None
     output_parts: list[bytes] = []
@@ -229,6 +366,12 @@ def _run_godot(
         timed_out = True
         process.kill()
         process.wait()
+    except BaseException:
+        # An interrupted gate must not leave Godot writing into a profile
+        # that is about to be removed.
+        process.kill()
+        process.wait()
+        raise
     reader.join()
     process.stdout.close()
 
@@ -391,59 +534,68 @@ def main(argv: Sequence[str] | None = None) -> int:
         sys.stderr.write(f"godot_gate: {exc}\n")
         return 2
 
-    deadline = time.monotonic() + max_wait
-    exclusive = os.getenv("FSD_GODOT_EXCLUSIVE", "") == "1"
-    while True:
-        lease = _MachineRunLease(sem_dir, exclusive)
-        if lease.try_acquire():
-            try:
-                for index in range(slots):
-                    slot = _SlotLock(sem_dir / f"slot{index}.lock")
-                    if not slot.try_acquire():
-                        continue
-                    try:
-                        import_code = _ensure_import_cache(
-                            args, godot, force=ensure_import_cache_only
-                        )
-                        if import_code != 0:
-                            return import_code
-                        if ensure_import_cache_only:
-                            return 0
-                        return _run_godot(
-                            [godot, *args],
-                            fail_on_fatal_output=True,
-                        )
-                    finally:
-                        slot.release()
-            finally:
-                lease.release()
+    requested = _requested_user_data_dir(args)
+    if requested is not None and not requested.strip():
+        sys.stderr.write(f"godot_gate: {USER_DATA_DIR_ARG} needs a scratch directory\n")
+        return 2
+    with _sigterm_as_exit(), _player_profile(args, godot) as (run_args, env):
+        deadline = time.monotonic() + max_wait
+        exclusive = os.getenv("FSD_GODOT_EXCLUSIVE", "") == "1"
+        while True:
+            lease = _MachineRunLease(sem_dir, exclusive)
+            if lease.try_acquire():
+                try:
+                    for index in range(slots):
+                        slot = _SlotLock(sem_dir / f"slot{index}.lock")
+                        if not slot.try_acquire():
+                            continue
+                        try:
+                            import_code = _ensure_import_cache(
+                                args, godot, force=ensure_import_cache_only, env=env
+                            )
+                            if import_code != 0:
+                                return import_code
+                            if ensure_import_cache_only:
+                                return 0
+                            return _run_godot(
+                                [godot, *run_args],
+                                fail_on_fatal_output=True,
+                                env=env,
+                            )
+                        finally:
+                            slot.release()
+                finally:
+                    lease.release()
 
-        if time.monotonic() > deadline:
-            if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1" and not exclusive:
+            if time.monotonic() > deadline:
+                if os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1" and not exclusive:
+                    sys.stderr.write(
+                        "godot_gate: slot wait timed out; explicit bypass enabled\n"
+                    )
+                    import_code = _ensure_import_cache(
+                        args, godot, force=ensure_import_cache_only, env=env
+                    )
+                    if import_code != 0:
+                        return import_code
+                    if ensure_import_cache_only:
+                        return 0
+                    return _run_godot(
+                        [godot, *run_args],
+                        fail_on_fatal_output=True,
+                        env=env,
+                    )
+                if exclusive and os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":
+                    sys.stderr.write(
+                        "godot_gate: slot wait timed out; exclusive runs refuse "
+                        "the emergency bypass\n"
+                    )
+                    return 124
                 sys.stderr.write(
-                    "godot_gate: slot wait timed out; explicit bypass enabled\n"
-                )
-                import_code = _ensure_import_cache(args, godot, force=ensure_import_cache_only)
-                if import_code != 0:
-                    return import_code
-                if ensure_import_cache_only:
-                    return 0
-                return _run_godot(
-                    [godot, *args],
-                    fail_on_fatal_output=True,
-                )
-            if exclusive and os.getenv("FSD_GODOT_BYPASS_ON_TIMEOUT", "") == "1":
-                sys.stderr.write(
-                    "godot_gate: slot wait timed out; exclusive runs refuse "
-                    "the emergency bypass\n"
+                    "godot_gate: slot wait timed out; bypass is disabled "
+                    "(set FSD_GODOT_BYPASS_ON_TIMEOUT=1 only for manual recovery)\n"
                 )
                 return 124
-            sys.stderr.write(
-                "godot_gate: slot wait timed out; bypass is disabled "
-                "(set FSD_GODOT_BYPASS_ON_TIMEOUT=1 only for manual recovery)\n"
-            )
-            return 124
-        time.sleep(1.5)
+            time.sleep(1.5)
 
 
 if __name__ == "__main__":

@@ -360,7 +360,7 @@ class GodotGateTest(unittest.TestCase):
                         0,
                     )
         self.assertEqual(run.call_args_list[0], mock.call(
-            ["/godot", "--headless", "--path", "/repo", "--import", "--quit"]
+            ["/godot", "--headless", "--path", "/repo", "--import", "--quit"], env=None
         ))
         self.assertIn(
             "godot_gate: import cache missing, running headless import first",
@@ -448,13 +448,17 @@ class GodotGateTest(unittest.TestCase):
             self.assertEqual(
                 run.call_args_list,
                 [
-                    mock.call(["/godot", "--headless", "--path", str(project), "--import", "--quit"]),
+                    mock.call(
+                        ["/godot", "--headless", "--path", str(project), "--import", "--quit"],
+                        env=None,
+                    ),
                     mock.call(
                         [
                             "/godot", "--headless", "--path", str(project), "--script",
                             "res://tests/import_cache_player_load_test.gd",
                         ],
                         fail_on_fatal_output=True,
+                        env=None,
                     ),
                 ],
             )
@@ -478,6 +482,7 @@ class GodotGateTest(unittest.TestCase):
                     "res://tests/import_cache_player_load_test.gd",
                 ],
                 fail_on_fatal_output=True,
+                env=None,
             )
 
     def test_ensure_import_cache_skips_player_probe_undeclared_by_a_minimal_project(self):
@@ -491,7 +496,8 @@ class GodotGateTest(unittest.TestCase):
                         0,
                     )
             run.assert_called_once_with(
-                ["/godot", "--headless", "--path", str(project), "--import", "--quit"]
+                ["/godot", "--headless", "--path", str(project), "--import", "--quit"],
+                env=None,
             )
 
     def test_ensure_import_cache_only_skips_the_requested_godot_command(self):
@@ -521,10 +527,21 @@ class GodotGateTest(unittest.TestCase):
                                 ]),
                                 0,
                             )
-        ensure_import.assert_called_once_with(
-            ["--headless", "--path", "/repo"], sys.executable, force=True
+        # Fields are compared one by one: a whole-call mismatch would print the
+        # child environment, which carries the caller's secrets.
+        ensure_import.assert_called_once()
+        self.assertEqual(
+            ensure_import.call_args.args, (["--headless", "--path", "/repo"], sys.executable)
         )
+        self.assertIs(ensure_import.call_args.kwargs["force"], True)
         run.assert_not_called()
+
+    def _assert_one_fatal_output_run(self, run, command_prefix):
+        # Compare fields, not the whole call, so a failure never prints the
+        # child environment (it carries the caller's secrets).
+        run.assert_called_once()
+        self.assertEqual(run.call_args.args[0][: len(command_prefix)], command_prefix)
+        self.assertIs(run.call_args.kwargs["fail_on_fatal_output"], True)
 
     def test_normal_and_bypass_execution_enable_fatal_output_detection(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -548,10 +565,7 @@ class GodotGateTest(unittest.TestCase):
                             self.module, "_run_godot", return_value=3
                         ) as run:
                             self.assertEqual(self.module.main(["--headless"]), 3)
-            run.assert_called_once_with(
-                [sys.executable, "--headless"],
-                fail_on_fatal_output=True,
-            )
+            self._assert_one_fatal_output_run(run, [sys.executable, "--headless"])
 
             bypass_env = dict(common_env)
             bypass_env["FSD_GODOT_BYPASS_ON_TIMEOUT"] = "1"
@@ -577,10 +591,7 @@ class GodotGateTest(unittest.TestCase):
                                         self.module.main(["--headless"]),
                                         3,
                                     )
-            run.assert_called_once_with(
-                [sys.executable, "--headless"],
-                fail_on_fatal_output=True,
-            )
+            self._assert_one_fatal_output_run(run, [sys.executable, "--headless"])
 
     def test_megabyte_output_is_streamed_without_deadlock(self):
         output_size = 1024 * 1024
