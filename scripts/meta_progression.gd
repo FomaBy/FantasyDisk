@@ -19,6 +19,7 @@ extends RefCounted
 # meta_points/skill_points остались фасадами «всего заработано/доступно».
 
 const DEFAULT_SAVE_PATH := "user://fantasydisk_meta.cfg"
+const ATOMIC_CONFIG := preload("res://scripts/atomic_config_file.gd")
 const CODEX_DATA := preload("res://scripts/codex_data.gd")
 const CODEX_UNLOCK_STATE := preload("res://scripts/codex_unlock_state.gd")
 const TREE_DATA := preload("res://scripts/meta_progression_tree_data.gd")
@@ -167,8 +168,19 @@ static func default_state() -> Dictionary:
 
 static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	var state := default_state()
-	var config := ConfigFile.new()
-	if config.load(save_path) != OK:
+	var config := _load_config(save_path)
+	if config == null:
+		# Preserve damage even when recovery succeeds: it must never rotate over
+		# the last good backup on the next codex/achievement save.
+		_preserve_damaged_file(save_path)
+		config = _load_config(save_path + ".bak")
+	if config == null:
+		_preserve_damaged_file(save_path + ".bak")
+		# Only an initial save can have no committed primary or backup. A valid
+		# pending file is the last recovery source; never prefer it to a commit.
+		config = _load_config(save_path + ".tmp")
+	if config == null:
+		_preserve_damaged_file(save_path + ".tmp")
 		return state
 	var schema := int(config.get_value(SECTION, "skill_tree_schema", 0))
 	var raw_levels = config.get_value(SECTION, "ascension_levels", {})
@@ -272,7 +284,19 @@ static func load_state(save_path := DEFAULT_SAVE_PATH) -> Dictionary:
 	return state
 
 
-static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> void:
+static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> bool:
+	# Refuse to overwrite damage if quarantining it failed (permissions/locks).
+	# Validate again here because callers may save without first loading.
+	for path in [save_path, save_path + ".bak"]:
+		if _load_config(path) == null and not _preserve_damaged_file(path):
+			return false
+	if not FileAccess.file_exists(save_path) and not FileAccess.file_exists(save_path + ".bak"):
+		var pending := save_path + ".tmp"
+		if _load_config(pending) != null:
+			if DirAccess.rename_absolute(ProjectSettings.globalize_path(pending), ProjectSettings.globalize_path(save_path)) != OK:
+				return false
+		elif not _preserve_damaged_file(pending):
+			return false
 	_sync_meta_economy_fields(state)
 	var config := ConfigFile.new()
 	config.set_value(SECTION, "skill_tree_schema", TREE_SCHEMA_VERSION)
@@ -293,7 +317,34 @@ static func save_state(state: Dictionary, save_path := DEFAULT_SAVE_PATH) -> voi
 		var save_key: String = CODEX_DISCOVERY_CATEGORIES[category]
 		config.set_value(SECTION, save_key, CODEX_UNLOCK_STATE.normalized_id_list(state.get(save_key, []), category))
 	config.set_value(SECTION, CODEX_UNREAD_SAVE_KEY, CODEX_UNLOCK_STATE.normalized_unread(state.get(CODEX_UNREAD_SAVE_KEY, {})))
-	config.save(save_path)
+	return ATOMIC_CONFIG.save(config, save_path, true)
+
+
+static func _load_config(path: String) -> ConfigFile:
+	if not FileAccess.file_exists(path):
+		return null
+	var config := ConfigFile.new()
+	# ConfigFile.load can return OK for zero bytes or arbitrary non-config
+	# text. Old profiles may omit individual keys, but must have [meta].
+	if config.load(path) != OK or not config.has_section(SECTION):
+		return null
+	return config
+
+
+static func _preserve_damaged_file(path: String) -> bool:
+	if not FileAccess.file_exists(path):
+		return true
+	var source := ProjectSettings.globalize_path(path)
+	var preserved := source + ".corrupt"
+	var suffix := 0
+	while FileAccess.file_exists(preserved) or DirAccess.dir_exists_absolute(preserved):
+		suffix += 1
+		preserved = source + ".corrupt.%d" % suffix
+	if DirAccess.rename_absolute(source, preserved) != OK:
+		push_warning("Could not preserve damaged meta profile: %s" % path)
+		return false
+	push_warning("Preserved damaged meta profile: %s" % preserved)
+	return true
 
 
 static func _normalized_meta_point_awards(raw) -> Dictionary:

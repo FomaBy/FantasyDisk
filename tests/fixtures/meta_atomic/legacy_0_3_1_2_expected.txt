@@ -1,0 +1,31 @@
+{
+"achievements": ["first_boss_win"],
+"ascension_levels": {
+"berserk": 3,
+"guitarist": 2
+},
+"class_boss_wins": {
+"berserk": 7,
+"guitarist": 4
+},
+"class_challenge_progress": {},
+"class_challenges_done": {},
+"codex_unread": {},
+"constellation_schema6_migrated": true,
+"discovered_artifacts": [],
+"discovered_bosses": [],
+"discovered_characters": [],
+"discovered_monsters": ["ash_marksman"],
+"discovered_weapons": [],
+"hidden_reveal_facts": {},
+"legacy_mastery": {},
+"meta_point_awards": {
+"berserk": [0, 1, 2],
+"guitarist": [0, 1]
+},
+"meta_points": 14,
+"secret_boss_defeated": false,
+"skill_nodes": ["berserk_sword_b1", "atlas_m0"],
+"skill_points": 12,
+"skill_tree_schema": 6
+}

@@ -17,6 +17,29 @@
 
 - Long-term progression is saved by `scripts/meta_progression.gd` to
   `user://fantasydisk_meta.cfg`.
+- `save_state()` returns `bool`. The shared `scripts/atomic_config_file.gd`
+  writer writes a same-directory `.tmp`, reloads it and compares every section,
+  key and value, then moves the primary to `.bak` and the temporary file to the
+  primary. Replacement never relies on renaming over an existing destination.
+  Meta progression retains the previous committed good generation in `.bak`;
+  failed placement attempts rollback, and a failed rollback leaves that backup
+  available to the loader. This provides process-interruption recovery, not a
+  guarantee against filesystem or hardware failure that loses buffered writes.
+- Loading prefers a valid primary, then `.bak`, then a valid `.tmp` only when
+  neither committed generation is usable (including an interrupted first save).
+  A valid meta file must parse and contain `[meta]`; empty files, non-config text,
+  parse errors and missing sections are damage. Existing key defaults, schema 6
+  and all migrations are unchanged. Syntactically valid legacy files with missing
+  keys still use their existing defaults.
+- Damaged files encountered during recovery are moved to `.corrupt`, then
+  `.corrupt.1`, `.corrupt.2`, etc.; earlier copies are never overwritten. If no
+  recovery source works, defaults start only after attempting preservation.
+  Saving validates the primary and backup again and refuses to overwrite damage
+  if preservation fails. A sole valid temporary file is promoted before writing
+  another temporary file, so a failed retry cannot destroy that recovery source.
+- `Main.save_meta_progression()` returns the save result, retains in-memory
+  progress on failure and logs the failure once per Main instance. Gameplay can
+  retry on its next ordinary save event.
 - The file stores meta points, unlocked Ascension levels and purchased skill-tree
   nodes. Combat-facing bonuses are applied at run start through
   `Main.apply_ascension_bonuses()` and player meta-skill hooks.
@@ -35,7 +58,9 @@ SCRUM-349 adds a separate autosave for the active run:
 - Path: `user://fantasydisk_autosave.cfg`.
 - Format: `ConfigFile`, schema-versioned with `RunAutosave.SCHEMA_VERSION`.
 - Invalid, missing, corrupted or incompatible saves load as `{}` and are ignored.
-- Save is atomic: runtime writes to `.tmp`, then renames over the active file.
+- Save uses the same verified `.tmp` / `.bak` replacement helper. Unlike permanent
+  progression, a successful run save removes its backup, preserving the existing
+  run lifecycle and clear behavior. Interrupted replacements still load `.bak`.
 
 Autosave is written only at safe map checkpoints, never mid-combat:
 
@@ -82,6 +107,16 @@ Main menu start checks `RunAutosave.has_run()`:
 
 ## Tests
 
+- `tests/meta_progression_atomic_save_test.gd` covers legacy 0.3.1.2 bytes/state,
+  round-trip and backup rotation, damaged-primary recovery with/without backup,
+  unique quarantine, interruption boundaries including the first save, observable
+  write/rotation failures and Main's in-memory retry. The legacy fixture and full
+  expected state were generated with commit `9a19870a15d71bc2b63e622c7895519bd84dafb4`.
+- Every automated save/migration test must use a fresh scratch HOME and platform
+  data directories as well as an explicit scratch `--user-data-dir`. The atomic
+  and schema-6 migration suites refuse a user-data directory outside that root.
+  `tools/quality_gate.py` supplies per-suite isolation; direct runs through
+  `tools/godot_gate.py` must supply the same environment and user argument.
 - `tests/run_autosave_persistence_test.gd` covers round-trip, atomic save,
   overwrite, clear, corrupted file and incompatible schema behavior.
 - `tests/runtime_smoke_test.gd` covers the user flow: save exists, main menu
