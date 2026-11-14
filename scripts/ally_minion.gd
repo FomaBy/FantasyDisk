@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 const TARGET_QUERY := preload("res://scripts/combat_target_query.gd")
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
 const StatusEffects := preload("res://scripts/status_effects.gd")
 const ProgressionData := preload("res://scripts/progression_data.gd")
 const FullFrameAnimationRegistry := preload("res://scripts/full_frame_animation_registry.gd")
@@ -400,13 +401,10 @@ func _try_attack(target: Node2D) -> void:
 func _deal_typed_damage(target: Node, amount: float, feedback: Dictionary) -> void:
 	if target == null or not is_instance_valid(target) or not target.has_method("take_damage"):
 		return
-	for method in target.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			if (method.get("args", []) as Array).size() >= 2:
-				target.call("take_damage", amount, feedback)
-			else:
-				target.call("take_damage", amount)
-			return
+	if TAKE_DAMAGE_CONTRACT.accepts_second_argument(target):
+		target.call("take_damage", amount, feedback)
+	else:
+		target.call("take_damage", amount)
 
 
 # SCRUM-902: косметический магический болт дальнего духа — самодостаточный
