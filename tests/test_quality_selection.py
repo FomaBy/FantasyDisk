@@ -155,6 +155,115 @@ class QualitySelectionPolicyTests(unittest.TestCase):
         self.assertIn("tests/weapon_integrity_test.gd", result.suite_paths)
         self.assertNotEqual(set(result.suite_paths), set(self.discovered_paths))
 
+    def test_persistence_paths_select_dedicated_save_and_migration_suites(self) -> None:
+        autosave = {
+            "tests/run_autosave_persistence_test.gd",
+            "tests/two_act_run_progression_scrum1058_test.gd",
+            "tests/encounters/encounter_feature_state_autosave_test.gd",
+        }
+        migration = {
+            "tests/meta_progression_smoke_test.gd",
+            "tests/constellation_schema6_migration_test.gd",
+            "tests/meta_skill_tree_smoke_test.gd",
+            "tests/skill_tree_per_hero_test.gd",
+        }
+        cases = {
+            "scripts/run_autosave.gd": autosave,
+            "scripts/meta_progression.gd": migration,
+            "scripts/constellation_schema6_data.gd": migration,
+            "scripts/meta_progression_tree_data.gd": migration | {
+                "tests/offensive_scaling_contract_test.gd",
+            },
+        }
+        for changed_path, required in cases.items():
+            with self.subTest(changed_path=changed_path):
+                result = self._select({changed_path})
+                self.assertFalse(result.used_full_fallback)
+                self.assertLessEqual(required, set(result.suite_paths))
+                self.assertLess(len(result.suite_paths), len(self.discovered_paths))
+
+    def test_run_coordinators_select_save_boss_and_charge_contracts(self) -> None:
+        required = {
+            "tests/run_autosave_persistence_test.gd",
+            "tests/two_act_run_progression_scrum1058_test.gd",
+            "tests/encounters/encounter_feature_state_autosave_test.gd",
+            "tests/runtime_smoke_boss_elite_test.gd",
+            "tests/ultimate_charge_persist_test.gd",
+            "tests/main_state_pause_lifecycle_test.gd",
+            "tests/combat_world_pause_test.gd",
+        }
+        for changed_path in ("scripts/main.gd", "scripts/combat_director.gd"):
+            with self.subTest(changed_path=changed_path):
+                result = self._select({changed_path})
+                self.assertFalse(result.used_full_fallback)
+                self.assertLessEqual(required, set(result.suite_paths))
+                self.assertLess(len(result.suite_paths), len(self.discovered_paths))
+
+    def test_in_run_screens_select_death_victory_and_pause_flows(self) -> None:
+        required = {
+            "tests/runtime_smoke_ui_test.gd",
+            "tests/runtime_smoke_boss_elite_test.gd",
+            "tests/combat/smoke_death_flow_test.gd",
+            "tests/main_state_pause_lifecycle_test.gd",
+            "tests/combat_world_pause_test.gd",
+        }
+        for screen in ("victory_death", "level_up_screen", "level_up_cards", "pause_menu"):
+            with self.subTest(screen=screen):
+                result = self._select({f"scripts/ui/screens/{screen}.gd"})
+                self.assertFalse(result.used_full_fallback)
+                self.assertLessEqual(required, set(result.suite_paths))
+                self.assertLess(len(result.suite_paths), len(self.discovered_paths))
+
+    def test_encounter_sources_and_data_select_all_discovered_encounter_suites(self) -> None:
+        encounter_suites = {
+            path for path in self.discovered_paths if path.startswith("tests/encounters/")
+        }
+        self.assertIn("tests/encounters/contract_feature_lifecycle_test.gd", encounter_suites)
+        for changed_path in (
+            "scripts/encounters/encounter_context.gd",
+            "scripts/encounters/features/contracts/next_phase_contract_feature.gd",
+            "data/encounters/features/contracts/next_phase_contract.feature.json",
+        ):
+            with self.subTest(changed_path=changed_path):
+                result = self._select({changed_path})
+                self.assertFalse(result.used_full_fallback)
+                self.assertLessEqual(encounter_suites, set(result.suite_paths))
+                self.assertLess(len(result.suite_paths), len(self.discovered_paths))
+
+    def test_encounter_prefix_rules_include_future_nested_suites_and_stay_bounded(self) -> None:
+        future = "tests/encounters/future/nested_contract_test.gd"
+        discovered = self.discovered_paths + (future,)
+        for source, included, fallback in (
+            ("scripts/encounters/future/new.gd", True, False),
+            ("data/encounters/future/new.json", True, False),
+            ("scripts/encounters_extra/new.gd", False, False),
+            ("data/encounters_extra/new.json", True, True),
+        ):
+            with self.subTest(source=source):
+                result = selection.select_suite_paths(
+                    profile="changed", filters=(), changed_paths=(source,),
+                    discovered_paths=discovered, parent_resources={},
+                    defensive_fixture_paths=(), feature_list_recipe_scripts=(),
+                    skip_umbrella=False,
+                )
+                self.assertEqual(result.used_full_fallback, fallback)
+                self.assertEqual(future in result.suite_paths, included)
+                self.assertEqual("tests/weapon_integrity_test.gd" in result.suite_paths, fallback)
+
+    def test_encounter_coverage_retains_filters_profiles_and_umbrella_controls(self) -> None:
+        source = {"scripts/encounters/encounter_context.gd"}
+        filtered = self._select(source, filters=("contract_feature_lifecycle",))
+        self.assertEqual(filtered.suite_paths, ("tests/encounters/contract_feature_lifecycle_test.gd",))
+        without_umbrella = self._select(source, skip_umbrella=True)
+        self.assertNotIn("tests/runtime_smoke_test.gd", without_umbrella.suite_paths)
+        self.assertIn("tests/encounters/contract_feature_lifecycle_test.gd", without_umbrella.suite_paths)
+        self.assertEqual(self._select(source, profile="static").suite_paths, ())
+        for profile in ("full", "windows"):
+            self.assertEqual(
+                set(self._select(source, profile=profile).suite_paths),
+                set(self.discovered_paths),
+            )
+
     def test_shared_helper_keeps_transitive_umbrella_coverage(self) -> None:
         result = self._select({selection.RUNTIME_SMOKE_HELPER_PATH})
         selected = set(result.suite_paths)
