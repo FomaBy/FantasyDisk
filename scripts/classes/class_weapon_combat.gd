@@ -1,5 +1,7 @@
 extends "res://scripts/classes/class_weapon_core.gd"
 
+const TAKE_DAMAGE_CONTRACT := preload("res://scripts/take_damage_contract.gd")
+
 # FAN-3840: модуль распределённого боевого класса ClassWeapon — общий боевой слой: цели/урон/статусы/лужи/капы ширины и диспетчеризация событий созвездий.
 # Часть линейной extends-цепочки scripts/classes/** (сборка — фасад
 # scripts/class_weapon.gd). Код перенесён из class_weapon.gd БЕЗ изменений;
@@ -657,16 +659,12 @@ func _call_take_damage(enemy: Node, amount: float, feedback := {}) -> void:
 
 
 func _take_damage_accepts_feedback(enemy: Node) -> bool:
-	for method in enemy.get_method_list():
-		if str(method.get("name", "")) == "take_damage":
-			var args: Array = method.get("args", [])
-			if args.size() < 2:
-				return false
-			var script: Script = enemy.get_script()
-			if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
-				return true
-			return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
-	return false
+	if not TAKE_DAMAGE_CONTRACT.accepts_second_argument(enemy):
+		return false
+	var script: Script = enemy.get_script()
+	if script != null and str(script.resource_path) in ["res://scripts/enemy.gd", "res://scripts/boss.gd"]:
+		return true
+	return enemy.is_in_group("enemies") and enemy.has_method("_show_combat_feedback")
 
 
 func _push_enemy(enemy: Node2D, direction: Vector2) -> void:
