@@ -71,6 +71,12 @@ Read detailed design references only when the assigned scope needs them:
   for release, saves/migrations, networking, payments/secrets/security, or an
   already-red CI whose scope cannot be isolated. Current project features target
   Godot 4.7. Never commit `.godot/`.
+- The gate runs every invocation in a fresh scratch player profile, removed
+  afterwards, so a focused test cannot wipe the machine's real saves or
+  settings: `python3 tools/godot_gate.py --headless --path . --script
+  res://tests/<test>.gd`. Pass `-- --user-data-dir=<dir>` to keep the profile
+  for inspection. `FSD_GODOT_REAL_PROFILE=1` uses the real profile and is only
+  for a manual run that needs it, never for evidence.
 - UI content must remain inside the real empty content zone of decorative
   frames. Content margins must include frame thickness plus safety space.
   Covering ornament is a QA failure.

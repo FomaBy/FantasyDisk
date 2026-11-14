@@ -27,7 +27,6 @@ import importlib.util
 import json
 import os
 import re
-import shutil
 import signal
 import subprocess
 import sys
@@ -38,9 +37,13 @@ from pathlib import Path
 from typing import Iterable, Sequence
 
 try:
-    from tools.godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
+    from tools.godot_gate import (
+        FATAL_OUTPUT_RE,
+        IMPORT_CACHE_MISSING_MESSAGE,
+        isolated_profile_env,
+    )
 except ModuleNotFoundError:
-    from godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE
+    from godot_gate import FATAL_OUTPUT_RE, IMPORT_CACHE_MISSING_MESSAGE, isolated_profile_env
 
 try:
     from tools.quality import selection as selection_policy
@@ -958,21 +961,9 @@ def _godot_environment(
     *,
     exclusive: bool = False,
 ) -> dict[str, str]:
-    env = os.environ.copy()
-    # Resolve before overriding HOME: the conventional macOS binary lives under
-    # the real user's Downloads directory, while each test gets a scratch HOME.
-    if not env.get("GODOT_BIN") and not env.get("GODOT"):
-        candidates = [shutil.which("godot4"), shutil.which("godot")]
-        if sys.platform == "darwin":
-            candidates.insert(0, str(Path.home() / "Downloads/Godot.app/Contents/MacOS/Godot"))
-        for candidate in candidates:
-            if candidate and Path(candidate).is_file() and os.access(candidate, os.X_OK):
-                env["GODOT_BIN"] = candidate
-                break
-    env["HOME"] = str(user_data)
-    env["XDG_DATA_HOME"] = str(user_data)
-    env["APPDATA"] = str(user_data)
-    env["LOCALAPPDATA"] = str(user_data)
+    # Shared with tools/godot_gate.py: pins GODOT_BIN, then gives each test a
+    # scratch HOME/XDG_DATA_HOME/APPDATA/LOCALAPPDATA.
+    env = isolated_profile_env(user_data)
     # Callers own the timing classification.  Setting an explicit empty value
     # keeps imports and ordinary suites non-exclusive even if the parent shell
     # happens to export FSD_GODOT_EXCLUSIVE=1.
