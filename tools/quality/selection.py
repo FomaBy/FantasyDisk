@@ -97,8 +97,47 @@ ULTIMATE_FEATURE_LIST_TRIGGER_PATHS = frozenset({
     "tools/ultimate_feature_list_check.py",
     "tests/test_ultimate_feature_list.py",
 })
+AUTOSAVE_CONTRACT_TESTS = frozenset({
+    "run_autosave_persistence_test",
+    "two_act_run_progression_scrum1058_test",
+    "encounter_feature_state_autosave_test",
+})
+META_PROGRESSION_PERSISTENCE_TESTS = frozenset({
+    "meta_progression_smoke_test",
+    "constellation_schema6_migration_test",
+    "meta_skill_tree_smoke_test",
+    "skill_tree_per_hero_test",
+})
+RUN_LIFECYCLE_TESTS = AUTOSAVE_CONTRACT_TESTS | frozenset({
+    "runtime_smoke_boss_elite_test",
+    "ultimate_charge_persist_test",
+    "main_state_pause_lifecycle_test",
+    "combat_world_pause_test",
+})
+IN_RUN_UI_FLOW_TESTS = frozenset({
+    "runtime_smoke_ui_test",
+    "runtime_smoke_boss_elite_test",
+    "smoke_death_flow_test",
+    "main_state_pause_lifecycle_test",
+    "combat_world_pause_test",
+})
+# Match directory boundaries and discover the entire suite subtree so new
+# encounter contracts join changed-profile coverage without another rule edit.
+PREFIX_SUITE_DIRECTORY_RULES: Mapping[str, str] = {
+    "scripts/encounters/": "tests/encounters/",
+    "data/encounters/": "tests/encounters/",
+}
 
 PATH_TEST_RULES: Mapping[str, frozenset[str]] = {
+    "scripts/run_autosave.gd": AUTOSAVE_CONTRACT_TESTS,
+    "scripts/meta_progression.gd": META_PROGRESSION_PERSISTENCE_TESTS,
+    "scripts/constellation_schema6_data.gd": META_PROGRESSION_PERSISTENCE_TESTS,
+    "scripts/main.gd": RUN_LIFECYCLE_TESTS,
+    "scripts/combat_director.gd": RUN_LIFECYCLE_TESTS,
+    "scripts/ui/screens/victory_death.gd": IN_RUN_UI_FLOW_TESTS,
+    "scripts/ui/screens/level_up_screen.gd": IN_RUN_UI_FLOW_TESTS,
+    "scripts/ui/screens/level_up_cards.gd": IN_RUN_UI_FLOW_TESTS,
+    "scripts/ui/screens/pause_menu.gd": IN_RUN_UI_FLOW_TESTS,
     "scripts/ultimates/classes/thief/thief_coin_pouch.gd": frozenset({
         "thief_live_test",
         "thief_balance_test",
@@ -109,7 +148,9 @@ PATH_TEST_RULES: Mapping[str, frozenset[str]] = {
     "scripts/berserk_weapon.gd": frozenset({"berserk_rage_trait_test"}),
     "scripts/full_frame_animation_registry.gd": ANIMATION_REGISTRY_TESTS,
     "scripts/class_weapon.gd": CADENCE_STATUS_CONTRACT_TESTS | frozenset({"coverage_cap_gate"}),
-    "scripts/meta_progression_tree_data.gd": frozenset({"offensive_scaling_contract_test"}),
+    "scripts/meta_progression_tree_data.gd": (
+        META_PROGRESSION_PERSISTENCE_TESTS | frozenset({"offensive_scaling_contract_test"})
+    ),
     "scripts/player.gd": (
         OFFENSIVE_CONTRACT_TESTS
         | CADENCE_STATUS_CONTRACT_TESTS
@@ -306,6 +347,13 @@ def select_suite_paths(
             if exact is not None:
                 selected_names.update(exact)
                 recognized = True
+            for source_prefix, suite_prefix in PREFIX_SUITE_DIRECTORY_RULES.items():
+                if changed_path.startswith(source_prefix):
+                    selected_names.update(
+                        name for name, path in by_name.items()
+                        if path.startswith(suite_prefix)
+                    )
+                    recognized = True
             if changed_path == RUNTIME_SMOKE_HELPER_PATH:
                 selected_names.update(dependent_suite_names(
                     discovered_paths,
