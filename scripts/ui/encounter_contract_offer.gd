@@ -23,6 +23,7 @@ var _settled := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("encounter_hud")
 	if _accept != null and not _accept.pressed.is_connected(_accept_contract):
 		_accept.pressed.connect(_accept_contract)
 	if _decline != null and not _decline.pressed.is_connected(_decline_contract):
@@ -55,7 +56,7 @@ func present(payload: Dictionary) -> void:
 
 
 func _process(delta: float) -> void:
-	if _settled:
+	if _settled or get_tree().paused:
 		return
 	_remaining = maxf(0.0, _remaining - delta)
 	_update_timeout_hint()
@@ -64,7 +65,7 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
-	if _settled:
+	if _settled or get_tree().paused:
 		return
 	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
@@ -80,6 +81,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED:
 		_layout_for_viewport(_viewport_size())
+	elif what == NOTIFICATION_ENTER_TREE and is_node_ready():
+		# A HUD transfer returns from level-up; restore the safe keyboard choice.
+		call_deferred("_focus_safe_default")
 
 
 func _accept_contract() -> void:
@@ -107,7 +111,7 @@ func _focus_safe_default() -> void:
 
 
 func _focus(button: Button) -> void:
-	if button != null and not button.disabled:
+	if button != null and button.is_inside_tree() and not button.is_queued_for_deletion() and not button.disabled:
 		button.grab_focus()
 
 

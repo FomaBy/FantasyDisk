@@ -12,6 +12,13 @@ var errors: Array[String] = []
 var completed := 0
 
 
+class FakeCombat extends RefCounted:
+	func _scale_enemy_for_current_wave(enemy: Node) -> void:
+		enemy.max_health *= 20.0
+		enemy.health = enemy.max_health
+		enemy.contact_damage *= 4.0
+
+
 class FakePlayer extends Node2D:
 	var xp := 0
 	var gold := 0
@@ -123,8 +130,31 @@ func _check_retry_preserves_armed_risk_and_claims_once() -> void:
 	_expect(retry.is_eligible(fixture["context"]), "retry must remain eligible only to finish the armed risk")
 	_expect(retry.on_trigger(fixture["context"], _definition()) and retry.debug_offer() == null,
 		"retry must resume risk directly and never present a second offer")
-	for enemy in retry.debug_risk_enemies():
-		enemy.emit_signal("died", enemy)
+	var risk_enemies := retry.debug_risk_enemies()
+	for enemy in risk_enemies:
+		enemy.set_process(false)
+		enemy.set_physics_process(false)
+	for index in range(risk_enemies.size()):
+		var enemy: Node2D = risk_enemies[index]
+		if not is_instance_valid(enemy):
+			_expect(false, "pending risk enemies must survive earlier confirmed deaths")
+			break
+		_expect(is_equal_approx(float(enemy.max_health), 3.0 * 20.0 * 1.35) \
+			and is_equal_approx(float(enemy.contact_damage), 1.0 * 4.0 * 1.35),
+			"risk stats must apply the wave scaler before the extra risk multiplier")
+		_expect(enemy.reward_xp == 0 and enemy.reward_money == 0,
+			"the scaler must not enable risk-enemy drops")
+		enemy.take_damage(999999.0)
+		if not enemy.is_queued_for_deletion():
+			enemy.emit_signal("died", enemy)
+		if index < risk_enemies.size() - 1:
+			# Longer than a death animation: the old test emitted all deaths in one frame.
+			for frame in range(150):
+				await process_frame
+				retry.on_tick(fixture["context"], 1.0 / 60.0)
+			_expect(not is_instance_valid(enemy), "confirmed death must finish freeing its node")
+			_expect(not retry.is_resolved() and fixture["player"].xp == 0,
+				"a freed confirmed kill must leave the other pending enemies and reward intact")
 	await process_frame
 	var succeeded: Dictionary = fixture["context"].act_feature_state("next_phase_contract")
 	_expect(str(succeeded.get("risk", "")) == "succeeded" and int(succeeded.get("claim_count", 0)) == 1,
@@ -142,6 +172,12 @@ func _check_retry_preserves_armed_risk_and_claims_once() -> void:
 
 
 func _check_failure_is_persisted_without_reward() -> void:
+	for detach in [false, true]:
+		await _check_interrupted_risk(detach)
+	completed += 1
+
+
+func _check_interrupted_risk(detach: bool) -> void:
 	var fixture := await _fixture(1)
 	var feature := FEATURE.new()
 	feature.plan(fixture["context"], _definition())
@@ -153,7 +189,10 @@ func _check_failure_is_persisted_without_reward() -> void:
 	var enemies := feature.debug_risk_enemies()
 	_expect(not enemies.is_empty(), "accepted contract must create a concrete risk phase")
 	if not enemies.is_empty():
-		enemies[0].queue_free()
+		if detach:
+			enemies[0].get_parent().remove_child(enemies[0])
+		else:
+			enemies[0].queue_free()
 		await process_frame
 		feature.on_tick(fixture["context"], 0.1)
 	var state: Dictionary = fixture["context"].act_feature_state("next_phase_contract")
@@ -163,7 +202,6 @@ func _check_failure_is_persisted_without_reward() -> void:
 	_expect(str(outcome.get("status", "")) == FEATURE.STATUS_FAILED and str(outcome.get("reason", "")) == "risk_interrupted",
 		"failure outcome must remain machine-checkable")
 	await _free_fixture(fixture)
-	completed += 1
 
 
 func _check_director_runtime_path() -> void:
@@ -225,6 +263,7 @@ func _fixture(stage: int) -> Dictionary:
 	await process_frame
 	var context := CONTEXT.new()
 	context.game = game
+	context.combat = FakeCombat.new()
 	context.combat_type = "battle"
 	context.route_scaling_stage = stage
 	return {"game": game, "player": player, "context": context}
